@@ -45,3 +45,13 @@ private/*
 !private/.gitkeep
 
 .env.local
+
+# Local extracted exam assets and bundles
+/public/local-assets/*
+!/public/local-assets/.gitkeep
+/private/exams/*
+!/private/exams/.gitkeep
+
+# Python cache
+__pycache__/
+*.pyc

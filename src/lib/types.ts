@@ -1,5 +1,21 @@
 export type Choice = { key: string; label: string };
 
+export type ExamProfile = {
+  id: string;
+  name: string;
+  grades: string;
+  durationSeconds: number;
+  questionCount: number;
+  initialScore: number;
+  maxScore: number;
+  wrongPenaltyMode: "fixed" | "quarter-points";
+  wrongPenaltyValue: number;
+  country?: string;
+  year?: number;
+  language?: string;
+  sourceLabel?: string;
+};
+
 export type Question = {
   id: string;
   year: number;
@@ -18,9 +34,11 @@ export type Question = {
   sourceFile: string;
   assetUrl?: string;
   verified?: boolean;
+  sourceMeta?: unknown;
 };
 
-export type PublicQuestion = Omit<Question, "answer" | "solution" | "sourceFile">;
+export type PublicQuestion = Omit<Question, "answer" | "solution" | "sourceFile" | "sourceMeta">;
+export type ExamBundle = { profile: ExamProfile; questions: Question[] };
 
 export type ExamResultItem = {
   questionId: string;

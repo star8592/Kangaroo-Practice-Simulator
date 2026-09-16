@@ -3,15 +3,14 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import type { PublicQuestion } from "@/lib/types";
+import type { ExamProfile, PublicQuestion } from "@/lib/types";
 
-type Profile = { name:string; grades:string; durationSeconds:number; questionCount:number; initialScore:number; maxScore:number };
 type Event = { type:string; questionId?:string; at:number; value?:string };
 
-export default function ExamClient() {
+export default function ExamClient({ examId }: { examId: string }) {
   const router = useRouter();
   const [questions,setQuestions] = useState<PublicQuestion[]>([]);
-  const [profile,setProfile] = useState<Profile|null>(null);
+  const [profile,setProfile] = useState<ExamProfile|null>(null);
   const [index,setIndex] = useState(0);
   const [answers,setAnswers] = useState<Record<string,string>>({});
   const [flagged,setFlagged] = useState<Record<string,boolean>>({});
@@ -23,12 +22,12 @@ export default function ExamClient() {
   const [error,setError] = useState("");
 
   useEffect(()=>{
-    fetch("/api/exams/level-a").then(r=>r.json()).then(data=>{
+    fetch(`/api/exams/${encodeURIComponent(examId)}`).then(r=>r.json()).then(data=>{
       if(data.error) throw new Error(data.error);
       setQuestions(data.questions); setProfile(data.profile); setSeconds(data.profile.durationSeconds);
       setEvents([{type:"exam_start",at:Date.now()}]);
     }).catch(e=>setError(String(e.message||e)));
-  },[]);
+  },[examId]);
 
   useEffect(()=>{
     if(!profile || submitting) return;
@@ -57,10 +56,10 @@ export default function ExamClient() {
     if(submitting) return;
     setSubmitting(true); setShowSubmit(false); record(auto?"auto_submit":"submit");
     try{
-      const res=await fetch("/api/grade",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({answers})});
+      const res=await fetch("/api/grade",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({examId,answers})});
       const grade=await res.json();
       if(!res.ok) throw new Error(grade.error||"评分失败");
-      const payload={grade,answers,events:[...events,{type:auto?"auto_submit":"submit",at:Date.now()}],submittedAt:Date.now(),elapsedSeconds:(profile?.durationSeconds??4500)-seconds,questions};
+      const payload={examId,profile,grade,answers,events:[...events,{type:auto?"auto_submit":"submit",at:Date.now()}],submittedAt:Date.now(),elapsedSeconds:(profile?.durationSeconds??4500)-seconds,questions};
       localStorage.setItem("kangaroo-last-attempt",JSON.stringify(payload));
       router.push("/result");
     }catch(e){ setError(e instanceof Error?e.message:String(e)); setSubmitting(false); }
@@ -71,6 +70,7 @@ export default function ExamClient() {
 
   const stem=lang==="en" && q.stemEn ? q.stemEn : q.stem;
   const choices=lang==="en" && q.choicesEn?.length ? q.choicesEn : q.choices;
+  const hasBilingual=Boolean(q.stemEn || q.choicesEn?.length);
 
   return <div className="exam-shell">
     <header className="exam-topbar">
@@ -93,7 +93,7 @@ export default function ExamClient() {
       <section className="question-card">
         <div className="question-meta">
           <div><span className="q-number">Question {index+1}</span><span className={`point-badge ${pointBand}`}>{q.points} 分</span></div>
-          <div className="question-tools"><button onClick={()=>setLang(l=>l==="zh"?"en":"zh")}>{lang==="zh"?"EN":"中"}</button><button onClick={toggleFlag}>{flagged[q.id]?"★ 已标记":"☆ 标记"}</button></div>
+          <div className="question-tools">{hasBilingual&&<button onClick={()=>setLang(l=>l==="zh"?"en":"zh")}>{lang==="zh"?"EN":"中"}</button>}<button onClick={toggleFlag}>{flagged[q.id]?"★ 已标记":"☆ 标记"}</button></div>
         </div>
         <div className="concept-label">{q.concept}</div>
         <h1 className="question-stem">{stem}</h1>
