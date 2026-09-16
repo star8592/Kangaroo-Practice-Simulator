@@ -2,18 +2,19 @@ import { GRADE_PROFILES, type ArithmeticGrade, type MentalStrategy } from "./ari
 import type { ArithmeticItem } from "./arithmetic-generator";
 
 export type ErrorReason="correct"|"slow_recall"|"impulsive"|"hesitation"|"near_miss"|"operation_confusion"|"place_value"|"fact_gap"|"strategy_missed"|"unknown";
-export type ArithmeticAttempt={item:ArithmeticItem;answer:string;numericAnswer:number|null;correct:boolean;presentedAt:number;firstInputAt:number|null;submittedAt:number;firstInputMs:number;responseMs:number;edits:number;backspaces:number;reason:ErrorReason};
+export type ArithmeticAttempt={item:ArithmeticItem;answer:string;numericAnswer:number|null;correct:boolean;presentedAt:number;firstInputAt:number|null;submittedAt:number;firstInputMs:number;responseMs:number;edits:number;backspaces:number;reason:ErrorReason;telemetryVersion?:2};
 export type ArithmeticSession={id:string;grade:ArithmeticGrade;mode:"diagnostic"|"adaptive"|"speed";startedAt:number;finishedAt:number;attempts:ArithmeticAttempt[]};
-export type SkillMetric={skillId:string;attempts:number;correct:number;accuracy:number;medianMs:number;speedRatio:number;editRate:number;priority:number};
-export type TrainingPlan={grade:ArithmeticGrade;focusSkills:string[];focusStrategies:MentalStrategy[];reasons:{code:ErrorReason;count:number}[];summaryZh:string[];summaryEn:string[];metrics:SkillMetric[]};
+export type SkillStatus="unseen"|"insufficient"|"monitor"|"needs_accuracy"|"needs_fluency"|"mastered";
+export type SkillMetric={skillId:string;attempts:number;correct:number;accuracy:number;medianMs:number;speedRatio:number;editRate:number;priority:number;status:SkillStatus};
+export type TrainingPlan={grade:ArithmeticGrade;focusSkills:string[];accuracyFocusSkills:string[];fluencyFocusSkills:string[];monitorSkills:string[];focusStrategies:MentalStrategy[];reasons:{code:ErrorReason;count:number}[];summaryZh:string[];summaryEn:string[];metrics:SkillMetric[]};
 
 function median(xs:number[]){if(!xs.length)return 0;const a=[...xs].sort((x,y)=>x-y);const m=Math.floor(a.length/2);return a.length%2?a[m]:(a[m-1]+a[m])/2;}
 function parseNumbers(prompt:string){return (prompt.match(/-?\d+(?:\.\d+)?/g)||[]).map(Number);}
 export function classifyAttempt(item:ArithmeticItem,raw:string,responseMs:number,firstInputMs:number,edits:number,backspaces:number):ErrorReason{
  const x=Number(raw); const correct=raw.trim()!==""&&Number.isFinite(x)&&Math.abs(x-item.answer)<1e-9;
- if(correct){if(responseMs>item.expectedMs*1.55)return item.strategy==="fact_recall"?"slow_recall":"strategy_missed";if(firstInputMs>item.expectedMs*.9||edits>=4)return"hesitation";return"correct";}
+ if(correct){if(responseMs>item.expectedMs*1.55)return item.strategy==="fact_recall"?"slow_recall":"strategy_missed";if(firstInputMs>item.expectedMs*.9||edits>=2||backspaces>=2)return"hesitation";return"correct";}
  if(responseMs<item.expectedMs*.42&&firstInputMs<item.expectedMs*.3)return"impulsive";
- if(firstInputMs>item.expectedMs*.95||edits>=4||backspaces>=3)return"hesitation";
+ if(firstInputMs>item.expectedMs*.95||edits>=2||backspaces>=2)return"hesitation";
  if(Number.isFinite(x)&&Math.abs(x-item.answer)===1)return"near_miss";
  const ns=parseNumbers(item.prompt); if(Number.isFinite(x)&&ns.length>=2){const [a,b]=ns;if(Math.abs(x-(a+b))<1e-9||Math.abs(x-(a-b))<1e-9||Math.abs(x-a*b)<1e-9)return"operation_confusion";if(Math.abs(x-item.answer)%10===0||Math.abs(x-item.answer)%100===0)return"place_value";}
  if(item.strategy==="fact_recall")return"fact_gap";
@@ -21,17 +22,38 @@ export function classifyAttempt(item:ArithmeticItem,raw:string,responseMs:number
 }
 export function finalizeAttempt(item:ArithmeticItem,raw:string,t:{presentedAt:number;firstInputAt:number|null;submittedAt:number;edits:number;backspaces:number}):ArithmeticAttempt{
  const numeric=raw.trim()===""?null:Number(raw);const correct=numeric!==null&&Number.isFinite(numeric)&&Math.abs(numeric-item.answer)<1e-9;const responseMs=Math.max(1,t.submittedAt-t.presentedAt);const firstInputMs=t.firstInputAt?Math.max(0,t.firstInputAt-t.presentedAt):responseMs;
- return{item,answer:raw,numericAnswer:numeric!==null&&Number.isFinite(numeric)?numeric:null,correct,presentedAt:t.presentedAt,firstInputAt:t.firstInputAt,submittedAt:t.submittedAt,firstInputMs,responseMs,edits:t.edits,backspaces:t.backspaces,reason:classifyAttempt(item,raw,responseMs,firstInputMs,t.edits,t.backspaces)};
+ return{item,answer:raw,numericAnswer:numeric!==null&&Number.isFinite(numeric)?numeric:null,correct,presentedAt:t.presentedAt,firstInputAt:t.firstInputAt,submittedAt:t.submittedAt,firstInputMs,responseMs,edits:t.edits,backspaces:t.backspaces,reason:classifyAttempt(item,raw,responseMs,firstInputMs,t.edits,t.backspaces),telemetryVersion:2};
+}
+function normalizeLegacyAttempt(a:ArithmeticAttempt):ArithmeticAttempt{
+ if(a.telemetryVersion===2)return a;
+ // V1 counted every typed character as an edit. Recompute old records so normal input such as "16" is not treated as two revisions.
+ const edits=a.backspaces>0?Math.min(a.edits,a.backspaces):0;
+ return {...a,edits,reason:classifyAttempt(a.item,a.answer,a.responseMs,a.firstInputMs,edits,a.backspaces)};
 }
 export function buildTrainingPlan(grade:ArithmeticGrade,sessions:ArithmeticSession[]):TrainingPlan{
- const profile=GRADE_PROFILES[grade];const attempts=sessions.filter(s=>s.grade===grade).flatMap(s=>s.attempts).slice(-240);const bySkill=new Map<string,ArithmeticAttempt[]>();
+ const profile=GRADE_PROFILES[grade];const attempts=sessions.filter(s=>s.grade===grade).flatMap(s=>s.attempts).slice(-240).map(normalizeLegacyAttempt);const bySkill=new Map<string,ArithmeticAttempt[]>();
  for(const a of attempts){const x=bySkill.get(a.item.skillId)||[];x.push(a);bySkill.set(a.item.skillId,x)}
- const metrics:SkillMetric[]=profile.skills.map(s=>{const a=bySkill.get(s.id)||[];const correct=a.filter(x=>x.correct).length;const accuracy=a.length?correct/a.length:0;const med=median(a.map(x=>x.responseMs));const speedRatio=a.length?med/s.targetMs:2;const editRate=a.length?a.filter(x=>x.edits>=3||x.backspaces>=2).length/a.length:0;const priority=(1-accuracy)*2.8+Math.max(0,speedRatio-1)*.9+editRate*.8+(a.length<5?.5:0);return{skillId:s.id,attempts:a.length,correct,accuracy,medianMs:med,speedRatio,editRate,priority}}).sort((a,b)=>b.priority-a.priority);
+ const metrics:SkillMetric[]=profile.skills.map(s=>{const a=bySkill.get(s.id)||[];const correct=a.filter(x=>x.correct).length;const errors=a.length-correct;const accuracy=a.length?correct/a.length:0;const med=median(a.map(x=>x.responseMs));const speedRatio=a.length?med/s.targetMs:0;const editRate=a.length?a.filter(x=>x.edits>=2||x.backspaces>=2).length/a.length:0;let status:SkillStatus="unseen";if(a.length){if(errors>=2||(a.length>=6&&accuracy<profile.targetAccuracy-.1))status="needs_accuracy";else if(errors===1)status="monitor";else if(a.length<4)status="insufficient";else if(speedRatio>1.1)status="needs_fluency";else status="mastered"}const priority=a.length?Math.max(0,profile.targetAccuracy-accuracy)*5+Math.max(0,speedRatio-1)*.8+editRate*.5:0;return{skillId:s.id,attempts:a.length,correct,accuracy,medianMs:med,speedRatio,editRate,priority,status}}).sort((a,b)=>b.priority-a.priority);
  const reasonCounts=new Map<ErrorReason,number>();for(const a of attempts){if(a.reason!=="correct")reasonCounts.set(a.reason,(reasonCounts.get(a.reason)||0)+1)}
- const reasons=[...reasonCounts.entries()].map(([code,count])=>({code,count})).sort((a,b)=>b.count-a.count);const focusSkills=metrics.slice(0,Math.min(3,metrics.length)).map(x=>x.skillId);
+ const reasons=[...reasonCounts.entries()].map(([code,count])=>({code,count})).sort((a,b)=>b.count-a.count);
+ const accuracyFocusSkills=metrics.filter(x=>x.status==="needs_accuracy").slice(0,3).map(x=>x.skillId);
+ const fluencyFocusSkills=metrics.filter(x=>x.status==="needs_fluency").sort((a,b)=>b.speedRatio-a.speedRatio).slice(0,2).map(x=>x.skillId);
+ const monitorSkills=metrics.filter(x=>x.status==="monitor").slice(0,2).map(x=>x.skillId);
+ const focusSkills=[...new Set([...accuracyFocusSkills,...fluencyFocusSkills])].slice(0,3);
  const focusStrategies=[...new Set(attempts.filter(a=>focusSkills.includes(a.item.skillId)&&(["strategy_missed","slow_recall","fact_gap"] as ErrorReason[]).includes(a.reason)).map(a=>a.item.strategy))].slice(0,4);
- const top=reasons[0]?.code;const zh:string[]=[];const en:string[]=[];
+ const zh:string[]=[];const en:string[]=[];
+ const labelZh=(id:string)=>profile.skills.find(s=>s.id===id)?.labelZh||id;const labelEn=(id:string)=>profile.skills.find(s=>s.id===id)?.labelEn||id;
  if(!attempts.length){zh.push("先完成一次20题诊断，系统会建立你的个人速度与准确率基线。");en.push("Complete a 20-question diagnostic to establish your personal speed and accuracy baseline.")}
- else {const overall=attempts.filter(a=>a.correct).length/attempts.length;zh.push(`最近 ${attempts.length} 题正确率 ${(overall*100).toFixed(0)}%，优先训练：${focusSkills.map(id=>profile.skills.find(s=>s.id===id)?.labelZh||id).join("、")}。`);en.push(`Recent accuracy ${(overall*100).toFixed(0)}%. Priority skills: ${focusSkills.map(id=>profile.skills.find(s=>s.id===id)?.labelEn||id).join(", ")}.`);if(top==="impulsive"){zh.push("主要习惯问题是出手过快：下一轮会降低题量节奏，要求先判断运算结构再输入。");en.push("Main habit: impulsive answering. The next set will emphasize structure before response.")}if(top==="hesitation"){zh.push("主要问题是启动慢和反复修改：下一轮会增加同结构短组训练，减少决策负担。");en.push("Main issue: slow starts and repeated editing. The next set will use short same-structure runs.")}if(reasons.some(x=>x.code==="strategy_missed")){zh.push("有多道题答对但明显偏慢，说明巧算结构识别不足；下一轮会提高补整、分配律和友好数题的比例。");en.push("Several answers were correct but slow, suggesting missed mental shortcuts; shortcut patterns will be weighted more heavily.")}}
- return{grade,focusSkills,focusStrategies,reasons,summaryZh:zh,summaryEn:en,metrics};
+ else {
+  const overall=attempts.filter(a=>a.correct).length/attempts.length;zh.push(`最近 ${attempts.length} 题正确 ${attempts.filter(a=>a.correct).length}/${attempts.length}（${(overall*100).toFixed(0)}%）。`);en.push(`Recent result: ${attempts.filter(a=>a.correct).length}/${attempts.length} correct (${(overall*100).toFixed(0)}%).`);
+  if(accuracyFocusSkills.length){const detail=accuracyFocusSkills.map(id=>{const m=metrics.find(x=>x.skillId===id)!;return `${labelZh(id)} ${m.correct}/${m.attempts}`}).join("、");zh.push(`准确性需要补强：${detail}。这些项目才进入重点补错训练。`);const detailEn=accuracyFocusSkills.map(id=>{const m=metrics.find(x=>x.skillId===id)!;return `${labelEn(id)} ${m.correct}/${m.attempts}`}).join(", ");en.push(`Accuracy remediation: ${detailEn}. Only these skills enter focused error practice.`)}else{zh.push("目前没有足够证据把任何技能判定为“准确性弱项”。");en.push("There is not enough evidence to label any skill an accuracy weakness.")}
+  if(monitorSkills.length){const detail=monitorSkills.map(id=>{const m=metrics.find(x=>x.skillId===id)!;return `${labelZh(id)}（${m.correct}/${m.attempts}）`}).join("、");zh.push(`单次异常，先复测不下结论：${detail}。下一轮不额外加权，只在正常题量中继续观察。`);en.push(`Single-event watchlist: ${monitorSkills.map(labelEn).join(", ")}. These will be lightly rechecked, not treated as established weaknesses.`)}
+  const insufficient=metrics.filter(x=>x.status==="insufficient");if(insufficient.length){zh.push(`样本还不足：${insufficient.map(x=>`${labelZh(x.skillId)}仅${x.attempts}题`).join("、")}；暂不根据速度给弱项标签。`);en.push(`Insufficient samples for a fluency judgement: ${insufficient.map(x=>`${labelEn(x.skillId)} ${x.attempts} item(s)`).join(", ")}.`)}
+  if(fluencyFocusSkills.length){const detail=fluencyFocusSkills.map(id=>{const m=metrics.find(x=>x.skillId===id)!;const target=profile.skills.find(s=>s.id===id)!.targetMs;return `${labelZh(id)}（中位 ${(m.medianMs/1000).toFixed(1)}s，目标 ≤ ${(target/1000).toFixed(1)}s）`}).join("、");zh.push(`准确性已达标但可提速：${detail}。这属于流畅度/巧算训练，不是“不会”。`);en.push(`Accuracy is on target but fluency can improve: ${fluencyFocusSkills.map(labelEn).join(", ")}. This is fluency/strategy work, not error remediation.`)}
+  const habitThreshold=Math.max(3,Math.ceil(attempts.length*.15));const topHabit=reasons.find(x=>["impulsive","hesitation"].includes(x.code)&&x.count>=habitThreshold);
+  if(topHabit?.code==="impulsive"){zh.push(`“出手过快”连续出现 ${topHabit.count} 次，才作为稳定习惯处理；下一轮会要求先判断结构再输入。`);en.push(`Impulsive responding appeared ${topHabit.count} times, enough to treat it as a stable habit.`)}
+  if(topHabit?.code==="hesitation"){zh.push(`“启动慢/反复修改”连续出现 ${topHabit.count} 次，达到习惯阈值；下一轮使用同结构短组降低决策负担。`);en.push(`Slow starts/revisions appeared ${topHabit.count} times, reaching the habit threshold.`)}
+  const efficiencyCount=reasons.filter(x=>["strategy_missed","slow_recall"].includes(x.code)).reduce((s,x)=>s+x.count,0);if(efficiencyCount>=2){if(fluencyFocusSkills.length)zh.push(`有 ${efficiencyCount} 题属于“答对但效率偏低”，且已形成技能级证据，下一轮针对对应结构做提速和巧算识别。`);else zh.push(`出现 ${efficiencyCount} 个单题效率信号，但还没达到技能级“提速弱项”的证据门槛，先记录并复测。`)}
+ }
+ return{grade,focusSkills,accuracyFocusSkills,fluencyFocusSkills,monitorSkills,focusStrategies,reasons,summaryZh:zh,summaryEn:en,metrics};
 }
