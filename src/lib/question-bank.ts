@@ -15,8 +15,14 @@ export const LEVEL_A_PROFILE: ExamProfile = {
   maxScore: 120,
   wrongPenaltyMode: "fixed",
   wrongPenaltyValue: 1,
-  country: "China-style",
+  country: "Local",
   language: "zh/en",
+  nameZh: "Level A 仿真赛",
+  nameEn: "Level A Mock Exam",
+  gradesZh: "1–2年级",
+  gradesEn: "Grades 1–2",
+  sourceLabelZh: "本地双语训练题库",
+  sourceLabelEn: "Local bilingual training bank",
   studentReady: true,
 };
 
@@ -29,9 +35,10 @@ function hasBilingualText(q: Question) {
   return Boolean(q.localized?.zh?.stem?.trim() && q.localized?.en?.stem?.trim());
 }
 
-function isStudentReady(q: Question) {
+export function isStudentReady(q: Question) {
   if (q.language === "zh/en" || (q.stem && q.stemEn)) return true;
-  return Boolean(q.examReady && hasBilingualText(q) && q.studentAssetUrl);
+  const hasStudentVisual = Boolean(q.studentAssetUrl || (q.studentAssetUrlZh && q.studentAssetUrlEn));
+  return Boolean(q.examReady && hasBilingualText(q) && hasStudentVisual);
 }
 
 export function loadQuestionBank(): Question[] {
@@ -39,6 +46,10 @@ export function loadQuestionBank(): Question[] {
     throw new Error(`Local question bank not found: ${BANK_PATH}. Run scripts/import_level_a.py first.`);
   }
   return JSON.parse(fs.readFileSync(BANK_PATH, "utf8")) as Question[];
+}
+
+export function isExamBundleStudentReady(bundle: ExamBundle) {
+  return Boolean(bundle.questions.length && bundle.questions.every(isStudentReady));
 }
 
 export function loadExamBundle(examId: string): ExamBundle {
@@ -67,6 +78,9 @@ export function listExamProfiles(): ExamProfile[] {
 
 export function publicQuestions(questions: Question[]): PublicQuestion[] {
   return questions.map((q) => {
+    if (!isStudentReady(q)) {
+      throw new Error(`Question ${q.id} is not student-ready`);
+    }
     const localized = hasBilingualText(q);
     if (!localized && q.language !== "zh/en" && !q.stemEn) {
       throw new Error(`Question ${q.id} is not bilingual-ready`);
@@ -81,12 +95,14 @@ export function publicQuestions(questions: Question[]): PublicQuestion[] {
       language: localized ? "zh/en" : q.language,
       questionNo: q.questionNo,
       points: q.points,
-      concept: q.concept,
+      concept: localized ? "official_original" : q.concept,
       stem: zh?.stem || q.stem,
       stemEn: en?.stem || q.stemEn,
       choices: zh?.choices?.length ? zh.choices : q.choices,
       choicesEn: en?.choices?.length ? en.choices : q.choicesEn,
       assetUrl: q.studentAssetUrl || q.assetUrl,
+      assetUrlZh: q.studentAssetUrlZh || q.assetUrlZh,
+      assetUrlEn: q.studentAssetUrlEn || q.assetUrlEn,
       verified: Boolean(q.verified || q.review?.verified),
     };
   });

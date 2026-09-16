@@ -45,6 +45,8 @@ def main() -> int:
             q["localized"] = localized
             q.setdefault("review", {})["translationStatus"] = src.get("review", {}).get("translationStatus", "reviewed")
             q["review"]["needsReview"] = src.get("review", {}).get("needsReview", False)
+            if "verified" in src.get("review", {}):
+                q["review"]["verified"] = bool(src["review"]["verified"])
             q["examReady"] = False
             changed += 1
 

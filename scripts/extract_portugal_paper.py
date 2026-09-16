@@ -99,7 +99,7 @@ def build_bundle(problem_pdf:Path,key_pdf:Path,exam_id:str,year:int,root:Path):
     for m in meta:
         q=m['questionNo']; points=3 if q<=5 else 4 if q<=10 else 5
         questions.append({'id':f'{exam_id}-q{q:02d}','year':year,'level':'Mini-Escolar I','grades':'2.º ano','language':'pt','questionNo':q,'points':points,'concept':'Original oficial','stem':f'Questão {q} — veja a imagem original.','choices':[{'key':c,'label':c} for c in 'ABCDE'],'answer':answers[q],'solution':'','sourceFile':str(problem_pdf),'assetUrl':f'/local-assets/{quote(exam_id)}/q{q:02d}.png','verified':True,'sourceMeta':m})
-    profile={'id':exam_id,'name':f'Portugal {year} · Mini-Escolar I','grades':'2.º ano','durationSeconds':75*60,'questionCount':15,'initialScore':15,'maxScore':75,'wrongPenaltyMode':'quarter-points','wrongPenaltyValue':0.25,'country':'Portugal','year':year,'language':'pt','sourceLabel':'Universidade de Coimbra · Canguru Matemático'}
+    profile={'id':exam_id,'name':f'Portugal {year} · Grade 2','nameZh':f'{year} 袋鼠数学 · 二年级（葡萄牙赛区）','nameEn':f'{year} Math Kangaroo · Grade 2 (Portugal)','grades':'Grade 2','gradesZh':'二年级','gradesEn':'Grade 2','durationSeconds':75*60,'questionCount':15,'initialScore':15,'maxScore':75,'wrongPenaltyMode':'quarter-points','wrongPenaltyValue':0.25,'country':'Portugal','year':year,'language':'pt','sourceLabel':'University of Coimbra · Math Kangaroo','sourceLabelZh':'科英布拉大学 · 袋鼠数学','sourceLabelEn':'University of Coimbra · Math Kangaroo'}
     bundle_path.parent.mkdir(parents=True,exist_ok=True)
     bundle_path.write_text(json.dumps({'profile':profile,'questions':questions},ensure_ascii=False,indent=2),encoding='utf-8')
     return {'exam':exam_id,'questions':15,'answers':answers,'bundle':str(bundle_path)}

@@ -57,6 +57,17 @@ def localized_ready(q: dict) -> bool:
     loc = q.get("localized", {})
     return bool(loc.get("zh", {}).get("stem") and loc.get("en", {}).get("stem"))
 
+def exam_gate(q: dict) -> bool:
+    review = q.get("review", {})
+    source_verified = bool(q.get("verified") or review.get("verified"))
+    return bool(
+        localized_ready(q)
+        and review.get("translationStatus") == "reviewed"
+        and source_verified
+        and review.get("visualVerified") is True
+        and review.get("needsReview") is not True
+    )
+
 
 def main() -> int:
     ap = argparse.ArgumentParser()
@@ -83,8 +94,12 @@ def main() -> int:
         out = out_dir / f"q{qno:02d}.png"
         total_masked += render_student_asset(page, crop, out, args.scale)
         q["studentAssetUrl"] = f"/local-assets/{exam_id}/student/q{qno:02d}.png"
-        q.setdefault("review", {})["visualStatus"] = "diagram_only"
-        q["examReady"] = localized_ready(q)
+        review = q.setdefault("review", {})
+        if q.get("studentAssetUrlZh") and q.get("studentAssetUrlEn"):
+            review["visualStatus"] = "localized"
+        else:
+            review["visualStatus"] = "diagram_only"
+        q["examReady"] = exam_gate(q)
 
     for doc in docs.values():
         doc.close()

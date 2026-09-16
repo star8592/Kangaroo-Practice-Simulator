@@ -15,6 +15,12 @@ export type ExamProfile = {
   year?: number;
   language?: string;
   sourceLabel?: string;
+  nameZh?: string;
+  nameEn?: string;
+  gradesZh?: string;
+  gradesEn?: string;
+  sourceLabelZh?: string;
+  sourceLabelEn?: string;
   studentReady?: boolean;
 };
 
@@ -35,7 +41,11 @@ export type Question = {
   solution: string;
   sourceFile: string;
   assetUrl?: string;
+  assetUrlZh?: string;
+  assetUrlEn?: string;
   studentAssetUrl?: string;
+  studentAssetUrlZh?: string;
+  studentAssetUrlEn?: string;
   verified?: boolean;
   sourceMeta?: unknown;
   localized?: { zh?: LocalizedText; en?: LocalizedText };
@@ -43,6 +53,7 @@ export type Question = {
     translationStatus?: string;
     visualStatus?: string;
     verified?: boolean;
+    visualVerified?: boolean;
     needsReview?: boolean;
     notes?: string;
   };
@@ -50,7 +61,7 @@ export type Question = {
 };
 
 export type PublicQuestion = Omit<Question,
-  "answer" | "solution" | "sourceFile" | "sourceMeta" | "localized" | "review" | "examReady" | "studentAssetUrl"
+  "answer" | "solution" | "sourceFile" | "sourceMeta" | "localized" | "review" | "examReady" | "studentAssetUrl" | "studentAssetUrlZh" | "studentAssetUrlEn"
 >;
 export type ExamBundle = { profile: ExamProfile; questions: Question[] };
 
