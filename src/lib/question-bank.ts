@@ -17,11 +17,21 @@ export const LEVEL_A_PROFILE: ExamProfile = {
   wrongPenaltyValue: 1,
   country: "China-style",
   language: "zh/en",
+  studentReady: true,
 };
 
 function safeExamId(examId: string) {
   if (!/^[a-zA-Z0-9_-]+$/.test(examId)) throw new Error("Invalid exam id");
   return examId;
+}
+
+function hasBilingualText(q: Question) {
+  return Boolean(q.localized?.zh?.stem?.trim() && q.localized?.en?.stem?.trim());
+}
+
+function isStudentReady(q: Question) {
+  if (q.language === "zh/en" || (q.stem && q.stemEn)) return true;
+  return Boolean(q.examReady && hasBilingualText(q) && q.studentAssetUrl);
 }
 
 export function loadQuestionBank(): Question[] {
@@ -42,21 +52,42 @@ export function loadExamBundle(examId: string): ExamBundle {
 export function listExamProfiles(): ExamProfile[] {
   const profiles: ExamProfile[] = [];
   if (fs.existsSync(BANK_PATH)) profiles.push(LEVEL_A_PROFILE);
-  if (fs.existsSync(EXAMS_DIR)) {
-    for (const name of fs.readdirSync(EXAMS_DIR).filter((x) => x.endsWith(".json")).sort()) {
-      try {
-        const bundle = JSON.parse(fs.readFileSync(path.join(EXAMS_DIR, name), "utf8")) as ExamBundle;
-        if (!profiles.some((p) => p.id === bundle.profile.id)) profiles.push(bundle.profile);
-      } catch { /* skip invalid local bundles */ }
-    }
+  if (!fs.existsSync(EXAMS_DIR)) return profiles;
+
+  for (const name of fs.readdirSync(EXAMS_DIR).filter((x) => x.endsWith(".json")).sort()) {
+    if (name.includes("before-bilingual")) continue;
+    try {
+      const bundle = JSON.parse(fs.readFileSync(path.join(EXAMS_DIR, name), "utf8")) as ExamBundle;
+      if (!bundle.questions.length || !bundle.questions.every(isStudentReady)) continue;
+      if (!profiles.some((p) => p.id === bundle.profile.id)) profiles.push({ ...bundle.profile, studentReady: true });
+    } catch { /* skip invalid or source-only local bundles */ }
   }
   return profiles;
 }
 
 export function publicQuestions(questions: Question[]): PublicQuestion[] {
-  return questions.map((q) => ({
-    id: q.id, year: q.year, level: q.level, grades: q.grades, language: q.language,
-    questionNo: q.questionNo, points: q.points, concept: q.concept, stem: q.stem,
-    stemEn: q.stemEn, choices: q.choices, choicesEn: q.choicesEn, assetUrl: q.assetUrl, verified: q.verified,
-  }));
+  return questions.map((q) => {
+    const localized = hasBilingualText(q);
+    if (!localized && q.language !== "zh/en" && !q.stemEn) {
+      throw new Error(`Question ${q.id} is not bilingual-ready`);
+    }
+    const zh = q.localized?.zh;
+    const en = q.localized?.en;
+    return {
+      id: q.id,
+      year: q.year,
+      level: q.level,
+      grades: q.grades,
+      language: localized ? "zh/en" : q.language,
+      questionNo: q.questionNo,
+      points: q.points,
+      concept: q.concept,
+      stem: zh?.stem || q.stem,
+      stemEn: en?.stem || q.stemEn,
+      choices: zh?.choices?.length ? zh.choices : q.choices,
+      choicesEn: en?.choices?.length ? en.choices : q.choicesEn,
+      assetUrl: q.studentAssetUrl || q.assetUrl,
+      verified: Boolean(q.verified || q.review?.verified),
+    };
+  });
 }

@@ -1,4 +1,5 @@
 export type Choice = { key: string; label: string };
+export type LocalizedText = { stem: string; choices: Choice[]; solution?: string };
 
 export type ExamProfile = {
   id: string;
@@ -14,6 +15,7 @@ export type ExamProfile = {
   year?: number;
   language?: string;
   sourceLabel?: string;
+  studentReady?: boolean;
 };
 
 export type Question = {
@@ -33,11 +35,23 @@ export type Question = {
   solution: string;
   sourceFile: string;
   assetUrl?: string;
+  studentAssetUrl?: string;
   verified?: boolean;
   sourceMeta?: unknown;
+  localized?: { zh?: LocalizedText; en?: LocalizedText };
+  review?: {
+    translationStatus?: string;
+    visualStatus?: string;
+    verified?: boolean;
+    needsReview?: boolean;
+    notes?: string;
+  };
+  examReady?: boolean;
 };
 
-export type PublicQuestion = Omit<Question, "answer" | "solution" | "sourceFile" | "sourceMeta">;
+export type PublicQuestion = Omit<Question,
+  "answer" | "solution" | "sourceFile" | "sourceMeta" | "localized" | "review" | "examReady" | "studentAssetUrl"
+>;
 export type ExamBundle = { profile: ExamProfile; questions: Question[] };
 
 export type ExamResultItem = {
