@@ -25,7 +25,8 @@ export default function ResultClient(){
   if(!a)return <div className="center-card"><h2>{ui.noResult}</h2><Link className="primary-button" href="/">{ui.backList}</Link></div>;
   const g=a.grade; const pct=Math.round((g.score/g.maxScore)*100); const mins=Math.floor(a.elapsedSeconds/60); const secs=a.elapsedSeconds%60;
   const examId=a.examId??"level-a";
-  const mixedBase=examId.startsWith("mixed24-")?"mixed24":examId.startsWith("mixed15-")?"mixed15":null;
+  const mixedMatch=/^(mix-(?:g12|g34|g56|g78|g910|g1113)|mixed24|mixed15)-/.exec(examId);
+  const mixedBase=mixedMatch?.[1]??null;
   const title=lang==="zh" ? (a.profile?.nameZh||a.profile?.name||"LEVEL A") : (a.profile?.nameEn||a.profile?.name||"LEVEL A");
   return <div className="report-shell">
     <section className="score-hero"><div><span className="eyebrow">{title} · RESULT</span><h1>{ui.result}</h1><p>{ui.time} {mins}:{String(secs).padStart(2,"0")}</p></div><div className="score-ring"><strong>{scoreText(g.score)}</strong><span>/ {scoreText(g.maxScore)}</span><small>{pct}%</small></div></section>
