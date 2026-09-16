@@ -1,28 +1,31 @@
-# Local bilingual corpus progress
+# Local student-ready corpus
 
-This file tracks code/data readiness without publishing private question text or extracted assets.
+This file tracks local readiness without publishing private question text or extracted assets.
 
-## Current ready corpus
+## Portugal · bilingual
 
-Portugal Coimbra `Mini-Escolar I`:
+Coimbra `Mini-Escolar I` / Grade 2:
 
-- 2017: 15 / 15 student-ready
-- 2018: 15 / 15 student-ready
-- 2019: 15 / 15 student-ready
-- 2020: 15 / 15 student-ready
-- 2021: 15 / 15 student-ready
-- 2022: 15 / 15 student-ready
-- 2023: 15 / 15 student-ready
-- 2024: 15 / 15 student-ready
-- 2025: 15 / 15 student-ready
-- 2026: 15 / 15 student-ready
+- 2017–2026: 10 exams
+- 15 questions per exam
+- 150 questions total
+- Chinese + English
+- translation, answer and visual review passed
 
-Total: **10 exams / 150 questions**.
+## Austria · official English
 
-## Student gate
+Student-ready official English papers currently imported:
 
-A source-language question is exposed only when Chinese and English text exist, source/answer extraction is verified, translation review is complete, visual review is complete, and all required student assets exist.
+- Grades 1–2 (Felix): 2016, 2018, 2022
+- Grades 3–4 (Ecolier): 2016, 2017, 2018, 2022
+- Grades 5–6 (Benjamin): 2016, 2017, 2018, 2022
+- Grades 7–8 (Kadett): 2018
+- 12 exams / 267 questions total
 
-Source-language-dependent labels embedded in artwork are localized with private overlay manifests and `scripts/apply_visual_overlays.py`.
+All 12 exams pass full-score and blank-paper scoring regression.
 
-Full-score and blank-paper scoring regression is run for promoted exam bundles.
+## Current total
+
+**22 official past-paper exams / 417 student-ready questions**, excluding the local Level A training bank and dynamically generated mixed exams.
+
+Student delivery permits Chinese-English bilingual questions or verified official-English questions. German, Portuguese, French and other source languages are never exposed as an accidental fallback.

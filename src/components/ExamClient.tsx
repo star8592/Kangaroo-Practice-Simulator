@@ -30,7 +30,7 @@ export default function ExamClient({ examId }: { examId: string }) {
   useEffect(()=>{
     fetch(`/api/exams/${encodeURIComponent(examId)}`).then(r=>r.json()).then(data=>{
       if(data.error) throw new Error(data.error);
-      setQuestions(data.questions); setProfile(data.profile); setSeconds(data.profile.durationSeconds);
+      setQuestions(data.questions); setProfile(data.profile); setSeconds(data.profile.durationSeconds); setLang(data.profile.language === "en" ? "en" : "zh");
       setEvents([{type:"exam_start",at:Date.now()}]);
     }).catch(e=>setError(String(e.message||e)));
   },[examId]);

@@ -37,7 +37,7 @@ function hasBilingualText(q: Question) {
 }
 
 export function isStudentReady(q: Question) {
-  if (q.language === "zh/en" || (q.stem && q.stemEn)) return true;
+  if (q.language === "zh/en" || q.language === "en" || (q.stem && q.stemEn)) return true;
   const hasStudentVisual = Boolean(q.studentAssetUrl || (q.studentAssetUrlZh && q.studentAssetUrlEn));
   return Boolean(q.examReady && hasBilingualText(q) && hasStudentVisual);
 }
@@ -101,7 +101,7 @@ export function publicQuestions(questions: Question[]): PublicQuestion[] {
       throw new Error(`Question ${q.id} is not student-ready`);
     }
     const localized = hasBilingualText(q);
-    if (!localized && q.language !== "zh/en" && !q.stemEn) {
+    if (!localized && q.language !== "zh/en" && q.language !== "en" && !q.stemEn) {
       throw new Error(`Question ${q.id} is not bilingual-ready`);
     }
     const zh = q.localized?.zh;
