@@ -14,7 +14,8 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <header className="site-header">
           <Link href="/" className="brand"><span className="brand-mark">K</span><span>Kangaroo Practice Lab</span></Link>
           <nav>
-            <Link href="/exam/level-a">模拟考试</Link>
+            <Link href="/arithmetic">口算训练</Link>
+            <Link href="/">模拟考试</Link>
             <Link href="/review">错题复盘</Link>
             <Link href="/admin/questions">题库审核</Link>
           </nav>

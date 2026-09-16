@@ -1,0 +1,2 @@
+import ArithmeticSessionClient from "@/components/ArithmeticSessionClient";
+export default async function ArithmeticSessionPage({params,searchParams}:{params:Promise<{grade:string}>;searchParams:Promise<{mode?:string}>}){const p=await params;const q=await searchParams;const grade=Math.min(6,Math.max(1,Number(p.grade)||1));const mode=q.mode==="diagnostic"||q.mode==="speed"?q.mode:"adaptive";return <ArithmeticSessionClient grade={grade as 1|2|3|4|5|6} mode={mode} seed={0}/>}
