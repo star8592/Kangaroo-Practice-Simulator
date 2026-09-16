@@ -9,7 +9,7 @@ type GradeFilter="all"|"1-2"|"3-4"|"5-6"|"7-8"|"9-10"|"11+";
 
 function gradeBucket(exam:ExamProfile):GradeFilter {
  const g=(exam.gradesEn||exam.grades||"").replace(/\s/g,"");
- if(g.includes("1–2")||g.includes("1-2")) return "1-2";
+ if(g==="grade2"||g.includes("1–2")||g.includes("1-2")) return "1-2";
  if(g.includes("3–4")||g.includes("3-4")) return "3-4";
  if(g.includes("5–6")||g.includes("5-6")) return "5-6";
  if(g.includes("7–8")||g.includes("7-8")) return "7-8";
@@ -43,7 +43,7 @@ export default function HomeClient({exams}:{exams:ExamProfile[]}){
     const name=lang==="zh"?(exam.nameZh||exam.name):(exam.nameEn||exam.name);
     const grades=lang==="zh"?(exam.gradesZh||exam.grades):(exam.gradesEn||exam.grades);
     const source=lang==="zh"?(exam.sourceLabelZh||exam.sourceLabel):(exam.sourceLabelEn||exam.sourceLabel);
-    const mixed=exam.id==="mixed24"||exam.id==="mixed15";
+    const mixed=exam.id.startsWith("mix-")||exam.id==="mixed24"||exam.id==="mixed15";
     return <article key={exam.id}><div className="feature-index">{exam.country??"LOCAL"}</div><h2>{name}</h2><p>{grades} · {exam.questionCount} {ui.questions} · {Math.round(exam.durationSeconds/60)} {ui.minutes} · {ui.max} {exam.maxScore}</p>{source&&<p>{source}</p>}{mixed?<button className="primary-button" onClick={(event)=>router.push(`/exam/${exam.id}-${Math.floor(event.timeStamp*1000).toString(36)}`)}>{ui.start}</button>:<Link className="primary-button" href={`/exam/${exam.id}`}>{ui.start}</Link>}</article>;
   })}</section>
   <section className="stat-grid"><article><strong>{exams.length}</strong><span>{ui.exams}</span><p>{ui.examDesc}</p></article><article><strong>{ui.visual}</strong><span>{ui.visualLabel}</span><p>{ui.visualDesc}</p></article><article><strong>75</strong><span>{ui.timer}</span><p>{ui.timerDesc}</p></article><article><strong>{ui.local}</strong><span>{ui.localLabel}</span><p>{ui.localDesc}</p></article></section>
