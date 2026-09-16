@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.kangaroo/schema/bilingual-question.schema.json",
+  "title": "Bilingual Kangaroo Question",
+  "type": "object",
+  "required": ["id", "answer", "source", "localized", "visual", "review", "examReady"],
+  "properties": {
+    "id": { "type": "string", "minLength": 1 },
+    "answer": { "type": "string", "enum": ["A", "B", "C", "D", "E"] },
+    "source": {
+      "type": "object",
+      "required": ["language", "stem", "choices"],
+      "properties": {
+        "language": { "type": "string", "minLength": 2 },
+        "stem": { "type": "string" },
+        "choices": { "$ref": "#/$defs/choices" },
+        "sourcePdf": { "type": "string" },
+        "sourceCrop": { "type": "string" }
+      }
+    },
+    "localized": {
+      "type": "object",
+      "required": ["zh", "en"],
+      "properties": {
+        "zh": { "$ref": "#/$defs/localizedText" },
+        "en": { "$ref": "#/$defs/localizedText" }
+      }
+    },
+    "visual": {
+      "type": "object",
+      "properties": {
+        "sourceCrop": { "type": "string" },
+        "diagramOnly": { "type": "string" },
+        "localizedZh": { "type": "string" },
+        "localizedEn": { "type": "string" }
+      }
+    },
+    "review": {
+      "type": "object",
+      "required": ["translationStatus", "visualStatus", "verified"],
+      "properties": {
+        "translationStatus": { "enum": ["missing", "draft", "reviewed"] },
+        "visualStatus": { "enum": ["source_only", "diagram_only", "localized"] },
+        "verified": { "type": "boolean" },
+        "needsReview": { "type": "boolean" },
+        "notes": { "type": "string" }
+      }
+    },
+    "examReady": { "type": "boolean" }
+  },
+  "$defs": {
+    "choices": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 5,
+      "items": {
+        "type": "object",
+        "required": ["key", "label"],
+        "properties": {
+          "key": { "enum": ["A", "B", "C", "D", "E"] },
+          "label": { "type": "string" }
+        }
+      }
+    },
+    "localizedText": {
+      "type": "object",
+      "required": ["stem", "choices"],
+      "properties": {
+        "stem": { "type": "string", "minLength": 1 },
+        "choices": { "$ref": "#/$defs/choices" },
+        "solution": { "type": "string" }
+      }
+    }
+  }
+}
