@@ -6,6 +6,7 @@ This file tracks code/data readiness without publishing private question text or
 
 Portugal Coimbra `Mini-Escolar I`:
 
+- 2017: 15 / 15 student-ready
 - 2018: 15 / 15 student-ready
 - 2019: 15 / 15 student-ready
 - 2020: 15 / 15 student-ready
@@ -16,7 +17,7 @@ Portugal Coimbra `Mini-Escolar I`:
 - 2025: 15 / 15 student-ready
 - 2026: 15 / 15 student-ready
 
-Total: **9 exams / 135 questions**.
+Total: **10 exams / 150 questions**.
 
 ## Student gate
 

@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import type { ExamBundle, ExamProfile, PublicQuestion, Question } from "./types";
+import { buildMixedBundle, mixedProfiles, parseMixedExamId } from "./mixed-exam";
 
 const BANK_PATH = path.join(process.cwd(), "private", "question-bank.json");
 const EXAMS_DIR = path.join(process.cwd(), "private", "exams");
@@ -52,16 +53,34 @@ export function isExamBundleStudentReady(bundle: ExamBundle) {
   return Boolean(bundle.questions.length && bundle.questions.every(isStudentReady));
 }
 
+function loadReadyArchiveBundles(): ExamBundle[] {
+  if (!fs.existsSync(EXAMS_DIR)) return [];
+  const bundles: ExamBundle[] = [];
+  for (const name of fs.readdirSync(EXAMS_DIR).filter((x) => x.endsWith(".json")).sort()) {
+    if (name.includes("before-bilingual")) continue;
+    try {
+      const bundle = JSON.parse(fs.readFileSync(path.join(EXAMS_DIR, name), "utf8")) as ExamBundle;
+      if (!bundle.profile.id.includes("mini1")) continue;
+      if (isExamBundleStudentReady(bundle)) bundles.push(bundle);
+    } catch { /* ignore invalid local bundle */ }
+  }
+  return bundles;
+}
+
 export function loadExamBundle(examId: string): ExamBundle {
   const id = safeExamId(examId);
   const file = path.join(EXAMS_DIR, `${id}.json`);
   if (fs.existsSync(file)) return JSON.parse(fs.readFileSync(file, "utf8")) as ExamBundle;
   if (id === "level-a") return { profile: LEVEL_A_PROFILE, questions: loadQuestionBank() };
+  const mixed = parseMixedExamId(id);
+  if (mixed) return buildMixedBundle(mixed.kind, mixed.seed, loadReadyArchiveBundles());
   throw new Error(`Local exam bundle not found: ${id}`);
 }
 
 export function listExamProfiles(): ExamProfile[] {
   const profiles: ExamProfile[] = [];
+  const archives = loadReadyArchiveBundles();
+  if (archives.length >= 3) profiles.push(...mixedProfiles());
   if (fs.existsSync(BANK_PATH)) profiles.push(LEVEL_A_PROFILE);
   if (!fs.existsSync(EXAMS_DIR)) return profiles;
 

@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import type { ExamProfile } from "@/lib/types";
 
 type Lang="zh"|"en";
@@ -12,6 +13,7 @@ const UI={
 export default function HomeClient({exams}:{exams:ExamProfile[]}){
  const [lang,setLang]=useState<Lang>(()=>typeof navigator!=="undefined"&&!navigator.language.toLowerCase().startsWith("zh")?"en":"zh");
  const ui=UI[lang];
+ const router=useRouter();
  return <div className="home-shell">
   <section className="hero-card">
    <div className="eyebrow">LOCAL COMPETITION TRAINING</div>
@@ -24,7 +26,8 @@ export default function HomeClient({exams}:{exams:ExamProfile[]}){
     const name=lang==="zh"?(exam.nameZh||exam.name):(exam.nameEn||exam.name);
     const grades=lang==="zh"?(exam.gradesZh||exam.grades):(exam.gradesEn||exam.grades);
     const source=lang==="zh"?(exam.sourceLabelZh||exam.sourceLabel):(exam.sourceLabelEn||exam.sourceLabel);
-    return <article key={exam.id}><div className="feature-index">{exam.country??"LOCAL"}</div><h2>{name}</h2><p>{grades} · {exam.questionCount} {ui.questions} · {Math.round(exam.durationSeconds/60)} {ui.minutes} · {ui.max} {exam.maxScore}</p>{source&&<p>{source}</p>}<Link className="primary-button" href={`/exam/${exam.id}`}>{ui.start}</Link></article>;
+    const mixed=exam.id==="mixed24"||exam.id==="mixed15";
+    return <article key={exam.id}><div className="feature-index">{exam.country??"LOCAL"}</div><h2>{name}</h2><p>{grades} · {exam.questionCount} {ui.questions} · {Math.round(exam.durationSeconds/60)} {ui.minutes} · {ui.max} {exam.maxScore}</p>{source&&<p>{source}</p>}{mixed?<button className="primary-button" onClick={(event)=>router.push(`/exam/${exam.id}-${Math.floor(event.timeStamp*1000).toString(36)}`)}>{ui.start}</button>:<Link className="primary-button" href={`/exam/${exam.id}`}>{ui.start}</Link>}</article>;
   })}</section>
   <section className="stat-grid"><article><strong>{exams.length}</strong><span>{ui.exams}</span><p>{ui.examDesc}</p></article><article><strong>{ui.visual}</strong><span>{ui.visualLabel}</span><p>{ui.visualDesc}</p></article><article><strong>75</strong><span>{ui.timer}</span><p>{ui.timerDesc}</p></article><article><strong>{ui.local}</strong><span>{ui.localLabel}</span><p>{ui.localDesc}</p></article></section>
  </div>;

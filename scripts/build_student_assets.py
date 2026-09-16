@@ -29,18 +29,34 @@ def should_mask(token: str, line_words: int) -> bool:
     return True
 
 
-def render_student_asset(page: fitz.Page, crop: fitz.Rect, out: Path, scale: float = 2.4) -> int:
+def render_student_asset(page: fitz.Page, crop: fitz.Rect, out: Path, question_no: int, scale: float = 2.4) -> int:
     pix = page.get_pixmap(matrix=fitz.Matrix(scale, scale), clip=crop, alpha=False)
     image = Image.frombytes("RGB", [pix.width, pix.height], pix.samples)
     draw = ImageDraw.Draw(image)
     words = page.get_text("words", clip=crop)
     line_counts: dict[tuple[int, int], int] = {}
+    line_tokens: dict[tuple[int, int], list[str]] = {}
     for item in words:
         key = (int(item[5]), int(item[6]))
         line_counts[key] = line_counts.get(key, 0) + 1
+        line_tokens.setdefault(key, []).append(str(item[4]))
+    full_mask_lines: set[tuple[int, int]] = set()
+    for key, tokens in line_tokens.items():
+        ordinary = [t for t in tokens if len(re.findall(r"[A-Za-zÀ-ÿ]", t)) >= 2 and t not in SAFE_TOKENS]
+        text = " ".join(tokens).lower()
+        if (key[0] == 0 and ordinary) or ("problemas" in text and "pontos" in text):
+            full_mask_lines.add(key)
     masked = 0
     for x0, y0, x1, y1, word, block_no, line_no, *_ in words:
-        if not should_mask(str(word), line_counts.get((int(block_no), int(line_no)), 1)):
+        token = str(word).strip()
+        normalized = token.rstrip(".、")
+        source_qno = (
+            normalized == str(question_no)
+            and (x0 - crop.x0) < 90
+            and (y0 - crop.y0) < 70
+        )
+        line_key = (int(block_no), int(line_no))
+        if line_key not in full_mask_lines and not source_qno and not should_mask(token, line_counts.get(line_key, 1)):
             continue
         left = max(0, int((x0 - crop.x0) * scale) - 2)
         top = max(0, int((y0 - crop.y0) * scale) - 2)
@@ -92,7 +108,7 @@ def main() -> int:
         crop = fitz.Rect(*meta["crop"])
         qno = int(q["questionNo"])
         out = out_dir / f"q{qno:02d}.png"
-        total_masked += render_student_asset(page, crop, out, args.scale)
+        total_masked += render_student_asset(page, crop, out, qno, args.scale)
         q["studentAssetUrl"] = f"/local-assets/{exam_id}/student/q{qno:02d}.png"
         review = q.setdefault("review", {})
         if q.get("studentAssetUrlZh") and q.get("studentAssetUrlEn"):
