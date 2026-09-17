@@ -3,7 +3,7 @@ import type { ArithmeticItem } from "./arithmetic-generator";
 
 export type ErrorReason="correct"|"slow_recall"|"impulsive"|"hesitation"|"near_miss"|"operation_confusion"|"place_value"|"fact_gap"|"strategy_missed"|"unknown";
 export type ArithmeticAttempt={item:ArithmeticItem;answer:string;numericAnswer:number|null;correct:boolean;presentedAt:number;firstInputAt:number|null;submittedAt:number;firstInputMs:number;entryMs:number;responseMs:number;edits:number;backspaces:number;reason:ErrorReason;telemetryVersion?:2|3};
-export type ArithmeticSession={id:string;grade:ArithmeticGrade;mode:"diagnostic"|"adaptive"|"speed";startedAt:number;finishedAt:number;attempts:ArithmeticAttempt[]};
+export type ArithmeticSession={id:string;studentId?:string;grade:ArithmeticGrade;mode:"diagnostic"|"adaptive"|"speed";startedAt:number;finishedAt:number;attempts:ArithmeticAttempt[]};
 export type SkillStatus="unseen"|"insufficient"|"monitor"|"needs_accuracy"|"needs_fluency"|"mastered";
 export type SkillMetric={skillId:string;attempts:number;correct:number;accuracy:number;medianMs:number;medianEntryMs:number;speedRatio:number;editRate:number;priority:number;status:SkillStatus;evidence:number;accuracyScore:number|null;fluencyScore:number|null;stabilityScore:number|null;strategyScore:number|null;baselineMs:number|null;personalTargetMs:number;improvementPct:number|null};
 export type TrainingPlan={grade:ArithmeticGrade;focusSkills:string[];accuracyFocusSkills:string[];fluencyFocusSkills:string[];monitorSkills:string[];focusStrategies:MentalStrategy[];reasons:{code:ErrorReason;count:number}[];summaryZh:string[];summaryEn:string[];metrics:SkillMetric[]};
