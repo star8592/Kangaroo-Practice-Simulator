@@ -29,6 +29,9 @@ def main():
   code,full=req(client,base+'/api/grade','POST',{'examId':'level-a','sessionId':sid,'answers':correct,'lang':'zh','events':[{'type':'question_enter','questionId':qs[0]['id'],'at':now}]});assert code==200 and full['score']==120
   code,start=req(client,base+'/api/exam-sessions','POST',{'examId':'level-a'});assert code==200
   code,blank=req(client,base+'/api/grade','POST',{'examId':'level-a','sessionId':start['session']['id'],'answers':{},'lang':'zh','events':[]});assert code==200 and blank['score']==24
-  print(json.dumps({'auth':'PASS','questions':24,'distribution':{'3':8,'4':8,'5':8},'answer_leak':False,'student_admin_access':403,'full_score':120,'blank_score':24,'server_timed':True},ensure_ascii=False))
+  code,ana=req(client,base+'/api/student/analytics');assert code==200 and ana['overview']['examAttempts']==2 and ana['overview']['totalQuestions']==48 and ana['readiness'] is not None and ana['dataConfidence']>0
+  code,arith=req(client,base+'/api/arithmetic/sessions');assert code==200 and 'sessions' in arith
+  with client.open(base+'/student') as page: html=page.read().decode('utf-8');assert 'Smoke Test' in html and '数据置信度' in html
+  print(json.dumps({'auth':'PASS','questions':24,'distribution':{'3':8,'4':8,'5':8},'answer_leak':False,'student_admin_access':403,'full_score':120,'blank_score':24,'server_timed':True,'analytics_attempts':ana['overview']['examAttempts'],'analytics_confidence':ana['dataConfidence'],'student_page':True},ensure_ascii=False))
  finally:cleanup(uid)
 if __name__=='__main__':main()
