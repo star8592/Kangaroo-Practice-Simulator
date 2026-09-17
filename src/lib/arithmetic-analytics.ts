@@ -1,4 +1,4 @@
-import { GRADE_PROFILES, type ArithmeticGrade, type MentalStrategy } from "./arithmetic";
+import { GRADE_PROFILES, type ArithmeticGrade, type CleverNode, type MentalStrategy } from "./arithmetic";
 import type { ArithmeticItem } from "./arithmetic-generator";
 
 export type ErrorReason="correct"|"slow_recall"|"impulsive"|"hesitation"|"near_miss"|"operation_confusion"|"place_value"|"fact_gap"|"strategy_missed"|"unknown";
@@ -7,13 +7,22 @@ export type ArithmeticSession={id:string;studentId?:string;grade:ArithmeticGrade
 export type SkillStatus="unseen"|"insufficient"|"monitor"|"needs_accuracy"|"needs_fluency"|"mastered";
 export type SkillMetric={skillId:string;attempts:number;correct:number;accuracy:number;medianMs:number;medianEntryMs:number;speedRatio:number;editRate:number;priority:number;status:SkillStatus;evidence:number;accuracyScore:number|null;fluencyScore:number|null;stabilityScore:number|null;strategyScore:number|null;baselineMs:number|null;personalTargetMs:number;improvementPct:number|null};
 export type StrategyMetric={strategy:MentalStrategy;attempts:number;correct:number;accuracy:number;medianMs:number;evidence:number;status:SkillStatus};
-export type TrainingPlan={grade:ArithmeticGrade;focusSkills:string[];accuracyFocusSkills:string[];fluencyFocusSkills:string[];monitorSkills:string[];focusStrategies:MentalStrategy[];reasons:{code:ErrorReason;count:number}[];summaryZh:string[];summaryEn:string[];metrics:SkillMetric[];strategyMetrics:StrategyMetric[]};
+export type CleverNodeMetric={node:CleverNode;attempts:number;correct:number;accuracy:number;medianMs:number;evidence:number;status:SkillStatus};
+export type TrainingPlan={grade:ArithmeticGrade;focusSkills:string[];accuracyFocusSkills:string[];fluencyFocusSkills:string[];monitorSkills:string[];focusStrategies:MentalStrategy[];focusNodes:CleverNode[];reasons:{code:ErrorReason;count:number}[];summaryZh:string[];summaryEn:string[];metrics:SkillMetric[];strategyMetrics:StrategyMetric[];nodeMetrics:CleverNodeMetric[]};
 
 function median(xs:number[]){if(!xs.length)return 0;const a=[...xs].sort((x,y)=>x-y);const m=Math.floor(a.length/2);return a.length%2?a[m]:(a[m-1]+a[m])/2;}
 function mean(xs:number[]){return xs.length?xs.reduce((a,b)=>a+b,0)/xs.length:0;}
 function stddev(xs:number[]){if(xs.length<2)return 0;const m=mean(xs);return Math.sqrt(xs.reduce((s,x)=>s+(x-m)*(x-m),0)/xs.length);}
 function score100(x:number){return Math.max(0,Math.min(100,Math.round(x)));}
 function parseNumbers(prompt:string){return (prompt.match(/-?\d+(?:\.\d+)?/g)||[]).map(Number);}
+function inferNode(item:ArithmeticItem):CleverNode{
+ if(item.strategyNode)return item.strategyNode;
+ if(item.strategy==="make10")return"make10";if(item.strategy==="bridge10")return"bridge10";if(item.strategy==="double")return"double";if(item.strategy==="near_double")return"near_double";
+ if(item.strategy==="compensation"){if(item.prompt.includes("×"))return"mul_compensation";if(item.prompt.includes("−"))return"sub_compensation";return"add_compensation"}
+ if(item.strategy==="split")return"split_place";if(item.strategy==="distributive")return"distributive";if(item.strategy==="fact_recall")return"fact_recall";if(item.strategy==="place_value")return"place_value";
+ if(item.strategy==="friendly_25_50_125"){const ns=parseNumbers(item.prompt);if(ns.some(x=>Math.abs(x)===125||Math.abs(x)===12.5))return"friendly125";if(ns.some(x=>Math.abs(x)===50||Math.abs(x)===5))return"friendly50";return"friendly25"}
+ return"fact_recall";
+}
 export function classifyAttempt(item:ArithmeticItem,raw:string,responseMs:number,firstInputMs:number,edits:number,backspaces:number):ErrorReason{
  const x=Number(raw); const correct=raw.trim()!==""&&Number.isFinite(x)&&Math.abs(x-item.answer)<1e-9;
  if(correct){if(edits>=2||backspaces>=2)return"hesitation";if(firstInputMs>item.expectedMs*1.35)return item.strategy==="fact_recall"?"slow_recall":"strategy_missed";return"correct";}
@@ -44,11 +53,14 @@ export function buildTrainingPlan(grade:ArithmeticGrade,sessions:ArithmeticSessi
  const reasons=[...reasonCounts.entries()].map(([code,count])=>({code,count})).sort((a,b)=>b.count-a.count);
  const byStrategy=new Map<MentalStrategy,ArithmeticAttempt[]>();for(const a of attempts){const x=byStrategy.get(a.item.strategy)||[];x.push(a);byStrategy.set(a.item.strategy,x)}
  const strategyMetrics:StrategyMetric[]=[...byStrategy.entries()].map(([strategy,a])=>{const correct=a.filter(x=>x.correct).length;const accuracy=correct/a.length;const med=median(a.map(x=>x.firstInputMs));const ratios=a.map(x=>x.item.expectedMs>0?x.firstInputMs/x.item.expectedMs:1);const ratio=median(ratios);let status:SkillStatus="mastered";if(a.length<4)status="insufficient";else if(a.length-correct>=2)status="needs_accuracy";else if(a.length-correct===1)status="monitor";else if(ratio>1.1)status="needs_fluency";return{strategy,attempts:a.length,correct,accuracy,medianMs:med,evidence:score100(a.length/8*100),status}}).sort((a,b)=>{const rank=(x:SkillStatus)=>({needs_accuracy:5,needs_fluency:4,monitor:3,insufficient:2,mastered:1,unseen:0}[x]);return rank(b.status)-rank(a.status)||b.attempts-a.attempts});
+ const byNode=new Map<CleverNode,ArithmeticAttempt[]>();for(const a of attempts){const node=inferNode(a.item);const x=byNode.get(node)||[];x.push(a);byNode.set(node,x)}
+ const nodeMetrics:CleverNodeMetric[]=[...byNode.entries()].map(([node,a])=>{const correct=a.filter(x=>x.correct).length;const accuracy=correct/a.length;const med=median(a.map(x=>x.firstInputMs));const ratio=median(a.map(x=>x.item.expectedMs>0?x.firstInputMs/x.item.expectedMs:1));let status:SkillStatus="mastered";if(a.length<4)status="insufficient";else if(a.length-correct>=2)status="needs_accuracy";else if(a.length-correct===1)status="monitor";else if(ratio>1.1)status="needs_fluency";return{node,attempts:a.length,correct,accuracy,medianMs:med,evidence:score100(a.length/8*100),status}}).sort((a,b)=>{const rank=(x:SkillStatus)=>({needs_accuracy:5,needs_fluency:4,monitor:3,insufficient:2,mastered:1,unseen:0}[x]);return rank(b.status)-rank(a.status)||b.attempts-a.attempts});
  const accuracyFocusSkills=metrics.filter(x=>x.status==="needs_accuracy").slice(0,3).map(x=>x.skillId);
  const fluencyFocusSkills=metrics.filter(x=>x.status==="needs_fluency").sort((a,b)=>b.speedRatio-a.speedRatio).slice(0,2).map(x=>x.skillId);
  const monitorSkills=metrics.filter(x=>x.status==="monitor").slice(0,2).map(x=>x.skillId);
  const focusSkills=[...new Set([...accuracyFocusSkills,...fluencyFocusSkills])].slice(0,3);
  const focusStrategies=strategyMetrics.filter(x=>x.status==="needs_accuracy"||x.status==="needs_fluency").slice(0,4).map(x=>x.strategy);
+ const focusNodes=nodeMetrics.filter(x=>x.status==="needs_accuracy"||x.status==="needs_fluency").slice(0,3).map(x=>x.node);
  const zh:string[]=[];const en:string[]=[];
  const labelZh=(id:string)=>profile.skills.find(s=>s.id===id)?.labelZh||id;const labelEn=(id:string)=>profile.skills.find(s=>s.id===id)?.labelEn||id;
  if(!attempts.length){zh.push("先完成一次20题诊断，系统会建立你的个人速度与准确率基线。");en.push("Complete a 20-question diagnostic to establish your personal speed and accuracy baseline.")}
@@ -63,5 +75,5 @@ export function buildTrainingPlan(grade:ArithmeticGrade,sessions:ArithmeticSessi
   if(topHabit?.code==="hesitation"){zh.push(`“启动慢/反复修改”连续出现 ${topHabit.count} 次，达到习惯阈值；下一轮使用同结构短组降低决策负担。`);en.push(`Slow starts/revisions appeared ${topHabit.count} times, reaching the habit threshold.`)}
   const efficiencyCount=reasons.filter(x=>["strategy_missed","slow_recall"].includes(x.code)).reduce((s,x)=>s+x.count,0);if(efficiencyCount>=2){if(fluencyFocusSkills.length)zh.push(`有 ${efficiencyCount} 题属于“答对但效率偏低”，且已形成技能级证据，下一轮针对对应结构做提速和巧算识别。`);else zh.push(`出现 ${efficiencyCount} 个单题效率信号，但还没达到技能级“提速弱项”的证据门槛，先记录并复测。`)}
  }
- return{grade,focusSkills,accuracyFocusSkills,fluencyFocusSkills,monitorSkills,focusStrategies,reasons,summaryZh:zh,summaryEn:en,metrics,strategyMetrics};
+ return{grade,focusSkills,accuracyFocusSkills,fluencyFocusSkills,monitorSkills,focusStrategies,focusNodes,reasons,summaryZh:zh,summaryEn:en,metrics,strategyMetrics,nodeMetrics};
 }

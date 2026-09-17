@@ -1,6 +1,7 @@
 export type ArithmeticGrade = 1|2|3|4|5|6;
 export type ArithmeticSkill = "add"|"sub"|"mul"|"div"|"decimal"|"fraction"|"percent"|"mixed";
 export type MentalStrategy = "make10"|"bridge10"|"double"|"near_double"|"compensation"|"split"|"distributive"|"friendly_25_50_125"|"fact_recall"|"place_value";
+export type CleverNode = "make10"|"bridge10"|"double"|"near_double"|"add_compensation"|"sub_compensation"|"mul_compensation"|"split_place"|"distributive"|"friendly25"|"friendly50"|"friendly125"|"fact_recall"|"place_value";
 
 export type GradeProfile = {
   grade: ArithmeticGrade;
@@ -60,4 +61,22 @@ export const STRATEGY_GUIDE:Record<MentalStrategy,{zh:string;en:string}> = {
   friendly_25_50_125:{zh:"看到25/50/125，优先寻找4/2/8等配对凑整",en:"Pair 25/50/125 with 4/2/8 to make round numbers"},
   fact_recall:{zh:"这类题目标是直接提取基础事实，不重新推导",en:"Recall the basic fact directly"},
   place_value:{zh:"先看位值和0的变化，再计算有效数字",en:"Track place value and zeros first"},
+};
+
+
+export const CLEVER_NODE_GUIDE:Record<CleverNode,{zh:string;en:string;minGrade:ArithmeticGrade}> = {
+  make10:{zh:"凑十",en:"Make 10",minGrade:1},
+  bridge10:{zh:"破十 / 过十",en:"Bridge through 10",minGrade:1},
+  double:{zh:"双数",en:"Doubles",minGrade:1},
+  near_double:{zh:"近双数",en:"Near doubles",minGrade:1},
+  add_compensation:{zh:"加法补整",en:"Addition compensation",minGrade:2},
+  sub_compensation:{zh:"减法补整",en:"Subtraction compensation",minGrade:2},
+  mul_compensation:{zh:"乘法补整",en:"Multiplication compensation",minGrade:4},
+  split_place:{zh:"按位拆分",en:"Place-value splitting",minGrade:2},
+  distributive:{zh:"分配律",en:"Distributive property",minGrade:3},
+  friendly25:{zh:"25配4",en:"25 × 4 pairing",minGrade:3},
+  friendly50:{zh:"50配2",en:"50 × 2 pairing",minGrade:3},
+  friendly125:{zh:"125配8",en:"125 × 8 pairing",minGrade:3},
+  fact_recall:{zh:"基础事实直接提取",en:"Direct fact recall",minGrade:1},
+  place_value:{zh:"位值与整十整百",en:"Place value / round numbers",minGrade:2},
 };
