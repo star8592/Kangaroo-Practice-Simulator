@@ -1,5 +1,4 @@
 "use client";
-import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import type { ExamProfile } from "@/lib/types";
@@ -51,7 +50,7 @@ export default function HomeClient({exams}:{exams:ExamProfile[]}){
    return <article key={exam.id}><div className="feature-index">{regionName(exam.country||"Local",lang)} · {badge}</div><h2>{name}</h2><p>{exam.questionCount} {ui.questions} · {Math.round(exam.durationSeconds/60)} {ui.minutes} · {ui.max} {exam.maxScore}</p>{source&&<p>{source}</p>}<button className="primary-button" onClick={e=>startExam(exam,e)}>{ui.start}</button></article>;
  };
  return <div className="home-shell">
-  <section className="hero-card"><div className="eyebrow">LOCAL COMPETITION TRAINING</div><div className="hero-actions" style={{float:"right"}}><button className="secondary-button" onClick={()=>setLang(x=>x==="zh"?"en":"zh")}>{lang==="zh"?"EN":"中"}</button></div><h1>{ui.title1}<br/><span>{ui.title2}</span></h1><p className="hero-copy">{ui.copy}</p><div className="hero-actions"><Link className="secondary-button" href="/admin/questions">{ui.admin}</Link></div></section>
+  <section className="hero-card"><div className="eyebrow">LOCAL COMPETITION TRAINING</div><div className="hero-actions" style={{float:"right"}}><button className="secondary-button" onClick={()=>setLang(x=>x==="zh"?"en":"zh")}>{lang==="zh"?"EN":"中"}</button></div><h1>{ui.title1}<br/><span>{ui.title2}</span></h1><p className="hero-copy">{ui.copy}</p></section>
   <section className="section-heading"><div><span className="eyebrow">GRADE BANDS</span><h1>{ui.choose}</h1><p>{ui.chooseDesc}</p></div></section>
   <div className="segmented" style={{marginBottom:28,flexWrap:"wrap"}}>{GRADE_OPTIONS.map(g=><button key={g} className={grade===g?"active":""} onClick={()=>{setGrade(g);setRegion("all")}}>{gradeLabel(g)}</button>)}</div>
   {grade==="all" ? <section className="feature-grid">{GRADE_OPTIONS.filter(g=>g!=="all").map(g=>{const set=archives.filter(x=>gradeBucket(x)===g);const regs=[...new Set(set.map(x=>x.country||"Local"))];const years=set.map(yearOf).filter(Boolean);return <article key={g}><div className="feature-index">{regs.map(r=>regionName(r,lang)).join(" + ")}</div><h2>{gradeLabel(g)}</h2><p><strong>{set.length}</strong> {ui.papers} · {regs.length} {ui.regions}</p><p>{years.length?`${ui.range} ${Math.min(...years)}–${Math.max(...years)}`:""}</p><button className="primary-button" onClick={()=>{setGrade(g);setRegion("all")}}>{ui.open}</button></article>})}</section> : <>

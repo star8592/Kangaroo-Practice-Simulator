@@ -1,2 +1,2 @@
-import ArithmeticDashboard from "@/components/ArithmeticDashboard";
-export default function ArithmeticPage(){return <ArithmeticDashboard/>}
+import { cookies } from "next/headers";import { redirect } from "next/navigation";import ArithmeticDashboard from "@/components/ArithmeticDashboard";import { SESSION_COOKIE,userFromSessionToken } from "@/lib/auth";
+export default async function ArithmeticPage(){const jar=await cookies(),user=userFromSessionToken(jar.get(SESSION_COOKIE)?.value);if(!user)redirect('/login?next=/arithmetic');return <ArithmeticDashboard user={user}/>}

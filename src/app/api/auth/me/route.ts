@@ -1,0 +1,1 @@
+import{NextRequest,NextResponse}from"next/server";import{SESSION_COOKIE,userFromSessionToken}from"@/lib/auth";export async function GET(req:NextRequest){const u=userFromSessionToken(req.cookies.get(SESSION_COOKIE)?.value);return u?NextResponse.json({user:u}):NextResponse.json({error:"not logged in"},{status:401})}

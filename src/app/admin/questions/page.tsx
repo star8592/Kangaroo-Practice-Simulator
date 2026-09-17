@@ -1,2 +1,2 @@
-import AdminQuestions from "@/components/AdminQuestions";
-export default function AdminQuestionsPage(){ return <AdminQuestions/>; }
+import { cookies } from "next/headers";import { redirect } from "next/navigation";import AdminQuestions from "@/components/AdminQuestions";import { isAdmin,SESSION_COOKIE,userFromSessionToken } from "@/lib/auth";
+export default async function AdminQuestionsPage(){const jar=await cookies(),user=userFromSessionToken(jar.get(SESSION_COOKIE)?.value);if(!user)redirect('/login?next=/admin/questions');if(!isAdmin(user))redirect('/student');return <AdminQuestions/>}

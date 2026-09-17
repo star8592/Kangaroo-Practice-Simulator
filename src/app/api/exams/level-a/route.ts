@@ -1,11 +1,1 @@
-import { NextResponse } from "next/server";
-import { loadExamBundle, publicQuestions } from "@/lib/question-bank";
-
-export async function GET() {
-  try {
-    const bundle = loadExamBundle("level-a");
-    return NextResponse.json({ profile: bundle.profile, questions: publicQuestions(bundle.questions) });
-  } catch (error) {
-    return NextResponse.json({ error: error instanceof Error ? error.message : "Unable to load question bank" }, { status: 500 });
-  }
-}
+import{NextRequest,NextResponse}from"next/server";import{loadExamBundle,publicQuestions}from"@/lib/question-bank";import{SESSION_COOKIE,userFromSessionToken}from"@/lib/auth";export async function GET(r:NextRequest){if(!userFromSessionToken(r.cookies.get(SESSION_COOKIE)?.value))return NextResponse.json({error:"请先登录考生账号"},{status:401});try{const b=loadExamBundle("level-a");return NextResponse.json({profile:b.profile,questions:publicQuestions(b.questions)})}catch(e){return NextResponse.json({error:e instanceof Error?e.message:"Unable to load question bank"},{status:500})}}

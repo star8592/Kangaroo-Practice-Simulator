@@ -1,12 +1,1 @@
-import { NextResponse } from "next/server";
-import { loadExamBundle, publicQuestions } from "@/lib/question-bank";
-
-export async function GET(_req: Request, ctx: { params: Promise<{ examId: string }> }) {
-  try {
-    const { examId } = await ctx.params;
-    const bundle = loadExamBundle(examId);
-    return NextResponse.json({ profile: bundle.profile, questions: publicQuestions(bundle.questions) });
-  } catch (error) {
-    return NextResponse.json({ error: error instanceof Error ? error.message : "Unable to load exam" }, { status: 404 });
-  }
-}
+import{NextRequest,NextResponse}from"next/server";import{loadExamBundle,publicQuestions}from"@/lib/question-bank";import{SESSION_COOKIE,userFromSessionToken}from"@/lib/auth";export async function GET(r:NextRequest,c:{params:Promise<{examId:string}>}){if(!userFromSessionToken(r.cookies.get(SESSION_COOKIE)?.value))return NextResponse.json({error:"请先登录考生账号"},{status:401});try{const{id}= {id:(await c.params).examId},b=loadExamBundle(id);return NextResponse.json({profile:b.profile,questions:publicQuestions(b.questions)})}catch(e){return NextResponse.json({error:e instanceof Error?e.message:"Unable to load exam"},{status:404})}}

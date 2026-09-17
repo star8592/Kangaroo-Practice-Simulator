@@ -1,2 +1,2 @@
-import ExamClient from "@/components/ExamClient";
-export default function LevelAExamPage(){ return <ExamClient examId="level-a"/>; }
+import { cookies } from "next/headers";import { redirect } from "next/navigation";import ExamClient from "@/components/ExamClient";import { SESSION_COOKIE,userFromSessionToken } from "@/lib/auth";
+export default async function LevelAExamPage(){const jar=await cookies(),user=userFromSessionToken(jar.get(SESSION_COOKIE)?.value);if(!user)redirect('/login?next=/exam/level-a');return <ExamClient examId="level-a" user={user}/>}
