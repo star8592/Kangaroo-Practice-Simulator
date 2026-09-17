@@ -31,6 +31,47 @@ function targetItem(grade:ArithmeticGrade,node:CleverNode,r:()=>number,seed:numb
   else return null;
   const difficulty=Math.min(5,1+Math.floor(s.targetMs/2500));return{id:`g${grade}-${seed}-${index}-node-${node}`,grade,skillId,prompt,answer,strategy,strategyNode:node,expectedMs:s.targetMs,difficulty,meta:{seed,index,node}};
 }
+
+function probePair(grade:ArithmeticGrade,node:CleverNode,r:()=>number,seed:number,pairNo:number):ArithmeticItem[]{
+  const skillId=NODE_SKILL[grade]?.[node];if(!skillId)return[];const skill=GRADE_PROFILES[grade].skills.find(x=>x.id===skillId);if(!skill)return[];
+  let controlPrompt="",strategyPrompt="",controlAnswer=0,strategyAnswer=0,controlStrategy:MentalStrategy="fact_recall",strategy:MentalStrategy="compensation";
+  if(node==="near_double"){const a=n(r,4,8);controlPrompt=`${a} + ${a} = ?`;strategyPrompt=`${a} + ${a+1} = ?`;controlAnswer=a*2;strategyAnswer=a*2+1;controlStrategy="double";strategy="near_double"}
+  else if(node==="add_compensation"&&grade===2){const a=n(r,31,68);controlPrompt=`${a} + 30 = ?`;strategyPrompt=`${a} + 29 = ?`;controlAnswer=a+30;strategyAnswer=a+29;controlStrategy="place_value"}
+  else if(node==="sub_compensation"&&grade===2){const a=n(r,61,98);controlPrompt=`${a} − 30 = ?`;strategyPrompt=`${a} − 29 = ?`;controlAnswer=a-30;strategyAnswer=a-29;controlStrategy="place_value"}
+  else if(node==="add_compensation"&&grade===3){const a=n(r,220,760);controlPrompt=`${a} + 100 = ?`;strategyPrompt=`${a} + 99 = ?`;controlAnswer=a+100;strategyAnswer=a+99;controlStrategy="place_value"}
+  else if(node==="mul_compensation"&&(grade===4||grade===6)){const a=n(r,12,49),base=grade===4?10:100,near=base-1;controlPrompt=`${a} × ${base} = ?`;strategyPrompt=`${a} × ${near} = ?`;controlAnswer=a*base;strategyAnswer=a*near;controlStrategy="place_value"}
+  else if(node==="add_compensation"&&grade===5){const a=n(r,21,79)/10;controlPrompt=`${a.toFixed(1)} + 3.0 = ?`;strategyPrompt=`${a.toFixed(1)} + 2.9 = ?`;controlAnswer=+(a+3).toFixed(1);strategyAnswer=+(a+2.9).toFixed(1);controlStrategy="place_value"}
+  else return[];
+  const family=`g${grade}-${node}-${seed}-${pairNo}`;const common={grade,skillId,expectedMs:skill.targetMs,difficulty:Math.min(5,1+Math.floor(skill.targetMs/2500))};
+  return[
+    {...common,id:`${family}-control`,prompt:controlPrompt,answer:controlAnswer,strategy:controlStrategy,meta:{seed,index:pairNo,probeFamily:family,probeRole:"control",probeNode:node}},
+    {...common,id:`${family}-strategy`,prompt:strategyPrompt,answer:strategyAnswer,strategy,strategyNode:node,meta:{seed,index:pairNo,probeFamily:family,probeRole:"strategy",probeNode:node}},
+  ];
+}
+
+function diagnosticProbeNodes(grade:ArithmeticGrade):CleverNode[]{
+  if(grade===1)return["near_double"];
+  if(grade===2)return["add_compensation","sub_compensation"];
+  if(grade===3)return["add_compensation"];
+  if(grade===4)return["mul_compensation"];
+  if(grade===5)return["add_compensation"];
+  return["mul_compensation"];
+}
+
+export function injectDiagnosticProbes(items:ArithmeticItem[],grade:ArithmeticGrade,seed:number):ArithmeticItem[]{
+  const r=rng(seed^0x51f15e);const copy=[...items];
+  for(const node of diagnosticProbeNodes(grade)){
+    const pairs=[...probePair(grade,node,r,seed,0),...probePair(grade,node,r,seed,1)];if(!pairs.length)continue;
+    const skillId=pairs[0].skillId;const slots=copy.map((x,i)=>x.skillId===skillId?i:-1).filter(i=>i>=0).slice(0,pairs.length);
+    if(slots.length<pairs.length)continue;slots.forEach((slot,i)=>copy[slot]=pairs[i]);
+  }
+  return copy;
+}
+
+export function generateDiagnosticSet(grade:ArithmeticGrade,count=20,seed=Date.now()):ArithmeticItem[]{
+  return injectDiagnosticProbes(generateArithmeticSet(grade,count,seed,[],true,[]),grade,seed);
+}
+
 export function generateArithmeticSet(grade:ArithmeticGrade,count=20,seed=Date.now(),focusSkills:string[]=[],balanced=false,focusNodes:CleverNode[]=[]):ArithmeticItem[]{const r=rng(seed);const p=GRADE_PROFILES[grade];const bag=p.skills.flatMap(s=>Array.from({length:s.weight*(focusSkills.includes(s.id)?3:1)},()=>s));const balancedSkills=balanced?Array.from({length:count},(_,i)=>p.skills[i%p.skills.length]).sort(()=>r()-.5):[];const out:ArithmeticItem[]=[];
  for(let i=0;i<count;i++){if(focusNodes.length&&i<Math.ceil(count*.6)){const targeted=targetItem(grade,pick(r,focusNodes),r,seed,i);if(targeted){out.push(targeted);continue}}const s=balanced?balancedSkills[i]:pick(r,bag);let prompt="",answer=0,strategy=pick(r,s.strategies),difficulty=1;
  if(grade===1){if(s.id==="number10"){const a=n(r,1,9);prompt=`${a} + □ = 10`;answer=10-a;strategy="make10"}else if(s.id==="add20"){const a=n(r,2,9),b=n(r,2,9);prompt=`${a} + ${b} = ?`;answer=a+b;strategy=a+b>10?"make10":"fact_recall"}else{const a=n(r,11,20),b=n(r,1,9);prompt=`${a} − ${b} = ?`;answer=a-b;strategy=a-b<10?"bridge10":"fact_recall"}}

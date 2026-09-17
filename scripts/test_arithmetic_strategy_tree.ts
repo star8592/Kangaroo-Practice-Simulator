@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { buildTrainingPlan, type ArithmeticAttempt, type ArithmeticSession } from "../src/lib/arithmetic-analytics";
-import { generateArithmeticSet, type ArithmeticItem } from "../src/lib/arithmetic-generator";
+import { generateArithmeticSet, generateDiagnosticSet, type ArithmeticItem } from "../src/lib/arithmetic-generator";
 import type { CleverNode } from "../src/lib/arithmetic";
 
 function attempt(i:number,node:CleverNode,ms:number,correct=true):ArithmeticAttempt {
@@ -48,4 +48,34 @@ const legacy=Array.from({length:5},(_,i)=>{
 });
 const legacyPlan=buildTrainingPlan(2,[makeSession(legacy)]);
 assert(legacyPlan.nodeMetrics.some(x=>x.node==="add_compensation"));
+
+
+const diagnostic=generateDiagnosticSet(2,20,24680);
+assert.equal(diagnostic.length,20);
+const skillCounts=Object.fromEntries(["add100","sub100","times","divide"].map(skill=>[skill,diagnostic.filter(x=>x.skillId===skill).length]));
+assert.deepEqual(skillCounts,{add100:5,sub100:5,times:5,divide:5});
+const families=new Set(diagnostic.map(x=>x.meta.probeFamily).filter((x):x is string=>typeof x==="string"));
+assert.equal(families.size,4);
+const probeAttempts=diagnostic.map((item)=>{
+  const role=item.meta.probeRole;const node=item.meta.probeNode;
+  const slow=role==="strategy"&&node==="add_compensation";
+  const ms=slow?6500:2200;
+  const answer=item.answer;
+  return {item,answer:String(answer),numericAnswer:answer,correct:true,presentedAt:0,firstInputAt:ms,submittedAt:ms+300,firstInputMs:ms,entryMs:300,responseMs:ms+300,edits:0,backspaces:0,reason:"correct" as const,telemetryVersion:3 as const};
+});
+const probePlan=buildTrainingPlan(2,[{id:"probe",studentId:"test",grade:2,mode:"diagnostic",startedAt:1,finishedAt:2,attempts:probeAttempts}]);
+const addProbe=probePlan.probeMetrics.find(x=>x.node==="add_compensation");
+assert(addProbe);
+assert.equal(addProbe.status,"strategy_gap");
+assert(probePlan.focusNodes.includes("add_compensation"));
+
+
+for(let grade=1;grade<=6;grade++){
+  for(let seed=1;seed<=50;seed++){
+    const xs=generateDiagnosticSet(grade as 1|2|3|4|5|6,20,seed);
+    assert.equal(xs.length,20);
+    assert(xs.every(x=>Number.isFinite(x.answer)));
+  }
+}
+
 console.log("arithmetic strategy tree regression: PASS");
