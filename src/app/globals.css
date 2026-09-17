@@ -32,3 +32,5 @@
 @media(max-width:600px){.student-create-form{grid-template-columns:1fr}}
 
 .student-admin-row.disabled{opacity:.52}.student-admin-actions{display:flex!important;flex-wrap:wrap;gap:8px!important;margin-top:5px}.student-admin-actions a,.student-admin-actions button{border:0;background:transparent;padding:0;color:var(--accent-dark);font-size:11px;text-decoration:underline}.student-admin-actions button{cursor:pointer}
+.student-edit-form{display:grid;grid-template-columns:1.4fr 1fr .7fr 1fr auto;gap:10px;align-items:end;background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px;margin-bottom:20px}.student-edit-form h2{margin:2px 0 4px}.student-edit-form p{margin:0;color:var(--muted);font-size:12px}.student-edit-form input{border:1px solid var(--line);border-radius:10px;padding:12px}.student-edit-actions{display:flex;gap:8px}
+@media(max-width:900px){.student-edit-form{grid-template-columns:1fr 1fr}.student-edit-form>div:first-child{grid-column:1/-1}}@media(max-width:600px){.student-edit-form{grid-template-columns:1fr}.student-edit-form>div:first-child{grid-column:auto}}
