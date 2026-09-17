@@ -11,7 +11,7 @@ def req(opener,url,method='GET',payload=None):
   except Exception:b={'error':str(e)}
   return e.code,b
 def add_user():
- users=json.loads(USERS.read_text()) if USERS.exists() else [];uid='smoke_'+secrets.token_hex(6);username=uid;candidate='SMK'+secrets.token_hex(4).upper();pin=secrets.token_hex(4);salt=secrets.token_hex(16);key=hashlib.scrypt(pin.encode(),salt=bytes.fromhex(salt),n=16384,r=8,p=1,dklen=32).hex();users.append({'id':uid,'username':username,'candidateNo':candidate,'name':'Smoke Test','grade':1,'pinHash':f'scrypt${salt}${key}','createdAt':int(time.time()*1000),'active':True,'role':'student'});USERS.parent.mkdir(parents=True,exist_ok=True);USERS.write_text(json.dumps(users,ensure_ascii=False,indent=2));return uid,username,pin
+ users=json.loads(USERS.read_text()) if USERS.exists() else [];uid='smoke_'+secrets.token_hex(6);username=uid;candidate='SMK'+secrets.token_hex(4).upper();pin=secrets.token_hex(4);salt=secrets.token_hex(16);key=hashlib.scrypt(pin.encode(),salt=salt.encode(),n=16384,r=8,p=1,dklen=32).hex();users.append({'id':uid,'username':username,'candidateNo':candidate,'name':'Smoke Test','grade':1,'pinHash':f'scrypt${salt}${key}','createdAt':int(time.time()*1000),'active':True,'role':'student'});USERS.parent.mkdir(parents=True,exist_ok=True);USERS.write_text(json.dumps(users,ensure_ascii=False,indent=2));return uid,username,pin
 def cleanup(uid):
  if USERS.exists():USERS.write_text(json.dumps([u for u in json.loads(USERS.read_text()) if u.get('id')!=uid],ensure_ascii=False,indent=2))
  if ATT.exists():
