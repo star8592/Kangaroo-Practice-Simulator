@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test:arithmetic": "tsx scripts/test_arithmetic_strategy_tree.ts"
+    "test:arithmetic": "tsx scripts/test_arithmetic_strategy_tree.ts",
+    "admin:create": "node scripts/create_admin.mjs",
+    "test:smoke": "python3 scripts/smoke_test.py"
   },
   "dependencies": {
     "next": "16.3.5",

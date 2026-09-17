@@ -19,6 +19,7 @@ def cleanup(uid):
  if SESS.exists():SESS.write_text(json.dumps([x for x in json.loads(SESS.read_text()) if x.get('userId')!=uid],ensure_ascii=False,indent=2))
 def main():
  ap=argparse.ArgumentParser();ap.add_argument('--base',default='http://127.0.0.1:3027');a=ap.parse_args();base=a.base.rstrip('/');anon=urllib.request.build_opener();code,_=req(anon,base+'/api/exams/level-a');assert code==401,code
+ fake='missing_'+secrets.token_hex(4);bad_codes=[req(anon,base+'/api/auth/login','POST',{'username':fake,'pin':'invalid'})[0] for _ in range(5)];assert bad_codes[:4]==[401]*4 and bad_codes[4]==429,bad_codes
  uid,username,pin=add_user();jar=http.cookiejar.CookieJar();client=urllib.request.build_opener(urllib.request.HTTPCookieProcessor(jar))
  try:
   code,login=req(client,base+'/api/auth/login','POST',{'username':username,'pin':pin});assert code==200 and login['user']['id']==uid
@@ -33,6 +34,7 @@ def main():
   code,ana=req(client,base+'/api/student/analytics');assert code==200 and ana['overview']['examAttempts']==2 and ana['overview']['totalQuestions']==48 and ana['readiness'] is not None and ana['dataConfidence']>0
   code,arith=req(client,base+'/api/arithmetic/sessions');assert code==200 and 'sessions' in arith
   with client.open(base+'/student') as page: html=page.read().decode('utf-8');assert 'Smoke Test' in html and '数据置信度' in html
-  print(json.dumps({'auth':'PASS','questions':24,'distribution':{'3':8,'4':8,'5':8},'answer_leak':False,'student_admin_access':403,'student_manager_access':403,'full_score':120,'blank_score':24,'server_timed':True,'analytics_attempts':ana['overview']['examAttempts'],'analytics_confidence':ana['dataConfidence'],'student_page':True},ensure_ascii=False))
+  users=json.loads(USERS.read_text());target=next(x for x in users if x.get('id')==uid);target['sessionVersion']=int(target.get('sessionVersion') or 1)+1;USERS.write_text(json.dumps(users,ensure_ascii=False,indent=2));code,_=req(client,base+'/api/auth/me');assert code==401,code
+  print(json.dumps({'auth':'PASS','questions':24,'distribution':{'3':8,'4':8,'5':8},'answer_leak':False,'student_admin_access':403,'student_manager_access':403,'full_score':120,'blank_score':24,'server_timed':True,'analytics_attempts':ana['overview']['examAttempts'],'analytics_confidence':ana['dataConfidence'],'student_page':True,'login_rate_limit':True,'session_revocation':True},ensure_ascii=False))
  finally:cleanup(uid)
 if __name__=='__main__':main()
