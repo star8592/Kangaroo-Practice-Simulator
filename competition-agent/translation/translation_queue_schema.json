@@ -1,0 +1,15 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Translation Queue Item",
+  "type": "object",
+  "required": ["id", "source", "targetLanguage", "status"],
+  "properties": {
+    "id": {"type": "string"},
+    "source": {"type": "string"},
+    "targetLanguage": {"type": "string", "default": "zh-CN"},
+    "status": {
+      "type": "string",
+      "enum": ["pending", "translated", "validated", "rejected"]
+    }
+  }
+}
