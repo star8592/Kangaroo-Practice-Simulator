@@ -1,0 +1,13 @@
+{
+  "search_roots": [
+    "/mnt/disk1",
+    "/home/master/下载"
+  ],
+  "competitions": [
+    "Kangaroo",
+    "AMC",
+    "Australian_AMC",
+    "UKMT"
+  ],
+  "default_language": "zh-CN"
+}
