@@ -1,33 +1,38 @@
-import type { LearningEvent } from "../events/types";
+import type { AnswerEventPayload, LearningEvent } from "../events/types";
 
 export type ExamAttemptInput = {
   studentId: string;
   competition: string;
   questionId: string;
   topic?: string;
+  skill?: string;
   correct: boolean;
   durationMs?: number;
+  difficulty?: number;
+  timestamp?: string;
 };
 
 /**
- * Convert existing exam records into profile learning events.
- * This adapter intentionally keeps the existing exam APIs unchanged.
+ * Convert existing exam records into canonical profile learning events.
+ * Existing exam APIs remain unchanged.
  */
 export function examAttemptToLearningEvent(
   input: ExamAttemptInput,
-): LearningEvent {
+): LearningEvent<AnswerEventPayload> {
   return {
     eventId: crypto.randomUUID(),
     studentId: input.studentId,
     domain: "competition",
     eventType: "answer",
-    timestamp: new Date().toISOString(),
+    timestamp: input.timestamp ?? new Date().toISOString(),
     payload: {
       competition: input.competition,
       questionId: input.questionId,
       topic: input.topic,
+      skill: input.skill ?? input.topic,
       correct: input.correct,
-      durationMs: input.durationMs,
+      responseTimeMs: input.durationMs,
+      difficulty: input.difficulty,
     },
   };
 }
