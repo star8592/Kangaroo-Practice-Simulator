@@ -1,3 +1,4 @@
+import type { ExamAttemptRecord } from "@/lib/attempt-store";
 import type { AnswerEventPayload, LearningEvent } from "../events/types";
 
 export type ExamAttemptInput = {
@@ -13,8 +14,7 @@ export type ExamAttemptInput = {
 };
 
 /**
- * Convert existing exam records into canonical profile learning events.
- * Existing exam APIs remain unchanged.
+ * Convert one exam question result into a canonical profile event.
  */
 export function examAttemptToLearningEvent(
   input: ExamAttemptInput,
@@ -35,4 +35,37 @@ export function examAttemptToLearningEvent(
       difficulty: input.difficulty,
     },
   };
+}
+
+/**
+ * Bridge the existing persisted exam record into profile events.
+ * Unanswered questions are intentionally excluded from skill accuracy
+ * until the profile model has a dedicated blank/skip signal.
+ */
+export function examRecordToLearningEvents(
+  record: ExamAttemptRecord,
+): LearningEvent<AnswerEventPayload>[] {
+  const timestamp = new Date(record.submittedAt).toISOString();
+  const competition =
+    record.profile.competitionId ??
+    record.profile.formatId ??
+    record.profile.name;
+
+  return record.questions.flatMap((question) => {
+    if (typeof question.correct !== "boolean") return [];
+
+    return [
+      examAttemptToLearningEvent({
+        studentId: record.userId,
+        competition,
+        questionId: question.questionId,
+        topic: question.concept,
+        skill: question.concept,
+        correct: question.correct,
+        durationMs: question.dwellMs,
+        difficulty: question.points,
+        timestamp,
+      }),
+    ];
+  });
 }
