@@ -19,9 +19,19 @@ export interface StudentProfileEvent<TPayload = Record<string, unknown>> {
   payload: TPayload;
 }
 
+/** Backward-compatible domain name used by the first profile engine code. */
+export type LearningEvent<TPayload = Record<string, unknown>> =
+  StudentProfileEvent<TPayload>;
+
 export interface AnswerEventPayload {
   skill?: string;
   correct: boolean;
   responseTimeMs?: number;
+  firstInputMs?: number;
   difficulty?: number;
+  questionId?: string;
+  competition?: string;
+  topic?: string;
+  errorType?: string;
+  strategy?: string;
 }
