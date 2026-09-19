@@ -1,3 +1,7 @@
+import { arithmeticSessionToLearningEvents } from "@/domains/profile/adapters/arithmetic-adapter";
+import { examRecordToLearningEvents } from "@/domains/profile/adapters/exam-adapter";
+import { buildProfileSnapshot } from "@/domains/profile/profile-engine";
+import { recommendTraining } from "@/domains/profile/recommendation";
 import fs from "node:fs";import path from "node:path";import type { PublicStudent } from "./auth";import { loadExamAttempts,type QuestionBehavior } from "./attempt-store";import { buildTrainingPlan,type ArithmeticSession } from "./arithmetic-analytics";import type { ArithmeticGrade } from "./arithmetic";import { listExamProfiles } from "./question-bank";
 export type StudentInsight={kind:"strength"|"watch"|"priority";title:string;evidence:string;action:string};
 const mean=(xs:number[])=>xs.length?xs.reduce((a,b)=>a+b,0)/xs.length:0;
@@ -47,7 +51,7 @@ export function buildStudentAnalytics(user:PublicStudent){
  const nextPlan=insights.filter(x=>x.kind==="priority").slice(0,3).map(x=>({title:x.title,action:x.action,evidence:x.evidence}));
  if(nextPlan.length<3&&qs.length<40)nextPlan.push({title:"继续建立完整卷基线",action:"再完成 2 套同年级、不同年份的计时真题；不要只做零散题。",evidence:`当前 ${attempts.length} 套完整考试、${qs.length} 道题。`});
  if(nextPlan.length<3&&arithmetic.length===0&&user.grade<=6)nextPlan.push({title:"建立口算速度基线",action:"完成一次 20 题口算诊断，分开测准确率、启动速度、输入执行和巧算识别。",evidence:"目前没有该账号的口算行为数据。"});
- const done=new Set(attempts.map(a=>a.examId));const recommendedExams=listExamProfiles().filter(x=>x.country!=="Mixed"&&x.paperType!=="practice"&&(x.gradeBand?matchesGradeBand(x.gradeBand,user.grade):matchesGrade(x.gradesEn||x.grades,user.grade))&&!done.has(x.id)).sort((a,b)=>(b.year||0)-(a.year||0)).slice(0,3).map(x=>({id:x.id,name:x.nameZh||x.name,year:x.year,country:x.country,questionCount:x.questionCount}));
- return{user,overview,readiness,dataConfidence,trend:latest,difficulty,phases,concepts:concepts.slice(0,20),insights,nextPlan,recommendedExams,practice:{attempts:practiceAttempts.length,questions:practiceQs.length,correct:practiceCorrect,accuracy:practiceQs.length?practiceCorrect/practiceQs.length:0,topics:practiceTopics.slice(0,12)},arithmetic:{sessions:arithmetic.length,plan:arithmeticPlan}};
+ const profileEvents=[...attempts.flatMap(examRecordToLearningEvents),...arithmetic.flatMap(session=>arithmeticSessionToLearningEvents(session,{studentId:user.id}))];const profileDomain={eventCount:profileEvents.length,snapshot:buildProfileSnapshot(user.id,profileEvents),recommendations:recommendTraining(profileEvents)}; const done=new Set(attempts.map(a=>a.examId));const recommendedExams=listExamProfiles().filter(x=>x.country!=="Mixed"&&x.paperType!=="practice"&&(x.gradeBand?matchesGradeBand(x.gradeBand,user.grade):matchesGrade(x.gradesEn||x.grades,user.grade))&&!done.has(x.id)).sort((a,b)=>(b.year||0)-(a.year||0)).slice(0,3).map(x=>({id:x.id,name:x.nameZh||x.name,year:x.year,country:x.country,questionCount:x.questionCount}));
+ return{user,profileDomain,overview,readiness,dataConfidence,trend:latest,difficulty,phases,concepts:concepts.slice(0,20),insights,nextPlan,recommendedExams,practice:{attempts:practiceAttempts.length,questions:practiceQs.length,correct:practiceCorrect,accuracy:practiceQs.length?practiceCorrect/practiceQs.length:0,topics:practiceTopics.slice(0,12)},arithmetic:{sessions:arithmetic.length,plan:arithmeticPlan}};
 }
 export type StudentAnalytics=ReturnType<typeof buildStudentAnalytics>;
