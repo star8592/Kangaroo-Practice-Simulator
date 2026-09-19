@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.math-competition/schema/solution-storyboard.schema.json",
+  "title": "Verified animated solution storyboard",
+  "type": "object",
+  "required": ["version", "questionId", "quality", "verification", "scenes"],
+  "properties": {
+    "version": { "const": 1 },
+    "questionId": { "type": "string", "minLength": 1 },
+    "quality": { "enum": ["draft", "verified"] },
+    "verification": {
+      "type": "object",
+      "required": ["officialAnswerMatched", "solverAgreement", "confidence"],
+      "properties": {
+        "officialAnswerMatched": { "type": "boolean" },
+        "solverAgreement": { "type": "boolean" },
+        "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+        "notes": { "type": "string" }
+      }
+    },
+    "scenes": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 12,
+      "items": { "$ref": "#/$defs/scene" }
+    }
+  },
+  "$defs": {
+    "scene": {
+      "type": "object",
+      "required": ["id", "title", "narration", "visual"],
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string", "minLength": 1 },
+        "narration": { "type": "string", "minLength": 1 },
+        "caption": { "type": "string" },
+        "checkpoint": { "type": "string" },
+        "durationMs": { "type": "integer", "minimum": 1500, "maximum": 20000 },
+        "visual": {
+          "oneOf": [
+            { "type": "object", "required": ["type", "url"], "properties": { "type": { "const": "source-image" }, "url": { "type": "string" } } },
+            { "type": "object", "required": ["type", "start", "end"], "properties": { "type": { "const": "number-line" }, "start": { "type": "number" }, "end": { "type": "number" }, "marker": { "type": "number" } } },
+            { "type": "object", "required": ["type", "numerator", "denominator"], "properties": { "type": { "const": "fraction-bar" }, "numerator": { "type": "integer" }, "denominator": { "type": "integer", "minimum": 1, "maximum": 20 } } },
+            { "type": "object", "required": ["type", "shape"], "properties": { "type": { "const": "solid3d" }, "shape": { "enum": ["cube"] } } },
+            { "type": "object", "required": ["type"], "properties": { "type": { "const": "none" } } }
+          ]
+        }
+      }
+    }
+  }
+}

@@ -2,10 +2,11 @@
 import argparse, json
 from pathlib import Path
 
-ap = argparse.ArgumentParser(description="Build a local Level A mock exam bank from the Math Kangaroo archive")
+ap = argparse.ArgumentParser(description="DEPRECATED legacy importer. The student site now uses official AMC Pre-A sample bundles built by import_amc_pre_a.py.")
 ap.add_argument("--corpus-root", type=Path, required=True)
 ap.add_argument("--output", type=Path, default=Path("private/question-bank.json"))
 a = ap.parse_args()
+print("WARNING: import_level_a.py is legacy-only and its output is not student-facing. Use scripts/import_amc_pre_a.py for AMC Pre-A.")
 source = a.corpus_root / "99_Metadata" / "sample_questions.jsonl"
 rows = [json.loads(line) for line in source.open(encoding="utf-8")]
 zh = [r for r in rows if r.get("level") == "A" and r.get("language") == "zh"]

@@ -1,5 +1,5 @@
 {
-  "name": "kangaroo-practice-simulator",
+  "name": "math-competition-lab",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -9,17 +9,30 @@
     "lint": "eslint",
     "test:arithmetic": "tsx scripts/test_arithmetic_strategy_tree.ts",
     "admin:create": "node scripts/create_admin.mjs",
-    "test:smoke": "python3 scripts/smoke_test.py"
+    "test:smoke": "python3 scripts/smoke_test.py",
+    "test:brand": "python3 scripts/brand_audit.py",
+    "prebuild": "python3 scripts/brand_audit.py && npm run test:competition-identity && npm run test:maa && npm run test:maa-library && npm run test:aime-sections && npm run test:maa-smart && npm run test:solution-books && npm run test:verified-storyboards && npm run test:maa-verified-store",
+    "test:maa": "tsx scripts/test_maa_scoring.ts",
+    "test:maa-library": "python3 scripts/validate_maa_library.py",
+    "test:competition-identity": "python3 scripts/test_competition_identity.py",
+    "test:aime-sections": "tsx scripts/test_aime_sections.ts",
+    "test:maa-smart": "tsx scripts/test_maa_smart.ts",
+    "test:solution-books": "tsx scripts/test_solution_books.ts",
+    "test:verified-storyboards": "tsx scripts/test_verified_storyboards.ts",
+    "solution:queue": "tsx scripts/build_solution_queue.ts",
+    "test:maa-verified-store": "tsx scripts/test_maa_verified_store.ts"
   },
   "dependencies": {
     "next": "16.3.5",
     "react": "19.2.8",
-    "react-dom": "19.2.8"
+    "react-dom": "19.2.8",
+    "three": "^0.186.0"
   },
   "devDependencies": {
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@types/three": "^0.186.0",
     "eslint": "^9",
     "eslint-config-next": "16.3.5",
     "tsx": "^4.23.13",

@@ -17,7 +17,7 @@ export default function ResultClient(){
   const router=useRouter();
   const [a] = useState<Attempt|null>(() => {
     if (typeof window === "undefined") return null;
-    const raw = localStorage.getItem("kangaroo-last-attempt");
+    const raw = localStorage.getItem("math-competition-last-attempt") || localStorage.getItem("kangaroo-last-attempt");
     return raw ? JSON.parse(raw) : null;
   });
   const lang:DisplayLang=a?.lang==="en"?"en":"zh";
@@ -32,7 +32,7 @@ export default function ResultClient(){
     <section className="score-hero"><div><span className="eyebrow">{title} · RESULT</span><h1>{ui.result}</h1><p>{ui.time} {mins}:{String(secs).padStart(2,"0")}</p></div><div className="score-ring"><strong>{scoreText(g.score)}</strong><span>/ {scoreText(g.maxScore)}</span><small>{pct}%</small></div></section>
     <section className="result-stats"><article><strong>{g.correct}</strong><span>{ui.correct}</span></article><article><strong>{g.wrong}</strong><span>{ui.wrong}</span></article><article><strong>{g.blank}</strong><span>{ui.blank}</span></article></section>
     <section className="report-grid">
-      <article className="report-card"><h2>{ui.difficulty}</h2>{Object.entries(g.byPoints).sort().map(([p,v])=><div className="metric-row" key={p}><span>{lang==="zh"?`${p} ${ui.points}`:`${p}${ui.points}`}</span><div className="metric-bar"><i style={{width:`${(v.correct/v.total)*100}%`}}/></div><strong>{v.correct}/{v.total}</strong></div>)}</article>
+      <article className="report-card"><h2>{ui.difficulty}</h2>{a.profile?.competitionId==="maa-amc"&&g.byPosition?Object.entries(g.byPosition).map(([name,v])=><div className="metric-row" key={name}><span>{name}</span><div className="metric-bar"><i style={{width:`${(v.correct/v.total)*100}%`}}/></div><strong>{v.correct}/{v.total}</strong></div>):Object.entries(g.byPoints).sort().map(([p,v])=><div className="metric-row" key={p}><span>{lang==="zh"?`${p} ${ui.points}`:`${p}${ui.points}`}</span><div className="metric-bar"><i style={{width:`${(v.correct/v.total)*100}%`}}/></div><strong>{v.correct}/{v.total}</strong></div>)}</article>
       <article className="report-card"><h2>{ui.concepts}</h2>{Object.entries(g.byConcept).sort((x,y)=>y[1].total-x[1].total).slice(0,8).map(([name,v])=><div className="metric-row" key={name}><span>{conceptLabel(name,lang)}</span><div className="metric-bar"><i style={{width:`${(v.correct/v.total)*100}%`}}/></div><strong>{v.correct}/{v.total}</strong></div>)}</article>
     </section>
     <div className="report-actions"><Link className="primary-button" href="/review">{ui.review}</Link><Link className="secondary-button" href={`/exam/${examId}`}>{mixedBase?ui.same:ui.again}</Link>{mixedBase&&<button className="secondary-button" onClick={(event)=>router.push(`/exam/${mixedBase}-${Math.floor(event.timeStamp*1000).toString(36)}`)}>{ui.newMix}</button>}<Link className="secondary-button" href="/">{ui.list}</Link></div>

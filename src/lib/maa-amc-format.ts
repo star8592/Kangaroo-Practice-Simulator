@@ -1,0 +1,17 @@
+import type { ExamProfile, ExamTimingSection } from "./types";
+
+export type MaaFormatId="maa-amc8"|"maa-amc10"|"maa-amc12"|"maa-aime-classic"|"maa-aime-2027";
+export type MaaFormatSpec={id:MaaFormatId;labelZh:string;labelEn:string;gradeBand:NonNullable<ExamProfile["gradeBand"]>;questionCount:number;durationSeconds:number;maxScore:number;blankScoreValue:number;answerMode:"choice"|"integer";rulesZh:string;rulesEn:string;timingSections?:ExamTimingSection[]};
+
+export const MAA_FORMATS:Record<MaaFormatId,MaaFormatSpec>={
+ "maa-amc8":{id:"maa-amc8",labelZh:"美国 MAA AMC 8",labelEn:"MAA AMC 8",gradeBand:"7-8",questionCount:25,durationSeconds:2400,maxScore:25,blankScoreValue:0,answerMode:"choice",rulesZh:"25道选择题，40分钟，满分25分；答对1分，答错或空题0分。",rulesEn:"25 multiple-choice questions in 40 minutes; 1 point correct, 0 points wrong or blank; maximum 25."},
+ "maa-amc10":{id:"maa-amc10",labelZh:"美国 MAA AMC 10",labelEn:"MAA AMC 10",gradeBand:"9-10",questionCount:25,durationSeconds:4500,maxScore:150,blankScoreValue:1.5,answerMode:"choice",rulesZh:"25道选择题，75分钟，满分150分；答对6分，空题1.5分，答错0分；A/B卷采用相同赛制。",rulesEn:"25 multiple-choice questions in 75 minutes; 6 points correct, 1.5 points blank, 0 points wrong; maximum 150; A and B use the same format."},
+ "maa-amc12":{id:"maa-amc12",labelZh:"美国 MAA AMC 12",labelEn:"MAA AMC 12",gradeBand:"11+",questionCount:25,durationSeconds:4500,maxScore:150,blankScoreValue:1.5,answerMode:"choice",rulesZh:"25道选择题，75分钟，满分150分；答对6分，空题1.5分，答错0分；A/B卷采用相同赛制。",rulesEn:"25 multiple-choice questions in 75 minutes; 6 points correct, 1.5 points blank, 0 points wrong; maximum 150; A and B use the same format."},
+ "maa-aime-classic":{id:"maa-aime-classic",labelZh:"美国 AIME · 经典赛制",labelEn:"AIME · classic format",gradeBand:"11+",questionCount:15,durationSeconds:10800,maxScore:15,blankScoreValue:0,answerMode:"integer",rulesZh:"15道整数填答题，传统赛制总时长3小时；答案为000–999，每题1分，答错或空题0分。",rulesEn:"15 integer-answer questions, traditionally 3 hours total; answers 000–999; 1 point correct, 0 wrong or blank."},
+ "maa-aime-2027":{id:"maa-aime-2027",labelZh:"美国 AIME · 2027赛制",labelEn:"AIME · 2027 format",gradeBand:"11+",questionCount:15,durationSeconds:10800,maxScore:15,blankScoreValue:0,answerMode:"integer",rulesZh:"15道整数填答题；第1部分8题、90分钟，第2部分7题、90分钟；中间有短暂休息；进入第2部分后不可返回第1部分；答案为0–999，每题1分。",rulesEn:"15 integer-answer questions; Part 1 has 8 questions in 90 minutes and Part 2 has 7 questions in 90 minutes, with a short break between parts; Part 1 cannot be revisited after Part 2 begins; answers are 0–999; 1 point each.",timingSections:[{labelZh:"第1部分",labelEn:"Part 1",questionStart:1,questionEnd:8,durationSeconds:5400,lockAfter:true},{labelZh:"第2部分",labelEn:"Part 2",questionStart:9,questionEnd:15,durationSeconds:5400,lockAfter:true}]},
+};
+
+export function applyMaaFormat(profile:ExamProfile,formatId:MaaFormatId):ExamProfile{
+ const f=MAA_FORMATS[formatId];
+ return {...profile,competitionId:"maa-amc",formatId:f.id,gradeBand:f.gradeBand,questionCount:f.questionCount,durationSeconds:f.durationSeconds,maxScore:f.maxScore,initialScore:0,wrongPenaltyMode:"fixed",wrongPenaltyValue:0,blankScoreValue:f.blankScoreValue,timingMode:profile.timingMode||"official",formatLabelZh:profile.formatLabelZh||f.labelZh,formatLabelEn:profile.formatLabelEn||f.labelEn,rulesSummaryZh:profile.rulesSummaryZh||f.rulesZh,rulesSummaryEn:profile.rulesSummaryEn||f.rulesEn,timingSections:profile.timingSections||f.timingSections};
+}

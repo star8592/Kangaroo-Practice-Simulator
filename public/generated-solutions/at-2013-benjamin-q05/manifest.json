@@ -1,0 +1,72 @@
+{
+  "questionId": "at-2013-benjamin-q05",
+  "voice": "/mnt/disk1/H3_Studio/IndexTTS2/examples/voice_09.wav",
+  "scenes": [
+    {
+      "id": "s1",
+      "audioUrl": "/generated-solutions/at-2013-benjamin-q05/scene-01.wav",
+      "audioDurationMs": 8417,
+      "durationMs": 9067,
+      "renderSpec": {
+        "engine": "source",
+        "instruction": "现在总年龄 = 31",
+        "script": [
+          "SOURCE"
+        ],
+        "interaction": "点击步骤或暂停后先自己回答",
+        "voiceDirection": "轻松、清楚，关键数字稍停顿"
+      }
+    },
+    {
+      "id": "s2",
+      "audioUrl": "/generated-solutions/at-2013-benjamin-q05/scene-02.wav",
+      "audioDurationMs": 6269,
+      "durationMs": 6919,
+      "renderSpec": {
+        "engine": "svg",
+        "instruction": "3个人 × 每人3岁 = 9岁",
+        "script": [
+          "COUNTERS people 3",
+          "EQUATION gain 3 × 3 = 9",
+          "HIGHLIGHT gain"
+        ],
+        "interaction": "点击步骤或暂停后先自己回答",
+        "voiceDirection": "轻松、清楚，关键数字稍停顿"
+      }
+    },
+    {
+      "id": "s3",
+      "audioUrl": "/generated-solutions/at-2013-benjamin-q05/scene-03.wav",
+      "audioDurationMs": 5306,
+      "durationMs": 6800,
+      "renderSpec": {
+        "engine": "svg",
+        "instruction": "31 + 9 = 40",
+        "script": [
+          "BAR now 31 现在总年龄",
+          "BAR future 40 三年后总年龄",
+          "EQUATION total 31 + 9 = 40",
+          "HIGHLIGHT future"
+        ],
+        "interaction": "点击步骤或暂停后先自己回答",
+        "voiceDirection": "轻松、清楚，关键数字稍停顿"
+      }
+    },
+    {
+      "id": "s4",
+      "audioUrl": "/generated-solutions/at-2013-benjamin-q05/scene-04.wav",
+      "audioDurationMs": 6861,
+      "durationMs": 7511,
+      "renderSpec": {
+        "engine": "svg",
+        "instruction": "答案 E：40",
+        "script": [
+          "EQUATION answer 40",
+          "HIGHLIGHT answer"
+        ],
+        "interaction": "",
+        "voiceDirection": "轻松、清楚，关键数字稍停顿"
+      }
+    }
+  ]
+}

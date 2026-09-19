@@ -1,5 +1,13 @@
 export type Choice = { key: string; label: string };
 export type LocalizedText = { stem: string; choices: Choice[]; solution?: string };
+export type ExamTimingSection = {
+  labelZh: string;
+  labelEn: string;
+  questionStart: number;
+  questionEnd: number;
+  durationSeconds: number;
+  lockAfter?: boolean;
+};
 
 export type ExamProfile = {
   id: string;
@@ -11,6 +19,7 @@ export type ExamProfile = {
   maxScore: number;
   wrongPenaltyMode: "fixed" | "quarter-points";
   wrongPenaltyValue: number;
+  blankScoreValue?: number;
   country?: string;
   year?: number;
   language?: string;
@@ -22,6 +31,16 @@ export type ExamProfile = {
   sourceLabelZh?: string;
   sourceLabelEn?: string;
   studentReady?: boolean;
+  competitionId?: "kangaroo" | "australian-amc" | "maa-amc";
+  formatId?: string;
+  paperType?: "past" | "sample" | "smart" | "practice";
+  gradeBand?: "1-2" | "3-4" | "5-6" | "7-8" | "9-10" | "11+";
+  timingMode?: "official" | "recommended" | "untimed";
+  timingSections?: ExamTimingSection[];
+  formatLabelZh?: string;
+  formatLabelEn?: string;
+  rulesSummaryZh?: string;
+  rulesSummaryEn?: string;
 };
 
 export type Question = {
@@ -31,7 +50,8 @@ export type Question = {
   grades: string;
   language: string;
   questionNo: number;
-  points: 3 | 4 | 5;
+  points: number;
+  answerMode?: "choice" | "integer";
   concept: string;
   stem: string;
   stemEn?: string;
@@ -86,4 +106,5 @@ export type GradeResult = {
   items: ExamResultItem[];
   byPoints: Record<string, { correct: number; total: number }>;
   byConcept: Record<string, { correct: number; total: number }>;
+  byPosition?: Record<string, { correct: number; total: number }>;
 };

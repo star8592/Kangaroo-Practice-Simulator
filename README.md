@@ -1,6 +1,8 @@
-# Kangaroo Practice Simulator
+# Math Competition Lab · 国际数学竞赛训练中心
 
-本地优先的数学竞赛训练、仿真考试与学生学习画像系统。当前主线已经从单纯“做卷 + 看分数”升级为：**账号体系 + 服务器考试会话 + 正式考试行为记录 + 口算/巧算诊断 + 个性化学习画像 + 教师管理台**。
+本地优先的数学竞赛训练、仿真考试与学生学习画像系统。目前正式支持 **袋鼠数学（Math Kangaroo）**、**澳洲 AMC（Australian Mathematics Competition / AMT）** 与 **美国 AMC（MAA American Mathematics Competitions）**。不同竞赛、赛区、年级和样题使用独立赛制模板，题量、时间、计分、答题方式和智能组卷不会跨模板混用。
+
+当前主线包括：**账号体系 + 服务器考试会话 + 竞赛赛制模板 + 真题/官方样题 + 模板内智能组卷 + 正式考试行为记录 + 口算/巧算诊断 + 个性化学习画像 + 教师管理台**。
 
 ## 本地启动
 
@@ -9,14 +11,15 @@ npm install
 npm run dev
 ```
 
-生产模式：
+生产构建：
 
 ```bash
 npm run build
-npm start -- --port 3027
 ```
 
-默认生产入口：`http://127.0.0.1:3027`。
+正式服务由用户级 systemd 单元 `math-competition-lab.service` 守护，网关容器名为 `math-competition-gateway`。应用监听 `3027`，局域网统一入口为 `http://10.10.10.42`。
+
+规范工程入口为 `/mnt/disk1/Code/Math-Competition-Lab`；它兼容指向原有物理目录，因此旧脚本仍可继续使用历史路径而不会中断。运行时工程名、包名、服务名与网关名均统一为 Math Competition Lab。
 
 ## 首次创建管理员
 
@@ -38,7 +41,20 @@ npm run admin:create -- \
 ```bash
 npm run test:smoke -- --base http://127.0.0.1:3027
 ```
-当前 smoke 会验证：匿名题目 API 被拒绝、学生端不泄露正确答案、学生不能访问管理员 API、24 题 3/4/5 分分布正确、服务器计时、满分/空白评分、考试记录进入学习画像、登录错误次数限流，以及 PIN 重置后的旧会话立即失效。
+当前 smoke 会同时验证账号/权限与竞赛模板：AMC Pre-A 官方样题为 25 题 / 100 分、1–20 选择题 + 21–25 整数填答、官方未注明限时因此以不限时样题模式运行；AMC Middle Primary 为 30 题 / 135 分 / 60 分钟正式赛制。测试还覆盖答案不泄露、满分/空白评分、考试记录进入学习画像、登录限流和会话撤销。
+
+## 竞赛与赛制模板
+
+系统不再用“国家/地区”字段猜测考试规则。每套学生可用试卷都会归入明确的 `competitionId`、`formatId` 和 `paperType`。
+
+- **袋鼠数学**：按赛区 + 具体年级保留原卷规则。例如奥地利 3–4 年级为 24 题 / 60 分钟，而德国 3–4 年级为 24 题 / 75 分钟；智能组卷只在相同赛区、年级、题量、时长与计分规则中进行。
+- **澳洲 AMC 正式赛制**：Middle Primary / Upper Primary 为 60 分钟；Junior / Intermediate / Senior 为 75 分钟。正式卷均为 30 题、135 分，前 25 题选择，后 5 题为 0–999 整数填答，答错不倒扣。
+- **AMC Pre-A 官方样题**：来自本地官方提供的 `AMC-Pre A样题.zip`，共两套。每套 25 题、100 分；1–20 为选择题，21–25 为整数填答。源文件没有声明正式限时，因此网站明确显示为“不限时样题模式”，不会伪造官方时间。
+- **智能组卷**：继承对应 `formatId` 的题量、分值分布、时间和扣分规则；不会跨竞赛或跨赛制混题。
+
+- **美国 MAA AMC**：独立使用 `maa-amc`，与澳洲 `australian-amc` 完全隔离。AMC 8 为 25 题 / 40 分钟 / 每题 1 分；AMC 10/12 为 25 题 / 75 分钟 / 答对 6 分、空题 1.5 分、答错 0 分；AIME 使用整数填答赛制。当前已接入 MAA 官方公开的 2023 AMC 8 与 2022 AMC 10A Sample Competition，后续历史卷仅从官方公开、授权或用户自有资料导入。
+
+旧的 `private/question-bank.json` 与 `scripts/import_level_a.py` 仅作为历史兼容数据保留，不再出现在学生端；旧 `/level-a` 入口兼容映射到 AMC Pre-A 官方样题 1。
 
 ## 学生数据模型
 
@@ -60,7 +76,8 @@ npm run test:smoke -- --base http://127.0.0.1:3027
 
 GitHub 不保存正式题库、账号、PIN、考试记录或学生行为数据。主要本地数据位于：
 
-- `private/question-bank.json`：本地题库
+- `private/exams/*.json`：正式竞赛真题、官方样题与赛制化试卷
+- `private/question-bank.json`：旧版兼容题库（不再作为学生端正式分类来源）
 - `private/users/users.json`：用户资料与 PIN 哈希
 - `private/users/exam-attempts.jsonl`：正式考试与逐题行为
 - `private/users/exam-sessions.json`：服务器考试会话
@@ -70,7 +87,7 @@ GitHub 不保存正式题库、账号、PIN、考试记录或学生行为数据�
 
 ## 主要入口
 
-- `/`：真题与智能混合模考
+- `/`：按竞赛 → 年级 → 赛制浏览真题、官方样题与模板内智能组卷
 - `/arithmetic`：口算诊断与自适应训练
 - `/student`：学生个人学习报告
 - `/review`：错题复盘
