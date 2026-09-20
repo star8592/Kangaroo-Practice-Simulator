@@ -77,7 +77,12 @@ def main()->int:
         except Exception as e: failures.append({'sourceFile':raw,'error':str(e)}); continue
         for j in rows:
             no=j.get('questionNo'); txt=found.get(int(no)) if no is not None else None
-            if txt and (placeholder(str(j.get('sourceText') or ''))):
+            current=str(j.get('sourceText') or '').strip()
+            # Existing Portuguese OCR text is already useful source material; preserve it
+            # and mark its provenance even when a clean numbered PDF segment is unavailable.
+            if j.get('sourceLanguage')=='pt' and current and not placeholder(current):
+                j['sourceTextOrigin']='existing_ocr'; j['sourceTextNeedsReview']=True; recovered+=1
+            elif txt and placeholder(current):
                 j['sourceText']=txt; j['sourceTextOrigin']='pdftotext'; j['sourceTextNeedsReview']=True; recovered+=1
     out=args.output or root/'private/translation/queue.enriched.json'; out.parent.mkdir(parents=True,exist_ok=True); out.write_text(json.dumps({'jobs':jobs,'meta':{'pdfFilesScanned':files,'sourceTextsRecovered':recovered,'htmlRecovered':html_recovered,'failures':failures}},ensure_ascii=False,indent=2),encoding='utf-8')
     print(json.dumps({'jobs':len(jobs),'pdfFilesScanned':files,'sourceTextsRecovered':recovered,'htmlRecovered':html_recovered,'failures':len(failures),'output':str(out)},ensure_ascii=False)); return 0
