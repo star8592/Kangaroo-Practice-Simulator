@@ -102,3 +102,15 @@ GitHub 不保存正式题库、账号、PIN、考试记录或学生行为数据�
 3. SQLite/PostgreSQL 迁移，替代 JSON/JSONL 的单机存储
 4. 更细的知识点标签与错因人工反馈闭环
 5. 用长期纵向数据驱动自适应组卷，而不是只依赖最近一次成绩
+
+## 生产发布与运维
+
+生产站点为 **https://socthink.cn**。正式发布统一使用 GitHub main 作为唯一代码源，并通过本地测试节点执行验证后，再免密 SSH 发布到生产服务器。
+
+完整 SOP、生产目录、systemd/Nginx 架构、数据保护、版本识别、自动回滚、故障排查及验收标准见：
+
+- **ops/release/SOCTHINK_DEPLOYMENT.md**
+- 正式发布脚本：**ops/release/publish_socthink.sh**
+- 公网版本身份接口：**https://socthink.cn/api/release**
+
+发布是否完成，以公网接口返回的 deployedSha 与 GitHub origin/main 完全一致为最终标准。
