@@ -9,3 +9,4 @@ print('TRANSLATION_QUALITY=PASS')
 
 w=checks('Veja a figura.','见图。',[{'key':x,'label':x} for x in 'ABCDE'],'/q.png')
 assert 'choice_labels_unrecovered' in w
+assert 'numeric_mismatch' not in checks('rectangle 5 × 4. (A) 2 (B) 3 - 4 Point Questions -','矩形5×4。(A) 2 (B) 3')
