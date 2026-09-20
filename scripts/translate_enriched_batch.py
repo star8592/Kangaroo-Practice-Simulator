@@ -5,6 +5,7 @@ import argparse,json,re,urllib.request
 from collections import defaultdict
 from pathlib import Path
 from clean_translation_source import clean_source
+from translation_quality import checks as quality_checks
 
 CJK=re.compile(r'[\u3400-\u9fff]')
 
@@ -31,9 +32,9 @@ def main():
         source,cleanup_flags=clean_source(j['sourceText'])
         zh=ask(args.model,source); reasons=[]
         if not CJK.search(zh): reasons.append('missing_chinese')
-        if nums(source)!=nums(zh): reasons.append('numeric_mismatch')
+        reasons.extend(quality_checks(source,zh,j.get('choices',[]),j.get('assetUrl')))
         if suspicious_source(source): reasons.append('source_ocr_noise')
-        row={'questionNo':j['questionNo'],'localized':{'en':{'stem':source,'choices':j.get('choices',[])},'zh':{'stem':zh,'choices':j.get('choices',[])}},'review':{'translationStatus':'machine_draft','needsReview':True,'verified':False,'sourceTextRecovered':True,'qualityWarnings':reasons,'sourceCleanup':cleanup_flags}}
+        row={'questionNo':j['questionNo'],'localized':{'en':{'stem':source,'choices':j.get('choices',[])},'zh':{'stem':zh,'choices':j.get('choices',[])}},'review':{'translationStatus':'machine_draft','needsReview':True,'verified':False,'sourceTextRecovered':True,'qualityWarnings':reasons,'sourceCleanup':cleanup_flags,'assetUrl':j.get('assetUrl'),'visualReviewRequired':'visual_review_required' in reasons}}
         grouped[j['examId']].append(row); ok+=not reasons; rejected+=bool(reasons)
     outdir=root/'private/translations/auto'; outdir.mkdir(parents=True,exist_ok=True)
     for exam,rows in grouped.items():
