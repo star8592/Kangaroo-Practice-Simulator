@@ -15,7 +15,11 @@ def option_letters(s): return OPTION_RE.findall(s or '')
 def visual_dependent(s): return bool(VISUAL_RE.search(s or ''))
 def checks(source,zh,choices=None,asset_url=None):
     warnings=[]
-    if normalized_numeric_tokens(source)!=normalized_numeric_tokens(zh): warnings.append('numeric_mismatch')
+    src_nums=normalized_numeric_tokens(source); zh_nums=normalized_numeric_tokens(zh)
+    # Translation may reorder clauses or expand 'three' to 3; compare numeric multisets.
+    # Extra digits remain a hard failure; order alone is not semantic loss.
+    from collections import Counter
+    if Counter(src_nums)!=Counter(zh_nums): warnings.append('numeric_mismatch')
     src_opts=option_letters(source); zh_opts=option_letters(zh)
     if src_opts and src_opts!=zh_opts: warnings.append('option_letter_mismatch')
     if choices and len(choices)==5 and all(c.get('label')==c.get('key') for c in choices) and not option_letters(source): warnings.append('choice_labels_unrecovered')

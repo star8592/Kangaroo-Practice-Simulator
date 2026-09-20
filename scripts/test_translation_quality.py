@@ -10,3 +10,5 @@ print('TRANSLATION_QUALITY=PASS')
 w=checks('Veja a figura.','见图。',[{'key':x,'label':x} for x in 'ABCDE'],'/q.png')
 assert 'choice_labels_unrecovered' in w
 assert 'numeric_mismatch' not in checks('rectangle 5 × 4. (A) 2 (B) 3 - 4 Point Questions -','矩形5×4。(A) 2 (B) 3')
+assert 'numeric_mismatch' not in checks('A 1×1 cube from a 3×3 cube','从3×3立方体切去1×1立方体')
+assert 'numeric_mismatch' in checks('There are 6 goals','有6个球，后来又进了3个')
