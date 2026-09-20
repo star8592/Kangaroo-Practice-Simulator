@@ -15,3 +15,5 @@ assert 'numeric_mismatch' in checks('There are 6 goals','有6个球，后来又�
 assert 'numeric_mismatch' not in checks('three times as many fish, he would have 12 more','鱼的数量是3倍，那么会多12条')
 assert 'numeric_mismatch' not in checks('três vezes mais, 12 peixes','3倍，12条鱼')
 assert 'numeric_mismatch' in checks('three times as many fish, 12 more','4倍，12条鱼')
+assert 'numeric_mismatch' not in checks('6 goals, then another three goals. (A) 3 (B) 4','6个球，后来又进3个球。(A) 3 (B) 4')
+assert 'numeric_mismatch' in checks('6 goals, then another three goals','6个球，后来又进4个球')

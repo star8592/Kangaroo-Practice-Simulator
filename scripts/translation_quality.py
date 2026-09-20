@@ -18,8 +18,13 @@ def normalized_numeric_tokens(s):
     # This handles "three times" -> "3倍" without treating every prose number word as a digit.
     low=s.lower()
     for word,value in WORD_NUMBERS.items():
+        # Multiplier context: three times / três vezes.
         pat=rf'(?<!\w){re.escape(word)}\s+(?:times|vezes)(?!\w)'
         tokens.extend([value]*len(re.findall(pat,low,re.I)))
+        # Count context: another three goals / mais três gols. Restrict nouns to
+        # competition quantities so ordinary prose words do not become numbers.
+        count_pat=rf'(?<!\w){re.escape(word)}\s+(?:goals?|fish|cubes?|tiles?|cards?|points?|peixes?|cubos?|cart(?:ão|ões)|pontos?)(?!\w)'
+        tokens.extend([value]*len(re.findall(count_pat,low,re.I)))
     return tokens
 def option_letters(s): return OPTION_RE.findall(s or '')
 def visual_dependent(s): return bool(VISUAL_RE.search(s or ''))
