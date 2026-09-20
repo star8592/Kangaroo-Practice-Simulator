@@ -77,7 +77,7 @@ def main():
     exam_dir=root/"private"/"exams"
     totals={
         "bundles":0,"questions":0,"zh_ready":0,"en_ready":0,"bilingual_ready":0,
-        "english_only":0,"student_flag_english_only":0,
+        "missing_zh":0,"source_english_without_zh":0,"student_flag_english_only":0,
         "suspicious_crop":0,"missing_options_in_crop":0,"missing_asset":0,
     }
     defects=[]
@@ -102,8 +102,10 @@ def main():
             totals["zh_ready"] += int(zh)
             totals["en_ready"] += int(en)
             totals["bilingual_ready"] += int(zh and en)
-            totals["english_only"] += int(en and not zh)
-            if bool(q.get("examReady") or profile.get("studentReady")) and en and not zh:
+            totals["missing_zh"] += int(not zh)
+            totals["source_english_without_zh"] += int(q.get("language") == "en" and not zh)
+            raw_en = q.get("language") == "en" or bool(txt(q.get("stem")) and re.search(r"[A-Za-z]{3,}", txt(q.get("stem"))))
+            if bool(q.get("examReady") or profile.get("studentReady")) and raw_en and not zh:
                 totals["student_flag_english_only"] += 1
                 defects.append({"type":"english_only_student","exam":file.stem,"question":qid})
 
