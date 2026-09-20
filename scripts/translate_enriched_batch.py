@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse,json,re,urllib.request
 from collections import defaultdict
 from pathlib import Path
+from clean_translation_source import clean_source
 
 CJK=re.compile(r'[\u3400-\u9fff]')
 
@@ -27,11 +28,12 @@ def main():
     if args.exam: jobs=[j for j in jobs if j['examId']==args.exam]
     jobs=jobs[:args.limit]; grouped=defaultdict(list); ok=0; rejected=0
     for j in jobs:
-        zh=ask(args.model,j['sourceText']); reasons=[]
+        source,cleanup_flags=clean_source(j['sourceText'])
+        zh=ask(args.model,source); reasons=[]
         if not CJK.search(zh): reasons.append('missing_chinese')
-        if nums(j['sourceText'])!=nums(zh): reasons.append('numeric_mismatch')
-        if suspicious_source(j['sourceText']): reasons.append('source_ocr_noise')
-        row={'questionNo':j['questionNo'],'localized':{'en':{'stem':j['sourceText'],'choices':j.get('choices',[])},'zh':{'stem':zh,'choices':j.get('choices',[])}},'review':{'translationStatus':'machine_draft','needsReview':True,'verified':False,'sourceTextRecovered':True,'qualityWarnings':reasons}}
+        if nums(source)!=nums(zh): reasons.append('numeric_mismatch')
+        if suspicious_source(source): reasons.append('source_ocr_noise')
+        row={'questionNo':j['questionNo'],'localized':{'en':{'stem':source,'choices':j.get('choices',[])},'zh':{'stem':zh,'choices':j.get('choices',[])}},'review':{'translationStatus':'machine_draft','needsReview':True,'verified':False,'sourceTextRecovered':True,'qualityWarnings':reasons,'sourceCleanup':cleanup_flags}}
         grouped[j['examId']].append(row); ok+=not reasons; rejected+=bool(reasons)
     outdir=root/'private/translations/auto'; outdir.mkdir(parents=True,exist_ok=True)
     for exam,rows in grouped.items():
