@@ -32,9 +32,18 @@ def suspicious_source(s):
 
 
 def main():
-    ap=argparse.ArgumentParser(); ap.add_argument('--root',type=Path,default=Path(__file__).resolve().parents[1]); ap.add_argument('--model',default='qwen3.8:9b'); ap.add_argument('--limit',type=int,default=24); ap.add_argument('--exam'); args=ap.parse_args(); root=args.root.resolve()
+    ap=argparse.ArgumentParser(); ap.add_argument('--root',type=Path,default=Path(__file__).resolve().parents[1]); ap.add_argument('--model',default='qwen3.8:9b'); ap.add_argument('--limit',type=int,default=24); ap.add_argument('--exam'); ap.add_argument('--skip-existing',action='store_true'); args=ap.parse_args(); root=args.root.resolve()
     data=json.load(open(root/'private/translation/queue.enriched.json',encoding='utf-8')); jobs=[j for j in data['jobs'] if j.get('sourceTextOrigin') in ('pdftotext','html','existing_ocr')]
     if args.exam: jobs=[j for j in jobs if j['examId']==args.exam]
+    if args.skip_existing:
+        done=set()
+        outdir=root/'private/translations/auto'
+        for f in outdir.glob('*.draft.json') if outdir.exists() else []:
+            try:
+                d=json.loads(f.read_text(encoding='utf-8')); exam=d.get('examId',f.name.removesuffix('.draft.json'))
+                done.update((exam,int(q['questionNo'])) for q in d.get('questions',[]) if 'questionNo' in q)
+            except Exception: pass
+        jobs=[j for j in jobs if (j['examId'],int(j['questionNo'])) not in done]
     jobs=jobs[:args.limit]; grouped=defaultdict(list); ok=0; rejected=0
     for j in jobs:
         source,cleanup_flags=clean_source(j['sourceText'])
@@ -55,7 +64,12 @@ def main():
         reasons.extend(quality_checks(source,zh,j.get('choices',[]),j.get('assetUrl')))
         if suspicious_source(source): reasons.append('source_ocr_noise')
         tier=quality_tier(reasons,translation_status='machine_draft',visual_verified=False,answer_verified=False)
-        row={'questionNo':j['questionNo'],'localized':{'en':{'stem':source,'choices':source_choices},'zh':{'stem':zh,'choices':zh_choices}},'review':{'translationStatus':'machine_draft','needsReview':True,'verified':False,'sourceTextRecovered':True,'qualityWarnings':reasons,'sourceCleanup':cleanup_flags,'assetUrl':j.get('assetUrl'),'choicesOrigin':j.get('choicesOrigin'),'visualReviewRequired':'visual_review_required' in reasons,**tier}}
+        localized={'zh':{'stem':zh,'choices':zh_choices}}
+        lang=(j.get('sourceLanguage') or '').lower()
+        if lang=='en': localized['en']={'stem':source,'choices':source_choices}
+        elif lang=='pt': localized['pt']={'stem':source,'choices':source_choices}
+        else: localized['source']={'language':lang or 'unknown','stem':source,'choices':source_choices}
+        row={'questionNo':j['questionNo'],'localized':localized,'review':{'translationStatus':'machine_draft','needsReview':True,'verified':False,'sourceTextRecovered':True,'qualityWarnings':reasons,'sourceCleanup':cleanup_flags,'assetUrl':j.get('assetUrl'),'choicesOrigin':j.get('choicesOrigin'),'visualReviewRequired':'visual_review_required' in reasons,**tier}}
         grouped[j['examId']].append(row); ok+=not reasons; rejected+=bool(reasons)
     outdir=root/'private/translations/auto'; outdir.mkdir(parents=True,exist_ok=True)
     for exam,rows in grouped.items():
