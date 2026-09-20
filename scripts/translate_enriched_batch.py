@@ -34,7 +34,7 @@ def main():
         if not CJK.search(zh): reasons.append('missing_chinese')
         reasons.extend(quality_checks(source,zh,j.get('choices',[]),j.get('assetUrl')))
         if suspicious_source(source): reasons.append('source_ocr_noise')
-        row={'questionNo':j['questionNo'],'localized':{'en':{'stem':source,'choices':j.get('choices',[])},'zh':{'stem':zh,'choices':j.get('choices',[])}},'review':{'translationStatus':'machine_draft','needsReview':True,'verified':False,'sourceTextRecovered':True,'qualityWarnings':reasons,'sourceCleanup':cleanup_flags,'assetUrl':j.get('assetUrl'),'visualReviewRequired':'visual_review_required' in reasons}}
+        row={'questionNo':j['questionNo'],'localized':{'en':{'stem':source,'choices':j.get('choices',[])},'zh':{'stem':zh,'choices':j.get('choices',[])}},'review':{'translationStatus':'machine_draft','needsReview':True,'verified':False,'sourceTextRecovered':True,'qualityWarnings':reasons,'sourceCleanup':cleanup_flags,'assetUrl':j.get('assetUrl'),'choicesOrigin':j.get('choicesOrigin'),'visualReviewRequired':'visual_review_required' in reasons}}
         grouped[j['examId']].append(row); ok+=not reasons; rejected+=bool(reasons)
     outdir=root/'private/translations/auto'; outdir.mkdir(parents=True,exist_ok=True)
     for exam,rows in grouped.items():

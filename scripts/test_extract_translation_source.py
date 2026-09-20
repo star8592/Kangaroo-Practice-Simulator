@@ -15,3 +15,8 @@ with tempfile.TemporaryDirectory() as td:
     assert m.html_question(h)==r"What is \(2+3\)?"
     assert [x["key"] for x in m.html_choices(h)]==["A","B"]
 print("HTML_TRANSLATION_SOURCE_EXTRACTOR=PASS")
+
+c=m.inline_choices('Pergunta? A) 10 B) 20 C) 30 D) 40 E) 50 do Canguru M')
+assert [x['label'] for x in c]==['10','20','30','40','50']
+assert m.inline_choices('A) 1 B) 2')==[]
+print('INLINE_CHOICES=PASS')

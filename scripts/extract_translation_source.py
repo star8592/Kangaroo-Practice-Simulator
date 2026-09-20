@@ -41,6 +41,20 @@ def html_choices(path:Path):
         out.append({'key':chr(65+i),'label':v})
     return out
 
+def inline_choices(text:str):
+    hits=list(re.finditer(r'(?<!\w)([A-E])\s*\)\s*',text or ''))
+    if len(hits)!=5 or [m.group(1) for m in hits] != list('ABCDE'): return []
+    out=[]
+    for i,m in enumerate(hits):
+        end=hits[i+1].start() if i+1<len(hits) else len(text)
+        label=re.sub(r'\s+',' ',text[m.end():end]).strip()
+        # Conservative cleanup of known archive/footer tails on final option.
+        if i==4:
+            label=re.sub(r'\s+(?:do Canguru M|com autorização|r reproduzido apenas|rial pode se|g Este mate)\s*$','',label,flags=re.I).strip()
+        if not label: return []
+        out.append({'key':m.group(1),'label':label})
+    return out
+
 def segments(text:str)->dict[int,str]:
     hits=list(QUESTION_START.finditer(text)); out={}
     for i,m in enumerate(hits):
@@ -81,7 +95,10 @@ def main()->int:
             # Existing Portuguese OCR text is already useful source material; preserve it
             # and mark its provenance even when a clean numbered PDF segment is unavailable.
             if j.get('sourceLanguage')=='pt' and current and not placeholder(current):
-                j['sourceTextOrigin']='existing_ocr'; j['sourceTextNeedsReview']=True; recovered+=1
+                j['sourceTextOrigin']='existing_ocr'; j['sourceTextNeedsReview']=True
+                choices=inline_choices(current)
+                if choices: j['choices']=choices; j['choicesOrigin']='inline_ocr'
+                recovered+=1
             elif txt and placeholder(current):
                 j['sourceText']=txt; j['sourceTextOrigin']='pdftotext'; j['sourceTextNeedsReview']=True; recovered+=1
     out=args.output or root/'private/translation/queue.enriched.json'; out.parent.mkdir(parents=True,exist_ok=True); out.write_text(json.dumps({'jobs':jobs,'meta':{'pdfFilesScanned':files,'sourceTextsRecovered':recovered,'htmlRecovered':html_recovered,'failures':failures}},ensure_ascii=False,indent=2),encoding='utf-8')
