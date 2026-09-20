@@ -14,7 +14,7 @@ export async function POST(req: NextRequest) {
   }
 
   const body = await req.json().catch(() => ({}));
-  const grade = String(body.grade || "1");
+  const grade = Math.min(6, Math.max(1, Number(body.grade) || 1)) as ArithmeticSession["grade"];
 
   let sessions: ArithmeticSession[] = [];
   if (fs.existsSync(FILE)) {
@@ -31,7 +31,7 @@ export async function POST(req: NextRequest) {
       .filter((item) => item.studentId === user.id);
   }
 
-  const plan = buildTrainingPlan(grade as ArithmeticSession["grade"], sessions);
+  const plan = buildTrainingPlan(grade, sessions);
 
   return NextResponse.json({
     ok: true,
