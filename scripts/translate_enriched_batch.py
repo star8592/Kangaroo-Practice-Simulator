@@ -17,7 +17,7 @@ def nums(s): return re.findall(r'\d+(?:\.\d+)?',s or '')
 
 def main():
     ap=argparse.ArgumentParser(); ap.add_argument('--root',type=Path,default=Path(__file__).resolve().parents[1]); ap.add_argument('--model',default='qwen3.8:9b'); ap.add_argument('--limit',type=int,default=24); ap.add_argument('--exam'); args=ap.parse_args(); root=args.root.resolve()
-    data=json.load(open(root/'private/translation/queue.enriched.json',encoding='utf-8')); jobs=[j for j in data['jobs'] if j.get('sourceTextOrigin')=='pdftotext']
+    data=json.load(open(root/'private/translation/queue.enriched.json',encoding='utf-8')); jobs=[j for j in data['jobs'] if j.get('sourceTextOrigin') in ('pdftotext','html')]
     if args.exam: jobs=[j for j in jobs if j['examId']==args.exam]
     jobs=jobs[:args.limit]; grouped=defaultdict(list); ok=0; rejected=0
     for j in jobs:

@@ -7,3 +7,11 @@ r=m.segments(text)
 assert r[1].startswith('Which number') and '(B) 5' in r[1]
 assert r[2].startswith('A square') and '(C) 16' in r[2]
 print('TRANSLATION_SOURCE_EXTRACTOR=PASS')
+
+import tempfile
+with tempfile.TemporaryDirectory() as td:
+    h=Path(td)/"question.html"
+    h.write_text('<div id="page_content"><p>What is \\(2+3\\)?</p><form><button class="question submit">\\(4\\)</button><button class="question submit">\\(5\\)</button></form></div>',encoding="utf-8")
+    assert m.html_question(h)==r"What is \(2+3\)?"
+    assert [x["key"] for x in m.html_choices(h)]==["A","B"]
+print("HTML_TRANSLATION_SOURCE_EXTRACTOR=PASS")
