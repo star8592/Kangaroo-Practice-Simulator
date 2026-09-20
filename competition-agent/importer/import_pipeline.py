@@ -3,14 +3,14 @@
 Competition Bank import pipeline.
 
 Flow:
-source files -> metadata -> english dataset -> translation queue
+source files -> metadata -> question assets -> translation queue
 """
 
 import json
 import sys
 from pathlib import Path
 
-from pdf_batch_import import scan_pdfs
+from pdf_batch_import import scan_directory
 from dataset_writer import write_dataset
 
 
@@ -19,7 +19,7 @@ def run(source_dir: str, output_dir: str = "data/import"):
     output = Path(output_dir)
     output.mkdir(parents=True, exist_ok=True)
 
-    records = scan_pdfs(source)
+    records = scan_directory(source)
 
     metadata_file = output / "metadata.json"
     metadata_file.write_text(
@@ -33,8 +33,7 @@ def run(source_dir: str, output_dir: str = "data/import"):
     queue = []
     for item in records:
         queue.append({
-            "id": item.get("id"),
-            "source": item.get("file"),
+            "source": item.get("source"),
             "targetLanguage": "zh-CN",
             "status": "pending_translation"
         })
@@ -44,13 +43,13 @@ def run(source_dir: str, output_dir: str = "data/import"):
         encoding="utf-8"
     )
 
-    print(f"Imported: {len(records)} files")
+    print(f"Imported: {len(records)} PDF files")
     print(f"Output: {output}")
 
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print("Usage: python import_pipeline.py <source_dir>")
+        print("Usage: python import_pipeline.py <source_dir> [output_dir]")
         sys.exit(1)
 
-    run(sys.argv[1])
+    run(sys.argv[1], sys.argv[2] if len(sys.argv) > 2 else "data/import")

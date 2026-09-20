@@ -12,7 +12,7 @@ from datetime import datetime
 def build_question_record(meta, index):
     return {
         "id": f"{meta.get('competition','UNKNOWN').upper()}_{meta.get('year','UNKNOWN')}_{meta.get('grade','UNKNOWN')}_Q{index:03d}",
-        "source": meta.get("file"),
+        "source": meta.get("source"),
         "localized": {
             "en": {
                 "stem": ""

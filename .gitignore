@@ -58,3 +58,7 @@ __pycache__/
 
 # release runtime metadata
 .release/
+
+# local ingestion/audit outputs
+/competition-agent/importer/data/
+/reports/
