@@ -71,7 +71,7 @@ export default function ExamClient({examId,user}:{examId:string;user:PublicStude
    setQuestions(data.questions);setProfile(data.profile);
    const firstSection=data.profile.timingSections?.[0];
    setSeconds(firstSection?.durationSeconds??data.profile.durationSeconds);
-   setLang(data.profile.language==="en"?"en":"zh");
+   setLang("zh");
    if(s?.session)setResumeSession(s.session);
   }).catch(e=>setError(String(e.message||e)));
  },[examId]);
