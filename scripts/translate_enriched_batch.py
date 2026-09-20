@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Translate enriched source-text jobs with the local Ollama model into private draft sidecars."""
 from __future__ import annotations
-import argparse,json,re,urllib.request
+import argparse,json,re,urllib.request,time
 from collections import defaultdict
 from pathlib import Path
 from clean_translation_source import clean_source
@@ -14,7 +14,14 @@ def ask(model:str,text:str)->str:
     prompt='''你是数学竞赛题专业翻译。把下面数学竞赛题准确翻译成简体中文。原文可能是英语或葡萄牙语。严格保留所有数字、算式、单位、选项字母和数学关系；不要解题，不要解释，不要添加原文没有的信息。只输出中文题目正文。\n\n英文：'''+text
     body=json.dumps({'model':model,'prompt':prompt,'stream':False,'think':False,'options':{'temperature':0.1,'num_predict':512}}).encode()
     req=urllib.request.Request('http://127.0.0.1:11434/api/generate',data=body,headers={'Content-Type':'application/json'})
-    with urllib.request.urlopen(req,timeout=180) as r: return json.load(r)['response'].strip()
+    last=None
+    for attempt in range(4):
+        try:
+            with urllib.request.urlopen(req,timeout=180) as r: return json.load(r)['response'].strip()
+        except Exception as e:
+            last=e
+            if attempt<3: time.sleep(2**attempt)
+    raise RuntimeError(f'Ollama request failed after retries: {last}')
 
 def nums(s): return re.findall(r'\d+(?:\.\d+)?',s or '')
 
