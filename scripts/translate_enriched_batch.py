@@ -6,6 +6,7 @@ from collections import defaultdict
 from pathlib import Path
 from clean_translation_source import clean_source
 from translation_quality import checks as quality_checks
+from quality_tier import classify as quality_tier
 
 CJK=re.compile(r'[\u3400-\u9fff]')
 
@@ -46,7 +47,8 @@ def main():
         if not CJK.search(zh): reasons.append('missing_chinese')
         reasons.extend(quality_checks(source,zh,j.get('choices',[]),j.get('assetUrl')))
         if suspicious_source(source): reasons.append('source_ocr_noise')
-        row={'questionNo':j['questionNo'],'localized':{'en':{'stem':source,'choices':source_choices},'zh':{'stem':zh,'choices':zh_choices}},'review':{'translationStatus':'machine_draft','needsReview':True,'verified':False,'sourceTextRecovered':True,'qualityWarnings':reasons,'sourceCleanup':cleanup_flags,'assetUrl':j.get('assetUrl'),'choicesOrigin':j.get('choicesOrigin'),'visualReviewRequired':'visual_review_required' in reasons}}
+        tier=quality_tier(reasons,translation_status='machine_draft',visual_verified=False,answer_verified=False)
+        row={'questionNo':j['questionNo'],'localized':{'en':{'stem':source,'choices':source_choices},'zh':{'stem':zh,'choices':zh_choices}},'review':{'translationStatus':'machine_draft','needsReview':True,'verified':False,'sourceTextRecovered':True,'qualityWarnings':reasons,'sourceCleanup':cleanup_flags,'assetUrl':j.get('assetUrl'),'choicesOrigin':j.get('choicesOrigin'),'visualReviewRequired':'visual_review_required' in reasons,**tier}}
         grouped[j['examId']].append(row); ok+=not reasons; rejected+=bool(reasons)
     outdir=root/'private/translations/auto'; outdir.mkdir(parents=True,exist_ok=True)
     for exam,rows in grouped.items():
