@@ -16,6 +16,7 @@ export interface ArithmeticQuestion {
 
 export interface ArithmeticAttempt {
   questionId: string;
+  skill?: ArithmeticSkill;
   correct: boolean;
   responseTimeMs: number;
   errorType?: "wrong_answer" | "slow" | "unknown";
