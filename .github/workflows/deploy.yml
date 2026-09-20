@@ -27,8 +27,8 @@ jobs:
       - name: Install
         run: npm ci
 
-      - name: Build
-        run: npm run build
+      - name: Build repository code
+        run: npx next build
 
       - name: Deploy to server
         if: env.SERVER_HOST != ''
