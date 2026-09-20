@@ -1,8 +1,8 @@
-import type { ArithmeticQuestion } from './types';
+import type { ArithmeticQuestion, ArithmeticSkill } from './types';
 
 type GeneratorOptions = {
   grade: number;
-  skill: string;
+  skill: ArithmeticSkill;
   difficulty?: number;
   count?: number;
 };
