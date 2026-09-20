@@ -31,10 +31,22 @@ def main():
     for j in jobs:
         source,cleanup_flags=clean_source(j['sourceText'])
         zh=ask(args.model,source); reasons=[]
+        source_choices=j.get('choices',[])
+        # Choice labels are mathematical source content; translate textual labels separately.
+        zh_choices=[]
+        for c in source_choices:
+            label=str(c.get('label',''))
+            if label and label!=c.get('key') and re.search(r'[A-Za-zÀ-ÿ]',label):
+                translated_label=ask(args.model,label)
+                # Proper names must not be inconsistently transliterated across choices.
+                if re.fullmatch(r'[A-Za-zÀ-ÿ ,;]+',label): translated_label=label
+            else:
+                translated_label=label
+            zh_choices.append({'key':c.get('key'),'label':translated_label})
         if not CJK.search(zh): reasons.append('missing_chinese')
         reasons.extend(quality_checks(source,zh,j.get('choices',[]),j.get('assetUrl')))
         if suspicious_source(source): reasons.append('source_ocr_noise')
-        row={'questionNo':j['questionNo'],'localized':{'en':{'stem':source,'choices':j.get('choices',[])},'zh':{'stem':zh,'choices':j.get('choices',[])}},'review':{'translationStatus':'machine_draft','needsReview':True,'verified':False,'sourceTextRecovered':True,'qualityWarnings':reasons,'sourceCleanup':cleanup_flags,'assetUrl':j.get('assetUrl'),'choicesOrigin':j.get('choicesOrigin'),'visualReviewRequired':'visual_review_required' in reasons}}
+        row={'questionNo':j['questionNo'],'localized':{'en':{'stem':source,'choices':source_choices},'zh':{'stem':zh,'choices':zh_choices}},'review':{'translationStatus':'machine_draft','needsReview':True,'verified':False,'sourceTextRecovered':True,'qualityWarnings':reasons,'sourceCleanup':cleanup_flags,'assetUrl':j.get('assetUrl'),'choicesOrigin':j.get('choicesOrigin'),'visualReviewRequired':'visual_review_required' in reasons}}
         grouped[j['examId']].append(row); ok+=not reasons; rejected+=bool(reasons)
     outdir=root/'private/translations/auto'; outdir.mkdir(parents=True,exist_ok=True)
     for exam,rows in grouped.items():
