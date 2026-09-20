@@ -7,7 +7,7 @@ REMOTE_HOST="${REMOTE_HOST:-root@socthink.cn}"
 REMOTE_APP="${REMOTE_APP:-/opt/socthink-math}"
 REMOTE_SERVICE="${REMOTE_SERVICE:-socthink-math.service}"
 PUBLIC_URL="${PUBLIC_URL:-https://socthink.cn}"
-LOCAL_TEST_PORT="${LOCAL_TEST_PORT:-3037}"
+LOCAL_TEST_PORT="${LOCAL_TEST_PORT:-}"
 
 log() { printf '\n[publish] %s\n' "$*"; }
 die() { echo "[publish] ERROR: $*" >&2; exit 1; }
@@ -36,7 +36,31 @@ npm ci
 npm run build
 
 log "local isolated smoke test"
-LOCAL_LOG="/tmp/math-competition-release-${TARGET_SHA:0:12}.log"
+if [ -z "$LOCAL_TEST_PORT" ]; then
+  LOCAL_TEST_PORT="$(python3 - <<'PY'
+import socket
+s=socket.socket()
+s.bind(("127.0.0.1",0))
+print(s.getsockname()[1])
+s.close()
+PY
+)"
+fi
+LOCAL_LOG="/tmp/math-competition-release-${TARGET_SHA:0:12}-${LOCAL_TEST_PORT}.log"
+
+# Refuse to run a release smoke test against an already occupied port.
+python3 - "$LOCAL_TEST_PORT" <<'PY'
+import socket,sys
+port=int(sys.argv[1])
+s=socket.socket()
+try:
+    s.bind(("127.0.0.1",port))
+except OSError as exc:
+    raise SystemExit(f"local smoke port {port} is already occupied: {exc}")
+finally:
+    s.close()
+PY
+
 npm start -- -p "$LOCAL_TEST_PORT" >"$LOCAL_LOG" 2>&1 &
 LOCAL_PID=$!
 cleanup_local() {
@@ -45,14 +69,22 @@ cleanup_local() {
 }
 trap cleanup_local EXIT
 
+LOCAL_READY=0
 for _ in $(seq 1 60); do
-  if curl -fsS "http://127.0.0.1:$LOCAL_TEST_PORT/" >/dev/null 2>&1; then break; fi
+  if ! kill -0 "$LOCAL_PID" >/dev/null 2>&1; then
+    cat "$LOCAL_LOG" >&2 || true
+    die "local release candidate process exited before becoming ready"
+  fi
+  if curl -fsS "http://127.0.0.1:$LOCAL_TEST_PORT/api/release" >/dev/null 2>&1; then
+    LOCAL_READY=1
+    break
+  fi
   sleep 1
 done
-curl -fsS "http://127.0.0.1:$LOCAL_TEST_PORT/" >/dev/null || {
-  cat "$LOCAL_LOG" >&2
-  die "local release candidate did not start"
-}
+if [ "$LOCAL_READY" -ne 1 ]; then
+  cat "$LOCAL_LOG" >&2 || true
+  die "local release candidate did not become ready"
+fi
 python3 scripts/smoke_test.py --base "http://127.0.0.1:$LOCAL_TEST_PORT"
 cleanup_local
 trap - EXIT
@@ -70,6 +102,9 @@ REPO_URL="https://github.com/star8592/Kangaroo-Practice-Simulator.git"
 BACKUP_ROOT="/opt/socthink-math-backups"
 LEGACY_BACKUP=""
 PREV_SHA=""
+PREV_DEPLOYED_SHA=""
+PREV_DEPLOYED_VERSION=""
+PREV_DEPLOYED_AT=""
 
 log() { printf '\n[remote-deploy] %s\n' "$*"; }
 
@@ -82,8 +117,20 @@ rollback() {
     git reset --hard "$PREV_SHA" || true
     npm ci || true
     npm run build || true
+    mkdir -p .release
+    printf '%s\n' "${PREV_DEPLOYED_SHA:-$PREV_SHA}" > .release/deployed_sha
+    if [ -n "$PREV_DEPLOYED_VERSION" ]; then
+      printf '%s\n' "$PREV_DEPLOYED_VERSION" > .release/deployed_version
+    else
+      git show "$PREV_SHA:VERSION" 2>/dev/null | tr -d '\r' > .release/deployed_version || printf '%s\n' "unknown" > .release/deployed_version
+    fi
+    if [ -n "$PREV_DEPLOYED_AT" ]; then
+      printf '%s\n' "$PREV_DEPLOYED_AT" > .release/deployed_at
+    else
+      date -Iseconds > .release/deployed_at
+    fi
     systemctl restart "$SERVICE" || true
-    echo "[remote-deploy] rolled back to $PREV_SHA" >&2
+    echo "[remote-deploy] rolled back to $PREV_SHA and restored release metadata" >&2
   elif [ -n "$LEGACY_BACKUP" ] && [ -f "$LEGACY_BACKUP" ]; then
     cd "$APP"
     if [ -d .git ]; then
@@ -122,6 +169,9 @@ if [ ! -d .git ]; then
   git remote add origin "$REPO_URL"
 else
   PREV_SHA="$(git rev-parse HEAD 2>/dev/null || true)"
+  PREV_DEPLOYED_SHA="$(cat .release/deployed_sha 2>/dev/null || true)"
+  PREV_DEPLOYED_VERSION="$(cat .release/deployed_version 2>/dev/null || true)"
+  PREV_DEPLOYED_AT="$(cat .release/deployed_at 2>/dev/null || true)"
   git remote set-url origin "$REPO_URL"
 fi
 
@@ -132,14 +182,15 @@ git reset --hard "$TARGET_SHA"
 
 # Never run git clean here. private/, public/local-assets/, generated assets,
 # user data and other runtime files are intentionally preserved.
+log "install and build production"
+npm ci
+npm run build
+
+# Only mark the new release after its production build has succeeded.
 mkdir -p .release
 printf '%s\n' "$TARGET_SHA" > .release/deployed_sha
 printf '%s\n' "$VERSION" > .release/deployed_version
 printf '%s\n' "$(date -Iseconds)" > .release/deployed_at
-
-log "install and build production"
-npm ci
-npm run build
 
 log "restart $SERVICE"
 systemctl restart "$SERVICE"
