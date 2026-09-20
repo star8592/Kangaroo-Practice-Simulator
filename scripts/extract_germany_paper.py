@@ -30,28 +30,39 @@ def qno(section:str, n:int, per:int):
     return {"A":0,"B":per,"C":2*per}[section]+n
 
 def crop_questions(pdf:Path,out_dir:Path,per:int,expected:int,scale:float=2.2):
-    doc=fitz.open(pdf); out_dir.mkdir(parents=True,exist_ok=True); rows=[]
+    doc=fitz.open(pdf); out_dir.mkdir(parents=True,exist_ok=True)
+    candidates=[]
     for pi,page in enumerate(doc):
-        aa=anchors(page,per)
-        for i,(sec,n,a) in enumerate(aa):
-            q=qno(sec,n,per); top=max(0,a.y0-5)
-            next_y=aa[i+1][2].y0-6 if i+1<len(aa) else page.rect.height-25
-            # Keep section headings out of the previous question crop.
-            for phrase in ("4 point problems","5 point problems","4 Point", "5 Point"):
-                for r in page.search_for(phrase):
-                    if top+10 < r.y0 < next_y: next_y=min(next_y,r.y0-5)
-            rect=fitz.Rect(14,top,page.rect.width-15,max(top+22,next_y))
-            pix=page.get_pixmap(matrix=fitz.Matrix(scale,scale),clip=rect,alpha=False)
-            name=f"q{q:02d}.png"; pix.save(out_dir/name)
-            raw=" ".join(page.get_text("text",clip=rect).split())
-            rows.append({"questionNo":q,"sourceKey":f"{sec}{n}","page":pi+1,
-                         "crop":[round(v,2) for v in rect],"rawText":raw,"asset":name})
+        for sec,n,a in anchors(page,per):
+            candidates.append((qno(sec,n,per),sec,n,pi,a))
+
     chosen={}
-    for row in sorted(rows,key=lambda x:(x["questionNo"],x["page"],x["crop"][1])): chosen.setdefault(row["questionNo"],row)
-    rows=[chosen[q] for q in sorted(chosen)]
-    if len(rows)!=expected or [x["questionNo"] for x in rows]!=list(range(1,expected+1)):
-        missing=sorted(set(range(1,expected+1))-set(x["questionNo"] for x in rows))
-        raise RuntimeError(f"expected {expected} questions, got {len(rows)}; missing={missing}")
+    for q,sec,n,pi,a in sorted(candidates,key=lambda x:(x[0],x[3],x[4].y0,x[4].x0)):
+        chosen.setdefault(q,(sec,n,pi,a))
+    if set(chosen) != set(range(1,expected+1)):
+        missing=sorted(set(range(1,expected+1))-set(chosen))
+        raise RuntimeError(f"expected {expected} question starts; missing={missing}")
+
+    rows=[]
+    for q in range(1,expected+1):
+        sec,n,pi,a=chosen[q]; page=doc[pi]; top=max(0,a.y0-5)
+        nxt=chosen.get(q+1)
+        next_y=(nxt[3].y0-6) if nxt and nxt[2]==pi else page.rect.height-25
+
+        # Section headings may sit between the final question of one point band
+        # and the first question of the next. They are safe boundaries, but
+        # arbitrary number-like lines are not.
+        for phrase in ("4 point problems","5 point problems","4 Point","5 Point"):
+            for r in page.search_for(phrase):
+                if top+35 < r.y0 < next_y:
+                    next_y=min(next_y,r.y0-5)
+
+        rect=fitz.Rect(14,top,page.rect.width-15,max(top+35,next_y))
+        pix=page.get_pixmap(matrix=fitz.Matrix(scale,scale),clip=rect,alpha=False)
+        name=f"q{q:02d}.png"; pix.save(out_dir/name)
+        raw=" ".join(page.get_text("text",clip=rect).split())
+        rows.append({"questionNo":q,"sourceKey":f"{sec}{n}","page":pi+1,
+                     "crop":[round(v,2) for v in rect],"rawText":raw,"asset":name})
     return rows
 
 def extract_answers(solution_pdf:Path, grade_code:str, year:int):
