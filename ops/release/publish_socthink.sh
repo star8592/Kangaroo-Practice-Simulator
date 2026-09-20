@@ -221,6 +221,7 @@ expected_sha=sys.argv[2]
 expected_version=sys.argv[3]
 assert data.get("ok") is True, data
 assert data.get("deployedSha")==expected_sha, (data, expected_sha)
+assert data.get("gitSha")==expected_sha, (data, expected_sha)
 assert data.get("version")==expected_version, (data, expected_version)
 print("PUBLIC_RELEASE=PASS", expected_version, expected_sha)
 PY
