@@ -26,19 +26,33 @@ def footer_y(page: fitz.Page, after_y: float):
     return min(candidates) if candidates else page.rect.height-24
 
 def crop_questions(pdf: Path, out_dir: Path, scale: float=2.4):
-    doc=fitz.open(pdf); out_dir.mkdir(parents=True,exist_ok=True); rows=[]
+    doc=fitz.open(pdf); out_dir.mkdir(parents=True,exist_ok=True)
+    candidates=[]
     for page_index,page in enumerate(doc):
-        anchors=question_anchors(page)
-        for i,(qno,anchor) in enumerate(anchors):
-            top=max(0,anchor.y0-7)
-            if i+1 < len(anchors): bottom=max(top+20,anchors[i+1][1].y0-8)
-            else: bottom=max(top+20,footer_y(page,top)-7)
-            rect=fitz.Rect(26,top,page.rect.width-22,min(bottom,page.rect.height-18))
-            pix=page.get_pixmap(matrix=fitz.Matrix(scale,scale),clip=rect,alpha=False)
-            name=f"q{qno:02d}.png"; pix.save(out_dir/name)
-            raw=" ".join(page.get_text("text",clip=rect).split())
-            rows.append({"questionNo":qno,"page":page_index+1,"crop":[round(v,2) for v in rect],"rawText":raw,"asset":name})
-    rows.sort(key=lambda x:x["questionNo"])
+        for qno,anchor in question_anchors(page):
+            candidates.append((qno,page_index,anchor))
+
+    # Deduplicate before computing any bottom edge. The previous implementation
+    # cropped against the next raw anchor, so a false number-like anchor could
+    # cut away the rest of the problem or all answer options.
+    chosen={}
+    for qno,page_index,anchor in sorted(candidates,key=lambda x:(x[0],x[1],x[2].y0,x[2].x0)):
+        chosen.setdefault(qno,(page_index,anchor))
+
+    rows=[]
+    for qno in sorted(chosen):
+        page_index,anchor=chosen[qno]; page=doc[page_index]
+        top=max(0,anchor.y0-7)
+        nxt=chosen.get(qno+1)
+        if nxt and nxt[0]==page_index:
+            bottom=max(top+35,nxt[1].y0-8)
+        else:
+            bottom=max(top+35,footer_y(page,top)-7)
+        rect=fitz.Rect(26,top,page.rect.width-22,min(bottom,page.rect.height-18))
+        pix=page.get_pixmap(matrix=fitz.Matrix(scale,scale),clip=rect,alpha=False)
+        name=f"q{qno:02d}.png"; pix.save(out_dir/name)
+        raw=" ".join(page.get_text("text",clip=rect).split())
+        rows.append({"questionNo":qno,"page":page_index+1,"crop":[round(v,2) for v in rect],"rawText":raw,"asset":name})
     return rows
 
 def _answer_from_simple_table(page: fitz.Page):
