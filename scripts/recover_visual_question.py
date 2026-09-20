@@ -3,15 +3,24 @@
 Private output only; never marks content reviewed/student-ready.
 """
 from __future__ import annotations
-import argparse,base64,json,re,urllib.request
+import argparse,base64,json,re,urllib.request,time
 from pathlib import Path
 
 def ask(model,path):
     prompt='''Leia apenas a questão de matemática mostrada na imagem. Devolva JSON puro com: sourceText (texto original completo da questão, sem cabeçalhos/rodapés), choices (lista de objetos key/label para A-E; se uma opção for somente figura use "[visual]"), visualDependent (boolean). Não resolva, não traduza e não invente texto ilegível.'''
     body=json.dumps({'model':model,'prompt':prompt,'images':[base64.b64encode(path.read_bytes()).decode()],'stream':False,'think':False,'options':{'temperature':0,'num_predict':1400}}).encode()
     req=urllib.request.Request('http://127.0.0.1:11434/api/generate',data=body,headers={'Content-Type':'application/json'})
-    with urllib.request.urlopen(req,timeout=240) as r:
-        raw=json.load(r)['response'].strip()
+    last=None
+    for attempt in range(5):
+        try:
+            with urllib.request.urlopen(req,timeout=240) as r:
+                raw=json.load(r)['response'].strip()
+            break
+        except Exception as e:
+            last=e
+            if attempt<4: time.sleep(2**attempt)
+    else:
+        raise RuntimeError(f'Ollama vision request failed after retries: {last}')
     raw=re.sub(r'^```(?:json)?\s*|\s*```$','',raw,flags=re.I|re.S).strip()
     m=re.search(r'\{.*\}',raw,re.S)
     if not m: raise ValueError('vision model returned non-JSON: '+raw[:160])
