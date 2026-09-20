@@ -44,8 +44,8 @@ def main():
                 done.update((exam,int(q['questionNo'])) for q in d.get('questions',[]) if 'questionNo' in q)
             except Exception: pass
         jobs=[j for j in jobs if (j['examId'],int(j['questionNo'])) not in done]
-    jobs=jobs[:args.limit]; grouped=defaultdict(list); ok=0; rejected=0
-    for j in jobs:
+    jobs=jobs[:args.limit]; grouped=defaultdict(list); ok=0; rejected=0; started=time.time(); total=len(jobs)
+    for idx,j in enumerate(jobs,1):
         source,cleanup_flags=clean_source(j['sourceText'])
         zh=ask(args.model,source); reasons=[]
         source_choices=j.get('choices',[])
@@ -71,6 +71,9 @@ def main():
         else: localized['source']={'language':lang or 'unknown','stem':source,'choices':source_choices}
         row={'questionNo':j['questionNo'],'localized':localized,'review':{'translationStatus':'machine_draft','needsReview':True,'verified':False,'sourceTextRecovered':True,'qualityWarnings':reasons,'sourceCleanup':cleanup_flags,'assetUrl':j.get('assetUrl'),'choicesOrigin':j.get('choicesOrigin'),'visualReviewRequired':'visual_review_required' in reasons,**tier}}
         grouped[j['examId']].append(row); ok+=not reasons; rejected+=bool(reasons)
+        if idx==1 or idx%10==0 or idx==total:
+            elapsed=max(time.time()-started,0.001); rate=idx/elapsed; eta=(total-idx)/rate if rate else 0
+            print(json.dumps({'progress':idx,'total':total,'exam':j['examId'],'questionNo':j['questionNo'],'qualityPass':ok,'needsFix':rejected,'rateQpm':round(rate*60,1),'etaSec':round(eta)},ensure_ascii=False),flush=True)
     outdir=root/'private/translations/auto'; outdir.mkdir(parents=True,exist_ok=True)
     for exam,rows in grouped.items():
         target=outdir/f'{exam}.draft.json'
