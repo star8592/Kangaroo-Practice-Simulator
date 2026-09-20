@@ -63,7 +63,18 @@ def main():
                     if nm.get("page")==page_no and isinstance(nc,list) and len(nc)==4:
                         next_crop=list(map(float,nc)); break
                 gap=(next_crop[1]-y1) if next_crop else None
-                suspicious=current_h < args.min_height or (gap is not None and gap > args.gap_threshold)
+                raw=str(meta.get("rawText") or "")
+                option_markers=len(set(__import__("re").findall(r"(?:\\([A-E]\\)|\\b[A-E][.)])", raw)))
+                is_choice=isinstance(q.get("choices"),list) and len(q.get("choices") or []) >= 4
+                suspicious=(
+                    current_h < args.min_height
+                    or (
+                        gap is not None
+                        and gap > args.gap_threshold
+                        and is_choice
+                        and option_markers < 4
+                    )
+                )
                 if not suspicious:
                     continue
 
