@@ -19,7 +19,7 @@ export function toArithmeticLearningEvent(
   return {
     domain: "arithmetic",
     eventType: "answer",
-    skill: attempt.skill,
+    skill: attempt.skill ?? "mixed",
     correct: attempt.correct,
     responseTimeMs: attempt.responseTimeMs,
     errorType: attempt.errorType,
