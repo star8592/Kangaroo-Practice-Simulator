@@ -36,28 +36,39 @@ def anchors(page, expected:int):
     return sorted(dedup.items(),key=lambda z:(z[1].y0,z[1].x0))
 
 def crop_questions(pdf:Path,out_dir:Path,expected:int,scale:float=2.2):
-    doc=fitz.open(pdf); out_dir.mkdir(parents=True,exist_ok=True); rows=[]
+    doc=fitz.open(pdf); out_dir.mkdir(parents=True,exist_ok=True)
+    candidates=[]
     # Austrian English papers use page 1 as the cover/answer grid; questions start afterwards.
     for pi,page in enumerate(doc):
         if pi == 0: continue
-        aa=anchors(page,expected)
-        for i,(qno,a) in enumerate(aa):
-            top=max(0,a.y0-6)
-            bottom=(aa[i+1][1].y0-7) if i+1<len(aa) else page.rect.height-30
-            if bottom <= top+18: bottom=min(page.rect.height-20,top+180)
-            r=fitz.Rect(24,top,page.rect.width-20,max(top+20,bottom))
-            pix=page.get_pixmap(matrix=fitz.Matrix(scale,scale),clip=r,alpha=False)
-            name=f"q{qno:02d}.png"; pix.save(out_dir/name)
-            raw=" ".join(page.get_text("text",clip=r).split())
-            rows.append({"questionNo":qno,"page":pi+1,"crop":[round(x,2) for x in r],"rawText":raw,"asset":name})
-    # Prefer the first real occurrence of each q number.
+        for qno,a in anchors(page,expected):
+            candidates.append((qno,pi,a))
+
+    # Pick one canonical start per question first. Crop boundaries must be computed
+    # from canonical q -> q+1 starts, never from arbitrary number-like lines.
     chosen={}
-    for row in sorted(rows,key=lambda x:(x['questionNo'],x['page'],x['crop'][1])):
-        chosen.setdefault(row['questionNo'],row)
-    rows=[chosen[q] for q in sorted(chosen)]
-    if len(rows)!=expected or [x['questionNo'] for x in rows] != list(range(1,expected+1)):
-        missing=sorted(set(range(1,expected+1))-set(x['questionNo'] for x in rows))
-        raise RuntimeError(f"expected {expected} questions, got {len(rows)}; missing={missing}")
+    for qno,pi,a in sorted(candidates,key=lambda x:(x[0],x[1],x[2].y0,x[2].x0)):
+        chosen.setdefault(qno,(pi,a))
+    if set(chosen) != set(range(1,expected+1)):
+        missing=sorted(set(range(1,expected+1))-set(chosen))
+        raise RuntimeError(f"expected {expected} question starts; missing={missing}")
+
+    rows=[]
+    for qno in range(1,expected+1):
+        pi,a=chosen[qno]; page=doc[pi]
+        top=max(0,a.y0-6)
+        nxt=chosen.get(qno+1)
+        if nxt and nxt[0]==pi:
+            bottom=nxt[1].y0-7
+        else:
+            bottom=page.rect.height-30
+        if bottom <= top+35:
+            bottom=min(page.rect.height-20,top+180)
+        r=fitz.Rect(24,top,page.rect.width-20,max(top+35,bottom))
+        pix=page.get_pixmap(matrix=fitz.Matrix(scale,scale),clip=r,alpha=False)
+        name=f"q{qno:02d}.png"; pix.save(out_dir/name)
+        raw=" ".join(page.get_text("text",clip=r).split())
+        rows.append({"questionNo":qno,"page":pi+1,"crop":[round(x,2) for x in r],"rawText":raw,"asset":name})
     return rows
 
 def extract_answers(solution_pdf:Path,expected:int):
