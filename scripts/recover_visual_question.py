@@ -8,7 +8,7 @@ from pathlib import Path
 
 def ask(model,path):
     prompt='''Leia apenas a questão de matemática mostrada na imagem. Devolva JSON puro com: sourceText (texto original completo da questão, sem cabeçalhos/rodapés), choices (lista de objetos key/label para A-E; se uma opção for somente figura use "[visual]"), visualDependent (boolean). Não resolva, não traduza e não invente texto ilegível.'''
-    body=json.dumps({'model':model,'prompt':prompt,'images':[base64.b64encode(path.read_bytes()).decode()],'stream':False,'think':False,'options':{'temperature':0,'num_predict':1400}}).encode()
+    body=json.dumps({'model':model,'prompt':prompt,'images':[base64.b64encode(path.read_bytes()).decode()],'stream':False,'think':False,'format':'json','options':{'temperature':0,'num_predict':1400}}).encode()
     req=urllib.request.Request('http://127.0.0.1:11434/api/generate',data=body,headers={'Content-Type':'application/json'})
     last=None
     for attempt in range(5):
