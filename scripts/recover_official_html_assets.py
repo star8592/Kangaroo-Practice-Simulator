@@ -12,7 +12,7 @@ def main():
   for x in q['assets']:
    tasks.append((q,x))
  def fetch(item):
-  q,x=item;url=urllib.parse.urljoin(a.base,x['src']);ext=Path(urllib.parse.urlparse(url).path).suffix.lower() or '.bin';dst=root/'private/source-digitization/original-official-assets'/q['examId']/f"q{q['questionNo']:02d}"/(x['role']+ext)
+  q,x=item;url=urllib.parse.urljoin(a.base,x['src']);ext=Path(urllib.parse.urlparse(url).path).suffix.lower() or '.bin';dst=root/'private/source-digitization/original-official-assets'/q['examId']/f"q{q['questionNo']:02d}"/(f"{x['order']:02d}-{x['role']}"+ext)
   if dst.exists():
    b=dst.read_bytes();return q,{**x,'officialUrl':url,'path':str(dst.relative_to(root)),'sha256':sha(b),'bytes':len(b),'status':'ORIGINAL_OFFICIAL_ASSET_RECOVERED'}
   try:
