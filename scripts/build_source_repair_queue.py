@@ -11,7 +11,7 @@ for fn in sorted(glob.glob(str(ROOT/'private/translations/auto/*.draft.json'))):
         r=q.get('review',{}); ws=set(r.get('qualityWarnings',[])); hit=sorted(ws & hard)
         if not hit: continue
         for x in hit: causes[x]+=1
-        route='vision_source_recovery' if ws & {'source_ocr_noise','source_math_gap','choice_labels_unrecovered'} else 'translation_recheck'
+        route='vision_source_recovery' if ws & {'source_ocr_noise','source_math_gap','choice_labels_unrecovered'} else ('missing_chinese_retranslate' if 'missing_chinese' in ws else 'translation_recheck')
         items.append({'examId':d.get('examId') or q.get('examId'),'questionNo':q.get('questionNo'),'route':route,'causes':hit,'sourceFile':fn})
 out.parent.mkdir(parents=True,exist_ok=True)
 json.dump({'questions':len(items),'causes':dict(causes),'routes':dict(collections.Counter(x['route'] for x in items)),'items':items},open(out,'w',encoding='utf-8'),ensure_ascii=False,indent=2)
