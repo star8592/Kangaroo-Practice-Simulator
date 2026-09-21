@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import json,glob,re,subprocess,sys
+import json,glob,re,subprocess,sys,collections
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 QUEUE=ROOT/'private/translation/queue.enriched.json'
@@ -24,6 +24,14 @@ def main():
     zh=q.get('localized',{}).get('zh',{}); zh['stem']=clean(zh.get('stem',''))[0]
     j['sourceText']=cs; r['sourceCleanup']=sorted(set(r.get('sourceCleanup',[])+['auto_footer_noise_strip']))
     warns.discard('source_ocr_noise'); repaired+=1; changed=True
+   # Recheck deterministic numeric/choice equivalence after cleanup.
+   locs=q.get('localized',{}); src_loc=locs.get(j.get('sourceLanguage',''),{}).get('stem',''); zh_loc=locs.get('zh',{}).get('stem','')
+   if 'numeric_mismatch' in warns and src_loc and zh_loc:
+    def nums(v): return collections.Counter(re.findall(r'(?<![A-Za-z])\d+(?:[.,]\d+)?',v.replace(',','.')))
+    if nums(src_loc)==nums(zh_loc): warns.discard('numeric_mismatch'); r['sourceCleanup']=sorted(set(r.get('sourceCleanup',[])+['auto_numeric_equivalence']))
+   if 'option_letter_mismatch' in warns and src_loc and zh_loc:
+    def marks(v): return collections.Counter(re.findall(r'\(([A-E])\)',v))
+    if marks(src_loc)==marks(zh_loc)==collections.Counter('ABCDE'): warns.discard('option_letter_mismatch'); r['sourceCleanup']=sorted(set(r.get('sourceCleanup',[])+['auto_option_equivalence']))
    # Anything still structurally/numerically damaged is explicitly routed, never auto-promoted.
    if warns & {'numeric_mismatch','option_letter_mismatch','choice_labels_unrecovered','source_math_gap'}:
     r['reviewRoute']='repair'; routed+=1
