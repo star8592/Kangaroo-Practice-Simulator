@@ -6,7 +6,7 @@ from pathlib import Path
 
 def sha(b):return hashlib.sha256(b).hexdigest()
 def main():
- ap=argparse.ArgumentParser();ap.add_argument('--root',type=Path,default=Path(__file__).resolve().parents[1]);ap.add_argument('--base',default='https://amt-cbr.cuttle.org');ap.add_argument('--workers',type=int,default=12);a=ap.parse_args();root=a.root.resolve();sem=json.loads((root/'private/source-digitization/html-visual-semantics.json').read_text())['questions']; out=[];ok=0;fail=0
+ ap=argparse.ArgumentParser();ap.add_argument('--root',type=Path,default=Path(__file__).resolve().parents[1]);ap.add_argument('--base',default='https://amt-cbr.cuttle.org');ap.add_argument('--workers',type=int,default=12);ap.add_argument('--retries',type=int,default=3);a=ap.parse_args();root=a.root.resolve();sem=json.loads((root/'private/source-digitization/html-visual-semantics.json').read_text())['questions']; out=[];ok=0;fail=0
  tasks=[]
  for q in sem:
   for x in q['assets']:
@@ -16,7 +16,13 @@ def main():
   if dst.exists():
    b=dst.read_bytes();return q,{**x,'officialUrl':url,'path':str(dst.relative_to(root)),'sha256':sha(b),'bytes':len(b),'status':'ORIGINAL_OFFICIAL_ASSET_RECOVERED'}
   try:
-   req=urllib.request.Request(url,headers={'User-Agent':'Mozilla/5.0'});b=urllib.request.urlopen(req,timeout=12).read();head=b[:300].lower();valid=(ext=='.svg' and b'<svg' in head) or (ext=='.png' and b.startswith(b'\x89PNG\r\n\x1a\n'))
+   b=None;last=None
+   for attempt in range(a.retries):
+    try:
+     req=urllib.request.Request(url,headers={'User-Agent':'Mozilla/5.0'});b=urllib.request.urlopen(req,timeout=20).read();break
+    except Exception as e:last=e
+   if b is None: raise last
+   head=b[:300].lower();valid=(ext=='.svg' and b'<svg' in head) or (ext=='.png' and b.startswith(b'\x89PNG\r\n\x1a\n'))
    if not valid: raise ValueError('unexpected content')
    dst.parent.mkdir(parents=True,exist_ok=True);dst.write_bytes(b);return q,{**x,'officialUrl':url,'path':str(dst.relative_to(root)),'sha256':sha(b),'bytes':len(b),'status':'ORIGINAL_OFFICIAL_ASSET_RECOVERED'}
   except Exception as e:return q,{**x,'officialUrl':url,'status':'RECOVERY_FAILED','error':str(e)[:160]}
