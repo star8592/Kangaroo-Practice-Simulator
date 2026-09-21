@@ -8,7 +8,8 @@ OPTION_RE=re.compile(r'(?<!\w)([A-E])\s*[\)\.]')
 def numeric_tokens(s): return [x.replace(',', '.') for x in re.findall(r'\d+(?:[.,]\d+)?',s or '')]
 WORD_NUMBERS={
     'zero':'0','one':'1','two':'2','three':'3','four':'4','five':'5','six':'6','seven':'7','eight':'8','nine':'9','ten':'10',
-    'um':'1','uma':'1','dois':'2','duas':'2','três':'3','tres':'3','quatro':'4','cinco':'5','seis':'6','sete':'7','oito':'8','nove':'9','dez':'10'
+    'um':'1','uma':'1','dois':'2','duas':'2','três':'3','tres':'3','quatro':'4','cinco':'5','seis':'6','sete':'7','oito':'8','nove':'9','dez':'10',
+    '一':'1','二':'2','两':'2','三':'3','四':'4','五':'5','六':'6','七':'7','八':'8','九':'9','十':'10'
 }
 def normalized_numeric_tokens(s):
     # Ignore layout-only section headings such as '- 4 Point Questions -'.
@@ -19,11 +20,14 @@ def normalized_numeric_tokens(s):
     low=s.lower()
     for word,value in WORD_NUMBERS.items():
         # Multiplier context: three times / três vezes.
-        pat=rf'(?<!\w){re.escape(word)}\s+(?:times|vezes)(?!\w)'
+        pat=rf'(?<!\w){re.escape(word)}(?:\s+(?:times|vezes)(?!\w)|倍)'
         tokens.extend([value]*len(re.findall(pat,low,re.I)))
         # Count context: another three goals / mais três gols. Restrict nouns to
         # competition quantities so ordinary prose words do not become numbers.
-        count_pat=rf'(?<!\w){re.escape(word)}\s+(?:goals?|fish|cubes?|tiles?|cards?|points?|peixes?|cubos?|cart(?:ão|ões)|pontos?)(?!\w)'
+        count_pat=rf'(?<!\w){re.escape(word)}(?:\s+(?:goals?|fish|cubes?|tiles?|cards?|points?|peixes?|cubos?|cart(?:ão|ões)|pontos?)(?!\w)|(?:张)?卡片|个(?:球|点|数字)|条鱼|块(?:砖|瓷砖))'
+        if word in '一二两三四五六七八九十':
+            tokens.extend([value]*len(re.findall(rf'{re.escape(word)}倍',s)))
+            tokens.extend([value]*len(re.findall(rf'{re.escape(word)}(?:张卡片|个(?:球|点|数字)|条鱼|块(?:砖|瓷砖))',s)))
         tokens.extend([value]*len(re.findall(count_pat,low,re.I)))
     return tokens
 def option_letters(s): return OPTION_RE.findall(s or '')

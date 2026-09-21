@@ -17,3 +17,7 @@ assert 'numeric_mismatch' not in checks('três vezes mais, 12 peixes','3倍，12
 assert 'numeric_mismatch' in checks('three times as many fish, 12 more','4倍，12条鱼')
 assert 'numeric_mismatch' not in checks('6 goals, then another three goals. (A) 3 (B) 4','6个球，后来又进3个球。(A) 3 (B) 4')
 assert 'numeric_mismatch' in checks('6 goals, then another three goals','6个球，后来又进4个球')
+
+def test_chinese_spelled_quantities_match_english_words():
+    assert checks('A tractor pulls three times as much.','拖拉机能拉三倍。') == []
+    assert checks('Carly has six cards numbered 2, 4, 5, 6, 7, 8.','卡莉有六张卡片，数字为 2、4、5、6、7、8。') == []
