@@ -2,7 +2,7 @@
 """Merge private zh/en translations into a local bilingual exam bundle.
 
 Translation sidecars are intentionally kept out of the public repository. They are
-matched by questionNo and only update localization/review fields.
+matched by questionNo and update only localization/review/readiness fields.
 """
 from __future__ import annotations
 import argparse
@@ -30,7 +30,11 @@ def main() -> int:
     rows = sidecar.get("questions", [])
     if not isinstance(rows, list):
         raise SystemExit("sidecar.questions must be an array")
-    by_no = {int(row["questionNo"]): row for row in rows if isinstance(row, dict) and "questionNo" in row}
+    by_no = {
+        int(row["questionNo"]): row
+        for row in rows
+        if isinstance(row, dict) and "questionNo" in row
+    }
 
     changed = 0
     for q in bundle.get("questions", []):
@@ -40,20 +44,42 @@ def main() -> int:
         src = by_no.get(no)
         if not src:
             continue
+
         localized = src.get("localized", {})
-        if localized.get("zh") and localized.get("en"):
-            q["localized"] = localized
-            q.setdefault("review", {})["translationStatus"] = src.get("review", {}).get("translationStatus", "reviewed")
-            q["review"]["needsReview"] = src.get("review", {}).get("needsReview", False)
-            if "verified" in src.get("review", {}):
-                q["review"]["verified"] = bool(src["review"]["verified"])
-            q["examReady"] = False
-            changed += 1
+        if not (localized.get("zh") and localized.get("en")):
+            continue
+
+        q["localized"] = localized
+        review_src = src.get("review", {})
+        review = q.setdefault("review", {})
+        for key in (
+            "translationStatus",
+            "needsReview",
+            "verified",
+            "visualVerified",
+            "visualStatus",
+            "notes",
+        ):
+            if key in review_src:
+                review[key] = review_src[key]
+
+        review.setdefault("translationStatus", "reviewed")
+        review.setdefault("needsReview", False)
+
+        # Readiness is explicit. Machine drafts must never become exam-ready by
+        # merely passing through this merger.
+        q["examReady"] = bool(src.get("examReady", False))
+        changed += 1
 
     bundle.setdefault("localization", {})
-    bundle["localization"].update({"studentLanguages": ["zh", "en"], "sourceFallback": False})
+    bundle["localization"].update(
+        {"studentLanguages": ["zh", "en"], "sourceFallback": False}
+    )
     out = args.output or args.bundle
-    out.write_text(json.dumps(bundle, ensure_ascii=False, indent=2), encoding="utf-8")
+    out.write_text(
+        json.dumps(bundle, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
     print(json.dumps({"changed": changed, "output": str(out)}, ensure_ascii=False))
     return 0 if changed else 2
 
