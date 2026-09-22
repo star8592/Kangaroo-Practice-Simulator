@@ -291,34 +291,39 @@ def run_mineru(crop: Path, out_dir: Path, mineru_cmd: str, tier: str) -> dict:
         return {"status": "FAILED", "error": str(e)[:1000], "command": cmd}
 
 
-def run_paddleocr(crop: Path, root: Path, python_cmd: str, lang: str, device: str) -> dict:
+def start_paddleocr_worker(root: Path, python_cmd: str, lang: str, device: str):
     py = Path(python_cmd)
     resolved = str(py) if py.exists() else shutil.which(python_cmd)
     if not resolved:
-        return {"status": "UNAVAILABLE", "python": python_cmd}
+        raise FileNotFoundError(f"PaddleOCR Python not found: {python_cmd}")
     runner = root / "scripts/run_paddleocr_engine.py"
-    cmd = [resolved, str(runner), str(crop), "--lang", lang, "--device", device]
+    cmd = [resolved, str(runner), "--lang", lang, "--device", device, "--server"]
+    proc = subprocess.Popen(
+        cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
+        text=True, bufsize=1,
+    )
+    return proc, cmd
+
+
+def run_paddleocr_worker(worker, crop: Path, command: list[str]) -> dict:
+    if worker.poll() is not None:
+        return {"status": "FAILED", "error": f"PaddleOCR worker exited {worker.returncode}", "command": command}
     try:
-        p = subprocess.run(cmd, check=True, capture_output=True, text=True, timeout=1200)
-        payload = None
-        for line in reversed(p.stdout.splitlines()):
-            line = line.strip()
-            if line.startswith("{"):
-                try:
-                    payload = json.loads(line)
-                    break
-                except json.JSONDecodeError:
-                    pass
-        if payload is None:
-            raise ValueError("PaddleOCR runner produced no JSON payload")
-        payload["command"] = cmd
-        payload["stdoutTail"] = p.stdout[-1000:]
-        payload["stderrTail"] = p.stderr[-1000:]
-        if payload.get("text"):
-            payload["text"] = norm_text(payload["text"])
-        return payload
+        worker.stdin.write(str(crop) + "\n")
+        worker.stdin.flush()
+        while True:
+            line = worker.stdout.readline()
+            if not line:
+                raise RuntimeError("PaddleOCR worker closed stdout")
+            if not line.startswith("@@PADDLE@@"):
+                continue
+            payload = json.loads(line[len("@@PADDLE@@"):])
+            payload["command"] = command
+            if payload.get("text"):
+                payload["text"] = norm_text(payload["text"])
+            return payload
     except Exception as e:
-        return {"status": "FAILED", "error": str(e)[:1000], "command": cmd}
+        return {"status": "FAILED", "error": str(e)[:1000], "command": command}
 
 
 def compare_engines(engine_texts: dict[str, str]) -> dict:
@@ -440,6 +445,17 @@ def main() -> int:
         if len(targets) >= args.limit:
             break
 
+    paddle_worker = None
+    paddle_command = None
+    paddle_start_error = None
+    if args.paddleocr:
+        try:
+            paddle_worker, paddle_command = start_paddleocr_worker(
+                root, args.paddle_python, args.paddle_lang, args.paddle_device
+            )
+        except Exception as e:
+            paddle_start_error = f"{type(e).__name__}: {e}"
+
     results = []
     for j, ep in targets:
         exam = json.loads(ep.read_text())
@@ -491,7 +507,12 @@ def main() -> int:
                         m["fields"] = structured_fields(m["text"])
                     rec["engines"]["mineru"] = m
                 if args.paddleocr:
-                    po = run_paddleocr(root / evidence["questionCropPath"], root, args.paddle_python, args.paddle_lang, args.paddle_device)
+                    if paddle_worker is not None:
+                        po = run_paddleocr_worker(
+                            paddle_worker, root / evidence["questionCropPath"], paddle_command
+                        )
+                    else:
+                        po = {"status": "UNAVAILABLE", "error": paddle_start_error}
                     if po.get("text"):
                         po["fields"] = structured_fields(po["text"])
                     rec["engines"]["paddleocr"] = po
@@ -513,6 +534,14 @@ def main() -> int:
         manifest = out_dir / "manifest.json"
         manifest.write_text(json.dumps(rec, ensure_ascii=False, indent=2))
         results.append(rec)
+
+    if paddle_worker is not None:
+        try:
+            paddle_worker.stdin.close()
+            paddle_worker.terminate()
+            paddle_worker.wait(timeout=10)
+        except Exception:
+            paddle_worker.kill()
 
     bykey = {(q["examId"], q["questionNo"]): q for q in existing.get("questions", [])}
     for r in results:
