@@ -62,11 +62,27 @@ def main():
     ap.add_argument('--root', type=Path, default=Path(__file__).resolve().parents[1])
     ap.add_argument('--limit', type=int, default=500)
     ap.add_argument('--dpi', type=int, default=160)
+    ap.add_argument('--retry-rejected', action='store_true')
     a = ap.parse_args()
     root = a.root.resolve()
 
     audit = json.loads((root / 'private/source-digitization/audit.json').read_text())['questions']
-    targets = [q for q in audit if q['origin'] == 'existing_ocr' and q['status'] == 'NEEDS_SOURCE_REVIEW'][:a.limit]
+    unresolved = [q for q in audit if q['origin'] == 'existing_ocr' and q['status'] == 'NEEDS_SOURCE_REVIEW']
+    history_path = root / 'private/source-digitization/portugal-batch-history.json'
+    history = json.loads(history_path.read_text()) if history_path.exists() else {'decisions': [], 'batches': []}
+    # Seed the persistent history from the previous single-batch manifest once.
+    legacy = root / 'private/source-digitization/portugal-500-batch-decisions.json'
+    if not history['decisions'] and legacy.exists():
+        history['decisions'] = json.loads(legacy.read_text()).get('decisions', [])
+    rejected_before = {
+        (d['examId'], d['questionNo'])
+        for d in history.get('decisions', [])
+        if d.get('status') == 'REJECTED'
+    }
+    candidates = unresolved if a.retry_rejected else [
+        q for q in unresolved if (q['examId'], q['questionNo']) not in rejected_before
+    ]
+    targets = candidates[:a.limit]
     jobs = {(j['examId'], j['questionNo']): j for j in json.loads((root / 'private/translation/queue.enriched.json').read_text())['jobs']}
     exam_cache = {}
     pdf_hash = {}
@@ -211,11 +227,22 @@ def main():
     store.write_text(json.dumps(prior, ensure_ascii=False, indent=2))
     manifest = root / 'private/source-digitization/portugal-500-batch-decisions.json'
     manifest.write_text(json.dumps({'processed': len(targets), 'decisions': decisions}, ensure_ascii=False, indent=2))
+    by_decision = {(d['examId'], d['questionNo']): d for d in history.get('decisions', [])}
+    for d in decisions:
+        by_decision[(d['examId'], d['questionNo'])] = d
+    history['decisions'] = [by_decision[k] for k in sorted(by_decision)]
+    history.setdefault('batches', []).append({
+        'processed': len(targets), 'verified': len(verified), 'rejected': len(targets)-len(verified),
+        'retryRejected': bool(a.retry_rejected),
+        'reasons': dict(Counter(d['reason'] for d in decisions if d['reason'])),
+    })
+    history_path.write_text(json.dumps(history, ensure_ascii=False, indent=2))
     print(json.dumps({
         'processed': len(targets), 'verified': len(verified), 'rejected': len(targets)-len(verified),
         'reasons': dict(Counter(d['reason'] for d in decisions if d['reason'])),
         'totalStored': len(prior['questions']), 'pageEvidence': len(page_cache),
-        'output': str(store), 'decisions': str(manifest)
+        'previousRejectedSkipped': 0 if a.retry_rejected else len(rejected_before),
+        'output': str(store), 'decisions': str(manifest), 'history': str(history_path)
     }, ensure_ascii=False))
 
 if __name__ == '__main__':
