@@ -21,19 +21,21 @@ def anchors(page, expected:int):
             spans=line.get("spans",[])
             if not spans: continue
             text="".join(sp.get("text","") for sp in spans).strip().replace("\xa0"," ")
-            # Supports: 1. text / 1) text / 1  text. Require actual text after the number.
-            m=re.match(r"^(\d{1,2})(?:[.)])?\s+\S",text)
+            # Two official layouts occur in the Austrian archive:
+            #   "9. Problem text..." and a standalone "14." followed by text
+            #   on the next line. Standalone markers are lower-confidence because
+            #   diagrams may also contain numbers; canonical selection below uses
+            #   monotonic question order and prefers inline markers when possible.
+            inline=re.match(r"^(\d{1,2})(?:[.)])?\s+\S",text)
+            bare=re.fullmatch(r"(\d{1,2})(?:[.)])?",text)
+            m=inline or bare
             if not m: continue
             q=int(m.group(1))
             if not (1 <= q <= expected): continue
             x0=min(sp["bbox"][0] for sp in spans); y0=min(sp["bbox"][1] for sp in spans)
             x1=max(sp["bbox"][2] for sp in spans); y1=max(sp["bbox"][3] for sp in spans)
-            out.append((q,fitz.Rect(x0,y0,x1,y1)))
-    # One start marker per question, ordered by page position.
-    dedup={}
-    for q,r in sorted(out,key=lambda z:(z[1].y0,z[1].x0,z[0])):
-        dedup.setdefault(q,r)
-    return sorted(dedup.items(),key=lambda z:(z[1].y0,z[1].x0))
+            out.append((q,fitz.Rect(x0,y0,x1,y1),"inline" if inline else "bare"))
+    return sorted(out,key=lambda z:(z[1].y0,z[1].x0,z[0]))
 
 def crop_questions(pdf:Path,out_dir:Path,expected:int,scale:float=2.2):
     doc=fitz.open(pdf); out_dir.mkdir(parents=True,exist_ok=True)
@@ -41,16 +43,30 @@ def crop_questions(pdf:Path,out_dir:Path,expected:int,scale:float=2.2):
     # Austrian English papers use page 1 as the cover/answer grid; questions start afterwards.
     for pi,page in enumerate(doc):
         if pi == 0: continue
-        for qno,a in anchors(page,expected):
-            candidates.append((qno,pi,a))
+        for qno,a,kind in anchors(page,expected):
+            candidates.append((qno,pi,a,kind))
 
-    # Pick one canonical start per question first. Crop boundaries must be computed
-    # from canonical q -> q+1 starts, never from arbitrary number-like lines.
+    # Pick canonical starts in strict Q1 -> Q2 -> ... document order. This
+    # prevents diagram numerals from stealing a later question number. Prefer
+    # inline markers ("9. text") over bare markers ("14.") whenever an inline
+    # candidate exists after the previous canonical start.
+    by_q={q:[] for q in range(1,expected+1)}
+    for qno,pi,a,kind in candidates:
+        by_q[qno].append((pi,a,kind))
     chosen={}
-    for qno,pi,a in sorted(candidates,key=lambda x:(x[0],x[1],x[2].y0,x[2].x0)):
-        chosen.setdefault(qno,(pi,a))
-    if set(chosen) != set(range(1,expected+1)):
-        missing=sorted(set(range(1,expected+1))-set(chosen))
+    prev=(-1,-1.0)
+    missing=[]
+    for qno in range(1,expected+1):
+        valid=[c for c in by_q[qno] if c[0] > prev[0] or (c[0] == prev[0] and c[1].y0 > prev[1] + 1)]
+        inline=[c for c in valid if c[2] == "inline"]
+        pool=inline or valid
+        if not pool:
+            missing.append(qno)
+            continue
+        pi,a,kind=min(pool,key=lambda c:(c[0],c[1].y0,c[1].x0))
+        chosen[qno]=(pi,a)
+        prev=(pi,a.y0)
+    if missing:
         raise RuntimeError(f"expected {expected} question starts; missing={missing}")
 
     rows=[]
