@@ -26,6 +26,7 @@ def main():
   if not canonical: rej.append((k,'region_empty'));continue
   if canonical==fresh: agreement='exact_text'
   elif tokens(canonical)==tokens(fresh): agreement='exact_tokens'
+  elif re.sub(r'\s+','',canonical)==re.sub(r'\s+','',fresh): agreement='whitespace_only'
   else: rej.append((k,'independent_extractions_not_exact'));continue
   key=r.get('sourceKey') or ''
   pos=canonical.find(key)

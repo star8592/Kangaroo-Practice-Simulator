@@ -23,6 +23,7 @@ def main():
   canonical=norm(r.get('rawText',''));fresh=norm(r.get('freshRegionText',''))
   if canonical==fresh:agreement='exact_text'
   elif tokens(canonical)==tokens(fresh):agreement='exact_tokens'
+  elif re.sub(r'\s+','',canonical)==re.sub(r'\s+','',fresh):agreement='whitespace_only'
   else:rej.append((k,'independent_extractions_not_exact'));continue
   q=str(r['questionNo']);qm=re.match(r'^0*'+re.escape(q)+r'(?:\.|\s)+',canonical)
   if not qm:rej.append((k,'question_not_at_region_start'));continue
