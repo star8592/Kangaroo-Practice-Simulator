@@ -2,8 +2,10 @@
 """Validate bilingual exam bundles before student exposure."""
 from __future__ import annotations
 import argparse, json, re
+from collections import Counter
 from pathlib import Path
 from typing import Any
+from translation_quality import normalized_numeric_tokens
 
 DIGIT_RE = re.compile(r"\d+(?:[.,]\d+)?(?:%|°)?")
 SOURCE_HINTS = {
@@ -39,7 +41,6 @@ def visible_text(q: dict[str, Any], lang: str) -> str:
     bits += [str(x.get('label','')) for x in loc.get('choices',[]) if isinstance(x,dict)]
     return ' '.join(bits)
 
-def nums(text: str) -> list[str]: return DIGIT_RE.findall(text)
 
 def student_assets(q: dict[str, Any]) -> tuple[str,str]:
     visual=q.get('visual') if isinstance(q.get('visual'),dict) else {}
@@ -59,7 +60,7 @@ def validate(q: dict[str, Any], assets_root: Path|None) -> list[str]:
         if localized_choice_keys(q,lang) != keys:
             errors.append(f'{qid}: {lang} choice keys differ from source')
         texts[lang]=visible_text(q,lang)
-    if 'zh' in texts and 'en' in texts and set(nums(texts['zh'])) != set(nums(texts['en'])):
+    if 'zh' in texts and 'en' in texts and Counter(normalized_numeric_tokens(texts['zh'])) != Counter(normalized_numeric_tokens(texts['en'])):
         errors.append(f'{qid}: zh/en numeric tokens differ')
     answer=str(q.get('answer',''))
     if answer not in keys: errors.append(f'{qid}: answer {answer!r} is not a source choice key')
