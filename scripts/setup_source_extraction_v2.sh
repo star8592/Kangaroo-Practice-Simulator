@@ -26,33 +26,42 @@ if [[ ! -x "$PADDLE_PY" ]]; then
   uv venv --python 3.12 "$PADDLE_ROOT/.venv"
 fi
 
-# Install PaddleOCR first because it pulls the CPU paddlepaddle package.
-# After that, select the final backend explicitly so the GPU wheel is not
-# accidentally overwritten by PaddleOCR dependency resolution.
-uv pip install --python "$PADDLE_PY" -U 'paddleocr[doc-parser]'
+# Install the current OCR front-end first, then select the Paddle runtime.
+uv pip install --python "$PADDLE_PY" -U 'paddleocr[doc-parser]==3.7.0'
 
-PADDLE_USE_GPU=0
+PADDLE_VERSION="${PADDLE_VERSION:-3.4.0}"
 if command -v nvidia-smi >/dev/null 2>&1; then
   CAP="$(nvidia-smi --query-gpu=compute_cap --format=csv,noheader 2>/dev/null | head -1 || true)"
-  # The stable PaddlePaddle 3.2.1 cu126 wheel is built through sm_90.
-  # Blackwell sm_120 (RTX 50-series) aborts at runtime, so keep PaddleOCR on
-  # CPU there. MinerU can still use its own VLM backend independently.
-  case "$CAP" in
-    12.*) PADDLE_USE_GPU=0 ;;
-    '')   PADDLE_USE_GPU=0 ;;
-    *)    PADDLE_USE_GPU=1 ;;
-  esac
+else
+  CAP=""
 fi
-if [[ "$PADDLE_USE_GPU" == 1 ]]; then
-  uv pip uninstall --python "$PADDLE_PY" paddlepaddle >/dev/null 2>&1 || true
-  uv pip install --python "$PADDLE_PY" --no-deps 'paddlepaddle-gpu==3.2.1' -i https://www.paddlepaddle.org.cn/packages/stable/cu126/
+
+if [[ "$CAP" == 12.* ]]; then
+  # Consumer Blackwell / RTX 50-series: Paddle 3.4 + CUDA 13 contains sm_120.
+  uv pip uninstall --python "$PADDLE_PY" paddlepaddle paddlepaddle-gpu >/dev/null 2>&1 || true
+  uv pip install --python "$PADDLE_PY" --reinstall "paddlepaddle-gpu==$PADDLE_VERSION" \
+    --index https://www.paddlepaddle.org.cn/packages/stable/cu130/ \
+    --index-strategy unsafe-best-match
+  PADDLE_DEVICE="gpu:0"
+elif [[ -n "$CAP" ]]; then
+  uv pip uninstall --python "$PADDLE_PY" paddlepaddle paddlepaddle-gpu >/dev/null 2>&1 || true
+  uv pip install --python "$PADDLE_PY" --reinstall "paddlepaddle-gpu==$PADDLE_VERSION" \
+    --index https://www.paddlepaddle.org.cn/packages/stable/cu126/ \
+    --index-strategy unsafe-best-match
+  PADDLE_DEVICE="gpu:0"
 else
   uv pip uninstall --python "$PADDLE_PY" paddlepaddle-gpu >/dev/null 2>&1 || true
-  uv pip install --python "$PADDLE_PY" --no-deps 'paddlepaddle==3.2.1' -i https://www.paddlepaddle.org.cn/packages/stable/cpu/
+  uv pip install --python "$PADDLE_PY" "paddlepaddle==$PADDLE_VERSION" \
+    -i https://www.paddlepaddle.org.cn/packages/stable/cpu/
+  PADDLE_DEVICE="cpu"
 fi
 
 mineru version --json
 "$PADDLE_PY" - <<'PY'
 import paddle, paddleocr
 print({"paddle": paddle.__version__, "cuda": paddle.is_compiled_with_cuda(), "device": paddle.device.get_device(), "paddleocr": getattr(paddleocr, "__version__", "unknown")})
+if paddle.is_compiled_with_cuda():
+    paddle.set_device("gpu:0")
+    x=paddle.to_tensor([1.0,2.0])
+    print({"gpu_smoke": str(x.place), "values": (x*x).numpy().tolist()})
 PY

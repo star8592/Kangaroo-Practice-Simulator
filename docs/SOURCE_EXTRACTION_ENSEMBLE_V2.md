@@ -29,7 +29,7 @@ scripts/setup_source_extraction_v2.sh
 
 The setup does not install packages into the project Python environment. MinerU is an isolated `uv tool`; PaddleOCR lives under `/mnt/disk1/Tools/ocr/paddleocr-vl/.venv` by default.
 
-On RTX 50-series / Blackwell (compute capability 12.0), the stable PaddlePaddle 3.2.1 CUDA wheel does not contain sm_120 kernels and aborts at runtime. The setup therefore keeps PaddleOCR on CPU on those GPUs; this is intentional. MinerU remains a separate OCR/VLM path.
+On the RTX 5070 Ti / Blackwell host, PaddlePaddle 3.4.0 with the CUDA 13.0 wheel is verified on sm_120 and PP-OCRv6 can run on `gpu:0`. PaddleOCR remains isolated from the project Python environment. MinerU is a separate OCR/VLM path.
 
 ## Smoke test
 
@@ -40,7 +40,7 @@ python3 scripts/source_extraction_ensemble_v2.py \
   --mineru \
   --mineru-tier standard \
   --paddleocr \
-  --paddle-device cpu
+  --paddle-device gpu:0
 ```
 
 The output is private evidence under `private/source-extraction-v2/`.
@@ -55,7 +55,7 @@ Do not run the VLM tier over every unresolved question. Use PP-OCRv6 as the fast
 # Tier 1: fast native PDF + PP-OCRv6
 python3 scripts/source_extraction_ensemble_v2.py \
   --only-unverified --source-origin existing_ocr --exam-prefix pt- \
-  --limit 500 --paddleocr --paddle-device cpu
+  --limit 500 --paddleocr --paddle-device gpu:0
 python3 scripts/verify_source_ensemble_v2.py
 python3 scripts/audit_source_digitization.py
 
@@ -63,7 +63,12 @@ python3 scripts/audit_source_digitization.py
 python3 scripts/source_extraction_ensemble_v2.py \
   --only-unverified --source-origin existing_ocr --exam-prefix pt- \
   --prior-consensus ENGINE_CONFLICT,FIELD_CONSENSUS_NATIVE_OCR,NATIVE_ONLY_TEXT_CONSENSUS,OCR_ONLY_TEXT_CONSENSUS \
-  --limit 100 --mineru --mineru-tier standard --paddleocr --paddle-device cpu
+  --limit 100 --mineru --mineru-tier standard --paddleocr --paddle-device gpu:0
 ```
 
 `--prior-consensus` deliberately reprocesses records already present in the ensemble index while still respecting the Stage-1 `SOURCE_VERIFIED` gate. This prevents expensive VLM work from being wasted on easy questions.
+
+
+## Local GPU validation
+
+On the current RTX 5070 Ti (sm_120), PaddlePaddle 3.4.0 + CUDA 13.0 successfully executes tensors on `gpu:0`. A warm PP-OCRv6 worker processed the Q2 smoke image in about 0.067 s per repeated inference after model initialization. This is the preferred fast-pass backend on this host.
