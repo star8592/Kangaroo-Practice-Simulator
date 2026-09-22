@@ -20,7 +20,10 @@
     "test:solution-books": "tsx scripts/test_solution_books.ts",
     "test:verified-storyboards": "tsx scripts/test_verified_storyboards.ts",
     "solution:queue": "tsx scripts/build_solution_queue.ts",
-    "test:maa-verified-store": "tsx scripts/test_maa_verified_store.ts"
+    "test:maa-verified-store": "tsx scripts/test_maa_verified_store.ts",
+    "data:manifest": "tsx scripts/build_student_ready_manifest.ts",
+    "data:publish-source": "bash ops/data/promote_verified_sources.sh",
+    "data:publish-ready": "bash ops/data/promote_student_ready.sh"
   },
   "dependencies": {
     "next": "16.3.5",
