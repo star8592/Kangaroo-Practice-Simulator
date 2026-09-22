@@ -21,8 +21,15 @@ def main():
   # remove known section footer accidentally attached to end of stem
   stem=re.sub(r'\s*-\s*[345]\s*Point Questions\s*-\s*$','',stem,flags=re.I).strip()
   hits=[i+1 for i,t in enumerate(pages) if stem and stem in t]
+  method='exact_stem'
+  if not hits:
+   # Safe fallback for manually repaired / formula-damaged text: question number at a line start.
+   rawpages=subprocess.run(['pdftotext','-layout',str(p),'-'],check=True,capture_output=True).stdout.decode(errors='ignore').split('\f')
+   pat=re.compile(r'(?m)^\s*'+re.escape(str(j['questionNo']))+r'\.\s+')
+   hits=[i+1 for i,t in enumerate(rawpages) if pat.search(t)]
+   method='question_number_line'
   status='PAGE_LOCATED_EXACT' if len(hits)==1 else ('PAGE_AMBIGUOUS' if len(hits)>1 else 'PAGE_NOT_LOCATED')
-  out.append({'examId':j['examId'],'questionNo':j['questionNo'],'sourceFile':str(p),'sourceSha256':pdfsha,'pageCandidates':hits,'status':status})
+  out.append({'examId':j['examId'],'questionNo':j['questionNo'],'sourceFile':str(p),'sourceSha256':pdfsha,'pageCandidates':hits,'status':status,'locationMethod':method})
  dst=root/'private/source-digitization/pdf-page-locations.json';dst.write_text(json.dumps({'questions':out},ensure_ascii=False,indent=2))
  c=Counter(x['status'] for x in out);print(json.dumps({'questions':len(out),'statuses':dict(c),'pdfFiles':len(cache),'output':str(dst)},ensure_ascii=False))
 if __name__=='__main__':main()
