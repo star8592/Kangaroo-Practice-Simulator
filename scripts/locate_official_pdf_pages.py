@@ -19,7 +19,7 @@ def main():
   pdfsha,pages=cache[str(p)]
   stem=clean(j.get('sourceText','')).split(' (A)',1)[0]
   # remove known section footer accidentally attached to end of stem
-  stem=re.sub(r'\s*-\s*[345]\s*Point Questions\s*-\s*$','',stem,flags=re.I).strip()
+  stem=re.sub(r'\s*[-‐‑‒–—]\s*[345]\s*[Pp]oint [Qq]uestions\s*[-‐‑‒–—]\s*$','',stem,flags=re.I).strip()
   hits=[i+1 for i,t in enumerate(pages) if stem and stem in t]
   method='exact_stem'
   if not hits:
