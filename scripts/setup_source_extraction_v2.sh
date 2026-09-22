@@ -26,12 +26,17 @@ if [[ ! -x "$PADDLE_PY" ]]; then
   uv venv --python 3.12 "$PADDLE_ROOT/.venv"
 fi
 
+# Install PaddleOCR first because it pulls the CPU paddlepaddle package.
+# After that, select the final backend explicitly so the GPU wheel is not
+# accidentally overwritten by PaddleOCR dependency resolution.
+uv pip install --python "$PADDLE_PY" -U 'paddleocr[doc-parser]'
+
 PADDLE_USE_GPU=0
 if command -v nvidia-smi >/dev/null 2>&1; then
   CAP="$(nvidia-smi --query-gpu=compute_cap --format=csv,noheader 2>/dev/null | head -1 || true)"
-  # PaddlePaddle 3.2.1 cu126 wheels used here are built through sm_90.
-  # Blackwell sm_120 (RTX 50-series) is therefore kept on CPU until an
-  # official compatible wheel is available.
+  # The stable PaddlePaddle 3.2.1 cu126 wheel is built through sm_90.
+  # Blackwell sm_120 (RTX 50-series) aborts at runtime, so keep PaddleOCR on
+  # CPU there. MinerU can still use its own VLM backend independently.
   case "$CAP" in
     12.*) PADDLE_USE_GPU=0 ;;
     '')   PADDLE_USE_GPU=0 ;;
@@ -40,12 +45,11 @@ if command -v nvidia-smi >/dev/null 2>&1; then
 fi
 if [[ "$PADDLE_USE_GPU" == 1 ]]; then
   uv pip uninstall --python "$PADDLE_PY" paddlepaddle >/dev/null 2>&1 || true
-  uv pip install --python "$PADDLE_PY" 'paddlepaddle-gpu==3.2.1' -i https://www.paddlepaddle.org.cn/packages/stable/cu126/
+  uv pip install --python "$PADDLE_PY" --no-deps 'paddlepaddle-gpu==3.2.1' -i https://www.paddlepaddle.org.cn/packages/stable/cu126/
 else
   uv pip uninstall --python "$PADDLE_PY" paddlepaddle-gpu >/dev/null 2>&1 || true
-  uv pip install --python "$PADDLE_PY" 'paddlepaddle==3.2.1' -i https://www.paddlepaddle.org.cn/packages/stable/cpu/
+  uv pip install --python "$PADDLE_PY" --no-deps 'paddlepaddle==3.2.1' -i https://www.paddlepaddle.org.cn/packages/stable/cpu/
 fi
-uv pip install --python "$PADDLE_PY" -U 'paddleocr[doc-parser]'
 
 mineru version --json
 "$PADDLE_PY" - <<'PY'

@@ -404,6 +404,7 @@ def main() -> int:
     ap.add_argument("--limit", type=int, default=1)
     ap.add_argument("--only-unverified", action="store_true")
     ap.add_argument("--force", action="store_true", help="reprocess records already present in the ensemble index")
+    ap.add_argument("--prior-consensus", help="comma-separated existing ensemble statuses to reprocess/escalate")
     ap.add_argument("--dpi", type=int, default=300)
     ap.add_argument("--mineru", action="store_true")
     ap.add_argument("--mineru-cmd", default=os.environ.get("MINERU_CMD", "mineru-kit"))
@@ -422,6 +423,8 @@ def main() -> int:
     index = root / "private/source-extraction-v2/index.json"
     existing = json.loads(index.read_text()) if index.exists() else {"questions": []}
     already_processed = {(q["examId"], q["questionNo"]) for q in existing.get("questions", [])}
+    prior_status = {(q["examId"], q["questionNo"]): q.get("consensus") for q in existing.get("questions", [])}
+    wanted_prior = {x.strip() for x in (args.prior_consensus or "").split(",") if x.strip()}
 
     targets = []
     for j in jobs:
@@ -436,7 +439,9 @@ def main() -> int:
             continue
         if args.only_unverified and status.get(key) == "SOURCE_VERIFIED":
             continue
-        if args.only_unverified and not args.force and key in already_processed:
+        if wanted_prior and prior_status.get(key) not in wanted_prior:
+            continue
+        if args.only_unverified and not args.force and not wanted_prior and key in already_processed:
             continue
         ep = root / "private/exams" / f"{j['examId']}.json"
         if not ep.exists():
