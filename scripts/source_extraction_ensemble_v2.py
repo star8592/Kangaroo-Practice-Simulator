@@ -78,6 +78,38 @@ def normalize_math_markup(s: str) -> str:
     return norm_text(t)
 
 
+
+
+def isolate_question_text(s: str, question_no: int) -> str:
+    """Trim deterministic page/crop contamination before engine comparison.
+
+    Raw engine output is preserved separately.  This view only removes content
+    before this question marker, the following question, and known page
+    footer/section text.
+    """
+    t = norm_text(s)
+    start_re = re.compile(r"(?<!\d)0*" + re.escape(str(question_no)) + r"\s*[.\)\-:]\s*")
+    m = start_re.search(t)
+    if m:
+        t = t[m.start():]
+    next_re = re.compile(
+        r"(?<!\d)0*" + re.escape(str(question_no + 1)) +
+        r"\s*[.\)]\s+(?=[A-ZÀ-ÖØ-Þ])"
+    )
+    m = next_re.search(t, 1)
+    if m:
+        t = t[:m.start()]
+    footer_patterns = [
+        r"\s+SPM[- ]?Centro\b.*$",
+        r"\s+Departamento de Matem[aá]tica\b.*$",
+        r"\s+Todos os direitos\b.*$",
+        r"\s+Canguru Matem[aá]tico\b.*$",
+        r"\s+(?:Problemas?|Quest[oõ]es?)\s+de\s+[345]\s+pontos(?:\s+\d+)?\s*$",
+    ]
+    for pat in footer_patterns:
+        t = re.sub(pat, "", t, flags=re.I)
+    return norm_text(t)
+
 def structured_fields(s: str) -> dict:
     t = normalize_math_markup(s)
     marks = list(CHOICE_RE.finditer(t))
@@ -322,14 +354,30 @@ def compare_engines(engine_texts: dict[str, str]) -> dict:
             })
     status = "INSUFFICIENT_ENGINES"
     ocr_names = {"mineru", "paddleocr"}
+    independent_text_consensus = any(
+        p["exactTokens"] and ((p["a"] in ocr_names) != (p["b"] in ocr_names))
+        for p in pairs
+    )
     independent_field_consensus = any(
         p["criticalFieldsEqual"] and ((p["a"] in ocr_names) != (p["b"] in ocr_names))
         for p in pairs
     )
-    if token_pairs:
-        status = "ENSEMBLE_CONSENSUS"
+    ocr_only_text_consensus = any(
+        p["exactTokens"] and p["a"] in ocr_names and p["b"] in ocr_names
+        for p in pairs
+    )
+    native_only_text_consensus = any(
+        p["exactTokens"] and p["a"] not in ocr_names and p["b"] not in ocr_names
+        for p in pairs
+    )
+    if independent_text_consensus:
+        status = "OCR_NATIVE_TEXT_CONSENSUS"
     elif independent_field_consensus:
         status = "FIELD_CONSENSUS_NATIVE_OCR"
+    elif ocr_only_text_consensus:
+        status = "OCR_ONLY_TEXT_CONSENSUS"
+    elif native_only_text_consensus:
+        status = "NATIVE_ONLY_TEXT_CONSENSUS"
     elif len(names) >= 2:
         status = "ENGINE_CONFLICT"
     return {
@@ -345,9 +393,12 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--root", type=Path, default=Path(__file__).resolve().parents[1])
     ap.add_argument("--exam-id")
+    ap.add_argument("--exam-prefix")
+    ap.add_argument("--source-origin")
     ap.add_argument("--question-no", type=int)
     ap.add_argument("--limit", type=int, default=1)
     ap.add_argument("--only-unverified", action="store_true")
+    ap.add_argument("--force", action="store_true", help="reprocess records already present in the ensemble index")
     ap.add_argument("--dpi", type=int, default=300)
     ap.add_argument("--mineru", action="store_true")
     ap.add_argument("--mineru-cmd", default=os.environ.get("MINERU_CMD", "mineru-kit"))
@@ -363,15 +414,24 @@ def main() -> int:
     audit_path = root / "private/source-digitization/audit.json"
     audit = json.loads(audit_path.read_text())["questions"] if audit_path.exists() else []
     status = {(q["examId"], q["questionNo"]): q["status"] for q in audit}
+    index = root / "private/source-extraction-v2/index.json"
+    existing = json.loads(index.read_text()) if index.exists() else {"questions": []}
+    already_processed = {(q["examId"], q["questionNo"]) for q in existing.get("questions", [])}
 
     targets = []
     for j in jobs:
         key = (j["examId"], j["questionNo"])
         if args.exam_id and j["examId"] != args.exam_id:
             continue
+        if args.exam_prefix and not j["examId"].startswith(args.exam_prefix):
+            continue
+        if args.source_origin and j.get("sourceTextOrigin") != args.source_origin:
+            continue
         if args.question_no is not None and j["questionNo"] != args.question_no:
             continue
         if args.only_unverified and status.get(key) == "SOURCE_VERIFIED":
+            continue
+        if args.only_unverified and not args.force and key in already_processed:
             continue
         ep = root / "private/exams" / f"{j['examId']}.json"
         if not ep.exists():
@@ -440,19 +500,20 @@ def main() -> int:
         else:
             rec["nativeError"] = "PDF page/crop metadata unavailable"
 
-        texts = {
-            name: e.get("text", "")
-            for name, e in rec["engines"].items()
-            if e.get("status") == "OK"
-        }
+        texts = {}
+        for name, e in rec["engines"].items():
+            if e.get("status") != "OK":
+                continue
+            comparison = isolate_question_text(e.get("text", ""), j["questionNo"])
+            e["comparisonText"] = comparison
+            e["comparisonFields"] = structured_fields(comparison)
+            texts[name] = comparison
         rec["consensus"] = compare_engines(texts)
         rec["promotion"] = "EVIDENCE_ONLY_NOT_SOURCE_VERIFIED"
         manifest = out_dir / "manifest.json"
         manifest.write_text(json.dumps(rec, ensure_ascii=False, indent=2))
         results.append(rec)
 
-    index = root / "private/source-extraction-v2/index.json"
-    existing = json.loads(index.read_text()) if index.exists() else {"questions": []}
     bykey = {(q["examId"], q["questionNo"]): q for q in existing.get("questions", [])}
     for r in results:
         bykey[(r["examId"], r["questionNo"])] = {
