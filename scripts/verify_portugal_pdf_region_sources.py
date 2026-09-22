@@ -27,6 +27,7 @@ def main():
   t=r.get('regionText',''); qm=re.search(r'(?<!\d)'+re.escape(str(r['questionNo']))+r'\s*[\.\)\-:]\s*',t)
   if not qm: rej.append((k,'question_marker_missing'));continue
   canonical=norm(t[qm.start():])
+  canonical=re.sub(r'\s+(?:Problemas?|Quest[oõ]es?)\s+de\s+[345]\s+pontos(?:\s+\d+)?\s*$','',canonical,flags=re.I)
   src=norm(j.get('sourceText',''));sm=re.search(r'(?<!\d)'+re.escape(str(r['questionNo']))+r'\s*[\.\)\-:]\s*',src);src=src[sm.start():] if sm else src
   relation='exact' if src==canonical else ('canonical_in_source' if canonical in src else 'different')
   marks=list(marker_re().finditer(canonical));letters=[m.group(0).strip()[0] for m in marks]
