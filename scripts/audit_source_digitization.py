@@ -8,7 +8,7 @@ def main():
  ap=argparse.ArgumentParser();ap.add_argument('--root',type=Path,default=Path(__file__).resolve().parents[1]);a=ap.parse_args();root=a.root.resolve()
  qpath=root/'private/translation/queue.enriched.json'; data=json.loads(qpath.read_text(encoding='utf-8')); rows=[]
  verified={}
- for vp in [root/'private/source-digitization/verified-official-html.json',root/'private/source-digitization/verified-official-html-visual.json',root/'private/source-digitization/verified-official-pdf.json',root/'private/source-digitization/verified-portugal-pdf-region.json']:
+ for vp in [root/'private/source-digitization/verified-official-html.json',root/'private/source-digitization/verified-official-html-visual.json',root/'private/source-digitization/verified-official-pdf.json',root/'private/source-digitization/verified-official-pdf-manual.json',root/'private/source-digitization/verified-portugal-pdf-region.json']:
   if vp.exists():
    for r in json.loads(vp.read_text(encoding='utf-8')).get('questions',[]):
     verified[(r.get('examId'),r.get('questionNo'))]=r

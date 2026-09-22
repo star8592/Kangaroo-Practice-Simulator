@@ -18,27 +18,45 @@ def main():
   if not x or x.get('status')!='PAGE_LOCATED_EXACT': rej.append((k,'page_not_exact'));continue
   src=Path(x['sourceFile']);pdfsha=filehash(src)
   if pdfsha!=x['sourceSha256']: rej.append((k,'pdf_hash_changed'));continue
-  page=x['pageCandidates'][0];pe=E.get((pdfsha,page))
-  if not pe: rej.append((k,'page_evidence_missing'));continue
-  ep=root/pe['evidencePath']
-  if not ep.exists() or filehash(ep)!=pe['evidenceSha256']: rej.append((k,'page_evidence_hash'));continue
+  page=x['pageCandidates'][0]
   if str(src) not in cache:
-   raw=subprocess.run(['pdftotext','-layout',str(src),'-'],check=True,capture_output=True).stdout.decode(errors='ignore');cache[str(src)]=[clean(t) for t in raw.split('\f')]
-  pagetxt=cache[str(src)][page-1]
+   raw=subprocess.run(['pdftotext','-layout',str(src),'-'],check=True,capture_output=True).stdout.decode(errors='ignore')
+   cache[str(src)]=[clean(t) for t in raw.split('\f')]
+  pages=cache[str(src)]
   source=clean(j.get('sourceText',''));source=clean(re.sub(r'\s*[-‐‑‒–—]\s*[345]\s*[Pp]oint [Qq]uestions\s*[-‐‑‒–—]\s*',' ',source,flags=re.I));repair=None
-  # Some imported text leaked the following numbered question into this record. Truncate only when the exact next-question marker is present.
+  # Deterministic repairs for known extraction boundary artefacts.
+  current=pages[page-1]
   m=re.search(r'\s+'+re.escape(str(j['questionNo']+1))+r'\.(?=\s*[^0-9])',source)
   if m:
    candidate=clean(source[:m.start()])
-   if candidate in pagetxt: source=candidate;repair='truncate_next_question_boundary'
-  if source not in pagetxt:
-   # Accept removal of a lone trailing page-number token only when the remainder is verbatim and option E still has content.
+   if candidate in current: source=candidate;repair='truncate_next_question_boundary'
+  if source not in current:
    m=re.search(r'\s+(\d)\s*$',source)
    if m and re.search(r'\(E\)\s+\S+',source[:m.start()]):
     candidate=clean(source[:m.start()])
-    if candidate in pagetxt: source=candidate;repair='remove_trailing_page_number'
-  if not source or source not in pagetxt: rej.append((k,'full_text_not_verbatim'));continue
-  out.append({'examId':j['examId'],'questionNo':j['questionNo'],'sourceLanguage':j.get('sourceLanguage','en'),'sourceText':source,'choices':j.get('choices') or [],'sourceFile':str(src),'sourceSha256':pdfsha,'page':page,'pageEvidence':{'path':pe['evidencePath'],'sha256':pe['evidenceSha256'],'dpi':pe['dpi']},'extractionMethod':j.get('sourceTextOrigin'),'verificationStatus':'SOURCE_VERIFIED','verificationMethod':'deterministic_verbatim_pdf_text_plus_authoritative_page_raster','sourceRepair':repair,'assetUrl':j.get('assetUrl')})
- dst=root/'private/source-digitization/verified-official-pdf.json';dst.write_text(json.dumps({'questions':out,'rejected':[{'examId':k[0],'questionNo':k[1],'reason':r} for k,r in rej]},ensure_ascii=False,indent=2))
+    if candidate in current: source=candidate;repair='remove_trailing_page_number'
+  page_span=[page]
+  match_text=current
+  if source not in match_text and page < len(pages):
+   two=clean(current+' '+pages[page])
+   if source in two:
+    match_text=two;page_span=[page,page+1]
+  if not source or source not in match_text: rej.append((k,'full_text_not_verbatim'));continue
+  evidence=[];bad=False
+  for pg in page_span:
+   pe=E.get((pdfsha,pg))
+   if not pe: bad=True;break
+   ep=root/pe['evidencePath']
+   if not ep.exists() or filehash(ep)!=pe['evidenceSha256']: bad=True;break
+   evidence.append({'page':pg,'path':pe['evidencePath'],'sha256':pe['evidenceSha256'],'dpi':pe['dpi']})
+  if bad: rej.append((k,'page_evidence_missing_or_changed'));continue
+  method='deterministic_verbatim_pdf_text_plus_authoritative_page_raster'
+  if len(page_span)>1: method='deterministic_verbatim_cross_page_pdf_text_plus_authoritative_page_rasters'
+  out.append({'examId':j['examId'],'questionNo':j['questionNo'],'sourceLanguage':j.get('sourceLanguage','en'),'sourceText':source,
+              'choices':j.get('choices') or [],'sourceFile':str(src),'sourceSha256':pdfsha,'page':page,'pageSpan':page_span,
+              'pageEvidence':evidence,'extractionMethod':j.get('sourceTextOrigin'),'verificationStatus':'SOURCE_VERIFIED',
+              'verificationMethod':method,'sourceRepair':repair,'assetUrl':j.get('assetUrl')})
+ dst=root/'private/source-digitization/verified-official-pdf.json'
+ dst.write_text(json.dumps({'questions':out,'rejected':[{'examId':k[0],'questionNo':k[1],'reason':r} for k,r in rej]},ensure_ascii=False,indent=2))
  print(json.dumps({'pdfTotal':len(out)+len(rej),'verified':len(out),'rejected':len(rej),'reasons':dict(Counter(r for _,r in rej)),'output':str(dst)},ensure_ascii=False))
 if __name__=='__main__':main()
