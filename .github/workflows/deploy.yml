@@ -10,9 +10,11 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     env:
-      SERVER_HOST: ${{ secrets.SERVER_HOST }}
-      SERVER_USER: ${{ secrets.SERVER_USER }}
-      APP_DIR: ${{ secrets.APP_DIR }}
+      SERVER_HOST: ${{ secrets.SERVER_HOST || 'socthink.cn' }}
+      SERVER_USER: ${{ secrets.SERVER_USER || 'root' }}
+      APP_DIR: ${{ secrets.APP_DIR || '/opt/socthink-math' }}
+      SERVER_SERVICE: ${{ secrets.SERVER_SERVICE || 'socthink-math.service' }}
+      SERVER_SSH_KEY: ${{ secrets.SERVER_SSH_KEY }}
 
     steps:
       - name: Checkout
@@ -30,22 +32,94 @@ jobs:
       - name: Build repository code
         run: npx next build
 
-      - name: Deploy to server
-        if: env.SERVER_HOST != ''
+      - name: Validate deployment credentials
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$SERVER_HOST"
+          test -n "$SERVER_USER"
+          test -n "$APP_DIR"
+          test -n "$SERVER_SERVICE"
+          if [ -z "$SERVER_SSH_KEY" ]; then
+            echo "::error::SERVER_SSH_KEY is not configured; refusing a fake-green deployment."
+            exit 1
+          fi
+
+      - name: Deploy exact commit to production
         uses: appleboy/ssh-action@v1
         with:
           host: ${{ env.SERVER_HOST }}
           username: ${{ env.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
+          script_stop: true
           script: |
-            cd "${{ env.APP_DIR }}"
-            chmod +x ops/deploy/deploy.sh
-            ./ops/deploy/deploy.sh
+            set -Eeuo pipefail
+            APP='${{ env.APP_DIR }}'
+            SERVICE='${{ env.SERVER_SERVICE }}'
+            TARGET_SHA='${{ github.sha }}'
+            PREV_SHA=""
 
-      - name: Deployment ready check
+            rollback() {
+              rc=$?
+              trap - ERR
+              echo "deployment failed (exit $rc); attempting rollback" >&2
+              if [ -n "$PREV_SHA" ]; then
+                cd "$APP"
+                git reset --hard "$PREV_SHA" || true
+                npm ci || true
+                npm run build || true
+                mkdir -p .release
+                printf '%s\n' "$PREV_SHA" > .release/deployed_sha
+                git show "$PREV_SHA:VERSION" 2>/dev/null | tr -d '\r' > .release/deployed_version || printf '%s\n' unknown > .release/deployed_version
+                date -Iseconds > .release/deployed_at
+                systemctl restart "$SERVICE" || true
+              fi
+              exit "$rc"
+            }
+            trap rollback ERR
+
+            cd "$APP"
+            PREV_SHA="$(git rev-parse HEAD 2>/dev/null || true)"
+            git remote set-url origin https://github.com/star8592/Kangaroo-Practice-Simulator.git
+            git fetch --prune origin main
+            git cat-file -e "$TARGET_SHA^{commit}"
+            git reset --hard "$TARGET_SHA"
+
+            # Never run git clean: private/, public/local-assets/ and runtime data
+            # are intentionally outside Git and must survive code deployments.
+            npm ci
+            npm run build
+
+            mkdir -p .release
+            printf '%s\n' "$TARGET_SHA" > .release/deployed_sha
+            cat VERSION | tr -d '\r' > .release/deployed_version
+            date -Iseconds > .release/deployed_at
+
+            systemctl restart "$SERVICE"
+            for _ in $(seq 1 60); do
+              if curl -fsS http://127.0.0.1:3000/api/release >/dev/null 2>&1; then
+                break
+              fi
+              sleep 1
+            done
+
+            curl -fsS http://127.0.0.1:3000/api/release
+            echo
+            python3 scripts/smoke_test.py --base http://127.0.0.1:3000
+            test "$(git rev-parse HEAD)" = "$TARGET_SHA"
+            trap - ERR
+
+      - name: Verify public deployment receipt
+        shell: bash
         run: |
-          if [ -n "$SERVER_HOST" ]; then
-            echo "Build successful. Production deployment step executed."
-          else
-            echo "Build successful. Production deployment skipped because SERVER_HOST is not configured."
-          fi
+          set -euo pipefail
+          for _ in $(seq 1 30); do
+            if payload="$(curl -fsS https://socthink.cn/api/release 2>/dev/null)"; then
+              if PAYLOAD="$payload" python3 -c 'import json, os; d=json.loads(os.environ["PAYLOAD"]); expected=os.environ["GITHUB_SHA"]; assert d.get("ok") is True, d; assert d.get("deployedSha")==expected, (d,expected); assert d.get("gitSha")==expected, (d,expected); print("PUBLIC_DEPLOYMENT_RECEIPT=PASS", expected)'; then
+                exit 0
+              fi
+            fi
+            sleep 2
+          done
+          echo "::error::Public deployment receipt never matched $GITHUB_SHA"
+          exit 1
