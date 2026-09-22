@@ -52,6 +52,7 @@ files_path, exams_path=sys.argv[3],sys.argv[4]
 rb={b["examId"]:b for b in remote.get("bundles",[])}
 files=set()
 exams=[]
+blocked=[]
 for b in local.get("bundles",[]):
     old=rb.get(b["examId"])
     changed_exam=old is None or old.get("examSha256") != b["examSha256"]
@@ -61,9 +62,16 @@ for b in local.get("bundles",[]):
         if old_assets.get(a["path"]) != a["sha256"]
     ]
     if changed_exam or changed_assets:
+        verified=int(b.get("canonicalSourceVerified") or 0)
+        total=int(b.get("questionCount") or 0)
+        if verified != total:
+            blocked.append({"examId":b["examId"],"verified":verified,"questions":total})
+            continue
         files.add(b["examPath"])
         files.update(a["path"] for a in b.get("assets",[]))
         exams.append(b["examId"])
+if blocked:
+    raise SystemExit("refusing changed STUDENT_READY bundles without full SOURCE_VERIFIED coverage: "+json.dumps(blocked,ensure_ascii=False))
 open(files_path,"w",encoding="utf-8").write("".join(f+"\n" for f in sorted(files)))
 open(exams_path,"w",encoding="utf-8").write("".join(x+"\n" for x in sorted(exams)))
 print(json.dumps({
@@ -184,9 +192,31 @@ for exam_id in sorted(ids):
 print(json.dumps({"verifiedPublishedBundles":len(ids)},ensure_ascii=False))
 PY
 
-python3 scripts/smoke_test.py --base "$PUBLIC_URL"
+# Data promotion must not mutate production auth/user state. The full application
+# smoke test belongs to code deployment. Here we verify the public service and one
+# published asset byte-for-byte, while the manifest checks above verify every
+# promoted exam bundle and asset on the production filesystem.
 curl -fsS "$PUBLIC_URL/api/release" >/dev/null
 curl -fsS "$PUBLIC_URL/" | grep -q "Math Competition Lab"
+mapfile -t PUBLIC_ASSET_CHECK < <(python3 - "$TMP/local.json" "$TMP/exams.txt" <<'PY'
+import json,sys
+m=json.load(open(sys.argv[1],encoding="utf-8"))
+ids={x.strip() for x in open(sys.argv[2],encoding="utf-8") if x.strip()}
+for b in m.get("bundles",[]):
+    if b.get("examId") in ids and b.get("assets"):
+        a=b["assets"][0]
+        print(a["path"])
+        print(a["sha256"])
+        break
+PY
+)
+if [[ ${#PUBLIC_ASSET_CHECK[@]} -ge 2 ]]; then
+  PUBLIC_ASSET_PATH="${PUBLIC_ASSET_CHECK[0]#public/}"
+  PUBLIC_ASSET_SHA="${PUBLIC_ASSET_CHECK[1]}"
+  curl -fsS "$PUBLIC_URL/$PUBLIC_ASSET_PATH" -o "$TMP/public-asset.bin"
+  [[ "$(sha256sum "$TMP/public-asset.bin" | awk '{print $1}')" == "$PUBLIC_ASSET_SHA" ]] \
+    || die "public asset hash mismatch: $PUBLIC_ASSET_PATH"
+fi
 
 log "write production data release receipt"
 ssh -o BatchMode=yes "$REMOTE_HOST" bash -s -- \
