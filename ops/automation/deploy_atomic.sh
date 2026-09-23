@@ -53,9 +53,21 @@ if [[ ! -d "$FINAL" ]]; then
 
   rm -rf "$TMP/private" "$TMP/public/local-assets" "$TMP/public/generated-solutions"
   mkdir -p "$TMP/public" "$GENERATED_STATE"
-  ln -s "$PRIVATE_STATE" "$TMP/private"
-  ln -s "$LOCAL_ASSETS_STATE" "$TMP/public/local-assets"
-  ln -s "$GENERATED_STATE" "$TMP/public/generated-solutions"
+
+  snapshot_dir() {
+    local source="$1"
+    local destination="$2"
+    if cp -al "$source" "$destination" 2>/dev/null; then
+      return 0
+    fi
+    cp -a --reflink=auto "$source" "$destination"
+  }
+
+  # Turbopack rejects a project-root symlink that points outside the build root.
+  # Build from a cheap same-filesystem snapshot, then restore persistent runtime links.
+  snapshot_dir "$PRIVATE_STATE" "$TMP/private"
+  snapshot_dir "$LOCAL_ASSETS_STATE" "$TMP/public/local-assets"
+  snapshot_dir "$GENERATED_STATE" "$TMP/public/generated-solutions"
 
   mkdir -p "$TMP/.release"
   printf '%s\n' "$TARGET_SHA" > "$TMP/.release/deployed_sha"
@@ -64,6 +76,11 @@ if [[ ! -d "$FINAL" ]]; then
   cd "$TMP"
   npm ci
   npm run build
+
+  rm -rf "$TMP/private" "$TMP/public/local-assets" "$TMP/public/generated-solutions"
+  ln -s "$PRIVATE_STATE" "$TMP/private"
+  ln -s "$LOCAL_ASSETS_STATE" "$TMP/public/local-assets"
+  ln -s "$GENERATED_STATE" "$TMP/public/generated-solutions"
 
   node node_modules/next/dist/bin/next start -p "$STAGING_PORT" >"$DEPLOY_ROOT/logs/staging-$TARGET_SHA.log" 2>&1 &
   STAGING_PID="$!"
