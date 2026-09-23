@@ -24,6 +24,9 @@ step "arithmetic regression" npm run test:arithmetic
 step "A4 personalization regression" npm run test:arithmetic-print
 step "eslint" npm run lint -- --max-warnings=0
 step "typescript" npx tsc --noEmit
+if [[ -d private/solutions ]]; then
+  step "solution experience V2 tagged contract" python3 scripts/validate_solution_standard_v2.py --enforce-tagged --show 0
+fi
 if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
   step "diff whitespace" git diff --check
 else

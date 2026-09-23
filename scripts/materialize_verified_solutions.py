@@ -14,6 +14,9 @@ TTS_SERVICE_DEFAULT=os.environ.get("MATH_TTS_SERVICE","http://127.0.0.1:39010").
 # IndexTTS emotion order: happy, angry, sad, afraid, disgusted, melancholic,
 # surprised, calm. Keep narration warm, steady and non-distracting for children.
 WARM_TEACHER_EMO=[0.18,0.0,0.0,0.0,0.0,0.0,0.03,0.82]
+SOLUTION_STANDARD_VERSION=2
+VOICE_PROFILE="warm-teacher-v1"
+PLAYBACK_PROFILE="continuous-auto-v1"
 
 def tts_service_ready(base):
     try:
@@ -60,11 +63,19 @@ def narration_hash(data):
     raw=json.dumps(core,ensure_ascii=False,sort_keys=True,separators=(",",":")).encode()
     return hashlib.sha256(raw).hexdigest()
 
+def scene_directable(scene):
+    spec=scene.get("renderSpec") or {}
+    visual=scene.get("visual") or {}
+    return bool(spec.get("script") or []) or visual.get("type") in {"source-image","number-line","fraction-bar","solid3d"}
+
 def valid_verified(data):
     v=data.get("verification") or {}
+    scenes=data.get("scenes") or []
     return (data.get("quality")=="verified" and v.get("officialAnswerMatched") is True and
             v.get("solverAgreement") is True and isinstance(v.get("confidence"),(int,float)) and
-            v.get("confidence",0)>=0.65 and 2<=len(data.get("scenes") or [])<=12)
+            v.get("confidence",0)>=0.65 and 2<=len(scenes)<=12 and
+            all(str(s.get("narration") or "").strip() for s in scenes) and
+            all(scene_directable(s) for s in scenes))
 
 def wav_ms(p):
     with wave.open(str(p),"rb") as w:
@@ -190,15 +201,22 @@ for qid,p,data in items:
         scene["durationMs"]=max(int(scene.get("durationMs") or 0),scene["audioDurationMs"]+650)
     after=core_hash(data)
     if before!=after: raise RuntimeError(f"director core mutated during local materialization: {qid}")
+    data["solutionStandardVersion"]=SOLUTION_STANDARD_VERSION
     data["materialization"]={
         **(data.get("materialization") or {}),
         "directorHash":before,"audioNarrationHash":narration_before,
         "voiceEngine":"IndexTTS2.5","voice":args.voice,"audioReady":True,
+        "voiceProfile":VOICE_PROFILE,
+        "playbackProfile":PLAYBACK_PROFILE,
+        "visualReasoningRequired":True,
     }
     tmp=p.with_suffix(".json.tmp")
     tmp.write_text(json.dumps(data,ensure_ascii=False,indent=2)+"\n")
     tmp.replace(p)
-    manifest={"questionId":qid,"directorHash":before,"audioNarrationHash":narration_before,"scenes":[
+    manifest={"questionId":qid,"solutionStandardVersion":SOLUTION_STANDARD_VERSION,
+              "voiceProfile":VOICE_PROFILE,"playbackProfile":PLAYBACK_PROFILE,
+              "visualReasoningRequired":True,
+              "directorHash":before,"audioNarrationHash":narration_before,"scenes":[
         {"id":s["id"],"audioUrl":s.get("audioUrl"),"audioDurationMs":s.get("audioDurationMs"),
          "durationMs":s.get("durationMs"),"renderSpec":s.get("renderSpec")} for s in data["scenes"]
     ]}

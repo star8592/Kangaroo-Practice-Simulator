@@ -36,6 +36,7 @@ def publish():
     raise RuntimeError(f"production service health check failed: {last}")
 
 run(["python3","scripts/audit_solution_pipeline.py","--write","--show","0"])
+run(["python3","scripts/validate_solution_standard_v2.py","--write","--show","0","--enforce-tagged"])
 run(["python3","scripts/build_solution_materialization_queue.py"])
 cmd=[TTS_PY,"scripts/materialize_verified_solutions.py","--queue","--limit",str(max(1,args.limit))]
 if args.video: cmd.append("--video")
@@ -43,6 +44,7 @@ if args.dry_run: cmd.append("--dry-run")
 run(cmd)
 if not args.dry_run:
     run(["python3","scripts/audit_solution_pipeline.py","--write","--show","0"])
+    run(["python3","scripts/validate_solution_standard_v2.py","--write","--show","0","--enforce-tagged"])
     run(["python3","scripts/build_solution_materialization_queue.py"])
     if args.publish:
         publish()

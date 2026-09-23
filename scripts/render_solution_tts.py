@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import argparse, json, os, sys, wave
+import argparse, hashlib, json, os, sys, wave
 from pathlib import Path
 
 ROOT=Path(__file__).resolve().parents[1]
@@ -13,6 +13,25 @@ from indextts.infer_v2_5 import IndexTTS2
 # IndexTTS emotion order: happy, angry, sad, afraid, disgusted, melancholic,
 # surprised, calm. Low-grade math narration should feel calm and encouraging.
 WARM_TEACHER_EMO=[0.18, 0.0, 0.0, 0.0, 0.0, 0.0, 0.03, 0.82]
+SOLUTION_STANDARD_VERSION=2
+VOICE_PROFILE="warm-teacher-v1"
+PLAYBACK_PROFILE="continuous-auto-v1"
+
+def narration_hash(data):
+    core=[]
+    for scene in data.get("scenes") or []:
+        core.append({
+            "id":scene.get("id"),
+            "narration":scene.get("narration"),
+            "voiceDirection":((scene.get("renderSpec") or {}).get("voiceDirection") or ""),
+        })
+    raw=json.dumps(core,ensure_ascii=False,sort_keys=True,separators=(",",":")).encode()
+    return hashlib.sha256(raw).hexdigest()
+
+def scene_directable(scene):
+    spec=scene.get("renderSpec") or {}
+    visual=scene.get("visual") or {}
+    return bool(spec.get("script") or []) or visual.get("type") in {"source-image","number-line","fraction-bar","solid3d"}
 
 def wav_ms(p):
     with wave.open(str(p),"rb") as w:
@@ -28,6 +47,14 @@ solution_path=ROOT/"private/solutions"/f"{args.question_id}.json"
 if not solution_path.exists(): raise SystemExit("verified solution not found")
 data=json.loads(solution_path.read_text())
 if data.get("quality")!="verified": raise SystemExit("refuse non-verified solution")
+verification=data.get("verification") or {}
+scenes=data.get("scenes") or []
+if not (verification.get("officialAnswerMatched") is True and verification.get("solverAgreement") is True
+        and isinstance(verification.get("confidence"),(int,float)) and verification.get("confidence",0)>=0.65):
+    raise SystemExit("refuse solution below verified-math gate")
+if not (2<=len(scenes)<=12 and all(str(s.get("narration") or "").strip() for s in scenes)
+        and all(scene_directable(s) for s in scenes)):
+    raise SystemExit("refuse solution below V2 director gate")
 
 out_dir=ROOT/"public/generated-solutions"/args.question_id
 out_dir.mkdir(parents=True,exist_ok=True)
@@ -56,9 +83,20 @@ for i,scene in enumerate(data.get("scenes",[]),1):
     scene["audioDurationMs"]=wav_ms(out)
     scene["durationMs"]=max(int(scene.get("durationMs") or 0),scene["audioDurationMs"]+650)
 
+data["solutionStandardVersion"]=SOLUTION_STANDARD_VERSION
+data["materialization"]={
+    **(data.get("materialization") or {}),
+    "audioNarrationHash":narration_hash(data),
+    "voiceEngine":"IndexTTS2.5",
+    "voice":args.voice,
+    "audioReady":True,
+    "voiceProfile":VOICE_PROFILE,
+    "playbackProfile":PLAYBACK_PROFILE,
+    "visualReasoningRequired":True,
+}
 tmp=solution_path.with_suffix(".json.tmp")
-tmp.write_text(json.dumps(data,ensure_ascii=False,indent=2))
+tmp.write_text(json.dumps(data,ensure_ascii=False,indent=2)+"\n")
 tmp.replace(solution_path)
-manifest={"questionId":args.question_id,"voice":args.voice,"scenes":[{"id":s["id"],"audioUrl":s.get("audioUrl"),"audioDurationMs":s.get("audioDurationMs"),"durationMs":s.get("durationMs"),"renderSpec":s.get("renderSpec")} for s in data["scenes"]]}
+manifest={"questionId":args.question_id,"solutionStandardVersion":SOLUTION_STANDARD_VERSION,"voiceProfile":VOICE_PROFILE,"playbackProfile":PLAYBACK_PROFILE,"voice":args.voice,"scenes":[{"id":s["id"],"audioUrl":s.get("audioUrl"),"audioDurationMs":s.get("audioDurationMs"),"durationMs":s.get("durationMs"),"renderSpec":s.get("renderSpec")} for s in data["scenes"]]}
 (out_dir/"manifest.json").write_text(json.dumps(manifest,ensure_ascii=False,indent=2))
 print(json.dumps({"status":"PASS","questionId":args.question_id,"scenes":len(data["scenes"]),"manifest":str(out_dir/"manifest.json")},ensure_ascii=False))
