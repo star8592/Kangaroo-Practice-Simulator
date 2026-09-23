@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
-DEPLOY_ROOT="${DEPLOY_ROOT:-/mnt/disk1/Deploy/math-competition-lab}"
+DEPLOY_ROOT="${DEPLOY_ROOT:-/mnt/disk1/Code/.deploy/math-competition-lab}"
 SERVICE="${SERVICE:-math-competition-lab.service}"
 LIVE_PORT="${LIVE_PORT:-3027}"
 CURRENT="$DEPLOY_ROOT/current"

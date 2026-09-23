@@ -24,8 +24,8 @@ Every feature follows one engineering flow:
 ## Directory model
 
 - Development: /mnt/disk1/Code/Kangaroo-Practice-Simulator
-- Immutable releases: /mnt/disk1/Deploy/math-competition-lab/releases/<sha>
-- Active release: /mnt/disk1/Deploy/math-competition-lab/current
+- Immutable releases: /mnt/disk1/Code/.deploy/math-competition-lab/releases/<sha>
+- Active release: /mnt/disk1/Code/.deploy/math-competition-lab/current
 - Service: math-competition-lab.service on port 3027
 - Staging verification: port 3127
 - Runtime private/local asset/generated data are linked into releases and are never deleted by deploy.

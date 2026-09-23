@@ -4,10 +4,10 @@ After=network.target
 
 [Service]
 Type=simple
-WorkingDirectory=/mnt/disk1/Deploy/math-competition-lab/current
+WorkingDirectory=/mnt/disk1/Code/.deploy/math-competition-lab/current
 Environment=NODE_ENV=production
 Environment=PATH=/home/master/.nvm/versions/node/v22.22.1/bin:/usr/local/bin:/usr/bin:/bin
-ExecStart=/home/master/.nvm/versions/node/v22.22.1/bin/node /mnt/disk1/Deploy/math-competition-lab/current/node_modules/next/dist/bin/next start -p 3027
+ExecStart=/home/master/.nvm/versions/node/v22.22.1/bin/node /mnt/disk1/Code/.deploy/math-competition-lab/current/node_modules/next/dist/bin/next start -p 3027
 Restart=always
 RestartSec=2
 TimeoutStopSec=15
