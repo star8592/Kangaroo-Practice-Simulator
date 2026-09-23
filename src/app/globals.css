@@ -107,3 +107,15 @@
 .dsl-geometry .dsl-angle.hot path{stroke:#ff7a45;stroke-width:7}
 .dsl-geometry .dsl-angle text{font-size:17px;font-weight:850;fill:#8d651e}
 .dsl-geometry .dsl-point.hot circle{stroke:#ff7a45;stroke-width:6}
+
+.cube-net-scene{display:grid;gap:12px;justify-items:center;width:min(100%,620px);margin:auto}
+.cube-net-stage{width:100%;min-height:330px;display:grid;place-items:center;border-radius:24px;background:linear-gradient(145deg,#fffaf1,#f3f7f2);border:1px solid rgba(55,76,63,.12);overflow:hidden}
+.cube-net-svg{width:min(100%,520px);height:360px}
+.cube-net-face{opacity:0;animation:dslReveal .38s cubic-bezier(.2,.8,.2,1) forwards}
+.cube-net-face rect{fill:#fff3df;stroke:#42564a;stroke-width:4}
+.cube-net-face text{font-size:20px;font-weight:850;text-anchor:middle;fill:#27362d}
+.cube-net-toggle{border:0;border-radius:999px;padding:10px 18px;background:#27362d;color:white;font-weight:850;cursor:pointer}
+.cube-net-toggle:hover{transform:translateY(-1px)}
+.cube-net-scene small{color:#6a756e;font-weight:650}
+.dsl-morphed{animation:dslMorph .52s cubic-bezier(.2,.8,.2,1)}
+@keyframes dslMorph{0%{opacity:.2;transform:scale(.94)}70%{transform:scale(1.04)}100%{opacity:1;transform:scale(1)}}
