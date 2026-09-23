@@ -54,8 +54,8 @@ export function analyzeCubeNet(cells:CubeNetCell[]):CubeNetAnalysis{
   }
   const overlaps=[...byNormal.values()].filter(labels=>labels.length>1);
   if(overlaps.length) return {valid:false,reason:"face-overlap",overlaps,faceByNormal:{}};
-  const faceByNormal:Object=Object.fromEntries([...orientation.entries()].map(([label,o])=>[key(o.n),label]));
-  return {valid:true,reason:"ok",overlaps:[],faceByNormal:faceByNormal as Record<string,string>};
+  const faceByNormal:Record<string,string>=Object.fromEntries([...orientation.entries()].map(([label,o])=>[key(o.n),label]));
+  return {valid:true,reason:"ok",overlaps:[],faceByNormal};
 }
 
 export const isCubeNet=(cells:CubeNetCell[])=>analyzeCubeNet(cells).valid;
