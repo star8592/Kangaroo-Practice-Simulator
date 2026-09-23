@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import ThreeSolidScene from "@/components/ThreeSolidScene";
 import MathDslScene from "@/components/MathDslScene";
+import styles from "./SmartSolutionPlayer.module.css";
 import { buildFallbackStoryboard, type SolutionScene, type SolutionStoryboard, type SolutionVisual } from "@/lib/solution-storyboard";
 
 type Props = {
@@ -47,6 +48,35 @@ function VisualStage({ scene }: { scene: SolutionScene }) {
   if (visual.type === "fraction-bar") return <FractionBar visual={visual} />;
   if (visual.type === "solid3d") return <ThreeSolidScene />;
   return <div className="solution-empty-visual"><span>🦘</span><strong>先把题意说清楚，再决定画什么图。</strong><small>不确定的图，系统宁可不乱画。</small></div>;
+}
+
+function SolutionTeacher({ speaking }: { speaking: boolean }) {
+  return (
+    <aside className={styles.teacherSlot} aria-label="袋鼠数学老师">
+      <div className={`${styles.teacherAvatar} ${speaking ? styles.speaking : ""}`}>
+        <svg viewBox="0 0 120 132" role="img" aria-label="戴眼镜的Q版袋鼠数学老师">
+          <ellipse cx="39" cy="25" rx="12" ry="27" transform="rotate(-13 39 25)" fill="#c88755" />
+          <ellipse cx="81" cy="25" rx="12" ry="27" transform="rotate(13 81 25)" fill="#c88755" />
+          <ellipse cx="39" cy="24" rx="5" ry="17" transform="rotate(-13 39 24)" fill="#f2b99a" />
+          <ellipse cx="81" cy="24" rx="5" ry="17" transform="rotate(13 81 24)" fill="#f2b99a" />
+          <circle cx="60" cy="64" r="39" fill="#d99a63" />
+          <ellipse cx="60" cy="76" rx="27" ry="21" fill="#f2c3a0" />
+          <circle cx="47" cy="59" r="4.4" fill="#2e3a33" />
+          <circle cx="73" cy="59" r="4.4" fill="#2e3a33" />
+          <circle cx="47" cy="59" r="11" fill="none" stroke="#34443b" strokeWidth="3" />
+          <circle cx="73" cy="59" r="11" fill="none" stroke="#34443b" strokeWidth="3" />
+          <path d="M58 59h4" stroke="#34443b" strokeWidth="3" strokeLinecap="round" />
+          <ellipse cx="60" cy="72" rx="5" ry="3.5" fill="#684b3c" />
+          <path d="M51 82c6 6 12 6 18 0" fill="none" stroke="#684b3c" strokeWidth="3" strokeLinecap="round" />
+          <path d="M35 105c9-9 41-9 50 0l8 27H27z" fill="#f3a45f" />
+          <path d="M47 101l13 13 13-13" fill="#fff9ef" />
+          <path d="M88 108l17-18" stroke="#5b6d61" strokeWidth="4" strokeLinecap="round" />
+          <circle cx="107" cy="88" r="4" fill="#ff7a45" />
+        </svg>
+      </div>
+      <div className={styles.teacherBubble}>{speaking ? "听我慢慢讲" : "我们一步一步来"}</div>
+    </aside>
+  );
 }
 
 function speak(text: string, rate: number, onDone: () => void) {
@@ -207,7 +237,10 @@ export default function SmartSolutionPlayer(props: Props) {
     <div className="solution-stage">
       <VisualStage scene={scene} />
       <div className="solution-story-card">
-        <span className="solution-step-tag">STEP {index + 1}/{storyboard.scenes.length}</span>
+        <div className={styles.storyTop}>
+          <span className="solution-step-tag">STEP {index + 1}/{storyboard.scenes.length}</span>
+          <SolutionTeacher speaking={playing} />
+        </div>
         <p>{scene.narration}</p>
         {scene.caption && <div className="solution-caption">{scene.caption}</div>}
         {scene.checkpoint && <button className="solution-checkpoint" onClick={() => setPlaying(false)}>💡 {scene.checkpoint}</button>}

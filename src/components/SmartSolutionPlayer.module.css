@@ -1,0 +1,66 @@
+.storyTop {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  min-height: 82px;
+}
+
+.teacherSlot {
+  flex: 0 0 86px;
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  margin-top: -10px;
+}
+
+.teacherAvatar {
+  width: 72px;
+  height: 78px;
+  border-radius: 24px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(180deg, #fff8eb 0%, #fff2df 100%);
+  border: 1px solid #f0d9bd;
+  box-shadow: 0 8px 24px rgba(74, 58, 39, 0.08);
+  transform-origin: 50% 100%;
+}
+
+.teacherAvatar svg {
+  width: 66px;
+  height: 73px;
+  overflow: visible;
+}
+
+.speaking {
+  animation: teacherBreathe 2.2s ease-in-out infinite;
+}
+
+.teacherBubble {
+  white-space: nowrap;
+  font-size: 10px;
+  line-height: 1;
+  font-weight: 850;
+  color: #6f5a42;
+  background: #fffaf3;
+  border: 1px solid #f0dfc8;
+  border-radius: 999px;
+  padding: 5px 7px;
+}
+
+@keyframes teacherBreathe {
+  0%, 100% { transform: translateY(0) rotate(-0.8deg); }
+  50% { transform: translateY(-3px) rotate(0.8deg); }
+}
+
+@media (max-width: 800px) {
+  .storyTop { min-height: 66px; }
+  .teacherSlot { flex-basis: 68px; margin-top: -6px; }
+  .teacherAvatar { width: 56px; height: 60px; border-radius: 19px; }
+  .teacherAvatar svg { width: 52px; height: 57px; }
+  .teacherBubble { font-size: 9px; padding: 4px 6px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .speaking { animation: none; }
+}
