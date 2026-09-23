@@ -9,6 +9,9 @@ type Obj =
   | {kind:"bar";id:string;value:number;label:string}
   | {kind:"point";id:string;x:number;y:number;label:string}
   | {kind:"segment";id:string;a:string;b:string}
+  | {kind:"circle";id:string;center:string;radius:number}
+  | {kind:"polygon";id:string;points:string[]}
+  | {kind:"angle";id:string;vertex:string;a:string;b:string;label:string}
   | {kind:"text";id:string;text:string}
   | {kind:"equation";id:string;text:string}
   | {kind:"dicepair";id:string;a:number;b:number;label:string};
@@ -26,6 +29,9 @@ function parse(script:string[]) {
     else if((m=s.match(/^BAR\s+(\S+)\s+(-?\d+(?:\.\d+)?)\s*(.*)$/i))) objects.push({kind:"bar",id:m[1],value:Number(m[2]),label:m[3]});
     else if((m=s.match(/^POINT\s+(\S+)\s+(-?\d+(?:\.\d+)?)\s+(-?\d+(?:\.\d+)?)\s*(.*)$/i))) objects.push({kind:"point",id:m[1],x:Number(m[2]),y:Number(m[3]),label:m[4]||m[1]});
     else if((m=s.match(/^SEGMENT\s+(\S+)\s+(\S+)\s+(\S+)$/i))) objects.push({kind:"segment",id:m[1],a:m[2],b:m[3]});
+    else if((m=s.match(/^CIRCLE\s+(\S+)\s+(\S+)\s+(\d+(?:\.\d+)?)$/i))) objects.push({kind:"circle",id:m[1],center:m[2],radius:Number(m[3])});
+    else if((m=s.match(/^POLYGON\s+(\S+)\s+([A-Za-z0-9_.:-]+(?:,[A-Za-z0-9_.:-]+){2,})$/i))) objects.push({kind:"polygon",id:m[1],points:m[2].split(",")});
+    else if((m=s.match(/^ANGLE\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s*(.*)$/i))) objects.push({kind:"angle",id:m[1],vertex:m[2],a:m[3],b:m[4],label:m[5]});
     else if((m=s.match(/^TEXT\s+(\S+)\s+[-\d.]+\s+[-\d.]+\s+(.+)$/i))) objects.push({kind:"text",id:m[1],text:m[2]});
     else if((m=s.match(/^EQUATION\s+(\S+)\s+(.+)$/i))) objects.push({kind:"equation",id:m[1],text:m[2]});
     else if((m=s.match(/^DICEPAIR\s+(\S+)\s+([1-6])\s+([1-6])\s*(.*)$/i))) objects.push({kind:"dicepair",id:m[1],a:Number(m[2]),b:Number(m[3]),label:m[4]});
@@ -45,11 +51,29 @@ function NumberLine({o,hot}:{o:Extract<Obj,{kind:"numberline"}>;hot:boolean}) {
 function Geometry({objects,highlighted}:{objects:Obj[];highlighted:Set<string>}) {
   const pts=new Map(objects.filter((o):o is Extract<Obj,{kind:"point"}>=>o.kind==="point").map(p=>[p.id,p]));
   const segs=objects.filter((o):o is Extract<Obj,{kind:"segment"}>=>o.kind==="segment");
-  if(!pts.size&&!segs.length)return null;
-  const sx=(x:number)=>300+x*38, sy=(y:number)=>180-y*38;
-  return <svg className="dsl-geometry" viewBox="0 0 600 360">
-    {segs.map(s=>{const a=pts.get(s.a),b=pts.get(s.b);return a&&b?<line key={s.id} x1={sx(a.x)} y1={sy(a.y)} x2={sx(b.x)} y2={sy(b.y)} className={highlighted.has(s.id)?"hot":""}/>:null})}
-    {[...pts.values()].map(p=><g key={p.id} className={highlighted.has(p.id)?"hot":""}><circle cx={sx(p.x)} cy={sy(p.y)} r="7"/><text x={sx(p.x)+11} y={sy(p.y)-11}>{p.label}</text></g>)}
+  const circles=objects.filter((o):o is Extract<Obj,{kind:"circle"}>=>o.kind==="circle");
+  const polys=objects.filter((o):o is Extract<Obj,{kind:"polygon"}>=>o.kind==="polygon");
+  const angles=objects.filter((o):o is Extract<Obj,{kind:"angle"}>=>o.kind==="angle");
+  if(!pts.size&&!segs.length&&!circles.length&&!polys.length&&!angles.length)return null;
+  const sx=(x:number)=>300+x*82, sy=(y:number)=>225-y*82;
+  const polygonPoints=(ids:string[])=>ids.map(id=>pts.get(id)).filter(Boolean).map(p=>String(sx(p!.x))+","+String(sy(p!.y))).join(" ");
+  const angleArc=(o:Extract<Obj,{kind:"angle"}>)=>{
+    const v=pts.get(o.vertex),a=pts.get(o.a),b=pts.get(o.b); if(!v||!a||!b)return null;
+    const av=Math.atan2(-(a.y-v.y),a.x-v.x),bv=Math.atan2(-(b.y-v.y),b.x-v.x);
+    let diff=bv-av; while(diff<=-Math.PI)diff+=Math.PI*2; while(diff>Math.PI)diff-=Math.PI*2;
+    const r=36,startX=sx(v.x)+r*Math.cos(av),startY=sy(v.y)+r*Math.sin(av);
+    const endX=sx(v.x)+r*Math.cos(av+diff),endY=sy(v.y)+r*Math.sin(av+diff);
+    const d="M "+startX+" "+startY+" A "+r+" "+r+" 0 0 "+(diff>0?1:0)+" "+endX+" "+endY;
+    return {d,lx:sx(v.x)+55*Math.cos(av+diff/2),ly:sy(v.y)+55*Math.sin(av+diff/2)};
+  };
+  let reveal=0;
+  const revealStyle=()=>({animationDelay:String(Math.min(900,reveal++*95))+"ms"});
+  return <svg className="dsl-geometry" viewBox="0 0 600 450">
+    {circles.map(c=>{const center=pts.get(c.center);return center?<circle key={c.id} style={revealStyle()} className={"dsl-geo-shape dsl-reveal "+(highlighted.has(c.id)?"hot":"")} cx={sx(center.x)} cy={sy(center.y)} r={c.radius*82}/>:null})}
+    {polys.map(poly=>{const points=polygonPoints(poly.points);return points?<polygon key={poly.id} style={revealStyle()} className={"dsl-geo-shape dsl-reveal "+(highlighted.has(poly.id)?"hot":"")} points={points}/>:null})}
+    {segs.map(seg=>{const a=pts.get(seg.a),b=pts.get(seg.b);return a&&b?<line key={seg.id} style={revealStyle()} x1={sx(a.x)} y1={sy(a.y)} x2={sx(b.x)} y2={sy(b.y)} className={"dsl-reveal "+(highlighted.has(seg.id)?"hot":"")}/>:null})}
+    {angles.map(angle=>{const arc=angleArc(angle);return arc?<g key={angle.id} style={revealStyle()} className={"dsl-angle dsl-reveal "+(highlighted.has(angle.id)?"hot":"")}><path d={arc.d}/>{angle.label&&<text x={arc.lx} y={arc.ly}>{angle.label}</text>}</g>:null})}
+    {[...pts.values()].map(point=><g key={point.id} style={revealStyle()} className={"dsl-point dsl-reveal "+(highlighted.has(point.id)?"hot":"")}><circle cx={sx(point.x)} cy={sy(point.y)} r="7"/><text x={sx(point.x)+11} y={sy(point.y)-11}>{point.label}</text></g>)}
   </svg>;
 }
 

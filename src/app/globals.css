@@ -97,3 +97,13 @@
 .dsl-dicepair{display:flex;align-items:center;justify-content:center;gap:16px;padding:10px 14px;border-radius:14px;background:#fff;border:1px solid var(--line)}.dsl-dicepair>div{display:flex;align-items:center;gap:8px}.dsl-dicepair i{width:44px;height:44px;display:grid;place-items:center;border:2px solid #42564a;border-radius:11px;background:linear-gradient(180deg,#fff,#f5f7f3);font-style:normal;font-size:20px;font-weight:900}.dsl-dicepair span{font-weight:900;color:var(--muted)}.dsl-dicepair b{font-size:13px;color:var(--ink)}.dsl-dicepair.hot{border-color:#ff9a67;background:#fff7f2;box-shadow:0 0 0 4px rgba(255,122,69,.12)}.dsl-dicepair.hot i{border-color:#ff7a45}
 
 .site-footer{padding:24px;text-align:center;color:#6b7280;font-size:13px;border-top:1px solid #eee}.site-footer a{color:inherit}
+
+
+.dsl-reveal{opacity:0;animation:dslReveal .38s cubic-bezier(.2,.8,.2,1) forwards}
+@keyframes dslReveal{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.dsl-geometry .dsl-geo-shape{fill:rgba(120,170,135,.08);stroke:#648675;stroke-width:3}
+.dsl-geometry .dsl-geo-shape.hot{fill:rgba(255,122,69,.10);stroke:#ff7a45;stroke-width:6}
+.dsl-geometry .dsl-angle path{fill:none;stroke:#df9a2b;stroke-width:5;stroke-linecap:round}
+.dsl-geometry .dsl-angle.hot path{stroke:#ff7a45;stroke-width:7}
+.dsl-geometry .dsl-angle text{font-size:17px;font-weight:850;fill:#8d651e}
+.dsl-geometry .dsl-point.hot circle{stroke:#ff7a45;stroke-width:6}

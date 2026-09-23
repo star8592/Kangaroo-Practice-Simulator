@@ -23,7 +23,11 @@
     "test:maa-verified-store": "tsx scripts/test_maa_verified_store.ts",
     "data:manifest": "tsx scripts/build_student_ready_manifest.ts",
     "data:publish-source": "bash ops/data/promote_verified_sources.sh",
-    "data:publish-ready": "bash ops/data/promote_student_ready.sh"
+    "data:publish-ready": "bash ops/data/promote_student_ready.sh",
+    "solution:audit": "python3 scripts/audit_solution_pipeline.py --write",
+    "solution:materialize": "python3 scripts/materialize_verified_solutions.py",
+    "solution:materialize-queue": "python3 scripts/build_solution_materialization_queue.py",
+    "solution:factory": "python3 scripts/run_solution_factory.py"
   },
   "dependencies": {
     "next": "16.3.5",

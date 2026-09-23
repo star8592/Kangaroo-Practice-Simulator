@@ -1,0 +1,147 @@
+#!/usr/bin/env python3
+import argparse, hashlib, json, os, subprocess, sys, wave
+from pathlib import Path
+
+ROOT=Path(__file__).resolve().parents[1]
+SOL=ROOT/"private/solutions"
+PUB=ROOT/"public"
+H3=Path("/mnt/disk1/H3_Studio")
+INDEX=H3/"IndexTTS2"
+VOICE_DEFAULT=INDEX/"examples/voice_09.wav"
+
+def core_hash(data):
+    core=[]
+    for s in data.get("scenes") or []:
+        core.append({
+            "id":s.get("id"),"title":s.get("title"),"narration":s.get("narration"),
+            "caption":s.get("caption"),"checkpoint":s.get("checkpoint"),
+            "visual":s.get("visual"),"renderSpec":s.get("renderSpec"),
+        })
+    raw=json.dumps(core,ensure_ascii=False,sort_keys=True,separators=(",",":")).encode()
+    return hashlib.sha256(raw).hexdigest()
+
+def valid_verified(data):
+    v=data.get("verification") or {}
+    return (data.get("quality")=="verified" and v.get("officialAnswerMatched") is True and
+            v.get("solverAgreement") is True and isinstance(v.get("confidence"),(int,float)) and
+            v.get("confidence",0)>=0.65 and 2<=len(data.get("scenes") or [])<=12)
+
+def wav_ms(p):
+    with wave.open(str(p),"rb") as w:
+        return round(w.getnframes()/w.getframerate()*1000)
+
+def audio_ok(scene):
+    url=scene.get("audioUrl")
+    if not url or not url.startswith("/"): return False
+    p=PUB/url.lstrip("/")
+    return p.exists() and p.stat().st_size>1000
+
+def video_ok(qid):
+    p=PUB/"generated-solutions"/qid/f"{qid}.mp4"
+    return p.exists() and p.stat().st_size>10000
+
+ap=argparse.ArgumentParser()
+ap.add_argument("question_ids",nargs="*")
+ap.add_argument("--limit",type=int,default=0)
+ap.add_argument("--voice",default=str(VOICE_DEFAULT))
+ap.add_argument("--video",action="store_true")
+ap.add_argument("--force-audio",action="store_true")
+ap.add_argument("--dry-run",action="store_true")
+ap.add_argument("--queue",action="store_true",help="use demand-ranked local materialization queue")
+args=ap.parse_args()
+
+items=[]
+target_order=list(dict.fromkeys(args.question_ids))
+if args.queue and not target_order:
+    qp=SOL/"_meta/materialization-queue.json"
+    if not qp.exists(): raise SystemExit("materialization queue missing; run npm run solution:materialize-queue")
+    qd=json.loads(qp.read_text())
+    target_order=[r["questionId"] for r in (qd.get("queue") or [])]
+if args.limit>0 and target_order:
+    target_order=target_order[:args.limit]
+wanted=set(target_order)
+order={qid:i for i,qid in enumerate(target_order)}
+
+for p in sorted(SOL.glob("*.json")):
+    if p.name=="queue.json": continue
+    try:d=json.loads(p.read_text())
+    except: continue
+    qid=d.get("questionId") or p.stem
+    if wanted and qid not in wanted: continue
+    if not valid_verified(d): continue
+    audio_ready=all(audio_ok(s) for s in d.get("scenes") or [])
+    fully_ready=(audio_ready and (not args.video or video_ok(qid)))
+    if not args.force_audio and fully_ready: continue
+    items.append((qid,p,d))
+
+if order: items.sort(key=lambda x:order.get(x[0],10**9))
+elif args.limit>0: items=items[:args.limit]
+
+if target_order:
+    found={q for q,_,_ in items}
+    invalid=[q for q in target_order if not (SOL/f"{q}.json").exists()]
+    completed=[q for q in target_order if q not in found and q not in invalid]
+    if invalid: print("MISSING",",".join(invalid),file=sys.stderr)
+    if completed: print("ALREADY_READY",",".join(completed),file=sys.stderr)
+
+print(json.dumps({"targets":[q for q,_,_ in items],"count":len(items),"video":args.video,"dryRun":args.dry_run},ensure_ascii=False))
+if args.dry_run or not items: raise SystemExit(0)
+
+need_tts=any(args.force_audio or any(not audio_ok(s) for s in d.get("scenes") or []) for _,_,d in items)
+tts=None
+if need_tts:
+    sys.path.insert(0,str(INDEX))
+    os.environ.setdefault("HF_HOME",str(H3/"runtime/h3studio/hf-cache"))
+    os.environ.setdefault("XDG_CACHE_HOME",str(H3/"runtime/h3studio/xdg-cache"))
+    from indextts.infer_v2_5 import IndexTTS2
+    print("LOADING_INDEXTTS_2_5")
+    tts=IndexTTS2(cfg_path=str(INDEX/"checkpoints_25/config.yaml"),model_dir=str(INDEX/"checkpoints_25"),use_bf16=True)
+    print("INDEXTTS_READY")
+
+for qid,p,data in items:
+    before=core_hash(data)
+    out_dir=PUB/"generated-solutions"/qid
+    out_dir.mkdir(parents=True,exist_ok=True)
+    for i,scene in enumerate(data.get("scenes") or [],1):
+        out=out_dir/f"scene-{i:02d}.wav"
+        if args.force_audio or not audio_ok(scene):
+            if tts is None: raise RuntimeError("TTS not initialized")
+            direction=((scene.get("renderSpec") or {}).get("voiceDirection") or "")
+            factor=1.0
+            if "慢" in direction or "沉稳" in direction: factor=1.12
+            if "快" in direction or "兴奋" in direction: factor=0.92
+            tts.infer(spk_audio_prompt=args.voice,text=scene["narration"],lang="ZH",
+                      output_path=str(out),duration_factor=factor,verbose=False)
+        if not out.exists() or out.stat().st_size<1000:
+            raise RuntimeError(f"bad TTS output: {out}")
+        scene["audioUrl"]=f"/generated-solutions/{qid}/{out.name}"
+        scene["audioDurationMs"]=wav_ms(out)
+        scene["durationMs"]=max(int(scene.get("durationMs") or 0),scene["audioDurationMs"]+650)
+    after=core_hash(data)
+    if before!=after: raise RuntimeError(f"director core mutated during local materialization: {qid}")
+    data["materialization"]={
+        **(data.get("materialization") or {}),
+        "directorHash":before,"voiceEngine":"IndexTTS2.5","voice":args.voice,
+        "audioReady":True,
+    }
+    tmp=p.with_suffix(".json.tmp")
+    tmp.write_text(json.dumps(data,ensure_ascii=False,indent=2)+"\n")
+    tmp.replace(p)
+    manifest={"questionId":qid,"directorHash":before,"scenes":[
+        {"id":s["id"],"audioUrl":s.get("audioUrl"),"audioDurationMs":s.get("audioDurationMs"),
+         "durationMs":s.get("durationMs"),"renderSpec":s.get("renderSpec")} for s in data["scenes"]
+    ]}
+    (out_dir/"manifest.json").write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+"\n")
+    print("VOICE_READY",qid,len(data["scenes"]))
+
+    if args.video:
+        subprocess.run([sys.executable,str(ROOT/"scripts/export_solution_video.py"),qid,"--skip-tts"],check=True)
+        data=json.loads(p.read_text())
+        data["materialization"]={**(data.get("materialization") or {}),"videoReady":True,
+                                 "videoUrl":f"/generated-solutions/{qid}/{qid}.mp4"}
+        tmp=p.with_suffix(".json.tmp")
+        tmp.write_text(json.dumps(data,ensure_ascii=False,indent=2)+"\n")
+        tmp.replace(p)
+        print("VIDEO_READY",qid)
+
+print("MATERIALIZE_PASS",len(items))
