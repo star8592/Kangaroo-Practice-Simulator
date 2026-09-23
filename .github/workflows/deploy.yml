@@ -1,9 +1,9 @@
 name: Deploy Production
 
+# Production currently deploys from the authorized workstation over its
+# existing passwordless SSH path. Keep this workflow manual until dedicated
+# GitHub Actions production credentials are intentionally configured.
 on:
-  push:
-    branches:
-      - main
   workflow_dispatch:
 
 jobs:
