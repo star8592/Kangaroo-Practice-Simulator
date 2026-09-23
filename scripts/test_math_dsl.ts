@@ -67,4 +67,10 @@ assert(faces&&faces.kind==="cubefaces");
 assert.equal(faces.labels[0],"○");
 assert(overlay.highlighted.has("s1"));
 
-console.log("MATH_DSL=PASS move=true morph=true net=true fold=true rotate=true cubenet=true overlay=true cubefaces=true");
+
+
+const actions=parseMathDsl(["FLIPCARD f1","CHASE c1"]);
+assert.equal(actions.objects.filter(o=>o.kind==="flipcard").length,1);
+assert.equal(actions.objects.filter(o=>o.kind==="chase").length,1);
+
+console.log("MATH_DSL=PASS move=true morph=true net=true fold=true rotate=true cubenet=true overlay=true cubefaces=true flipcard=true chase=true");

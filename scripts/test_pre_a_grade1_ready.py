@@ -52,11 +52,11 @@ for sample in (1,2):
 visual_requirements={
     "au-amc-pre-a-s1-q08":"PICK ",
     "au-amc-pre-a-s1-q12":"PICK ",
-    "au-amc-pre-a-s1-q14":"PICK ",
+    "au-amc-pre-a-s1-q14":"FLIPCARD ",
     "au-amc-pre-a-s1-q19":"PICK ",
     "au-amc-pre-a-s2-q02":"TRACE ",
     "au-amc-pre-a-s2-q10":"SPOT ",
-    "au-amc-pre-a-s2-q14":"SPOT ",
+    "au-amc-pre-a-s2-q14":"CHASE ",
     "au-amc-pre-a-s2-q15":"PICK ",
     "au-amc-pre-a-s2-q17":"PICK ",
     "au-amc-pre-a-s2-q19":"CUBEFACES ",

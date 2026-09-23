@@ -4,6 +4,8 @@ import CubeNetScene from "@/components/CubeNetScene";
 import CubeNetPuzzle from "@/components/CubeNetPuzzle";
 import ThreeSolidScene from "@/components/ThreeSolidScene";
 import ImageOverlayScene from "@/components/ImageOverlayScene";
+import FlipCardScene from "@/components/FlipCardScene";
+import ChaseScene from "@/components/ChaseScene";
 
 type Obj =
   | {kind:"counters";id:string;count:number}
@@ -24,7 +26,9 @@ type Obj =
   | {kind:"spot";id:string;x:number;y:number;label:string}
   | {kind:"trace";id:string;points:Array<[number,number]>}
   | {kind:"pick";id:string;x:number;y:number;label:string;correct:boolean}
-  | {kind:"cubefaces";id:string;labels:[string,string,string,string,string,string]};
+  | {kind:"cubefaces";id:string;labels:[string,string,string,string,string,string]}
+  | {kind:"flipcard";id:string}
+  | {kind:"chase";id:string};
 
 export function parseMathDsl(script:string[]) {
   const objects:Obj[]=[];
@@ -72,6 +76,8 @@ export function parseMathDsl(script:string[]) {
     }
     else if((m=s.match(/^PICK\s+(\S+)\s+(-?\d+(?:\.\d+)?)\s+(-?\d+(?:\.\d+)?)\s+(correct|wrong)\s+(.+)$/i))) objects.push({kind:"pick",id:m[1],x:Number(m[2]),y:Number(m[3]),correct:m[4].toLowerCase()==="correct",label:m[5]});
     else if((m=s.match(/^CUBEFACES\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)$/i))) objects.push({kind:"cubefaces",id:m[1],labels:[m[2],m[3],m[4],m[5],m[6],m[7]]});
+    else if((m=s.match(/^FLIPCARD\s+(\S+)$/i))) objects.push({kind:"flipcard",id:m[1]});
+    else if((m=s.match(/^CHASE\s+(\S+)$/i))) objects.push({kind:"chase",id:m[1]});
     else if(/^CUBE\s+/i.test(s)) hasCube=true;
     else if((m=s.match(/^MOVE\s+(\S+)\s+(-?\d+(?:\.\d+)?)\s+(-?\d+(?:\.\d+)?)$/i))) {
       const o=find(m[1]);
@@ -148,6 +154,8 @@ export default function MathDslScene({script}:{script:string[]}) {
   const traces=objects.filter((o):o is Extract<Obj,{kind:"trace"}>=>o.kind==="trace");
   const picks=objects.filter((o):o is Extract<Obj,{kind:"pick"}>=>o.kind==="pick");
   const cubeFaces=objects.filter((o):o is Extract<Obj,{kind:"cubefaces"}>=>o.kind==="cubefaces");
+  const flipCards=objects.filter((o):o is Extract<Obj,{kind:"flipcard"}>=>o.kind==="flipcard");
+  const chases=objects.filter((o):o is Extract<Obj,{kind:"chase"}>=>o.kind==="chase");
   const maxBar=Math.max(1,...bars.map(b=>Math.abs(b.value)));
   return <div className="dsl-stage">
     {hasCube&&<ThreeSolidScene/>}
@@ -155,6 +163,8 @@ export default function MathDslScene({script}:{script:string[]}) {
       "1,0,0":o.labels[0],"-1,0,0":o.labels[1],"0,1,0":o.labels[2],
       "0,-1,0":o.labels[3],"0,0,1":o.labels[4],"0,0,-1":o.labels[5],
     }}/>)}
+    {flipCards.map(o=><FlipCardScene key={o.id}/>)}
+    {chases.map(o=><ChaseScene key={o.id}/>)}
     {images.map(img=><ImageOverlayScene key={img.id} url={img.url}
       spots={spots.map(o=>({...o,hot:highlighted.has(o.id)}))}
       traces={traces.map(o=>({...o,hot:highlighted.has(o.id)}))}
