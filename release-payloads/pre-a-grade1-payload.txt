@@ -1,0 +1,2 @@
+sha256  e0a409db2bcaa9d1953a6c937d7befd8aef46bfcfc672d30e3d0f6d565200277
+contents  50 verified Pre-A solution JSON + generated solution media
