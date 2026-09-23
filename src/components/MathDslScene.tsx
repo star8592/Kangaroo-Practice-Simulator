@@ -3,6 +3,7 @@
 import CubeNetScene from "@/components/CubeNetScene";
 import CubeNetPuzzle from "@/components/CubeNetPuzzle";
 import ThreeSolidScene from "@/components/ThreeSolidScene";
+import ImageOverlayScene from "@/components/ImageOverlayScene";
 
 type Obj =
   | {kind:"counters";id:string;count:number}
@@ -18,7 +19,12 @@ type Obj =
   | {kind:"equation";id:string;text:string}
   | {kind:"dicepair";id:string;a:number;b:number;label:string}
   | {kind:"net";id:string;pattern:string}
-  | {kind:"cubenet";id:string;cells:{label:string;x:number;y:number}[];removed?:string};
+  | {kind:"cubenet";id:string;cells:{label:string;x:number;y:number}[];removed?:string}
+  | {kind:"image";id:string;url:string}
+  | {kind:"spot";id:string;x:number;y:number;label:string}
+  | {kind:"trace";id:string;points:Array<[number,number]>}
+  | {kind:"pick";id:string;x:number;y:number;label:string;correct:boolean}
+  | {kind:"cubefaces";id:string;labels:[string,string,string,string,string,string]};
 
 export function parseMathDsl(script:string[]) {
   const objects:Obj[]=[];
@@ -55,6 +61,17 @@ export function parseMathDsl(script:string[]) {
       }).filter(Boolean) as {label:string;x:number;y:number}[];
       if(cells.length>=6&&cells.length<=12) objects.push({kind:"cubenet",id:m[1],cells});
     }
+    else if((m=s.match(/^IMAGE\s+(\S+)\s+(\S+)$/i))) objects.push({kind:"image",id:m[1],url:m[2]});
+    else if((m=s.match(/^SPOT\s+(\S+)\s+(-?\d+(?:\.\d+)?)\s+(-?\d+(?:\.\d+)?)\s*(.*)$/i))) objects.push({kind:"spot",id:m[1],x:Number(m[2]),y:Number(m[3]),label:m[4]});
+    else if((m=s.match(/^TRACE\s+(\S+)\s+(.+)$/i))) {
+      const points=m[2].split("|").map(part=>{
+        const z=part.match(/^(-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?)$/);
+        return z?[Number(z[1]),Number(z[2])] as [number,number]:null;
+      }).filter(Boolean) as Array<[number,number]>;
+      if(points.length>=2) objects.push({kind:"trace",id:m[1],points});
+    }
+    else if((m=s.match(/^PICK\s+(\S+)\s+(-?\d+(?:\.\d+)?)\s+(-?\d+(?:\.\d+)?)\s+(correct|wrong)\s+(.+)$/i))) objects.push({kind:"pick",id:m[1],x:Number(m[2]),y:Number(m[3]),correct:m[4].toLowerCase()==="correct",label:m[5]});
+    else if((m=s.match(/^CUBEFACES\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)$/i))) objects.push({kind:"cubefaces",id:m[1],labels:[m[2],m[3],m[4],m[5],m[6],m[7]]});
     else if(/^CUBE\s+/i.test(s)) hasCube=true;
     else if((m=s.match(/^MOVE\s+(\S+)\s+(-?\d+(?:\.\d+)?)\s+(-?\d+(?:\.\d+)?)$/i))) {
       const o=find(m[1]);
@@ -126,9 +143,22 @@ export default function MathDslScene({script}:{script:string[]}) {
   const dice=objects.filter((o):o is Extract<Obj,{kind:"dicepair"}>=>o.kind==="dicepair");
   const nets=objects.filter((o):o is Extract<Obj,{kind:"net"}>=>o.kind==="net");
   const cubenets=objects.filter((o):o is Extract<Obj,{kind:"cubenet"}>=>o.kind==="cubenet");
+  const images=objects.filter((o):o is Extract<Obj,{kind:"image"}>=>o.kind==="image");
+  const spots=objects.filter((o):o is Extract<Obj,{kind:"spot"}>=>o.kind==="spot");
+  const traces=objects.filter((o):o is Extract<Obj,{kind:"trace"}>=>o.kind==="trace");
+  const picks=objects.filter((o):o is Extract<Obj,{kind:"pick"}>=>o.kind==="pick");
+  const cubeFaces=objects.filter((o):o is Extract<Obj,{kind:"cubefaces"}>=>o.kind==="cubefaces");
   const maxBar=Math.max(1,...bars.map(b=>Math.abs(b.value)));
   return <div className="dsl-stage">
     {hasCube&&<ThreeSolidScene/>}
+    {cubeFaces.map(o=><ThreeSolidScene key={o.id} faceLabels={{
+      "1,0,0":o.labels[0],"-1,0,0":o.labels[1],"0,1,0":o.labels[2],
+      "0,-1,0":o.labels[3],"0,0,1":o.labels[4],"0,0,-1":o.labels[5],
+    }}/>)}
+    {images.map(img=><ImageOverlayScene key={img.id} url={img.url}
+      spots={spots.map(o=>({...o,hot:highlighted.has(o.id)}))}
+      traces={traces.map(o=>({...o,hot:highlighted.has(o.id)}))}
+      picks={picks}/>)}
     {nets.map(o=><CubeNetScene key={o.id} pattern={o.pattern} initialFolded={folded.has(o.id)}/>)}
     {cubenets.map(o=><CubeNetPuzzle key={o.id} cells={o.cells} initialRemoved={o.removed} initialFolded={folded.has(o.id)}/>)}
     {counters.map(o=><div key={o.id} className={"dsl-counters "+(highlighted.has(o.id)?"hot":"")}>{Array.from({length:Math.min(o.count,60)},(_,i)=><i key={i}/>)}</div>)}

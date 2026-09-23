@@ -47,4 +47,24 @@ assert.equal(puzzle.cells.length,7);
 assert.equal(puzzle.removed,"3");
 assert(cubeNet.folded.has("puzzle"));
 
-console.log("MATH_DSL=PASS move=true morph=true net=true fold=true rotate=true cubenet=true");
+
+
+const overlay=parseMathDsl([
+  "IMAGE img /local-assets/australian-amc/pre-a/sample-2/en/q10.png",
+  "SPOT s1 50 50 中心",
+  "TRACE tr 10,10|50,50|90,20",
+  "PICK p1 25 80 wrong A",
+  "PICK p2 75 80 correct B",
+  "CUBEFACES cube ○ □ ♣ ♦ ♥ ♠",
+  "HIGHLIGHT s1",
+]);
+assert.equal(overlay.objects.filter(o=>o.kind==="image").length,1);
+assert.equal(overlay.objects.filter(o=>o.kind==="spot").length,1);
+assert.equal(overlay.objects.filter(o=>o.kind==="trace").length,1);
+assert.equal(overlay.objects.filter(o=>o.kind==="pick").length,2);
+const faces=overlay.objects.find(o=>o.kind==="cubefaces");
+assert(faces&&faces.kind==="cubefaces");
+assert.equal(faces.labels[0],"○");
+assert(overlay.highlighted.has("s1"));
+
+console.log("MATH_DSL=PASS move=true morph=true net=true fold=true rotate=true cubenet=true overlay=true cubefaces=true");

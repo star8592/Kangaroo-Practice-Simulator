@@ -46,6 +46,27 @@ for sample in (1,2):
             af=ROOT/"public"/audio.lstrip("/")
             assert af.exists() and af.stat().st_size>1000, (q["id"],audio)
 
+
+
+# High-value visual questions must expose deterministic interaction, not only a static source image.
+visual_requirements={
+    "au-amc-pre-a-s1-q08":"PICK ",
+    "au-amc-pre-a-s1-q12":"PICK ",
+    "au-amc-pre-a-s1-q14":"PICK ",
+    "au-amc-pre-a-s1-q19":"PICK ",
+    "au-amc-pre-a-s2-q02":"TRACE ",
+    "au-amc-pre-a-s2-q10":"SPOT ",
+    "au-amc-pre-a-s2-q14":"SPOT ",
+    "au-amc-pre-a-s2-q15":"PICK ",
+    "au-amc-pre-a-s2-q17":"PICK ",
+    "au-amc-pre-a-s2-q19":"CUBEFACES ",
+}
+for qid,command in visual_requirements.items():
+    d=json.loads((SOL/f"{qid}.json").read_text())
+    reason=next(x for x in d["scenes"] if x["id"]=="reason")
+    script=(reason.get("renderSpec") or {}).get("script") or []
+    assert any(x.startswith(command) for x in script),(qid,command)
+
 # Two independently checked regression answers.
 s2=json.loads((ROOT/"private/exams/au-amc-pre-a-sample-2.json").read_text())
 assert s2["questions"][9]["answer"]=="E", "Sample 2 Q10 triple-overlap answer must be E=4"
@@ -54,4 +75,4 @@ assert "A、B、C、D、E、F" in json.loads((ROOT/"private/exams/au-amc-pre-a-s
 assert all(x in s2["questions"][18]["stem"] for x in ("♣","♦","♥","♠","□","○"))
 assert all(x in s2["questions"][18]["stemEn"] for x in ("♣","♦","♥","♠","□","○"))
 
-print(f"PRE_A_GRADE1_READY=PASS questions={total} verified={total} assets={total*2} audio_scenes={total*3}")
+print(f"PRE_A_GRADE1_READY=PASS questions={total} verified={total} assets={total*2} audio_scenes={total*3} interactive_visuals=10")

@@ -31,18 +31,21 @@ export default function ThreeSolidScene({faceLabels}:{faceLabels?:Record<string,
       const textures: Array<InstanceType<typeof THREE.CanvasTexture>> = [];
       const makeMaterial = (bg: string, label?: string) => {
         const canvas = document.createElement("canvas");
-        canvas.width = 512; canvas.height = 512;
+        canvas.width = 1024; canvas.height = 1024;
         const ctx = canvas.getContext("2d")!;
-        ctx.fillStyle = bg; ctx.fillRect(0, 0, 512, 512);
-        ctx.strokeStyle = "#27362d"; ctx.lineWidth = 16; ctx.strokeRect(8, 8, 496, 496);
+        ctx.fillStyle = bg; ctx.fillRect(0, 0, 1024, 1024);
+        ctx.strokeStyle = "#27362d"; ctx.lineWidth = 28; ctx.strokeRect(14, 14, 996, 996);
         if (label) {
           ctx.fillStyle = "#27362d";
-          ctx.font = "900 210px sans-serif";
+          ctx.font = "900 420px 'Noto Sans Symbols 2', 'DejaVu Sans', sans-serif";
           ctx.textAlign = "center"; ctx.textBaseline = "middle";
-          ctx.fillText(label, 256, 272);
+          ctx.fillText(label, 512, 540);
         }
         const texture = new THREE.CanvasTexture(canvas);
         texture.colorSpace = THREE.SRGBColorSpace;
+        texture.anisotropy = renderer.capabilities.getMaxAnisotropy();
+        texture.minFilter = THREE.LinearMipmapLinearFilter;
+        texture.magFilter = THREE.LinearFilter;
         textures.push(texture);
         return new THREE.MeshStandardMaterial({ map: texture, roughness: 0.52, metalness: 0.03 });
       };
