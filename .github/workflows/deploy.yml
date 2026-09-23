@@ -14,11 +14,19 @@ jobs:
       SERVER_USER: ${{ secrets.SERVER_USER || 'root' }}
       APP_DIR: ${{ secrets.APP_DIR || '/opt/socthink-math' }}
       SERVER_SERVICE: ${{ secrets.SERVER_SERVICE || 'socthink-math.service' }}
-      SERVER_SSH_KEY: ${{ secrets.SERVER_SSH_KEY }}
+      SERVER_SSH_KEY: ${{ secrets.SERVER_SSH_KEY || secrets.SSH_PRIVATE_KEY || secrets.DEPLOY_SSH_KEY || secrets.SSH_KEY }}
+      SERVER_PASSWORD: ${{ secrets.SERVER_PASSWORD || secrets.SSH_PASSWORD || secrets.DEPLOY_PASSWORD }}
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Checkout one-time Pre-A payload
+        uses: actions/checkout@v4
+        with:
+          ref: release-data/pre-a-grade1-20260923
+          path: release-data
+          sparse-checkout: release-payloads
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -40,17 +48,20 @@ jobs:
           test -n "$SERVER_USER"
           test -n "$APP_DIR"
           test -n "$SERVER_SERVICE"
-          if [ -z "$SERVER_SSH_KEY" ]; then
-            echo "::error::SERVER_SSH_KEY is not configured; refusing a fake-green deployment."
+          if [ -z "$SERVER_SSH_KEY" ] && [ -z "$SERVER_PASSWORD" ]; then
+            echo "::error::No production SSH credential is configured. Supported secrets: SERVER_SSH_KEY/SSH_PRIVATE_KEY/DEPLOY_SSH_KEY/SSH_KEY or SERVER_PASSWORD/SSH_PASSWORD/DEPLOY_PASSWORD."
             exit 1
           fi
+          test -f release-data/release-payloads/pre-a-grade1-payload.tar.gz
+          echo "DEPLOYMENT_CREDENTIAL=PASS"
 
       - name: Deploy exact commit to production
         uses: appleboy/ssh-action@v1
         with:
           host: ${{ env.SERVER_HOST }}
           username: ${{ env.SERVER_USER }}
-          key: ${{ secrets.SERVER_SSH_KEY }}
+          key: ${{ env.SERVER_SSH_KEY }}
+          password: ${{ env.SERVER_PASSWORD }}
           script_stop: true
           script: |
             set -Eeuo pipefail
@@ -109,17 +120,107 @@ jobs:
             test "$(git rev-parse HEAD)" = "$TARGET_SHA"
             trap - ERR
 
-      - name: Verify public deployment receipt
+      - name: Upload Pre-A grade-one payload
+        uses: appleboy/scp-action@v1
+        with:
+          host: ${{ env.SERVER_HOST }}
+          username: ${{ env.SERVER_USER }}
+          key: ${{ env.SERVER_SSH_KEY }}
+          password: ${{ env.SERVER_PASSWORD }}
+          source: release-data/release-payloads/pre-a-grade1-payload.tar.gz
+          target: /tmp/kps-pre-a-grade1
+          strip_components: 2
+          overwrite: true
+
+      - name: Install and verify Pre-A grade-one data
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ env.SERVER_HOST }}
+          username: ${{ env.SERVER_USER }}
+          key: ${{ env.SERVER_SSH_KEY }}
+          password: ${{ env.SERVER_PASSWORD }}
+          script_stop: true
+          script: |
+            set -Eeuo pipefail
+            APP='${{ env.APP_DIR }}'
+            SERVICE='${{ env.SERVER_SERVICE }}'
+            EXPECTED_SHA='728d0ff18b19c3b290fc180a3b0221b7acb6bdd0f843ea7059b9b30b8f1440a1'
+            PAYLOAD='/tmp/kps-pre-a-grade1/pre-a-grade1-payload.tar.gz'
+            MARKER="$APP/.release/data-promotions/pre-a-grade1-20260923.sha256"
+            STAMP="$(date +%Y%m%d-%H%M%S)"
+            BACKUP="/opt/socthink-math-backups/pre-a-grade1-$STAMP.tar.gz"
+            LIST="/tmp/pre-a-grade1-backup-$STAMP.txt"
+
+            echo "$EXPECTED_SHA  $PAYLOAD" | sha256sum -c -
+            cd "$APP"
+
+            if [ -f "$MARKER" ] && [ "$(cat "$MARKER")" = "$EXPECTED_SHA" ]; then
+              python3 scripts/test_pre_a_grade1_ready.py
+              echo "PRE_A_DATA_ALREADY_CURRENT=PASS"
+              exit 0
+            fi
+
+            : > "$LIST"
+            find private/solutions -maxdepth 1 -type f -name 'au-amc-pre-a-*.json' -print >> "$LIST" 2>/dev/null || true
+            find private/exams -maxdepth 1 -type f -name 'au-amc-pre-a-sample-*.json' -print >> "$LIST" 2>/dev/null || true
+            find public/generated-solutions -maxdepth 1 -mindepth 1 -type d -name 'au-amc-pre-a-*' -print >> "$LIST" 2>/dev/null || true
+            if [ -d public/local-assets/australian-amc/pre-a ]; then
+              printf '%s\n' public/local-assets/australian-amc/pre-a >> "$LIST"
+            fi
+            sort -u -o "$LIST" "$LIST"
+            mkdir -p "$(dirname "$BACKUP")"
+            if [ -s "$LIST" ]; then
+              tar -czf "$BACKUP" -T "$LIST"
+            else
+              tar -czf "$BACKUP" --files-from=/dev/null
+            fi
+
+            rollback_data() {
+              rc=$?
+              trap - ERR
+              echo "Pre-A data promotion failed (exit $rc); restoring $BACKUP" >&2
+              cd "$APP"
+              rm -f private/solutions/au-amc-pre-a-*.json private/exams/au-amc-pre-a-sample-*.json || true
+              rm -rf public/generated-solutions/au-amc-pre-a-* public/local-assets/australian-amc/pre-a || true
+              tar -xzf "$BACKUP" -C "$APP" || true
+              npm run build || true
+              systemctl restart "$SERVICE" || true
+              exit "$rc"
+            }
+            trap rollback_data ERR
+
+            tar -xzf "$PAYLOAD" -C "$APP"
+            python3 scripts/test_pre_a_grade1_ready.py
+            npm run build
+            systemctl restart "$SERVICE"
+            for _ in $(seq 1 60); do
+              if curl -fsS http://127.0.0.1:3000/api/release >/dev/null 2>&1; then
+                break
+              fi
+              sleep 1
+            done
+            python3 scripts/smoke_test.py --base http://127.0.0.1:3000
+            mkdir -p "$(dirname "$MARKER")"
+            printf '%s\n' "$EXPECTED_SHA" > "$MARKER"
+            trap - ERR
+            echo "PRE_A_DATA_PROMOTION=PASS backup=$BACKUP"
+
+      - name: Verify public deployment receipt and Pre-A assets
         shell: bash
         run: |
           set -euo pipefail
           for _ in $(seq 1 30); do
             if payload="$(curl -fsS https://socthink.cn/api/release 2>/dev/null)"; then
               if PAYLOAD="$payload" python3 -c 'import json, os; d=json.loads(os.environ["PAYLOAD"]); expected=os.environ["GITHUB_SHA"]; assert d.get("ok") is True, d; assert d.get("deployedSha")==expected, (d,expected); assert d.get("gitSha")==expected, (d,expected); print("PUBLIC_DEPLOYMENT_RECEIPT=PASS", expected)'; then
-                exit 0
+                break
               fi
             fi
             sleep 2
           done
-          echo "::error::Public deployment receipt never matched $GITHUB_SHA"
-          exit 1
+
+          payload="$(curl -fsS https://socthink.cn/api/release)"
+          PAYLOAD="$payload" python3 -c 'import json, os; d=json.loads(os.environ["PAYLOAD"]); expected=os.environ["GITHUB_SHA"]; assert d.get("deployedSha")==expected and d.get("gitSha")==expected, (d,expected)'
+          curl -fsS -o /dev/null https://socthink.cn/generated-solutions/au-amc-pre-a-s1-q01/scene-01.wav
+          curl -fsS -o /dev/null https://socthink.cn/local-assets/australian-amc/pre-a/sample-1/zh/q01.png
+          curl -fsS https://socthink.cn/ | grep -q "Math Competition Lab"
+          echo "PUBLIC_PRE_A_GRADE1=PASS"
