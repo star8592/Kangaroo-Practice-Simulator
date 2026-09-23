@@ -89,4 +89,17 @@ assert "A、B、C、D、E、F" in json.loads((ROOT/"private/exams/au-amc-pre-a-s
 assert all(x in s2["questions"][18]["stem"] for x in ("♣","♦","♥","♠","□","○"))
 assert all(x in s2["questions"][18]["stemEn"] for x in ("♣","♦","♥","♠","□","○"))
 
-print(f"PRE_A_GRADE1_READY=PASS questions={total} verified={total} assets={total*2} audio_scenes={total*3} interactive_visuals=10")
+interactive_commands={"IMAGE","SPOT","TRACE","PICK","FLIPCARD","CHASE","CUBEFACES","CUBENET","NET","CUBE"}
+interactive_visuals=0
+for sp in SOL.glob("au-amc-pre-a-*.json"):
+    d=json.loads(sp.read_text())
+    commands=set()
+    for scene in d.get("scenes") or []:
+        for line in ((scene.get("renderSpec") or {}).get("script") or []):
+            parts=line.split()
+            if parts: commands.add(parts[0])
+    if commands & interactive_commands:
+        interactive_visuals+=1
+assert interactive_visuals>=20, interactive_visuals
+
+print(f"PRE_A_GRADE1_READY=PASS questions={total} verified={total} assets={total*2} audio_scenes={total*3} interactive_visuals={interactive_visuals}")
