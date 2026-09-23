@@ -13,6 +13,24 @@ HARD = {
     "no_ocr_native_text_consensus": 40,
 }
 
+
+def route_for(reason, consensus, engines):
+    mineru_ok=engines.get("mineru",{}).get("status")=="OK"
+    paddle_ok=engines.get("paddleocr",{}).get("status")=="OK"
+    if reason=="formula_sensitive":
+        return "FORMULA_LAYOUT_REVIEW", "FORMULA_HIGH_RISK"
+    if reason=="visual_sensitive":
+        return "VISUAL_VLM_REVIEW", "VISUAL_DEPENDENCY"
+    if reason=="question_or_choices_not_structured":
+        return "RECROP_OR_LAYOUT_RECONSTRUCTION", "STRUCTURE_INCOMPLETE"
+    if reason=="no_ocr_native_text_consensus":
+        if not mineru_ok:
+            return "MINERU_VLM_ESCALATION", "MULTI_ENGINE_CONFLICT"
+        if not paddle_ok:
+            return "PADDLE_OCR_ESCALATION", "MULTI_ENGINE_CONFLICT"
+        return "CONFLICT_ARBITRATION", "MULTI_ENGINE_CONFLICT"
+    return "MANUAL_SOURCE_REVIEW", "OTHER"
+
 def main():
     ap=argparse.ArgumentParser()
     ap.add_argument("--root",type=Path,default=Path(__file__).resolve().parents[1])
@@ -31,12 +49,15 @@ def main():
             continue
         engines=d.get("engines",{})
         consensus=d.get("consensus",{})
+        route,risk_class=route_for(reason,consensus.get("status"),engines)
         rows.append({
             "examId":key[0],
             "questionNo":key[1],
             "priority":HARD.get(reason,50),
             "reason":reason,
             "consensus":consensus.get("status"),
+            "riskClass":risk_class,
+            "route":route,
             "engines":{
                 name:{
                     "status":e.get("status"),
@@ -60,6 +81,8 @@ def main():
             "questions":len(rows),
             "reasons":dict(Counter(x["reason"] for x in rows)),
             "consensus":dict(Counter(x["consensus"] for x in rows)),
+            "routes":dict(Counter(x["route"] for x in rows)),
+            "riskClasses":dict(Counter(x["riskClass"] for x in rows)),
         },
         "questions":rows,
     },ensure_ascii=False,indent=2))

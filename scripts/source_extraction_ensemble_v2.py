@@ -405,6 +405,7 @@ def main() -> int:
     ap.add_argument("--only-unverified", action="store_true")
     ap.add_argument("--force", action="store_true", help="reprocess records already present in the ensemble index")
     ap.add_argument("--prior-consensus", help="comma-separated existing ensemble statuses to reprocess/escalate")
+    ap.add_argument("--skip-engine-ok", help="skip records whose existing manifest already has this engine with status OK")
     ap.add_argument("--dpi", type=int, default=300)
     ap.add_argument("--mineru", action="store_true")
     ap.add_argument("--mineru-cmd", default=os.environ.get("MINERU_CMD", "mineru-kit"))
@@ -441,6 +442,15 @@ def main() -> int:
             continue
         if wanted_prior and prior_status.get(key) not in wanted_prior:
             continue
+        if args.skip_engine_ok:
+            mp = root / "private/source-extraction-v2" / j["examId"] / f"q{j['questionNo']:02d}" / "manifest.json"
+            if mp.exists():
+                try:
+                    prior_manifest = json.loads(mp.read_text())
+                    if prior_manifest.get("engines", {}).get(args.skip_engine_ok, {}).get("status") == "OK":
+                        continue
+                except Exception:
+                    pass
         if args.only_unverified and not args.force and not wanted_prior and key in already_processed:
             continue
         ep = root / "private/exams" / f"{j['examId']}.json"

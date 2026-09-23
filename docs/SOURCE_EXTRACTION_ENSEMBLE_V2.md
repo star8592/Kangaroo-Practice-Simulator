@@ -63,6 +63,7 @@ python3 scripts/audit_source_digitization.py
 python3 scripts/source_extraction_ensemble_v2.py \
   --only-unverified --source-origin existing_ocr --exam-prefix pt- \
   --prior-consensus ENGINE_CONFLICT,FIELD_CONSENSUS_NATIVE_OCR,NATIVE_ONLY_TEXT_CONSENSUS,OCR_ONLY_TEXT_CONSENSUS \
+  --skip-engine-ok mineru \
   --limit 100 --mineru --mineru-tier standard --paddleocr --paddle-device gpu:0
 ```
 
@@ -72,3 +73,5 @@ python3 scripts/source_extraction_ensemble_v2.py \
 ## Local GPU validation
 
 On the current RTX 5070 Ti (sm_120), PaddlePaddle 3.4.0 + CUDA 13.0 successfully executes tensors on `gpu:0`. A warm PP-OCRv6 worker processed the Q2 smoke image in about 0.067 s per repeated inference after model initialization. This is the preferred fast-pass backend on this host.
+
+`--skip-engine-ok mineru` makes VLM escalation resumable: already successful MinerU records are skipped instead of being reprocessed on every batch.
