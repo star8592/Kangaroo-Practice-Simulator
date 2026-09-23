@@ -83,6 +83,9 @@ for sample,exam_path,pdf,zh_pages,en_pages in CONFIG:
         meta["textLayer"]="pdftotext-layout"
     # Symbol-rich questions need explicit text because PDF extraction strips glyphs.
     if sample==1:
+        q8=data["questions"][7]
+        q8["answer"]="C"
+        q8.setdefault("sourceMeta",{})["answerCorrection"]="Supplied answer page says A; original Kangaroo wording requires no-rotation overlay and local option C is the exact segment union. Corrected A -> C on 2026-09-23."
         q20=data["questions"][19]
         q20["stem"]="如图，字母 A、B、C、D、E、F 分别代表6个人。箭头从一个人指向另一个人，表示前者比后者高。例如 B→A 表示 B 比 A 高。请问谁最矮？"
     # Known source-layer quirks / independently verified correction.
