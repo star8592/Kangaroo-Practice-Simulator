@@ -37,6 +37,14 @@ for sample in (1,2):
         scenes=s.get("scenes") or []
         assert 2<=len(scenes)<=12
         assert all(str(x.get("narration") or "").strip() for x in scenes)
+        mat=s.get("materialization") or {}
+        assert mat.get("audioReady") is True, q["id"]
+        assert mat.get("audioNarrationHash"), q["id"]
+        for scene in scenes:
+            audio=scene.get("audioUrl")
+            assert audio and audio.startswith("/generated-solutions/"), (q["id"],audio)
+            af=ROOT/"public"/audio.lstrip("/")
+            assert af.exists() and af.stat().st_size>1000, (q["id"],audio)
 
 # Two independently checked regression answers.
 s2=json.loads((ROOT/"private/exams/au-amc-pre-a-sample-2.json").read_text())
@@ -46,4 +54,4 @@ assert "A、B、C、D、E、F" in json.loads((ROOT/"private/exams/au-amc-pre-a-s
 assert all(x in s2["questions"][18]["stem"] for x in ("♣","♦","♥","♠","□","○"))
 assert all(x in s2["questions"][18]["stemEn"] for x in ("♣","♦","♥","♠","□","○"))
 
-print(f"PRE_A_GRADE1_READY=PASS questions={total} verified={total} assets={total*2}")
+print(f"PRE_A_GRADE1_READY=PASS questions={total} verified={total} assets={total*2} audio_scenes={total*3}")

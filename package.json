@@ -34,7 +34,8 @@
     "verify:public": "bash ops/automation/quality_gate.sh public",
     "verify:full": "bash ops/automation/quality_gate.sh full",
     "test:cube-net": "tsx scripts/test_cube_net.ts",
-    "test:pre-a-grade1": "python3 scripts/test_pre_a_grade1_ready.py"
+    "test:pre-a-grade1": "python3 scripts/test_pre_a_grade1_ready.py",
+    "solution:factory:publish": "python3 scripts/run_solution_factory.py --publish"
   },
   "dependencies": {
     "next": "16.3.5",
