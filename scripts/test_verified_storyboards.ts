@@ -3,7 +3,7 @@ import path from "node:path";
 import { loadVerifiedSolution } from "../src/lib/solution-store";
 
 const exam=JSON.parse(fs.readFileSync(path.join(process.cwd(),"private/exams/maa-amc8-2024-user-owned.json"),"utf8"));
-const answers=new Map<number,string>(exam.questions.map((q:any)=>[q.questionNo,q.answer]));
+const answers=new Map<number,string>(exam.questions.map((q:{questionNo:number;answer:string})=>[q.questionNo,q.answer]));
 const expected=Array.from({length:25},(_,i)=>i+1);
 for(const q of expected){
   const id="maa-amc8-2024-q"+String(q).padStart(2,"0");

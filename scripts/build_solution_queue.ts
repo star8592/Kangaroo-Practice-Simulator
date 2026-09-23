@@ -43,7 +43,13 @@ const verified=new Set(
     : []
 );
 
-const rows:any[]=[];
+type QueueRow = {
+  questionId:string; examId:string; competitionId:string; formatId:string; paperType:string;
+  year:number|null; questionNo:number; concept:string; officialAnswer:string; sourceAsset:string|null;
+  verified:boolean; priority:number;
+  telemetry:{attempts:number;wrong:number;blank:number;correct:number;dwellMs:number;changes:number;flags:number;errorRate:number};
+};
+const rows:QueueRow[]=[];
 const seen=new Set<string>();
 for(const name of fs.readdirSync(examsDir).filter(x=>x.endsWith(".json")&&!x.includes("before-bilingual"))){
   let b:Bundle;

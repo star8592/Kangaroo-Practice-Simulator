@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import type { SolutionBook } from "@/lib/solution-books";
 import { solutionBookPageUrl, verifiedPagesForQuestion } from "@/lib/solution-books";
 import type { DisplayLang } from "@/lib/display";
@@ -44,9 +44,17 @@ export default function SolutionBookViewer({
   const verified = useMemo(() => questionNo ? verifiedPagesForQuestion(book, questionNo) : [], [book, questionNo]);
   const initial = verified[0] ?? 1;
   const [open, setOpen] = useState(false);
-  const [page, setPage] = useState(initial);
+  const pageKey = `${book.id}:${questionNo ?? "book"}:${initial}`;
+  const [pageState, setPageState] = useState({ key: pageKey, page: initial });
+  const page = pageState.key === pageKey ? pageState.page : initial;
+  const updatePage = (next: number | ((current: number) => number)) => {
+    setPageState((previous) => {
+      const current = previous.key === pageKey ? previous.page : initial;
+      const value = typeof next === "function" ? next(current) : next;
+      return { key: pageKey, page: value };
+    });
+  };
 
-  useEffect(() => setPage(initial), [initial, questionNo]);
   const url = solutionBookPageUrl(book, page);
   const label = lang === "en" ? book.labelEn : book.labelZh;
   const note = lang === "en" ? book.noteEn : book.noteZh;
@@ -77,7 +85,7 @@ export default function SolutionBookViewer({
         </a>
       </div>
       <div className="solution-book-controls">
-        <button className="secondary-button" disabled={page <= 1} onClick={() => setPage(p => Math.max(1, p - 1))}>{ui.prev}</button>
+        <button className="secondary-button" disabled={page <= 1} onClick={() => updatePage(p => Math.max(1, p - 1))}>{ui.prev}</button>
         <label>
           <span>{ui.page}</span>
           <input
@@ -85,12 +93,12 @@ export default function SolutionBookViewer({
             value={page}
             onChange={e => {
               const n = Number(e.target.value);
-              if (Number.isFinite(n)) setPage(Math.max(1, Math.min(book.totalPages, Math.trunc(n) || 1)));
+              if (Number.isFinite(n)) updatePage(Math.max(1, Math.min(book.totalPages, Math.trunc(n) || 1)));
             }}
           />
           <span>/ {book.totalPages}</span>
         </label>
-        <button className="secondary-button" disabled={page >= book.totalPages} onClick={() => setPage(p => Math.min(book.totalPages, p + 1))}>{ui.next}</button>
+        <button className="secondary-button" disabled={page >= book.totalPages} onClick={() => updatePage(p => Math.min(book.totalPages, p + 1))}>{ui.next}</button>
         <a className="secondary-button solution-book-open" href={url} target="_blank" rel="noreferrer">{ui.open}</a>
       </div>
       <p className="solution-book-note">{verified.length ? `${ui.verified}: ${verified.join(", ")}` : (note || ui.whole)}</p>

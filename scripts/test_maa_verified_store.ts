@@ -20,7 +20,7 @@ for(const name of fs.readdirSync(sols).filter(x=>/^maa-.*-q\d+\.json$/.test(x)).
   if(!official) throw new Error(id+": no local official answer");
   if(raw.verification?.officialAnswer!==official||raw.verification?.derivedAnswer!==official) throw new Error(id+": answer mismatch");
   const pages=Array.isArray(raw.verification?.evidencePages)&&raw.verification.evidencePages.length>0;
-  const urls=Array.isArray(raw.verification?.evidenceUrls)&&raw.verification.evidenceUrls.some((u:any)=>typeof u==="string"&&/^https?:\/\//.test(u));
+  const urls=Array.isArray(raw.verification?.evidenceUrls)&&raw.verification.evidenceUrls.some((u:unknown)=>typeof u==="string"&&/^https?:\/\//.test(u));
   if(!pages&&!urls) throw new Error(id+": missing exact-page or independent-url evidence");
   if(typeof raw.verification?.evidenceBook!=="string"||!raw.verification.evidenceBook) throw new Error(id+": evidenceBook missing");
   if(!loadVerifiedSolution(id)) throw new Error(id+": verified loader rejected");
