@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 import { useMemo, useState } from "react";
 import type { SolutionBook } from "@/lib/solution-books";
 import { solutionBookPageUrl, verifiedPagesForQuestion } from "@/lib/solution-books";
@@ -81,7 +82,7 @@ export default function SolutionBookViewer({
       </header>
       <div className="solution-book-page">
         <a href={url} target="_blank" rel="noreferrer" title={ui.open}>
-          <img src={url} alt={`${label} · ${ui.page} ${page}`} loading="lazy" />
+          <Image src={url} alt={`${label} · ${ui.page} ${page}`} width={1200} height={1700} loading="lazy" unoptimized />
         </a>
       </div>
       <div className="solution-book-controls">

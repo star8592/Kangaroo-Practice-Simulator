@@ -66,8 +66,13 @@ export function buildProfileSnapshot(
   return {
     studentId,
     skills: Array.from(map.values()).map(
-      ({ responseTimeTotalMs: _total, responseTimeSamples: _samples, ...skill }) =>
+      ({ skill, attempts, correct, accuracy, averageResponseTimeMs }) => ({
         skill,
+        attempts,
+        correct,
+        accuracy,
+        averageResponseTimeMs,
+      }),
     ),
   };
 }

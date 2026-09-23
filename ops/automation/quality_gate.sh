@@ -22,7 +22,7 @@ fi
 
 step "arithmetic regression" npm run test:arithmetic
 step "A4 personalization regression" npm run test:arithmetic-print
-step "eslint" npm run lint
+step "eslint" npm run lint -- --max-warnings=0
 step "typescript" npx tsc --noEmit
 if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
   step "diff whitespace" git diff --check

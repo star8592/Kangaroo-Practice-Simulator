@@ -38,4 +38,4 @@ Every feature follows one engineering flow:
 - Deploy exact committed SHAs, not working-tree state.
 - Never declare deployment success before staging, live health checks, and release receipt pass.
 - Never overwrite runtime private/, public/local-assets/, or generated-solution data.
-- Keep unrelated changes out of feature commits.
+- Keep unrelated changes out of feature commits.\n- Keep staging, recovery, and build-backup artifacts outside the repository root.
