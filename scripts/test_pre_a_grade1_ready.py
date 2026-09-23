@@ -1,9 +1,20 @@
 #!/usr/bin/env python3
-import json
+import hashlib, json
 from pathlib import Path
 
 ROOT=Path(__file__).resolve().parents[1]
 SOL=ROOT/"private/solutions"
+
+def narration_hash(data):
+    core=[]
+    for scene in data.get("scenes") or []:
+        core.append({
+            "id":scene.get("id"),
+            "narration":scene.get("narration"),
+            "voiceDirection":((scene.get("renderSpec") or {}).get("voiceDirection") or ""),
+        })
+    raw=json.dumps(core,ensure_ascii=False,sort_keys=True,separators=(",",":")).encode()
+    return hashlib.sha256(raw).hexdigest()
 
 total=0
 for sample in (1,2):
@@ -39,7 +50,7 @@ for sample in (1,2):
         assert all(str(x.get("narration") or "").strip() for x in scenes)
         mat=s.get("materialization") or {}
         assert mat.get("audioReady") is True, q["id"]
-        assert mat.get("audioNarrationHash"), q["id"]
+        assert mat.get("audioNarrationHash")==narration_hash(s), (q["id"],"stale audio")
         for scene in scenes:
             audio=scene.get("audioUrl")
             assert audio and audio.startswith("/generated-solutions/"), (q["id"],audio)
@@ -68,6 +79,9 @@ for qid,command in visual_requirements.items():
     assert any(x.startswith(command) for x in script),(qid,command)
 
 # Two independently checked regression answers.
+s1=json.loads((ROOT/"private/exams/au-amc-pre-a-sample-1.json").read_text())
+assert s1["questions"][7]["answer"]=="C", "Sample 1 Q8 no-rotation transparent overlay must be C"
+
 s2=json.loads((ROOT/"private/exams/au-amc-pre-a-sample-2.json").read_text())
 assert s2["questions"][9]["answer"]=="E", "Sample 2 Q10 triple-overlap answer must be E=4"
 assert s2["questions"][18]["answer"]=="A", "Sample 2 Q19 square-opposite face must be circle=A"

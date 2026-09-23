@@ -78,6 +78,11 @@ def answers(pdf: Path, page: int):
     if len(out)!=25: raise RuntimeError(f'answer count {len(out)} != 25 for {pdf.name}')
     return out
 
+ANSWER_CORRECTIONS = {
+    (1, 8): ('C', 'Supplied answer page says A; original Kangaroo wording requires no-rotation overlay and local option C is the exact segment union.'),
+    (2, 19): ('A', 'Supplied answer page says D; cube adjacency proves square is opposite circle, local option A.'),
+}
+
 def points(q):
     if q<=10:return 3
     if q<=20:return 4
@@ -87,6 +92,8 @@ def points(q):
 
 def build_bundle(sample:int,cfg):
     pdf=cfg['pdf']; ans=answers(pdf,cfg['answer_page'])
+    corrections={q:(value,note) for (s,q),(value,note) in ANSWER_CORRECTIONS.items() if s==sample}
+    for q,(value,_) in corrections.items(): ans[q]=value
     build_crops(pdf,cfg['zh_pages'],sample,'zh'); build_crops(pdf,cfg['en_pages'],sample,'en')
     profile={
       'id':f'au-amc-pre-a-sample-{sample}',
@@ -116,7 +123,7 @@ def build_bundle(sample:int,cfg):
           'choices':CHOICES if mode=='choice' else [],'choicesEn':CHOICES if mode=='choice' else [],
           'answer':ans[q],'solution':'','sourceFile':str(pdf),'studentAssetUrlZh':f'{base}/zh/q{q:02d}.png',
           'studentAssetUrlEn':f'{base}/en/q{q:02d}.png','verified':True,'examReady':True,
-          'sourceMeta':{'competition':'Australian AMC','collection':'Pre-A','sample':sample,'officialSupplied':True},
+          'sourceMeta':{'competition':'Australian AMC','collection':'Pre-A','sample':sample,'officialSupplied':True,**({'answerCorrection':corrections[q][1]} if q in corrections else {})},
         })
     EXAM_ROOT.mkdir(parents=True,exist_ok=True)
     out=EXAM_ROOT/f"{profile['id']}.json"; out.write_text(json.dumps({'profile':profile,'questions':qs},ensure_ascii=False,indent=2),encoding='utf-8')
