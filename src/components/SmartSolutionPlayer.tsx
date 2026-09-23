@@ -49,16 +49,29 @@ function VisualStage({ scene }: { scene: SolutionScene }) {
   return <div className="solution-empty-visual"><span>🦘</span><strong>先把题意说清楚，再决定画什么图。</strong><small>不确定的图，系统宁可不乱画。</small></div>;
 }
 
-function speak(text: string, rate: number) {
-  if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
-  window.speechSynthesis.cancel();
+function speak(text: string, rate: number, onDone: () => void) {
+  if (typeof window === "undefined" || !("speechSynthesis" in window)) return false;
+  const synth = window.speechSynthesis;
+  synth.cancel();
   const utterance = new SpeechSynthesisUtterance(text);
   utterance.lang = "zh-CN";
-  utterance.rate = rate;
-  utterance.pitch = 1.08;
-  const voices = window.speechSynthesis.getVoices();
-  utterance.voice = voices.find((v) => /zh|Chinese|Xiaoxiao|Tingting/i.test(`${v.lang} ${v.name}`)) || null;
-  window.speechSynthesis.speak(utterance);
+  utterance.rate = Math.max(0.75, Math.min(1.2, rate * 0.96));
+  utterance.pitch = 1.02;
+  const voices = synth.getVoices();
+  const preferred = [
+    /Xiaoxiao/i,
+    /Tingting/i,
+    /Meijia/i,
+    /Sinji/i,
+    /zh-CN|Chinese/i,
+  ];
+  utterance.voice = preferred
+    .map((pattern) => voices.find((voice) => pattern.test(`${voice.lang} ${voice.name}`)))
+    .find(Boolean) || null;
+  utterance.onend = onDone;
+  utterance.onerror = onDone;
+  synth.speak(utterance);
+  return true;
 }
 
 export default function SmartSolutionPlayer(props: Props) {
@@ -68,7 +81,7 @@ export default function SmartSolutionPlayer(props: Props) {
   const [open, setOpen] = useState(false);
   const [index, setIndex] = useState(0);
   const [playing, setPlaying] = useState(false);
-  const [voiceOn, setVoiceOn] = useState(false);
+  const [autoStartPending, setAutoStartPending] = useState(false);
   const [rate, setRate] = useState(1);
   const scene = storyboard.scenes[index];
 
@@ -83,36 +96,103 @@ export default function SmartSolutionPlayer(props: Props) {
           setIndex(0);
         }
       })
-      .catch(() => undefined);
+      .catch(() => undefined)
+      .finally(() => {
+        if (!cancelled && autoStartPending) {
+          window.dispatchEvent(new CustomEvent("smart-solution-start", { detail: { questionId: props.questionId } }));
+          setAutoStartPending(false);
+          setPlaying(true);
+        }
+      });
     return () => { cancelled = true; };
-  }, [open, props.questionId, verified]);
+  }, [autoStartPending, open, props.questionId, verified]);
 
   useEffect(() => {
-    if (!open || !scene || !voiceOn) return;
-    let audio: HTMLAudioElement | null = null;
-    if (scene.audioUrl) {
-      audio = new Audio(scene.audioUrl);
-      audio.playbackRate = rate;
-      audio.play().catch(() => speak(scene.narration, rate));
-    } else speak(scene.narration, rate);
-    return () => {
-      audio?.pause();
-      if (typeof window !== "undefined") window.speechSynthesis?.cancel();
+    const stopForOtherPlayer = (event: Event) => {
+      const detail = (event as CustomEvent<{ questionId?: string }>).detail;
+      if (detail?.questionId && detail.questionId !== props.questionId) {
+        setPlaying(false);
+        setAutoStartPending(false);
+      }
     };
-  }, [index, open, voiceOn, rate, scene]);
+    window.addEventListener("smart-solution-start", stopForOtherPlayer);
+    return () => window.removeEventListener("smart-solution-start", stopForOtherPlayer);
+  }, [props.questionId]);
+
+  const startPlayback = () => {
+    window.dispatchEvent(new CustomEvent("smart-solution-start", { detail: { questionId: props.questionId } }));
+    setPlaying(true);
+  };
+
+  const openAndStart = () => {
+    setOpen(true);
+    setIndex(0);
+    if (verified) startPlayback();
+    else setAutoStartPending(true);
+  };
+
   useEffect(() => {
     if (!open || !playing || !scene) return;
-    const timer = window.setTimeout(() => {
-      if (index >= storyboard.scenes.length - 1) setPlaying(false);
-      else setIndex((v) => v + 1);
-    }, scene.durationMs || 6000);
-    return () => window.clearTimeout(timer);
-  }, [open, playing, index, scene, storyboard.scenes.length]);
+
+    let active = true;
+    let audio: HTMLAudioElement | null = null;
+    let fallbackTimer: number | null = null;
+    let transitionTimer: number | null = null;
+    let fallbackStarted = false;
+
+    const advanceScene = () => {
+      if (!active) return;
+      active = false;
+      if (index >= storyboard.scenes.length - 1) {
+        setPlaying(false);
+      } else {
+        setIndex((value) => Math.min(storyboard.scenes.length - 1, value + 1));
+      }
+    };
+
+    const finishScene = () => {
+      if (!active || transitionTimer !== null) return;
+      transitionTimer = window.setTimeout(advanceScene, 420);
+    };
+
+    const playSpeechFallback = () => {
+      if (!active || fallbackStarted) return;
+      fallbackStarted = true;
+      const started = speak(scene.narration, rate, finishScene);
+      if (!started) {
+        const estimate = Math.max(scene.durationMs || 0, 2200 + scene.narration.length * 180);
+        fallbackTimer = window.setTimeout(finishScene, estimate / Math.max(0.75, rate));
+      }
+    };
+
+    if (scene.audioUrl) {
+      audio = new Audio(scene.audioUrl);
+      audio.preload = "auto";
+      audio.playbackRate = rate;
+      audio.onended = finishScene;
+      audio.onerror = playSpeechFallback;
+      audio.play().catch(playSpeechFallback);
+    } else {
+      playSpeechFallback();
+    }
+
+    return () => {
+      active = false;
+      if (fallbackTimer !== null) window.clearTimeout(fallbackTimer);
+      if (transitionTimer !== null) window.clearTimeout(transitionTimer);
+      if (audio) {
+        audio.onended = null;
+        audio.onerror = null;
+        audio.pause();
+      }
+      if (typeof window !== "undefined") window.speechSynthesis?.cancel();
+    };
+  }, [index, open, playing, rate, scene, storyboard.scenes.length]);
 
   if (!open) {
     return <div className="smart-solution-entry">
-      <button className="smart-solution-launch" onClick={() => setOpen(true)}>
-        <span>✨</span><div><strong>动画讲懂这道题</strong><small>数形结合 · 可交互 · 可语音</small></div><b>打开 →</b>
+      <button className="smart-solution-launch" onClick={openAndStart}>
+        <span>✨</span><div><strong>动画讲懂这道题</strong><small>打开即自动连续讲解 · 声音同步</small></div><b>打开 →</b>
       </button>
       {storyboard.requiresGeneration && <p className="solution-quality-note">当前只有官方答案；系统会先展示安全版讲解，不会编造推导。</p>}
     </div>;
@@ -121,7 +201,7 @@ export default function SmartSolutionPlayer(props: Props) {
   return <section className="smart-solution-player">
     <div className="solution-player-head">
       <div><span className="solution-mascot">🦘</span><div><small>Q{props.questionNo} · 数学侦探模式</small><strong>{scene.title}</strong></div></div>
-      <button className="solution-close" onClick={() => { setOpen(false); setPlaying(false); }}>收起</button>
+      <button className="solution-close" onClick={() => { setOpen(false); setPlaying(false); setAutoStartPending(false); }}>收起</button>
     </div>
 
     <div className="solution-stage">
@@ -137,8 +217,11 @@ export default function SmartSolutionPlayer(props: Props) {
 
     <div className="solution-controls">
       <button className="secondary-button" disabled={index === 0} onClick={() => setIndex((v) => Math.max(0, v - 1))}>← 上一步</button>
-      <button className={playing ? "primary-button solution-playing" : "primary-button"} onClick={() => setPlaying((v) => !v)}>{playing ? "暂停一下" : "▶ 自动讲解"}</button>
-      <button className={voiceOn ? "secondary-button active" : "secondary-button"} onClick={() => setVoiceOn((v) => !v)}>{voiceOn ? "🔊 解说开" : "🔈 解说关"}</button>
+      <button
+        className={playing ? "primary-button solution-playing" : "primary-button"}
+        disabled={autoStartPending}
+        onClick={() => playing ? setPlaying(false) : startPlayback()}
+      >{autoStartPending ? "正在准备讲解…" : playing ? "暂停一下" : "▶ 继续讲解"}</button>
       <select aria-label="讲解速度" value={rate} onChange={(e) => setRate(Number(e.target.value))}>
         <option value={0.88}>慢一点</option><option value={1}>正常</option><option value={1.15}>快一点</option>
       </select>
