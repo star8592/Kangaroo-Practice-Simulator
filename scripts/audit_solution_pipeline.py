@@ -1,10 +1,31 @@
 #!/usr/bin/env python3
-import argparse, json
+import argparse, hashlib, json
 from pathlib import Path
 
 ROOT=Path(__file__).resolve().parents[1]
 SOL=ROOT/"private/solutions"
 PUB=ROOT/"public"
+
+def core_hash(data):
+    core=[]
+    for scene in data.get("scenes") or []:
+        core.append({
+            "id":scene.get("id"),"title":scene.get("title"),"narration":scene.get("narration"),
+            "caption":scene.get("caption"),"checkpoint":scene.get("checkpoint"),
+            "visual":scene.get("visual"),"renderSpec":scene.get("renderSpec"),
+        })
+    raw=json.dumps(core,ensure_ascii=False,sort_keys=True,separators=(",",":")).encode()
+    return hashlib.sha256(raw).hexdigest()
+
+def narration_hash(data):
+    core=[]
+    for scene in data.get("scenes") or []:
+        core.append({
+            "id":scene.get("id"),"narration":scene.get("narration"),
+            "voiceDirection":((scene.get("renderSpec") or {}).get("voiceDirection") or ""),
+        })
+    raw=json.dumps(core,ensure_ascii=False,sort_keys=True,separators=(",",":")).encode()
+    return hashlib.sha256(raw).hexdigest()
 
 def scene_directable(s):
     spec=s.get("renderSpec") or {}
@@ -36,15 +57,23 @@ for p in sorted(SOL.glob("*.json")):
              v.get("confidence",0)>=0.65 and 2<=len(scenes)<=12)
     directed=sum(scene_directable(s) for s in scenes)
     interactive=bool(math_ok and scenes and directed==len(scenes))
-    audio=bool(interactive and all(audio_ok(qid,s) for s in scenes))
-    video=bool(audio and video_ok(qid))
+    mat=d.get("materialization") or {}
+    audio_files=bool(interactive and all(audio_ok(qid,s) for s in scenes))
+    narration=narration_hash(d)
+    director=core_hash(d)
+    audio=bool(audio_files and mat.get("audioNarrationHash")==narration)
+    video_file=bool(audio_files and video_ok(qid))
+    video=bool(audio and video_file and mat.get("videoDirectorHash")==director and mat.get("videoAudioHash")==narration)
     if video: stage="VIDEO_READY"
+    elif audio and video_file: stage="STALE_VIDEO"
+    elif audio_files and not audio: stage="STALE_AUDIO"
     elif audio: stage="VOICE_READY"
     elif interactive: stage="VERIFIED_DIRECTOR"
     elif math_ok: stage="VERIFIED_MATH"
     else: stage="NOT_VERIFIED"
     rows.append({"questionId":qid,"stage":stage,"scenes":len(scenes),"directedScenes":directed,
-                 "audioScenes":sum(audio_ok(qid,s) for s in scenes),"video":video_ok(qid)})
+                 "audioScenes":sum(audio_ok(qid,s) for s in scenes),"video":video_ok(qid),
+                 "audioFresh":audio,"videoFresh":video})
 
 from collections import Counter
 counts=Counter(r["stage"] for r in rows)

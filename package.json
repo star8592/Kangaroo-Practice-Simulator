@@ -32,7 +32,8 @@
     "test:math-dsl": "tsx scripts/test_math_dsl.ts",
     "test:arithmetic-print-live": "tsx scripts/smoke_arithmetic_print_live.ts",
     "verify:public": "bash ops/automation/quality_gate.sh public",
-    "verify:full": "bash ops/automation/quality_gate.sh full"
+    "verify:full": "bash ops/automation/quality_gate.sh full",
+    "test:cube-net": "tsx scripts/test_cube_net.ts"
   },
   "dependencies": {
     "next": "16.3.5",

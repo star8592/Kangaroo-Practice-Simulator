@@ -1,6 +1,7 @@
 "use client";
 
 import CubeNetScene from "@/components/CubeNetScene";
+import CubeNetPuzzle from "@/components/CubeNetPuzzle";
 import ThreeSolidScene from "@/components/ThreeSolidScene";
 
 type Obj =
@@ -16,7 +17,8 @@ type Obj =
   | {kind:"text";id:string;x:number;y:number;text:string}
   | {kind:"equation";id:string;text:string}
   | {kind:"dicepair";id:string;a:number;b:number;label:string}
-  | {kind:"net";id:string;pattern:string};
+  | {kind:"net";id:string;pattern:string}
+  | {kind:"cubenet";id:string;cells:{label:string;x:number;y:number}[];removed?:string};
 
 export function parseMathDsl(script:string[]) {
   const objects:Obj[]=[];
@@ -46,6 +48,13 @@ export function parseMathDsl(script:string[]) {
     else if((m=s.match(/^EQUATION\s+(\S+)\s+(.+)$/i))) objects.push({kind:"equation",id:m[1],text:m[2]});
     else if((m=s.match(/^DICEPAIR\s+(\S+)\s+([1-6])\s+([1-6])\s*(.*)$/i))) objects.push({kind:"dicepair",id:m[1],a:Number(m[2]),b:Number(m[3]),label:m[4]});
     else if((m=s.match(/^NET\s+(\S+)\s+(cube-cross|cube-t|cube-zigzag)$/i))) objects.push({kind:"net",id:m[1],pattern:m[2].toLowerCase()});
+    else if((m=s.match(/^CUBENET\s+(\S+)\s+(.+)$/i))) {
+      const cells=m[2].split("|").map(part=>{
+        const z=part.match(/^([^@|]+)@(-?\d+),(-?\d+)$/);
+        return z?{label:z[1],x:Number(z[2]),y:Number(z[3])}:null;
+      }).filter(Boolean) as {label:string;x:number;y:number}[];
+      if(cells.length>=6&&cells.length<=12) objects.push({kind:"cubenet",id:m[1],cells});
+    }
     else if(/^CUBE\s+/i.test(s)) hasCube=true;
     else if((m=s.match(/^MOVE\s+(\S+)\s+(-?\d+(?:\.\d+)?)\s+(-?\d+(?:\.\d+)?)$/i))) {
       const o=find(m[1]);
@@ -58,6 +67,9 @@ export function parseMathDsl(script:string[]) {
       if(o?.kind==="equation"||o?.kind==="text"){o.text=m[2];morphed.add(o.id);highlighted.add(o.id);}
     }
     else if((m=s.match(/^FOLD\s+(\S+)$/i))) folded.add(m[1]);
+    else if((m=s.match(/^REMOVE\s+(\S+)\s+(\S+)$/i))) {
+      const o=find(m[1]); if(o?.kind==="cubenet") o.removed=m[2];
+    }
     else if((m=s.match(/^HIDE\s+(\S+)$/i))) hidden.add(m[1]);
     else if((m=s.match(/^SHOW\s+(\S+)$/i))) hidden.delete(m[1]);
     else if((m=s.match(/^HIGHLIGHT\s+(\S+)$/i))) highlighted.add(m[1]);
@@ -113,10 +125,12 @@ export default function MathDslScene({script}:{script:string[]}) {
   const texts=objects.filter(o=>o.kind==="text"||o.kind==="equation") as Extract<Obj,{kind:"text"|"equation"}>[];
   const dice=objects.filter((o):o is Extract<Obj,{kind:"dicepair"}>=>o.kind==="dicepair");
   const nets=objects.filter((o):o is Extract<Obj,{kind:"net"}>=>o.kind==="net");
+  const cubenets=objects.filter((o):o is Extract<Obj,{kind:"cubenet"}>=>o.kind==="cubenet");
   const maxBar=Math.max(1,...bars.map(b=>Math.abs(b.value)));
   return <div className="dsl-stage">
     {hasCube&&<ThreeSolidScene/>}
     {nets.map(o=><CubeNetScene key={o.id} pattern={o.pattern} initialFolded={folded.has(o.id)}/>)}
+    {cubenets.map(o=><CubeNetPuzzle key={o.id} cells={o.cells} initialRemoved={o.removed} initialFolded={folded.has(o.id)}/>)}
     {counters.map(o=><div key={o.id} className={"dsl-counters "+(highlighted.has(o.id)?"hot":"")}>{Array.from({length:Math.min(o.count,60)},(_,i)=><i key={i}/>)}</div>)}
     {frames.map(o=><div key={o.id} className={"dsl-tenframe "+(highlighted.has(o.id)?"hot":"")}>{Array.from({length:10},(_,i)=><i key={i} className={i<o.filled?"filled":""}/>)}</div>)}
     {lines.map(o=><NumberLine key={o.id} o={o} hot={highlighted.has(o.id)}/>)}

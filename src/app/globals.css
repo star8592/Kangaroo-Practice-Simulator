@@ -119,3 +119,19 @@
 .cube-net-scene small{color:#6a756e;font-weight:650}
 .dsl-morphed{animation:dslMorph .52s cubic-bezier(.2,.8,.2,1)}
 @keyframes dslMorph{0%{opacity:.2;transform:scale(.94)}70%{transform:scale(1.04)}100%{opacity:1;transform:scale(1)}}
+
+
+.cube-net-puzzle{display:grid;gap:12px;justify-items:center;width:min(100%,680px);margin:auto}
+.cube-net-puzzle-stage{width:100%;min-height:340px;display:grid;place-items:center;border-radius:24px;background:linear-gradient(145deg,#fffdf8,#f1f6f2);border:1px solid rgba(55,76,63,.12);overflow:hidden}
+.cube-net-puzzle-svg{width:min(100%,560px);height:330px}
+.cube-net-puzzle-cell{cursor:pointer;transition:opacity .18s ease,transform .18s ease}
+.cube-net-puzzle-cell rect{fill:#fff3df;stroke:#42564a;stroke-width:4}
+.cube-net-puzzle-cell text{font-size:22px;font-weight:900;text-anchor:middle;fill:#27362d;pointer-events:none}
+.cube-net-puzzle-cell:hover rect{fill:#ffe2bd;stroke:#ff7a45}
+.cube-net-puzzle-cell.removed{opacity:.18}
+.cube-net-puzzle-actions{display:flex;gap:9px;align-items:center;justify-content:center;flex-wrap:wrap}
+.cube-net-puzzle-actions span{font-weight:760;color:#4b5c52}
+.cube-net-puzzle-actions button{border:0;border-radius:999px;padding:9px 15px;background:#27362d;color:#fff;font-weight:850;cursor:pointer}
+.cube-net-puzzle-actions button.secondary{background:#e8eee9;color:#33443a}
+.cube-net-puzzle small{color:#6a756e;font-weight:650}
+.cube-net-puzzle-teacher{display:none}

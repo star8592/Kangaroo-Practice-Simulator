@@ -51,7 +51,7 @@ for p in EXAMS.glob("*.json"):
 
 rows=[]
 for qid,stg in stage.items():
-    if stg not in {"VERIFIED_DIRECTOR","VOICE_READY"}: continue
+    if stg not in {"VERIFIED_DIRECTOR","VOICE_READY","STALE_AUDIO","STALE_VIDEO"}: continue
     s=stats[qid]; m=meta.get(qid,{})
     demand=s["wrong"]*100+s["blank"]*75+s["flags"]*20+s["changes"]*8+min(30,round(s["dwellMs"]/60000))
     tie=(15 if m.get("competitionId")=="maa-amc" else 0)+min(25,m.get("questionNo") or 0)+max(0,(m.get("year") or 2000)-2000)/10

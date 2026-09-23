@@ -34,4 +34,17 @@ assert(parsed.folded.has("net1"));
 assert.equal(parsed.rotations.get("tri"),30);
 assert(parsed.highlighted.has("tri"));
 
-console.log("MATH_DSL=PASS move=true morph=true net=true fold=true rotate=true");
+
+
+const cubeNet=parseMathDsl([
+  "CUBENET puzzle 1@2,0|2@3,0|3@4,0|4@0,1|5@1,1|6@2,1|7@2,2",
+  "REMOVE puzzle 3",
+  "FOLD puzzle",
+]);
+const puzzle=cubeNet.objects.find(o=>o.id==="puzzle");
+assert(puzzle&&puzzle.kind==="cubenet");
+assert.equal(puzzle.cells.length,7);
+assert.equal(puzzle.removed,"3");
+assert(cubeNet.folded.has("puzzle"));
+
+console.log("MATH_DSL=PASS move=true morph=true net=true fold=true rotate=true cubenet=true");

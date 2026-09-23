@@ -20,6 +20,17 @@ def core_hash(data):
     raw=json.dumps(core,ensure_ascii=False,sort_keys=True,separators=(",",":")).encode()
     return hashlib.sha256(raw).hexdigest()
 
+def narration_hash(data):
+    core=[]
+    for scene in data.get("scenes") or []:
+        core.append({
+            "id":scene.get("id"),
+            "narration":scene.get("narration"),
+            "voiceDirection":((scene.get("renderSpec") or {}).get("voiceDirection") or ""),
+        })
+    raw=json.dumps(core,ensure_ascii=False,sort_keys=True,separators=(",",":")).encode()
+    return hashlib.sha256(raw).hexdigest()
+
 def valid_verified(data):
     v=data.get("verification") or {}
     return (data.get("quality")=="verified" and v.get("officialAnswerMatched") is True and
@@ -69,8 +80,12 @@ for p in sorted(SOL.glob("*.json")):
     qid=d.get("questionId") or p.stem
     if wanted and qid not in wanted: continue
     if not valid_verified(d): continue
-    audio_ready=all(audio_ok(s) for s in d.get("scenes") or [])
-    fully_ready=(audio_ready and (not args.video or video_ok(qid)))
+    mat=d.get("materialization") or {}
+    narration=narration_hash(d)
+    director=core_hash(d)
+    audio_ready=(all(audio_ok(s) for s in d.get("scenes") or []) and mat.get("audioNarrationHash")==narration)
+    video_ready=(video_ok(qid) and mat.get("videoDirectorHash")==director and mat.get("videoAudioHash")==narration)
+    fully_ready=(audio_ready and (not args.video or video_ready))
     if not args.force_audio and fully_ready: continue
     items.append((qid,p,d))
 
@@ -87,7 +102,12 @@ if target_order:
 print(json.dumps({"targets":[q for q,_,_ in items],"count":len(items),"video":args.video,"dryRun":args.dry_run},ensure_ascii=False))
 if args.dry_run or not items: raise SystemExit(0)
 
-need_tts=any(args.force_audio or any(not audio_ok(s) for s in d.get("scenes") or []) for _,_,d in items)
+need_tts=any(
+    args.force_audio
+    or (d.get("materialization") or {}).get("audioNarrationHash")!=narration_hash(d)
+    or any(not audio_ok(s) for s in d.get("scenes") or [])
+    for _,_,d in items
+)
 tts=None
 if need_tts:
     sys.path.insert(0,str(INDEX))
@@ -100,11 +120,14 @@ if need_tts:
 
 for qid,p,data in items:
     before=core_hash(data)
+    narration_before=narration_hash(data)
+    mat_before=data.get("materialization") or {}
+    regen_audio=(args.force_audio or mat_before.get("audioNarrationHash")!=narration_before)
     out_dir=PUB/"generated-solutions"/qid
     out_dir.mkdir(parents=True,exist_ok=True)
     for i,scene in enumerate(data.get("scenes") or [],1):
         out=out_dir/f"scene-{i:02d}.wav"
-        if args.force_audio or not audio_ok(scene):
+        if regen_audio or not audio_ok(scene):
             if tts is None: raise RuntimeError("TTS not initialized")
             direction=((scene.get("renderSpec") or {}).get("voiceDirection") or "")
             factor=1.0
@@ -121,13 +144,13 @@ for qid,p,data in items:
     if before!=after: raise RuntimeError(f"director core mutated during local materialization: {qid}")
     data["materialization"]={
         **(data.get("materialization") or {}),
-        "directorHash":before,"voiceEngine":"IndexTTS2.5","voice":args.voice,
-        "audioReady":True,
+        "directorHash":before,"audioNarrationHash":narration_before,
+        "voiceEngine":"IndexTTS2.5","voice":args.voice,"audioReady":True,
     }
     tmp=p.with_suffix(".json.tmp")
     tmp.write_text(json.dumps(data,ensure_ascii=False,indent=2)+"\n")
     tmp.replace(p)
-    manifest={"questionId":qid,"directorHash":before,"scenes":[
+    manifest={"questionId":qid,"directorHash":before,"audioNarrationHash":narration_before,"scenes":[
         {"id":s["id"],"audioUrl":s.get("audioUrl"),"audioDurationMs":s.get("audioDurationMs"),
          "durationMs":s.get("durationMs"),"renderSpec":s.get("renderSpec")} for s in data["scenes"]
     ]}
@@ -137,8 +160,13 @@ for qid,p,data in items:
     if args.video:
         subprocess.run([sys.executable,str(ROOT/"scripts/export_solution_video.py"),qid,"--skip-tts"],check=True)
         data=json.loads(p.read_text())
-        data["materialization"]={**(data.get("materialization") or {}),"videoReady":True,
-                                 "videoUrl":f"/generated-solutions/{qid}/{qid}.mp4"}
+        data["materialization"]={
+            **(data.get("materialization") or {}),
+            "videoReady":True,
+            "videoUrl":f"/generated-solutions/{qid}/{qid}.mp4",
+            "videoDirectorHash":core_hash(data),
+            "videoAudioHash":narration_hash(data),
+        }
         tmp=p.with_suffix(".json.tmp")
         tmp.write_text(json.dumps(data,ensure_ascii=False,indent=2)+"\n")
         tmp.replace(p)

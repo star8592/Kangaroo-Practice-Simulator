@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 
-export default function ThreeSolidScene() {
+export default function ThreeSolidScene({faceLabels}:{faceLabels?:Record<string,string>}) {
   const hostRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -28,14 +28,38 @@ export default function ThreeSolidScene() {
       renderer.setSize(width, height);
       host.appendChild(renderer.domElement);
       const geometry = new THREE.BoxGeometry(2, 2, 2);
-      const material = new THREE.MeshStandardMaterial({ color: 0xffb35b, roughness: 0.5, metalness: 0.05 });
-      const cube = new THREE.Mesh(geometry, material);
+      const textures: Array<InstanceType<typeof THREE.CanvasTexture>> = [];
+      const makeMaterial = (bg: string, label?: string) => {
+        const canvas = document.createElement("canvas");
+        canvas.width = 512; canvas.height = 512;
+        const ctx = canvas.getContext("2d")!;
+        ctx.fillStyle = bg; ctx.fillRect(0, 0, 512, 512);
+        ctx.strokeStyle = "#27362d"; ctx.lineWidth = 16; ctx.strokeRect(8, 8, 496, 496);
+        if (label) {
+          ctx.fillStyle = "#27362d";
+          ctx.font = "900 210px sans-serif";
+          ctx.textAlign = "center"; ctx.textBaseline = "middle";
+          ctx.fillText(label, 256, 272);
+        }
+        const texture = new THREE.CanvasTexture(canvas);
+        texture.colorSpace = THREE.SRGBColorSpace;
+        textures.push(texture);
+        return new THREE.MeshStandardMaterial({ map: texture, roughness: 0.52, metalness: 0.03 });
+      };
+      const materials = faceLabels ? [
+        makeMaterial("#ffb86f", faceLabels["1,0,0"]),
+        makeMaterial("#ffd7a0", faceLabels["-1,0,0"]),
+        makeMaterial("#a8d8b7", faceLabels["0,1,0"]),
+        makeMaterial("#c9e7d1", faceLabels["0,-1,0"]),
+        makeMaterial("#ffca86", faceLabels["0,0,1"]),
+        makeMaterial("#f5e4c8", faceLabels["0,0,-1"]),
+      ] : new THREE.MeshStandardMaterial({ color: 0xffb35b, roughness: 0.5, metalness: 0.05 });
+      const cube = new THREE.Mesh(geometry, materials);
       scene.add(cube);
 
-      const edges = new THREE.LineSegments(
-        new THREE.EdgesGeometry(geometry),
-        new THREE.LineBasicMaterial({ color: 0x27362d, linewidth: 2 }),
-      );
+      const edgeGeometry = new THREE.EdgesGeometry(geometry);
+      const edgeMaterial = new THREE.LineBasicMaterial({ color: 0x27362d, linewidth: 2 });
+      const edges = new THREE.LineSegments(edgeGeometry, edgeMaterial);
       cube.add(edges);
 
       scene.add(new THREE.HemisphereLight(0xffffff, 0xbfd8c7, 2.2));
@@ -72,7 +96,11 @@ export default function ThreeSolidScene() {
         cancelAnimationFrame(frame);
         controls.dispose();
         geometry.dispose();
-        material.dispose();
+        edgeGeometry.dispose();
+        edgeMaterial.dispose();
+        if (Array.isArray(materials)) materials.forEach((m) => m.dispose());
+        else materials.dispose();
+        textures.forEach((t) => t.dispose());
         renderer.dispose();
         renderer.domElement.remove();
       };
@@ -82,7 +110,7 @@ export default function ThreeSolidScene() {
       disposed = true;
       cleanup();
     };
-  }, []);
+  }, [faceLabels]);
 
   return <div className="solution-3d-stage" ref={hostRef} aria-label="可拖拽旋转的三维模型" />;
 }
