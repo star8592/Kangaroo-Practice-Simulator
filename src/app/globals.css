@@ -176,3 +176,14 @@
 .chase-info span{padding:6px 10px;border-radius:999px;background:#eef4ed;font-size:12px;font-weight:800}
 .chase-info strong{color:#b9552f}
 @media(max-width:800px){.flip-card-object{width:260px;height:92px}.flip-circle{width:42px;height:42px}.flip-square{width:44px;height:44px}.flip-triangle{border-left-width:25px;border-right-width:25px;border-bottom-width:48px}.chase-strip{grid-template-columns:repeat(15,34px)}}
+
+.step-reveal-scene{display:grid;gap:14px;align-content:center;justify-items:center;min-height:320px;width:min(100%,720px);margin:auto}
+.step-reveal-stack{display:grid;gap:10px;width:min(92%,640px)}
+.step-reveal-card{display:grid;grid-template-columns:38px 1fr;gap:10px;align-items:center;padding:12px 14px;border-radius:14px;background:#fff;border:1px solid #dfe5df;opacity:.72;transform:scale(.985)}
+.step-reveal-card>span{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;background:#edf3ed;color:#3c5d47;font-size:12px;font-weight:900}
+.step-reveal-card>strong{font-size:15px;line-height:1.55;color:#36443b}
+.step-reveal-card.active{opacity:1;transform:scale(1);border-color:#ffb485;box-shadow:0 8px 22px rgba(255,122,69,.10);animation:stepRevealPop .28s ease both}
+.step-reveal-card.active>span{background:#fff0e5;color:#b75228}
+@keyframes stepRevealPop{from{opacity:.15;transform:translateY(8px) scale(.98)}to{opacity:1;transform:none}}
+.step-reveal-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}.step-reveal-actions button{border:0;border-radius:999px;padding:10px 14px;background:#27362d;color:#fff;font-weight:850}.step-reveal-actions button:disabled{opacity:.35}.step-reveal-actions .secondary{background:#e8eee9;color:#33443a}
+.step-reveal-scene>small{color:#748078;font-weight:700}

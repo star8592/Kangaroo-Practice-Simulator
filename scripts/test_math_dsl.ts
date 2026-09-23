@@ -83,4 +83,11 @@ for(let step=0;step<=6;step++){
   else { assert.equal(cat,12); assert.equal(mouse,12); assert.equal(12-8,4); }
 }
 
-console.log("MATH_DSL=PASS move=true morph=true net=true fold=true rotate=true cubenet=true overlay=true cubefaces=true flipcard=true chase=true");
+
+
+const seq=parseMathDsl(["STEPS s 先观察|再计算|最后验证"]);
+const seqObj=seq.objects.find(o=>o.kind==="steps");
+assert(seqObj&&seqObj.kind==="steps");
+assert.deepEqual(seqObj.items,["先观察","再计算","最后验证"]);
+
+console.log("MATH_DSL=PASS move=true morph=true net=true fold=true rotate=true cubenet=true overlay=true cubefaces=true flipcard=true chase=true steps=true");
