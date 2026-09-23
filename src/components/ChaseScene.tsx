@@ -1,23 +1,26 @@
 "use client";
+
 import {useState} from "react";
 
 export default function ChaseScene(){
-  const [round,setRound]=useState(0);
-  const cat=-4+round*2;
-  const mouse=round;
-  const caught=cat>=mouse;
-  const min=-4,max=6;
-  const pos=(v:number)=>((v-min)/(max-min))*100;
+  const [step,setStep]=useState(0);
+  const cat=Math.min(12,step*2);
+  const mouse=Math.min(12,6+step);
+  const met=cat===mouse;
   return <div className="chase-scene">
-    <div className="chase-track">
-      {Array.from({length:max-min+1},(_,i)=>min+i).map(v=><span key={v} className="chase-cell" style={{left:pos(v)+"%"}}>{v>0&&v<=5?v:""}</span>)}
-      <span className="chase-token cat" style={{left:pos(cat)+"%"}}>🐱</span>
-      <span className="chase-token mouse" style={{left:pos(mouse)+"%"}}>🐭</span>
+    <div className="chase-strip">
+      {Array.from({length:15},(_,i)=><div key={i} className={"chase-tile "+(met&&i===12?"meet":"")}>
+        <span>{cat===i?"🐱":""}{mouse===i?"🐭":""}</span>
+        {i>=9&&i<=13?<b>{i-8}</b>:<b>&nbsp;</b>}
+      </div>)}
+    </div>
+    <div className="chase-info">
+      <span>第 {step} 轮</span><span>猫：+2</span><span>老鼠：+1</span>
+      {met&&<strong>追上了！在 4 号格</strong>}
     </div>
     <div className="chase-actions">
-      <button type="button" disabled={caught} onClick={()=>setRound(r=>Math.min(6,r+1))}>{caught?"抓到了！":"跳一下 →"}</button>
-      <button type="button" className="secondary" onClick={()=>setRound(0)}>重来</button>
+      <button type="button" disabled={step>=6} onClick={()=>setStep(v=>Math.min(6,v+1))}>下一跳 →</button>
+      <button type="button" className="secondary" onClick={()=>setStep(0)}>重来</button>
     </div>
-    <strong>{caught?"第 "+mouse+" 格相遇；一共跳了 "+round+" 轮。":"第 "+round+" 轮：猫每次跳2格，鼠每次跳1格。"}</strong>
   </div>;
 }

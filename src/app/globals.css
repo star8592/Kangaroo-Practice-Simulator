@@ -155,22 +155,24 @@
 .image-overlay-feedback.correct{color:#36764b}.image-overlay-feedback.wrong{color:#a64e30}
 @media(max-width:800px){.image-overlay-wrap,.image-overlay-wrap>img{max-height:250px}.image-overlay-pick{min-width:30px;height:30px;font-size:11px}}
 
-.flip-card-scene,.chase-scene{display:grid;gap:16px;justify-items:center;align-content:center;min-height:330px}
-.flip-card-demo{display:flex;gap:26px;align-items:center;justify-content:center;width:min(82%,560px);min-height:150px;border:4px solid #42564a;border-radius:18px;background:linear-gradient(180deg,#fffdf9,#f8f2e8);box-shadow:0 14px 30px rgba(35,49,40,.08)}
-.flip-card-demo span{font-size:64px;font-weight:900;color:#27362d}
-.flip-card-demo .triangle{color:#ff7a45}
-.flip-card-demo.step-1{animation:flipTop .55s ease}
-.flip-card-demo.step-2{animation:flipLeft .55s ease}
-@keyframes flipTop{0%{transform:perspective(700px) rotateX(0)}50%{transform:perspective(700px) rotateX(75deg)}100%{transform:perspective(700px) rotateX(0)}}
-@keyframes flipLeft{0%{transform:perspective(700px) rotateY(0)}50%{transform:perspective(700px) rotateY(75deg)}100%{transform:perspective(700px) rotateY(0)}}
+.flip-card-scene,.chase-scene{display:grid;gap:16px;justify-items:center;align-content:center;min-height:320px}
+.flip-card-board{width:min(82%,520px);height:170px;display:grid;place-items:center;perspective:900px}
+.flip-card-object{width:330px;height:110px;border:4px solid #42564a;border-radius:12px;background:#fff;display:flex;align-items:center;justify-content:space-around;transition:transform .65s cubic-bezier(.2,.8,.2,1);transform-style:preserve-3d}
+.flip-circle{width:52px;height:52px;border-radius:50%;background:#27362d}
+.flip-square{width:54px;height:54px;background:#27362d}
+.flip-triangle{width:0;height:0;border-left:31px solid transparent;border-right:31px solid transparent;border-bottom:58px solid #27362d}
 .flip-card-actions,.chase-actions{display:flex;gap:9px;flex-wrap:wrap;justify-content:center}
-.flip-card-actions button,.chase-actions button{border:0;border-radius:999px;padding:10px 15px;background:#27362d;color:#fff;font-weight:850;cursor:pointer}
-.flip-card-actions button:disabled,.chase-actions button:disabled{opacity:.42;cursor:not-allowed}
-.flip-card-actions .secondary,.chase-actions .secondary{background:#e7ede8;color:#33443a}
-.flip-card-scene>strong,.chase-scene>strong{font-size:13px;color:#526158}
-.chase-track{position:relative;width:min(90%,760px);height:150px;border-bottom:5px solid #42564a;margin-top:18px}
-.chase-cell{position:absolute;bottom:-28px;transform:translateX(-50%);font-size:14px;font-weight:900;color:#5f6d64}
-.chase-cell::before{content:"";position:absolute;left:50%;bottom:24px;width:2px;height:20px;background:#7e8d83}
-.chase-token{position:absolute;transform:translateX(-50%);font-size:44px;transition:left .45s cubic-bezier(.2,.8,.2,1)}
-.chase-token.cat{bottom:48px}.chase-token.mouse{bottom:0}
-@media(max-width:800px){.flip-card-demo span{font-size:48px}.chase-token{font-size:36px}}
+.flip-card-actions button,.chase-actions button{border:0;border-radius:999px;padding:10px 15px;background:#27362d;color:#fff;font-weight:850}
+.flip-card-actions button:disabled,.chase-actions button:disabled{opacity:.35}
+.flip-card-actions .secondary,.chase-actions .secondary{background:#e8eee9;color:#33443a}
+.flip-card-scene>strong{font-size:14px;color:#4b5c52}
+.chase-strip{display:grid;grid-template-columns:repeat(15,minmax(28px,42px));max-width:100%;overflow:auto}
+.chase-tile{height:64px;border:2px solid #42564a;border-right:0;display:grid;place-items:center;position:relative;background:#fff}
+.chase-tile:last-child{border-right:2px solid #42564a}
+.chase-tile>span{font-size:22px;white-space:nowrap}
+.chase-tile>b{position:absolute;bottom:-26px;font-size:12px}
+.chase-tile.meet{background:#fff1df;box-shadow:inset 0 0 0 4px #ff9b68}
+.chase-info{display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:center;margin-top:18px}
+.chase-info span{padding:6px 10px;border-radius:999px;background:#eef4ed;font-size:12px;font-weight:800}
+.chase-info strong{color:#b9552f}
+@media(max-width:800px){.flip-card-object{width:260px;height:92px}.flip-circle{width:42px;height:42px}.flip-square{width:44px;height:44px}.flip-triangle{border-left-width:25px;border-right-width:25px;border-bottom-width:48px}.chase-strip{grid-template-columns:repeat(15,34px)}}

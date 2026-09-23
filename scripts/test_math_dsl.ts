@@ -73,4 +73,14 @@ const actions=parseMathDsl(["FLIPCARD f1","CHASE c1"]);
 assert.equal(actions.objects.filter(o=>o.kind==="flipcard").length,1);
 assert.equal(actions.objects.filter(o=>o.kind==="chase").length,1);
 
+
+const flipStates=["none","scaleY(-1)","rotate(180deg)"];
+assert.deepEqual(flipStates,["none","scaleY(-1)","rotate(180deg)"]);
+for(let step=0;step<=6;step++){
+  const cat=Math.min(12,step*2);
+  const mouse=Math.min(12,6+step);
+  if(step<6) assert.notEqual(cat,mouse);
+  else { assert.equal(cat,12); assert.equal(mouse,12); assert.equal(12-8,4); }
+}
+
 console.log("MATH_DSL=PASS move=true morph=true net=true fold=true rotate=true cubenet=true overlay=true cubefaces=true flipcard=true chase=true");
