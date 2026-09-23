@@ -1,0 +1,9 @@
+[Unit]
+Description=Watch Math Competition Lab deployment trigger
+
+[Path]
+PathChanged=/mnt/disk1/Code/.deploy/math-competition-lab/reload.request
+Unit=math-competition-lab-reload.service
+
+[Install]
+WantedBy=default.target

@@ -1,0 +1,6 @@
+[Unit]
+Description=Restart Math Competition Lab after atomic release switch
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/systemctl --user restart math-competition-lab.service

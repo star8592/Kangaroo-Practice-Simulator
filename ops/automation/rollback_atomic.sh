@@ -6,6 +6,18 @@ SERVICE="${SERVICE:-math-competition-lab.service}"
 LIVE_PORT="${LIVE_PORT:-3027}"
 CURRENT="$DEPLOY_ROOT/current"
 
+restart_live() {
+  if [[ "${RESTART_MODE:-auto}" == "systemctl" ]]; then
+    systemctl --user restart "$SERVICE"
+    return
+  fi
+  if systemctl --user restart "$SERVICE" >/dev/null 2>&1; then
+    return
+  fi
+  date -Iseconds > "$DEPLOY_ROOT/reload.request"
+  echo "restart requested through systemd path watcher"
+}
+
 mapfile -t releases < <(find "$DEPLOY_ROOT/releases" -mindepth 1 -maxdepth 1 -type d ! -name '.tmp-*' -printf '%T@ %p\n' | sort -nr | awk '{print $2}')
 active="$(readlink -f "$CURRENT" 2>/dev/null || true)"
 target=""
@@ -21,7 +33,7 @@ done
 
 ln -sfn "$target" "$DEPLOY_ROOT/current.next"
 mv -Tf "$DEPLOY_ROOT/current.next" "$CURRENT"
-systemctl --user restart "$SERVICE"
+restart_live
 
 for _ in $(seq 1 40); do
   if curl -fsS --max-time 2 "http://127.0.0.1:$LIVE_PORT/api/release" >/dev/null 2>&1; then

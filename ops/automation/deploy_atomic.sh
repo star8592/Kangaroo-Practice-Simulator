@@ -34,6 +34,19 @@ cleanup() {
 }
 trap cleanup EXIT
 
+restart_live() {
+  if [[ "${RESTART_MODE:-auto}" == "systemctl" ]]; then
+    systemctl --user restart "$SERVICE"
+    return
+  fi
+  if systemctl --user restart "$SERVICE" >/dev/null 2>&1; then
+    return
+  fi
+  mkdir -p "$DEPLOY_ROOT"
+  date -Iseconds > "$DEPLOY_ROOT/reload.request"
+  echo "restart requested through systemd path watcher"
+}
+
 rollback_live() {
   local rc="$1"
   trap - ERR
@@ -41,7 +54,7 @@ rollback_live() {
   if [[ -n "$PREVIOUS" && -d "$PREVIOUS" ]]; then
     ln -sfn "$PREVIOUS" "$DEPLOY_ROOT/current.next"
     mv -Tf "$DEPLOY_ROOT/current.next" "$CURRENT"
-    systemctl --user restart "$SERVICE" || true
+    restart_live || true
   fi
   exit "$rc"
 }
@@ -110,7 +123,7 @@ fi
 ln -sfn "$FINAL" "$DEPLOY_ROOT/current.next"
 mv -Tf "$DEPLOY_ROOT/current.next" "$CURRENT"
 
-systemctl --user restart "$SERVICE"
+restart_live
 for _ in $(seq 1 40); do
   if curl -fsS --max-time 2 "http://127.0.0.1:$LIVE_PORT/api/release" >/dev/null 2>&1; then
     break

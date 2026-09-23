@@ -39,3 +39,12 @@ Every feature follows one engineering flow:
 - Never declare deployment success before staging, live health checks, and release receipt pass.
 - Never overwrite runtime private/, public/local-assets/, or generated-solution data.
 - Keep unrelated changes out of feature commits.\n- Keep staging, recovery, and build-backup artifacts outside the repository root.
+
+## One-time host bootstrap
+
+Run once from a normal host shell:
+
+- bash ops/automation/install_local_service.sh <git-sha>
+
+This installs the application service plus a systemd path watcher on reload.request.
+After bootstrap, restricted automation can deploy without direct D-Bus access: it switches the immutable current release and updates reload.request; the host watcher performs the restart.
