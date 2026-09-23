@@ -1,0 +1,66 @@
+/* A4 arithmetic paper practice */
+.print-workspace{min-height:100vh;background:#eef1ed;padding:34px 22px 70px}
+.print-screen-shell{max-width:1100px;margin:0 auto 30px}
+.print-screen-head{display:flex;align-items:flex-start;justify-content:space-between;gap:24px;background:#fff;border:1px solid var(--line);border-radius:20px;padding:24px 26px}
+.print-screen-head h1{margin:5px 0 8px;font-size:34px}
+.print-screen-head p{margin:0;max-width:720px;color:var(--muted);line-height:1.65}
+.print-config-card{display:grid;grid-template-columns:repeat(4,minmax(0,1fr)) auto;gap:12px;align-items:end;margin-top:14px;background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px}
+.print-config-card label{display:grid;gap:7px;font-size:12px;font-weight:800;color:var(--muted)}
+.print-config-card select{width:100%;border:1px solid var(--line);border-radius:10px;background:#fff;padding:11px 12px;color:var(--ink);font:inherit}
+.print-answer-toggle{display:flex!important;align-items:center;gap:8px;min-height:42px;padding:0 8px;color:var(--ink)!important;white-space:nowrap}
+.print-answer-toggle input{width:18px;height:18px}
+.print-summary-card{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px}
+.print-summary-card>div{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 16px;display:grid;gap:3px}
+.print-summary-card strong{font-size:20px}
+.print-summary-card span{font-size:11px;color:var(--muted)}
+.print-toolbar{display:flex;justify-content:flex-end;gap:10px;margin-top:14px}
+.print-note{text-align:right;color:var(--muted);font-size:11px;margin:9px 2px 0}
+.print-pages{display:grid;gap:24px;justify-content:center}
+.a4-sheet{width:210mm;min-height:297mm;box-sizing:border-box;background:#fff;padding:11mm 12mm 10mm;box-shadow:0 8px 34px rgba(28,44,33,.12);display:flex;flex-direction:column;color:#111}
+.paper-header{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;border-bottom:2px solid #111;padding-bottom:4mm}
+.paper-header span{font-size:10px;font-weight:800;letter-spacing:.08em;color:#555}
+.paper-header h2{font-size:22px;line-height:1.2;margin:2mm 0 0}
+.paper-header small{font-size:9px;color:#555;font-weight:700;padding-top:2mm}
+.paper-meta{display:grid;grid-template-columns:1.25fr 1fr 1.25fr 1fr;gap:4mm;border-bottom:1px solid #aaa;padding:4mm 0;font-size:11px}
+.paper-meta b{font-weight:700}
+.print-question-grid{display:grid;flex:1;align-content:start;column-gap:8mm;row-gap:0}
+.print-question-grid.cols-2{grid-template-columns:repeat(2,1fr)}
+.print-question-grid.cols-3{grid-template-columns:repeat(3,1fr);column-gap:5mm}
+.print-question-grid.cols-4{grid-template-columns:repeat(4,1fr);column-gap:3.5mm}
+.print-question{display:grid;grid-template-columns:7mm 1fr;align-items:center;min-height:11.5mm;border-bottom:1px dotted #c8c8c8;font-family:"Noto Sans SC","Microsoft YaHei",Arial,sans-serif;font-size:15px;white-space:nowrap}
+.print-question-grid.cols-2 .print-question{font-size:17px;min-height:12mm}
+.print-question-grid.cols-3 .print-question{font-size:13.5px;min-height:10mm}
+.print-question-grid.cols-4 .print-question{font-size:12px;min-height:9.8mm}
+.print-question b{font-size:10px;color:#666}
+.paper-footer{display:flex;justify-content:space-between;gap:12px;border-top:1px solid #aaa;padding-top:3mm;margin-top:3mm;font-size:8.5px;color:#666}
+.answer-warning{margin:5mm 0 4mm;padding:3mm 4mm;background:#f5f5f5;border:1px solid #ccc;font-size:10px}
+.answer-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:3mm 6mm;align-content:start}
+.answer-grid>div{display:grid;grid-template-columns:8mm 1fr;align-items:center;border-bottom:1px solid #ddd;padding:2.5mm 0;font-size:14px}
+.answer-grid b{font-size:10px;color:#666}
+.answer-sheet .paper-footer{margin-top:auto}
+
+@media(max-width:1000px){
+  .print-config-card{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .print-summary-card{grid-template-columns:repeat(2,1fr)}
+  .a4-sheet{width:min(100%,210mm);min-height:auto;aspect-ratio:210/297}
+}
+@media(max-width:620px){
+  .print-workspace{padding:14px 10px 40px}
+  .print-screen-head{display:grid;padding:18px}
+  .print-config-card{grid-template-columns:1fr}
+  .print-summary-card{grid-template-columns:1fr 1fr}
+  .print-toolbar{display:grid;grid-template-columns:1fr 1fr}
+  .print-toolbar button{width:100%}
+}
+
+@page{size:A4 portrait;margin:0}
+@media print{
+  html,body{background:#fff!important}
+  body{print-color-adjust:exact;-webkit-print-color-adjust:exact}
+  .site-header,.site-footer,.screen-only{display:none!important}
+  main{padding:0!important;margin:0!important;max-width:none!important}
+  .print-workspace{background:#fff!important;padding:0!important;margin:0!important}
+  .print-pages{display:block!important}
+  .a4-sheet{width:210mm!important;height:297mm!important;min-height:297mm!important;max-height:297mm!important;padding:10mm 12mm 9mm!important;box-shadow:none!important;margin:0!important;break-after:page;page-break-after:always;overflow:hidden}
+  .a4-sheet:last-child{break-after:auto;page-break-after:auto}
+}
