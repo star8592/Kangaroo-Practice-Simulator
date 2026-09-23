@@ -42,5 +42,8 @@ for sample in (1,2):
 s2=json.loads((ROOT/"private/exams/au-amc-pre-a-sample-2.json").read_text())
 assert s2["questions"][9]["answer"]=="E", "Sample 2 Q10 triple-overlap answer must be E=4"
 assert s2["questions"][18]["answer"]=="A", "Sample 2 Q19 square-opposite face must be circle=A"
+assert "A、B、C、D、E、F" in json.loads((ROOT/"private/exams/au-amc-pre-a-sample-1.json").read_text())["questions"][19]["stem"]
+assert all(x in s2["questions"][18]["stem"] for x in ("♣","♦","♥","♠","□","○"))
+assert all(x in s2["questions"][18]["stemEn"] for x in ("♣","♦","♥","♠","□","○"))
 
 print(f"PRE_A_GRADE1_READY=PASS questions={total} verified={total} assets={total*2}")

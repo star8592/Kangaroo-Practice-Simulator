@@ -81,12 +81,18 @@ for sample,exam_path,pdf,zh_pages,en_pages in CONFIG:
         meta["sourcePageZh"]=zpages[n]
         meta["sourcePageEn"]=epages[n]
         meta["textLayer"]="pdftotext-layout"
+    # Symbol-rich questions need explicit text because PDF extraction strips glyphs.
+    if sample==1:
+        q20=data["questions"][19]
+        q20["stem"]="如图，字母 A、B、C、D、E、F 分别代表6个人。箭头从一个人指向另一个人，表示前者比后者高。例如 B→A 表示 B 比 A 高。请问谁最矮？"
     # Known source-layer quirks / independently verified correction.
     if sample==2:
         q9=data["questions"][8]
         q9["stem"]="两个苹果一共6美分，两个梨一共8美分。一个苹果和一个梨一共多少钱？"
         q9["stemEn"]="Two apples together cost 6 cents. Two pears together cost 8 cents. How much do one apple and one pear cost together?"
         q19=data["questions"][18]
+        q19["stem"]="一个立方体的六个面分别标有 ♣、♦、♥、♠、□、○。图中展示了同一个立方体的两种摆放方式。请问 □ 的对面是哪一个符号？"
+        q19["stemEn"]="The six faces of a cube are marked ♣, ♦, ♥, ♠, □ and ○. The same cube is shown in two positions. Which symbol is opposite □?"
         q19["answer"]="A"
         q19.setdefault("sourceMeta",{})["answerCorrection"]="Independent cube-adjacency verification: square is opposite circle; corrected D -> A on 2026-09-23."
     if missing:
