@@ -1,15 +1,16 @@
 [Unit]
 Description=Math Competition Lab
-After=network.target docker.service
+After=network.target
 
 [Service]
 Type=simple
-WorkingDirectory=/mnt/disk1/Code/Math-Competition-Lab
+WorkingDirectory=/mnt/disk1/Deploy/math-competition-lab/current
 Environment=NODE_ENV=production
 Environment=PATH=/home/master/.nvm/versions/node/v22.22.1/bin:/usr/local/bin:/usr/bin:/bin
-ExecStart=/home/master/.nvm/versions/node/v22.22.1/bin/node /mnt/disk1/Code/Math-Competition-Lab/node_modules/next/dist/bin/next start -p 3027
+ExecStart=/home/master/.nvm/versions/node/v22.22.1/bin/node /mnt/disk1/Deploy/math-competition-lab/current/node_modules/next/dist/bin/next start -p 3027
 Restart=always
-RestartSec=3
+RestartSec=2
+TimeoutStopSec=15
 
 [Install]
 WantedBy=default.target

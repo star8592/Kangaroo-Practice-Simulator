@@ -31,11 +31,12 @@ function readGitHead(root: string) {
 
 export async function GET() {
   const root = process.cwd();
+  const deployedSha = readText(path.join(root, ".release", "deployed_sha")) || null;
   return NextResponse.json({
     ok: true,
     service: "math-competition-lab",
     version: readText(path.join(root, "VERSION")) || "dev",
-    deployedSha: readText(path.join(root, ".release", "deployed_sha")) || null,
-    gitSha: readGitHead(root),
+    deployedSha,
+    gitSha: readGitHead(root) || deployedSha,
   });
 }

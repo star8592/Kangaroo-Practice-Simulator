@@ -4,6 +4,12 @@
 .print-screen-head{display:flex;align-items:flex-start;justify-content:space-between;gap:24px;background:#fff;border:1px solid var(--line);border-radius:20px;padding:24px 26px}
 .print-screen-head h1{margin:5px 0 8px;font-size:34px}
 .print-screen-head p{margin:0;max-width:720px;color:var(--muted);line-height:1.65}
+.personalized-print-card{display:grid;grid-template-columns:minmax(190px,.34fr) 1fr;gap:18px;align-items:center;margin-top:14px;background:#f7fbf5;border:1px solid #cbdacc;border-radius:18px;padding:18px 20px}
+.personalized-print-card h2{margin:4px 0 0;font-size:22px}
+.personalized-print-card p{margin:0;color:var(--muted);line-height:1.65;font-size:13px}
+.personalized-copy{display:grid;gap:10px}
+.personalized-chips{display:flex;flex-wrap:wrap;gap:7px}
+.personalized-chips span{background:#fff;border:1px solid #cbdacc;border-radius:999px;padding:6px 9px;font-size:11px;font-weight:800;color:var(--green)}
 .print-config-card{display:grid;grid-template-columns:repeat(4,minmax(0,1fr)) auto;gap:12px;align-items:end;margin-top:14px;background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px}
 .print-config-card label{display:grid;gap:7px;font-size:12px;font-weight:800;color:var(--muted)}
 .print-config-card select{width:100%;border:1px solid var(--line);border-radius:10px;background:#fff;padding:11px 12px;color:var(--ink);font:inherit}
@@ -13,6 +19,10 @@
 .print-summary-card>div{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 16px;display:grid;gap:3px}
 .print-summary-card strong{font-size:20px}
 .print-summary-card span{font-size:11px;color:var(--muted)}
+.print-mix-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.print-mix-strip>div{display:flex;align-items:baseline;justify-content:center;gap:7px;background:#eef4ed;border:1px solid #cfddd2;border-radius:12px;padding:9px 12px}
+.print-mix-strip b{font-size:18px;color:var(--green)}
+.print-mix-strip span{font-size:11px;color:var(--muted)}
 .print-toolbar{display:flex;justify-content:flex-end;gap:10px;margin-top:14px}
 .print-note{text-align:right;color:var(--muted);font-size:11px;margin:9px 2px 0}
 .print-pages{display:grid;gap:24px;justify-content:center}
@@ -23,12 +33,13 @@
 .paper-header small{font-size:9px;color:#555;font-weight:700;padding-top:2mm}
 .paper-meta{display:grid;grid-template-columns:1.25fr 1fr 1.25fr 1fr;gap:4mm;border-bottom:1px solid #aaa;padding:4mm 0;font-size:11px}
 .paper-meta b{font-weight:700}
+.paper-plan{margin:2.2mm 0 1.2mm;padding:1.5mm 2mm;border-radius:1.5mm;background:#f3f6f1;border:1px solid #d7ddd4;font-size:8px;line-height:1.35;color:#4d5a51}
 .print-question-grid{display:grid;flex:1;align-content:start;column-gap:8mm;row-gap:0}
 .print-question-grid.cols-2{grid-template-columns:repeat(2,1fr)}
 .print-question-grid.cols-3{grid-template-columns:repeat(3,1fr);column-gap:5mm}
 .print-question-grid.cols-4{grid-template-columns:repeat(4,1fr);column-gap:3.5mm}
 .print-question{display:grid;grid-template-columns:7mm 1fr;align-items:center;min-height:11.5mm;border-bottom:1px dotted #c8c8c8;font-family:"Noto Sans SC","Microsoft YaHei",Arial,sans-serif;font-size:15px;white-space:nowrap}
-.print-question-grid.cols-2 .print-question{font-size:17px;min-height:12mm}
+.print-question-grid.cols-2 .print-question{font-size:17px;min-height:11mm}
 .print-question-grid.cols-3 .print-question{font-size:13.5px;min-height:10mm}
 .print-question-grid.cols-4 .print-question{font-size:12px;min-height:9.8mm}
 .print-question b{font-size:10px;color:#666}
@@ -40,6 +51,7 @@
 .answer-sheet .paper-footer{margin-top:auto}
 
 @media(max-width:1000px){
+  .personalized-print-card{grid-template-columns:1fr}
   .print-config-card{grid-template-columns:repeat(2,minmax(0,1fr))}
   .print-summary-card{grid-template-columns:repeat(2,1fr)}
   .a4-sheet{width:min(100%,210mm);min-height:auto;aspect-ratio:210/297}
@@ -49,6 +61,7 @@
   .print-screen-head{display:grid;padding:18px}
   .print-config-card{grid-template-columns:1fr}
   .print-summary-card{grid-template-columns:1fr 1fr}
+  .print-mix-strip{grid-template-columns:1fr}
   .print-toolbar{display:grid;grid-template-columns:1fr 1fr}
   .print-toolbar button{width:100%}
 }

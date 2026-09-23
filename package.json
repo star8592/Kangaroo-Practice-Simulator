@@ -8,10 +8,11 @@
     "start": "next start",
     "lint": "eslint",
     "test:arithmetic": "tsx scripts/test_arithmetic_strategy_tree.ts",
+    "test:arithmetic-print": "tsx scripts/test_arithmetic_print.ts",
     "admin:create": "node scripts/create_admin.mjs",
     "test:smoke": "python3 scripts/smoke_test.py",
     "test:brand": "python3 scripts/brand_audit.py",
-    "prebuild": "python3 scripts/brand_audit.py && npm run test:competition-identity && npm run test:maa && npm run test:maa-library && npm run test:aime-sections && npm run test:maa-smart && npm run test:solution-books && npm run test:verified-storyboards && npm run test:maa-verified-store",
+    "prebuild": "python3 scripts/brand_audit.py && npm run test:arithmetic-print && npm run test:competition-identity && npm run test:maa && npm run test:maa-library && npm run test:aime-sections && npm run test:maa-smart && npm run test:solution-books && npm run test:verified-storyboards && npm run test:maa-verified-store",
     "test:maa": "tsx scripts/test_maa_scoring.ts",
     "test:maa-library": "python3 scripts/validate_maa_library.py",
     "test:competition-identity": "python3 scripts/test_competition_identity.py",
@@ -27,7 +28,11 @@
     "solution:audit": "python3 scripts/audit_solution_pipeline.py --write",
     "solution:materialize": "python3 scripts/materialize_verified_solutions.py",
     "solution:materialize-queue": "python3 scripts/build_solution_materialization_queue.py",
-    "solution:factory": "python3 scripts/run_solution_factory.py"
+    "solution:factory": "python3 scripts/run_solution_factory.py",
+    "test:math-dsl": "tsx scripts/test_math_dsl.ts",
+    "test:arithmetic-print-live": "tsx scripts/smoke_arithmetic_print_live.ts",
+    "verify:public": "bash ops/automation/quality_gate.sh public",
+    "verify:full": "bash ops/automation/quality_gate.sh full"
   },
   "dependencies": {
     "next": "16.3.5",

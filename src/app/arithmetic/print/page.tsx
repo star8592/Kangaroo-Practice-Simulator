@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import ArithmeticPrintClient from "@/components/ArithmeticPrintClient";
 import { SESSION_COOKIE, userFromSessionToken } from "@/lib/auth";
 import type { ArithmeticGrade } from "@/lib/arithmetic";
+import { loadArithmeticSessions } from "@/lib/arithmetic-session-store";
 
 function clampGrade(value: string | undefined, fallback: number): ArithmeticGrade {
   const parsed = Number(value);
@@ -30,11 +31,14 @@ export default async function ArithmeticPrintPage({
 
   const params = await searchParams;
   const grade = clampGrade(params.grade, user.grade);
+  const sessions = loadArithmeticSessions(user.id, 500);
+
   return (
     <ArithmeticPrintClient
       initialGrade={grade}
       initialSeed={stableSeed(user.id, grade)}
       studentName={user.name}
+      sessions={sessions}
     />
   );
 }

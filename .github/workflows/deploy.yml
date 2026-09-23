@@ -29,8 +29,8 @@ jobs:
       - name: Install
         run: npm ci
 
-      - name: Build repository code
-        run: npx next build
+      - name: Public quality gate
+        run: npm run verify:public
 
       - name: Validate deployment credentials
         shell: bash
