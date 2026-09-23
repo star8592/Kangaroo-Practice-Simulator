@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import argparse, hashlib, json, os, subprocess, sys, wave
+import argparse, hashlib, json, os, subprocess, sys, wave, urllib.request, urllib.error
 from pathlib import Path
 
 ROOT=Path(__file__).resolve().parents[1]
@@ -8,6 +8,35 @@ PUB=ROOT/"public"
 H3=Path("/mnt/disk1/H3_Studio")
 INDEX=H3/"IndexTTS2"
 VOICE_DEFAULT=INDEX/"examples/voice_09.wav"
+
+TTS_SERVICE_DEFAULT=os.environ.get("MATH_TTS_SERVICE","http://127.0.0.1:39010").rstrip("/")
+
+# IndexTTS emotion order: happy, angry, sad, afraid, disgusted, melancholic,
+# surprised, calm. Keep narration warm, steady and non-distracting for children.
+WARM_TEACHER_EMO=[0.18,0.0,0.0,0.0,0.0,0.0,0.03,0.82]
+
+def tts_service_ready(base):
+    try:
+        with urllib.request.urlopen(base+"/health",timeout=2) as r:
+            d=json.loads(r.read().decode())
+            return r.status==200 and d.get("model_loaded") is True
+    except Exception:
+        return False
+
+def tts_service_synthesize(base, *, voice, text, output_path, length_scale):
+    payload={
+        "text":text,"spk_audio_prompt":str(voice),"output_path":str(output_path),
+        "language":"ZH","length_scale":float(length_scale),
+        "emo_vector":WARM_TEACHER_EMO,
+        "use_random":False,
+        "interval_silence":260,
+        "max_text_tokens_per_segment":120,"max_mel_tokens":1200,
+    }
+    req=urllib.request.Request(base+"/synthesize",data=json.dumps(payload,ensure_ascii=False).encode("utf-8"),headers={"content-type":"application/json"},method="POST")
+    with urllib.request.urlopen(req,timeout=180) as r:
+        body=json.loads(r.read().decode("utf-8"))
+        if r.status!=200: raise RuntimeError(f"TTS service HTTP {r.status}")
+        return body
 
 def core_hash(data):
     core=[]
@@ -58,6 +87,8 @@ ap.add_argument("--voice",default=str(VOICE_DEFAULT))
 ap.add_argument("--video",action="store_true")
 ap.add_argument("--force-audio",action="store_true")
 ap.add_argument("--dry-run",action="store_true")
+ap.add_argument("--tts-service",default=TTS_SERVICE_DEFAULT)
+ap.add_argument("--no-tts-service",action="store_true")
 ap.add_argument("--queue",action="store_true",help="use demand-ranked local materialization queue")
 args=ap.parse_args()
 
@@ -109,14 +140,19 @@ need_tts=any(
     for _,_,d in items
 )
 tts=None
+use_tts_service=False
 if need_tts:
-    sys.path.insert(0,str(INDEX))
-    os.environ.setdefault("HF_HOME",str(H3/"runtime/h3studio/hf-cache"))
-    os.environ.setdefault("XDG_CACHE_HOME",str(H3/"runtime/h3studio/xdg-cache"))
-    from indextts.infer_v2_5 import IndexTTS2
-    print("LOADING_INDEXTTS_2_5")
-    tts=IndexTTS2(cfg_path=str(INDEX/"checkpoints_25/config.yaml"),model_dir=str(INDEX/"checkpoints_25"),use_bf16=True)
-    print("INDEXTTS_READY")
+    use_tts_service=(not args.no_tts_service and tts_service_ready(args.tts_service))
+    if use_tts_service:
+        print("INDEXTTS_SERVICE_READY",args.tts_service)
+    else:
+        sys.path.insert(0,str(INDEX))
+        os.environ.setdefault("HF_HOME",str(H3/"runtime/h3studio/hf-cache"))
+        os.environ.setdefault("XDG_CACHE_HOME",str(H3/"runtime/h3studio/xdg-cache"))
+        from indextts.infer_v2_5 import IndexTTS2
+        print("LOADING_INDEXTTS_2_5")
+        tts=IndexTTS2(cfg_path=str(INDEX/"checkpoints_25/config.yaml"),model_dir=str(INDEX/"checkpoints_25"),use_bf16=True)
+        print("INDEXTTS_READY")
 
 for qid,p,data in items:
     before=core_hash(data)
@@ -128,13 +164,25 @@ for qid,p,data in items:
     for i,scene in enumerate(data.get("scenes") or [],1):
         out=out_dir/f"scene-{i:02d}.wav"
         if regen_audio or not audio_ok(scene):
-            if tts is None: raise RuntimeError("TTS not initialized")
             direction=((scene.get("renderSpec") or {}).get("voiceDirection") or "")
             factor=1.0
             if "慢" in direction or "沉稳" in direction: factor=1.12
             if "快" in direction or "兴奋" in direction: factor=0.92
-            tts.infer(spk_audio_prompt=args.voice,text=scene["narration"],lang="ZH",
-                      output_path=str(out),duration_factor=factor,verbose=False)
+            if use_tts_service:
+                tts_service_synthesize(args.tts_service,voice=args.voice,text=scene["narration"],output_path=out,length_scale=factor)
+            else:
+                if tts is None: raise RuntimeError("TTS not initialized")
+                tts.infer(
+                    spk_audio_prompt=args.voice,
+                    text=scene["narration"],
+                    lang="ZH",
+                    output_path=str(out),
+                    duration_factor=factor,
+                    emo_vector=WARM_TEACHER_EMO,
+                    use_random=False,
+                    interval_silence=260,
+                    verbose=False,
+                )
         if not out.exists() or out.stat().st_size<1000:
             raise RuntimeError(f"bad TTS output: {out}")
         scene["audioUrl"]=f"/generated-solutions/{qid}/{out.name}"

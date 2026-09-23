@@ -10,6 +10,10 @@ os.environ.setdefault("HF_HOME",str(H3/"runtime/h3studio/hf-cache"))
 os.environ.setdefault("XDG_CACHE_HOME",str(H3/"runtime/h3studio/xdg-cache"))
 from indextts.infer_v2_5 import IndexTTS2
 
+# IndexTTS emotion order: happy, angry, sad, afraid, disgusted, melancholic,
+# surprised, calm. Low-grade math narration should feel calm and encouraging.
+WARM_TEACHER_EMO=[0.18, 0.0, 0.0, 0.0, 0.0, 0.0, 0.03, 0.82]
+
 def wav_ms(p):
     with wave.open(str(p),"rb") as w:
         return round(w.getnframes()/w.getframerate()*1000)
@@ -36,7 +40,17 @@ for i,scene in enumerate(data.get("scenes",[]),1):
         factor=1.0
         if "慢" in direction or "沉稳" in direction: factor=1.12
         if "快" in direction or "兴奋" in direction: factor=0.92
-        tts.infer(spk_audio_prompt=args.voice,text=scene["narration"],lang="ZH",output_path=str(out),duration_factor=factor,verbose=False)
+        tts.infer(
+            spk_audio_prompt=args.voice,
+            text=scene["narration"],
+            lang="ZH",
+            output_path=str(out),
+            duration_factor=factor,
+            emo_vector=WARM_TEACHER_EMO,
+            use_random=False,
+            interval_silence=260,
+            verbose=False,
+        )
     if out.stat().st_size<1000: raise RuntimeError(f"bad tts output: {out}")
     scene["audioUrl"]=f"/generated-solutions/{args.question_id}/{out.name}"
     scene["audioDurationMs"]=wav_ms(out)
