@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import ThreeSolidScene from "@/components/ThreeSolidScene";
 import MathDslScene from "@/components/MathDslScene";
 import styles from "./SmartSolutionPlayer.module.css";
@@ -112,11 +112,11 @@ export default function SmartSolutionPlayer(props: Props) {
   const [index, setIndex] = useState(0);
   const [playing, setPlaying] = useState(false);
   const [autoStartPending, setAutoStartPending] = useState(false);
+  const autoStartPendingRef = useRef(false);
   const [rate, setRate] = useState(1);
   const scene = storyboard.scenes[index];
 
   useEffect(() => {
-    if (!open || verified) return;
     let cancelled = false;
     fetch(`/api/solutions/${encodeURIComponent(props.questionId)}`, { cache: "no-store" })
       .then(async (res) => res.ok ? res.json() as Promise<SolutionStoryboard> : null)
@@ -128,20 +128,22 @@ export default function SmartSolutionPlayer(props: Props) {
       })
       .catch(() => undefined)
       .finally(() => {
-        if (!cancelled && autoStartPending) {
+        if (!cancelled && autoStartPendingRef.current) {
+          autoStartPendingRef.current = false;
           window.dispatchEvent(new CustomEvent("smart-solution-start", { detail: { questionId: props.questionId } }));
           setAutoStartPending(false);
           setPlaying(true);
         }
       });
     return () => { cancelled = true; };
-  }, [autoStartPending, open, props.questionId, verified]);
+  }, [props.questionId]);
 
   useEffect(() => {
     const stopForOtherPlayer = (event: Event) => {
       const detail = (event as CustomEvent<{ questionId?: string }>).detail;
       if (detail?.questionId && detail.questionId !== props.questionId) {
         setPlaying(false);
+        autoStartPendingRef.current = false;
         setAutoStartPending(false);
       }
     };
@@ -158,7 +160,10 @@ export default function SmartSolutionPlayer(props: Props) {
     setOpen(true);
     setIndex(0);
     if (verified) startPlayback();
-    else setAutoStartPending(true);
+    else {
+      autoStartPendingRef.current = true;
+      setAutoStartPending(true);
+    }
   };
 
   useEffect(() => {
@@ -231,7 +236,7 @@ export default function SmartSolutionPlayer(props: Props) {
   return <section className="smart-solution-player">
     <div className="solution-player-head">
       <div><span className="solution-mascot">🦘</span><div><small>Q{props.questionNo} · 数学侦探模式</small><strong>{scene.title}</strong></div></div>
-      <button className="solution-close" onClick={() => { setOpen(false); setPlaying(false); setAutoStartPending(false); }}>收起</button>
+      <button className="solution-close" onClick={() => { setOpen(false); setPlaying(false); autoStartPendingRef.current = false; setAutoStartPending(false); }}>收起</button>
     </div>
 
     <div className="solution-stage">

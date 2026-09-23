@@ -1,0 +1,1361 @@
+{
+  "version": 1,
+  "codec": "mp3",
+  "sampleRate": 22050,
+  "channels": 1,
+  "bitrateKbps": 64,
+  "questionCount": 50,
+  "sceneCount": 150,
+  "entries": [
+    {
+      "questionId": "au-amc-pre-a-s1-q01",
+      "scene": "scene-01",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s1-q01/scene-01.mp3",
+      "durationMs": 6107,
+      "sourceWavSha256": "6cd37b088daaf833a18313bd5a1891a049cc1be7111d77d1655dc39fa58177c6",
+      "mp3Sha256": "c9537b4525381ef1d84fbada535af062034163f147f84c29cee208fcd65ff10b",
+      "bytes": 49571
+    },
+    {
+      "questionId": "au-amc-pre-a-s1-q01",
+      "scene": "scene-02",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s1-q01/scene-02.mp3",
+      "durationMs": 6548,
+      "sourceWavSha256": "14c6c542e8577a6817912d34dda6db806f46050f05acffe0cc90b2026253d650",
+      "mp3Sha256": "0eac749e4521cac298fef95ff7d5d9f43ccea88afe8f04a320dabc8f04144894",
+      "bytes": 53123
+    },
+    {
+      "questionId": "au-amc-pre-a-s1-q01",
+      "scene": "scene-03",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s1-q01/scene-03.mp3",
+      "durationMs": 8139,
+      "sourceWavSha256": "feb4f0d845e08175fcccc30ca1fb3c79c1939b3bc1f95e1fe62669a6d081d58a",
+      "mp3Sha256": "ae0796fc7ce58750cd6f9b11ad7906057667925861c418d7f095496c16e546a8",
+      "bytes": 65871
+    },
+    {
+      "questionId": "au-amc-pre-a-s1-q02",
+      "scene": "scene-01",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s1-q02/scene-01.mp3",
+      "durationMs": 7187,
+      "sourceWavSha256": "5d9d4b501c8b00961c16239e7a5b18d18e33112d23e9799d6c1e614a5c537da2",
+      "mp3Sha256": "3990c2397b0a1565dac0b84b99980f34803cc526c160a7dccba518e02ac5d728",
+      "bytes": 58348
+    },
+    {
+      "questionId": "au-amc-pre-a-s1-q02",
+      "scene": "scene-02",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s1-q02/scene-02.mp3",
+      "durationMs": 7187,
+      "sourceWavSha256": "1e35f254a0771fd53889d9edb84f50ac657c7cc3b67f8c3568fdb414605060f6",
+      "mp3Sha256": "f6347b79620f5a92a2153cb4f5e8dfa36388706e5697a921d742f06b9d758779",
+      "bytes": 58348
+    },
+    {
+      "questionId": "au-amc-pre-a-s1-q02",
+      "scene": "scene-03",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s1-q02/scene-03.mp3",
+      "durationMs": 6780,
+      "sourceWavSha256": "67ca02ff062f1a5d0adfd604a99e0f98566dc19704445aa8ba19b22f44bead6f",
+      "mp3Sha256": "db92482b68c7d7010e36ab867c08993ae9e6c4d808acd27096f5ae8821753340",
+      "bytes": 55004
+    },
+    {
+      "questionId": "au-amc-pre-a-s1-q03",
+      "scene": "scene-01",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s1-q03/scene-01.mp3",
+      "durationMs": 8499,
+      "sourceWavSha256": "895ec8dc286079c962a47ec8768ba5312584c94cb5724ef6c4f2ba55334f2af8",
+      "mp3Sha256": "d054746a2fc979e13cc8ef9825e515e59a07a79f4d1d8b631b3911c6462b6cf0",
+      "bytes": 68797
+    },
+    {
+      "questionId": "au-amc-pre-a-s1-q03",
+      "scene": "scene-02",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s1-q03/scene-02.mp3",
+      "durationMs": 6827,
+      "sourceWavSha256": "15648bb53193fa23b116d949a01953b15529e8faa9b157bdf1082154c5ba70ce",
+      "mp3Sha256": "e799b47332d1d23957742b9b355fc83470b4e65f0bc8f1ee090d7964b71a5a53",
+      "bytes": 55422
+    },
+    {
+      "questionId": "au-amc-pre-a-s1-q03",
+      "scene": "scene-03",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s1-q03/scene-03.mp3",
+      "durationMs": 6142,
+      "sourceWavSha256": "330fd6291cf6e5cfbfb6ffb24b2674b1cb570694dded5dca10359d7de24fa5d6",
+      "mp3Sha256": "a6b05f5d6e89d31f6198c50dcbd655b6e05f7ed70a9215d239134e48cefbc403",
+      "bytes": 49989
+    },
+    {
+      "questionId": "au-amc-pre-a-s1-q04",
+      "scene": "scene-01",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s1-q04/scene-01.mp3",
+      "durationMs": 7221,
+      "sourceWavSha256": "5b575811e70d55442f006678b490096366e5957f8c73a11fbb943e60d1f7df02",
+      "mp3Sha256": "c7ec2fd5b6dd409dbd72cdc551adca55c31908711277362a0a0442b660d9d75d",
+      "bytes": 58557
+    },
+    {
+      "questionId": "au-amc-pre-a-s1-q04",
+      "scene": "scene-02",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s1-q04/scene-02.mp3",
+      "durationMs": 6269,
+      "sourceWavSha256": "05e4bfa1e0253142dce854efa6bf63b3b5160d2b7754183762c3230dee76e4e6",
+      "mp3Sha256": "b5acc98928507ef6756f8cf37fd0ab82b793c5d238fb0fec8b8af937f20c3845",
+      "bytes": 50825
+    },
+    {
+      "questionId": "au-amc-pre-a-s1-q04",
+      "scene": "scene-03",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s1-q04/scene-03.mp3",
+      "durationMs": 7105,
+      "sourceWavSha256": "4fe0f49e4061210596234bb6d183196419543a4c823176f4900bc24aa625cab4",
+      "mp3Sha256": "4e383baa849f02ef4d850800d9b4613faca0725530e58cb56dc71e9503ca5058",
+      "bytes": 57512
+    },
+    {
+      "questionId": "au-amc-pre-a-s1-q05",
+      "scene": "scene-01",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s1-q05/scene-01.mp3",
+      "durationMs": 7268,
+      "sourceWavSha256": "f544dce8bd4a752abfb4666492b3757f06c58db0b54376ec79e4467d3e211cd4",
+      "mp3Sha256": "9521f3d36e497fa7beecc449f7fe4bcfa68304db5c5709fb7fae2b57a668822d",
+      "bytes": 58975
+    },
+    {
+      "questionId": "au-amc-pre-a-s1-q05",
+      "scene": "scene-02",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s1-q05/scene-02.mp3",
+      "durationMs": 7338,
+      "sourceWavSha256": "92c76938fd8400b47ce46bee2e61c67ad855387304cd34feca80c75e6035782c",
+      "mp3Sha256": "925f666573093ec8acec69113567f36d6120e64196d3c189215a78fe6f34c432",
+      "bytes": 59393
+    },
+    {
+      "questionId": "au-amc-pre-a-s1-q05",
+      "scene": "scene-03",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s1-q05/scene-03.mp3",
+      "durationMs": 7988,
+      "sourceWavSha256": "28d52875d5d42b484cf6fce4f03b4e6ce4def56a46b3bbecb681ad3bee6a7288",
+      "mp3Sha256": "50457940f17166e7ac52f21632ab5c2a44775bda5617a1d5836c8d8b8e79dbf2",
+      "bytes": 64617
+    },
+    {
+      "questionId": "au-amc-pre-a-s1-q06",
+      "scene": "scene-01",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s1-q06/scene-01.mp3",
+      "durationMs": 8661,
+      "sourceWavSha256": "95582db204716f39aef3d1d47c6b787871d338d0862cca1b84d5e9647c239318",
+      "mp3Sha256": "d15cd8c0037ec4385f2e9430190a462539ade1713c4cd69aff8f90aa8d3fcc48",
+      "bytes": 70051
+    },
+    {
+      "questionId": "au-amc-pre-a-s1-q06",
+      "scene": "scene-02",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s1-q06/scene-02.mp3",
+      "durationMs": 8220,
+      "sourceWavSha256": "c6dac355010e691778bb89b3525efdbd38a6dc3c61a168a249145712faafc918",
+      "mp3Sha256": "43ff802d337562f3631186bf923d79b5a1a38c8b5fc3356067fd596ed5255ac8",
+      "bytes": 66498
+    },
+    {
+      "questionId": "au-amc-pre-a-s1-q06",
+      "scene": "scene-03",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s1-q06/scene-03.mp3",
+      "durationMs": 7187,
+      "sourceWavSha256": "a44fb229d1cf471793b733da190fbfb5531b3d465b0c989978d52dcf2d868701",
+      "mp3Sha256": "f3243e7f21f7bff657c33016fe48115c2f0a414b5963bc7c01ae374c3a54951d",
+      "bytes": 58348
+    },
+    {
+      "questionId": "au-amc-pre-a-s1-q07",
+      "scene": "scene-01",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s1-q07/scene-01.mp3",
+      "durationMs": 8104,
+      "sourceWavSha256": "ec8c49b668ddd93b2d0c889edf5bf675d668a5a63ec41a2d55c078c603568b96",
+      "mp3Sha256": "077a0322de260779eb47e9bf9717724f8f0f9d745345bde484ff6881e80a6a5b",
+      "bytes": 65662
+    },
+    {
+      "questionId": "au-amc-pre-a-s1-q07",
+      "scene": "scene-02",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s1-q07/scene-02.mp3",
+      "durationMs": 8858,
+      "sourceWavSha256": "e0ba7f9b891acd4b268c71d32f6183cf3ed4bff9829420027411b249862bb049",
+      "mp3Sha256": "7b3c1ef08ebd825b5dc980a1659db23529ab13ccb7b8172094131bb97af6d227",
+      "bytes": 71723
+    },
+    {
+      "questionId": "au-amc-pre-a-s1-q07",
+      "scene": "scene-03",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s1-q07/scene-03.mp3",
+      "durationMs": 5747,
+      "sourceWavSha256": "5220c0696cdb18ce924ec3b23811f9e47537691a82dc14881564b868d749cf12",
+      "mp3Sha256": "2f54f453af8ba64a5e56a15c1c9cea13433b0f0ef50b98089e2f5c8869bc75b1",
+      "bytes": 46645
+    },
+    {
+      "questionId": "au-amc-pre-a-s1-q08",
+      "scene": "scene-01",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s1-q08/scene-01.mp3",
+      "durationMs": 8986,
+      "sourceWavSha256": "f5560938e93ad4f4597da5f65fdb64e134ef7b19c9bca16fff97c57a8f8638c1",
+      "mp3Sha256": "4c14a0ec3634fda849891e00804a8cb9ff44373510069bd3d03e752efe371135",
+      "bytes": 72558
+    },
+    {
+      "questionId": "au-amc-pre-a-s1-q08",
+      "scene": "scene-02",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s1-q08/scene-02.mp3",
+      "durationMs": 14129,
+      "sourceWavSha256": "9e4922e567abfc70016793c323df044c09fb59e1ce0e24fee6131bfe19bf3166",
+      "mp3Sha256": "aa7f585bd2d019381439f22cad0b38efc10950ffc34d60e624437e0c99db6f48",
+      "bytes": 113727
+    },
+    {
+      "questionId": "au-amc-pre-a-s1-q08",
+      "scene": "scene-03",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s1-q08/scene-03.mp3",
+      "durationMs": 9857,
+      "sourceWavSha256": "e9976de5944af1f0c56c74d31f4982e7951767ce4171b235625c9d3729ffcc90",
+      "mp3Sha256": "60702cdede788f0ddf735b3930c614a612ace6792dca98cf89e2d67a6599fe54",
+      "bytes": 79664
+    },
+    {
+      "questionId": "au-amc-pre-a-s1-q09",
+      "scene": "scene-01",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s1-q09/scene-01.mp3",
+      "durationMs": 7988,
+      "sourceWavSha256": "82fd7d7e8dcb8492178054e5cfc922639fec717359ad3888be7d678465175ed7",
+      "mp3Sha256": "47240aa1fe5bf7b0f5c6d290d5af44932f33af88aae5f3302275206d0f487167",
+      "bytes": 64617
+    },
+    {
+      "questionId": "au-amc-pre-a-s1-q09",
+      "scene": "scene-02",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s1-q09/scene-02.mp3",
+      "durationMs": 6223,
+      "sourceWavSha256": "6f7937edc4a2648acb33a01ab876faae7af4eb5fe1c3d8ba75d93bba395a16c2",
+      "mp3Sha256": "ca7545346fa5fd47afea69293c0a35ed597da8958bf3ade7d9d6cb1de3e42beb",
+      "bytes": 50616
+    },
+    {
+      "questionId": "au-amc-pre-a-s1-q09",
+      "scene": "scene-03",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s1-q09/scene-03.mp3",
+      "durationMs": 6420,
+      "sourceWavSha256": "7abf8bd0e27a4531fc88279e46017d55f90c02bc68a6ead349e6f6c221e40ee0",
+      "mp3Sha256": "d671202cbcf7e7f0568abdccb247fbdac9562f787b55b4becfa29ea479a6c26b",
+      "bytes": 52078
+    },
+    {
+      "questionId": "au-amc-pre-a-s1-q10",
+      "scene": "scene-01",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s1-q10/scene-01.mp3",
+      "durationMs": 4748,
+      "sourceWavSha256": "30c9ae4b76031f8d93b15c74826aada709dbf20cfdd65fde9824f2745e8597b9",
+      "mp3Sha256": "cf98cc6362af42a3b870f1d700b520bbc10a1fbea0a63a1e2665d70507562e42",
+      "bytes": 38704
+    },
+    {
+      "questionId": "au-amc-pre-a-s1-q10",
+      "scene": "scene-02",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s1-q10/scene-02.mp3",
+      "durationMs": 6908,
+      "sourceWavSha256": "998c25c2926fa489738926906fc5270def76c9baf2ddbb40942334d8d0634810",
+      "mp3Sha256": "b7ae84e59eaaaafd1dce035c5ec137cd630406705833ca57512ad727526246dc",
+      "bytes": 56049
+    },
+    {
+      "questionId": "au-amc-pre-a-s1-q10",
+      "scene": "scene-03",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s1-q10/scene-03.mp3",
+      "durationMs": 5700,
+      "sourceWavSha256": "6d9379626e2183ca690791e89b186963c6ddb0edc5a05f82ece9f3443adbd6d9",
+      "mp3Sha256": "ca9f489e53a357d9179efdba221ae33959830ebf0a7f7dba0146acde4fe40fff",
+      "bytes": 46436
+    },
+    {
+      "questionId": "au-amc-pre-a-s1-q11",
+      "scene": "scene-01",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s1-q11/scene-01.mp3",
+      "durationMs": 8777,
+      "sourceWavSha256": "9d0c5f98675f98c72b582ff5d744ae9c40c52665896fe737945f4445c75a197f",
+      "mp3Sha256": "f6415a806da329c4df536dae8d025a9c69a339f449f61c3d7ce2ab8c7209403e",
+      "bytes": 70887
+    },
+    {
+      "questionId": "au-amc-pre-a-s1-q11",
+      "scene": "scene-02",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s1-q11/scene-02.mp3",
+      "durationMs": 10623,
+      "sourceWavSha256": "f1937f29828aa2fb392e6d73a867aae38bf34342ce1b86014c392194dc830f6d",
+      "mp3Sha256": "044ede98e80945cfde31b66c0b30f378a4cd2b2deaefaa121cf0ae5b6d4ddc21",
+      "bytes": 85724
+    },
+    {
+      "questionId": "au-amc-pre-a-s1-q11",
+      "scene": "scene-03",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s1-q11/scene-03.mp3",
+      "durationMs": 6420,
+      "sourceWavSha256": "cb6839af0997520c1c7b6c77b953ce5e48cea52e70563a436278340d11fea5b5",
+      "mp3Sha256": "5cb2a80ba8f03643af1a939957f4a0bdc601cf4667c85de87034c4f5cdb6278a",
+      "bytes": 52078
+    },
+    {
+      "questionId": "au-amc-pre-a-s1-q12",
+      "scene": "scene-01",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s1-q12/scene-01.mp3",
+      "durationMs": 7825,
+      "sourceWavSha256": "902e8cfc8dbeef8802e4204bc40edc3ca0c8bc1a56722882f06b138e458a05cf",
+      "mp3Sha256": "b309d662a0e4899085a7ad0f813ca92b197d86564c77bf69b42bea6864954fec",
+      "bytes": 63363
+    },
+    {
+      "questionId": "au-amc-pre-a-s1-q12",
+      "scene": "scene-02",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s1-q12/scene-02.mp3",
+      "durationMs": 7221,
+      "sourceWavSha256": "e4348e29d0e8d8a67e72e8347240b58f52385184d545467b898a5f0c22d2c67f",
+      "mp3Sha256": "2452975280e6837f170f0080b1dadc35fc31ec0c6d9458742d919e0bf5254e52",
+      "bytes": 58557
+    },
+    {
+      "questionId": "au-amc-pre-a-s1-q12",
+      "scene": "scene-03",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s1-q12/scene-03.mp3",
+      "durationMs": 6142,
+      "sourceWavSha256": "d1fd045eddff01e2245479b51e130a9e43a0dc5774a93f6b21b783655f8f0fe2",
+      "mp3Sha256": "5deba4e8695ef377ae1fcc021146bddbcd0e85f8e6bc88c90c87f85618a1cebb",
+      "bytes": 49989
+    },
+    {
+      "questionId": "au-amc-pre-a-s1-q13",
+      "scene": "scene-01",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s1-q13/scene-01.mp3",
+      "durationMs": 7338,
+      "sourceWavSha256": "d58a2dd958f88426c1020121b83e420f8f5e49c52fe746d22d940e3213e3fe86",
+      "mp3Sha256": "1eea8c2a648896aef4d4df265621da0ad9992b8a34f70ec8dee775f8f3478378",
+      "bytes": 59393
+    },
+    {
+      "questionId": "au-amc-pre-a-s1-q13",
+      "scene": "scene-02",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s1-q13/scene-02.mp3",
+      "durationMs": 7825,
+      "sourceWavSha256": "a5e64a981d79c32bd09c24de232a3ca621a6b2a75880ccbab68c8d5e197f2cbd",
+      "mp3Sha256": "48f231e75001e1637cfe2f34fa5148e6a6e629c1c0a1a23b8d3d078a4466ab95",
+      "bytes": 63363
+    },
+    {
+      "questionId": "au-amc-pre-a-s1-q13",
+      "scene": "scene-03",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s1-q13/scene-03.mp3",
+      "durationMs": 5828,
+      "sourceWavSha256": "586099b765abb8a5545d25aeedd8f6adc3e7fa32263a4e9790cf57727ab1b3bf",
+      "mp3Sha256": "3dc8525f853de27e1806fd67d91cda059d6abf84650dacb88064e73c1eed7da5",
+      "bytes": 47481
+    },
+    {
+      "questionId": "au-amc-pre-a-s1-q14",
+      "scene": "scene-01",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s1-q14/scene-01.mp3",
+      "durationMs": 8824,
+      "sourceWavSha256": "b54b6ddaae57ce0ab0721554623f3dd537bb3b8484d08d562c96670770d365e0",
+      "mp3Sha256": "1728f9fa26b101580441ec8a008d73e983a87e1db7ffa988c35573ba5ad5ba7a",
+      "bytes": 71305
+    },
+    {
+      "questionId": "au-amc-pre-a-s1-q14",
+      "scene": "scene-02",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s1-q14/scene-02.mp3",
+      "durationMs": 10820,
+      "sourceWavSha256": "a270ae90e721999407b13b4a51e175366ae9e8a8aeffc58babad0361ae431d6c",
+      "mp3Sha256": "c598987252e9770e3ea355a10d29703f455af9dfb3f2f7a144094e72dee117e1",
+      "bytes": 87396
+    },
+    {
+      "questionId": "au-amc-pre-a-s1-q14",
+      "scene": "scene-03",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s1-q14/scene-03.mp3",
+      "durationMs": 4783,
+      "sourceWavSha256": "b10ceebae69cd462e307153887e120beaaadd92d04451898051b0e7d7afddf15",
+      "mp3Sha256": "255ebe60f90d1030ec70304a67085c033cfaf7e4659b0a5423d28f2d8d121e1a",
+      "bytes": 39122
+    },
+    {
+      "questionId": "au-amc-pre-a-s1-q15",
+      "scene": "scene-01",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s1-q15/scene-01.mp3",
+      "durationMs": 8220,
+      "sourceWavSha256": "84be3d26392f0dc0d9cd1334cab03d9d929e48dc913df0b56b9a9fa69a21a9e7",
+      "mp3Sha256": "ab354ed8f0c0494922497250101d8afdc96d97b5a2787c8467d8e09f7c7f725e",
+      "bytes": 66498
+    },
+    {
+      "questionId": "au-amc-pre-a-s1-q15",
+      "scene": "scene-02",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s1-q15/scene-02.mp3",
+      "durationMs": 7500,
+      "sourceWavSha256": "36794ed219c5f0318a3550d11b0073b1ed2548c063c0044ca9e552d7d28dd344",
+      "mp3Sha256": "ed1256d8ed99a28789efa4c88fb12f148f3b1afee782cd8a4c6b3da17ff3625d",
+      "bytes": 60856
+    },
+    {
+      "questionId": "au-amc-pre-a-s1-q15",
+      "scene": "scene-03",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s1-q15/scene-03.mp3",
+      "durationMs": 6269,
+      "sourceWavSha256": "67e27b5dff2aa62a5278abf74c092a03aee8d4af3fbf7192db06b35d810f62ad",
+      "mp3Sha256": "d7313b5daac7c1dd9195a97c002e5df5c72db3dc045b4edc339f0bee2147b8dd",
+      "bytes": 50825
+    },
+    {
+      "questionId": "au-amc-pre-a-s1-q16",
+      "scene": "scene-01",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s1-q16/scene-01.mp3",
+      "durationMs": 8464,
+      "sourceWavSha256": "baab7ed9056a2459a069cb23e373a4583180a2b4b9203755200a7ecc9355072c",
+      "mp3Sha256": "d96dcd2118d26bc37b0b6b9e329b73b227e7a661ca3b407c0df73629182775ad",
+      "bytes": 68379
+    },
+    {
+      "questionId": "au-amc-pre-a-s1-q16",
+      "scene": "scene-02",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s1-q16/scene-02.mp3",
+      "durationMs": 7105,
+      "sourceWavSha256": "a704f132e3ab6a0242f65a2bbc783ca84ac0ae725f47a858d6eb63acdd12be4c",
+      "mp3Sha256": "66d2e5a46450610225d93e9bd98c4f6ab9568cfd7d20369395edb42dd0130e75",
+      "bytes": 57512
+    },
+    {
+      "questionId": "au-amc-pre-a-s1-q16",
+      "scene": "scene-03",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s1-q16/scene-03.mp3",
+      "durationMs": 6385,
+      "sourceWavSha256": "b0eda9d23c2ee85d3de18406f102ca7f2bb594bb5f078d0e32ab5b8ea5cf6fec",
+      "mp3Sha256": "af2df12408b3538a84e4c088603b2142131bf4505f67993688220e4e8fe9c471",
+      "bytes": 51869
+    },
+    {
+      "questionId": "au-amc-pre-a-s1-q17",
+      "scene": "scene-01",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s1-q17/scene-01.mp3",
+      "durationMs": 7581,
+      "sourceWavSha256": "dd222df9db904d4798e5a94487c3d3a5dbdf2aad088b8c57792acc4bc084fb4d",
+      "mp3Sha256": "287b3bffb30774ad56b37e30ed342d7ae86a8704882294df36ffe434bde2f5f8",
+      "bytes": 61483
+    },
+    {
+      "questionId": "au-amc-pre-a-s1-q17",
+      "scene": "scene-02",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s1-q17/scene-02.mp3",
+      "durationMs": 4063,
+      "sourceWavSha256": "d73e141a68ccd6f19450748ce1a1de744ab1e7b9b0b9fb96377bd6aa47de6a64",
+      "mp3Sha256": "1d3808a94d64a28ae68a1fbc97a7a875f91693f9f52b51f35006feb05eeac9aa",
+      "bytes": 33270
+    },
+    {
+      "questionId": "au-amc-pre-a-s1-q17",
+      "scene": "scene-03",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s1-q17/scene-03.mp3",
+      "durationMs": 6188,
+      "sourceWavSha256": "d394832eaf6d11fa5efef5538667a5f3c7c2ab4fd24e9ed12678dcffb136fbe5",
+      "mp3Sha256": "e62a58e06ec28228ead073c09757748c75260760e05e84102c0eb922a8e5ca16",
+      "bytes": 50198
+    },
+    {
+      "questionId": "au-amc-pre-a-s1-q18",
+      "scene": "scene-01",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s1-q18/scene-01.mp3",
+      "durationMs": 5747,
+      "sourceWavSha256": "058c7845b70401490384f430a85d70f9c9fdbcf2e9a00505e2118a9bb9e119dc",
+      "mp3Sha256": "210c075b959df938dcc6b339e4b0b40f1b08c989c1b4deea7e43be3c196acd01",
+      "bytes": 46645
+    },
+    {
+      "questionId": "au-amc-pre-a-s1-q18",
+      "scene": "scene-02",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s1-q18/scene-02.mp3",
+      "durationMs": 11180,
+      "sourceWavSha256": "eb3caa272f44854522648a5e397f9d5da1d5e04693e079135b4efa448ffe5462",
+      "mp3Sha256": "1d9e3256d31512cfc0e67df9162638d8d121785b2da1994e9d5b79112c0eff0f",
+      "bytes": 90113
+    },
+    {
+      "questionId": "au-amc-pre-a-s1-q18",
+      "scene": "scene-03",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s1-q18/scene-03.mp3",
+      "durationMs": 5747,
+      "sourceWavSha256": "48870de113eb96361faee903a5dc46e41fe3ec89e68b0416597b430fff2c294c",
+      "mp3Sha256": "b91be38ee6a91951aed26f155dbe1c3cfa57c30a381c53bb470169a8094394ad",
+      "bytes": 46645
+    },
+    {
+      "questionId": "au-amc-pre-a-s1-q19",
+      "scene": "scene-01",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s1-q19/scene-01.mp3",
+      "durationMs": 7059,
+      "sourceWavSha256": "6296251e4c87e6d3d0d7125fa6476426b0dae940d7e03ac11d21d550d878f3d0",
+      "mp3Sha256": "77a45d3c624363c0eb745c4d4027518836e080a9495aca0eb1b1609064e48410",
+      "bytes": 57303
+    },
+    {
+      "questionId": "au-amc-pre-a-s1-q19",
+      "scene": "scene-02",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s1-q19/scene-02.mp3",
+      "durationMs": 8499,
+      "sourceWavSha256": "1e63f0a5dbea0fd1c41a74b4de7a9bd750147759d6594e6530427ee41b349004",
+      "mp3Sha256": "73b82e0205c169d5fd15bfdb16854fffbf78d8fc03657345a2236f71e07644ff",
+      "bytes": 68797
+    },
+    {
+      "questionId": "au-amc-pre-a-s1-q19",
+      "scene": "scene-03",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s1-q19/scene-03.mp3",
+      "durationMs": 5828,
+      "sourceWavSha256": "1f6ed47a4e76d7b353a4a1bac3590812bf07cebb08b961d8624b5f6ae483b415",
+      "mp3Sha256": "8aedc0c80693ea77d44aa533a4f5f2d67a93ebf94a20461a52d332096eba23c0",
+      "bytes": 47481
+    },
+    {
+      "questionId": "au-amc-pre-a-s1-q20",
+      "scene": "scene-01",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s1-q20/scene-01.mp3",
+      "durationMs": 7697,
+      "sourceWavSha256": "0292679b67f2abf1ae501425f77df4534b5753e8c28c0954de757f80d434e01d",
+      "mp3Sha256": "cfe9bb63310cd0201fdea140502cbbafe916c83f70294f0fb6d5d5dd5ea7160c",
+      "bytes": 62318
+    },
+    {
+      "questionId": "au-amc-pre-a-s1-q20",
+      "scene": "scene-02",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s1-q20/scene-02.mp3",
+      "durationMs": 7546,
+      "sourceWavSha256": "30979683f298c3037e532d1e15e4eb40f0147bb7ce1fcba8a33b2338663d3489",
+      "mp3Sha256": "ae296fa99f1ebabdd0585de20acae3abea7b8e0617271bfc4402ea9e6dce1982",
+      "bytes": 61065
+    },
+    {
+      "questionId": "au-amc-pre-a-s1-q20",
+      "scene": "scene-03",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s1-q20/scene-03.mp3",
+      "durationMs": 5224,
+      "sourceWavSha256": "4d733a7682e72ceb5774a96a925f02998b96b2e8311fe0dc5435dd4547f9da41",
+      "mp3Sha256": "ca17497b3610330960ee845bb6c39ea59b32c5cd3fa9faca59ea5b6cd3191826",
+      "bytes": 42465
+    },
+    {
+      "questionId": "au-amc-pre-a-s1-q21",
+      "scene": "scene-01",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s1-q21/scene-01.mp3",
+      "durationMs": 7500,
+      "sourceWavSha256": "c1280c029d58554155fefc6ce24fda340d79ca6083df200cd2faf5a076cab5f1",
+      "mp3Sha256": "9b92b4ed3defbf78ff2171c1814af72cc290aed4e1cf23f7eef6d72d3895fbdf",
+      "bytes": 60856
+    },
+    {
+      "questionId": "au-amc-pre-a-s1-q21",
+      "scene": "scene-02",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s1-q21/scene-02.mp3",
+      "durationMs": 10263,
+      "sourceWavSha256": "7f181f931bb7847ce52ee2e8c6ccf8a9f1b0c32f49ca6276b7dfddb312a18c10",
+      "mp3Sha256": "730424d137144c64fb875863ea56fa183b15628b030122333d979bbaca6f9182",
+      "bytes": 82798
+    },
+    {
+      "questionId": "au-amc-pre-a-s1-q21",
+      "scene": "scene-03",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s1-q21/scene-03.mp3",
+      "durationMs": 6223,
+      "sourceWavSha256": "9a30e9ac8380ea3330e83c8e75144ce123692503b2957afaf6d7512ea9f2825c",
+      "mp3Sha256": "b254c251c8839cca2bf504fc08e68486fabc881d393f3544ef77c8f858cef792",
+      "bytes": 50616
+    },
+    {
+      "questionId": "au-amc-pre-a-s1-q22",
+      "scene": "scene-01",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s1-q22/scene-01.mp3",
+      "durationMs": 5503,
+      "sourceWavSha256": "24cc6385592b7612eef56665b79068cb841f91d930a9de33240c912b6afde8f8",
+      "mp3Sha256": "8015120f2e6dfc0d97a3685c921214976e813ed77ce2d3e413de797800674ef2",
+      "bytes": 44764
+    },
+    {
+      "questionId": "au-amc-pre-a-s1-q22",
+      "scene": "scene-02",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s1-q22/scene-02.mp3",
+      "durationMs": 9265,
+      "sourceWavSha256": "d4cfe25eddfb82fbc40515346d89b818b1a1f8ecb67d4731394032fa2ff3ebf7",
+      "mp3Sha256": "213f1ce458b2e482ba10cdad187875bcb9e4eb4b6862acb68dcd2cd3c6e35530",
+      "bytes": 74857
+    },
+    {
+      "questionId": "au-amc-pre-a-s1-q22",
+      "scene": "scene-03",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s1-q22/scene-03.mp3",
+      "durationMs": 5909,
+      "sourceWavSha256": "d20417b7876a868632dc46e4a9ec9211d9fc4f2c8b730977fe0d5b89ffe2d9f3",
+      "mp3Sha256": "ea9108b9cec21225fc0fd85aab0289a17b1a92b61a844f4333944256f1870aa2",
+      "bytes": 48108
+    },
+    {
+      "questionId": "au-amc-pre-a-s1-q23",
+      "scene": "scene-01",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s1-q23/scene-01.mp3",
+      "durationMs": 9300,
+      "sourceWavSha256": "40dc52e5d68585e394500a741c7e3ed38b0c8e06d309cafdf5120e3ad3afe2fb",
+      "mp3Sha256": "92c9359db53ddc5e6c0952817c3f37385ca68be99217777b9aab826c870e2558",
+      "bytes": 75066
+    },
+    {
+      "questionId": "au-amc-pre-a-s1-q23",
+      "scene": "scene-02",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s1-q23/scene-02.mp3",
+      "durationMs": 18448,
+      "sourceWavSha256": "a38611a57b322b47165658a9802503de069139369434c8a7d1d463fbb413407d",
+      "mp3Sha256": "fbb8e3eda0bfa9c725880b1dfb996a82f382ba5a84b16274f5a2cf2eff516a3d",
+      "bytes": 148418
+    },
+    {
+      "questionId": "au-amc-pre-a-s1-q23",
+      "scene": "scene-03",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s1-q23/scene-03.mp3",
+      "durationMs": 5828,
+      "sourceWavSha256": "73284cf5dd4e058ddb31f81ed6905ffb93b18279594f42620a1f4ecca46fd5aa",
+      "mp3Sha256": "1c9de2ca4f5c2d967d0779dc7cad68ed21b7346bde997f3863bc2d8cc9970634",
+      "bytes": 47481
+    },
+    {
+      "questionId": "au-amc-pre-a-s1-q24",
+      "scene": "scene-01",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s1-q24/scene-01.mp3",
+      "durationMs": 8696,
+      "sourceWavSha256": "4a56ca6152edf2e1bb3dafc0216a62496dc075a2895c5dec1485daea25b6d9cc",
+      "mp3Sha256": "0794d2c166122affd28b296c77c1a6d192c4cc617a1c91313a9e94a15c321e12",
+      "bytes": 70260
+    },
+    {
+      "questionId": "au-amc-pre-a-s1-q24",
+      "scene": "scene-02",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s1-q24/scene-02.mp3",
+      "durationMs": 12980,
+      "sourceWavSha256": "4c9e0d2e01157d495b677559c4869e6e0b14279e6818d29a08b21dcb2394050f",
+      "mp3Sha256": "843e0a8597f24d686c02bd0008f76d085cf44ee66594f1e5d5ae352132cf0b9a",
+      "bytes": 104532
+    },
+    {
+      "questionId": "au-amc-pre-a-s1-q24",
+      "scene": "scene-03",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s1-q24/scene-03.mp3",
+      "durationMs": 8464,
+      "sourceWavSha256": "4696285c8b53cd5ef1cbd9b2d60861853484d4613bb0163b346f6e7e08ef052d",
+      "mp3Sha256": "0ceb89bc114786946a9b51449adb1f3bb0095e872f5620c8e80bb7a9157f5b4e",
+      "bytes": 68379
+    },
+    {
+      "questionId": "au-amc-pre-a-s1-q25",
+      "scene": "scene-01",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s1-q25/scene-01.mp3",
+      "durationMs": 7988,
+      "sourceWavSha256": "a40d7d324cb7f8cfc230fc35dee4fc212b070f9d8ab392aa8a0bce35256a6318",
+      "mp3Sha256": "c5819130220e99f463a507cc48002c04007db93ab33b5ee4f1e5290f63f255b8",
+      "bytes": 64617
+    },
+    {
+      "questionId": "au-amc-pre-a-s1-q25",
+      "scene": "scene-02",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s1-q25/scene-02.mp3",
+      "durationMs": 14408,
+      "sourceWavSha256": "414e27cd147f8b7bc1b5ed9da5057e9825c8726e9f31c37383cc11cd4e2f2b81",
+      "mp3Sha256": "54160074f39cdcde2e980e5f3d6c12160973af2a3e53c3835584d0546ed88580",
+      "bytes": 116026
+    },
+    {
+      "questionId": "au-amc-pre-a-s1-q25",
+      "scene": "scene-03",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s1-q25/scene-03.mp3",
+      "durationMs": 9776,
+      "sourceWavSha256": "6142e58e703599b27847f2a6a43635afb8aa188f159324acbe7ca4a33792aea6",
+      "mp3Sha256": "fff48eb0d1c42351e6eac0eda07935dc8e3ac676b108e4224261fcf5ac7b4a27",
+      "bytes": 79037
+    },
+    {
+      "questionId": "au-amc-pre-a-s2-q01",
+      "scene": "scene-01",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s2-q01/scene-01.mp3",
+      "durationMs": 8417,
+      "sourceWavSha256": "74319a38520826e02139a691675e39f7d505fe4f1e63b17f208fb13fdd04f30e",
+      "mp3Sha256": "3038c7be23de2a6fb581f0ac57106f828b4835e4040abb6a6ec7726d5a9ebff1",
+      "bytes": 68170
+    },
+    {
+      "questionId": "au-amc-pre-a-s2-q01",
+      "scene": "scene-02",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s2-q01/scene-02.mp3",
+      "durationMs": 7825,
+      "sourceWavSha256": "0537f941ae2d52f58985e4f74c4ad7f562f6632f43aed65b894948df54eef69a",
+      "mp3Sha256": "6ba243027f5d1cb6a0238bd7cfb388ba1cc6cf79ef595bfbbe1ccfc4e4a206b2",
+      "bytes": 63363
+    },
+    {
+      "questionId": "au-amc-pre-a-s2-q01",
+      "scene": "scene-03",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s2-q01/scene-03.mp3",
+      "durationMs": 4272,
+      "sourceWavSha256": "78147c223a3ee875c6c0fda3bba8ef79ff28fc047e0824adb0d0b3ae9f535c2a",
+      "mp3Sha256": "0e88d147a51c0797f7f338d816538b63259ef85651c09520ab881f26c4e60d5c",
+      "bytes": 34942
+    },
+    {
+      "questionId": "au-amc-pre-a-s2-q02",
+      "scene": "scene-01",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s2-q02/scene-01.mp3",
+      "durationMs": 7268,
+      "sourceWavSha256": "86acae71a86f4a663b34155bb96dbba8c34aa36f5e55a248113fb575b811301e",
+      "mp3Sha256": "45af642a53987159fa86e1e07ff12784c841fa55898d5888194f4823ec3c2335",
+      "bytes": 58975
+    },
+    {
+      "questionId": "au-amc-pre-a-s2-q02",
+      "scene": "scene-02",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s2-q02/scene-02.mp3",
+      "durationMs": 6699,
+      "sourceWavSha256": "e0bae7dda711176865ddc634689e65bc9e32efe6fbcfd2c7795533d952141bf1",
+      "mp3Sha256": "912cff426702e5f90eb4922f978f338a7ad84f9a73a16f40315172583cd14932",
+      "bytes": 54377
+    },
+    {
+      "questionId": "au-amc-pre-a-s2-q02",
+      "scene": "scene-03",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s2-q02/scene-03.mp3",
+      "durationMs": 5747,
+      "sourceWavSha256": "f52b36126d45a00d762fe927ad584fcf367ccfecdfc8be3329525b7a97a8205a",
+      "mp3Sha256": "996e6d9c30efa51bec2cecf83f29ff308b922e4bd0bf3fc7516fe417f0fa2cbc",
+      "bytes": 46645
+    },
+    {
+      "questionId": "au-amc-pre-a-s2-q03",
+      "scene": "scene-01",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s2-q03/scene-01.mp3",
+      "durationMs": 6420,
+      "sourceWavSha256": "ecf3c83b7923f8b3da29ef8a34c5c056f3d87a43203514b86daebbb21f44e5e3",
+      "mp3Sha256": "602f7ab448ff5e71d4d05cbde6e10455df976babf3e5c9dd11bbb0279c0b3315",
+      "bytes": 52078
+    },
+    {
+      "questionId": "au-amc-pre-a-s2-q03",
+      "scene": "scene-02",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s2-q03/scene-02.mp3",
+      "durationMs": 4063,
+      "sourceWavSha256": "0a3b68d3ddecf390e62df000977f781c057b95c406e2806463a2008d260dc4f0",
+      "mp3Sha256": "b2e05447c6b491ac6257d72a43d7ea421f45cff53898e57a32e88449b47cd696",
+      "bytes": 33270
+    },
+    {
+      "questionId": "au-amc-pre-a-s2-q03",
+      "scene": "scene-03",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s2-q03/scene-03.mp3",
+      "durationMs": 5584,
+      "sourceWavSha256": "eb581d3db039935dc4b781837eecb1b232d92a00ac9c39bdc0109fd815a6797d",
+      "mp3Sha256": "1d3b9792dab9434bf6dff40fdcce50ade906f133da4ed4e51ef6049830c44ab3",
+      "bytes": 45391
+    },
+    {
+      "questionId": "au-amc-pre-a-s2-q04",
+      "scene": "scene-01",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s2-q04/scene-01.mp3",
+      "durationMs": 5143,
+      "sourceWavSha256": "9ab09ffee2db20a3316320bd757b250ebc4b33149e6a7a5a539274eecf5c3958",
+      "mp3Sha256": "a39242b0bda163e11dfcb61c065bbd7abe574995f6ee76bc2bbdf9532082574b",
+      "bytes": 41838
+    },
+    {
+      "questionId": "au-amc-pre-a-s2-q04",
+      "scene": "scene-02",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s2-q04/scene-02.mp3",
+      "durationMs": 3553,
+      "sourceWavSha256": "e827823c835e855c2465ed875c4fc25f597dd76711978e388e99ac6f580ffd92",
+      "mp3Sha256": "8e212c66a5d4ebbbd93c50c258a3c5527647571309764edae6cc276068375f78",
+      "bytes": 29091
+    },
+    {
+      "questionId": "au-amc-pre-a-s2-q04",
+      "scene": "scene-03",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s2-q04/scene-03.mp3",
+      "durationMs": 5422,
+      "sourceWavSha256": "4b8aeda22d5d2901b32b5f55d8396a7617ff6f15c4cf794f124ac2b70061ce04",
+      "mp3Sha256": "41642e0288d94720c2c119e232a6f58742f1c4891fd5a2c4f5e247e8e756d806",
+      "bytes": 44137
+    },
+    {
+      "questionId": "au-amc-pre-a-s2-q05",
+      "scene": "scene-01",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s2-q05/scene-01.mp3",
+      "durationMs": 5143,
+      "sourceWavSha256": "dd6b7c772f1e75b3a9efd9930877fff5a1bcb9e2a8d90934a1466fdc063bd80d",
+      "mp3Sha256": "5e293778bb65d6daf22fea3bdb225e048c62e3496f16d44af3ff2e21091a8f15",
+      "bytes": 41838
+    },
+    {
+      "questionId": "au-amc-pre-a-s2-q05",
+      "scene": "scene-02",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s2-q05/scene-02.mp3",
+      "durationMs": 6780,
+      "sourceWavSha256": "48cd4de0d6c7829893eecccb60cc470152c9f8106e8531c3eee611e446f9c058",
+      "mp3Sha256": "d2e211bd3849b17271256588a9654498df0af6b665e5b853cda073d2ced07f63",
+      "bytes": 55004
+    },
+    {
+      "questionId": "au-amc-pre-a-s2-q05",
+      "scene": "scene-03",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s2-q05/scene-03.mp3",
+      "durationMs": 6664,
+      "sourceWavSha256": "ec3b5a0a49e98e17fd26634289522cd12cebb00e8f12f9390696e553f425142a",
+      "mp3Sha256": "d200fe899979b760208fd1e36d7191a31249edd9574e8d10647b6759476c2e62",
+      "bytes": 54168
+    },
+    {
+      "questionId": "au-amc-pre-a-s2-q06",
+      "scene": "scene-01",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s2-q06/scene-01.mp3",
+      "durationMs": 7338,
+      "sourceWavSha256": "c392110bde0aed6f1a27878692d0146c9923ccec8c59a8c0411855663ca29515",
+      "mp3Sha256": "f8e06cf4c486f4df1773d91665d4135baab64a55b21907c2065fef58463115ad",
+      "bytes": 59393
+    },
+    {
+      "questionId": "au-amc-pre-a-s2-q06",
+      "scene": "scene-02",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s2-q06/scene-02.mp3",
+      "durationMs": 6142,
+      "sourceWavSha256": "88bcb292ae334e6198cc75614fc9aa38739430d06674749b08a53c0d56dc4ea6",
+      "mp3Sha256": "5a1ade100b91dc0699ed7e53dd1638c553567a8e57f54b0400d71610befa54cb",
+      "bytes": 49989
+    },
+    {
+      "questionId": "au-amc-pre-a-s2-q06",
+      "scene": "scene-03",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s2-q06/scene-03.mp3",
+      "durationMs": 5700,
+      "sourceWavSha256": "dac59494fe8ba00f98ad961d646e9e13ea7ae936597c55380c57711aff29fd2c",
+      "mp3Sha256": "23a000ed5055d694012007d3f13d45afbe32b3471291ebe4a54e5c3420166002",
+      "bytes": 46436
+    },
+    {
+      "questionId": "au-amc-pre-a-s2-q07",
+      "scene": "scene-01",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s2-q07/scene-01.mp3",
+      "durationMs": 6060,
+      "sourceWavSha256": "59d3ef9b6e05410594e84d3c0fffb60b1fae749ed27e524ddecf116d384db61f",
+      "mp3Sha256": "81ac9d659d624aabac185d213b133f08879b476ac89d3e11f4a323ab22cd6e42",
+      "bytes": 49153
+    },
+    {
+      "questionId": "au-amc-pre-a-s2-q07",
+      "scene": "scene-02",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s2-q07/scene-02.mp3",
+      "durationMs": 4783,
+      "sourceWavSha256": "6f82e3f8609a4a880c23f85bea58e2e44c6278a63e03f15071c950716947d4ee",
+      "mp3Sha256": "fa3f9b4831b58e94e55aaa3fb5b633f053ad656645065d8592d4ed4889a5eb3e",
+      "bytes": 39122
+    },
+    {
+      "questionId": "au-amc-pre-a-s2-q07",
+      "scene": "scene-03",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s2-q07/scene-03.mp3",
+      "durationMs": 5700,
+      "sourceWavSha256": "08f21c843113a1a65a3ddcc52b615e546c838f9d81e87e333bb3fcf6a0d87897",
+      "mp3Sha256": "5ff27fab97121c9c57e8132e2146014fd59697e745df5f7db20de7ddf8be982e",
+      "bytes": 46436
+    },
+    {
+      "questionId": "au-amc-pre-a-s2-q08",
+      "scene": "scene-01",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s2-q08/scene-01.mp3",
+      "durationMs": 8661,
+      "sourceWavSha256": "8cb3e10d22b721c74605f64d40fbce2af66d9b1ed1171f1a819eb197865baef4",
+      "mp3Sha256": "4167879971a4f1a6f1aed54d7a6bc03e85e6edb0cda5ab930315ee5ca190ec52",
+      "bytes": 70051
+    },
+    {
+      "questionId": "au-amc-pre-a-s2-q08",
+      "scene": "scene-02",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s2-q08/scene-02.mp3",
+      "durationMs": 6827,
+      "sourceWavSha256": "228e2e31cc5e27561a2ef5fc1bea91ef52ba2fb88d5b9fad176464bd105ec1b7",
+      "mp3Sha256": "4560c7db8474aa674864accd892c5fe6cab4874ecc46d9674ac14dd76c9ce914",
+      "bytes": 55422
+    },
+    {
+      "questionId": "au-amc-pre-a-s2-q08",
+      "scene": "scene-03",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s2-q08/scene-03.mp3",
+      "durationMs": 6107,
+      "sourceWavSha256": "a9ec54cb88105b42b121c10ce4d42ffbb4ce3a6c29dfb570561e57b2d6760c61",
+      "mp3Sha256": "5b69982288714c891baeec081fdf7e226c559983b5a33ff489786ab947f0343f",
+      "bytes": 49571
+    },
+    {
+      "questionId": "au-amc-pre-a-s2-q09",
+      "scene": "scene-01",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s2-q09/scene-01.mp3",
+      "durationMs": 6827,
+      "sourceWavSha256": "4e12e33e0b7339d9b2dd81bab0e308d0135ed89f6cd498a2765e8445dadfefcc",
+      "mp3Sha256": "c7852394461204b5a82562d00f6ad6b9c76ff8108a27829fb118788ca53c4612",
+      "bytes": 55422
+    },
+    {
+      "questionId": "au-amc-pre-a-s2-q09",
+      "scene": "scene-02",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s2-q09/scene-02.mp3",
+      "durationMs": 3669,
+      "sourceWavSha256": "996e697f1b8f562d6fdaf012473bad8630ae6e1b07d9e606ecf4cd48b1fbd8d2",
+      "mp3Sha256": "c44375ace7130851b9f12c0ba27fd44f699549780d43745b1ab5b2ee92512fbe",
+      "bytes": 30136
+    },
+    {
+      "questionId": "au-amc-pre-a-s2-q09",
+      "scene": "scene-03",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s2-q09/scene-03.mp3",
+      "durationMs": 4865,
+      "sourceWavSha256": "d404be5e781e69d9d30639fdde497db98189ee4e9d65ea68f99d8ac7e2fd945a",
+      "mp3Sha256": "24582d57740ea84e7f042aeb4b420e332bea0df077a2b4357fbce324947ab605",
+      "bytes": 39749
+    },
+    {
+      "questionId": "au-amc-pre-a-s2-q10",
+      "scene": "scene-01",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s2-q10/scene-01.mp3",
+      "durationMs": 6548,
+      "sourceWavSha256": "2c6f31db0132b1a8169605e3e960c7a8b83c5789dbcf7ca71ca4c189d55ef501",
+      "mp3Sha256": "ea3e17ec51dfe38c0e0af1212b6731364fff37cf791ab64a3afd3c5d09325d2e",
+      "bytes": 53123
+    },
+    {
+      "questionId": "au-amc-pre-a-s2-q10",
+      "scene": "scene-02",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s2-q10/scene-02.mp3",
+      "durationMs": 11738,
+      "sourceWavSha256": "ddb2c2d1b822658b8a439593b98a071cf79cde532a4025c6db89eee378b69578",
+      "mp3Sha256": "5096bd7b2f16f68c3ee2a14d39e3050e014e1d43d4ef0f90c3f013a732136226",
+      "bytes": 94710
+    },
+    {
+      "questionId": "au-amc-pre-a-s2-q10",
+      "scene": "scene-03",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s2-q10/scene-03.mp3",
+      "durationMs": 5631,
+      "sourceWavSha256": "5b2f85a7493943cc27a6013f7eb4ad5e332e9262c17fba389f56d4715cce9747",
+      "mp3Sha256": "a34565d69c110fba87f11238b50f5cb3a4e2e8aaa9f329f10f8e0b3930fc0a15",
+      "bytes": 45809
+    },
+    {
+      "questionId": "au-amc-pre-a-s2-q11",
+      "scene": "scene-01",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s2-q11/scene-01.mp3",
+      "durationMs": 8336,
+      "sourceWavSha256": "733fdd7dc10c7eae685363f07059209f05427279c0fcc6363f5ae405978bf457",
+      "mp3Sha256": "c9106c94ef5ec4081346499e4d3ea26dfe68e0ed63870841c8a1a9b357908ea2",
+      "bytes": 67543
+    },
+    {
+      "questionId": "au-amc-pre-a-s2-q11",
+      "scene": "scene-02",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s2-q11/scene-02.mp3",
+      "durationMs": 6060,
+      "sourceWavSha256": "3d4d82a4d233c89979ed73e938760bf236c0292470962da6f9e898006bbaf81e",
+      "mp3Sha256": "0f260bd261d4e1abd7dd444fd2481888b9a4fe2f423e0fb88b12471078373f71",
+      "bytes": 49153
+    },
+    {
+      "questionId": "au-amc-pre-a-s2-q11",
+      "scene": "scene-03",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s2-q11/scene-03.mp3",
+      "durationMs": 4191,
+      "sourceWavSha256": "43cdf1ed9957f49dc226de781c7acf09eb71fe784dbea24bc15c87927932a77e",
+      "mp3Sha256": "4f3b97790c69807cab3c33e09eaea86d456eb56ff165e2d4f6a181fb5efae6ad",
+      "bytes": 34315
+    },
+    {
+      "questionId": "au-amc-pre-a-s2-q12",
+      "scene": "scene-01",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s2-q12/scene-01.mp3",
+      "durationMs": 5700,
+      "sourceWavSha256": "a1c3a25a740bbecf9db5918f9c2cdf0a346972ca682ed1ddc1ebe0126b71b252",
+      "mp3Sha256": "5430d6a144edf4f7829af62a44e8add8731693996530dd4489373ee83d42bfc0",
+      "bytes": 46436
+    },
+    {
+      "questionId": "au-amc-pre-a-s2-q12",
+      "scene": "scene-02",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s2-q12/scene-02.mp3",
+      "durationMs": 9334,
+      "sourceWavSha256": "30d5ae440caa703c4c029dee66e19bbe5fdf849d6cd975e609efc7f99a7af144",
+      "mp3Sha256": "c36ecc099943e78682e33162e08e78b5edb5ed466705257a8ba13cc4367f24a3",
+      "bytes": 75484
+    },
+    {
+      "questionId": "au-amc-pre-a-s2-q12",
+      "scene": "scene-03",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s2-q12/scene-03.mp3",
+      "durationMs": 5422,
+      "sourceWavSha256": "189fb249927291a54d75bc92c4232cd375bf8f0a8f42d8970cb4eaadeb856135",
+      "mp3Sha256": "fbbd5fc5a74f661a9ece1417d6f7f2843c29735565dbd9520b97f42c37638bfe",
+      "bytes": 44137
+    },
+    {
+      "questionId": "au-amc-pre-a-s2-q13",
+      "scene": "scene-01",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s2-q13/scene-01.mp3",
+      "durationMs": 8139,
+      "sourceWavSha256": "aac5c3d0b689097f6dfe7fe2a74cf416e3c6d8b05b21adcc53df583ac4b3f40c",
+      "mp3Sha256": "70e27dd2fe26468a148d4c764ab0b33975b951673a2060c41d8e098958306b97",
+      "bytes": 65871
+    },
+    {
+      "questionId": "au-amc-pre-a-s2-q13",
+      "scene": "scene-02",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s2-q13/scene-02.mp3",
+      "durationMs": 5224,
+      "sourceWavSha256": "4f45cbd128d297da69432024b296a5ac729a0628d4d93d684d9894721b7c33ed",
+      "mp3Sha256": "b40d999b8334a937c85e64d2680416a4c83b4d772ca2bb843c348285b7353306",
+      "bytes": 42465
+    },
+    {
+      "questionId": "au-amc-pre-a-s2-q13",
+      "scene": "scene-03",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s2-q13/scene-03.mp3",
+      "durationMs": 4830,
+      "sourceWavSha256": "3c5533cbed9406093e4c640002d558de75d747a99993e7af4ff8510caecf4de3",
+      "mp3Sha256": "b60d6a4103e81bfabb201f6846349a06774e092fdbcb840978037c80d85632e6",
+      "bytes": 39331
+    },
+    {
+      "questionId": "au-amc-pre-a-s2-q14",
+      "scene": "scene-01",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s2-q14/scene-01.mp3",
+      "durationMs": 6629,
+      "sourceWavSha256": "12fe460c746001e2481ac42fc46fe8d2c7af48a7d576265d6b32f8848fff8c40",
+      "mp3Sha256": "ab1a1d9f0848a47cde81bf6a2f5931c4d64c7b3e8eb0b2048d391d418ba22151",
+      "bytes": 53750
+    },
+    {
+      "questionId": "au-amc-pre-a-s2-q14",
+      "scene": "scene-02",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s2-q14/scene-02.mp3",
+      "durationMs": 8545,
+      "sourceWavSha256": "a47133402e07c42f7de4e64af18bcf45921aef43a346568fd425d2adafc44c3e",
+      "mp3Sha256": "be190dcfdc339d47c7779f4ffe5fd921aab0fb84f0db923015b36181dd5ccd75",
+      "bytes": 69215
+    },
+    {
+      "questionId": "au-amc-pre-a-s2-q14",
+      "scene": "scene-03",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s2-q14/scene-03.mp3",
+      "durationMs": 6467,
+      "sourceWavSha256": "333ba92306b7c9089a8095a144de95b9413db7da7f6ee19cc8065cac2433daeb",
+      "mp3Sha256": "22fcdb6d5c6ecf749be028212ab0dbed543d64504edfbe7a2dfbb8c6490ec8ca",
+      "bytes": 52496
+    },
+    {
+      "questionId": "au-amc-pre-a-s2-q15",
+      "scene": "scene-01",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s2-q15/scene-01.mp3",
+      "durationMs": 6385,
+      "sourceWavSha256": "a2ea6824fcf0c49354c483f40721de3211fc8d745d3d438432d46f37c11fca61",
+      "mp3Sha256": "e63f412f24609e5f43b0019931b9163c8f6dd1f338ad401c6cefe1f134f6fe6d",
+      "bytes": 51869
+    },
+    {
+      "questionId": "au-amc-pre-a-s2-q15",
+      "scene": "scene-02",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s2-q15/scene-02.mp3",
+      "durationMs": 9102,
+      "sourceWavSha256": "84b3a2141131b0c1f85a8d591e364101a78eee7066d100b56954cb548fd5e10e",
+      "mp3Sha256": "6669f028e0cbf371b198204f50077c3ad40dceaa6cad6c94ad692200d0fc7bb7",
+      "bytes": 73603
+    },
+    {
+      "questionId": "au-amc-pre-a-s2-q15",
+      "scene": "scene-03",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s2-q15/scene-03.mp3",
+      "durationMs": 6908,
+      "sourceWavSha256": "323ec88d8e7eadfa231664b384c702dcfdf3c3c00dac5de500a1825b25ee4478",
+      "mp3Sha256": "fdb5c0c28486c51aef53e5c855ebbc56668ffc281524a0f688763139aabfeb75",
+      "bytes": 56049
+    },
+    {
+      "questionId": "au-amc-pre-a-s2-q16",
+      "scene": "scene-01",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s2-q16/scene-01.mp3",
+      "durationMs": 5190,
+      "sourceWavSha256": "391c525266af11a48e46202e18f4cf8c32514f9afb8dc7b12f3837fa9b5b356c",
+      "mp3Sha256": "e9436db5e8fb2697eb0d9efa7a28e7920de8cdf37c22603eb347aa240fb73163",
+      "bytes": 42256
+    },
+    {
+      "questionId": "au-amc-pre-a-s2-q16",
+      "scene": "scene-02",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s2-q16/scene-02.mp3",
+      "durationMs": 9056,
+      "sourceWavSha256": "b45144449902728c5d2febef42d9fe7010211f8e38745c59fb42c419470526ed",
+      "mp3Sha256": "45d44bb0d2b1ab36624fc16ad7a7f8176f0f5aae4a47094d08b1a0924423489f",
+      "bytes": 73185
+    },
+    {
+      "questionId": "au-amc-pre-a-s2-q16",
+      "scene": "scene-03",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s2-q16/scene-03.mp3",
+      "durationMs": 5631,
+      "sourceWavSha256": "1c708e2cb680a2968646691cb993192b4dedf0a923defd15860bd3adad52d490",
+      "mp3Sha256": "8516e348e6f7439f7310ab8c34a25511390504e27445c39679b010347ac84409",
+      "bytes": 45809
+    },
+    {
+      "questionId": "au-amc-pre-a-s2-q17",
+      "scene": "scene-01",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s2-q17/scene-01.mp3",
+      "durationMs": 7744,
+      "sourceWavSha256": "8627ff22c94684937e2bf0e3d033db13a37c64d371c5e20539270790024e6892",
+      "mp3Sha256": "28c7be6975acd31ac85251be971532d28bf5881e67fa9bde47dce7eadbd62076",
+      "bytes": 62736
+    },
+    {
+      "questionId": "au-amc-pre-a-s2-q17",
+      "scene": "scene-02",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s2-q17/scene-02.mp3",
+      "durationMs": 9102,
+      "sourceWavSha256": "3ae9baa3ffedaf427f26571b0a94f93cb5b61eb7b764e4744dee42bf6e61482b",
+      "mp3Sha256": "ff0066765976a014e6c0a0033068f2e1886cbbdb9b4b3a8280f1811913e5ae4d",
+      "bytes": 73603
+    },
+    {
+      "questionId": "au-amc-pre-a-s2-q17",
+      "scene": "scene-03",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s2-q17/scene-03.mp3",
+      "durationMs": 4632,
+      "sourceWavSha256": "d8ce9d26d664fa424e43d9a646f35f775bb65078ddfd04035afc16fcede348cb",
+      "mp3Sha256": "9f7157dd262a41e6ac380a0a03e0c70f503018a2548428f3161a55edf4bd0752",
+      "bytes": 37868
+    },
+    {
+      "questionId": "au-amc-pre-a-s2-q18",
+      "scene": "scene-01",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s2-q18/scene-01.mp3",
+      "durationMs": 8742,
+      "sourceWavSha256": "294c9c6abaf4ff3b336223b62d49edb2bf3ad4aa874ff407f4b226adc8781d48",
+      "mp3Sha256": "b1428fbd031502b7e034ba108fe2ebc00a33567a7fbf618e79f431bfa047f6f5",
+      "bytes": 70678
+    },
+    {
+      "questionId": "au-amc-pre-a-s2-q18",
+      "scene": "scene-02",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s2-q18/scene-02.mp3",
+      "durationMs": 7105,
+      "sourceWavSha256": "b7650784405ef074683e1d26063290b9c5a23430005115e174c03e03ec5707ff",
+      "mp3Sha256": "9599f1f7058d411a02c30650e0f44d484fcb5d7acecd1e0fea5bab3a11b293f7",
+      "bytes": 57512
+    },
+    {
+      "questionId": "au-amc-pre-a-s2-q18",
+      "scene": "scene-03",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s2-q18/scene-03.mp3",
+      "durationMs": 5631,
+      "sourceWavSha256": "14082793247397e65daad8b28f5f958b16b684b69e46f5c68bb336824b7aab9e",
+      "mp3Sha256": "9db1fbf0761f3f1e3224b76f86bf084a71c53d3f56613642efa43c56adab88f7",
+      "bytes": 45809
+    },
+    {
+      "questionId": "au-amc-pre-a-s2-q19",
+      "scene": "scene-01",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s2-q19/scene-01.mp3",
+      "durationMs": 7024,
+      "sourceWavSha256": "7b03a915bf926c3643b3ab17f8196e7eb61433e56a9c29c3181d5873fb2ef6d5",
+      "mp3Sha256": "06a400922f57d96be29bae4c44c0b4d4ca4488e751681cf56cbb503326781add",
+      "bytes": 56885
+    },
+    {
+      "questionId": "au-amc-pre-a-s2-q19",
+      "scene": "scene-02",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s2-q19/scene-02.mp3",
+      "durationMs": 13050,
+      "sourceWavSha256": "8cdf204fd391b172d66e78d7bf506f4b69100548e32010ac17192bc4b0c2db67",
+      "mp3Sha256": "f44c84505ec2d8b3a68d2e4ee10d5f215d5d20d6bbcd8a95b7c8344857032f36",
+      "bytes": 105159
+    },
+    {
+      "questionId": "au-amc-pre-a-s2-q19",
+      "scene": "scene-03",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s2-q19/scene-03.mp3",
+      "durationMs": 9056,
+      "sourceWavSha256": "98e3100a05dfaeee5155beef86a3fb46e9ae3e9c6200e99e964c6a470b95a5ed",
+      "mp3Sha256": "0b48350871214b4c3c17c60a6be6530f640642cc25299fd6dec9143a8e52ebc4",
+      "bytes": 73185
+    },
+    {
+      "questionId": "au-amc-pre-a-s2-q20",
+      "scene": "scene-01",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s2-q20/scene-01.mp3",
+      "durationMs": 7338,
+      "sourceWavSha256": "14c3ab485751f8d213b55862e2650ac2c9aa2f1a71ca277c44657222daa02714",
+      "mp3Sha256": "af711e1be4cce08163c3bde51a82661a218c654eeee35546e34375aed92bda2f",
+      "bytes": 59393
+    },
+    {
+      "questionId": "au-amc-pre-a-s2-q20",
+      "scene": "scene-02",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s2-q20/scene-02.mp3",
+      "durationMs": 14257,
+      "sourceWavSha256": "96522b7d28c9314d64e7947b586f28d6ebb6b5921276470ff4c15ff4f24bb4a4",
+      "mp3Sha256": "58652bc5293432add9d9b5016f26476c6c0c2df550e8588f5e0bf07781b8516d",
+      "bytes": 114772
+    },
+    {
+      "questionId": "au-amc-pre-a-s2-q20",
+      "scene": "scene-03",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s2-q20/scene-03.mp3",
+      "durationMs": 5550,
+      "sourceWavSha256": "750345d0be0a23be67b525c535aebfde0a0a2fc6139b910f3c709812836806c3",
+      "mp3Sha256": "5b20bddd1560f5efa636dc3556db060011030ebdb5d37b343d545c5f8a88ab1b",
+      "bytes": 45182
+    },
+    {
+      "questionId": "au-amc-pre-a-s2-q21",
+      "scene": "scene-01",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s2-q21/scene-01.mp3",
+      "durationMs": 7024,
+      "sourceWavSha256": "d1c254135237bbfd3ad6c9802872ff5774172903c862006d3ca7efaa94c97cff",
+      "mp3Sha256": "1bd11f9cda5199364b157e46669020dd713050a497c8f72f35c4ff445dcb2a59",
+      "bytes": 56885
+    },
+    {
+      "questionId": "au-amc-pre-a-s2-q21",
+      "scene": "scene-02",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s2-q21/scene-02.mp3",
+      "durationMs": 11738,
+      "sourceWavSha256": "dab03c119f2b153c0d8bca68fb1f6212760057c259257542b7de4298f1477680",
+      "mp3Sha256": "6690bb01a92bbddc70ac7ee16ebf651f11dee5d43350fcd1a2d8b5e3279f838e",
+      "bytes": 94710
+    },
+    {
+      "questionId": "au-amc-pre-a-s2-q21",
+      "scene": "scene-03",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s2-q21/scene-03.mp3",
+      "durationMs": 6188,
+      "sourceWavSha256": "fa495e3a7f0662d9942d030e3f6463995e402ff757c077193ce17e47d7fa1159",
+      "mp3Sha256": "05d8c9755764cc5f504737a7a2bb85981e95466de6350b4e0eb583a973bc5cb7",
+      "bytes": 50198
+    },
+    {
+      "questionId": "au-amc-pre-a-s2-q22",
+      "scene": "scene-01",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s2-q22/scene-01.mp3",
+      "durationMs": 7663,
+      "sourceWavSha256": "ca2e9d78c5b5004992b80b3d52c6738c7786e3d2d5a929f6ac9bb56be805f362",
+      "mp3Sha256": "0d643808d7ab8410331248cde895bf2b83981a110d0b080cdad4b5a311ea9c50",
+      "bytes": 62109
+    },
+    {
+      "questionId": "au-amc-pre-a-s2-q22",
+      "scene": "scene-02",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s2-q22/scene-02.mp3",
+      "durationMs": 9985,
+      "sourceWavSha256": "4c4a66aaa9b877bf0ffd2015eae24fe3ec23ed1c7dfb897d487325b085528f09",
+      "mp3Sha256": "93639b732a92f8ef2bedb39b0026eea644b3084231be097aed24f9fc2629cdf4",
+      "bytes": 80709
+    },
+    {
+      "questionId": "au-amc-pre-a-s2-q22",
+      "scene": "scene-03",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s2-q22/scene-03.mp3",
+      "durationMs": 6827,
+      "sourceWavSha256": "ee1cac2343b86a242e08a4e63ad319d562c28cdfb139b4a14c2a5dee59fa1582",
+      "mp3Sha256": "305c719b449e51a7d923c7e0596620c1126f139278312573c081824bf5fcd0a0",
+      "bytes": 55422
+    },
+    {
+      "questionId": "au-amc-pre-a-s2-q23",
+      "scene": "scene-01",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s2-q23/scene-01.mp3",
+      "durationMs": 5944,
+      "sourceWavSha256": "6c5cb4bdbb182fb636f73841ce9be5e52748e5ae1475fb670c0adfabee411494",
+      "mp3Sha256": "853c999f75565e3e788e33a56a28c80f0439a9fd9b04e2ef2cf1d6255dc4e2c4",
+      "bytes": 48317
+    },
+    {
+      "questionId": "au-amc-pre-a-s2-q23",
+      "scene": "scene-02",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s2-q23/scene-02.mp3",
+      "durationMs": 10623,
+      "sourceWavSha256": "332a2474607801cf3f6a6395a49f4912d3336e7d65415b392c337fd6404b0284",
+      "mp3Sha256": "1af77a6af1e7c752ed12eb3b87f3eb8d811616ae0c5463b681157ab96c68154d",
+      "bytes": 85724
+    },
+    {
+      "questionId": "au-amc-pre-a-s2-q23",
+      "scene": "scene-03",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s2-q23/scene-03.mp3",
+      "durationMs": 6861,
+      "sourceWavSha256": "1e3c66cdf6231c8b041fcf9bf13dd11eae459262b1517a18da3bb1c34e2daea7",
+      "mp3Sha256": "69f21a9441552ea29f161c162b6edfc5374376d036724efec84654ec2e487ede",
+      "bytes": 55631
+    },
+    {
+      "questionId": "au-amc-pre-a-s2-q24",
+      "scene": "scene-01",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s2-q24/scene-01.mp3",
+      "durationMs": 5828,
+      "sourceWavSha256": "57c7378ad4aaea5109d606d5bc050d6e450a8db00adde768cf41c1f238f38d12",
+      "mp3Sha256": "644c171e2bc6efa65df982044c3ca50cad3235ff2d455651f79fc23fef0b342d",
+      "bytes": 47481
+    },
+    {
+      "questionId": "au-amc-pre-a-s2-q24",
+      "scene": "scene-02",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s2-q24/scene-02.mp3",
+      "durationMs": 13456,
+      "sourceWavSha256": "9298dd49e4619025ffa13509bd8562613c4243fa7159ac60f4b6b4610293c58b",
+      "mp3Sha256": "3a53b7208cd2c13543d2e636d4cbae7bd1c0f50deee99618bf2eb224fb053733",
+      "bytes": 108503
+    },
+    {
+      "questionId": "au-amc-pre-a-s2-q24",
+      "scene": "scene-03",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s2-q24/scene-03.mp3",
+      "durationMs": 5828,
+      "sourceWavSha256": "f0ed4cbf042340ebb4b50a76cc6f003c56d4046e80e645064067d9e1a7e31e30",
+      "mp3Sha256": "15a2b2c25cd294ca2b1457ead07bd536a7fc3a2ff26020cb96eb40dffd8dff42",
+      "bytes": 47481
+    },
+    {
+      "questionId": "au-amc-pre-a-s2-q25",
+      "scene": "scene-01",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s2-q25/scene-01.mp3",
+      "durationMs": 11935,
+      "sourceWavSha256": "0a80b42491ef25e5e4a930054c7599433809df8f2a2456091a7ef91e23a63cd3",
+      "mp3Sha256": "9e171f98ada7706c049ffc802268d8cbb473bca77dffa85a0b2d5fc6fb754119",
+      "bytes": 96173
+    },
+    {
+      "questionId": "au-amc-pre-a-s2-q25",
+      "scene": "scene-02",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s2-q25/scene-02.mp3",
+      "durationMs": 10414,
+      "sourceWavSha256": "9a797d89791437927aab53f19aab67c49b2dd2374936cf08a79398b842114c7f",
+      "mp3Sha256": "e32a1c77d3bd90d0714676683e65baf8046142ac12ebd53bc68534b3b50d1d93",
+      "bytes": 84052
+    },
+    {
+      "questionId": "au-amc-pre-a-s2-q25",
+      "scene": "scene-03",
+      "url": "/grade1-narration/v1/au-amc-pre-a-s2-q25/scene-03.mp3",
+      "durationMs": 7465,
+      "sourceWavSha256": "dc0df47d645e6a9787a14fce8cf3800f882d313036d83f4c7df56964798679e1",
+      "mp3Sha256": "ec7e23fc81ae2b591e1d23330ef8633fd086237d57eb1d5e0a9521bf357cf448",
+      "bytes": 60438
+    }
+  ]
+}
