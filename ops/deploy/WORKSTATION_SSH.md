@@ -18,4 +18,4 @@ cd /mnt/disk1/Code/Kangaroo-Practice-Simulator
 bash ops/release/publish_grade1_solution_hotfix.sh
 ```
 
-That script uses a clean committed checkout for code, copies only the validated build-time data subset, backs up the existing production grade-one solution data, deploys the exact GitHub SHA, promotes the 50-question/150-audio payload, and verifies both the public release receipt and narration file hash.
+That script uses a clean committed checkout for code, copies only the validated build-time data subset needed by release checks, deploys the exact GitHub SHA, and verifies both the public release receipt and the tracked warm narration MP3 hash. Grade-one narration is versioned under `public/grade1-narration/` and ships with Git; there is no second SCP/WAV promotion phase.
