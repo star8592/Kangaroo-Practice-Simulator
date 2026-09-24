@@ -1,3 +1,3 @@
-sha256  728d0ff18b19c3b290fc180a3b0221b7acb6bdd0f843ea7059b9b30b8f1440a1
-bytes  52692228
-contents  2 Pre-A exams + 50 verified solution JSON + 100 bilingual question assets + generated solution media
+sha256  3247950aa2c2fd26f09c4db27670affeb15a12aac0f772db49f434ab1292fa99
+bytes  57488300
+contents  2 Pre-A exams + 50 current verified solution JSON (experience standard v2) + 100 bilingual question assets + generated solution media

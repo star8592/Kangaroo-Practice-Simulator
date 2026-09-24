@@ -1,0 +1,3 @@
+sha256  77b60728b83b6d371397638ad36e5edbb0c18c3eada524c7ff2c77a3729df805
+bytes  41789679
+contents  50 current verified solution JSON (experience standard v2) + 50 manifests + 150 regenerated warm narration WAV files
