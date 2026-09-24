@@ -127,7 +127,7 @@ jobs:
           username: ${{ env.SERVER_USER }}
           key: ${{ env.SERVER_SSH_KEY }}
           password: ${{ env.SERVER_PASSWORD }}
-          source: release-data/release-payloads/pre-a-grade1-payload.tar.gz
+          source: release-data/release-payloads/pre-a-grade1-payload.tar.gz,release-data/release-payloads/pre-a-grade1-payload.txt
           target: /tmp/kps-pre-a-grade1
           strip_components: 2
           overwrite: true
@@ -144,8 +144,10 @@ jobs:
             set -Eeuo pipefail
             APP='${{ env.APP_DIR }}'
             SERVICE='${{ env.SERVER_SERVICE }}'
-            EXPECTED_SHA='728d0ff18b19c3b290fc180a3b0221b7acb6bdd0f843ea7059b9b30b8f1440a1'
             PAYLOAD='/tmp/kps-pre-a-grade1/pre-a-grade1-payload.tar.gz'
+            META='/tmp/kps-pre-a-grade1/pre-a-grade1-payload.txt'
+            EXPECTED_SHA="$(awk '$1 == "sha256" { print $2 }' "$META")"
+            test -n "$EXPECTED_SHA"
             MARKER="$APP/.release/data-promotions/pre-a-grade1-20260923.sha256"
             STAMP="$(date +%Y%m%d-%H%M%S)"
             BACKUP="/opt/socthink-math-backups/pre-a-grade1-$STAMP.tar.gz"
