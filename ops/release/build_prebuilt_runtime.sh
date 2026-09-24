@@ -13,7 +13,7 @@ die(){ echo "[prebuilt] ERROR: $*" >&2; exit 1; }
 cd "$ROOT"
 log "build standalone runtime for $VERSION @ $TARGET_SHA"
 npm ci
-npm run build
+NEXT_STANDALONE_BUILD=1 npm run build
 
 test -f .next/standalone/server.js || die "standalone server.js missing"
 
