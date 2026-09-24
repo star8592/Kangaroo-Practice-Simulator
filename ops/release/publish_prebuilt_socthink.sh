@@ -49,7 +49,9 @@ for dir in "$SOURCE_ROOT"/public/generated-solutions/au-amc-pre-a-s*-q*; do
 done
 
 log "build immutable runtime locally"
-OUT="$TMP/prebuilt" ROOT="$CLEAN" TARGET_SHA="$TARGET_SHA" VERSION="$VERSION"   bash "$CLEAN/ops/release/build_prebuilt_runtime.sh"
+OUT="$TMP/prebuilt"
+ROOT="$CLEAN" OUT="$OUT" TARGET_SHA="$TARGET_SHA" VERSION="$VERSION" \
+  bash "$CLEAN/ops/release/build_prebuilt_runtime.sh"
 
 DATA_PAYLOAD="$TMP/pre-a-grade1-payload.tar.gz"
 DATA_META="$TMP/pre-a-grade1-payload.txt"
