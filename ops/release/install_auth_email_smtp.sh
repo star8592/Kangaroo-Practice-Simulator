@@ -6,6 +6,13 @@ if [[ ${EUID:-$(id -u)} -ne 0 ]]; then
   exit 1
 fi
 
+if [[ -z "${SMTP_USER:-}" && -t 0 ]]; then
+  read -r -p "Sender mailbox (for example no-reply@socthink.cn): " SMTP_USER
+fi
+if [[ -z "${SMTP_PASS:-}" && -t 0 ]]; then
+  read -r -s -p "SMTP client authorization code/password (hidden): " SMTP_PASS
+  echo
+fi
 : "${SMTP_USER:?Set SMTP_USER to the verified sender mailbox}"
 : "${SMTP_PASS:?Set SMTP_PASS to the mailbox SMTP authorization code/password}"
 

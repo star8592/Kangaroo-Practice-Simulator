@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 f=ops/release/install_auth_email_smtp.sh
+grep -Fq 'read -r -p "Sender mailbox (for example no-reply@socthink.cn): " SMTP_USER' "$f"
+grep -Fq 'read -r -s -p "SMTP client authorization code/password (hidden): " SMTP_PASS' "$f"
 grep -Fq ': "${SMTP_USER:?Set SMTP_USER to the verified sender mailbox}"' "$f"
 grep -Fq ': "${SMTP_PASS:?Set SMTP_PASS to the mailbox SMTP authorization code/password}"' "$f"
 grep -Fq 'chmod 0600 "$ENV_FILE"' "$f"
