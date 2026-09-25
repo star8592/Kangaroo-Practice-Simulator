@@ -40,7 +40,11 @@
     "test:rights": "python3 scripts/validate_competition_source_registry.py",
     "data:collection-plan": "python3 scripts/build_competition_collection_plan.py",
     "data:rights-review": "python3 scripts/build_rights_review_queue.py",
-    "data:cemc-queue": "python3 scripts/build_cemc_ingestion_queue.py"
+    "data:cemc-queue": "python3 scripts/build_cemc_ingestion_queue.py",
+    "data:cemc-import": "python3 scripts/import_cemc_objective.py",
+    "test:cemc-objective": "python3 scripts/validate_cemc_objective.py",
+    "data:cemc-euclid": "python3 scripts/digitize_cemc_euclid.py",
+    "test:cemc-euclid": "python3 scripts/validate_cemc_euclid.py"
   },
   "dependencies": {
     "next": "16.3.5",

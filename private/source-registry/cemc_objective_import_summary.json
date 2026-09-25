@@ -1,0 +1,451 @@
+{
+  "generatedAt": "2026-09-25",
+  "sourceRegistryId": "cemc-official",
+  "examCount": 49,
+  "questionCount": 1225,
+  "studentReady": 0,
+  "status": "source-digitized-awaiting-bilingual-localization",
+  "exams": [
+    {
+      "examId": "cemc-cayley-2017",
+      "competition": "Cayley",
+      "year": 2017,
+      "grade": "10",
+      "questions": 25,
+      "formatId": "cemc-cayley",
+      "studentReady": false
+    },
+    {
+      "examId": "cemc-cayley-2018",
+      "competition": "Cayley",
+      "year": 2018,
+      "grade": "10",
+      "questions": 25,
+      "formatId": "cemc-cayley",
+      "studentReady": false
+    },
+    {
+      "examId": "cemc-cayley-2019",
+      "competition": "Cayley",
+      "year": 2019,
+      "grade": "10",
+      "questions": 25,
+      "formatId": "cemc-cayley",
+      "studentReady": false
+    },
+    {
+      "examId": "cemc-cayley-2020",
+      "competition": "Cayley",
+      "year": 2020,
+      "grade": "10",
+      "questions": 25,
+      "formatId": "cemc-cayley",
+      "studentReady": false
+    },
+    {
+      "examId": "cemc-cayley-2021",
+      "competition": "Cayley",
+      "year": 2021,
+      "grade": "10",
+      "questions": 25,
+      "formatId": "cemc-cayley",
+      "studentReady": false
+    },
+    {
+      "examId": "cemc-cayley-2022",
+      "competition": "Cayley",
+      "year": 2022,
+      "grade": "10",
+      "questions": 25,
+      "formatId": "cemc-cayley",
+      "studentReady": false
+    },
+    {
+      "examId": "cemc-cayley-2023",
+      "competition": "Cayley",
+      "year": 2023,
+      "grade": "10",
+      "questions": 25,
+      "formatId": "cemc-cayley",
+      "studentReady": false
+    },
+    {
+      "examId": "cemc-cayley-2024",
+      "competition": "Cayley",
+      "year": 2024,
+      "grade": "10",
+      "questions": 25,
+      "formatId": "cemc-cayley",
+      "studentReady": false
+    },
+    {
+      "examId": "cemc-cayley-2025",
+      "competition": "Cayley",
+      "year": 2025,
+      "grade": "10",
+      "questions": 25,
+      "formatId": "cemc-cayley",
+      "studentReady": false
+    },
+    {
+      "examId": "cemc-cayley-2026",
+      "competition": "Cayley",
+      "year": 2026,
+      "grade": "10",
+      "questions": 25,
+      "formatId": "cemc-cayley",
+      "studentReady": false
+    },
+    {
+      "examId": "cemc-fermat-2017",
+      "competition": "Fermat",
+      "year": 2017,
+      "grade": "11",
+      "questions": 25,
+      "formatId": "cemc-fermat",
+      "studentReady": false
+    },
+    {
+      "examId": "cemc-fermat-2018",
+      "competition": "Fermat",
+      "year": 2018,
+      "grade": "11",
+      "questions": 25,
+      "formatId": "cemc-fermat",
+      "studentReady": false
+    },
+    {
+      "examId": "cemc-fermat-2019",
+      "competition": "Fermat",
+      "year": 2019,
+      "grade": "11",
+      "questions": 25,
+      "formatId": "cemc-fermat",
+      "studentReady": false
+    },
+    {
+      "examId": "cemc-fermat-2020",
+      "competition": "Fermat",
+      "year": 2020,
+      "grade": "11",
+      "questions": 25,
+      "formatId": "cemc-fermat",
+      "studentReady": false
+    },
+    {
+      "examId": "cemc-fermat-2021",
+      "competition": "Fermat",
+      "year": 2021,
+      "grade": "11",
+      "questions": 25,
+      "formatId": "cemc-fermat",
+      "studentReady": false
+    },
+    {
+      "examId": "cemc-fermat-2022",
+      "competition": "Fermat",
+      "year": 2022,
+      "grade": "11",
+      "questions": 25,
+      "formatId": "cemc-fermat",
+      "studentReady": false
+    },
+    {
+      "examId": "cemc-fermat-2023",
+      "competition": "Fermat",
+      "year": 2023,
+      "grade": "11",
+      "questions": 25,
+      "formatId": "cemc-fermat",
+      "studentReady": false
+    },
+    {
+      "examId": "cemc-fermat-2024",
+      "competition": "Fermat",
+      "year": 2024,
+      "grade": "11",
+      "questions": 25,
+      "formatId": "cemc-fermat",
+      "studentReady": false
+    },
+    {
+      "examId": "cemc-fermat-2025",
+      "competition": "Fermat",
+      "year": 2025,
+      "grade": "11",
+      "questions": 25,
+      "formatId": "cemc-fermat",
+      "studentReady": false
+    },
+    {
+      "examId": "cemc-fermat-2026",
+      "competition": "Fermat",
+      "year": 2026,
+      "grade": "11",
+      "questions": 25,
+      "formatId": "cemc-fermat",
+      "studentReady": false
+    },
+    {
+      "examId": "cemc-gauss-2017-grade-7",
+      "competition": "Gauss",
+      "year": 2017,
+      "grade": "7",
+      "questions": 25,
+      "formatId": "cemc-gauss-7",
+      "studentReady": false
+    },
+    {
+      "examId": "cemc-gauss-2017-grade-8",
+      "competition": "Gauss",
+      "year": 2017,
+      "grade": "8",
+      "questions": 25,
+      "formatId": "cemc-gauss-8",
+      "studentReady": false
+    },
+    {
+      "examId": "cemc-gauss-2018-grade-7",
+      "competition": "Gauss",
+      "year": 2018,
+      "grade": "7",
+      "questions": 25,
+      "formatId": "cemc-gauss-7",
+      "studentReady": false
+    },
+    {
+      "examId": "cemc-gauss-2018-grade-8",
+      "competition": "Gauss",
+      "year": 2018,
+      "grade": "8",
+      "questions": 25,
+      "formatId": "cemc-gauss-8",
+      "studentReady": false
+    },
+    {
+      "examId": "cemc-gauss-2019-grade-7",
+      "competition": "Gauss",
+      "year": 2019,
+      "grade": "7",
+      "questions": 25,
+      "formatId": "cemc-gauss-7",
+      "studentReady": false
+    },
+    {
+      "examId": "cemc-gauss-2019-grade-8",
+      "competition": "Gauss",
+      "year": 2019,
+      "grade": "8",
+      "questions": 25,
+      "formatId": "cemc-gauss-8",
+      "studentReady": false
+    },
+    {
+      "examId": "cemc-gauss-2020-grade-7",
+      "competition": "Gauss",
+      "year": 2020,
+      "grade": "7",
+      "questions": 25,
+      "formatId": "cemc-gauss-7",
+      "studentReady": false
+    },
+    {
+      "examId": "cemc-gauss-2020-grade-8",
+      "competition": "Gauss",
+      "year": 2020,
+      "grade": "8",
+      "questions": 25,
+      "formatId": "cemc-gauss-8",
+      "studentReady": false
+    },
+    {
+      "examId": "cemc-gauss-2021-grade-7",
+      "competition": "Gauss",
+      "year": 2021,
+      "grade": "7",
+      "questions": 25,
+      "formatId": "cemc-gauss-7",
+      "studentReady": false
+    },
+    {
+      "examId": "cemc-gauss-2021-grade-8",
+      "competition": "Gauss",
+      "year": 2021,
+      "grade": "8",
+      "questions": 25,
+      "formatId": "cemc-gauss-8",
+      "studentReady": false
+    },
+    {
+      "examId": "cemc-gauss-2022-grade-7",
+      "competition": "Gauss",
+      "year": 2022,
+      "grade": "7",
+      "questions": 25,
+      "formatId": "cemc-gauss-7",
+      "studentReady": false
+    },
+    {
+      "examId": "cemc-gauss-2022-grade-8",
+      "competition": "Gauss",
+      "year": 2022,
+      "grade": "8",
+      "questions": 25,
+      "formatId": "cemc-gauss-8",
+      "studentReady": false
+    },
+    {
+      "examId": "cemc-gauss-2023-grade-7",
+      "competition": "Gauss",
+      "year": 2023,
+      "grade": "7",
+      "questions": 25,
+      "formatId": "cemc-gauss-7",
+      "studentReady": false
+    },
+    {
+      "examId": "cemc-gauss-2023-grade-8",
+      "competition": "Gauss",
+      "year": 2023,
+      "grade": "8",
+      "questions": 25,
+      "formatId": "cemc-gauss-8",
+      "studentReady": false
+    },
+    {
+      "examId": "cemc-gauss-2024-grade-7",
+      "competition": "Gauss",
+      "year": 2024,
+      "grade": "7",
+      "questions": 25,
+      "formatId": "cemc-gauss-7",
+      "studentReady": false
+    },
+    {
+      "examId": "cemc-gauss-2024-grade-8",
+      "competition": "Gauss",
+      "year": 2024,
+      "grade": "8",
+      "questions": 25,
+      "formatId": "cemc-gauss-8",
+      "studentReady": false
+    },
+    {
+      "examId": "cemc-gauss-2025-grade-7",
+      "competition": "Gauss",
+      "year": 2025,
+      "grade": "7",
+      "questions": 25,
+      "formatId": "cemc-gauss-7",
+      "studentReady": false
+    },
+    {
+      "examId": "cemc-gauss-2025-grade-8",
+      "competition": "Gauss",
+      "year": 2025,
+      "grade": "8",
+      "questions": 25,
+      "formatId": "cemc-gauss-8",
+      "studentReady": false
+    },
+    {
+      "examId": "cemc-gauss-2026-grade-7",
+      "competition": "Gauss",
+      "year": 2026,
+      "grade": "7",
+      "questions": 25,
+      "formatId": "cemc-gauss-7",
+      "studentReady": false
+    },
+    {
+      "examId": "cemc-gauss-2026-grade-8",
+      "competition": "Gauss",
+      "year": 2026,
+      "grade": "8",
+      "questions": 25,
+      "formatId": "cemc-gauss-8",
+      "studentReady": false
+    },
+    {
+      "examId": "cemc-pascal-2017",
+      "competition": "Pascal",
+      "year": 2017,
+      "grade": "9",
+      "questions": 25,
+      "formatId": "cemc-pascal",
+      "studentReady": false
+    },
+    {
+      "examId": "cemc-pascal-2018",
+      "competition": "Pascal",
+      "year": 2018,
+      "grade": "9",
+      "questions": 25,
+      "formatId": "cemc-pascal",
+      "studentReady": false
+    },
+    {
+      "examId": "cemc-pascal-2019",
+      "competition": "Pascal",
+      "year": 2019,
+      "grade": "9",
+      "questions": 25,
+      "formatId": "cemc-pascal",
+      "studentReady": false
+    },
+    {
+      "examId": "cemc-pascal-2021",
+      "competition": "Pascal",
+      "year": 2021,
+      "grade": "9",
+      "questions": 25,
+      "formatId": "cemc-pascal",
+      "studentReady": false
+    },
+    {
+      "examId": "cemc-pascal-2022",
+      "competition": "Pascal",
+      "year": 2022,
+      "grade": "9",
+      "questions": 25,
+      "formatId": "cemc-pascal",
+      "studentReady": false
+    },
+    {
+      "examId": "cemc-pascal-2023",
+      "competition": "Pascal",
+      "year": 2023,
+      "grade": "9",
+      "questions": 25,
+      "formatId": "cemc-pascal",
+      "studentReady": false
+    },
+    {
+      "examId": "cemc-pascal-2024",
+      "competition": "Pascal",
+      "year": 2024,
+      "grade": "9",
+      "questions": 25,
+      "formatId": "cemc-pascal",
+      "studentReady": false
+    },
+    {
+      "examId": "cemc-pascal-2025",
+      "competition": "Pascal",
+      "year": 2025,
+      "grade": "9",
+      "questions": 25,
+      "formatId": "cemc-pascal",
+      "studentReady": false
+    },
+    {
+      "examId": "cemc-pascal-2026",
+      "competition": "Pascal",
+      "year": 2026,
+      "grade": "9",
+      "questions": 25,
+      "formatId": "cemc-pascal",
+      "studentReady": false
+    }
+  ]
+}

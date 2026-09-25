@@ -1,6 +1,10 @@
 {
   "generatedAt": "2026-09-25",
   "count": 59,
+  "statusCounts": {
+    "objective-source-digitized": 49,
+    "proof-source-digitized": 10
+  },
   "items": [
     {
       "sourceRegistryId": "cemc-official",
@@ -18,8 +22,8 @@
         "publicQuestionDisplay": true,
         "commercialUse": false
       },
-      "status": "raw-collected",
-      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+      "status": "objective-source-digitized",
+      "nextStep": "bilingual-localization-and-review-before-student-delivery"
     },
     {
       "sourceRegistryId": "cemc-official",
@@ -37,8 +41,8 @@
         "publicQuestionDisplay": true,
         "commercialUse": false
       },
-      "status": "raw-collected",
-      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+      "status": "objective-source-digitized",
+      "nextStep": "bilingual-localization-and-review-before-student-delivery"
     },
     {
       "sourceRegistryId": "cemc-official",
@@ -56,8 +60,8 @@
         "publicQuestionDisplay": true,
         "commercialUse": false
       },
-      "status": "raw-collected",
-      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+      "status": "objective-source-digitized",
+      "nextStep": "bilingual-localization-and-review-before-student-delivery"
     },
     {
       "sourceRegistryId": "cemc-official",
@@ -75,8 +79,8 @@
         "publicQuestionDisplay": true,
         "commercialUse": false
       },
-      "status": "raw-collected",
-      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+      "status": "objective-source-digitized",
+      "nextStep": "bilingual-localization-and-review-before-student-delivery"
     },
     {
       "sourceRegistryId": "cemc-official",
@@ -94,8 +98,8 @@
         "publicQuestionDisplay": true,
         "commercialUse": false
       },
-      "status": "raw-collected",
-      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+      "status": "objective-source-digitized",
+      "nextStep": "bilingual-localization-and-review-before-student-delivery"
     },
     {
       "sourceRegistryId": "cemc-official",
@@ -113,8 +117,8 @@
         "publicQuestionDisplay": true,
         "commercialUse": false
       },
-      "status": "raw-collected",
-      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+      "status": "objective-source-digitized",
+      "nextStep": "bilingual-localization-and-review-before-student-delivery"
     },
     {
       "sourceRegistryId": "cemc-official",
@@ -132,8 +136,8 @@
         "publicQuestionDisplay": true,
         "commercialUse": false
       },
-      "status": "raw-collected",
-      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+      "status": "objective-source-digitized",
+      "nextStep": "bilingual-localization-and-review-before-student-delivery"
     },
     {
       "sourceRegistryId": "cemc-official",
@@ -151,8 +155,8 @@
         "publicQuestionDisplay": true,
         "commercialUse": false
       },
-      "status": "raw-collected",
-      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+      "status": "objective-source-digitized",
+      "nextStep": "bilingual-localization-and-review-before-student-delivery"
     },
     {
       "sourceRegistryId": "cemc-official",
@@ -170,8 +174,8 @@
         "publicQuestionDisplay": true,
         "commercialUse": false
       },
-      "status": "raw-collected",
-      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+      "status": "objective-source-digitized",
+      "nextStep": "bilingual-localization-and-review-before-student-delivery"
     },
     {
       "sourceRegistryId": "cemc-official",
@@ -189,8 +193,8 @@
         "publicQuestionDisplay": true,
         "commercialUse": false
       },
-      "status": "raw-collected",
-      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+      "status": "objective-source-digitized",
+      "nextStep": "bilingual-localization-and-review-before-student-delivery"
     },
     {
       "sourceRegistryId": "cemc-official",
@@ -208,8 +212,8 @@
         "publicQuestionDisplay": true,
         "commercialUse": false
       },
-      "status": "raw-collected",
-      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+      "status": "proof-source-digitized",
+      "nextStep": "build-proof-response-mode-and-bilingual-localization-before-student-delivery"
     },
     {
       "sourceRegistryId": "cemc-official",
@@ -227,8 +231,8 @@
         "publicQuestionDisplay": true,
         "commercialUse": false
       },
-      "status": "raw-collected",
-      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+      "status": "proof-source-digitized",
+      "nextStep": "build-proof-response-mode-and-bilingual-localization-before-student-delivery"
     },
     {
       "sourceRegistryId": "cemc-official",
@@ -246,8 +250,8 @@
         "publicQuestionDisplay": true,
         "commercialUse": false
       },
-      "status": "raw-collected",
-      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+      "status": "proof-source-digitized",
+      "nextStep": "build-proof-response-mode-and-bilingual-localization-before-student-delivery"
     },
     {
       "sourceRegistryId": "cemc-official",
@@ -265,8 +269,8 @@
         "publicQuestionDisplay": true,
         "commercialUse": false
       },
-      "status": "raw-collected",
-      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+      "status": "proof-source-digitized",
+      "nextStep": "build-proof-response-mode-and-bilingual-localization-before-student-delivery"
     },
     {
       "sourceRegistryId": "cemc-official",
@@ -284,8 +288,8 @@
         "publicQuestionDisplay": true,
         "commercialUse": false
       },
-      "status": "raw-collected",
-      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+      "status": "proof-source-digitized",
+      "nextStep": "build-proof-response-mode-and-bilingual-localization-before-student-delivery"
     },
     {
       "sourceRegistryId": "cemc-official",
@@ -303,8 +307,8 @@
         "publicQuestionDisplay": true,
         "commercialUse": false
       },
-      "status": "raw-collected",
-      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+      "status": "proof-source-digitized",
+      "nextStep": "build-proof-response-mode-and-bilingual-localization-before-student-delivery"
     },
     {
       "sourceRegistryId": "cemc-official",
@@ -322,8 +326,8 @@
         "publicQuestionDisplay": true,
         "commercialUse": false
       },
-      "status": "raw-collected",
-      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+      "status": "proof-source-digitized",
+      "nextStep": "build-proof-response-mode-and-bilingual-localization-before-student-delivery"
     },
     {
       "sourceRegistryId": "cemc-official",
@@ -341,8 +345,8 @@
         "publicQuestionDisplay": true,
         "commercialUse": false
       },
-      "status": "raw-collected",
-      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+      "status": "proof-source-digitized",
+      "nextStep": "build-proof-response-mode-and-bilingual-localization-before-student-delivery"
     },
     {
       "sourceRegistryId": "cemc-official",
@@ -360,8 +364,8 @@
         "publicQuestionDisplay": true,
         "commercialUse": false
       },
-      "status": "raw-collected",
-      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+      "status": "proof-source-digitized",
+      "nextStep": "build-proof-response-mode-and-bilingual-localization-before-student-delivery"
     },
     {
       "sourceRegistryId": "cemc-official",
@@ -379,8 +383,8 @@
         "publicQuestionDisplay": true,
         "commercialUse": false
       },
-      "status": "raw-collected",
-      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+      "status": "proof-source-digitized",
+      "nextStep": "build-proof-response-mode-and-bilingual-localization-before-student-delivery"
     },
     {
       "sourceRegistryId": "cemc-official",
@@ -398,8 +402,8 @@
         "publicQuestionDisplay": true,
         "commercialUse": false
       },
-      "status": "raw-collected",
-      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+      "status": "objective-source-digitized",
+      "nextStep": "bilingual-localization-and-review-before-student-delivery"
     },
     {
       "sourceRegistryId": "cemc-official",
@@ -417,8 +421,8 @@
         "publicQuestionDisplay": true,
         "commercialUse": false
       },
-      "status": "raw-collected",
-      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+      "status": "objective-source-digitized",
+      "nextStep": "bilingual-localization-and-review-before-student-delivery"
     },
     {
       "sourceRegistryId": "cemc-official",
@@ -436,8 +440,8 @@
         "publicQuestionDisplay": true,
         "commercialUse": false
       },
-      "status": "raw-collected",
-      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+      "status": "objective-source-digitized",
+      "nextStep": "bilingual-localization-and-review-before-student-delivery"
     },
     {
       "sourceRegistryId": "cemc-official",
@@ -455,8 +459,8 @@
         "publicQuestionDisplay": true,
         "commercialUse": false
       },
-      "status": "raw-collected",
-      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+      "status": "objective-source-digitized",
+      "nextStep": "bilingual-localization-and-review-before-student-delivery"
     },
     {
       "sourceRegistryId": "cemc-official",
@@ -474,8 +478,8 @@
         "publicQuestionDisplay": true,
         "commercialUse": false
       },
-      "status": "raw-collected",
-      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+      "status": "objective-source-digitized",
+      "nextStep": "bilingual-localization-and-review-before-student-delivery"
     },
     {
       "sourceRegistryId": "cemc-official",
@@ -493,8 +497,8 @@
         "publicQuestionDisplay": true,
         "commercialUse": false
       },
-      "status": "raw-collected",
-      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+      "status": "objective-source-digitized",
+      "nextStep": "bilingual-localization-and-review-before-student-delivery"
     },
     {
       "sourceRegistryId": "cemc-official",
@@ -512,8 +516,8 @@
         "publicQuestionDisplay": true,
         "commercialUse": false
       },
-      "status": "raw-collected",
-      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+      "status": "objective-source-digitized",
+      "nextStep": "bilingual-localization-and-review-before-student-delivery"
     },
     {
       "sourceRegistryId": "cemc-official",
@@ -531,8 +535,8 @@
         "publicQuestionDisplay": true,
         "commercialUse": false
       },
-      "status": "raw-collected",
-      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+      "status": "objective-source-digitized",
+      "nextStep": "bilingual-localization-and-review-before-student-delivery"
     },
     {
       "sourceRegistryId": "cemc-official",
@@ -550,8 +554,8 @@
         "publicQuestionDisplay": true,
         "commercialUse": false
       },
-      "status": "raw-collected",
-      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+      "status": "objective-source-digitized",
+      "nextStep": "bilingual-localization-and-review-before-student-delivery"
     },
     {
       "sourceRegistryId": "cemc-official",
@@ -569,8 +573,8 @@
         "publicQuestionDisplay": true,
         "commercialUse": false
       },
-      "status": "raw-collected",
-      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+      "status": "objective-source-digitized",
+      "nextStep": "bilingual-localization-and-review-before-student-delivery"
     },
     {
       "sourceRegistryId": "cemc-official",
@@ -588,8 +592,8 @@
         "publicQuestionDisplay": true,
         "commercialUse": false
       },
-      "status": "raw-collected",
-      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+      "status": "objective-source-digitized",
+      "nextStep": "bilingual-localization-and-review-before-student-delivery"
     },
     {
       "sourceRegistryId": "cemc-official",
@@ -607,8 +611,8 @@
         "publicQuestionDisplay": true,
         "commercialUse": false
       },
-      "status": "raw-collected",
-      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+      "status": "objective-source-digitized",
+      "nextStep": "bilingual-localization-and-review-before-student-delivery"
     },
     {
       "sourceRegistryId": "cemc-official",
@@ -626,8 +630,8 @@
         "publicQuestionDisplay": true,
         "commercialUse": false
       },
-      "status": "raw-collected",
-      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+      "status": "objective-source-digitized",
+      "nextStep": "bilingual-localization-and-review-before-student-delivery"
     },
     {
       "sourceRegistryId": "cemc-official",
@@ -645,8 +649,8 @@
         "publicQuestionDisplay": true,
         "commercialUse": false
       },
-      "status": "raw-collected",
-      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+      "status": "objective-source-digitized",
+      "nextStep": "bilingual-localization-and-review-before-student-delivery"
     },
     {
       "sourceRegistryId": "cemc-official",
@@ -664,8 +668,8 @@
         "publicQuestionDisplay": true,
         "commercialUse": false
       },
-      "status": "raw-collected",
-      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+      "status": "objective-source-digitized",
+      "nextStep": "bilingual-localization-and-review-before-student-delivery"
     },
     {
       "sourceRegistryId": "cemc-official",
@@ -683,8 +687,8 @@
         "publicQuestionDisplay": true,
         "commercialUse": false
       },
-      "status": "raw-collected",
-      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+      "status": "objective-source-digitized",
+      "nextStep": "bilingual-localization-and-review-before-student-delivery"
     },
     {
       "sourceRegistryId": "cemc-official",
@@ -702,8 +706,8 @@
         "publicQuestionDisplay": true,
         "commercialUse": false
       },
-      "status": "raw-collected",
-      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+      "status": "objective-source-digitized",
+      "nextStep": "bilingual-localization-and-review-before-student-delivery"
     },
     {
       "sourceRegistryId": "cemc-official",
@@ -721,8 +725,8 @@
         "publicQuestionDisplay": true,
         "commercialUse": false
       },
-      "status": "raw-collected",
-      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+      "status": "objective-source-digitized",
+      "nextStep": "bilingual-localization-and-review-before-student-delivery"
     },
     {
       "sourceRegistryId": "cemc-official",
@@ -740,8 +744,8 @@
         "publicQuestionDisplay": true,
         "commercialUse": false
       },
-      "status": "raw-collected",
-      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+      "status": "objective-source-digitized",
+      "nextStep": "bilingual-localization-and-review-before-student-delivery"
     },
     {
       "sourceRegistryId": "cemc-official",
@@ -759,8 +763,8 @@
         "publicQuestionDisplay": true,
         "commercialUse": false
       },
-      "status": "raw-collected",
-      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+      "status": "objective-source-digitized",
+      "nextStep": "bilingual-localization-and-review-before-student-delivery"
     },
     {
       "sourceRegistryId": "cemc-official",
@@ -778,8 +782,8 @@
         "publicQuestionDisplay": true,
         "commercialUse": false
       },
-      "status": "raw-collected",
-      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+      "status": "objective-source-digitized",
+      "nextStep": "bilingual-localization-and-review-before-student-delivery"
     },
     {
       "sourceRegistryId": "cemc-official",
@@ -797,8 +801,8 @@
         "publicQuestionDisplay": true,
         "commercialUse": false
       },
-      "status": "raw-collected",
-      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+      "status": "objective-source-digitized",
+      "nextStep": "bilingual-localization-and-review-before-student-delivery"
     },
     {
       "sourceRegistryId": "cemc-official",
@@ -816,8 +820,8 @@
         "publicQuestionDisplay": true,
         "commercialUse": false
       },
-      "status": "raw-collected",
-      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+      "status": "objective-source-digitized",
+      "nextStep": "bilingual-localization-and-review-before-student-delivery"
     },
     {
       "sourceRegistryId": "cemc-official",
@@ -835,8 +839,8 @@
         "publicQuestionDisplay": true,
         "commercialUse": false
       },
-      "status": "raw-collected",
-      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+      "status": "objective-source-digitized",
+      "nextStep": "bilingual-localization-and-review-before-student-delivery"
     },
     {
       "sourceRegistryId": "cemc-official",
@@ -854,8 +858,8 @@
         "publicQuestionDisplay": true,
         "commercialUse": false
       },
-      "status": "raw-collected",
-      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+      "status": "objective-source-digitized",
+      "nextStep": "bilingual-localization-and-review-before-student-delivery"
     },
     {
       "sourceRegistryId": "cemc-official",
@@ -873,8 +877,8 @@
         "publicQuestionDisplay": true,
         "commercialUse": false
       },
-      "status": "raw-collected",
-      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+      "status": "objective-source-digitized",
+      "nextStep": "bilingual-localization-and-review-before-student-delivery"
     },
     {
       "sourceRegistryId": "cemc-official",
@@ -892,8 +896,8 @@
         "publicQuestionDisplay": true,
         "commercialUse": false
       },
-      "status": "raw-collected",
-      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+      "status": "objective-source-digitized",
+      "nextStep": "bilingual-localization-and-review-before-student-delivery"
     },
     {
       "sourceRegistryId": "cemc-official",
@@ -911,8 +915,8 @@
         "publicQuestionDisplay": true,
         "commercialUse": false
       },
-      "status": "raw-collected",
-      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+      "status": "objective-source-digitized",
+      "nextStep": "bilingual-localization-and-review-before-student-delivery"
     },
     {
       "sourceRegistryId": "cemc-official",
@@ -930,8 +934,8 @@
         "publicQuestionDisplay": true,
         "commercialUse": false
       },
-      "status": "raw-collected",
-      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+      "status": "objective-source-digitized",
+      "nextStep": "bilingual-localization-and-review-before-student-delivery"
     },
     {
       "sourceRegistryId": "cemc-official",
@@ -949,8 +953,8 @@
         "publicQuestionDisplay": true,
         "commercialUse": false
       },
-      "status": "raw-collected",
-      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+      "status": "objective-source-digitized",
+      "nextStep": "bilingual-localization-and-review-before-student-delivery"
     },
     {
       "sourceRegistryId": "cemc-official",
@@ -968,8 +972,8 @@
         "publicQuestionDisplay": true,
         "commercialUse": false
       },
-      "status": "raw-collected",
-      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+      "status": "objective-source-digitized",
+      "nextStep": "bilingual-localization-and-review-before-student-delivery"
     },
     {
       "sourceRegistryId": "cemc-official",
@@ -987,8 +991,8 @@
         "publicQuestionDisplay": true,
         "commercialUse": false
       },
-      "status": "raw-collected",
-      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+      "status": "objective-source-digitized",
+      "nextStep": "bilingual-localization-and-review-before-student-delivery"
     },
     {
       "sourceRegistryId": "cemc-official",
@@ -1006,8 +1010,8 @@
         "publicQuestionDisplay": true,
         "commercialUse": false
       },
-      "status": "raw-collected",
-      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+      "status": "objective-source-digitized",
+      "nextStep": "bilingual-localization-and-review-before-student-delivery"
     },
     {
       "sourceRegistryId": "cemc-official",
@@ -1025,8 +1029,8 @@
         "publicQuestionDisplay": true,
         "commercialUse": false
       },
-      "status": "raw-collected",
-      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+      "status": "objective-source-digitized",
+      "nextStep": "bilingual-localization-and-review-before-student-delivery"
     },
     {
       "sourceRegistryId": "cemc-official",
@@ -1044,8 +1048,8 @@
         "publicQuestionDisplay": true,
         "commercialUse": false
       },
-      "status": "raw-collected",
-      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+      "status": "objective-source-digitized",
+      "nextStep": "bilingual-localization-and-review-before-student-delivery"
     },
     {
       "sourceRegistryId": "cemc-official",
@@ -1063,8 +1067,8 @@
         "publicQuestionDisplay": true,
         "commercialUse": false
       },
-      "status": "raw-collected",
-      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+      "status": "objective-source-digitized",
+      "nextStep": "bilingual-localization-and-review-before-student-delivery"
     },
     {
       "sourceRegistryId": "cemc-official",
@@ -1082,8 +1086,8 @@
         "publicQuestionDisplay": true,
         "commercialUse": false
       },
-      "status": "raw-collected",
-      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+      "status": "objective-source-digitized",
+      "nextStep": "bilingual-localization-and-review-before-student-delivery"
     },
     {
       "sourceRegistryId": "cemc-official",
@@ -1101,8 +1105,8 @@
         "publicQuestionDisplay": true,
         "commercialUse": false
       },
-      "status": "raw-collected",
-      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+      "status": "objective-source-digitized",
+      "nextStep": "bilingual-localization-and-review-before-student-delivery"
     },
     {
       "sourceRegistryId": "cemc-official",
@@ -1120,8 +1124,8 @@
         "publicQuestionDisplay": true,
         "commercialUse": false
       },
-      "status": "raw-collected",
-      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+      "status": "objective-source-digitized",
+      "nextStep": "bilingual-localization-and-review-before-student-delivery"
     }
   ]
 }

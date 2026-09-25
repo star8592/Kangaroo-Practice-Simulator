@@ -43,6 +43,9 @@ export function normalizeExamProfile(input:ExamProfile):ExamProfile{
     if(id==="maa-amc8"||id==="maa-amc10"||id==="maa-amc12"||id==="maa-aime-classic"||id==="maa-aime-2027") return applyMaaFormat(p,id);
     return {...p,competitionId:"maa-amc"};
   }
+  if(p.country==="Canada CEMC"||p.competitionId==="cemc") {
+    return {...p,competitionId:"cemc",paperType:p.paperType||"past",timingMode:p.timingMode||"official",formatLabelZh:p.formatLabelZh||"加拿大 CEMC 正式赛制",formatLabelEn:p.formatLabelEn||"CEMC official format"};
+  }
   if(p.country==="Mixed") return p;
   if(p.country && p.country!=="Local"){
     const exact=p.gradesEn||p.grades||"general",country=slug(p.country);

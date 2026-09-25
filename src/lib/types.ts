@@ -31,7 +31,7 @@ export type ExamProfile = {
   sourceLabelZh?: string;
   sourceLabelEn?: string;
   studentReady?: boolean;
-  competitionId?: "kangaroo" | "australian-amc" | "maa-amc";
+  competitionId?: "kangaroo" | "australian-amc" | "maa-amc" | "cemc";
   formatId?: string;
   paperType?: "past" | "sample" | "smart" | "practice";
   gradeBand?: "1-2" | "3-4" | "5-6" | "7-8" | "9-10" | "11+";

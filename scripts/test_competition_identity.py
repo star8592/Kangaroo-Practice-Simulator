@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 from pathlib import Path
 import json,sys
-ROOT=Path(__file__).resolve().parents[1]; EX=ROOT/'private/exams'; errors=[]; counts={'australian-amc':0,'maa-amc':0,'kangaroo':0}
+ROOT=Path(__file__).resolve().parents[1]; EX=ROOT/'private/exams'; errors=[]; counts={'australian-amc':0,'maa-amc':0,'kangaroo':0,'cemc':0}
 for p in sorted(EX.glob('*.json')):
  try:d=json.loads(p.read_text())
  except Exception:continue
@@ -11,6 +11,10 @@ for p in sorted(EX.glob('*.json')):
  if p.name.startswith('au-amc-'):
   if cid!='australian-amc': errors.append(f'{p.name}: expected australian-amc, got {cid}')
   if not fid.startswith('australian-amc-'): errors.append(f'{p.name}: Australian formatId must start australian-amc-, got {fid}')
+
+ if p.name.startswith('cemc-'):
+  if cid!='cemc': errors.append(f'{p.name}: expected cemc, got {cid}')
+  if not fid.startswith('cemc-'): errors.append(f'{p.name}: CEMC formatId must start cemc-, got {fid}')
  if p.name.startswith('maa-'):
   if cid!='maa-amc': errors.append(f'{p.name}: expected maa-amc, got {cid}')
   if not fid.startswith('maa-'): errors.append(f'{p.name}: MAA formatId must start maa-, got {fid}')
