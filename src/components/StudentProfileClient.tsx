@@ -17,9 +17,10 @@ type Student = {
   grade: number;
   school?: string;
   avatarKey?: string;
+  onboardingCompleted?: boolean;
 };
 
-export default function StudentProfileClient({ user }: { user: Student }) {
+export default function StudentProfileClient({ user, welcome = false }: { user: Student; welcome?: boolean }) {
   const router = useRouter();
   const [name, setName] = useState(user.name);
   const [grade, setGrade] = useState(user.grade);
@@ -101,6 +102,14 @@ export default function StudentProfileClient({ user }: { user: Student }) {
       <div className="report-actions" style={{ justifyContent: "flex-start", marginTop: 0 }}>
         <Link className="secondary-button" href="/student">← 返回学习报告</Link>
       </div>
+
+      {welcome && !user.onboardingCompleted && (
+        <section className="report-card" style={{ marginBottom: 18 }}>
+          <span className="eyebrow">第一次使用</span>
+          <h2>先花 20 秒确认你的资料</h2>
+          <p>选一个喜欢的头像，确认姓名或昵称和年级，然后点“保存我的资料”。完成后就可以开始训练。</p>
+        </section>
+      )}
 
       <section className="student-hero">
         <div>

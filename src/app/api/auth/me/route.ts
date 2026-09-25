@@ -36,7 +36,7 @@ export async function PATCH(req: NextRequest) {
       return NextResponse.json({ error: "学校名称不能超过 80 个字符" }, { status: 400 });
     }
 
-    const updated = updateStudent(user.id, { name, grade, school, avatarKey });
+    const updated = updateStudent(user.id, { name, grade, school, avatarKey, onboardingCompleted: true });
     return NextResponse.json({ user: updated });
   } catch (error) {
     return NextResponse.json(

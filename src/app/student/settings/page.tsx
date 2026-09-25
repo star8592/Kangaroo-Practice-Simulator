@@ -5,10 +5,15 @@ import { SESSION_COOKIE, userFromSessionToken } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
 
-export default async function StudentSettingsPage() {
+export default async function StudentSettingsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ welcome?: string }>;
+}) {
   const jar = await cookies();
   const user = userFromSessionToken(jar.get(SESSION_COOKIE)?.value);
   if (!user) redirect("/login?next=/student/settings");
   if (user.role !== "student") redirect("/student");
-  return <StudentProfileClient user={user} />;
+  const query = await searchParams;
+  return <StudentProfileClient user={user} welcome={query.welcome === "1"} />;
 }

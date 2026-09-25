@@ -35,16 +35,19 @@
     "verify:full": "bash ops/automation/quality_gate.sh full",
     "test:cube-net": "tsx scripts/test_cube_net.ts",
     "test:pre-a-grade1": "python3 scripts/test_pre_a_grade1_ready.py",
-    "solution:factory:publish": "python3 scripts/run_solution_factory.py --publish"
+    "solution:factory:publish": "python3 scripts/run_solution_factory.py --publish",
+    "test:parent-auth": "tsx scripts/test_parent_auth.ts"
   },
   "dependencies": {
     "next": "16.3.5",
+    "nodemailer": "^10.0.10",
     "react": "19.2.8",
     "react-dom": "19.2.8",
     "three": "^0.186.0"
   },
   "devDependencies": {
     "@types/node": "^20",
+    "@types/nodemailer": "^8.0.2",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@types/three": "^0.186.0",
