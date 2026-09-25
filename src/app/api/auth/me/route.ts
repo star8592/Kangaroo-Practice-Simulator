@@ -24,6 +24,7 @@ export async function PATCH(req: NextRequest) {
     const name = String(body?.name ?? "").trim();
     const grade = Number(body?.grade);
     const school = String(body?.school ?? "").trim();
+    const avatarKey = body?.avatarKey === undefined ? user.avatarKey : String(body.avatarKey);
 
     if (!name || name.length > 50) {
       return NextResponse.json({ error: "姓名或昵称请填写 1–50 个字符" }, { status: 400 });
@@ -35,7 +36,7 @@ export async function PATCH(req: NextRequest) {
       return NextResponse.json({ error: "学校名称不能超过 80 个字符" }, { status: 400 });
     }
 
-    const updated = updateStudent(user.id, { name, grade, school });
+    const updated = updateStudent(user.id, { name, grade, school, avatarKey });
     return NextResponse.json({ user: updated });
   } catch (error) {
     return NextResponse.json(

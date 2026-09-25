@@ -3,6 +3,11 @@
 import Link from "next/link";
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
+import {
+  DEFAULT_STUDENT_AVATAR,
+  STUDENT_AVATARS,
+  studentAvatarEmoji,
+} from "@/lib/student-avatar";
 
 type Student = {
   id: string;
@@ -11,6 +16,7 @@ type Student = {
   name: string;
   grade: number;
   school?: string;
+  avatarKey?: string;
 };
 
 export default function StudentProfileClient({ user }: { user: Student }) {
@@ -18,9 +24,17 @@ export default function StudentProfileClient({ user }: { user: Student }) {
   const [name, setName] = useState(user.name);
   const [grade, setGrade] = useState(user.grade);
   const [school, setSchool] = useState(user.school || "");
+  const [avatarKey, setAvatarKey] = useState(user.avatarKey || DEFAULT_STUDENT_AVATAR);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+
+  const [currentPin, setCurrentPin] = useState("");
+  const [newPin, setNewPin] = useState("");
+  const [confirmPin, setConfirmPin] = useState("");
+  const [pinBusy, setPinBusy] = useState(false);
+  const [pinMessage, setPinMessage] = useState("");
+  const [pinError, setPinError] = useState("");
 
   async function save(event: FormEvent) {
     event.preventDefault();
@@ -31,20 +45,54 @@ export default function StudentProfileClient({ user }: { user: Student }) {
       const response = await fetch("/api/auth/me", {
         method: "PATCH",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ name, grade, school }),
+        body: JSON.stringify({ name, grade, school, avatarKey }),
       });
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || "保存失败");
       setName(data.user.name);
       setGrade(data.user.grade);
       setSchool(data.user.school || "");
-      setMessage("资料已保存。新的姓名和年级会用于后续训练与报告。");
+      setAvatarKey(data.user.avatarKey || DEFAULT_STUDENT_AVATAR);
+      setMessage("资料已保存。新的姓名、年级和头像已经生效。");
       window.dispatchEvent(new Event("student-profile-updated"));
       router.refresh();
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e));
     } finally {
       setBusy(false);
+    }
+  }
+
+  async function changePin(event: FormEvent) {
+    event.preventDefault();
+    setPinMessage("");
+    setPinError("");
+    if (!/^\d{4,12}$/.test(newPin)) {
+      setPinError("新 PIN 必须为 4–12 位数字");
+      return;
+    }
+    if (newPin !== confirmPin) {
+      setPinError("两次输入的新 PIN 不一致");
+      return;
+    }
+
+    setPinBusy(true);
+    try {
+      const response = await fetch("/api/auth/pin", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ currentPin, newPin }),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "修改 PIN 失败");
+      setCurrentPin("");
+      setNewPin("");
+      setConfirmPin("");
+      setPinMessage("PIN 已修改，当前设备仍保持登录，其他旧会话已失效。");
+    } catch (e) {
+      setPinError(e instanceof Error ? e.message : String(e));
+    } finally {
+      setPinBusy(false);
     }
   }
 
@@ -57,13 +105,13 @@ export default function StudentProfileClient({ user }: { user: Student }) {
       <section className="student-hero">
         <div>
           <span className="eyebrow">MY PROFILE</span>
-          <h1>我的资料</h1>
+          <h1>{studentAvatarEmoji(avatarKey)} 我的资料</h1>
           <p>这里的信息用于考试、口算打印、学习报告和年级推荐。</p>
         </div>
         <div className="readiness-ring" aria-hidden="true">
-          <strong>{(name.trim()[0] || "我").toUpperCase()}</strong>
+          <strong style={{ fontSize: 44 }}>{studentAvatarEmoji(avatarKey)}</strong>
           <span>{grade} 年级</span>
-          <small>学生档案</small>
+          <small>{name || "学生档案"}</small>
         </div>
       </section>
 
@@ -73,6 +121,31 @@ export default function StudentProfileClient({ user }: { user: Student }) {
             <span className="eyebrow">EDIT PROFILE</span>
             <h2>设置自己的显示资料</h2>
             <p>姓名可以填写真实姓名，也可以填写平时使用的昵称。</p>
+          </div>
+
+          <div>
+            <span style={{ display: "block", fontWeight: 800, marginBottom: 8 }}>选择头像</span>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(105px,1fr))", gap: 10 }}>
+              {STUDENT_AVATARS.map((avatar) => (
+                <button
+                  key={avatar.key}
+                  type="button"
+                  onClick={() => setAvatarKey(avatar.key)}
+                  aria-pressed={avatarKey === avatar.key}
+                  style={{
+                    minHeight: 76,
+                    borderRadius: 14,
+                    border: avatarKey === avatar.key ? "2px solid var(--accent)" : "1px solid var(--line)",
+                    background: avatarKey === avatar.key ? "#fff8f4" : "#fff",
+                    cursor: "pointer",
+                    font: "inherit",
+                  }}
+                >
+                  <span style={{ display: "block", fontSize: 30 }}>{avatar.emoji}</span>
+                  <small>{avatar.label}</small>
+                </button>
+              ))}
+            </div>
           </div>
 
           <label>
@@ -125,6 +198,62 @@ export default function StudentProfileClient({ user }: { user: Student }) {
               disabled={busy || !name.trim() || grade < 1 || grade > 13}
             >
               {busy ? "保存中…" : "保存我的资料"}
+            </button>
+          </div>
+        </form>
+      </section>
+
+      <section className="report-card" style={{ maxWidth: 760, margin: "18px auto 0" }}>
+        <form className="student-edit-form" onSubmit={changePin}>
+          <div>
+            <span className="eyebrow">ACCOUNT SECURITY</span>
+            <h2>修改学生 PIN</h2>
+            <p>需要先输入当前 PIN。修改后，其他设备上的旧登录会自动失效。</p>
+          </div>
+
+          <label>
+            <span>当前 PIN</span>
+            <input
+              type="password"
+              inputMode="numeric"
+              autoComplete="current-password"
+              value={currentPin}
+              onChange={(e) => setCurrentPin(e.target.value.replace(/\D/g, "").slice(0, 12))}
+              required
+            />
+          </label>
+          <label>
+            <span>新 PIN（4–12 位数字）</span>
+            <input
+              type="password"
+              inputMode="numeric"
+              autoComplete="new-password"
+              value={newPin}
+              onChange={(e) => setNewPin(e.target.value.replace(/\D/g, "").slice(0, 12))}
+              required
+            />
+          </label>
+          <label>
+            <span>再次输入新 PIN</span>
+            <input
+              type="password"
+              inputMode="numeric"
+              autoComplete="new-password"
+              value={confirmPin}
+              onChange={(e) => setConfirmPin(e.target.value.replace(/\D/g, "").slice(0, 12))}
+              required
+            />
+          </label>
+
+          {pinError && <div className="login-error">{pinError}</div>}
+          {pinMessage && <div className="login-data-note"><b>修改成功</b><span>{pinMessage}</span></div>}
+
+          <div className="student-edit-actions">
+            <button
+              className="primary-button"
+              disabled={pinBusy || !currentPin || !newPin || !confirmPin}
+            >
+              {pinBusy ? "修改中…" : "修改 PIN"}
             </button>
           </div>
         </form>

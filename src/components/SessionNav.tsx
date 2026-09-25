@@ -3,10 +3,12 @@
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { studentAvatarEmoji } from "@/lib/student-avatar";
 
 type U = {
   name: string;
   candidateNo: string;
+  avatarKey?: string;
   role?: "student" | "admin";
 };
 
@@ -50,7 +52,10 @@ export default function SessionNav() {
           <Link href="/student/settings">我的资料</Link>
         </>
       )}
-      <span className="nav-candidate">{user.name}</span>
+      <span className="nav-candidate">
+        {user.role === "student" ? `${studentAvatarEmoji(user.avatarKey)} ` : ""}
+        {user.name}
+      </span>
       <button className="nav-logout" onClick={logout}>退出</button>
     </>
   );
