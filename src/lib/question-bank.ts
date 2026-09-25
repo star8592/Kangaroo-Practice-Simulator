@@ -6,6 +6,42 @@ import { normalizeExamProfile } from "./competition-format";
 
 const BANK_PATH = path.join(process.cwd(), "private", "question-bank.json");
 const EXAMS_DIR = path.join(process.cwd(), "private", "exams");
+const RIGHTS_REGISTRY_PATH = path.join(
+  process.cwd(),
+  "private",
+  "source-registry",
+  "competition_sources.json",
+);
+
+type RightsRegistry = {
+  sources?: Array<{ id?: string; rights?: { publicQuestionDisplay?: boolean } }>;
+};
+
+let publicRightsBySource: Map<string, boolean> | null = null;
+
+function sourceAllowsPublicQuestionDisplay(sourceRegistryId: unknown) {
+  if (typeof sourceRegistryId !== "string" || !sourceRegistryId.trim()) return true;
+  if (!publicRightsBySource) {
+    publicRightsBySource = new Map<string, boolean>();
+    try {
+      const registry = JSON.parse(
+        fs.readFileSync(RIGHTS_REGISTRY_PATH, "utf8"),
+      ) as RightsRegistry;
+      for (const source of registry.sources || []) {
+        if (source.id) {
+          publicRightsBySource.set(
+            source.id,
+            source.rights?.publicQuestionDisplay === true,
+          );
+        }
+      }
+    } catch {
+      // Conservative failure: a declared source cannot be published when its
+      // registry is unavailable or malformed.
+    }
+  }
+  return publicRightsBySource.get(sourceRegistryId) === true;
+}
 
 function safeExamId(examId: string) {
   if (!/^[a-zA-Z0-9_-]+$/.test(examId)) throw new Error("Invalid exam id");
@@ -98,6 +134,8 @@ export function loadQuestionBank(): Question[] {
 }
 
 export function isExamBundleStudentReady(bundle: ExamBundle) {
+  if (bundle.profile.studentReady === false) return false;
+  if (!sourceAllowsPublicQuestionDisplay(bundle.profile.sourceRegistryId)) return false;
   return Boolean(bundle.questions.length && bundle.questions.every(isStudentReady));
 }
 

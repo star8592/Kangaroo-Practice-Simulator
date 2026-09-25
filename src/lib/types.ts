@@ -31,6 +31,14 @@ export type ExamProfile = {
   sourceLabelZh?: string;
   sourceLabelEn?: string;
   studentReady?: boolean;
+  sourceRegistryId?: string;
+  rightsPolicy?: {
+    rightsClass?: string;
+    license?: string | null;
+    publicQuestionDisplay?: boolean;
+    commercialUse?: boolean;
+    attributionRequired?: boolean;
+  };
   competitionId?: "kangaroo" | "australian-amc" | "maa-amc" | "cemc";
   formatId?: string;
   paperType?: "past" | "sample" | "smart" | "practice";
