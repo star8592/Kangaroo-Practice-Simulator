@@ -1,0 +1,12 @@
+[Unit]
+Description=Socthink math CI-green auto deploy
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/socthink-auto-deploy
+TimeoutStartSec=20min
+Nice=10
+IOSchedulingClass=best-effort
+IOSchedulingPriority=7

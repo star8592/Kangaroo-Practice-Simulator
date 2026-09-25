@@ -1286,3 +1286,89 @@ GitHub 是唯一代码源
 最重要的一句话：
 
 > 只有当 https://socthink.cn/api/release 返回的 deployedSha 与 GitHub origin/main 完全一致时，才能宣布“发布完成”。
+
+---
+
+## 31. CI-green 生产机拉取式自动发布
+
+从 2026-09-25 起，推荐把常规代码发布切换为生产机主动拉取，而不是把 root SSH 私钥保存到 GitHub Actions。
+
+### 工作方式
+
+~~~text
+push main
+    ↓
+GitHub Actions: CI
+    ↓
+CI completed + success
+    ↓
+生产机 socthink-auto-deploy.timer 发现 origin/main 新 SHA
+    ↓
+再次通过 GitHub API 核验该 SHA 的 CI 为绿色
+    ↓
+精确 reset 到目标 SHA
+    ↓
+npm ci + production build
+    ↓
+写入 .release/deployed_sha
+    ↓
+restart socthink-math.service
+    ↓
+生产本机 /api/release + smoke_test
+    ↓
+公网 /api/release 最终核验
+~~~
+
+### 安装
+
+首次安装在生产服务器执行：
+
+~~~bash
+cd /opt/socthink-math
+bash ops/release/install_auto_deploy_server.sh
+~~~
+
+安装后包含：
+
+- `/usr/local/sbin/socthink-auto-deploy`
+- `socthink-auto-deploy.service`
+- `socthink-auto-deploy.timer`
+
+timer 默认每 2 分钟检查一次。没有新 SHA 时只执行一次轻量 `git fetch`；只有发现新 SHA 时才查询 GitHub Actions 状态。
+
+### 安全规则
+
+自动发布器必须满足：
+
+- 只跟踪 `origin/main`
+- 必须找到同一 SHA 的 `CI` workflow
+- `CI.status` 必须为 `completed`
+- `CI.conclusion` 必须为 `success`
+- CI 缺失、失败、运行中或 GitHub API 不可达时禁止发布
+- 禁止执行 `git clean`
+- `private/`、`public/local-assets/` 和运行数据必须保留
+- build、restart、本机 release receipt 或 smoke test 任一失败时自动回滚到上一 SHA
+- 公网边缘短暂不可达只记录 WARN，不回滚已经通过本机 smoke 的版本
+
+### 运维
+
+查看 timer：
+
+~~~bash
+systemctl status socthink-auto-deploy.timer --no-pager -l
+systemctl list-timers socthink-auto-deploy.timer --all
+~~~
+
+查看最近自动发布日志：
+
+~~~bash
+journalctl -u socthink-auto-deploy.service -n 200 --no-pager
+~~~
+
+手动立即检查一次：
+
+~~~bash
+systemctl start socthink-auto-deploy.service
+~~~
+
+现有 `.github/workflows/deploy.yml` 保留为人工应急发布入口；常规发布不再要求 GitHub 保存生产 root SSH 私钥。

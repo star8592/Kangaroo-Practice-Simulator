@@ -1,0 +1,12 @@
+[Unit]
+Description=Check Socthink math main for a CI-green release
+
+[Timer]
+OnBootSec=90s
+OnUnitActiveSec=2min
+RandomizedDelaySec=15s
+Persistent=true
+Unit=socthink-auto-deploy.service
+
+[Install]
+WantedBy=timers.target

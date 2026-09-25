@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+set -euo pipefail
+ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
+SCRIPT="$ROOT/ops/release/auto_deploy_server.sh"
+INSTALLER="$ROOT/ops/release/install_auto_deploy_server.sh"
+SERVICE="$ROOT/ops/release/systemd/socthink-auto-deploy.service"
+TIMER="$ROOT/ops/release/systemd/socthink-auto-deploy.timer"
+
+bash -n "$SCRIPT"
+bash -n "$INSTALLER"
+grep -q 'name") == "CI"' "$SCRIPT"
+grep -q 'conclusion") == "success"' "$SCRIPT"
+grep -q 'AUTO_DEPLOY=ROLLBACK' "$SCRIPT"
+grep -q 'scripts/smoke_test.py' "$SCRIPT"
+grep -q 'deployedSha' "$SCRIPT"
+grep -q 'gitSha' "$SCRIPT"
+grep -q 'Never run git clean' "$SCRIPT"
+grep -q '^ExecStart=/usr/local/sbin/socthink-auto-deploy$' "$SERVICE"
+grep -q '^OnUnitActiveSec=2min$' "$TIMER"
+grep -q '^Persistent=true$' "$TIMER"
+echo "AUTO_DEPLOY_CONTRACT=PASS"
