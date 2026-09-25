@@ -1,0 +1,2692 @@
+{
+  "generatedAt": "2026-09-25",
+  "summary": {
+    "reference": "https://live.poshenloh.com/past-contests",
+    "referenceRightsNote": "The reference site states its own MAA authorization. That authorization is not treated as a sublicense to this project.",
+    "totalIndexedPapers": 266,
+    "indexedBySeries": {
+      "AMC8": 41,
+      "AMC10": 52,
+      "AMC12": 102,
+      "AIME": 71
+    },
+    "localExamFilesByFormat": {
+      "maa-amc8": 32,
+      "maa-amc10": 6,
+      "maa-amc12": 4
+    },
+    "exactTargetIdsAlreadyPresent": {},
+    "localHistoricalPaperCoverage": {
+      "AMC8": 24,
+      "AMC10": 1
+    },
+    "missingHistoricalPapers": {
+      "AMC8": 17,
+      "AMC10": 51,
+      "AMC12": 102,
+      "AIME": 71
+    }
+  },
+  "records": [
+    {
+      "series": "AMC8",
+      "formatId": "maa-amc8",
+      "label": "1985",
+      "canonicalTargetId": "maa-amc8-1985",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc8/1985",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC8",
+      "formatId": "maa-amc8",
+      "label": "1986",
+      "canonicalTargetId": "maa-amc8-1986",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc8/1986",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC8",
+      "formatId": "maa-amc8",
+      "label": "1987",
+      "canonicalTargetId": "maa-amc8-1987",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc8/1987",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC8",
+      "formatId": "maa-amc8",
+      "label": "1988",
+      "canonicalTargetId": "maa-amc8-1988",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc8/1988",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC8",
+      "formatId": "maa-amc8",
+      "label": "1989",
+      "canonicalTargetId": "maa-amc8-1989",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc8/1989",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC8",
+      "formatId": "maa-amc8",
+      "label": "1990",
+      "canonicalTargetId": "maa-amc8-1990",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc8/1990",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC8",
+      "formatId": "maa-amc8",
+      "label": "1991",
+      "canonicalTargetId": "maa-amc8-1991",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc8/1991",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC8",
+      "formatId": "maa-amc8",
+      "label": "1992",
+      "canonicalTargetId": "maa-amc8-1992",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc8/1992",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC8",
+      "formatId": "maa-amc8",
+      "label": "1993",
+      "canonicalTargetId": "maa-amc8-1993",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc8/1993",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC8",
+      "formatId": "maa-amc8",
+      "label": "1994",
+      "canonicalTargetId": "maa-amc8-1994",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc8/1994",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC8",
+      "formatId": "maa-amc8",
+      "label": "1995",
+      "canonicalTargetId": "maa-amc8-1995",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc8/1995",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC8",
+      "formatId": "maa-amc8",
+      "label": "1996",
+      "canonicalTargetId": "maa-amc8-1996",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc8/1996",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC8",
+      "formatId": "maa-amc8",
+      "label": "1997",
+      "canonicalTargetId": "maa-amc8-1997",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc8/1997",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC8",
+      "formatId": "maa-amc8",
+      "label": "1998",
+      "canonicalTargetId": "maa-amc8-1998",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc8/1998",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC8",
+      "formatId": "maa-amc8",
+      "label": "1999",
+      "canonicalTargetId": "maa-amc8-1999",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc8/1999",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC8",
+      "formatId": "maa-amc8",
+      "label": "2000",
+      "canonicalTargetId": "maa-amc8-2000",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc8/2000",
+      "localExactIdPresent": false,
+      "localPaperPresent": true,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC8",
+      "formatId": "maa-amc8",
+      "label": "2001",
+      "canonicalTargetId": "maa-amc8-2001",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc8/2001",
+      "localExactIdPresent": false,
+      "localPaperPresent": true,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC8",
+      "formatId": "maa-amc8",
+      "label": "2002",
+      "canonicalTargetId": "maa-amc8-2002",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc8/2002",
+      "localExactIdPresent": false,
+      "localPaperPresent": true,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC8",
+      "formatId": "maa-amc8",
+      "label": "2003",
+      "canonicalTargetId": "maa-amc8-2003",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc8/2003",
+      "localExactIdPresent": false,
+      "localPaperPresent": true,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC8",
+      "formatId": "maa-amc8",
+      "label": "2004",
+      "canonicalTargetId": "maa-amc8-2004",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc8/2004",
+      "localExactIdPresent": false,
+      "localPaperPresent": true,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC8",
+      "formatId": "maa-amc8",
+      "label": "2005",
+      "canonicalTargetId": "maa-amc8-2005",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc8/2005",
+      "localExactIdPresent": false,
+      "localPaperPresent": true,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC8",
+      "formatId": "maa-amc8",
+      "label": "2006",
+      "canonicalTargetId": "maa-amc8-2006",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc8/2006",
+      "localExactIdPresent": false,
+      "localPaperPresent": true,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC8",
+      "formatId": "maa-amc8",
+      "label": "2007",
+      "canonicalTargetId": "maa-amc8-2007",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc8/2007",
+      "localExactIdPresent": false,
+      "localPaperPresent": true,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC8",
+      "formatId": "maa-amc8",
+      "label": "2008",
+      "canonicalTargetId": "maa-amc8-2008",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc8/2008",
+      "localExactIdPresent": false,
+      "localPaperPresent": true,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC8",
+      "formatId": "maa-amc8",
+      "label": "2009",
+      "canonicalTargetId": "maa-amc8-2009",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc8/2009",
+      "localExactIdPresent": false,
+      "localPaperPresent": true,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC8",
+      "formatId": "maa-amc8",
+      "label": "2010",
+      "canonicalTargetId": "maa-amc8-2010",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc8/2010",
+      "localExactIdPresent": false,
+      "localPaperPresent": true,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC8",
+      "formatId": "maa-amc8",
+      "label": "2011",
+      "canonicalTargetId": "maa-amc8-2011",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc8/2011",
+      "localExactIdPresent": false,
+      "localPaperPresent": true,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC8",
+      "formatId": "maa-amc8",
+      "label": "2012",
+      "canonicalTargetId": "maa-amc8-2012",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc8/2012",
+      "localExactIdPresent": false,
+      "localPaperPresent": true,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC8",
+      "formatId": "maa-amc8",
+      "label": "2013",
+      "canonicalTargetId": "maa-amc8-2013",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc8/2013",
+      "localExactIdPresent": false,
+      "localPaperPresent": true,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC8",
+      "formatId": "maa-amc8",
+      "label": "2014",
+      "canonicalTargetId": "maa-amc8-2014",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc8/2014",
+      "localExactIdPresent": false,
+      "localPaperPresent": true,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC8",
+      "formatId": "maa-amc8",
+      "label": "2015",
+      "canonicalTargetId": "maa-amc8-2015",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc8/2015",
+      "localExactIdPresent": false,
+      "localPaperPresent": true,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC8",
+      "formatId": "maa-amc8",
+      "label": "2016",
+      "canonicalTargetId": "maa-amc8-2016",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc8/2016",
+      "localExactIdPresent": false,
+      "localPaperPresent": true,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC8",
+      "formatId": "maa-amc8",
+      "label": "2017",
+      "canonicalTargetId": "maa-amc8-2017",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc8/2017",
+      "localExactIdPresent": false,
+      "localPaperPresent": true,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC8",
+      "formatId": "maa-amc8",
+      "label": "2018",
+      "canonicalTargetId": "maa-amc8-2018",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc8/2018",
+      "localExactIdPresent": false,
+      "localPaperPresent": true,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC8",
+      "formatId": "maa-amc8",
+      "label": "2019",
+      "canonicalTargetId": "maa-amc8-2019",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc8/2019",
+      "localExactIdPresent": false,
+      "localPaperPresent": true,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC8",
+      "formatId": "maa-amc8",
+      "label": "2020",
+      "canonicalTargetId": "maa-amc8-2020",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc8/2020",
+      "localExactIdPresent": false,
+      "localPaperPresent": true,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC8",
+      "formatId": "maa-amc8",
+      "label": "2022",
+      "canonicalTargetId": "maa-amc8-2022",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc8/2022",
+      "localExactIdPresent": false,
+      "localPaperPresent": true,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC8",
+      "formatId": "maa-amc8",
+      "label": "2023",
+      "canonicalTargetId": "maa-amc8-2023",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc8/2023",
+      "localExactIdPresent": false,
+      "localPaperPresent": true,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC8",
+      "formatId": "maa-amc8",
+      "label": "2024",
+      "canonicalTargetId": "maa-amc8-2024",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc8/2024",
+      "localExactIdPresent": false,
+      "localPaperPresent": true,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC8",
+      "formatId": "maa-amc8",
+      "label": "2025",
+      "canonicalTargetId": "maa-amc8-2025",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc8/2025",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC8",
+      "formatId": "maa-amc8",
+      "label": "2026",
+      "canonicalTargetId": "maa-amc8-2026",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc8/2026",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC10",
+      "formatId": "maa-amc10",
+      "label": "2000",
+      "canonicalTargetId": "maa-amc10-2000",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc10/2000",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC10",
+      "formatId": "maa-amc10",
+      "label": "2001",
+      "canonicalTargetId": "maa-amc10-2001",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc10/2001",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC10",
+      "formatId": "maa-amc10",
+      "label": "2002 A",
+      "canonicalTargetId": "maa-amc10-2002-a",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc10/2002A",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC10",
+      "formatId": "maa-amc10",
+      "label": "2002 B",
+      "canonicalTargetId": "maa-amc10-2002-b",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc10/2002B",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC10",
+      "formatId": "maa-amc10",
+      "label": "2003 A",
+      "canonicalTargetId": "maa-amc10-2003-a",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc10/2003A",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC10",
+      "formatId": "maa-amc10",
+      "label": "2003 B",
+      "canonicalTargetId": "maa-amc10-2003-b",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc10/2003B",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC10",
+      "formatId": "maa-amc10",
+      "label": "2004 A",
+      "canonicalTargetId": "maa-amc10-2004-a",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc10/2004A",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC10",
+      "formatId": "maa-amc10",
+      "label": "2004 B",
+      "canonicalTargetId": "maa-amc10-2004-b",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc10/2004B",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC10",
+      "formatId": "maa-amc10",
+      "label": "2005 A",
+      "canonicalTargetId": "maa-amc10-2005-a",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc10/2005A",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC10",
+      "formatId": "maa-amc10",
+      "label": "2005 B",
+      "canonicalTargetId": "maa-amc10-2005-b",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc10/2005B",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC10",
+      "formatId": "maa-amc10",
+      "label": "2006 A",
+      "canonicalTargetId": "maa-amc10-2006-a",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc10/2006A",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC10",
+      "formatId": "maa-amc10",
+      "label": "2006 B",
+      "canonicalTargetId": "maa-amc10-2006-b",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc10/2006B",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC10",
+      "formatId": "maa-amc10",
+      "label": "2007 A",
+      "canonicalTargetId": "maa-amc10-2007-a",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc10/2007A",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC10",
+      "formatId": "maa-amc10",
+      "label": "2007 B",
+      "canonicalTargetId": "maa-amc10-2007-b",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc10/2007B",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC10",
+      "formatId": "maa-amc10",
+      "label": "2008 A",
+      "canonicalTargetId": "maa-amc10-2008-a",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc10/2008A",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC10",
+      "formatId": "maa-amc10",
+      "label": "2008 B",
+      "canonicalTargetId": "maa-amc10-2008-b",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc10/2008B",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC10",
+      "formatId": "maa-amc10",
+      "label": "2009 A",
+      "canonicalTargetId": "maa-amc10-2009-a",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc10/2009A",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC10",
+      "formatId": "maa-amc10",
+      "label": "2009 B",
+      "canonicalTargetId": "maa-amc10-2009-b",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc10/2009B",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC10",
+      "formatId": "maa-amc10",
+      "label": "2010 A",
+      "canonicalTargetId": "maa-amc10-2010-a",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc10/2010A",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC10",
+      "formatId": "maa-amc10",
+      "label": "2010 B",
+      "canonicalTargetId": "maa-amc10-2010-b",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc10/2010B",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC10",
+      "formatId": "maa-amc10",
+      "label": "2011 A",
+      "canonicalTargetId": "maa-amc10-2011-a",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc10/2011A",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC10",
+      "formatId": "maa-amc10",
+      "label": "2011 B",
+      "canonicalTargetId": "maa-amc10-2011-b",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc10/2011B",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC10",
+      "formatId": "maa-amc10",
+      "label": "2012 A",
+      "canonicalTargetId": "maa-amc10-2012-a",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc10/2012A",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC10",
+      "formatId": "maa-amc10",
+      "label": "2012 B",
+      "canonicalTargetId": "maa-amc10-2012-b",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc10/2012B",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC10",
+      "formatId": "maa-amc10",
+      "label": "2013 A",
+      "canonicalTargetId": "maa-amc10-2013-a",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc10/2013A",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC10",
+      "formatId": "maa-amc10",
+      "label": "2013 B",
+      "canonicalTargetId": "maa-amc10-2013-b",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc10/2013B",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC10",
+      "formatId": "maa-amc10",
+      "label": "2014 A",
+      "canonicalTargetId": "maa-amc10-2014-a",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc10/2014A",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC10",
+      "formatId": "maa-amc10",
+      "label": "2014 B",
+      "canonicalTargetId": "maa-amc10-2014-b",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc10/2014B",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC10",
+      "formatId": "maa-amc10",
+      "label": "2015 A",
+      "canonicalTargetId": "maa-amc10-2015-a",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc10/2015A",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC10",
+      "formatId": "maa-amc10",
+      "label": "2015 B",
+      "canonicalTargetId": "maa-amc10-2015-b",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc10/2015B",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC10",
+      "formatId": "maa-amc10",
+      "label": "2016 A",
+      "canonicalTargetId": "maa-amc10-2016-a",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc10/2016A",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC10",
+      "formatId": "maa-amc10",
+      "label": "2016 B",
+      "canonicalTargetId": "maa-amc10-2016-b",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc10/2016B",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC10",
+      "formatId": "maa-amc10",
+      "label": "2017 A",
+      "canonicalTargetId": "maa-amc10-2017-a",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc10/2017A",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC10",
+      "formatId": "maa-amc10",
+      "label": "2017 B",
+      "canonicalTargetId": "maa-amc10-2017-b",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc10/2017B",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC10",
+      "formatId": "maa-amc10",
+      "label": "2018 A",
+      "canonicalTargetId": "maa-amc10-2018-a",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc10/2018A",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC10",
+      "formatId": "maa-amc10",
+      "label": "2018 B",
+      "canonicalTargetId": "maa-amc10-2018-b",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc10/2018B",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC10",
+      "formatId": "maa-amc10",
+      "label": "2019 A",
+      "canonicalTargetId": "maa-amc10-2019-a",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc10/2019A",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC10",
+      "formatId": "maa-amc10",
+      "label": "2019 B",
+      "canonicalTargetId": "maa-amc10-2019-b",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc10/2019B",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC10",
+      "formatId": "maa-amc10",
+      "label": "2020 A",
+      "canonicalTargetId": "maa-amc10-2020-a",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc10/2020A",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC10",
+      "formatId": "maa-amc10",
+      "label": "2020 B",
+      "canonicalTargetId": "maa-amc10-2020-b",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc10/2020B",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC10",
+      "formatId": "maa-amc10",
+      "label": "2021 A",
+      "canonicalTargetId": "maa-amc10-2021-a",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc10/2021A",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC10",
+      "formatId": "maa-amc10",
+      "label": "2021 B",
+      "canonicalTargetId": "maa-amc10-2021-b",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc10/2021B",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC10",
+      "formatId": "maa-amc10",
+      "label": "2021 C",
+      "canonicalTargetId": "maa-amc10-2021-c",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc10/2021C",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC10",
+      "formatId": "maa-amc10",
+      "label": "2021 D",
+      "canonicalTargetId": "maa-amc10-2021-d",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc10/2021D",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC10",
+      "formatId": "maa-amc10",
+      "label": "2022 A",
+      "canonicalTargetId": "maa-amc10-2022-a",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc10/2022A",
+      "localExactIdPresent": false,
+      "localPaperPresent": true,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC10",
+      "formatId": "maa-amc10",
+      "label": "2022 B",
+      "canonicalTargetId": "maa-amc10-2022-b",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc10/2022B",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC10",
+      "formatId": "maa-amc10",
+      "label": "2023 A",
+      "canonicalTargetId": "maa-amc10-2023-a",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc10/2023A",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC10",
+      "formatId": "maa-amc10",
+      "label": "2023 B",
+      "canonicalTargetId": "maa-amc10-2023-b",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc10/2023B",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC10",
+      "formatId": "maa-amc10",
+      "label": "2024 A",
+      "canonicalTargetId": "maa-amc10-2024-a",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc10/2024A",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC10",
+      "formatId": "maa-amc10",
+      "label": "2024 B",
+      "canonicalTargetId": "maa-amc10-2024-b",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc10/2024B",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC10",
+      "formatId": "maa-amc10",
+      "label": "2025 A",
+      "canonicalTargetId": "maa-amc10-2025-a",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc10/2025A",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC10",
+      "formatId": "maa-amc10",
+      "label": "2025 B",
+      "canonicalTargetId": "maa-amc10-2025-b",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc10/2025B",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "1950",
+      "canonicalTargetId": "maa-amc12-1950",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/1950",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "1951",
+      "canonicalTargetId": "maa-amc12-1951",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/1951",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "1952",
+      "canonicalTargetId": "maa-amc12-1952",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/1952",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "1953",
+      "canonicalTargetId": "maa-amc12-1953",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/1953",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "1954",
+      "canonicalTargetId": "maa-amc12-1954",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/1954",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "1955",
+      "canonicalTargetId": "maa-amc12-1955",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/1955",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "1956",
+      "canonicalTargetId": "maa-amc12-1956",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/1956",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "1957",
+      "canonicalTargetId": "maa-amc12-1957",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/1957",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "1958",
+      "canonicalTargetId": "maa-amc12-1958",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/1958",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "1959",
+      "canonicalTargetId": "maa-amc12-1959",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/1959",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "1960",
+      "canonicalTargetId": "maa-amc12-1960",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/1960",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "1961",
+      "canonicalTargetId": "maa-amc12-1961",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/1961",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "1962",
+      "canonicalTargetId": "maa-amc12-1962",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/1962",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "1963",
+      "canonicalTargetId": "maa-amc12-1963",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/1963",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "1964",
+      "canonicalTargetId": "maa-amc12-1964",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/1964",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "1965",
+      "canonicalTargetId": "maa-amc12-1965",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/1965",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "1966",
+      "canonicalTargetId": "maa-amc12-1966",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/1966",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "1967",
+      "canonicalTargetId": "maa-amc12-1967",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/1967",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "1968",
+      "canonicalTargetId": "maa-amc12-1968",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/1968",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "1969",
+      "canonicalTargetId": "maa-amc12-1969",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/1969",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "1970",
+      "canonicalTargetId": "maa-amc12-1970",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/1970",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "1971",
+      "canonicalTargetId": "maa-amc12-1971",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/1971",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "1972",
+      "canonicalTargetId": "maa-amc12-1972",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/1972",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "1973",
+      "canonicalTargetId": "maa-amc12-1973",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/1973",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "1974",
+      "canonicalTargetId": "maa-amc12-1974",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/1974",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "1975",
+      "canonicalTargetId": "maa-amc12-1975",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/1975",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "1976",
+      "canonicalTargetId": "maa-amc12-1976",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/1976",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "1977",
+      "canonicalTargetId": "maa-amc12-1977",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/1977",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "1978",
+      "canonicalTargetId": "maa-amc12-1978",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/1978",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "1979",
+      "canonicalTargetId": "maa-amc12-1979",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/1979",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "1980",
+      "canonicalTargetId": "maa-amc12-1980",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/1980",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "1981",
+      "canonicalTargetId": "maa-amc12-1981",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/1981",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "1982",
+      "canonicalTargetId": "maa-amc12-1982",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/1982",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "1983",
+      "canonicalTargetId": "maa-amc12-1983",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/1983",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "1984",
+      "canonicalTargetId": "maa-amc12-1984",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/1984",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "1985",
+      "canonicalTargetId": "maa-amc12-1985",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/1985",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "1986",
+      "canonicalTargetId": "maa-amc12-1986",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/1986",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "1987",
+      "canonicalTargetId": "maa-amc12-1987",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/1987",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "1988",
+      "canonicalTargetId": "maa-amc12-1988",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/1988",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "1989",
+      "canonicalTargetId": "maa-amc12-1989",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/1989",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "1990",
+      "canonicalTargetId": "maa-amc12-1990",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/1990",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "1991",
+      "canonicalTargetId": "maa-amc12-1991",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/1991",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "1992",
+      "canonicalTargetId": "maa-amc12-1992",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/1992",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "1993",
+      "canonicalTargetId": "maa-amc12-1993",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/1993",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "1994",
+      "canonicalTargetId": "maa-amc12-1994",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/1994",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "1995",
+      "canonicalTargetId": "maa-amc12-1995",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/1995",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "1996",
+      "canonicalTargetId": "maa-amc12-1996",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/1996",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "1997",
+      "canonicalTargetId": "maa-amc12-1997",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/1997",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "1998",
+      "canonicalTargetId": "maa-amc12-1998",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/1998",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "1999",
+      "canonicalTargetId": "maa-amc12-1999",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/1999",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "2000",
+      "canonicalTargetId": "maa-amc12-2000",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/2000",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "2001",
+      "canonicalTargetId": "maa-amc12-2001",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/2001",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "2002 A",
+      "canonicalTargetId": "maa-amc12-2002-a",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/2002A",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "2002 B",
+      "canonicalTargetId": "maa-amc12-2002-b",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/2002B",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "2003 A",
+      "canonicalTargetId": "maa-amc12-2003-a",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/2003A",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "2003 B",
+      "canonicalTargetId": "maa-amc12-2003-b",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/2003B",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "2004 A",
+      "canonicalTargetId": "maa-amc12-2004-a",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/2004A",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "2004 B",
+      "canonicalTargetId": "maa-amc12-2004-b",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/2004B",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "2005 A",
+      "canonicalTargetId": "maa-amc12-2005-a",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/2005A",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "2005 B",
+      "canonicalTargetId": "maa-amc12-2005-b",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/2005B",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "2006 A",
+      "canonicalTargetId": "maa-amc12-2006-a",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/2006A",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "2006 B",
+      "canonicalTargetId": "maa-amc12-2006-b",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/2006B",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "2007 A",
+      "canonicalTargetId": "maa-amc12-2007-a",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/2007A",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "2007 B",
+      "canonicalTargetId": "maa-amc12-2007-b",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/2007B",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "2008 A",
+      "canonicalTargetId": "maa-amc12-2008-a",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/2008A",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "2008 B",
+      "canonicalTargetId": "maa-amc12-2008-b",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/2008B",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "2009 A",
+      "canonicalTargetId": "maa-amc12-2009-a",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/2009A",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "2009 B",
+      "canonicalTargetId": "maa-amc12-2009-b",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/2009B",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "2010 A",
+      "canonicalTargetId": "maa-amc12-2010-a",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/2010A",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "2010 B",
+      "canonicalTargetId": "maa-amc12-2010-b",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/2010B",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "2011 A",
+      "canonicalTargetId": "maa-amc12-2011-a",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/2011A",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "2011 B",
+      "canonicalTargetId": "maa-amc12-2011-b",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/2011B",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "2012 A",
+      "canonicalTargetId": "maa-amc12-2012-a",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/2012A",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "2012 B",
+      "canonicalTargetId": "maa-amc12-2012-b",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/2012B",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "2013 A",
+      "canonicalTargetId": "maa-amc12-2013-a",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/2013A",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "2013 B",
+      "canonicalTargetId": "maa-amc12-2013-b",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/2013B",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "2014 A",
+      "canonicalTargetId": "maa-amc12-2014-a",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/2014A",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "2014 B",
+      "canonicalTargetId": "maa-amc12-2014-b",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/2014B",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "2015 A",
+      "canonicalTargetId": "maa-amc12-2015-a",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/2015A",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "2015 B",
+      "canonicalTargetId": "maa-amc12-2015-b",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/2015B",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "2016 A",
+      "canonicalTargetId": "maa-amc12-2016-a",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/2016A",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "2016 B",
+      "canonicalTargetId": "maa-amc12-2016-b",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/2016B",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "2017 A",
+      "canonicalTargetId": "maa-amc12-2017-a",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/2017A",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "2017 B",
+      "canonicalTargetId": "maa-amc12-2017-b",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/2017B",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "2018 A",
+      "canonicalTargetId": "maa-amc12-2018-a",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/2018A",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "2018 B",
+      "canonicalTargetId": "maa-amc12-2018-b",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/2018B",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "2019 A",
+      "canonicalTargetId": "maa-amc12-2019-a",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/2019A",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "2019 B",
+      "canonicalTargetId": "maa-amc12-2019-b",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/2019B",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "2020 A",
+      "canonicalTargetId": "maa-amc12-2020-a",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/2020A",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "2020 B",
+      "canonicalTargetId": "maa-amc12-2020-b",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/2020B",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "2021 A",
+      "canonicalTargetId": "maa-amc12-2021-a",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/2021A",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "2021 B",
+      "canonicalTargetId": "maa-amc12-2021-b",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/2021B",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "2021 C",
+      "canonicalTargetId": "maa-amc12-2021-c",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/2021C",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "2021 D",
+      "canonicalTargetId": "maa-amc12-2021-d",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/2021D",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "2022 A",
+      "canonicalTargetId": "maa-amc12-2022-a",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/2022A",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "2022 B",
+      "canonicalTargetId": "maa-amc12-2022-b",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/2022B",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "2023 A",
+      "canonicalTargetId": "maa-amc12-2023-a",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/2023A",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "2023 B",
+      "canonicalTargetId": "maa-amc12-2023-b",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/2023B",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "2024 A",
+      "canonicalTargetId": "maa-amc12-2024-a",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/2024A",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "2024 B",
+      "canonicalTargetId": "maa-amc12-2024-b",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/2024B",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "2025 A",
+      "canonicalTargetId": "maa-amc12-2025-a",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/2025A",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AMC12",
+      "formatId": "maa-amc12",
+      "label": "2025 B",
+      "canonicalTargetId": "maa-amc12-2025-b",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/amc12/2025B",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AIME",
+      "formatId": "maa-aime-classic",
+      "label": "1983",
+      "canonicalTargetId": "maa-aime-1983",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/aime/1983",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AIME",
+      "formatId": "maa-aime-classic",
+      "label": "1984",
+      "canonicalTargetId": "maa-aime-1984",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/aime/1984",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AIME",
+      "formatId": "maa-aime-classic",
+      "label": "1985",
+      "canonicalTargetId": "maa-aime-1985",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/aime/1985",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AIME",
+      "formatId": "maa-aime-classic",
+      "label": "1986",
+      "canonicalTargetId": "maa-aime-1986",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/aime/1986",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AIME",
+      "formatId": "maa-aime-classic",
+      "label": "1987",
+      "canonicalTargetId": "maa-aime-1987",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/aime/1987",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AIME",
+      "formatId": "maa-aime-classic",
+      "label": "1988",
+      "canonicalTargetId": "maa-aime-1988",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/aime/1988",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AIME",
+      "formatId": "maa-aime-classic",
+      "label": "1989",
+      "canonicalTargetId": "maa-aime-1989",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/aime/1989",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AIME",
+      "formatId": "maa-aime-classic",
+      "label": "1990",
+      "canonicalTargetId": "maa-aime-1990",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/aime/1990",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AIME",
+      "formatId": "maa-aime-classic",
+      "label": "1991",
+      "canonicalTargetId": "maa-aime-1991",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/aime/1991",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AIME",
+      "formatId": "maa-aime-classic",
+      "label": "1992",
+      "canonicalTargetId": "maa-aime-1992",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/aime/1992",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AIME",
+      "formatId": "maa-aime-classic",
+      "label": "1993",
+      "canonicalTargetId": "maa-aime-1993",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/aime/1993",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AIME",
+      "formatId": "maa-aime-classic",
+      "label": "1994",
+      "canonicalTargetId": "maa-aime-1994",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/aime/1994",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AIME",
+      "formatId": "maa-aime-classic",
+      "label": "1995",
+      "canonicalTargetId": "maa-aime-1995",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/aime/1995",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AIME",
+      "formatId": "maa-aime-classic",
+      "label": "1996",
+      "canonicalTargetId": "maa-aime-1996",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/aime/1996",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AIME",
+      "formatId": "maa-aime-classic",
+      "label": "1997",
+      "canonicalTargetId": "maa-aime-1997",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/aime/1997",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AIME",
+      "formatId": "maa-aime-classic",
+      "label": "1998",
+      "canonicalTargetId": "maa-aime-1998",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/aime/1998",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AIME",
+      "formatId": "maa-aime-classic",
+      "label": "1999",
+      "canonicalTargetId": "maa-aime-1999",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/aime/1999",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AIME",
+      "formatId": "maa-aime-classic",
+      "label": "2000 I",
+      "canonicalTargetId": "maa-aime-2000-i",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/aime/2000I",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AIME",
+      "formatId": "maa-aime-classic",
+      "label": "2000 II",
+      "canonicalTargetId": "maa-aime-2000-ii",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/aime/2000II",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AIME",
+      "formatId": "maa-aime-classic",
+      "label": "2001 I",
+      "canonicalTargetId": "maa-aime-2001-i",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/aime/2001I",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AIME",
+      "formatId": "maa-aime-classic",
+      "label": "2001 II",
+      "canonicalTargetId": "maa-aime-2001-ii",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/aime/2001II",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AIME",
+      "formatId": "maa-aime-classic",
+      "label": "2002 I",
+      "canonicalTargetId": "maa-aime-2002-i",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/aime/2002I",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AIME",
+      "formatId": "maa-aime-classic",
+      "label": "2002 II",
+      "canonicalTargetId": "maa-aime-2002-ii",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/aime/2002II",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AIME",
+      "formatId": "maa-aime-classic",
+      "label": "2003 I",
+      "canonicalTargetId": "maa-aime-2003-i",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/aime/2003I",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AIME",
+      "formatId": "maa-aime-classic",
+      "label": "2003 II",
+      "canonicalTargetId": "maa-aime-2003-ii",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/aime/2003II",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AIME",
+      "formatId": "maa-aime-classic",
+      "label": "2004 I",
+      "canonicalTargetId": "maa-aime-2004-i",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/aime/2004I",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AIME",
+      "formatId": "maa-aime-classic",
+      "label": "2004 II",
+      "canonicalTargetId": "maa-aime-2004-ii",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/aime/2004II",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AIME",
+      "formatId": "maa-aime-classic",
+      "label": "2005 I",
+      "canonicalTargetId": "maa-aime-2005-i",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/aime/2005I",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AIME",
+      "formatId": "maa-aime-classic",
+      "label": "2005 II",
+      "canonicalTargetId": "maa-aime-2005-ii",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/aime/2005II",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AIME",
+      "formatId": "maa-aime-classic",
+      "label": "2006 I",
+      "canonicalTargetId": "maa-aime-2006-i",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/aime/2006I",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AIME",
+      "formatId": "maa-aime-classic",
+      "label": "2006 II",
+      "canonicalTargetId": "maa-aime-2006-ii",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/aime/2006II",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AIME",
+      "formatId": "maa-aime-classic",
+      "label": "2007 I",
+      "canonicalTargetId": "maa-aime-2007-i",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/aime/2007I",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AIME",
+      "formatId": "maa-aime-classic",
+      "label": "2007 II",
+      "canonicalTargetId": "maa-aime-2007-ii",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/aime/2007II",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AIME",
+      "formatId": "maa-aime-classic",
+      "label": "2008 I",
+      "canonicalTargetId": "maa-aime-2008-i",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/aime/2008I",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AIME",
+      "formatId": "maa-aime-classic",
+      "label": "2008 II",
+      "canonicalTargetId": "maa-aime-2008-ii",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/aime/2008II",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AIME",
+      "formatId": "maa-aime-classic",
+      "label": "2009 I",
+      "canonicalTargetId": "maa-aime-2009-i",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/aime/2009I",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AIME",
+      "formatId": "maa-aime-classic",
+      "label": "2009 II",
+      "canonicalTargetId": "maa-aime-2009-ii",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/aime/2009II",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AIME",
+      "formatId": "maa-aime-classic",
+      "label": "2010 I",
+      "canonicalTargetId": "maa-aime-2010-i",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/aime/2010I",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AIME",
+      "formatId": "maa-aime-classic",
+      "label": "2010 II",
+      "canonicalTargetId": "maa-aime-2010-ii",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/aime/2010II",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AIME",
+      "formatId": "maa-aime-classic",
+      "label": "2011 I",
+      "canonicalTargetId": "maa-aime-2011-i",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/aime/2011I",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AIME",
+      "formatId": "maa-aime-classic",
+      "label": "2011 II",
+      "canonicalTargetId": "maa-aime-2011-ii",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/aime/2011II",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AIME",
+      "formatId": "maa-aime-classic",
+      "label": "2012 I",
+      "canonicalTargetId": "maa-aime-2012-i",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/aime/2012I",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AIME",
+      "formatId": "maa-aime-classic",
+      "label": "2012 II",
+      "canonicalTargetId": "maa-aime-2012-ii",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/aime/2012II",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AIME",
+      "formatId": "maa-aime-classic",
+      "label": "2013 I",
+      "canonicalTargetId": "maa-aime-2013-i",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/aime/2013I",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AIME",
+      "formatId": "maa-aime-classic",
+      "label": "2013 II",
+      "canonicalTargetId": "maa-aime-2013-ii",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/aime/2013II",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AIME",
+      "formatId": "maa-aime-classic",
+      "label": "2014 I",
+      "canonicalTargetId": "maa-aime-2014-i",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/aime/2014I",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AIME",
+      "formatId": "maa-aime-classic",
+      "label": "2014 II",
+      "canonicalTargetId": "maa-aime-2014-ii",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/aime/2014II",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AIME",
+      "formatId": "maa-aime-classic",
+      "label": "2015 I",
+      "canonicalTargetId": "maa-aime-2015-i",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/aime/2015I",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AIME",
+      "formatId": "maa-aime-classic",
+      "label": "2015 II",
+      "canonicalTargetId": "maa-aime-2015-ii",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/aime/2015II",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AIME",
+      "formatId": "maa-aime-classic",
+      "label": "2016 I",
+      "canonicalTargetId": "maa-aime-2016-i",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/aime/2016I",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AIME",
+      "formatId": "maa-aime-classic",
+      "label": "2016 II",
+      "canonicalTargetId": "maa-aime-2016-ii",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/aime/2016II",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AIME",
+      "formatId": "maa-aime-classic",
+      "label": "2017 I",
+      "canonicalTargetId": "maa-aime-2017-i",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/aime/2017I",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AIME",
+      "formatId": "maa-aime-classic",
+      "label": "2017 II",
+      "canonicalTargetId": "maa-aime-2017-ii",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/aime/2017II",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AIME",
+      "formatId": "maa-aime-classic",
+      "label": "2018 I",
+      "canonicalTargetId": "maa-aime-2018-i",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/aime/2018I",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AIME",
+      "formatId": "maa-aime-classic",
+      "label": "2018 II",
+      "canonicalTargetId": "maa-aime-2018-ii",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/aime/2018II",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AIME",
+      "formatId": "maa-aime-classic",
+      "label": "2019 I",
+      "canonicalTargetId": "maa-aime-2019-i",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/aime/2019I",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AIME",
+      "formatId": "maa-aime-classic",
+      "label": "2019 II",
+      "canonicalTargetId": "maa-aime-2019-ii",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/aime/2019II",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AIME",
+      "formatId": "maa-aime-classic",
+      "label": "2020 I",
+      "canonicalTargetId": "maa-aime-2020-i",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/aime/2020I",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AIME",
+      "formatId": "maa-aime-classic",
+      "label": "2020 II",
+      "canonicalTargetId": "maa-aime-2020-ii",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/aime/2020II",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AIME",
+      "formatId": "maa-aime-classic",
+      "label": "2021 I",
+      "canonicalTargetId": "maa-aime-2021-i",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/aime/2021I",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AIME",
+      "formatId": "maa-aime-classic",
+      "label": "2021 II",
+      "canonicalTargetId": "maa-aime-2021-ii",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/aime/2021II",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AIME",
+      "formatId": "maa-aime-classic",
+      "label": "2022 I",
+      "canonicalTargetId": "maa-aime-2022-i",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/aime/2022I",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AIME",
+      "formatId": "maa-aime-classic",
+      "label": "2022 II",
+      "canonicalTargetId": "maa-aime-2022-ii",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/aime/2022II",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AIME",
+      "formatId": "maa-aime-classic",
+      "label": "2023 I",
+      "canonicalTargetId": "maa-aime-2023-i",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/aime/2023I",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AIME",
+      "formatId": "maa-aime-classic",
+      "label": "2023 II",
+      "canonicalTargetId": "maa-aime-2023-ii",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/aime/2023II",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AIME",
+      "formatId": "maa-aime-classic",
+      "label": "2024 I",
+      "canonicalTargetId": "maa-aime-2024-i",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/aime/2024I",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AIME",
+      "formatId": "maa-aime-classic",
+      "label": "2024 II",
+      "canonicalTargetId": "maa-aime-2024-ii",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/aime/2024II",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AIME",
+      "formatId": "maa-aime-classic",
+      "label": "2025 I",
+      "canonicalTargetId": "maa-aime-2025-i",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/aime/2025I",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AIME",
+      "formatId": "maa-aime-classic",
+      "label": "2025 II",
+      "canonicalTargetId": "maa-aime-2025-ii",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/aime/2025II",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AIME",
+      "formatId": "maa-aime-classic",
+      "label": "2026 I",
+      "canonicalTargetId": "maa-aime-2026-i",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/aime/2026I",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    },
+    {
+      "series": "AIME",
+      "formatId": "maa-aime-classic",
+      "label": "2026 II",
+      "canonicalTargetId": "maa-aime-2026-ii",
+      "referenceUrl": "https://live.poshenloh.com/past-contests/aime/2026II",
+      "localExactIdPresent": false,
+      "localPaperPresent": false,
+      "collectionPolicy": "metadata-index-only-until-project-rights-basis-is-recorded"
+    }
+  ]
+}

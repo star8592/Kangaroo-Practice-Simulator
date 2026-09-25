@@ -43,6 +43,8 @@ next-env.d.ts
 private/*
 
 !private/.gitkeep
+!private/source-registry/
+!private/source-registry/**
 
 .env.local
 

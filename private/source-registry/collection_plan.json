@@ -1,0 +1,239 @@
+{
+  "generatedFrom": "private/source-registry/competition_sources.json",
+  "siteMode": "noncommercial-free",
+  "items": [
+    {
+      "sourceRegistryId": "amt-australian-amc-official",
+      "priority": "S",
+      "organization": "Australian Maths Trust",
+      "competitionIds": [
+        "au-amc",
+        "aimo",
+        "amo"
+      ],
+      "collectionMode": "official-free-index-plus-owned-materials",
+      "publicQuestionDisplay": false,
+      "reviewState": "license-or-purchase-specific",
+      "nextAction": "collect-internally-and-complete-rights-review"
+    },
+    {
+      "sourceRegistryId": "cemc-official",
+      "priority": "S",
+      "organization": "University of Waterloo Centre for Education in Mathematics and Computing",
+      "competitionIds": [
+        "cemc-gauss",
+        "cemc-pascal",
+        "cemc-cayley",
+        "cemc-fermat",
+        "cemc-euclid"
+      ],
+      "collectionMode": "official-past-contests",
+      "publicQuestionDisplay": true,
+      "reviewState": "verified",
+      "nextAction": "collect-and-publish-with-attribution"
+    },
+    {
+      "sourceRegistryId": "kangaroo-austria-official",
+      "priority": "S",
+      "organization": "Känguru der Mathematik Österreich",
+      "competitionIds": [
+        "kangaroo"
+      ],
+      "collectionMode": "official-archive",
+      "publicQuestionDisplay": false,
+      "reviewState": "license-not-yet-recorded",
+      "nextAction": "collect-internally-and-complete-rights-review"
+    },
+    {
+      "sourceRegistryId": "kangaroo-germany-official",
+      "priority": "S",
+      "organization": "Mathematikwettbewerb Känguru e.V.",
+      "competitionIds": [
+        "kangaroo"
+      ],
+      "collectionMode": "official-archive",
+      "publicQuestionDisplay": false,
+      "reviewState": "license-not-yet-recorded",
+      "nextAction": "collect-internally-and-complete-rights-review"
+    },
+    {
+      "sourceRegistryId": "kangaroo-netherlands-official",
+      "priority": "S",
+      "organization": "W4Kangoeroe",
+      "competitionIds": [
+        "kangaroo"
+      ],
+      "collectionMode": "official-archive",
+      "publicQuestionDisplay": false,
+      "reviewState": "license-not-yet-recorded",
+      "nextAction": "collect-internally-and-complete-rights-review"
+    },
+    {
+      "sourceRegistryId": "kangaroo-usa-official",
+      "priority": "S",
+      "organization": "Math Kangaroo USA, NFP",
+      "competitionIds": [
+        "kangaroo"
+      ],
+      "collectionMode": "official-index-and-free-materials-only",
+      "publicQuestionDisplay": false,
+      "reviewState": "license-not-yet-recorded",
+      "nextAction": "collect-internally-and-complete-rights-review"
+    },
+    {
+      "sourceRegistryId": "maa-historical-archive",
+      "priority": "S",
+      "organization": "Mathematical Association of America",
+      "competitionIds": [
+        "maa-amc8",
+        "maa-amc10",
+        "maa-amc12",
+        "maa-aime-classic",
+        "maa-aime-2027"
+      ],
+      "collectionMode": "internal-index-and-authorized-materials",
+      "publicQuestionDisplay": false,
+      "reviewState": "permission-or-specific-publication-review",
+      "nextAction": "collect-internally-and-complete-rights-review"
+    },
+    {
+      "sourceRegistryId": "maa-official-samples",
+      "priority": "S",
+      "organization": "Mathematical Association of America",
+      "competitionIds": [
+        "maa-amc8",
+        "maa-amc10",
+        "maa-amc12"
+      ],
+      "collectionMode": "official-public-sample",
+      "publicQuestionDisplay": true,
+      "reviewState": "verified",
+      "nextAction": "collect-and-publish-with-attribution"
+    },
+    {
+      "sourceRegistryId": "ukmt-official",
+      "priority": "S",
+      "organization": "United Kingdom Mathematics Trust",
+      "competitionIds": [
+        "ukmt-jmc",
+        "ukmt-imc",
+        "ukmt-smc",
+        "ukmt-kangaroo",
+        "ukmt-bmo"
+      ],
+      "collectionMode": "official-past-papers-index",
+      "publicQuestionDisplay": false,
+      "reviewState": "license-not-yet-recorded",
+      "nextAction": "collect-internally-and-complete-rights-review"
+    },
+    {
+      "sourceRegistryId": "hmmt-official",
+      "priority": "A",
+      "organization": "Harvard-MIT Mathematics Tournament",
+      "competitionIds": [
+        "hmmt"
+      ],
+      "collectionMode": "official-problem-archive-index",
+      "publicQuestionDisplay": false,
+      "reviewState": "license-not-yet-recorded",
+      "nextAction": "collect-internally-and-complete-rights-review"
+    },
+    {
+      "sourceRegistryId": "imo-official",
+      "priority": "A",
+      "organization": "International Mathematical Olympiad",
+      "competitionIds": [
+        "imo"
+      ],
+      "collectionMode": "official-problem-index",
+      "publicQuestionDisplay": false,
+      "reviewState": "license-not-yet-recorded",
+      "nextAction": "collect-internally-and-complete-rights-review"
+    },
+    {
+      "sourceRegistryId": "kangaroo-albania-official",
+      "priority": "A",
+      "organization": "Kangaroo Albania",
+      "competitionIds": [
+        "kangaroo"
+      ],
+      "collectionMode": "official-archive",
+      "publicQuestionDisplay": false,
+      "reviewState": "license-not-yet-recorded",
+      "nextAction": "collect-internally-and-complete-rights-review"
+    },
+    {
+      "sourceRegistryId": "kangaroo-canada-official",
+      "priority": "A",
+      "organization": "Canadian Math Kangaroo Contest",
+      "competitionIds": [
+        "kangaroo"
+      ],
+      "collectionMode": "official-samples-index",
+      "publicQuestionDisplay": false,
+      "reviewState": "license-not-yet-recorded",
+      "nextAction": "collect-internally-and-complete-rights-review"
+    },
+    {
+      "sourceRegistryId": "kangaroo-france-official",
+      "priority": "A",
+      "organization": "Kangourou Sans Frontières / Kangourou des Mathématiques",
+      "competitionIds": [
+        "kangaroo"
+      ],
+      "collectionMode": "official-archive",
+      "publicQuestionDisplay": false,
+      "reviewState": "license-not-yet-recorded",
+      "nextAction": "collect-internally-and-complete-rights-review"
+    },
+    {
+      "sourceRegistryId": "kangaroo-pakistan-official",
+      "priority": "A",
+      "organization": "International Kangaroo Mathematics Contest Pakistan",
+      "competitionIds": [
+        "kangaroo"
+      ],
+      "collectionMode": "official-archive",
+      "publicQuestionDisplay": false,
+      "reviewState": "license-not-yet-recorded",
+      "nextAction": "collect-internally-and-complete-rights-review"
+    },
+    {
+      "sourceRegistryId": "kangaroo-poland-official",
+      "priority": "A",
+      "organization": "Towarzystwo Upowszechniania Wiedzy i Nauk Matematycznych",
+      "competitionIds": [
+        "kangaroo"
+      ],
+      "collectionMode": "official-archive",
+      "publicQuestionDisplay": false,
+      "reviewState": "license-not-yet-recorded",
+      "nextAction": "collect-internally-and-complete-rights-review"
+    },
+    {
+      "sourceRegistryId": "mathcounts-official",
+      "priority": "A",
+      "organization": "MATHCOUNTS Foundation",
+      "competitionIds": [
+        "mathcounts"
+      ],
+      "collectionMode": "official-current-free-index",
+      "publicQuestionDisplay": false,
+      "reviewState": "license-not-yet-recorded",
+      "nextAction": "collect-internally-and-complete-rights-review"
+    },
+    {
+      "sourceRegistryId": "purple-comet-official",
+      "priority": "A",
+      "organization": "Purple Comet! Math Meet",
+      "competitionIds": [
+        "purple-comet-middle",
+        "purple-comet-high"
+      ],
+      "collectionMode": "official-index-only",
+      "publicQuestionDisplay": false,
+      "reviewState": "permission-required",
+      "nextAction": "collect-internally-and-complete-rights-review"
+    }
+  ]
+}

@@ -1,0 +1,1127 @@
+{
+  "generatedAt": "2026-09-25",
+  "count": 59,
+  "items": [
+    {
+      "sourceRegistryId": "cemc-official",
+      "competition": "Cayley",
+      "competitionId": "cemc-cayley",
+      "year": 2017,
+      "grade": "10",
+      "contestFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/cayley/2017/cayley-2017-contest.pdf",
+      "solutionFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/cayley/2017/cayley-2017-solution.pdf",
+      "contestSha256": "318a18d777275e2cb248994c3df3601afa93db12f1539c33f2b14e11dc4d810d",
+      "solutionSha256": "031d397e5bb5eeee7d53c9b7c13a73d402695c32364a9ce2e9fe835dc0528ef5",
+      "rights": {
+        "license": "CC BY-NC 4.0",
+        "attributionRequired": true,
+        "publicQuestionDisplay": true,
+        "commercialUse": false
+      },
+      "status": "raw-collected",
+      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+    },
+    {
+      "sourceRegistryId": "cemc-official",
+      "competition": "Cayley",
+      "competitionId": "cemc-cayley",
+      "year": 2018,
+      "grade": "10",
+      "contestFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/cayley/2018/cayley-2018-contest.pdf",
+      "solutionFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/cayley/2018/cayley-2018-solution.pdf",
+      "contestSha256": "274f63d561da1d52b661719beddc46a196e5afd6e55b745601c86acf344cba9e",
+      "solutionSha256": "fd250c9e902b736fc8f01536f670e5af480675c3fb7a43137b08a27f8fa9ba18",
+      "rights": {
+        "license": "CC BY-NC 4.0",
+        "attributionRequired": true,
+        "publicQuestionDisplay": true,
+        "commercialUse": false
+      },
+      "status": "raw-collected",
+      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+    },
+    {
+      "sourceRegistryId": "cemc-official",
+      "competition": "Cayley",
+      "competitionId": "cemc-cayley",
+      "year": 2019,
+      "grade": "10",
+      "contestFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/cayley/2019/cayley-2019-contest.pdf",
+      "solutionFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/cayley/2019/cayley-2019-solution.pdf",
+      "contestSha256": "0c82677f306c166d03a7cf9bfa4f3b2a9d3116380d5fd821b419362af7fab0bd",
+      "solutionSha256": "5002d72305c7e0fd9568b601a72df55fe05cd998b73a3cf887ea99e3aa55e0c9",
+      "rights": {
+        "license": "CC BY-NC 4.0",
+        "attributionRequired": true,
+        "publicQuestionDisplay": true,
+        "commercialUse": false
+      },
+      "status": "raw-collected",
+      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+    },
+    {
+      "sourceRegistryId": "cemc-official",
+      "competition": "Cayley",
+      "competitionId": "cemc-cayley",
+      "year": 2020,
+      "grade": "10",
+      "contestFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/cayley/2020/cayley-2020-contest.pdf",
+      "solutionFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/cayley/2020/cayley-2020-solution.pdf",
+      "contestSha256": "fdaccca59b1352fcd8fc9448e2dbffe5c5c5bdca191337136427457e520966c5",
+      "solutionSha256": "6f06ed0d2c77a06d5b23c57d23370abff4d01919bbb983ee028ee4ee1b6a8c5b",
+      "rights": {
+        "license": "CC BY-NC 4.0",
+        "attributionRequired": true,
+        "publicQuestionDisplay": true,
+        "commercialUse": false
+      },
+      "status": "raw-collected",
+      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+    },
+    {
+      "sourceRegistryId": "cemc-official",
+      "competition": "Cayley",
+      "competitionId": "cemc-cayley",
+      "year": 2021,
+      "grade": "10",
+      "contestFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/cayley/2021/cayley-2021-contest.pdf",
+      "solutionFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/cayley/2021/cayley-2021-solution.pdf",
+      "contestSha256": "89a486fefb2536421edd02ad0bf5ca58ebcfdbf8e84c5d9ceab64c3b70597374",
+      "solutionSha256": "6b7f6049c38af0adc5d7d9b143ed24d689562768462316a491ed69d31a3c4f4f",
+      "rights": {
+        "license": "CC BY-NC 4.0",
+        "attributionRequired": true,
+        "publicQuestionDisplay": true,
+        "commercialUse": false
+      },
+      "status": "raw-collected",
+      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+    },
+    {
+      "sourceRegistryId": "cemc-official",
+      "competition": "Cayley",
+      "competitionId": "cemc-cayley",
+      "year": 2022,
+      "grade": "10",
+      "contestFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/cayley/2022/cayley-2022-contest.pdf",
+      "solutionFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/cayley/2022/cayley-2022-solution.pdf",
+      "contestSha256": "84132fbc0c40799f5c54f5f91bd70f020cee3875c238377587aecd3be771d791",
+      "solutionSha256": "7e5e91a044a6fa886e3d045d693e0d57ef3ddfb9a606e1d88044a6eb4c3fd0bc",
+      "rights": {
+        "license": "CC BY-NC 4.0",
+        "attributionRequired": true,
+        "publicQuestionDisplay": true,
+        "commercialUse": false
+      },
+      "status": "raw-collected",
+      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+    },
+    {
+      "sourceRegistryId": "cemc-official",
+      "competition": "Cayley",
+      "competitionId": "cemc-cayley",
+      "year": 2023,
+      "grade": "10",
+      "contestFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/cayley/2023/cayley-2023-contest.pdf",
+      "solutionFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/cayley/2023/cayley-2023-solution.pdf",
+      "contestSha256": "56b1990bf443d727a78f666a18287a3779c477d3477af8782b4dca31c0b34ec5",
+      "solutionSha256": "335a7c231607706c804cbf0173a870d40358441087f5b39f8e1231d6279597f1",
+      "rights": {
+        "license": "CC BY-NC 4.0",
+        "attributionRequired": true,
+        "publicQuestionDisplay": true,
+        "commercialUse": false
+      },
+      "status": "raw-collected",
+      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+    },
+    {
+      "sourceRegistryId": "cemc-official",
+      "competition": "Cayley",
+      "competitionId": "cemc-cayley",
+      "year": 2024,
+      "grade": "10",
+      "contestFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/cayley/2024/cayley-2024-contest.pdf",
+      "solutionFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/cayley/2024/cayley-2024-solution.pdf",
+      "contestSha256": "e069d48aaee3ec372f8f459019021ed222df806346abff3defc3789a270eb938",
+      "solutionSha256": "3b1e087e4551e471ff257e7ddb9c8e58cc96b21142f8ff1914d7452ed6107cc2",
+      "rights": {
+        "license": "CC BY-NC 4.0",
+        "attributionRequired": true,
+        "publicQuestionDisplay": true,
+        "commercialUse": false
+      },
+      "status": "raw-collected",
+      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+    },
+    {
+      "sourceRegistryId": "cemc-official",
+      "competition": "Cayley",
+      "competitionId": "cemc-cayley",
+      "year": 2025,
+      "grade": "10",
+      "contestFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/cayley/2025/cayley-2025-contest.pdf",
+      "solutionFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/cayley/2025/cayley-2025-solution.pdf",
+      "contestSha256": "1e9259244363b177d7c83d917f3714b2b8ff592feddc8b8beb8a2d7574694552",
+      "solutionSha256": "ce388e6d740b814565e42d0e7211d1e6982951cd0c1db7b72130171cd4268232",
+      "rights": {
+        "license": "CC BY-NC 4.0",
+        "attributionRequired": true,
+        "publicQuestionDisplay": true,
+        "commercialUse": false
+      },
+      "status": "raw-collected",
+      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+    },
+    {
+      "sourceRegistryId": "cemc-official",
+      "competition": "Cayley",
+      "competitionId": "cemc-cayley",
+      "year": 2026,
+      "grade": "10",
+      "contestFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/cayley/2026/cayley-2026-contest.pdf",
+      "solutionFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/cayley/2026/cayley-2026-solution.pdf",
+      "contestSha256": "63ff5ab491affb81b7592b51a873a432ed52a068494de9109e8dccf8140017f5",
+      "solutionSha256": "05995af3c5f29043032cee75cc8379d0572a0800aaa75b79f1e2d8a4e3e9c436",
+      "rights": {
+        "license": "CC BY-NC 4.0",
+        "attributionRequired": true,
+        "publicQuestionDisplay": true,
+        "commercialUse": false
+      },
+      "status": "raw-collected",
+      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+    },
+    {
+      "sourceRegistryId": "cemc-official",
+      "competition": "Euclid",
+      "competitionId": "cemc-euclid",
+      "year": 2017,
+      "grade": "12",
+      "contestFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/euclid/2017/euclid-2017-contest.pdf",
+      "solutionFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/euclid/2017/euclid-2017-solution.pdf",
+      "contestSha256": "3d85dbedf8e3de2fb4bed034337212233ebaac3efb737e497a1d5989c2ea718f",
+      "solutionSha256": "aedc2621992818eb0ec0b65a5532457aeeaf434f30623a52741e230d49ad16f3",
+      "rights": {
+        "license": "CC BY-NC 4.0",
+        "attributionRequired": true,
+        "publicQuestionDisplay": true,
+        "commercialUse": false
+      },
+      "status": "raw-collected",
+      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+    },
+    {
+      "sourceRegistryId": "cemc-official",
+      "competition": "Euclid",
+      "competitionId": "cemc-euclid",
+      "year": 2018,
+      "grade": "12",
+      "contestFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/euclid/2018/euclid-2018-contest.pdf",
+      "solutionFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/euclid/2018/euclid-2018-solution.pdf",
+      "contestSha256": "a60bb902f158d40e437484f298f59b81feca0e47bc561b3ed22a130a0379332d",
+      "solutionSha256": "729d8ffb90ab0d44eddaf3e7f5655cb610369ce7a3277449aecbc14e26eae5f5",
+      "rights": {
+        "license": "CC BY-NC 4.0",
+        "attributionRequired": true,
+        "publicQuestionDisplay": true,
+        "commercialUse": false
+      },
+      "status": "raw-collected",
+      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+    },
+    {
+      "sourceRegistryId": "cemc-official",
+      "competition": "Euclid",
+      "competitionId": "cemc-euclid",
+      "year": 2019,
+      "grade": "12",
+      "contestFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/euclid/2019/euclid-2019-contest.pdf",
+      "solutionFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/euclid/2019/euclid-2019-solution.pdf",
+      "contestSha256": "6cbbd60997682414a8ca2cc66734edb0db450e1dff493f4285727fb8c8b6f154",
+      "solutionSha256": "9187ce5e9f6d3b0469df994fdc2bcd6d492313eb3509dc83324c02a8a06103dd",
+      "rights": {
+        "license": "CC BY-NC 4.0",
+        "attributionRequired": true,
+        "publicQuestionDisplay": true,
+        "commercialUse": false
+      },
+      "status": "raw-collected",
+      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+    },
+    {
+      "sourceRegistryId": "cemc-official",
+      "competition": "Euclid",
+      "competitionId": "cemc-euclid",
+      "year": 2020,
+      "grade": "12",
+      "contestFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/euclid/2020/euclid-2020-contest.pdf",
+      "solutionFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/euclid/2020/euclid-2020-solution.pdf",
+      "contestSha256": "fa4e613cfd26fba192219e6900375f5bc82f6f3080a0b08f20c5e5e4a79495be",
+      "solutionSha256": "c95a88e444f778fac1c5d76b541cf2f57dfbee26c7bc2392c7153ebcc582ab81",
+      "rights": {
+        "license": "CC BY-NC 4.0",
+        "attributionRequired": true,
+        "publicQuestionDisplay": true,
+        "commercialUse": false
+      },
+      "status": "raw-collected",
+      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+    },
+    {
+      "sourceRegistryId": "cemc-official",
+      "competition": "Euclid",
+      "competitionId": "cemc-euclid",
+      "year": 2021,
+      "grade": "12",
+      "contestFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/euclid/2021/euclid-2021-contest.pdf",
+      "solutionFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/euclid/2021/euclid-2021-solution.pdf",
+      "contestSha256": "0dd8494176d9a44993252106a3934cd0f3d40d7292b40ff8e0dd4853a803a79d",
+      "solutionSha256": "7976c4952a2b4b84cb4e9aa78e23fd2e4e9c3d66a2449b06b215a909e76d6699",
+      "rights": {
+        "license": "CC BY-NC 4.0",
+        "attributionRequired": true,
+        "publicQuestionDisplay": true,
+        "commercialUse": false
+      },
+      "status": "raw-collected",
+      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+    },
+    {
+      "sourceRegistryId": "cemc-official",
+      "competition": "Euclid",
+      "competitionId": "cemc-euclid",
+      "year": 2022,
+      "grade": "12",
+      "contestFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/euclid/2022/euclid-2022-contest.pdf",
+      "solutionFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/euclid/2022/euclid-2022-solution.pdf",
+      "contestSha256": "58632a9d1fc425bf5c65c15d5e4124734c6e9e0be8cd05084eff33e8d77cb2b5",
+      "solutionSha256": "3396a215963d50e4968ccf5fc33e1e0e2177fa2e8664bcd8216a20329fc82388",
+      "rights": {
+        "license": "CC BY-NC 4.0",
+        "attributionRequired": true,
+        "publicQuestionDisplay": true,
+        "commercialUse": false
+      },
+      "status": "raw-collected",
+      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+    },
+    {
+      "sourceRegistryId": "cemc-official",
+      "competition": "Euclid",
+      "competitionId": "cemc-euclid",
+      "year": 2023,
+      "grade": "12",
+      "contestFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/euclid/2023/euclid-2023-contest.pdf",
+      "solutionFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/euclid/2023/euclid-2023-solution.pdf",
+      "contestSha256": "9e4da7f44a1cbd1a4dd5d7a9e1c5e1e5b493d93ae9bddd9ee418c42674feb08b",
+      "solutionSha256": "cae52b26d98bf95dca9593055e432c07df156ea74424f2c6d04e903b2559fe8f",
+      "rights": {
+        "license": "CC BY-NC 4.0",
+        "attributionRequired": true,
+        "publicQuestionDisplay": true,
+        "commercialUse": false
+      },
+      "status": "raw-collected",
+      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+    },
+    {
+      "sourceRegistryId": "cemc-official",
+      "competition": "Euclid",
+      "competitionId": "cemc-euclid",
+      "year": 2024,
+      "grade": "12",
+      "contestFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/euclid/2024/euclid-2024-contest.pdf",
+      "solutionFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/euclid/2024/euclid-2024-solution.pdf",
+      "contestSha256": "f65a70ba508d5d02c1c1207bf11c66dab612bee9ab350cc2e17fbfacf6f432cd",
+      "solutionSha256": "66b7ef7c0b670f899303592a9ab40abba6765e3495895d0e336ef59e0855b875",
+      "rights": {
+        "license": "CC BY-NC 4.0",
+        "attributionRequired": true,
+        "publicQuestionDisplay": true,
+        "commercialUse": false
+      },
+      "status": "raw-collected",
+      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+    },
+    {
+      "sourceRegistryId": "cemc-official",
+      "competition": "Euclid",
+      "competitionId": "cemc-euclid",
+      "year": 2025,
+      "grade": "12",
+      "contestFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/euclid/2025/euclid-2025-contest.pdf",
+      "solutionFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/euclid/2025/euclid-2025-solution.pdf",
+      "contestSha256": "66488877108b5a7947f9c15bb8fa626ed2c4aab87a32c4646295233c93abc34c",
+      "solutionSha256": "42dea156db91e5cd9ec1c00f4807682583370fdb96b9b259847750544f435c38",
+      "rights": {
+        "license": "CC BY-NC 4.0",
+        "attributionRequired": true,
+        "publicQuestionDisplay": true,
+        "commercialUse": false
+      },
+      "status": "raw-collected",
+      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+    },
+    {
+      "sourceRegistryId": "cemc-official",
+      "competition": "Euclid",
+      "competitionId": "cemc-euclid",
+      "year": 2026,
+      "grade": "12",
+      "contestFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/euclid/2026/euclid-2026-contest.pdf",
+      "solutionFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/euclid/2026/euclid-2026-solution.pdf",
+      "contestSha256": "f6f1160c11ea24a3ce6965367e69b5dce3f36f055f9cbbc461b3fdf931e17cdd",
+      "solutionSha256": "009c5b48c6180e0b3c42ddff6f784a98657e282a5af6223a7834e3748fca107d",
+      "rights": {
+        "license": "CC BY-NC 4.0",
+        "attributionRequired": true,
+        "publicQuestionDisplay": true,
+        "commercialUse": false
+      },
+      "status": "raw-collected",
+      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+    },
+    {
+      "sourceRegistryId": "cemc-official",
+      "competition": "Fermat",
+      "competitionId": "cemc-fermat",
+      "year": 2017,
+      "grade": "11",
+      "contestFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/fermat/2017/fermat-2017-contest.pdf",
+      "solutionFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/fermat/2017/fermat-2017-solution.pdf",
+      "contestSha256": "1cb9348373a04e6d459a51b9414e58d8a0968d55da65b4e849eaf9b61823a937",
+      "solutionSha256": "0f177361606aad358e0749c441c762752107bc10ee8f0aba896f0aab00f4ed52",
+      "rights": {
+        "license": "CC BY-NC 4.0",
+        "attributionRequired": true,
+        "publicQuestionDisplay": true,
+        "commercialUse": false
+      },
+      "status": "raw-collected",
+      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+    },
+    {
+      "sourceRegistryId": "cemc-official",
+      "competition": "Fermat",
+      "competitionId": "cemc-fermat",
+      "year": 2018,
+      "grade": "11",
+      "contestFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/fermat/2018/fermat-2018-contest.pdf",
+      "solutionFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/fermat/2018/fermat-2018-solution.pdf",
+      "contestSha256": "210a1eebf199fd06c4914527be23a87183fb1e92d2012e6c70cbe57d4d945cb2",
+      "solutionSha256": "d4388da2c8b9a7f9fac7695efb316a2d3da9d7b468a06540d473611d03309ad8",
+      "rights": {
+        "license": "CC BY-NC 4.0",
+        "attributionRequired": true,
+        "publicQuestionDisplay": true,
+        "commercialUse": false
+      },
+      "status": "raw-collected",
+      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+    },
+    {
+      "sourceRegistryId": "cemc-official",
+      "competition": "Fermat",
+      "competitionId": "cemc-fermat",
+      "year": 2019,
+      "grade": "11",
+      "contestFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/fermat/2019/fermat-2019-contest.pdf",
+      "solutionFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/fermat/2019/fermat-2019-solution.pdf",
+      "contestSha256": "61e33d066839de639128fe4f77e2f2ff38b27132b3b4157980994191c86bcbf9",
+      "solutionSha256": "8c23035c3d5c6d236766e65505a521044a6c5ab06ffbb8e7dfd256440df6d75c",
+      "rights": {
+        "license": "CC BY-NC 4.0",
+        "attributionRequired": true,
+        "publicQuestionDisplay": true,
+        "commercialUse": false
+      },
+      "status": "raw-collected",
+      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+    },
+    {
+      "sourceRegistryId": "cemc-official",
+      "competition": "Fermat",
+      "competitionId": "cemc-fermat",
+      "year": 2020,
+      "grade": "11",
+      "contestFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/fermat/2020/fermat-2020-contest.pdf",
+      "solutionFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/fermat/2020/fermat-2020-solution.pdf",
+      "contestSha256": "071758b77caf8fa01da9bbb1e7c356c6117a0f8ca09cbf7cd43068a69100cbd2",
+      "solutionSha256": "068007c98a6dafc29ebd6604eb2a1ebc028f795b9d1ff3d4cd04d9e8de0567b3",
+      "rights": {
+        "license": "CC BY-NC 4.0",
+        "attributionRequired": true,
+        "publicQuestionDisplay": true,
+        "commercialUse": false
+      },
+      "status": "raw-collected",
+      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+    },
+    {
+      "sourceRegistryId": "cemc-official",
+      "competition": "Fermat",
+      "competitionId": "cemc-fermat",
+      "year": 2021,
+      "grade": "11",
+      "contestFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/fermat/2021/fermat-2021-contest.pdf",
+      "solutionFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/fermat/2021/fermat-2021-solution.pdf",
+      "contestSha256": "d511fa255849c92ceee3aa2f7010e0847aea119f00af1c50c29d55896295bf64",
+      "solutionSha256": "9afe40b4ce682a8b878d85e6360e1f213e5feec284adbad608c2959b2dee303e",
+      "rights": {
+        "license": "CC BY-NC 4.0",
+        "attributionRequired": true,
+        "publicQuestionDisplay": true,
+        "commercialUse": false
+      },
+      "status": "raw-collected",
+      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+    },
+    {
+      "sourceRegistryId": "cemc-official",
+      "competition": "Fermat",
+      "competitionId": "cemc-fermat",
+      "year": 2022,
+      "grade": "11",
+      "contestFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/fermat/2022/fermat-2022-contest.pdf",
+      "solutionFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/fermat/2022/fermat-2022-solution.pdf",
+      "contestSha256": "4ee9924eba6eb4110d390a1da942e0b819df66a9045915fb5fddb12156cae946",
+      "solutionSha256": "446a0c085accc2dff0c8ca877837c0ede45effc180495f62ad5afea54c48dc57",
+      "rights": {
+        "license": "CC BY-NC 4.0",
+        "attributionRequired": true,
+        "publicQuestionDisplay": true,
+        "commercialUse": false
+      },
+      "status": "raw-collected",
+      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+    },
+    {
+      "sourceRegistryId": "cemc-official",
+      "competition": "Fermat",
+      "competitionId": "cemc-fermat",
+      "year": 2023,
+      "grade": "11",
+      "contestFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/fermat/2023/fermat-2023-contest.pdf",
+      "solutionFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/fermat/2023/fermat-2023-solution.pdf",
+      "contestSha256": "92d495309cff757b24f29fa609ccaec11d7d3e871d4a3fb3c80ccb08f8c75f66",
+      "solutionSha256": "eed36daf0171a0a5022ed2745cd4887ccedf2b76c5ccd486b26c16f9dc16e96e",
+      "rights": {
+        "license": "CC BY-NC 4.0",
+        "attributionRequired": true,
+        "publicQuestionDisplay": true,
+        "commercialUse": false
+      },
+      "status": "raw-collected",
+      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+    },
+    {
+      "sourceRegistryId": "cemc-official",
+      "competition": "Fermat",
+      "competitionId": "cemc-fermat",
+      "year": 2024,
+      "grade": "11",
+      "contestFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/fermat/2024/fermat-2024-contest.pdf",
+      "solutionFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/fermat/2024/fermat-2024-solution.pdf",
+      "contestSha256": "625e3e796a4b0b5db049ec7d294e0ae307a71cc87f4d54f69bb7b631ec5d7048",
+      "solutionSha256": "be7907dad98da7075548080b770f3d2f2bc262fe1b7808ce017c2b0b2d5bd986",
+      "rights": {
+        "license": "CC BY-NC 4.0",
+        "attributionRequired": true,
+        "publicQuestionDisplay": true,
+        "commercialUse": false
+      },
+      "status": "raw-collected",
+      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+    },
+    {
+      "sourceRegistryId": "cemc-official",
+      "competition": "Fermat",
+      "competitionId": "cemc-fermat",
+      "year": 2025,
+      "grade": "11",
+      "contestFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/fermat/2025/fermat-2025-contest.pdf",
+      "solutionFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/fermat/2025/fermat-2025-solution.pdf",
+      "contestSha256": "fa7faf3b100e3cc3f32fd373e4488a0e00a6b04eae14636c8f04f469271c9431",
+      "solutionSha256": "192a98269a38f3a2eb0d6db4dc8cbd7d0fa15017320aec721b2e7ac103d3e786",
+      "rights": {
+        "license": "CC BY-NC 4.0",
+        "attributionRequired": true,
+        "publicQuestionDisplay": true,
+        "commercialUse": false
+      },
+      "status": "raw-collected",
+      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+    },
+    {
+      "sourceRegistryId": "cemc-official",
+      "competition": "Fermat",
+      "competitionId": "cemc-fermat",
+      "year": 2026,
+      "grade": "11",
+      "contestFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/fermat/2026/fermat-2026-contest.pdf",
+      "solutionFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/fermat/2026/fermat-2026-solution.pdf",
+      "contestSha256": "fee5d68fbb078c6668525a95e8e021858a7f13a02a06860e5ec9ae48c1728c5d",
+      "solutionSha256": "56398ee4d064b6e6c62c39dcb8bfcee399f73e449711f9026fced3c4ad265d84",
+      "rights": {
+        "license": "CC BY-NC 4.0",
+        "attributionRequired": true,
+        "publicQuestionDisplay": true,
+        "commercialUse": false
+      },
+      "status": "raw-collected",
+      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+    },
+    {
+      "sourceRegistryId": "cemc-official",
+      "competition": "Gauss",
+      "competitionId": "cemc-gauss",
+      "year": 2017,
+      "grade": "7",
+      "contestFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/gauss/2017/gauss-2017-grade-7-contest.pdf",
+      "solutionFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/gauss/2017/gauss-2017-grade-7-solution.pdf",
+      "contestSha256": "de8f26fe39aebe53365dfa5f39fc9218141b1cb82503cbc1162fdb1ec0850234",
+      "solutionSha256": "6314bc4dc2a1090a763e45cd9ce03cec70a4b25fdb903add2da02d2e582f5184",
+      "rights": {
+        "license": "CC BY-NC 4.0",
+        "attributionRequired": true,
+        "publicQuestionDisplay": true,
+        "commercialUse": false
+      },
+      "status": "raw-collected",
+      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+    },
+    {
+      "sourceRegistryId": "cemc-official",
+      "competition": "Gauss",
+      "competitionId": "cemc-gauss",
+      "year": 2017,
+      "grade": "8",
+      "contestFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/gauss/2017/gauss-2017-grade-8-contest.pdf",
+      "solutionFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/gauss/2017/gauss-2017-grade-8-solution.pdf",
+      "contestSha256": "11526124f37459fa3635d1ef682b605b5cf19943ca78ee58c87164107664c637",
+      "solutionSha256": "6314bc4dc2a1090a763e45cd9ce03cec70a4b25fdb903add2da02d2e582f5184",
+      "rights": {
+        "license": "CC BY-NC 4.0",
+        "attributionRequired": true,
+        "publicQuestionDisplay": true,
+        "commercialUse": false
+      },
+      "status": "raw-collected",
+      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+    },
+    {
+      "sourceRegistryId": "cemc-official",
+      "competition": "Gauss",
+      "competitionId": "cemc-gauss",
+      "year": 2018,
+      "grade": "7",
+      "contestFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/gauss/2018/gauss-2018-grade-7-contest.pdf",
+      "solutionFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/gauss/2018/gauss-2018-grade-7-solution.pdf",
+      "contestSha256": "ba11cfc36a2459299c38df6010fb566aad0e3b0e1b33b60fb066bbf22a13f908",
+      "solutionSha256": "d25ad7d18655458b346c470a1c926bc3a25016fbd6fa5d6a7fed6cdb9b0a35c2",
+      "rights": {
+        "license": "CC BY-NC 4.0",
+        "attributionRequired": true,
+        "publicQuestionDisplay": true,
+        "commercialUse": false
+      },
+      "status": "raw-collected",
+      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+    },
+    {
+      "sourceRegistryId": "cemc-official",
+      "competition": "Gauss",
+      "competitionId": "cemc-gauss",
+      "year": 2018,
+      "grade": "8",
+      "contestFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/gauss/2018/gauss-2018-grade-8-contest.pdf",
+      "solutionFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/gauss/2018/gauss-2018-grade-8-solution.pdf",
+      "contestSha256": "797089bf8af8b3a126cd1286c541e928ed46a3e0233a62f0495f5729a58be531",
+      "solutionSha256": "d25ad7d18655458b346c470a1c926bc3a25016fbd6fa5d6a7fed6cdb9b0a35c2",
+      "rights": {
+        "license": "CC BY-NC 4.0",
+        "attributionRequired": true,
+        "publicQuestionDisplay": true,
+        "commercialUse": false
+      },
+      "status": "raw-collected",
+      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+    },
+    {
+      "sourceRegistryId": "cemc-official",
+      "competition": "Gauss",
+      "competitionId": "cemc-gauss",
+      "year": 2019,
+      "grade": "7",
+      "contestFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/gauss/2019/gauss-2019-grade-7-contest.pdf",
+      "solutionFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/gauss/2019/gauss-2019-grade-7-solution.pdf",
+      "contestSha256": "a970759b05185c32caa42ec17ac58961a67adf21f508c609d5d4cd238c405785",
+      "solutionSha256": "22f1386be5e7e969a0dcc6716eb924932e3c3044cd3a636b44fb7d49cc529ecd",
+      "rights": {
+        "license": "CC BY-NC 4.0",
+        "attributionRequired": true,
+        "publicQuestionDisplay": true,
+        "commercialUse": false
+      },
+      "status": "raw-collected",
+      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+    },
+    {
+      "sourceRegistryId": "cemc-official",
+      "competition": "Gauss",
+      "competitionId": "cemc-gauss",
+      "year": 2019,
+      "grade": "8",
+      "contestFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/gauss/2019/gauss-2019-grade-8-contest.pdf",
+      "solutionFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/gauss/2019/gauss-2019-grade-8-solution.pdf",
+      "contestSha256": "25cecf075bd222474714aa4976430d46ed8c778f1315b1fe434491e90abf9343",
+      "solutionSha256": "22f1386be5e7e969a0dcc6716eb924932e3c3044cd3a636b44fb7d49cc529ecd",
+      "rights": {
+        "license": "CC BY-NC 4.0",
+        "attributionRequired": true,
+        "publicQuestionDisplay": true,
+        "commercialUse": false
+      },
+      "status": "raw-collected",
+      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+    },
+    {
+      "sourceRegistryId": "cemc-official",
+      "competition": "Gauss",
+      "competitionId": "cemc-gauss",
+      "year": 2020,
+      "grade": "7",
+      "contestFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/gauss/2020/gauss-2020-grade-7-contest.pdf",
+      "solutionFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/gauss/2020/gauss-2020-grade-7-solution.pdf",
+      "contestSha256": "347fd5abc8d864ecdb9bd9244157dc137c4fe669891e5456f05b1c57ceb6999b",
+      "solutionSha256": "653f8947faea0e70653b3c13ecc3ec2d5906c708aa17e936b52d65fb1811299d",
+      "rights": {
+        "license": "CC BY-NC 4.0",
+        "attributionRequired": true,
+        "publicQuestionDisplay": true,
+        "commercialUse": false
+      },
+      "status": "raw-collected",
+      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+    },
+    {
+      "sourceRegistryId": "cemc-official",
+      "competition": "Gauss",
+      "competitionId": "cemc-gauss",
+      "year": 2020,
+      "grade": "8",
+      "contestFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/gauss/2020/gauss-2020-grade-8-contest.pdf",
+      "solutionFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/gauss/2020/gauss-2020-grade-8-solution.pdf",
+      "contestSha256": "c849ace66b7353685317c4f3351beb0d4f56ac483f4c30812f1b29360056a5e9",
+      "solutionSha256": "653f8947faea0e70653b3c13ecc3ec2d5906c708aa17e936b52d65fb1811299d",
+      "rights": {
+        "license": "CC BY-NC 4.0",
+        "attributionRequired": true,
+        "publicQuestionDisplay": true,
+        "commercialUse": false
+      },
+      "status": "raw-collected",
+      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+    },
+    {
+      "sourceRegistryId": "cemc-official",
+      "competition": "Gauss",
+      "competitionId": "cemc-gauss",
+      "year": 2021,
+      "grade": "7",
+      "contestFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/gauss/2021/gauss-2021-grade-7-contest.pdf",
+      "solutionFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/gauss/2021/gauss-2021-grade-7-solution.pdf",
+      "contestSha256": "40892f2fb699f969f8f4ecd9583341d3f421da9f731045358af413050debb374",
+      "solutionSha256": "dd25ce01c0f6d0a381ecf6dea6b77bcd0e07a643381ddb8744dcc6e0405f4212",
+      "rights": {
+        "license": "CC BY-NC 4.0",
+        "attributionRequired": true,
+        "publicQuestionDisplay": true,
+        "commercialUse": false
+      },
+      "status": "raw-collected",
+      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+    },
+    {
+      "sourceRegistryId": "cemc-official",
+      "competition": "Gauss",
+      "competitionId": "cemc-gauss",
+      "year": 2021,
+      "grade": "8",
+      "contestFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/gauss/2021/gauss-2021-grade-8-contest.pdf",
+      "solutionFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/gauss/2021/gauss-2021-grade-8-solution.pdf",
+      "contestSha256": "e0b413927803472912abb468fb4be864669d58904b7f25e18d4e9f8f8ef32712",
+      "solutionSha256": "dd25ce01c0f6d0a381ecf6dea6b77bcd0e07a643381ddb8744dcc6e0405f4212",
+      "rights": {
+        "license": "CC BY-NC 4.0",
+        "attributionRequired": true,
+        "publicQuestionDisplay": true,
+        "commercialUse": false
+      },
+      "status": "raw-collected",
+      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+    },
+    {
+      "sourceRegistryId": "cemc-official",
+      "competition": "Gauss",
+      "competitionId": "cemc-gauss",
+      "year": 2022,
+      "grade": "7",
+      "contestFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/gauss/2022/gauss-2022-grade-7-contest.pdf",
+      "solutionFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/gauss/2022/gauss-2022-grade-7-solution.pdf",
+      "contestSha256": "e0e702bc0043d82f431da7fb5b4425bd11e1cdffe7354afb7a0438c39ecf08da",
+      "solutionSha256": "6cf65948404dbe50c79e9e4928956bc4ee3b55a696d291b1665c060250b061ba",
+      "rights": {
+        "license": "CC BY-NC 4.0",
+        "attributionRequired": true,
+        "publicQuestionDisplay": true,
+        "commercialUse": false
+      },
+      "status": "raw-collected",
+      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+    },
+    {
+      "sourceRegistryId": "cemc-official",
+      "competition": "Gauss",
+      "competitionId": "cemc-gauss",
+      "year": 2022,
+      "grade": "8",
+      "contestFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/gauss/2022/gauss-2022-grade-8-contest.pdf",
+      "solutionFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/gauss/2022/gauss-2022-grade-8-solution.pdf",
+      "contestSha256": "554851c0b73912432657fadda54af067134c39322903209e7862a0d3fcb0cea6",
+      "solutionSha256": "6cf65948404dbe50c79e9e4928956bc4ee3b55a696d291b1665c060250b061ba",
+      "rights": {
+        "license": "CC BY-NC 4.0",
+        "attributionRequired": true,
+        "publicQuestionDisplay": true,
+        "commercialUse": false
+      },
+      "status": "raw-collected",
+      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+    },
+    {
+      "sourceRegistryId": "cemc-official",
+      "competition": "Gauss",
+      "competitionId": "cemc-gauss",
+      "year": 2023,
+      "grade": "7",
+      "contestFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/gauss/2023/gauss-2023-grade-7-contest.pdf",
+      "solutionFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/gauss/2023/gauss-2023-grade-7-solution.pdf",
+      "contestSha256": "2511a5ea8687406f1019233d68ae0ae75c97e8f060e3620fc3a44effcb88a3ec",
+      "solutionSha256": "3b24def5404142e73c343e09d1599f3e746004391e26602fda9f10ee33974a3f",
+      "rights": {
+        "license": "CC BY-NC 4.0",
+        "attributionRequired": true,
+        "publicQuestionDisplay": true,
+        "commercialUse": false
+      },
+      "status": "raw-collected",
+      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+    },
+    {
+      "sourceRegistryId": "cemc-official",
+      "competition": "Gauss",
+      "competitionId": "cemc-gauss",
+      "year": 2023,
+      "grade": "8",
+      "contestFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/gauss/2023/gauss-2023-grade-8-contest.pdf",
+      "solutionFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/gauss/2023/gauss-2023-grade-8-solution.pdf",
+      "contestSha256": "a3be7efd0b0e30967982cd05783f6a20df9a76525385e6accb64a0e81d35224b",
+      "solutionSha256": "3b24def5404142e73c343e09d1599f3e746004391e26602fda9f10ee33974a3f",
+      "rights": {
+        "license": "CC BY-NC 4.0",
+        "attributionRequired": true,
+        "publicQuestionDisplay": true,
+        "commercialUse": false
+      },
+      "status": "raw-collected",
+      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+    },
+    {
+      "sourceRegistryId": "cemc-official",
+      "competition": "Gauss",
+      "competitionId": "cemc-gauss",
+      "year": 2024,
+      "grade": "7",
+      "contestFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/gauss/2024/gauss-2024-grade-7-contest.pdf",
+      "solutionFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/gauss/2024/gauss-2024-grade-7-solution.pdf",
+      "contestSha256": "2af5b4e89029110e27577de3b5e981f72f227614d52f426018ad7a77167963fc",
+      "solutionSha256": "1ae9932d1ac57bd2c63c175335e689ac0331fb21e85ab1a5a595ae6dcb781e64",
+      "rights": {
+        "license": "CC BY-NC 4.0",
+        "attributionRequired": true,
+        "publicQuestionDisplay": true,
+        "commercialUse": false
+      },
+      "status": "raw-collected",
+      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+    },
+    {
+      "sourceRegistryId": "cemc-official",
+      "competition": "Gauss",
+      "competitionId": "cemc-gauss",
+      "year": 2024,
+      "grade": "8",
+      "contestFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/gauss/2024/gauss-2024-grade-8-contest.pdf",
+      "solutionFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/gauss/2024/gauss-2024-grade-8-solution.pdf",
+      "contestSha256": "d1ab1c965ee52373dd43a34002464facfef8c1fcb9b8071608387543d178be72",
+      "solutionSha256": "1ae9932d1ac57bd2c63c175335e689ac0331fb21e85ab1a5a595ae6dcb781e64",
+      "rights": {
+        "license": "CC BY-NC 4.0",
+        "attributionRequired": true,
+        "publicQuestionDisplay": true,
+        "commercialUse": false
+      },
+      "status": "raw-collected",
+      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+    },
+    {
+      "sourceRegistryId": "cemc-official",
+      "competition": "Gauss",
+      "competitionId": "cemc-gauss",
+      "year": 2025,
+      "grade": "7",
+      "contestFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/gauss/2025/gauss-2025-grade-7-contest.pdf",
+      "solutionFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/gauss/2025/gauss-2025-grade-7-solution.pdf",
+      "contestSha256": "4bb5a204c646458af19cce2a5b0b3952ce2174932a028877981dd6fcd408e92c",
+      "solutionSha256": "f6fa8347cd54095a23d5206ea1369f60df237a55d126a01492d617dc0f3b0574",
+      "rights": {
+        "license": "CC BY-NC 4.0",
+        "attributionRequired": true,
+        "publicQuestionDisplay": true,
+        "commercialUse": false
+      },
+      "status": "raw-collected",
+      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+    },
+    {
+      "sourceRegistryId": "cemc-official",
+      "competition": "Gauss",
+      "competitionId": "cemc-gauss",
+      "year": 2025,
+      "grade": "8",
+      "contestFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/gauss/2025/gauss-2025-grade-8-contest.pdf",
+      "solutionFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/gauss/2025/gauss-2025-grade-8-solution.pdf",
+      "contestSha256": "b690217615bd9b0a1067c365ffdf87d81e3eedb86b620e6b2ede692d13369d62",
+      "solutionSha256": "f6fa8347cd54095a23d5206ea1369f60df237a55d126a01492d617dc0f3b0574",
+      "rights": {
+        "license": "CC BY-NC 4.0",
+        "attributionRequired": true,
+        "publicQuestionDisplay": true,
+        "commercialUse": false
+      },
+      "status": "raw-collected",
+      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+    },
+    {
+      "sourceRegistryId": "cemc-official",
+      "competition": "Gauss",
+      "competitionId": "cemc-gauss",
+      "year": 2026,
+      "grade": "7",
+      "contestFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/gauss/2026/gauss-2026-grade-7-contest.pdf",
+      "solutionFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/gauss/2026/gauss-2026-grade-7-solution.pdf",
+      "contestSha256": "90fe3d884c87bd94182d315bf2103071fccbdcea19cef2c18b86e6d710031664",
+      "solutionSha256": "64eb327d62eea6ff4534fe21b0e2f691db02fc060a2e44b32fdc9b960a399c60",
+      "rights": {
+        "license": "CC BY-NC 4.0",
+        "attributionRequired": true,
+        "publicQuestionDisplay": true,
+        "commercialUse": false
+      },
+      "status": "raw-collected",
+      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+    },
+    {
+      "sourceRegistryId": "cemc-official",
+      "competition": "Gauss",
+      "competitionId": "cemc-gauss",
+      "year": 2026,
+      "grade": "8",
+      "contestFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/gauss/2026/gauss-2026-grade-8-contest.pdf",
+      "solutionFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/gauss/2026/gauss-2026-grade-8-solution.pdf",
+      "contestSha256": "75d6de7836009993e931e03053b611b405de9f2a96753e13676af5dd9f83864f",
+      "solutionSha256": "64eb327d62eea6ff4534fe21b0e2f691db02fc060a2e44b32fdc9b960a399c60",
+      "rights": {
+        "license": "CC BY-NC 4.0",
+        "attributionRequired": true,
+        "publicQuestionDisplay": true,
+        "commercialUse": false
+      },
+      "status": "raw-collected",
+      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+    },
+    {
+      "sourceRegistryId": "cemc-official",
+      "competition": "Pascal",
+      "competitionId": "cemc-pascal",
+      "year": 2017,
+      "grade": "9",
+      "contestFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/pascal/2017/pascal-2017-contest.pdf",
+      "solutionFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/pascal/2017/pascal-2017-solution.pdf",
+      "contestSha256": "5eeb14e47ee1acad64821891f0bd3a63acfb3f63a8977f9a9057ac9bf0f95a87",
+      "solutionSha256": "99a7bf0c1409d1fb1a545e232cae847ff8a32127167939e690c954719dd26c0f",
+      "rights": {
+        "license": "CC BY-NC 4.0",
+        "attributionRequired": true,
+        "publicQuestionDisplay": true,
+        "commercialUse": false
+      },
+      "status": "raw-collected",
+      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+    },
+    {
+      "sourceRegistryId": "cemc-official",
+      "competition": "Pascal",
+      "competitionId": "cemc-pascal",
+      "year": 2018,
+      "grade": "9",
+      "contestFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/pascal/2018/pascal-2018-contest.pdf",
+      "solutionFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/pascal/2018/pascal-2018-solution.pdf",
+      "contestSha256": "adb12cdf39e810386574bc07b78bb8c139f52e2b488813563935ab8ed1af1a80",
+      "solutionSha256": "df9d00ca21f8ec1205ea225a935faad1e0af66d1472b5f3627c3d465bb74bbed",
+      "rights": {
+        "license": "CC BY-NC 4.0",
+        "attributionRequired": true,
+        "publicQuestionDisplay": true,
+        "commercialUse": false
+      },
+      "status": "raw-collected",
+      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+    },
+    {
+      "sourceRegistryId": "cemc-official",
+      "competition": "Pascal",
+      "competitionId": "cemc-pascal",
+      "year": 2019,
+      "grade": "9",
+      "contestFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/pascal/2019/pascal-2019-contest.pdf",
+      "solutionFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/pascal/2019/pascal-2019-solution.pdf",
+      "contestSha256": "7ca181b44900b7c97bd118a2d7a1331b97b0383b2f3bc1604716dfe7ccbc8c1b",
+      "solutionSha256": "8ac3f1ec8e5b09b5f30be0c78692b6381644b364f695816d1f69a0bd5982e938",
+      "rights": {
+        "license": "CC BY-NC 4.0",
+        "attributionRequired": true,
+        "publicQuestionDisplay": true,
+        "commercialUse": false
+      },
+      "status": "raw-collected",
+      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+    },
+    {
+      "sourceRegistryId": "cemc-official",
+      "competition": "Pascal",
+      "competitionId": "cemc-pascal",
+      "year": 2021,
+      "grade": "9",
+      "contestFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/pascal/2021/pascal-2021-contest.pdf",
+      "solutionFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/pascal/2021/pascal-2021-solution.pdf",
+      "contestSha256": "db9672718472f6b55014574bf4c47d3766d469660d19552893e0883ec706fbba",
+      "solutionSha256": "003ee5bc718d9227881d78c0af882b9f2c5214ab8a9d3e21624748aa294e5779",
+      "rights": {
+        "license": "CC BY-NC 4.0",
+        "attributionRequired": true,
+        "publicQuestionDisplay": true,
+        "commercialUse": false
+      },
+      "status": "raw-collected",
+      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+    },
+    {
+      "sourceRegistryId": "cemc-official",
+      "competition": "Pascal",
+      "competitionId": "cemc-pascal",
+      "year": 2022,
+      "grade": "9",
+      "contestFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/pascal/2022/pascal-2022-contest.pdf",
+      "solutionFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/pascal/2022/pascal-2022-solution.pdf",
+      "contestSha256": "fe6f20426ac03d5f8b9567c80ad47e00f509d60bd1b69f2f4003a7025cf81991",
+      "solutionSha256": "a291f049f0d6706526bc0069a5566c20d54c1d61c40851330d931c6a06c51d37",
+      "rights": {
+        "license": "CC BY-NC 4.0",
+        "attributionRequired": true,
+        "publicQuestionDisplay": true,
+        "commercialUse": false
+      },
+      "status": "raw-collected",
+      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+    },
+    {
+      "sourceRegistryId": "cemc-official",
+      "competition": "Pascal",
+      "competitionId": "cemc-pascal",
+      "year": 2023,
+      "grade": "9",
+      "contestFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/pascal/2023/pascal-2023-contest.pdf",
+      "solutionFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/pascal/2023/pascal-2023-solution.pdf",
+      "contestSha256": "92401e853726a78d86385a22d9260051d53d368e5837166bd24adf94f896f2b9",
+      "solutionSha256": "44bfd6eb536e49dad532cbcb7bc4d7b99ceab5da5d0d3d8133e7c6dde8b567bf",
+      "rights": {
+        "license": "CC BY-NC 4.0",
+        "attributionRequired": true,
+        "publicQuestionDisplay": true,
+        "commercialUse": false
+      },
+      "status": "raw-collected",
+      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+    },
+    {
+      "sourceRegistryId": "cemc-official",
+      "competition": "Pascal",
+      "competitionId": "cemc-pascal",
+      "year": 2024,
+      "grade": "9",
+      "contestFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/pascal/2024/pascal-2024-contest.pdf",
+      "solutionFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/pascal/2024/pascal-2024-solution.pdf",
+      "contestSha256": "459504cd0df285fd047f03acc6653099956b0a9624a6bdb3a43c98e857a1d83e",
+      "solutionSha256": "2834f43da6607eb55d09551678e4f2ca533adef02ab2154eda98094ae4e3c01a",
+      "rights": {
+        "license": "CC BY-NC 4.0",
+        "attributionRequired": true,
+        "publicQuestionDisplay": true,
+        "commercialUse": false
+      },
+      "status": "raw-collected",
+      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+    },
+    {
+      "sourceRegistryId": "cemc-official",
+      "competition": "Pascal",
+      "competitionId": "cemc-pascal",
+      "year": 2025,
+      "grade": "9",
+      "contestFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/pascal/2025/pascal-2025-contest.pdf",
+      "solutionFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/pascal/2025/pascal-2025-solution.pdf",
+      "contestSha256": "7693c097eea82fdf28e385dde6d1770492bc16f1ffe524543dc0e68e07d3dccd",
+      "solutionSha256": "4c3afe10c123656a1dacace512e7359551d786d5541054bd4c5fc7501c5f47f1",
+      "rights": {
+        "license": "CC BY-NC 4.0",
+        "attributionRequired": true,
+        "publicQuestionDisplay": true,
+        "commercialUse": false
+      },
+      "status": "raw-collected",
+      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+    },
+    {
+      "sourceRegistryId": "cemc-official",
+      "competition": "Pascal",
+      "competitionId": "cemc-pascal",
+      "year": 2026,
+      "grade": "9",
+      "contestFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/pascal/2026/pascal-2026-contest.pdf",
+      "solutionFile": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc/raw/pascal/2026/pascal-2026-solution.pdf",
+      "contestSha256": "1b4873fe7b6736616d31b12f11e35d25d1aa5b86a1b9ac99272f954cddd4392c",
+      "solutionSha256": "71ab0aaf23dff7f85acc66a0db53b3698175b4b9cb9bde9fed8ba07e96c9c242",
+      "rights": {
+        "license": "CC BY-NC 4.0",
+        "attributionRequired": true,
+        "publicQuestionDisplay": true,
+        "commercialUse": false
+      },
+      "status": "raw-collected",
+      "nextStep": "digitize-original-pdf-structure-preserve-figures-add-attribution-then-review"
+    }
+  ]
+}

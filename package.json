@@ -12,7 +12,7 @@
     "admin:create": "node scripts/create_admin.mjs",
     "test:smoke": "python3 scripts/smoke_test.py",
     "test:brand": "python3 scripts/brand_audit.py",
-    "prebuild": "python3 scripts/brand_audit.py && npm run test:arithmetic-print && npm run test:competition-identity && npm run test:maa && npm run test:maa-library && npm run test:aime-sections && npm run test:maa-smart && npm run test:solution-books && npm run test:verified-storyboards && npm run test:maa-verified-store",
+    "prebuild": "npm run test:rights && python3 scripts/brand_audit.py && npm run test:arithmetic-print && npm run test:competition-identity && npm run test:maa && npm run test:maa-library && npm run test:aime-sections && npm run test:maa-smart && npm run test:solution-books && npm run test:verified-storyboards && npm run test:maa-verified-store",
     "test:maa": "tsx scripts/test_maa_scoring.ts",
     "test:maa-library": "python3 scripts/validate_maa_library.py",
     "test:competition-identity": "python3 scripts/test_competition_identity.py",
@@ -36,7 +36,11 @@
     "test:cube-net": "tsx scripts/test_cube_net.ts",
     "test:pre-a-grade1": "python3 scripts/test_pre_a_grade1_ready.py",
     "solution:factory:publish": "python3 scripts/run_solution_factory.py --publish",
-    "test:parent-auth": "tsx scripts/test_parent_auth.ts"
+    "test:parent-auth": "tsx scripts/test_parent_auth.ts",
+    "test:rights": "python3 scripts/validate_competition_source_registry.py",
+    "data:collection-plan": "python3 scripts/build_competition_collection_plan.py",
+    "data:rights-review": "python3 scripts/build_rights_review_queue.py",
+    "data:cemc-queue": "python3 scripts/build_cemc_ingestion_queue.py"
   },
   "dependencies": {
     "next": "16.3.5",

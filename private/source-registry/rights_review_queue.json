@@ -1,0 +1,244 @@
+{
+  "generatedAt": "2026-09-25",
+  "count": 16,
+  "items": [
+    {
+      "sourceRegistryId": "amt-australian-amc-official",
+      "organization": "Australian Maths Trust",
+      "competitionIds": [
+        "au-amc",
+        "aimo",
+        "amo"
+      ],
+      "priority": "S",
+      "reviewState": "license-or-purchase-specific",
+      "rightsClass": "review-required",
+      "evidenceUrls": [
+        "https://amt.edu.au/department/past-papers",
+        "https://shop.amt.edu.au/collections"
+      ],
+      "nextAction": "obtain-or-document-explicit-republication-basis-before-public-question-display"
+    },
+    {
+      "sourceRegistryId": "kangaroo-austria-official",
+      "organization": "Känguru der Mathematik Österreich",
+      "competitionIds": [
+        "kangaroo"
+      ],
+      "priority": "S",
+      "reviewState": "license-not-yet-recorded",
+      "rightsClass": "review-required",
+      "evidenceUrls": [
+        "https://www.kaenguru.at/aufgaben.html"
+      ],
+      "nextAction": "obtain-or-document-explicit-republication-basis-before-public-question-display"
+    },
+    {
+      "sourceRegistryId": "kangaroo-germany-official",
+      "organization": "Mathematikwettbewerb Känguru e.V.",
+      "competitionIds": [
+        "kangaroo"
+      ],
+      "priority": "S",
+      "reviewState": "license-not-yet-recorded",
+      "rightsClass": "review-required",
+      "evidenceUrls": [
+        "https://www.mathe-kaenguru.de/chronik/aufgaben/"
+      ],
+      "nextAction": "obtain-or-document-explicit-republication-basis-before-public-question-display"
+    },
+    {
+      "sourceRegistryId": "kangaroo-netherlands-official",
+      "organization": "W4Kangoeroe",
+      "competitionIds": [
+        "kangaroo"
+      ],
+      "priority": "S",
+      "reviewState": "license-not-yet-recorded",
+      "rightsClass": "review-required",
+      "evidenceUrls": [
+        "https://www.w4kangoeroe.nl/"
+      ],
+      "nextAction": "obtain-or-document-explicit-republication-basis-before-public-question-display"
+    },
+    {
+      "sourceRegistryId": "kangaroo-usa-official",
+      "organization": "Math Kangaroo USA, NFP",
+      "competitionIds": [
+        "kangaroo"
+      ],
+      "priority": "S",
+      "reviewState": "license-not-yet-recorded",
+      "rightsClass": "review-required",
+      "evidenceUrls": [
+        "https://mathkangaroo.org/mks/practice/pdf-exams/",
+        "https://mathkangaroo.org/mks/practice/free-question-samples/"
+      ],
+      "nextAction": "obtain-or-document-explicit-republication-basis-before-public-question-display"
+    },
+    {
+      "sourceRegistryId": "maa-historical-archive",
+      "organization": "Mathematical Association of America",
+      "competitionIds": [
+        "maa-amc8",
+        "maa-amc10",
+        "maa-amc12",
+        "maa-aime-classic",
+        "maa-aime-2027"
+      ],
+      "priority": "S",
+      "reviewState": "permission-or-specific-publication-review",
+      "rightsClass": "educational-share",
+      "evidenceUrls": [
+        "https://maa.org/student-programs/amc/",
+        "https://maa.org/wp-content/uploads/2024/08/2022-AMC-10A-solutions.pdf"
+      ],
+      "nextAction": "obtain-or-document-explicit-republication-basis-before-public-question-display"
+    },
+    {
+      "sourceRegistryId": "ukmt-official",
+      "organization": "United Kingdom Mathematics Trust",
+      "competitionIds": [
+        "ukmt-jmc",
+        "ukmt-imc",
+        "ukmt-smc",
+        "ukmt-kangaroo",
+        "ukmt-bmo"
+      ],
+      "priority": "S",
+      "reviewState": "license-not-yet-recorded",
+      "rightsClass": "review-required",
+      "evidenceUrls": [
+        "https://ukmt.org.uk/"
+      ],
+      "nextAction": "obtain-or-document-explicit-republication-basis-before-public-question-display"
+    },
+    {
+      "sourceRegistryId": "hmmt-official",
+      "organization": "Harvard-MIT Mathematics Tournament",
+      "competitionIds": [
+        "hmmt"
+      ],
+      "priority": "A",
+      "reviewState": "license-not-yet-recorded",
+      "rightsClass": "review-required",
+      "evidenceUrls": [
+        "https://www.hmmt.org/www/archive/problems"
+      ],
+      "nextAction": "obtain-or-document-explicit-republication-basis-before-public-question-display"
+    },
+    {
+      "sourceRegistryId": "imo-official",
+      "organization": "International Mathematical Olympiad",
+      "competitionIds": [
+        "imo"
+      ],
+      "priority": "A",
+      "reviewState": "license-not-yet-recorded",
+      "rightsClass": "review-required",
+      "evidenceUrls": [
+        "https://www.imo-official.org/problems.aspx"
+      ],
+      "nextAction": "obtain-or-document-explicit-republication-basis-before-public-question-display"
+    },
+    {
+      "sourceRegistryId": "kangaroo-albania-official",
+      "organization": "Kangaroo Albania",
+      "competitionIds": [
+        "kangaroo"
+      ],
+      "priority": "A",
+      "reviewState": "license-not-yet-recorded",
+      "rightsClass": "review-required",
+      "evidenceUrls": [
+        "https://www.kangaroo.al/en/download/"
+      ],
+      "nextAction": "obtain-or-document-explicit-republication-basis-before-public-question-display"
+    },
+    {
+      "sourceRegistryId": "kangaroo-canada-official",
+      "organization": "Canadian Math Kangaroo Contest",
+      "competitionIds": [
+        "kangaroo"
+      ],
+      "priority": "A",
+      "reviewState": "license-not-yet-recorded",
+      "rightsClass": "review-required",
+      "evidenceUrls": [
+        "https://mathkangaroo.ca/samples/2015/en"
+      ],
+      "nextAction": "obtain-or-document-explicit-republication-basis-before-public-question-display"
+    },
+    {
+      "sourceRegistryId": "kangaroo-france-official",
+      "organization": "Kangourou Sans Frontières / Kangourou des Mathématiques",
+      "competitionIds": [
+        "kangaroo"
+      ],
+      "priority": "A",
+      "reviewState": "license-not-yet-recorded",
+      "rightsClass": "review-required",
+      "evidenceUrls": [
+        "https://www.mathkang.org/"
+      ],
+      "nextAction": "obtain-or-document-explicit-republication-basis-before-public-question-display"
+    },
+    {
+      "sourceRegistryId": "kangaroo-pakistan-official",
+      "organization": "International Kangaroo Mathematics Contest Pakistan",
+      "competitionIds": [
+        "kangaroo"
+      ],
+      "priority": "A",
+      "reviewState": "license-not-yet-recorded",
+      "rightsClass": "review-required",
+      "evidenceUrls": [
+        "https://ikmc.kangaroo.org.pk/past_papers/3162"
+      ],
+      "nextAction": "obtain-or-document-explicit-republication-basis-before-public-question-display"
+    },
+    {
+      "sourceRegistryId": "kangaroo-poland-official",
+      "organization": "Towarzystwo Upowszechniania Wiedzy i Nauk Matematycznych",
+      "competitionIds": [
+        "kangaroo"
+      ],
+      "priority": "A",
+      "reviewState": "license-not-yet-recorded",
+      "rightsClass": "review-required",
+      "evidenceUrls": [
+        "https://www.kangur-mat.pl/testy_konkursowe.php"
+      ],
+      "nextAction": "obtain-or-document-explicit-republication-basis-before-public-question-display"
+    },
+    {
+      "sourceRegistryId": "mathcounts-official",
+      "organization": "MATHCOUNTS Foundation",
+      "competitionIds": [
+        "mathcounts"
+      ],
+      "priority": "A",
+      "reviewState": "license-not-yet-recorded",
+      "rightsClass": "review-required",
+      "evidenceUrls": [
+        "https://www.mathcounts.org/resources/past-competitions"
+      ],
+      "nextAction": "obtain-or-document-explicit-republication-basis-before-public-question-display"
+    },
+    {
+      "sourceRegistryId": "purple-comet-official",
+      "organization": "Purple Comet! Math Meet",
+      "competitionIds": [
+        "purple-comet-middle",
+        "purple-comet-high"
+      ],
+      "priority": "A",
+      "reviewState": "permission-required",
+      "rightsClass": "copyright-restricted",
+      "evidenceUrls": [
+        "https://www.purplecomet.org/answers"
+      ],
+      "nextAction": "obtain-or-document-explicit-republication-basis-before-public-question-display"
+    }
+  ]
+}

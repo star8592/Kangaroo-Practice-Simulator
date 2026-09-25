@@ -1,0 +1,17 @@
+{
+  "sourceRegistryId": "cemc-official",
+  "library": "/mnt/disk1/Code/Kangaroo-Practice-Simulator/private/source-archive/cemc",
+  "yearRange": [
+    2017,
+    2026
+  ],
+  "paperCount": 59,
+  "byCompetition": {
+    "Cayley": 10,
+    "Euclid": 10,
+    "Fermat": 10,
+    "Gauss": 20,
+    "Pascal": 9
+  },
+  "totalBytes": 206638757
+}

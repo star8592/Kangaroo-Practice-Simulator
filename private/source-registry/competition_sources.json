@@ -1,0 +1,503 @@
+{
+  "version": 1,
+  "updatedAt": "2026-09-25",
+  "siteMode": "noncommercial-free",
+  "policy": {
+    "defaultPublicQuestionDisplay": false,
+    "defaultCommercialUse": false,
+    "rule": "Collection and internal normalization do not imply republication rights. Public question display requires an explicit rights basis recorded here."
+  },
+  "sources": [
+    {
+      "id": "maa-official-samples",
+      "organization": "Mathematical Association of America",
+      "competitionIds": [
+        "maa-amc8",
+        "maa-amc10",
+        "maa-amc12"
+      ],
+      "countries": [
+        "US"
+      ],
+      "priority": "S",
+      "collection": {
+        "allowed": true,
+        "mode": "official-public-sample"
+      },
+      "rights": {
+        "class": "educational-share",
+        "publicQuestionDisplay": true,
+        "commercialUse": false,
+        "attributionRequired": true,
+        "reviewState": "verified",
+        "basis": "MAA publishes selected Sample Competition resources and official solutions state that educators are encouraged to share competition problems and official solutions with students for educational purposes; revenue-generating publication/reproduction/communication requires written permission.",
+        "evidenceUrls": [
+          "https://maa.org/resource/sample-competition-2022-amc-10-a/",
+          "https://maa.org/wp-content/uploads/2024/08/2022-AMC-10A-solutions.pdf"
+        ]
+      }
+    },
+    {
+      "id": "maa-historical-archive",
+      "organization": "Mathematical Association of America",
+      "competitionIds": [
+        "maa-amc8",
+        "maa-amc10",
+        "maa-amc12",
+        "maa-aime-classic",
+        "maa-aime-2027"
+      ],
+      "countries": [
+        "US"
+      ],
+      "priority": "S",
+      "collection": {
+        "allowed": true,
+        "mode": "internal-index-and-authorized-materials"
+      },
+      "rights": {
+        "class": "educational-share",
+        "publicQuestionDisplay": false,
+        "commercialUse": false,
+        "attributionRequired": true,
+        "reviewState": "permission-or-specific-publication-review",
+        "basis": "Historical contest availability or possession does not by itself establish blanket republication rights. Keep full historical material internal unless a specific public resource, license, or written permission is recorded.",
+        "evidenceUrls": [
+          "https://maa.org/student-programs/amc/",
+          "https://maa.org/wp-content/uploads/2024/08/2022-AMC-10A-solutions.pdf"
+        ]
+      }
+    },
+    {
+      "id": "cemc-official",
+      "organization": "University of Waterloo Centre for Education in Mathematics and Computing",
+      "competitionIds": [
+        "cemc-gauss",
+        "cemc-pascal",
+        "cemc-cayley",
+        "cemc-fermat",
+        "cemc-euclid"
+      ],
+      "countries": [
+        "CA"
+      ],
+      "priority": "S",
+      "collection": {
+        "allowed": true,
+        "mode": "official-past-contests"
+      },
+      "rights": {
+        "class": "open-noncommercial",
+        "publicQuestionDisplay": true,
+        "commercialUse": false,
+        "attributionRequired": true,
+        "reviewState": "verified",
+        "license": "CC BY-NC 4.0",
+        "basis": "CEMC states that materials it owns are licensed under Creative Commons Attribution-NonCommercial 4.0 International and that its resources are available at no cost.",
+        "evidenceUrls": [
+          "https://cemc.uwaterloo.ca/online-ordering-terms-and-conditions",
+          "https://cemc.uwaterloo.ca/resources/past-contests"
+        ]
+      }
+    },
+    {
+      "id": "kangaroo-germany-official",
+      "organization": "Mathematikwettbewerb Känguru e.V.",
+      "competitionIds": [
+        "kangaroo"
+      ],
+      "countries": [
+        "DE"
+      ],
+      "priority": "S",
+      "collection": {
+        "allowed": true,
+        "mode": "official-archive"
+      },
+      "rights": {
+        "class": "review-required",
+        "publicQuestionDisplay": false,
+        "commercialUse": false,
+        "attributionRequired": true,
+        "reviewState": "license-not-yet-recorded",
+        "basis": "Official archive is useful as a source, but public availability is not treated as a republication license.",
+        "evidenceUrls": [
+          "https://www.mathe-kaenguru.de/chronik/aufgaben/"
+        ]
+      }
+    },
+    {
+      "id": "kangaroo-austria-official",
+      "organization": "Känguru der Mathematik Österreich",
+      "competitionIds": [
+        "kangaroo"
+      ],
+      "countries": [
+        "AT"
+      ],
+      "priority": "S",
+      "collection": {
+        "allowed": true,
+        "mode": "official-archive"
+      },
+      "rights": {
+        "class": "review-required",
+        "publicQuestionDisplay": false,
+        "commercialUse": false,
+        "attributionRequired": true,
+        "reviewState": "license-not-yet-recorded",
+        "basis": "Official archive is useful as a source, but public availability is not treated as a republication license.",
+        "evidenceUrls": [
+          "https://www.kaenguru.at/aufgaben.html"
+        ]
+      }
+    },
+    {
+      "id": "kangaroo-netherlands-official",
+      "organization": "W4Kangoeroe",
+      "competitionIds": [
+        "kangaroo"
+      ],
+      "countries": [
+        "NL"
+      ],
+      "priority": "S",
+      "collection": {
+        "allowed": true,
+        "mode": "official-archive"
+      },
+      "rights": {
+        "class": "review-required",
+        "publicQuestionDisplay": false,
+        "commercialUse": false,
+        "attributionRequired": true,
+        "reviewState": "license-not-yet-recorded",
+        "basis": "Official archive is useful as a source, but public availability is not treated as a republication license.",
+        "evidenceUrls": [
+          "https://www.w4kangoeroe.nl/"
+        ]
+      }
+    },
+    {
+      "id": "kangaroo-pakistan-official",
+      "organization": "International Kangaroo Mathematics Contest Pakistan",
+      "competitionIds": [
+        "kangaroo"
+      ],
+      "countries": [
+        "PK"
+      ],
+      "priority": "A",
+      "collection": {
+        "allowed": true,
+        "mode": "official-archive"
+      },
+      "rights": {
+        "class": "review-required",
+        "publicQuestionDisplay": false,
+        "commercialUse": false,
+        "attributionRequired": true,
+        "reviewState": "license-not-yet-recorded",
+        "basis": "Past papers are publicly discoverable on the official site; republication permission must be recorded separately.",
+        "evidenceUrls": [
+          "https://ikmc.kangaroo.org.pk/past_papers/3162"
+        ]
+      }
+    },
+    {
+      "id": "kangaroo-france-official",
+      "organization": "Kangourou Sans Frontières / Kangourou des Mathématiques",
+      "competitionIds": [
+        "kangaroo"
+      ],
+      "countries": [
+        "FR"
+      ],
+      "priority": "A",
+      "collection": {
+        "allowed": true,
+        "mode": "official-archive"
+      },
+      "rights": {
+        "class": "review-required",
+        "publicQuestionDisplay": false,
+        "commercialUse": false,
+        "attributionRequired": true,
+        "reviewState": "license-not-yet-recorded",
+        "basis": "Use the official archive as evidence/source; do not infer a republication license from public access.",
+        "evidenceUrls": [
+          "https://www.mathkang.org/"
+        ]
+      }
+    },
+    {
+      "id": "ukmt-official",
+      "organization": "United Kingdom Mathematics Trust",
+      "competitionIds": [
+        "ukmt-jmc",
+        "ukmt-imc",
+        "ukmt-smc",
+        "ukmt-kangaroo",
+        "ukmt-bmo"
+      ],
+      "countries": [
+        "GB"
+      ],
+      "priority": "S",
+      "collection": {
+        "allowed": true,
+        "mode": "official-past-papers-index"
+      },
+      "rights": {
+        "class": "review-required",
+        "publicQuestionDisplay": false,
+        "commercialUse": false,
+        "attributionRequired": true,
+        "reviewState": "license-not-yet-recorded",
+        "basis": "Index official past-paper resources, but require explicit rights evidence before mirroring full questions.",
+        "evidenceUrls": [
+          "https://ukmt.org.uk/"
+        ]
+      }
+    },
+    {
+      "id": "hmmt-official",
+      "organization": "Harvard-MIT Mathematics Tournament",
+      "competitionIds": [
+        "hmmt"
+      ],
+      "countries": [
+        "US"
+      ],
+      "priority": "A",
+      "collection": {
+        "allowed": true,
+        "mode": "official-problem-archive-index"
+      },
+      "rights": {
+        "class": "review-required",
+        "publicQuestionDisplay": false,
+        "commercialUse": false,
+        "attributionRequired": true,
+        "reviewState": "license-not-yet-recorded",
+        "basis": "Official problem archive may be indexed; mirror/display only after explicit republication terms are recorded.",
+        "evidenceUrls": [
+          "https://www.hmmt.org/www/archive/problems"
+        ]
+      }
+    },
+    {
+      "id": "purple-comet-official",
+      "organization": "Purple Comet! Math Meet",
+      "competitionIds": [
+        "purple-comet-middle",
+        "purple-comet-high"
+      ],
+      "countries": [
+        "US"
+      ],
+      "priority": "A",
+      "collection": {
+        "allowed": true,
+        "mode": "official-index-only"
+      },
+      "rights": {
+        "class": "copyright-restricted",
+        "publicQuestionDisplay": false,
+        "commercialUse": false,
+        "attributionRequired": true,
+        "reviewState": "permission-required",
+        "basis": "The official site states that all content is copyrighted. Keep as an indexed source unless permission is obtained.",
+        "evidenceUrls": [
+          "https://www.purplecomet.org/answers"
+        ]
+      }
+    },
+    {
+      "id": "kangaroo-usa-official",
+      "organization": "Math Kangaroo USA, NFP",
+      "competitionIds": [
+        "kangaroo"
+      ],
+      "countries": [
+        "US"
+      ],
+      "priority": "S",
+      "collection": {
+        "allowed": true,
+        "mode": "official-index-and-free-materials-only"
+      },
+      "rights": {
+        "class": "review-required",
+        "publicQuestionDisplay": false,
+        "commercialUse": false,
+        "attributionRequired": true,
+        "reviewState": "license-not-yet-recorded",
+        "basis": "The official site lists prior exams and distinguishes free and paid practice materials. Public availability or purchase is not treated as a republication license.",
+        "evidenceUrls": [
+          "https://mathkangaroo.org/mks/practice/pdf-exams/",
+          "https://mathkangaroo.org/mks/practice/free-question-samples/"
+        ]
+      }
+    },
+    {
+      "id": "kangaroo-canada-official",
+      "organization": "Canadian Math Kangaroo Contest",
+      "competitionIds": [
+        "kangaroo"
+      ],
+      "countries": [
+        "CA"
+      ],
+      "priority": "A",
+      "collection": {
+        "allowed": true,
+        "mode": "official-samples-index"
+      },
+      "rights": {
+        "class": "review-required",
+        "publicQuestionDisplay": false,
+        "commercialUse": false,
+        "attributionRequired": true,
+        "reviewState": "license-not-yet-recorded",
+        "basis": "Official sample downloads are available, but no project republication license has been recorded.",
+        "evidenceUrls": [
+          "https://mathkangaroo.ca/samples/2015/en"
+        ]
+      }
+    },
+    {
+      "id": "kangaroo-poland-official",
+      "organization": "Towarzystwo Upowszechniania Wiedzy i Nauk Matematycznych",
+      "competitionIds": [
+        "kangaroo"
+      ],
+      "countries": [
+        "PL"
+      ],
+      "priority": "A",
+      "collection": {
+        "allowed": true,
+        "mode": "official-archive"
+      },
+      "rights": {
+        "class": "review-required",
+        "publicQuestionDisplay": false,
+        "commercialUse": false,
+        "attributionRequired": true,
+        "reviewState": "license-not-yet-recorded",
+        "basis": "The official Polish organizer publishes contest PDFs by year and category; public access is not treated as a republication license.",
+        "evidenceUrls": [
+          "https://www.kangur-mat.pl/testy_konkursowe.php"
+        ]
+      }
+    },
+    {
+      "id": "kangaroo-albania-official",
+      "organization": "Kangaroo Albania",
+      "competitionIds": [
+        "kangaroo"
+      ],
+      "countries": [
+        "AL"
+      ],
+      "priority": "A",
+      "collection": {
+        "allowed": true,
+        "mode": "official-archive"
+      },
+      "rights": {
+        "class": "review-required",
+        "publicQuestionDisplay": false,
+        "commercialUse": false,
+        "attributionRequired": true,
+        "reviewState": "license-not-yet-recorded",
+        "basis": "The official download page publishes recent contest tests and answers across six levels; republication permission must be recorded separately.",
+        "evidenceUrls": [
+          "https://www.kangaroo.al/en/download/"
+        ]
+      }
+    },
+    {
+      "id": "amt-australian-amc-official",
+      "organization": "Australian Maths Trust",
+      "competitionIds": [
+        "au-amc",
+        "aimo",
+        "amo"
+      ],
+      "countries": [
+        "AU"
+      ],
+      "priority": "S",
+      "collection": {
+        "allowed": true,
+        "mode": "official-free-index-plus-owned-materials"
+      },
+      "rights": {
+        "class": "review-required",
+        "publicQuestionDisplay": false,
+        "commercialUse": false,
+        "attributionRequired": true,
+        "reviewState": "license-or-purchase-specific",
+        "basis": "AMT publishes some free past materials while many AMC past papers are sold through its shop. Possession or purchase does not imply public republication rights.",
+        "evidenceUrls": [
+          "https://amt.edu.au/department/past-papers",
+          "https://shop.amt.edu.au/collections"
+        ]
+      }
+    },
+    {
+      "id": "mathcounts-official",
+      "organization": "MATHCOUNTS Foundation",
+      "competitionIds": [
+        "mathcounts"
+      ],
+      "countries": [
+        "US"
+      ],
+      "priority": "A",
+      "collection": {
+        "allowed": true,
+        "mode": "official-current-free-index"
+      },
+      "rights": {
+        "class": "review-required",
+        "publicQuestionDisplay": false,
+        "commercialUse": false,
+        "attributionRequired": true,
+        "reviewState": "license-not-yet-recorded",
+        "basis": "MATHCOUNTS publishes selected recent competitions for free and sells access to substantial historical problem collections. Do not mirror full historical materials without permission.",
+        "evidenceUrls": [
+          "https://www.mathcounts.org/resources/past-competitions"
+        ]
+      }
+    },
+    {
+      "id": "imo-official",
+      "organization": "International Mathematical Olympiad",
+      "competitionIds": [
+        "imo"
+      ],
+      "countries": [
+        "INTL"
+      ],
+      "priority": "A",
+      "collection": {
+        "allowed": true,
+        "mode": "official-problem-index"
+      },
+      "rights": {
+        "class": "review-required",
+        "publicQuestionDisplay": false,
+        "commercialUse": false,
+        "attributionRequired": true,
+        "reviewState": "license-not-yet-recorded",
+        "basis": "Official problem archives may be indexed; an explicit republication basis should be recorded before mirroring full content.",
+        "evidenceUrls": [
+          "https://www.imo-official.org/problems.aspx"
+        ]
+      }
+    }
+  ]
+}
