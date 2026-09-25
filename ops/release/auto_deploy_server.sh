@@ -31,6 +31,12 @@ done
   exit 2
 }
 
+# The production checkout can be owned by the deployment account rather than
+# root. Trust only this exact configured application path for this process.
+export GIT_CONFIG_COUNT=1
+export GIT_CONFIG_KEY_0=safe.directory
+export GIT_CONFIG_VALUE_0="$APP"
+
 exec 9>"$LOCK_FILE"
 if ! flock -n 9; then
   log "AUTO_DEPLOY=SKIP reason=another_deploy_running"
