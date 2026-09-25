@@ -54,7 +54,22 @@ export default function ParentDashboard() {
   }
 
   useEffect(() => {
-    void load();
+    let cancelled = false;
+    fetch("/api/family/students", { cache: "no-store" })
+      .then(async (response) => {
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || "加载失败");
+        return data.students || [];
+      })
+      .then((students) => {
+        if (!cancelled) setRows(students);
+      })
+      .catch((e) => {
+        if (!cancelled) setError(e instanceof Error ? e.message : String(e));
+      });
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   async function create(event: FormEvent<HTMLFormElement>) {
