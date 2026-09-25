@@ -11,7 +11,14 @@ function provider(){
   if(p)return p;
   return process.env.NODE_ENV==="production"?"disabled":"outbox";
 }
-export function authEmailStatus(){const p=provider();return{provider:p,enabled:p==="smtp"||p==="resend"||p==="outbox",productionReady:p==="smtp"||p==="resend"}}
+export function authEmailStatus(){
+  const p=provider();
+  const smtpReady=p==="smtp"&&Boolean(process.env.SMTP_HOST?.trim()&&process.env.SMTP_USER?.trim()&&process.env.SMTP_PASS?.trim());
+  const resendReady=p==="resend"&&Boolean(process.env.RESEND_API_KEY?.trim());
+  const outboxReady=p==="outbox"&&process.env.NODE_ENV!=="production";
+  const productionReady=smtpReady||resendReady;
+  return{provider:p,enabled:productionReady||outboxReady,productionReady};
+}
 
 function subject(kind:EmailKind){return kind==="verify-email"?"Socthink 邮箱验证码":"Socthink 重置密码验证码"}
 function textBody(kind:EmailKind,code:string){
