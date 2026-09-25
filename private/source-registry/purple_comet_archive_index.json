@@ -1,0 +1,804 @@
+{
+  "sourceRegistryId": "purple-comet-official",
+  "publicQuestionDisplay": false,
+  "paperCount": 44,
+  "yearRange": [
+    2005,
+    2026
+  ],
+  "records": [
+    {
+      "year": 2005,
+      "level": "high",
+      "resources": [
+        {
+          "label": "Problems",
+          "url": "https://www.purplecomet.org/contest/2005/HS"
+        },
+        {
+          "label": "Answers",
+          "url": "https://www.purplecomet.org/answerlist/2005/2"
+        }
+      ],
+      "sourceRegistryId": "purple-comet-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "year": 2005,
+      "level": "middle",
+      "resources": [
+        {
+          "label": "Problems",
+          "url": "https://www.purplecomet.org/contest/2005/MS"
+        },
+        {
+          "label": "Answers",
+          "url": "https://www.purplecomet.org/answerlist/2005/1"
+        }
+      ],
+      "sourceRegistryId": "purple-comet-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "year": 2006,
+      "level": "high",
+      "resources": [
+        {
+          "label": "Problems",
+          "url": "https://www.purplecomet.org/contest/2006/HS"
+        },
+        {
+          "label": "Answers",
+          "url": "https://www.purplecomet.org/answerlist/2006/2"
+        }
+      ],
+      "sourceRegistryId": "purple-comet-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "year": 2006,
+      "level": "middle",
+      "resources": [
+        {
+          "label": "Problems",
+          "url": "https://www.purplecomet.org/contest/2006/MS"
+        },
+        {
+          "label": "Answers",
+          "url": "https://www.purplecomet.org/answerlist/2006/1"
+        }
+      ],
+      "sourceRegistryId": "purple-comet-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "year": 2007,
+      "level": "high",
+      "resources": [
+        {
+          "label": "Problems",
+          "url": "https://www.purplecomet.org/contest/2007/HS"
+        },
+        {
+          "label": "Answers",
+          "url": "https://www.purplecomet.org/answerlist/2007/2"
+        }
+      ],
+      "sourceRegistryId": "purple-comet-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "year": 2007,
+      "level": "middle",
+      "resources": [
+        {
+          "label": "Problems",
+          "url": "https://www.purplecomet.org/contest/2007/MS"
+        },
+        {
+          "label": "Answers",
+          "url": "https://www.purplecomet.org/answerlist/2007/1"
+        }
+      ],
+      "sourceRegistryId": "purple-comet-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "year": 2008,
+      "level": "high",
+      "resources": [
+        {
+          "label": "Problems",
+          "url": "https://www.purplecomet.org/contest/2008/HS"
+        },
+        {
+          "label": "Answers",
+          "url": "https://www.purplecomet.org/answerlist/2008/2"
+        }
+      ],
+      "sourceRegistryId": "purple-comet-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "year": 2008,
+      "level": "middle",
+      "resources": [
+        {
+          "label": "Problems",
+          "url": "https://www.purplecomet.org/contest/2008/MS"
+        },
+        {
+          "label": "Answers",
+          "url": "https://www.purplecomet.org/answerlist/2008/1"
+        }
+      ],
+      "sourceRegistryId": "purple-comet-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "year": 2009,
+      "level": "high",
+      "resources": [
+        {
+          "label": "Problems",
+          "url": "https://www.purplecomet.org/contest/2009/HS"
+        },
+        {
+          "label": "Answers",
+          "url": "https://www.purplecomet.org/answerlist/2009/2"
+        }
+      ],
+      "sourceRegistryId": "purple-comet-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "year": 2009,
+      "level": "middle",
+      "resources": [
+        {
+          "label": "Problems",
+          "url": "https://www.purplecomet.org/contest/2009/MS"
+        },
+        {
+          "label": "Answers",
+          "url": "https://www.purplecomet.org/answerlist/2009/1"
+        }
+      ],
+      "sourceRegistryId": "purple-comet-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "year": 2010,
+      "level": "high",
+      "resources": [
+        {
+          "label": "Problems",
+          "url": "https://www.purplecomet.org/contest/2010/HS"
+        },
+        {
+          "label": "Answers",
+          "url": "https://www.purplecomet.org/answerlist/2010/2"
+        }
+      ],
+      "sourceRegistryId": "purple-comet-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "year": 2010,
+      "level": "middle",
+      "resources": [
+        {
+          "label": "Problems",
+          "url": "https://www.purplecomet.org/contest/2010/MS"
+        },
+        {
+          "label": "Answers",
+          "url": "https://www.purplecomet.org/answerlist/2010/1"
+        }
+      ],
+      "sourceRegistryId": "purple-comet-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "year": 2011,
+      "level": "high",
+      "resources": [
+        {
+          "label": "Problems",
+          "url": "https://www.purplecomet.org/contest/2011/HS"
+        },
+        {
+          "label": "Answers",
+          "url": "https://www.purplecomet.org/answerlist/2011/2"
+        }
+      ],
+      "sourceRegistryId": "purple-comet-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "year": 2011,
+      "level": "middle",
+      "resources": [
+        {
+          "label": "Problems",
+          "url": "https://www.purplecomet.org/contest/2011/MS"
+        },
+        {
+          "label": "Answers",
+          "url": "https://www.purplecomet.org/answerlist/2011/1"
+        }
+      ],
+      "sourceRegistryId": "purple-comet-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "year": 2012,
+      "level": "high",
+      "resources": [
+        {
+          "label": "Problems",
+          "url": "https://www.purplecomet.org/contest/2012/HS"
+        },
+        {
+          "label": "Answers",
+          "url": "https://www.purplecomet.org/answerlist/2012/2"
+        }
+      ],
+      "sourceRegistryId": "purple-comet-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "year": 2012,
+      "level": "middle",
+      "resources": [
+        {
+          "label": "Problems",
+          "url": "https://www.purplecomet.org/contest/2012/MS"
+        },
+        {
+          "label": "Answers",
+          "url": "https://www.purplecomet.org/answerlist/2012/1"
+        }
+      ],
+      "sourceRegistryId": "purple-comet-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "year": 2013,
+      "level": "high",
+      "resources": [
+        {
+          "label": "Problems",
+          "url": "https://www.purplecomet.org/contest/2013/HS"
+        },
+        {
+          "label": "Answers",
+          "url": "https://www.purplecomet.org/answerlist/2013/2"
+        }
+      ],
+      "sourceRegistryId": "purple-comet-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "year": 2013,
+      "level": "middle",
+      "resources": [
+        {
+          "label": "Problems",
+          "url": "https://www.purplecomet.org/contest/2013/MS"
+        },
+        {
+          "label": "Answers",
+          "url": "https://www.purplecomet.org/answerlist/2013/1"
+        }
+      ],
+      "sourceRegistryId": "purple-comet-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "year": 2014,
+      "level": "high",
+      "resources": [
+        {
+          "label": "Problems",
+          "url": "https://www.purplecomet.org/contest/2014/HS"
+        },
+        {
+          "label": "Answers",
+          "url": "https://www.purplecomet.org/answerlist/2014/2"
+        }
+      ],
+      "sourceRegistryId": "purple-comet-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "year": 2014,
+      "level": "middle",
+      "resources": [
+        {
+          "label": "Problems",
+          "url": "https://www.purplecomet.org/contest/2014/MS"
+        },
+        {
+          "label": "Answers",
+          "url": "https://www.purplecomet.org/answerlist/2014/1"
+        }
+      ],
+      "sourceRegistryId": "purple-comet-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "year": 2015,
+      "level": "high",
+      "resources": [
+        {
+          "label": "Problems",
+          "url": "https://www.purplecomet.org/contest/2015/HS"
+        },
+        {
+          "label": "Answers",
+          "url": "https://www.purplecomet.org/answerlist/2015/2"
+        }
+      ],
+      "sourceRegistryId": "purple-comet-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "year": 2015,
+      "level": "middle",
+      "resources": [
+        {
+          "label": "Problems",
+          "url": "https://www.purplecomet.org/contest/2015/MS"
+        },
+        {
+          "label": "Answers",
+          "url": "https://www.purplecomet.org/answerlist/2015/1"
+        }
+      ],
+      "sourceRegistryId": "purple-comet-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "year": 2016,
+      "level": "high",
+      "resources": [
+        {
+          "label": "Problems",
+          "url": "https://www.purplecomet.org/contest/2016/HS"
+        },
+        {
+          "label": "Answers",
+          "url": "https://www.purplecomet.org/answerlist/2016/2"
+        }
+      ],
+      "sourceRegistryId": "purple-comet-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "year": 2016,
+      "level": "middle",
+      "resources": [
+        {
+          "label": "Problems",
+          "url": "https://www.purplecomet.org/contest/2016/MS"
+        },
+        {
+          "label": "Answers",
+          "url": "https://www.purplecomet.org/answerlist/2016/1"
+        }
+      ],
+      "sourceRegistryId": "purple-comet-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "year": 2017,
+      "level": "high",
+      "resources": [
+        {
+          "label": "Problems",
+          "url": "https://www.purplecomet.org/contest/2017/HS"
+        },
+        {
+          "label": "Answers",
+          "url": "https://www.purplecomet.org/answerlist/2017/2"
+        }
+      ],
+      "sourceRegistryId": "purple-comet-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "year": 2017,
+      "level": "middle",
+      "resources": [
+        {
+          "label": "Problems",
+          "url": "https://www.purplecomet.org/contest/2017/MS"
+        },
+        {
+          "label": "Answers",
+          "url": "https://www.purplecomet.org/answerlist/2017/1"
+        }
+      ],
+      "sourceRegistryId": "purple-comet-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "year": 2018,
+      "level": "high",
+      "resources": [
+        {
+          "label": "Problems",
+          "url": "https://www.purplecomet.org/contest/2018/HS"
+        },
+        {
+          "label": "Answers",
+          "url": "https://www.purplecomet.org/answerlist/2018/2"
+        }
+      ],
+      "sourceRegistryId": "purple-comet-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "year": 2018,
+      "level": "middle",
+      "resources": [
+        {
+          "label": "Problems",
+          "url": "https://www.purplecomet.org/contest/2018/MS"
+        },
+        {
+          "label": "Answers",
+          "url": "https://www.purplecomet.org/answerlist/2018/1"
+        }
+      ],
+      "sourceRegistryId": "purple-comet-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "year": 2019,
+      "level": "high",
+      "resources": [
+        {
+          "label": "Problems",
+          "url": "https://www.purplecomet.org/contest/2019/HS"
+        },
+        {
+          "label": "Answers",
+          "url": "https://www.purplecomet.org/answerlist/2019/2"
+        }
+      ],
+      "sourceRegistryId": "purple-comet-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "year": 2019,
+      "level": "middle",
+      "resources": [
+        {
+          "label": "Problems",
+          "url": "https://www.purplecomet.org/contest/2019/MS"
+        },
+        {
+          "label": "Answers",
+          "url": "https://www.purplecomet.org/answerlist/2019/1"
+        }
+      ],
+      "sourceRegistryId": "purple-comet-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "year": 2020,
+      "level": "high",
+      "resources": [
+        {
+          "label": "Problems",
+          "url": "https://www.purplecomet.org/contest/2020/HS"
+        },
+        {
+          "label": "Answers",
+          "url": "https://www.purplecomet.org/answerlist/2020/2"
+        }
+      ],
+      "sourceRegistryId": "purple-comet-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "year": 2020,
+      "level": "middle",
+      "resources": [
+        {
+          "label": "Problems",
+          "url": "https://www.purplecomet.org/contest/2020/MS"
+        },
+        {
+          "label": "Answers",
+          "url": "https://www.purplecomet.org/answerlist/2020/1"
+        }
+      ],
+      "sourceRegistryId": "purple-comet-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "year": 2021,
+      "level": "high",
+      "resources": [
+        {
+          "label": "Problems",
+          "url": "https://www.purplecomet.org/contest/2021/HS"
+        },
+        {
+          "label": "Answers",
+          "url": "https://www.purplecomet.org/answerlist/2021/2"
+        }
+      ],
+      "sourceRegistryId": "purple-comet-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "year": 2021,
+      "level": "middle",
+      "resources": [
+        {
+          "label": "Problems",
+          "url": "https://www.purplecomet.org/contest/2021/MS"
+        },
+        {
+          "label": "Answers",
+          "url": "https://www.purplecomet.org/answerlist/2021/1"
+        }
+      ],
+      "sourceRegistryId": "purple-comet-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "year": 2022,
+      "level": "high",
+      "resources": [
+        {
+          "label": "Problems",
+          "url": "https://www.purplecomet.org/contest/2022/HS"
+        },
+        {
+          "label": "Answers",
+          "url": "https://www.purplecomet.org/answerlist/2022/2"
+        }
+      ],
+      "sourceRegistryId": "purple-comet-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "year": 2022,
+      "level": "middle",
+      "resources": [
+        {
+          "label": "Problems",
+          "url": "https://www.purplecomet.org/contest/2022/MS"
+        },
+        {
+          "label": "Answers",
+          "url": "https://www.purplecomet.org/answerlist/2022/1"
+        }
+      ],
+      "sourceRegistryId": "purple-comet-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "year": 2023,
+      "level": "high",
+      "resources": [
+        {
+          "label": "Problems",
+          "url": "https://www.purplecomet.org/contest/2023/HS"
+        },
+        {
+          "label": "Answers",
+          "url": "https://www.purplecomet.org/answerlist/2023/2"
+        }
+      ],
+      "sourceRegistryId": "purple-comet-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "year": 2023,
+      "level": "middle",
+      "resources": [
+        {
+          "label": "Problems",
+          "url": "https://www.purplecomet.org/contest/2023/MS"
+        },
+        {
+          "label": "Answers",
+          "url": "https://www.purplecomet.org/answerlist/2023/1"
+        }
+      ],
+      "sourceRegistryId": "purple-comet-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "year": 2024,
+      "level": "high",
+      "resources": [
+        {
+          "label": "Problems",
+          "url": "https://www.purplecomet.org/contest/2024/HS"
+        },
+        {
+          "label": "Answers",
+          "url": "https://www.purplecomet.org/answerlist/2024/2"
+        }
+      ],
+      "sourceRegistryId": "purple-comet-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "year": 2024,
+      "level": "middle",
+      "resources": [
+        {
+          "label": "Problems",
+          "url": "https://www.purplecomet.org/contest/2024/MS"
+        },
+        {
+          "label": "Answers",
+          "url": "https://www.purplecomet.org/answerlist/2024/1"
+        }
+      ],
+      "sourceRegistryId": "purple-comet-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "year": 2025,
+      "level": "high",
+      "resources": [
+        {
+          "label": "Problems",
+          "url": "https://www.purplecomet.org/contest/2025/HS"
+        },
+        {
+          "label": "Answers",
+          "url": "https://www.purplecomet.org/answerlist/2025/2"
+        }
+      ],
+      "sourceRegistryId": "purple-comet-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "year": 2025,
+      "level": "middle",
+      "resources": [
+        {
+          "label": "Problems",
+          "url": "https://www.purplecomet.org/contest/2025/MS"
+        },
+        {
+          "label": "Answers",
+          "url": "https://www.purplecomet.org/answerlist/2025/1"
+        }
+      ],
+      "sourceRegistryId": "purple-comet-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "year": 2026,
+      "level": "high",
+      "resources": [
+        {
+          "label": "Problems",
+          "url": "https://www.purplecomet.org/contest/2026/HS"
+        },
+        {
+          "label": "Answers",
+          "url": "https://www.purplecomet.org/answerlist/2026/2"
+        }
+      ],
+      "sourceRegistryId": "purple-comet-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "year": 2026,
+      "level": "middle",
+      "resources": [
+        {
+          "label": "Problems",
+          "url": "https://www.purplecomet.org/contest/2026/MS"
+        },
+        {
+          "label": "Answers",
+          "url": "https://www.purplecomet.org/answerlist/2026/1"
+        }
+      ],
+      "sourceRegistryId": "purple-comet-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    }
+  ],
+  "generatedAt": "2026-09-26"
+}

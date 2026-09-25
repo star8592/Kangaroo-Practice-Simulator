@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+from datetime import date
 import json
 import os
 import re
@@ -147,7 +148,7 @@ def main() -> None:
             for k in by_series
         },
     }
-    payload = {"generatedAt": "2026-09-25", "summary": summary, "records": records}
+    payload = {"generatedAt": date.today().isoformat(), "summary": summary, "records": records}
     OUT.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n")
     print(json.dumps(summary, ensure_ascii=False))
 

@@ -97,6 +97,20 @@
       "nextAction": "collect-internally-and-complete-rights-review"
     },
     {
+      "sourceRegistryId": "maa-math-club-practice",
+      "priority": "S",
+      "organization": "Mathematical Association of America",
+      "competitionIds": [
+        "maa-amc8",
+        "maa-amc10",
+        "maa-amc12"
+      ],
+      "collectionMode": "official-public-practice-index",
+      "publicQuestionDisplay": false,
+      "reviewState": "specific-republication-review-required",
+      "nextAction": "collect-internally-and-complete-rights-review"
+    },
+    {
       "sourceRegistryId": "maa-official-samples",
       "priority": "S",
       "organization": "Mathematical Association of America",
@@ -202,6 +216,18 @@
       "sourceRegistryId": "kangaroo-poland-official",
       "priority": "A",
       "organization": "Towarzystwo Upowszechniania Wiedzy i Nauk Matematycznych",
+      "competitionIds": [
+        "kangaroo"
+      ],
+      "collectionMode": "official-archive",
+      "publicQuestionDisplay": false,
+      "reviewState": "license-not-yet-recorded",
+      "nextAction": "collect-internally-and-complete-rights-review"
+    },
+    {
+      "sourceRegistryId": "kangaroo-portugal-official",
+      "priority": "A",
+      "organization": "Departamento de Matemática da Universidade de Coimbra / Canguru Matemático sem Fronteiras",
       "competitionIds": [
         "kangaroo"
       ],

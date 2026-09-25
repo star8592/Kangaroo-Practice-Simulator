@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+from datetime import date
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -28,7 +29,7 @@ def main() -> None:
     order = {"S": 0, "A": 1, "B": 2, "C": 3}
     items.sort(key=lambda x: (order.get(x["priority"], 99), x["sourceRegistryId"]))
     OUT.write_text(json.dumps({
-        "generatedAt": "2026-09-25",
+        "generatedAt": date.today().isoformat(),
         "count": len(items),
         "items": items,
     }, ensure_ascii=False, indent=2) + "\n")

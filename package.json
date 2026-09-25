@@ -12,7 +12,7 @@
     "admin:create": "node scripts/create_admin.mjs",
     "test:smoke": "python3 scripts/smoke_test.py",
     "test:brand": "python3 scripts/brand_audit.py",
-    "prebuild": "npm run test:rights && python3 scripts/brand_audit.py && npm run test:arithmetic-print && npm run test:competition-identity && npm run test:maa && npm run test:maa-library && npm run test:aime-sections && npm run test:maa-smart && npm run test:solution-books && npm run test:verified-storyboards && npm run test:maa-verified-store",
+    "prebuild": "npm run test:rights && npm run test:rights-bindings && python3 scripts/brand_audit.py && npm run test:arithmetic-print && npm run test:competition-identity && npm run test:maa && npm run test:maa-library && npm run test:aime-sections && npm run test:maa-smart && npm run test:solution-books && npm run test:verified-storyboards && npm run test:maa-verified-store",
     "test:maa": "tsx scripts/test_maa_scoring.ts",
     "test:maa-library": "python3 scripts/validate_maa_library.py",
     "test:competition-identity": "python3 scripts/test_competition_identity.py",
@@ -44,7 +44,12 @@
     "data:cemc-import": "python3 scripts/import_cemc_objective.py",
     "test:cemc-objective": "python3 scripts/validate_cemc_objective.py",
     "data:cemc-euclid": "python3 scripts/digitize_cemc_euclid.py",
-    "test:cemc-euclid": "python3 scripts/validate_cemc_euclid.py"
+    "test:cemc-euclid": "python3 scripts/validate_cemc_euclid.py",
+    "test:rights-bindings": "python3 scripts/audit_competition_rights_bindings.py",
+    "data:maa-index": "python3 scripts/collect_maa_archive_index.py",
+    "data:maa-queue": "python3 scripts/build_maa_collection_queue.py",
+    "data:hmmt-index": "python3 scripts/collect_hmmt_archive_index.py",
+    "data:purple-comet-index": "python3 scripts/collect_purple_comet_index.py"
   },
   "dependencies": {
     "next": "16.3.5",

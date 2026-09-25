@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-25",
-  "count": 16,
+  "generatedAt": "2026-09-26",
+  "count": 18,
   "items": [
     {
       "sourceRegistryId": "amt-australian-amc-official",
@@ -92,6 +92,22 @@
       "evidenceUrls": [
         "https://maa.org/student-programs/amc/",
         "https://maa.org/wp-content/uploads/2024/08/2022-AMC-10A-solutions.pdf"
+      ],
+      "nextAction": "obtain-or-document-explicit-republication-basis-before-public-question-display"
+    },
+    {
+      "sourceRegistryId": "maa-math-club-practice",
+      "organization": "Mathematical Association of America",
+      "competitionIds": [
+        "maa-amc8",
+        "maa-amc10",
+        "maa-amc12"
+      ],
+      "priority": "S",
+      "reviewState": "specific-republication-review-required",
+      "rightsClass": "review-required",
+      "evidenceUrls": [
+        "https://connect.maa.org/viewdocument/problem-sets?CommunityKey=23b1e210-33fb-4cc6-b294-019eb20eba58&tab=librarydocuments"
       ],
       "nextAction": "obtain-or-document-explicit-republication-basis-before-public-question-display"
     },
@@ -208,6 +224,20 @@
       "rightsClass": "review-required",
       "evidenceUrls": [
         "https://www.kangur-mat.pl/testy_konkursowe.php"
+      ],
+      "nextAction": "obtain-or-document-explicit-republication-basis-before-public-question-display"
+    },
+    {
+      "sourceRegistryId": "kangaroo-portugal-official",
+      "organization": "Departamento de Matemática da Universidade de Coimbra / Canguru Matemático sem Fronteiras",
+      "competitionIds": [
+        "kangaroo"
+      ],
+      "priority": "A",
+      "reviewState": "license-not-yet-recorded",
+      "rightsClass": "review-required",
+      "evidenceUrls": [
+        "https://www.mat.uc.pt/canguru/arquivo.html"
       ],
       "nextAction": "obtain-or-document-explicit-republication-basis-before-public-question-display"
     },

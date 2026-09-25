@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-09-25",
+  "updatedAt": "2026-09-26",
   "siteMode": "noncommercial-free",
   "policy": {
     "defaultPublicQuestionDisplay": false,
@@ -496,6 +496,60 @@
         "basis": "Official problem archives may be indexed; an explicit republication basis should be recorded before mirroring full content.",
         "evidenceUrls": [
           "https://www.imo-official.org/problems.aspx"
+        ]
+      }
+    },
+    {
+      "id": "maa-math-club-practice",
+      "organization": "Mathematical Association of America",
+      "competitionIds": [
+        "maa-amc8",
+        "maa-amc10",
+        "maa-amc12"
+      ],
+      "countries": [
+        "US"
+      ],
+      "priority": "S",
+      "collection": {
+        "allowed": true,
+        "mode": "official-public-practice-index"
+      },
+      "rights": {
+        "class": "review-required",
+        "publicQuestionDisplay": false,
+        "commercialUse": false,
+        "attributionRequired": true,
+        "reviewState": "specific-republication-review-required",
+        "basis": "MAA publishes Math Club Resource Hub problem sets for educators and student use, but the project has not recorded an explicit license permitting republication of the full sets on a third-party website. Keep collected copies internal until that basis is documented.",
+        "evidenceUrls": [
+          "https://connect.maa.org/viewdocument/problem-sets?CommunityKey=23b1e210-33fb-4cc6-b294-019eb20eba58&tab=librarydocuments"
+        ]
+      }
+    },
+    {
+      "id": "kangaroo-portugal-official",
+      "organization": "Departamento de Matemática da Universidade de Coimbra / Canguru Matemático sem Fronteiras",
+      "competitionIds": [
+        "kangaroo"
+      ],
+      "countries": [
+        "PT"
+      ],
+      "priority": "A",
+      "collection": {
+        "allowed": true,
+        "mode": "official-archive"
+      },
+      "rights": {
+        "class": "review-required",
+        "publicQuestionDisplay": false,
+        "commercialUse": false,
+        "attributionRequired": true,
+        "reviewState": "license-not-yet-recorded",
+        "basis": "The University of Coimbra archive publishes past contest papers and solutions. Public availability is recorded as a source, not as a blanket third-party republication license.",
+        "evidenceUrls": [
+          "https://www.mat.uc.pt/canguru/arquivo.html"
         ]
       }
     }
