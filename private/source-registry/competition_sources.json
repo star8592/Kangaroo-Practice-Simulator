@@ -246,17 +246,19 @@
       "priority": "S",
       "collection": {
         "allowed": true,
-        "mode": "official-past-papers-index"
+        "mode": "official-metadata-index-and-permitted-single-question-use"
       },
       "rights": {
-        "class": "review-required",
+        "class": "copyright-restricted",
         "publicQuestionDisplay": false,
         "commercialUse": false,
         "attributionRequired": true,
-        "reviewState": "license-not-yet-recorded",
-        "basis": "Index official past-paper resources, but require explicit rights evidence before mirroring full questions.",
+        "reviewState": "permission-required",
+        "basis": "UKMT states that published materials are protected by copyright and may not be copied or made available electronically in whole or in part without permission, except limited internal use by UKMT centres. UKMT permits public-facing discussion of an individual question and solution under its stated policy, but not systematic publication or analysis of multiple questions without permission.",
         "evidenceUrls": [
-          "https://ukmt.org.uk/"
+          "https://ukmt.org.uk/wp-content/uploads/2023/08/UKMT-Policy_-Use-of-UKMT-Intellectual-Property.docx.pdf",
+          "https://ukmt.org.uk/wp-content/uploads/2024/04/Use-of-UKMT-Material.pdf",
+          "https://ukmt.org.uk/past-papers"
         ]
       }
     },

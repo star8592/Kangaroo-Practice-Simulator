@@ -122,10 +122,12 @@
         "ukmt-bmo"
       ],
       "priority": "S",
-      "reviewState": "license-not-yet-recorded",
-      "rightsClass": "review-required",
+      "reviewState": "permission-required",
+      "rightsClass": "copyright-restricted",
       "evidenceUrls": [
-        "https://ukmt.org.uk/"
+        "https://ukmt.org.uk/wp-content/uploads/2023/08/UKMT-Policy_-Use-of-UKMT-Intellectual-Property.docx.pdf",
+        "https://ukmt.org.uk/wp-content/uploads/2024/04/Use-of-UKMT-Material.pdf",
+        "https://ukmt.org.uk/past-papers"
       ],
       "nextAction": "obtain-or-document-explicit-republication-basis-before-public-question-display"
     },

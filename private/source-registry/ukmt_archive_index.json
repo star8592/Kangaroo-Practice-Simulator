@@ -1,0 +1,734 @@
+{
+  "generatedAt": "2026-09-26",
+  "sourceRegistryId": "ukmt-official",
+  "publicQuestionDisplay": false,
+  "seasonRange": [
+    "2017-2018",
+    "2025-2026"
+  ],
+  "seasonCount": 9,
+  "resourceCount": 71,
+  "byCompetitionId": {
+    "ukmt-bmo": 21,
+    "ukmt-other": 5,
+    "ukmt-jmc": 6,
+    "ukmt-olympiad": 18,
+    "ukmt-kangaroo": 8,
+    "ukmt-imc": 2,
+    "ukmt-mcg": 3,
+    "ukmt-mog": 4,
+    "ukmt-smc": 4
+  },
+  "records": [
+    {
+      "season": "2017-2018",
+      "title": "British Mathematical Olympiad Round 1  2017-18: Solutions",
+      "competitionId": "ukmt-bmo",
+      "resourceUrl": "https://ukmt.org.uk/video-solutions/british-mathematical-olympiad-round-1-2017-18-solutions",
+      "sourceRegistryId": "ukmt-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "season": "2018-2019",
+      "title": "British Mathematical Olympiad 1 – 2018",
+      "competitionId": "ukmt-bmo",
+      "resourceUrl": "https://ukmt.org.uk/free-past-papers/british-mathematical-olympiad-1-2018",
+      "sourceRegistryId": "ukmt-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "season": "2018-2019",
+      "title": "British Mathematical Olympiad Round 1  2018-19: Solutions",
+      "competitionId": "ukmt-bmo",
+      "resourceUrl": "https://ukmt.org.uk/video-solutions/british-mathematical-olympiad-round-1-2018-19-solutions",
+      "sourceRegistryId": "ukmt-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "season": "2018-2019",
+      "title": "Senior Team Maths Challenge National Final – 2018/19",
+      "competitionId": "ukmt-other",
+      "resourceUrl": "https://ukmt.org.uk/free-past-papers/senior-team-maths-challenge-national-final-2018-19",
+      "sourceRegistryId": "ukmt-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "season": "2018-2019",
+      "title": "Senior Team Maths Challenge – 2018/19",
+      "competitionId": "ukmt-other",
+      "resourceUrl": "https://ukmt.org.uk/free-past-papers/senior-team-maths-challenge-2018-19",
+      "sourceRegistryId": "ukmt-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "season": "2019-2020",
+      "title": "British Mathematical Olympiad 1 – 2019",
+      "competitionId": "ukmt-bmo",
+      "resourceUrl": "https://ukmt.org.uk/free-past-papers/british-mathematical-olympiad-1-2019",
+      "sourceRegistryId": "ukmt-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "season": "2019-2020",
+      "title": "British Mathematical Olympiad Round 1  2019-20: Solutions",
+      "competitionId": "ukmt-bmo",
+      "resourceUrl": "https://ukmt.org.uk/video-solutions/british-mathematical-olympiad-round-1-2019-20-solutions-2",
+      "sourceRegistryId": "ukmt-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "season": "2019-2020",
+      "title": "Senior Team Maths Challenge National Final – 2019/20",
+      "competitionId": "ukmt-other",
+      "resourceUrl": "https://ukmt.org.uk/free-past-papers/senior-team-maths-challenge-national-final-2019-20",
+      "sourceRegistryId": "ukmt-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "season": "2020-2021",
+      "title": "British Mathematical Olympiad 1 – 2020",
+      "competitionId": "ukmt-bmo",
+      "resourceUrl": "https://ukmt.org.uk/free-past-papers/british-mathematical-olympiad-1-2020",
+      "sourceRegistryId": "ukmt-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "season": "2020-2021",
+      "title": "British Mathematical Olympiad Round 1  2020-21: Solutions",
+      "competitionId": "ukmt-bmo",
+      "resourceUrl": "https://ukmt.org.uk/video-solutions/british-mathematical-olympiad-round-1-2020-21-solutions-2",
+      "sourceRegistryId": "ukmt-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "season": "2021-2022",
+      "title": "British Mathematical Olympiad 1 – 2021",
+      "competitionId": "ukmt-bmo",
+      "resourceUrl": "https://ukmt.org.uk/free-past-papers/british-mathematical-olympiad-2021",
+      "sourceRegistryId": "ukmt-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "season": "2021-2022",
+      "title": "British Mathematical Olympiad Round 1  2021-22: Solutions",
+      "competitionId": "ukmt-bmo",
+      "resourceUrl": "https://ukmt.org.uk/video-solutions/british-mathematical-olympiad-round-1-2021-22-solutions-2",
+      "sourceRegistryId": "ukmt-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "season": "2022-2023",
+      "title": "British Mathematical Olympiad 1 – 2022",
+      "competitionId": "ukmt-bmo",
+      "resourceUrl": "https://ukmt.org.uk/free-past-papers/british-mathematical-olympiad-2022",
+      "sourceRegistryId": "ukmt-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "season": "2022-2023",
+      "title": "British Mathematical Olympiad Round 1  2022-23: Solutions",
+      "competitionId": "ukmt-bmo",
+      "resourceUrl": "https://ukmt.org.uk/video-solutions/british-mathematical-olympiad-round-1-2023-24-solutions",
+      "sourceRegistryId": "ukmt-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "season": "2023-2024",
+      "title": "British Mathematical Olympiad 1 – 2023",
+      "competitionId": "ukmt-bmo",
+      "resourceUrl": "https://ukmt.org.uk/free-past-papers/british-mathematical-olympiad-1-2023",
+      "sourceRegistryId": "ukmt-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "season": "2023-2024",
+      "title": "British Mathematical Olympiad 2 – 2023",
+      "competitionId": "ukmt-bmo",
+      "resourceUrl": "https://ukmt.org.uk/free-past-papers/british-mathematical-olympiad-round-2-2023",
+      "sourceRegistryId": "ukmt-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "season": "2023-2024",
+      "title": "British Mathematical Olympiad Round 1  2023-24: Solutions",
+      "competitionId": "ukmt-bmo",
+      "resourceUrl": "https://ukmt.org.uk/video-solutions/british-mathematical-olympiad-round-1-2023-24-solutions-2",
+      "sourceRegistryId": "ukmt-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "season": "2023-2024",
+      "title": "British Mathematical Olympiad Round 2 2023-24 – Solutions",
+      "competitionId": "ukmt-bmo",
+      "resourceUrl": "https://ukmt.org.uk/video-solutions/british-mathematical-olympiad-round-round-2-2023-24-solutions",
+      "sourceRegistryId": "ukmt-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "season": "2023-2024",
+      "title": "Junior Mathematical Challenge – 2024",
+      "competitionId": "ukmt-jmc",
+      "resourceUrl": "https://ukmt.org.uk/free-past-papers/junior-mathematical-challenge-2024",
+      "sourceRegistryId": "ukmt-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "season": "2023-2024",
+      "title": "Junior Mathematical Challenge – Solutions 2023-2024",
+      "competitionId": "ukmt-jmc",
+      "resourceUrl": "https://ukmt.org.uk/video-solutions/junior-mathematical-challenge-2024-solutions-2",
+      "sourceRegistryId": "ukmt-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "season": "2023-2024",
+      "title": "Junior Mathematical Olympiad 2024: Solutions",
+      "competitionId": "ukmt-olympiad",
+      "resourceUrl": "https://ukmt.org.uk/video-solutions/junior-mathematical-olympiad",
+      "sourceRegistryId": "ukmt-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "season": "2023-2024",
+      "title": "Junior Mathematical Olympiad – 2024",
+      "competitionId": "ukmt-olympiad",
+      "resourceUrl": "https://ukmt.org.uk/free-past-papers/junior-mathematical-olympiad-2024",
+      "sourceRegistryId": "ukmt-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "season": "2024-2025",
+      "title": "BMO1 2024-25: Solutions",
+      "competitionId": "ukmt-bmo",
+      "resourceUrl": "https://ukmt.org.uk/video-solutions/bmo1-2024-25",
+      "sourceRegistryId": "ukmt-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "season": "2024-2025",
+      "title": "BMO2 2024-25: Solutions",
+      "competitionId": "ukmt-bmo",
+      "resourceUrl": "https://ukmt.org.uk/video-solutions/bmo2-2024-25-solutions",
+      "sourceRegistryId": "ukmt-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "season": "2024-2025",
+      "title": "Cayley Olympiad 2025: Solutions",
+      "competitionId": "ukmt-olympiad",
+      "resourceUrl": "https://ukmt.org.uk/video-solutions/cayley-olympiad-2025-solutions",
+      "sourceRegistryId": "ukmt-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "season": "2024-2025",
+      "title": "Cayley Olympiad – 2025",
+      "competitionId": "ukmt-olympiad",
+      "resourceUrl": "https://ukmt.org.uk/free-past-papers/cayley-mathematical-olympiad-2025",
+      "sourceRegistryId": "ukmt-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "season": "2024-2025",
+      "title": "Grey Kangaroo – 2025",
+      "competitionId": "ukmt-kangaroo",
+      "resourceUrl": "https://ukmt.org.uk/free-past-papers/grey-kangaroo-2025",
+      "sourceRegistryId": "ukmt-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "season": "2024-2025",
+      "title": "Hamilton Olympiad 2025: Solutions",
+      "competitionId": "ukmt-olympiad",
+      "resourceUrl": "https://ukmt.org.uk/video-solutions/hamilton-olympiad-2025",
+      "sourceRegistryId": "ukmt-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "season": "2024-2025",
+      "title": "Hamilton Olympiad – 2025",
+      "competitionId": "ukmt-olympiad",
+      "resourceUrl": "https://ukmt.org.uk/free-past-papers/hamilton-mathematical-olympiad-2025",
+      "sourceRegistryId": "ukmt-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "season": "2024-2025",
+      "title": "Intermediate Mathematical Challenge 2025: Solutions",
+      "competitionId": "ukmt-imc",
+      "resourceUrl": "https://ukmt.org.uk/video-solutions/imc-2025-solutions-available-from-friday-31st-jan",
+      "sourceRegistryId": "ukmt-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "season": "2024-2025",
+      "title": "Junior Mathematical Challenge 2025: Solutions",
+      "competitionId": "ukmt-jmc",
+      "resourceUrl": "https://ukmt.org.uk/video-solutions/junior-mathematical-challenge-2025-solutions",
+      "sourceRegistryId": "ukmt-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "season": "2024-2025",
+      "title": "Junior Mathematical Challenge – 2025",
+      "competitionId": "ukmt-jmc",
+      "resourceUrl": "https://ukmt.org.uk/free-past-papers/junior-mathematical-challenge-2025",
+      "sourceRegistryId": "ukmt-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "season": "2024-2025",
+      "title": "Junior Mathematical Olympiad 2025: Solutions",
+      "competitionId": "ukmt-olympiad",
+      "resourceUrl": "https://ukmt.org.uk/video-solutions/junior-mathematical-olympiad-2025",
+      "sourceRegistryId": "ukmt-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "season": "2024-2025",
+      "title": "Junior Mathematical Olympiad – 2025",
+      "competitionId": "ukmt-olympiad",
+      "resourceUrl": "https://ukmt.org.uk/free-past-papers/junior-mathematical-olympiad-2025",
+      "sourceRegistryId": "ukmt-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "season": "2024-2025",
+      "title": "Maclaurin Olympiad 2025: Solutions",
+      "competitionId": "ukmt-olympiad",
+      "resourceUrl": "https://ukmt.org.uk/video-solutions/maclaurin-olympiad-2025-solutions",
+      "sourceRegistryId": "ukmt-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "season": "2024-2025",
+      "title": "Maclaurin Olympiad – 2025",
+      "competitionId": "ukmt-olympiad",
+      "resourceUrl": "https://ukmt.org.uk/free-past-papers/maclaurin-mathematical-olympiad-2025",
+      "sourceRegistryId": "ukmt-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "season": "2024-2025",
+      "title": "Mathematical Competition for Girls – Sample Paper 1",
+      "competitionId": "ukmt-mcg",
+      "resourceUrl": "https://ukmt.org.uk/free-past-papers/mathematical-competition-for-girls-sample-paper-1",
+      "sourceRegistryId": "ukmt-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "season": "2024-2025",
+      "title": "Mathematical Olympiad for Girls 2024: Solutions",
+      "competitionId": "ukmt-mog",
+      "resourceUrl": "https://ukmt.org.uk/video-solutions/mathematical-olympiad-for-girls-2024-solutions",
+      "sourceRegistryId": "ukmt-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "season": "2024-2025",
+      "title": "Mathematical Olympiad for Girls – 2024",
+      "competitionId": "ukmt-mog",
+      "resourceUrl": "https://ukmt.org.uk/free-past-papers/mathematical-olympiad-for-girls-2024",
+      "sourceRegistryId": "ukmt-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "season": "2024-2025",
+      "title": "Pink Kangaroo – 2025",
+      "competitionId": "ukmt-kangaroo",
+      "resourceUrl": "https://ukmt.org.uk/free-past-papers/pink-kangaroo-2025",
+      "sourceRegistryId": "ukmt-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "season": "2024-2025",
+      "title": "Senior Kangaroo – 2024",
+      "competitionId": "ukmt-kangaroo",
+      "resourceUrl": "https://ukmt.org.uk/free-past-papers/senior-kangaroo-2024",
+      "sourceRegistryId": "ukmt-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "season": "2024-2025",
+      "title": "Senior Mathematical Challenge 2024: Solutions",
+      "competitionId": "ukmt-smc",
+      "resourceUrl": "https://ukmt.org.uk/video-solutions/senior-mathematical-challenge-2024-solutions",
+      "sourceRegistryId": "ukmt-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "season": "2024-2025",
+      "title": "Senior Mathematical Challenge – 2024",
+      "competitionId": "ukmt-smc",
+      "resourceUrl": "https://ukmt.org.uk/free-past-papers/senior-mathematical-challenge-2024",
+      "sourceRegistryId": "ukmt-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "season": "2024-2025",
+      "title": "Team Maths Challenge – National Final 2025",
+      "competitionId": "ukmt-other",
+      "resourceUrl": "https://ukmt.org.uk/free-past-papers/team-maths-challenge-national-final-2025",
+      "sourceRegistryId": "ukmt-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "season": "2024-2025",
+      "title": "Team Maths Challenge – Regional Final 2025",
+      "competitionId": "ukmt-other",
+      "resourceUrl": "https://ukmt.org.uk/free-past-papers/team-maths-challenge-regional-final-2025",
+      "sourceRegistryId": "ukmt-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "season": "2025-2026",
+      "title": "British Mathematical Olympiad 1 – 2025",
+      "competitionId": "ukmt-bmo",
+      "resourceUrl": "https://ukmt.org.uk/free-past-papers/british-mathematical-olympiad-round-1-2025",
+      "sourceRegistryId": "ukmt-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "season": "2025-2026",
+      "title": "British Mathematical Olympiad 2 – 2026",
+      "competitionId": "ukmt-bmo",
+      "resourceUrl": "https://ukmt.org.uk/free-past-papers/british-mathematical-olympiad-2-2026",
+      "sourceRegistryId": "ukmt-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "season": "2025-2026",
+      "title": "British Mathematical Olympiad Round 1 2025: Solutions",
+      "competitionId": "ukmt-bmo",
+      "resourceUrl": "https://ukmt.org.uk/video-solutions/british-mathematical-olympiad-round-1-2025-solutions",
+      "sourceRegistryId": "ukmt-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "season": "2025-2026",
+      "title": "British Mathematical Olympiad Round 2 2026: Solutions",
+      "competitionId": "ukmt-bmo",
+      "resourceUrl": "https://ukmt.org.uk/video-solutions/british-mathematical-olympiad-round-2-2026",
+      "sourceRegistryId": "ukmt-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "season": "2025-2026",
+      "title": "Cayley Olympiad 2026: Solutions",
+      "competitionId": "ukmt-olympiad",
+      "resourceUrl": "https://ukmt.org.uk/video-solutions/cayley-olympiad-2026-solutions",
+      "sourceRegistryId": "ukmt-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "season": "2025-2026",
+      "title": "Cayley Olympiad – 2026",
+      "competitionId": "ukmt-olympiad",
+      "resourceUrl": "https://ukmt.org.uk/free-past-papers/cayley-olympiad-2026",
+      "sourceRegistryId": "ukmt-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "season": "2025-2026",
+      "title": "Grey Kangaroo – 2026",
+      "competitionId": "ukmt-kangaroo",
+      "resourceUrl": "https://ukmt.org.uk/free-past-papers/grey-kangaroo-2026",
+      "sourceRegistryId": "ukmt-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "season": "2025-2026",
+      "title": "Hamilton Olympiad 2026: Solutions",
+      "competitionId": "ukmt-olympiad",
+      "resourceUrl": "https://ukmt.org.uk/video-solutions/hamilton-olympiad-2026-solutions",
+      "sourceRegistryId": "ukmt-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "season": "2025-2026",
+      "title": "Hamilton Olympiad – 2026",
+      "competitionId": "ukmt-olympiad",
+      "resourceUrl": "https://ukmt.org.uk/free-past-papers/hamilton-olympiad-2026",
+      "sourceRegistryId": "ukmt-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "season": "2025-2026",
+      "title": "Intermediate Mathematical Challenge 2026: Solutions",
+      "competitionId": "ukmt-imc",
+      "resourceUrl": "https://ukmt.org.uk/video-solutions/intermediate-mathematical-challenge-2026-solutions",
+      "sourceRegistryId": "ukmt-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "season": "2025-2026",
+      "title": "Junior Kangaroo – 2026",
+      "competitionId": "ukmt-kangaroo",
+      "resourceUrl": "https://ukmt.org.uk/free-past-papers/junior-kangaroo-2026",
+      "sourceRegistryId": "ukmt-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "season": "2025-2026",
+      "title": "Junior Mathematical Challenge 2026: Solutions",
+      "competitionId": "ukmt-jmc",
+      "resourceUrl": "https://ukmt.org.uk/video-solutions/junior-mathematical-challenge-2026-solutions",
+      "sourceRegistryId": "ukmt-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "season": "2025-2026",
+      "title": "Junior Mathematical Challenge – 2026",
+      "competitionId": "ukmt-jmc",
+      "resourceUrl": "https://ukmt.org.uk/free-past-papers/junior-mathematical-challenge-2026",
+      "sourceRegistryId": "ukmt-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "season": "2025-2026",
+      "title": "Junior Mathematical Olympiad 2026: Solutions",
+      "competitionId": "ukmt-olympiad",
+      "resourceUrl": "https://ukmt.org.uk/video-solutions/junior-mathematical-olympiad-2026-solutions",
+      "sourceRegistryId": "ukmt-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "season": "2025-2026",
+      "title": "Junior Mathematical Olympiad – 2026",
+      "competitionId": "ukmt-olympiad",
+      "resourceUrl": "https://ukmt.org.uk/free-past-papers/junior-mathematical-olympiad-2026",
+      "sourceRegistryId": "ukmt-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "season": "2025-2026",
+      "title": "Maclaurin Olympiad 2026: Solutions",
+      "competitionId": "ukmt-olympiad",
+      "resourceUrl": "https://ukmt.org.uk/video-solutions/maclaurin-olympiad-2026-solutions",
+      "sourceRegistryId": "ukmt-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "season": "2025-2026",
+      "title": "Maclaurin Olympiad – 2026",
+      "competitionId": "ukmt-olympiad",
+      "resourceUrl": "https://ukmt.org.uk/free-past-papers/maclaurin-olympiad-2026",
+      "sourceRegistryId": "ukmt-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "season": "2025-2026",
+      "title": "Mathematical Competition for Girls 2025: Solutions",
+      "competitionId": "ukmt-mcg",
+      "resourceUrl": "https://ukmt.org.uk/video-solutions/mathematical-competition-for-girls-2025-solutions",
+      "sourceRegistryId": "ukmt-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "season": "2025-2026",
+      "title": "Mathematical Competition for Girls – 2025",
+      "competitionId": "ukmt-mcg",
+      "resourceUrl": "https://ukmt.org.uk/free-past-papers/mathematical-competition-for-girls-2025",
+      "sourceRegistryId": "ukmt-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "season": "2025-2026",
+      "title": "Mathematical Olympiad for Girls 2025: Solutions",
+      "competitionId": "ukmt-mog",
+      "resourceUrl": "https://ukmt.org.uk/video-solutions/mathematical-olympiad-for-girls-2025-solutions",
+      "sourceRegistryId": "ukmt-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "season": "2025-2026",
+      "title": "Mathematical Olympiad for Girls – 2025",
+      "competitionId": "ukmt-mog",
+      "resourceUrl": "https://ukmt.org.uk/free-past-papers/mathematical-olympiad-for-girls-2025",
+      "sourceRegistryId": "ukmt-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "season": "2025-2026",
+      "title": "Pink Kangaroo – 2026",
+      "competitionId": "ukmt-kangaroo",
+      "resourceUrl": "https://ukmt.org.uk/free-past-papers/pink-kangaroo-2026",
+      "sourceRegistryId": "ukmt-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "season": "2025-2026",
+      "title": "Primary Kangaroo 2026",
+      "competitionId": "ukmt-kangaroo",
+      "resourceUrl": "https://ukmt.org.uk/free-past-papers/primary-kangaroo-2026",
+      "sourceRegistryId": "ukmt-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "season": "2025-2026",
+      "title": "Senior Kangaroo – 2025",
+      "competitionId": "ukmt-kangaroo",
+      "resourceUrl": "https://ukmt.org.uk/free-past-papers/senior-kangaroo-2025",
+      "sourceRegistryId": "ukmt-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "season": "2025-2026",
+      "title": "Senior Mathematical Challenge 2025: Solutions",
+      "competitionId": "ukmt-smc",
+      "resourceUrl": "https://ukmt.org.uk/video-solutions/senior-mathematical-challenge-2025-solutions",
+      "sourceRegistryId": "ukmt-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    },
+    {
+      "season": "2025-2026",
+      "title": "Senior Mathematical Challenge – 2025",
+      "competitionId": "ukmt-smc",
+      "resourceUrl": "https://ukmt.org.uk/free-past-papers/senior-mathematical-challenge-2025",
+      "sourceRegistryId": "ukmt-official",
+      "rightsClass": "copyright-restricted",
+      "publicQuestionDisplay": false,
+      "collectionMode": "metadata-index-only"
+    }
+  ]
+}

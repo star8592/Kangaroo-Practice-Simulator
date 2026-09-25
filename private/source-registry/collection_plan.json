@@ -135,9 +135,9 @@
         "ukmt-kangaroo",
         "ukmt-bmo"
       ],
-      "collectionMode": "official-past-papers-index",
+      "collectionMode": "official-metadata-index-and-permitted-single-question-use",
       "publicQuestionDisplay": false,
-      "reviewState": "license-not-yet-recorded",
+      "reviewState": "permission-required",
       "nextAction": "collect-internally-and-complete-rights-review"
     },
     {
