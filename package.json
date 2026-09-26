@@ -55,7 +55,8 @@
     "data:cemc-translate": "python3 scripts/translate_enriched_batch.py --queue private/translation/cemc.queue.enriched.json --outdir private/translations/cemc-auto",
     "data:cemc-review": "python3 scripts/review_cemc_translation_batch.py",
     "data:cemc-promote": "python3 scripts/promote_cemc_reviewed_exam.py",
-    "test:cemc-localization": "python3 scripts/test_cemc_localization_pipeline.py"
+    "test:cemc-localization": "python3 scripts/test_cemc_localization_pipeline.py",
+    "test:cemc-canonical": "python3 scripts/verify_cemc_canonical_sources.py"
   },
   "dependencies": {
     "next": "16.3.5",

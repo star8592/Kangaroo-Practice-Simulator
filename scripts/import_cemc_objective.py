@@ -292,6 +292,16 @@ def build_bundle(record):
                     "contestSha256": record["contestFile"]["sha256"],
                     "solutionSha256": record["solutionFile"]["sha256"],
                     "crop": crops[q - 1],
+                    "canonicalSource": {
+                        "status": "SOURCE_VERIFIED",
+                        "manifest": "cemc-official-pdf-v1",
+                        "verificationMethod": "official_pdf_sha256_plus_question_sequence_and_frozen_crop",
+                        "sourceSha256": record["contestFile"]["sha256"],
+                        "sourceLanguage": "en",
+                        "page": crops[q - 1]["page"],
+                        "pageSpan": None,
+                        "crop": [round(v / SCALE, 3) for v in crops[q - 1]["pixelBox"]],
+                    },
                 },
                 "review": {
                     "translationStatus": "source-verified",
