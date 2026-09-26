@@ -52,11 +52,12 @@
     "data:purple-comet-index": "python3 scripts/collect_purple_comet_index.py",
     "data:ukmt-index": "python3 scripts/collect_ukmt_archive_index.py",
     "data:cemc-translation-queue": ".venv-tools/bin/python scripts/build_cemc_translation_queue.py",
-    "data:cemc-translate": "python3 scripts/translate_enriched_batch.py --queue private/translation/cemc.queue.enriched.json --outdir private/translations/cemc-auto",
     "data:cemc-review": "python3 scripts/review_cemc_translation_batch.py",
     "data:cemc-promote": "python3 scripts/promote_cemc_reviewed_exam.py",
     "test:cemc-localization": "python3 scripts/test_cemc_localization_pipeline.py",
-    "test:cemc-canonical": "python3 scripts/verify_cemc_canonical_sources.py"
+    "test:cemc-canonical": "python3 scripts/verify_cemc_canonical_sources.py",
+    "data:cemc-gpt-packet": "python3 scripts/build_cemc_gpt_review_packet.py",
+    "test:cemc-gpt-review": "python3 scripts/validate_cemc_gpt_review.py"
   },
   "dependencies": {
     "next": "16.3.5",
