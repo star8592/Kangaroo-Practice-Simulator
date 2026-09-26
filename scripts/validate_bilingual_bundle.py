@@ -63,7 +63,11 @@ def validate(q: dict[str, Any], assets_root: Path|None) -> list[str]:
     if 'zh' in texts and 'en' in texts and Counter(normalized_numeric_tokens(texts['zh'])) != Counter(normalized_numeric_tokens(texts['en'])):
         errors.append(f'{qid}: zh/en numeric tokens differ')
     answer=str(q.get('answer',''))
-    if answer not in keys: errors.append(f'{qid}: answer {answer!r} is not a source choice key')
+    if q.get('answerMode') == 'integer':
+        if not answer.isdigit() or not 0 <= int(answer) <= 999:
+            errors.append(f'{qid}: invalid integer answer {answer!r}')
+    elif answer not in keys:
+        errors.append(f'{qid}: answer {answer!r} is not a source choice key')
     sl=source_lang(q)
     for lang,text in texts.items():
         low=text.lower(); hits=[w for w in SOURCE_HINTS.get(sl,()) if w in low]
