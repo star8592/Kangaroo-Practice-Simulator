@@ -32,12 +32,13 @@ def suspicious_source(s):
 
 
 def main():
-    ap=argparse.ArgumentParser(); ap.add_argument('--root',type=Path,default=Path(__file__).resolve().parents[1]); ap.add_argument('--model',default='qwen3.8:9b'); ap.add_argument('--limit',type=int,default=24); ap.add_argument('--exam'); ap.add_argument('--skip-existing',action='store_true'); args=ap.parse_args(); root=args.root.resolve()
-    data=json.load(open(root/'private/translation/queue.enriched.json',encoding='utf-8')); jobs=[j for j in data['jobs'] if j.get('sourceTextOrigin') in ('pdftotext','html','existing_ocr')]
+    ap=argparse.ArgumentParser(); ap.add_argument('--root',type=Path,default=Path(__file__).resolve().parents[1]); ap.add_argument('--model',default='qwen3.8:9b'); ap.add_argument('--limit',type=int,default=24); ap.add_argument('--exam'); ap.add_argument('--skip-existing',action='store_true'); ap.add_argument('--queue',type=Path); ap.add_argument('--outdir',type=Path); args=ap.parse_args(); root=args.root.resolve()
+    queue_path=args.queue.resolve() if args.queue else root/'private/translation/queue.enriched.json'
+    data=json.load(open(queue_path,encoding='utf-8')); jobs=[j for j in data['jobs'] if j.get('sourceTextOrigin') in ('pdftotext','html','existing_ocr')]
     if args.exam: jobs=[j for j in jobs if j['examId']==args.exam]
+    outdir=args.outdir.resolve() if args.outdir else root/'private/translations/auto'
     if args.skip_existing:
         done=set()
-        outdir=root/'private/translations/auto'
         for f in outdir.glob('*.draft.json') if outdir.exists() else []:
             try:
                 d=json.loads(f.read_text(encoding='utf-8')); exam=d.get('examId',f.name.removesuffix('.draft.json'))
@@ -63,18 +64,19 @@ def main():
         if not CJK.search(zh): reasons.append('missing_chinese')
         reasons.extend(quality_checks(source,zh,j.get('choices',[]),j.get('assetUrl')))
         if suspicious_source(source): reasons.append('source_ocr_noise')
-        tier=quality_tier(reasons,translation_status='machine_draft',visual_verified=False,answer_verified=False)
+        visual_verified=bool(j.get('sourceVisualVerified')); answer_verified=bool(j.get('answerVerified'))
+        tier=quality_tier(reasons,translation_status='machine_draft',visual_verified=visual_verified,answer_verified=answer_verified)
         localized={'zh':{'stem':zh,'choices':zh_choices}}
         lang=(j.get('sourceLanguage') or '').lower()
         if lang=='en': localized['en']={'stem':source,'choices':source_choices}
         elif lang=='pt': localized['pt']={'stem':source,'choices':source_choices}
         else: localized['source']={'language':lang or 'unknown','stem':source,'choices':source_choices}
-        row={'questionNo':j['questionNo'],'localized':localized,'review':{'translationStatus':'machine_draft','needsReview':True,'verified':False,'sourceTextRecovered':True,'qualityWarnings':reasons,'sourceCleanup':cleanup_flags,'assetUrl':j.get('assetUrl'),'choicesOrigin':j.get('choicesOrigin'),'visualReviewRequired':'visual_review_required' in reasons,**tier}}
+        row={'questionNo':j['questionNo'],'localized':localized,'review':{'translationStatus':'machine_draft','needsReview':True,'verified':False,'sourceTextRecovered':True,'qualityWarnings':reasons,'sourceCleanup':cleanup_flags,'assetUrl':j.get('assetUrl'),'choicesOrigin':j.get('choicesOrigin'),'visualReviewRequired':'visual_review_required' in reasons,'visualVerified':visual_verified,'answerVerified':answer_verified,**tier}}
         grouped[j['examId']].append(row); ok+=not reasons; rejected+=bool(reasons)
         if idx==1 or idx%10==0 or idx==total:
             elapsed=max(time.time()-started,0.001); rate=idx/elapsed; eta=(total-idx)/rate if rate else 0
             print(json.dumps({'progress':idx,'total':total,'exam':j['examId'],'questionNo':j['questionNo'],'qualityPass':ok,'needsFix':rejected,'rateQpm':round(rate*60,1),'etaSec':round(eta)},ensure_ascii=False),flush=True)
-    outdir=root/'private/translations/auto'; outdir.mkdir(parents=True,exist_ok=True)
+    outdir.mkdir(parents=True,exist_ok=True)
     for exam,rows in grouped.items():
         target=outdir/f'{exam}.draft.json'
         existing=[]

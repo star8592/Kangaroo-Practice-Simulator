@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
+import argparse
 import json
 import re
 import subprocess
@@ -358,6 +359,9 @@ def build_bundle(record):
 
 
 def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--force", action="store_true", help="Rebuild even already-reviewed student-ready bundles")
+    args = ap.parse_args()
     data = json.loads(MANIFEST.read_text())
     records = [
         r
@@ -369,10 +373,33 @@ def main():
 
     imported = []
     total_questions = 0
+    student_ready_papers = 0
     for record in records:
+        eid = exam_id(record)
+        path = EXAMS / f"{eid}.json"
+        if path.exists() and not args.force:
+            try:
+                existing = json.loads(path.read_text())
+            except Exception:
+                existing = {}
+            if (existing.get("profile") or {}).get("studentReady") is True:
+                qs = existing.get("questions") or []
+                total_questions += len(qs)
+                student_ready_papers += 1
+                imported.append({
+                    "examId": eid,
+                    "competition": record["competition"],
+                    "year": record["year"],
+                    "grade": record["grade"],
+                    "questions": len(qs),
+                    "formatId": (existing.get("profile") or {}).get("formatId"),
+                    "studentReady": True,
+                    "status": "preserved-reviewed",
+                })
+                print(f"PRESERVED {eid} student-ready")
+                continue
         bundle = build_bundle(record)
         eid = bundle["profile"]["id"]
-        path = EXAMS / f"{eid}.json"
         path.write_text(json.dumps(bundle, ensure_ascii=False, indent=2) + "\n")
         total_questions += len(bundle["questions"])
         imported.append(
@@ -393,14 +420,14 @@ def main():
         "sourceRegistryId": "cemc-official",
         "examCount": len(imported),
         "questionCount": total_questions,
-        "studentReady": 0,
-        "status": "source-digitized-awaiting-bilingual-localization",
+        "studentReady": student_ready_papers,
+        "status": "mixed-reviewed-and-source-digitized" if student_ready_papers else "source-digitized-awaiting-bilingual-localization",
         "exams": imported,
     }
     SUMMARY.write_text(json.dumps(summary, ensure_ascii=False, indent=2) + "\n")
     print(
         f"CEMC_OBJECTIVE_IMPORT_OK exams={len(imported)} "
-        f"questions={total_questions} student_ready=0"
+        f"questions={total_questions} student_ready={student_ready_papers}"
     )
 
 

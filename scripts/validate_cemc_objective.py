@@ -14,12 +14,27 @@ def fail(msg: str):
     raise SystemExit(f"CEMC_OBJECTIVE=FAIL {msg}")
 
 
+def bilingual_ready(q: dict) -> bool:
+    loc = q.get('localized') or {}
+    review = q.get('review') or {}
+    return bool(
+        (loc.get('zh') or {}).get('stem')
+        and (loc.get('en') or {}).get('stem')
+        and q.get('examReady') is True
+        and review.get('translationStatus') == 'reviewed'
+        and review.get('visualVerified') is True
+        and review.get('needsReview') is not True
+    )
+
+
 def main():
     files = sorted(EXAMS.glob("cemc-*.json"))
     if len(files) != 49:
         fail(f"expected 49 objective papers, found {len(files)}")
 
     questions = 0
+    ready_papers = 0
+    ready_questions = 0
     by_comp = Counter()
     ids = set()
     for path in files:
@@ -28,14 +43,18 @@ def main():
         qs = data.get("questions") or []
         if p.get("competitionId") != "cemc":
             fail(f"{path.name}: competitionId")
-        if p.get("studentReady") is not False:
-            fail(f"{path.name}: source-only bundle must not be studentReady")
         if p.get("questionCount") != 25 or len(qs) != 25:
             fail(f"{path.name}: expected 25 questions")
         if p.get("maxScore") != 150 or p.get("durationSeconds") != 3600:
             fail(f"{path.name}: official format mismatch")
         if p.get("rightsPolicy", {}).get("license") != "CC BY-NC 4.0":
             fail(f"{path.name}: missing license")
+        if p.get("studentReady") is True:
+            if p.get("rightsPolicy", {}).get("publicQuestionDisplay") is not True:
+                fail(f"{path.name}: ready paper lacks public-display rights")
+            ready_papers += 1
+        elif p.get("studentReady") is not False:
+            fail(f"{path.name}: studentReady must be explicit boolean")
         comp = qs[0].get("level") if qs else ""
         by_comp[comp] += 1
         questions += len(qs)
@@ -46,10 +65,15 @@ def main():
             if q.get("id") in ids:
                 fail(f"duplicate question id {q.get('id')}")
             ids.add(q.get("id"))
-            if q.get("examReady") is not False:
-                fail(f"{q.get('id')}: must await localization")
             if q.get("verified") is not True:
                 fail(f"{q.get('id')}: source not verified")
+            if p.get("studentReady") is True:
+                if not bilingual_ready(q):
+                    fail(f"{q.get('id')}: ready paper contains non-ready question")
+                ready_questions += 1
+            else:
+                if q.get("examReady") is not False:
+                    fail(f"{q.get('id')}: source-only paper must await localization")
             meta = q.get("sourceMeta") or {}
             crop = (meta.get("crop") or {}).get("cropFile")
             if not crop or not Path(crop).exists():
@@ -72,7 +96,7 @@ def main():
     summary = json.loads(SUMMARY.read_text())
     if summary.get("examCount") != 49 or summary.get("questionCount") != 1225:
         fail("summary mismatch")
-    print(f"CEMC_OBJECTIVE=PASS papers={len(files)} questions={questions} by_comp={dict(by_comp)}")
+    print(f"CEMC_OBJECTIVE=PASS papers={len(files)} questions={questions} ready_papers={ready_papers} ready_questions={ready_questions} by_comp={dict(by_comp)}")
 
 
 if __name__ == "__main__":
