@@ -2,6 +2,7 @@ import crypto from "node:crypto";
 import { NextRequest, NextResponse } from "next/server";
 import { createStudent, updateStudent } from "@/lib/auth";
 import { buildStudentAnalytics } from "@/lib/student-analytics";
+import { loadExamAttempts } from "@/lib/attempt-store";
 import {
   addStudentToFamily,
   familyOwnsStudent,
@@ -23,6 +24,20 @@ export async function GET(req: NextRequest) {
   const students = publicFamilyStudents(p.id).map((student) => {
     const analytics = buildStudentAnalytics(student);
     const latestExamAt = analytics.trend.at(-1)?.submittedAt ?? null;
+    const recentReports = loadExamAttempts(student.id, 50)
+      .filter((attempt) => attempt.profile.paperType !== "practice" && !attempt.examId.includes("-practice-"))
+      .slice(-5)
+      .reverse()
+      .map((attempt) => ({
+        attemptId: attempt.id,
+        examId: attempt.examId,
+        examName: attempt.profile.name,
+        submittedAt: attempt.submittedAt,
+        scorePct: attempt.grade.maxScore ? attempt.grade.score / attempt.grade.maxScore : 0,
+        accuracy: attempt.questions.length
+          ? attempt.questions.filter((question) => question.correct === true).length / attempt.questions.length
+          : 0,
+      }));
     return {
       ...student,
       summary: {
@@ -32,6 +47,7 @@ export async function GET(req: NextRequest) {
         arithmeticSessions: analytics.arithmetic.sessions,
         latestExamAt,
       },
+      recentReports,
     };
   });
 
