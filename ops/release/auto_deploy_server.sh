@@ -193,6 +193,7 @@ rollback() {
   npm ci || true
   npm run build || true
   write_release_receipt "$PREV_SHA" || true
+  printf 'rollback:%s:line%s\n' "$rc" "$failed_line" > .release/deployed_version || true
   restore_prebuilt_runtime
   systemctl restart "$SERVICE" || true
   wait_local_ready || true
