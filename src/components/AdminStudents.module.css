@@ -1,0 +1,189 @@
+.shell {
+  max-width: 1180px;
+  padding-top: 34px;
+}
+
+.heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 22px;
+}
+
+.heading h1 {
+  margin: 0 0 7px;
+  font-size: 36px;
+  letter-spacing: -.035em;
+}
+
+.heading p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.kicker {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--accent-dark);
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: .08em;
+}
+
+.createForm {
+  display: grid;
+  grid-template-columns: 1.15fr 1.15fr 1fr .55fr 1.1fr .9fr auto;
+  gap: 9px;
+  margin-bottom: 18px;
+  padding: 15px;
+  border: 1px solid var(--line);
+  border-radius: 15px;
+  background: #fff;
+}
+
+.createForm input,
+.editForm input,
+.pinForm input {
+  width: 100%;
+  min-width: 0;
+  height: 44px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  padding: 0 12px;
+  background: #fff;
+  color: var(--ink);
+  font-size: 12px;
+}
+
+.createForm input:focus,
+.editForm input:focus,
+.pinForm input:focus {
+  border-color: transparent;
+  outline: 2px solid var(--accent);
+}
+
+.editForm,
+.pinForm {
+  display: grid;
+  align-items: end;
+  gap: 11px;
+  margin: 14px 0 18px;
+  padding: 20px;
+  border-radius: 15px;
+}
+
+.editForm { grid-template-columns: 1.4fr 1fr .55fr 1.1fr auto; }
+.pinForm { grid-template-columns: 1.7fr 1fr 1fr auto; }
+
+.formIntro { align-self: center; }
+.formIntro h2 { margin: 0 0 4px; font-size: 18px; }
+.formIntro p { margin: 0; color: var(--muted); font-size: 10px; }
+
+.editForm label,
+.pinForm label {
+  min-width: 0;
+  display: grid;
+  gap: 6px;
+  color: #35443b;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.formActions {
+  display: flex;
+  gap: 7px;
+  justify-content: flex-end;
+}
+
+.formActions :global(.primary-button),
+.formActions :global(.secondary-button) {
+  min-height: 42px;
+  min-width: 90px;
+  padding: 10px 12px;
+}
+
+.tableCard {
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: #fff;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1.45fr .45fr .75fr .65fr .8fr 1.55fr;
+  gap: 14px;
+  align-items: center;
+  padding: 15px 18px;
+  border-bottom: 1px solid #edf0ec;
+  font-size: 12px;
+}
+
+.row:last-child { border-bottom: 0; }
+
+.head {
+  background: #f7f9f6;
+  color: var(--muted);
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: .06em;
+}
+
+.row > span { min-width: 0; }
+.row > span > small { display: block; margin-top: 3px; color: var(--muted); font-size: 9px; line-height: 1.4; }
+.studentCell { display: grid; gap: 2px; }
+.studentCell b { font-size: 12px; }
+
+.operationCell { display: grid; gap: 6px; }
+.operationCell > b { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 10px; }
+
+.rowActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.rowActions a,
+.rowActions button {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  color: var(--accent-dark);
+  font-size: 9px;
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+.disabled { opacity: .48; }
+
+.empty {
+  padding: 34px;
+  color: var(--muted);
+  text-align: center;
+  font-size: 12px;
+}
+
+@media (max-width: 1040px) {
+  .createForm { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .editForm,
+  .pinForm { grid-template-columns: 1fr 1fr; }
+  .formIntro { grid-column: 1 / -1; }
+  .formActions { grid-column: 1 / -1; }
+  .tableCard { overflow-x: auto; }
+  .row { min-width: 900px; }
+}
+
+@media (max-width: 700px) {
+  .shell { padding-top: 24px; }
+  .heading { align-items: stretch; flex-direction: column; }
+  .heading h1 { font-size: 30px; }
+  .heading :global(.primary-button) { width: 100%; }
+  .createForm,
+  .editForm,
+  .pinForm { grid-template-columns: 1fr; }
+  .formIntro,
+  .formActions { grid-column: 1; }
+  .formActions { display: grid; grid-template-columns: 1fr 1fr; }
+}
