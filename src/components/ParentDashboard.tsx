@@ -2,6 +2,7 @@
 
 import { FormEvent, useEffect, useState } from "react";
 import { studentAvatarEmoji } from "@/lib/student-avatar";
+import styles from "./ParentDashboard.module.css";
 
 type Student = {
   id: string;
@@ -165,10 +166,10 @@ export default function ParentDashboard() {
   }
 
   return (
-    <div className="admin-shell">
-      <section className="section-heading">
+    <div className={`admin-shell ${styles.shell}`}>
+      <section className={styles.heading}>
         <div>
-          <span className="eyebrow">FAMILY CENTER</span>
+          <span className={styles.kicker}>家庭中心</span>
           <h1>家庭与孩子账号</h1>
           <p>创建和管理孩子账号，同时查看最近是否登录、做过几套模拟和口算训练。</p>
         </div>
@@ -181,7 +182,7 @@ export default function ParentDashboard() {
       {notice && <div className="success-box">{notice}</div>}
 
       {show && (
-        <form className="student-create-form" onSubmit={create}>
+        <form className={styles.createForm} onSubmit={create}>
           <input name="name" required maxLength={50} placeholder="孩子姓名 / 昵称" />
           <input name="username" placeholder="学生登录名（留空自动生成）" />
           <input name="grade" type="number" min="1" max="13" required placeholder="年级" />
@@ -201,9 +202,9 @@ export default function ParentDashboard() {
       )}
 
       {editing && (
-        <form className="student-edit-form report-card" onSubmit={saveEdit}>
+        <form className={`report-card ${styles.formCard}`} onSubmit={saveEdit}>
           <div>
-            <span className="eyebrow">EDIT STUDENT</span>
+            <span className={styles.kicker}>学生资料</span>
             <h2>编辑 {editing.name}</h2>
             <p>{editing.username} · {editing.candidateNo}</p>
           </div>
@@ -219,7 +220,7 @@ export default function ParentDashboard() {
             <span>学校（可选）</span>
             <input name="school" maxLength={80} defaultValue={editing.school || ""} />
           </label>
-          <div className="student-edit-actions">
+          <div className={styles.actions}>
             <button type="button" className="secondary-button" onClick={() => setEditing(null)}>取消</button>
             <button className="primary-button" disabled={busy}>保存资料</button>
           </div>
@@ -227,9 +228,9 @@ export default function ParentDashboard() {
       )}
 
       {pinStudent && (
-        <form className="student-edit-form report-card" onSubmit={resetPin}>
+        <form className={`report-card ${styles.formCard}`} onSubmit={resetPin}>
           <div>
-            <span className="eyebrow">RESET STUDENT PIN</span>
+            <span className={styles.kicker}>账号安全</span>
             <h2>重置 {pinStudent.name} 的 PIN</h2>
             <p>不需要知道旧 PIN。重置后，孩子其他设备上的旧登录会失效。</p>
           </div>
@@ -241,14 +242,14 @@ export default function ParentDashboard() {
             <span>再次输入新 PIN</span>
             <input name="confirm" type="password" inputMode="numeric" pattern="[0-9]{4,12}" required />
           </label>
-          <div className="student-edit-actions">
+          <div className={styles.actions}>
             <button type="button" className="secondary-button" onClick={() => setPinStudent(null)}>取消</button>
             <button className="primary-button" disabled={busy}>确认重置</button>
           </div>
         </form>
       )}
 
-      <div className="family-grid">
+      <div className={styles.familyGrid}>
         {rows.map((student) => {
           const summary = student.summary;
           const activityAt = Math.max(
@@ -257,12 +258,12 @@ export default function ParentDashboard() {
           ) || null;
 
           return (
-            <article className="report-card" key={student.id}>
-              <span className="eyebrow">STUDENT</span>
+            <article className={`report-card ${styles.studentCard}`} key={student.id}>
+              <span className={styles.kicker}>学生档案</span>
               <h2>{studentAvatarEmoji(student.avatarKey)} {student.name}</h2>
               <p>{student.grade} 年级{student.school ? " · " + student.school : ""}</p>
 
-              <div className="student-kpi-grid" style={{ gridTemplateColumns: "repeat(2,minmax(0,1fr))", margin: "16px 0" }}>
+              <div className={styles.kpiGrid}>
                 <article>
                   <span>正式模拟</span>
                   <strong>{summary.examAttempts}</strong>
@@ -275,14 +276,14 @@ export default function ParentDashboard() {
                 </article>
               </div>
 
-              <p>
-                <b>最近活动：</b>{relativeTime(activityAt)}<br />
-                <b>最近登录：</b>{relativeTime(student.lastLoginAt)}<br />
-                <b>登录名：</b>{student.username}<br />
-                <b>准考证号：</b>{student.candidateNo}
-              </p>
+              <div className={styles.studentMeta}>
+                <div><span>最近活动</span><strong>{relativeTime(activityAt)}</strong></div>
+                <div><span>最近登录</span><strong>{relativeTime(student.lastLoginAt)}</strong></div>
+                <div><span>登录名</span><strong>{student.username}</strong></div>
+                <div><span>准考证号</span><strong>{student.candidateNo}</strong></div>
+              </div>
 
-              <div className="student-edit-actions">
+              <div className={styles.actions}>
                 <button className="secondary-button" onClick={() => { setEditing(student); setPinStudent(null); }}>
                   编辑资料
                 </button>
@@ -295,7 +296,7 @@ export default function ParentDashboard() {
         })}
 
         {rows.length === 0 && (
-          <div className="empty-state">
+          <div className={styles.empty}>
             还没有孩子账号。点击“添加孩子”创建第一个学生档案。
           </div>
         )}

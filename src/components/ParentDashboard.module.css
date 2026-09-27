@@ -1,0 +1,272 @@
+.shell {
+  max-width: 1080px;
+  padding-top: 28px;
+}
+
+.heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 22px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--line);
+}
+
+.heading h1 {
+  margin: 0 0 7px;
+  font-size: 34px;
+  letter-spacing: -.035em;
+}
+
+.heading p {
+  max-width: 660px;
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.65;
+}
+
+.kicker {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--accent-dark);
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: .08em;
+}
+
+.createForm {
+  display: grid;
+  grid-template-columns: 1.25fr 1.25fr .55fr 1.25fr 1fr auto;
+  gap: 10px;
+  margin: 16px 0 22px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: #fff;
+}
+
+.createForm input,
+.formCard input {
+  width: 100%;
+  min-width: 0;
+  height: 46px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #fff;
+  padding: 0 13px;
+  color: var(--ink);
+  font-size: 13px;
+}
+
+.createForm input:focus,
+.formCard input:focus {
+  border-color: transparent;
+  outline: 2px solid var(--accent);
+}
+
+.formCard {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr .55fr 1.2fr auto;
+  align-items: end;
+  gap: 12px;
+  margin: 16px 0;
+  padding: 22px;
+  border-radius: 16px;
+}
+
+.formCard > div:first-child {
+  align-self: center;
+}
+
+.formCard h2 {
+  margin: 0 0 5px;
+  font-size: 20px;
+}
+
+.formCard p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.55;
+}
+
+.formCard label {
+  min-width: 0;
+  display: grid;
+  gap: 7px;
+  color: #35443b;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.actions :global(.primary-button),
+.actions :global(.secondary-button) {
+  min-width: 102px;
+  min-height: 44px;
+  padding: 11px 14px;
+}
+
+.familyGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+  gap: 16px;
+  margin-top: 18px;
+}
+
+.studentCard {
+  min-width: 0;
+  padding: 24px;
+  border-radius: 18px;
+}
+
+.studentCard > h2 {
+  margin: 0 0 5px;
+  font-size: 22px;
+  letter-spacing: -.02em;
+}
+
+.studentCard > p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.kpiGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 9px;
+  margin: 16px 0;
+}
+
+.kpiGrid article {
+  min-width: 0;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #f9fbf8;
+}
+
+.kpiGrid span,
+.kpiGrid small {
+  display: block;
+  color: var(--muted);
+  font-size: 9px;
+}
+
+.kpiGrid strong {
+  display: block;
+  margin: 5px 0 4px;
+  font-size: 23px;
+  line-height: 1;
+}
+
+.reportList {
+  margin: 18px 0;
+  padding: 14px 15px;
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  background: #fbfcfa;
+}
+
+.reportListHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 9px;
+}
+
+.reportListHead strong { font-size: 11px; }
+.reportListHead span { color: var(--muted); font-size: 9px; }
+
+.reportRow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 0;
+  border-top: 1px solid var(--line);
+}
+
+.reportRow > span {
+  min-width: 0;
+  display: grid;
+  gap: 3px;
+}
+
+.reportRow b {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 11px;
+}
+
+.reportRow small { color: var(--muted); font-size: 9px; }
+.reportRow strong { font-size: 13px; }
+.reportRow em { color: var(--accent-dark); font-size: 9px; font-style: normal; font-weight: 800; }
+
+.studentMeta {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin: 16px 0;
+}
+
+.studentMeta > div {
+  min-width: 0;
+  display: grid;
+  gap: 3px;
+  padding: 10px 11px;
+  border-radius: 10px;
+  background: #f6f8f5;
+}
+
+.studentMeta span { color: var(--muted); font-size: 9px; }
+.studentMeta strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 10px; }
+
+.empty {
+  grid-column: 1 / -1;
+  padding: 34px;
+  border: 1px dashed #cfd8d1;
+  border-radius: 16px;
+  background: #f8faf7;
+  color: var(--muted);
+  text-align: center;
+  font-size: 12px;
+}
+
+@media (max-width: 960px) {
+  .createForm { grid-template-columns: 1fr 1fr 1fr; }
+  .formCard { grid-template-columns: 1fr 1fr; }
+  .formCard > div:first-child { grid-column: 1 / -1; }
+  .actions { grid-column: 1 / -1; }
+}
+
+@media (max-width: 700px) {
+  .shell { padding-top: 20px; }
+  .heading { align-items: stretch; flex-direction: column; }
+  .heading h1 { font-size: 29px; }
+  .heading :global(.primary-button) { width: 100%; }
+  .createForm,
+  .formCard { grid-template-columns: 1fr; }
+  .formCard > div:first-child,
+  .actions { grid-column: 1; }
+  .familyGrid { grid-template-columns: 1fr; }
+  .actions { display: grid; grid-template-columns: 1fr 1fr; }
+  .actions :global(.primary-button),
+  .actions :global(.secondary-button) { width: 100%; min-width: 0; }
+}
+
+@media (max-width: 430px) {
+  .studentMeta { grid-template-columns: 1fr; }
+  .reportRow { grid-template-columns: minmax(0, 1fr) auto; }
+  .reportRow em { grid-column: 1 / -1; }
+}
