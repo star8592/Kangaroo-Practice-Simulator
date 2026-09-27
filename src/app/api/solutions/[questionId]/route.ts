@@ -3,12 +3,12 @@ import { SESSION_COOKIE, userFromSessionToken } from "@/lib/auth";
 import { loadVerifiedSolution } from "@/lib/solution-store";
 import { hasSubmittedQuestion } from "@/lib/attempt-store";
 import { activeExamSessionsForUser } from "@/lib/exam-session";
-import { loadExamBundle } from "@/lib/question-bank";
+import { loadTrainingExamBundle } from "@/lib/training-question-bank";
 
 function questionIsInActiveExam(userId:string,questionId:string){
   for(const session of activeExamSessionsForUser(userId)){
     try{
-      const bundle=loadExamBundle(session.examId);
+      const bundle=loadTrainingExamBundle(session.examId);
       if(bundle.questions.some(q=>q.id===questionId)) return true;
     }catch{}
   }

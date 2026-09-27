@@ -1,6 +1,6 @@
 import { NextRequest,NextResponse } from "next/server";
 import { gradeExam } from "@/lib/grading";
-import { isExamBundleStudentReady,loadExamBundle } from "@/lib/question-bank";
+import { isExamBundleTrainingReady,loadTrainingExamBundle } from "@/lib/training-question-bank";
 import { SESSION_COOKIE,userFromSessionToken } from "@/lib/auth";
 import { appendExamAttempt,type ExamEvent } from "@/lib/attempt-store";
 import {
@@ -31,8 +31,8 @@ export async function POST(r:NextRequest){
     const b=await r.json(),id=String(b?.examId||"level-a"),sid=String(b?.sessionId||"");
     const valid=validateExamSession(sid,u.id,id);
     if(!valid.ok)return NextResponse.json({error:valid.error},{status:409});
-    const bundle=loadExamBundle(id);
-    if(!isExamBundleStudentReady(bundle))return NextResponse.json({error:"Exam is not student-ready"},{status:404});
+    const bundle=loadTrainingExamBundle(id);
+    if(!isExamBundleTrainingReady(bundle))return NextResponse.json({error:"Exam is not training-ready"},{status:404});
 
     const sections=bundle.profile.timingSections||[];
     let effectiveAnswers=(b?.answers||{}) as Record<string,string>;

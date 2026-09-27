@@ -1,6 +1,6 @@
 import { NextRequest,NextResponse } from "next/server";
 import { SESSION_COOKIE,userFromSessionToken } from "@/lib/auth";
-import { isExamBundleStudentReady,loadExamBundle } from "@/lib/question-bank";
+import { isExamBundleTrainingReady,loadTrainingExamBundle } from "@/lib/training-question-bank";
 import { activeExamSession,lockExamSection,saveExamSectionDraft,startExamSection,startExamSession } from "@/lib/exam-session";
 
 const user=(r:NextRequest)=>userFromSessionToken(r.cookies.get(SESSION_COOKIE)?.value);
@@ -16,8 +16,8 @@ export async function POST(r:NextRequest){
   try{
     const u=user(r);
     if(!u)return NextResponse.json({error:"请先登录考生账号"},{status:401});
-    const b=await r.json(),id=String(b?.examId||""),bundle=loadExamBundle(id);
-    if(!isExamBundleStudentReady(bundle))return NextResponse.json({error:"Exam is not student-ready"},{status:404});
+    const b=await r.json(),id=String(b?.examId||""),bundle=loadTrainingExamBundle(id);
+    if(!isExamBundleTrainingReady(bundle))return NextResponse.json({error:"Exam is not training-ready"},{status:404});
     return NextResponse.json({
       ...startExamSession(u.id,id,bundle.profile.durationSeconds,bundle.profile.timingSections),
       durationSeconds:bundle.profile.durationSeconds
@@ -32,7 +32,7 @@ export async function PATCH(r:NextRequest){
     const u=user(r);
     if(!u)return NextResponse.json({error:"请先登录考生账号"},{status:401});
     const b=await r.json(),id=String(b?.examId||""),sid=String(b?.sessionId||""),action=String(b?.action||"");
-    const bundle=loadExamBundle(id),sections=bundle.profile.timingSections||[];
+    const bundle=loadTrainingExamBundle(id),sections=bundle.profile.timingSections||[];
     if(!sections.length)return NextResponse.json({error:"该考试不是分段计时赛制"},{status:400});
     const idx=Number(b?.sectionIndex);
     if(!Number.isInteger(idx)||idx<0||idx>=sections.length)return NextResponse.json({error:"无效的考试部分"},{status:400});
