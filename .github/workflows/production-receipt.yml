@@ -35,6 +35,7 @@ jobs:
           expected=os.environ["EXPECTED_SHA"]
           if data.get("deployedSha")==expected and data.get("gitSha")==expected:
               print("PRODUCTION_RECEIPT=PASS", expected)
+              print("TRAINING_INVENTORY=" + json.dumps(data.get("trainingInventory"), ensure_ascii=False, sort_keys=True))
               sys.exit(0)
           sys.exit(1)
           PY
