@@ -22,7 +22,7 @@ export async function GET(req:NextRequest,{params}:{params:Promise<{studentId:st
     const page=await fetch(pageUrl,{headers:{cookie:req.headers.get("cookie")||""},cache:"no-store"});
     if(!page.ok)throw new Error(`report page ${page.status}`);
     const html=await page.text();
-    const pdf=renderDiagnosticReportPdfFromHtml(html);
+    const pdf=await renderDiagnosticReportPdfFromHtml(html);
     return new NextResponse(pdf,{headers:{"content-type":"application/pdf","content-disposition":`attachment; filename="${report.meta.reportId}.pdf"`,"cache-control":"private, no-store"}});
   }catch(e){
     return NextResponse.json({error:"PDF 生成失败",detail:e instanceof Error?e.message:String(e)},{status:500});
