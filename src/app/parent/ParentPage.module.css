@@ -1,0 +1,57 @@
+.accountBar {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 28px 28px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.accountBar > div {
+  min-width: 0;
+  display: flex;
+  align-items: baseline;
+  gap: 9px;
+}
+
+.accountBar span {
+  flex: 0 0 auto;
+  padding: 4px 7px;
+  border-radius: 999px;
+  background: #e8f1ea;
+  color: var(--green);
+  font-size: 9px;
+  font-weight: 900;
+}
+
+.accountBar strong {
+  font-size: 14px;
+}
+
+.accountBar small {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 10px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.accountBar :global(.secondary-button) {
+  flex: 0 0 auto;
+  min-height: 38px;
+  padding: 9px 13px;
+  font-size: 11px;
+}
+
+@media (max-width: 700px) {
+  .accountBar {
+    padding: 18px 14px 0;
+  }
+  .accountBar > div {
+    display: grid;
+    gap: 3px;
+  }
+  .accountBar span { justify-self: start; }
+}

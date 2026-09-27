@@ -1,1 +1,26 @@
-import {cookies} from "next/headers";import {redirect} from "next/navigation";import ParentDashboard from "@/components/ParentDashboard";import ParentLogoutButton from "@/components/ParentLogoutButton";import {parentFromSessionToken,PARENT_SESSION_COOKIE} from "@/lib/parent-auth";export default async function Page(){const jar=await cookies(),u=parentFromSessionToken(jar.get(PARENT_SESSION_COOKIE)?.value);if(!u)redirect("/parent/login");return <><div className="parent-head"><div><span className="eyebrow">VERIFIED PARENT</span><h1>{u.name}</h1><p>{u.email}</p></div><ParentLogoutButton/></div><ParentDashboard/></>}
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
+import ParentDashboard from "@/components/ParentDashboard";
+import ParentLogoutButton from "@/components/ParentLogoutButton";
+import { parentFromSessionToken, PARENT_SESSION_COOKIE } from "@/lib/parent-auth";
+import styles from "./ParentPage.module.css";
+
+export default async function Page() {
+  const jar = await cookies();
+  const user = parentFromSessionToken(jar.get(PARENT_SESSION_COOKIE)?.value);
+  if (!user) redirect("/parent/login");
+
+  return (
+    <>
+      <header className={styles.accountBar}>
+        <div>
+          <span>家长账号</span>
+          <strong>{user.name}</strong>
+          <small>{user.email}</small>
+        </div>
+        <ParentLogoutButton />
+      </header>
+      <ParentDashboard />
+    </>
+  );
+}
