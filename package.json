@@ -12,7 +12,7 @@
     "admin:create": "node scripts/create_admin.mjs",
     "test:smoke": "python3 scripts/smoke_test.py",
     "test:brand": "python3 scripts/brand_audit.py",
-    "prebuild": "npm run test:rights && npm run test:rights-bindings && python3 scripts/brand_audit.py && npm run test:arithmetic-print && npm run test:competition-identity && npm run test:maa && npm run test:maa-library && npm run test:aime-sections && npm run test:maa-smart && npm run test:solution-books && npm run test:verified-storyboards && npm run test:maa-verified-store",
+    "prebuild": "npm run test:rights && python3 scripts/brand_audit.py",
     "test:maa": "tsx scripts/test_maa_scoring.ts",
     "test:maa-library": "python3 scripts/validate_maa_library.py",
     "test:competition-identity": "python3 scripts/test_competition_identity.py",
@@ -57,7 +57,8 @@
     "test:cemc-localization": "python3 scripts/test_cemc_localization_pipeline.py",
     "test:cemc-canonical": "python3 scripts/verify_cemc_canonical_sources.py",
     "data:cemc-gpt-packet": "python3 scripts/build_cemc_gpt_review_packet.py",
-    "test:cemc-gpt-review": "python3 scripts/validate_cemc_gpt_review.py"
+    "test:cemc-gpt-review": "python3 scripts/validate_cemc_gpt_review.py",
+    "test:private-gates": "npm run test:rights && npm run test:rights-bindings && python3 scripts/brand_audit.py && npm run test:arithmetic-print && npm run test:competition-identity && npm run test:maa && npm run test:maa-library && npm run test:aime-sections && npm run test:maa-smart && npm run test:solution-books && npm run test:verified-storyboards && npm run test:maa-verified-store"
   },
   "dependencies": {
     "next": "16.3.5",

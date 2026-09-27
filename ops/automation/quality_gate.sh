@@ -34,7 +34,8 @@ else
 fi
 
 if [[ "$MODE" == "full" ]]; then
-  step "full production build + private-data gates" npm run build
+  step "private-data gates" npm run test:private-gates
+  step "full production build" npx next build
 else
   step "public production build" npx next build
 fi
