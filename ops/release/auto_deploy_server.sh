@@ -99,6 +99,33 @@ then
 fi
 
 PREV_SHA="$HEAD_SHA"
+PREBUILT_DROPIN="/etc/systemd/system/${SERVICE}.d/90-prebuilt-runtime.conf"
+PREBUILT_BACKUP="/tmp/socthink-auto-deploy-prebuilt-${TARGET_SHA}.conf"
+PREBUILT_RECONCILED=0
+
+reconcile_prebuilt_runtime() {
+  if [[ ! -f "$PREBUILT_DROPIN" ]]; then
+    return 0
+  fi
+  if ! grep -q '/opt/socthink-releases/current' "$PREBUILT_DROPIN"; then
+    log "AUTO_DEPLOY=ERROR reason=unexpected_service_dropin file=$PREBUILT_DROPIN"
+    return 1
+  fi
+  cp -a "$PREBUILT_DROPIN" "$PREBUILT_BACKUP"
+  rm -f "$PREBUILT_DROPIN"
+  systemctl daemon-reload
+  PREBUILT_RECONCILED=1
+  log "AUTO_DEPLOY=RUNTIME_MODE from=prebuilt to=in_place"
+}
+
+restore_prebuilt_runtime() {
+  if [[ "$PREBUILT_RECONCILED" == "1" && -f "$PREBUILT_BACKUP" ]]; then
+    mkdir -p "$(dirname "$PREBUILT_DROPIN")"
+    cp -a "$PREBUILT_BACKUP" "$PREBUILT_DROPIN"
+    systemctl daemon-reload || true
+    log "AUTO_DEPLOY=RUNTIME_MODE rollback=prebuilt"
+  fi
+}
 
 write_release_receipt() {
   local sha="$1"
@@ -127,6 +154,7 @@ rollback() {
   npm ci || true
   npm run build || true
   write_release_receipt "$PREV_SHA" || true
+  restore_prebuilt_runtime
   systemctl restart "$SERVICE" || true
   wait_local_ready || true
   exit "$rc"
@@ -135,6 +163,7 @@ trap rollback ERR
 
 log "AUTO_DEPLOY=START from=$PREV_SHA to=$TARGET_SHA"
 git cat-file -e "$TARGET_SHA^{commit}"
+reconcile_prebuilt_runtime
 git reset --hard "$TARGET_SHA"
 
 # Never run git clean here. private/, public/local-assets/, generated runtime
@@ -162,6 +191,9 @@ python3 scripts/smoke_test.py --base "$LOCAL_BASE"
 test "$(git rev-parse HEAD)" = "$TARGET_SHA"
 
 trap - ERR
+rm -f "$PREBUILT_BACKUP" 2>/dev/null || true
+# Keep the installed runner synchronized with the verified repository copy.
+install -m 0755 "$APP/ops/release/auto_deploy_server.sh" /usr/local/sbin/socthink-auto-deploy
 log "AUTO_DEPLOY=PASS sha=$TARGET_SHA"
 
 for _ in $(seq 1 15); do
