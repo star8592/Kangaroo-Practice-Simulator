@@ -9,6 +9,26 @@ LOCAL_BASE="${SOCTHINK_LOCAL_BASE:-http://127.0.0.1:3000}"
 PUBLIC_BASE="${SOCTHINK_PUBLIC_BASE:-https://socthink.cn}"
 LOCK_FILE="${SOCTHINK_DEPLOY_LOCK:-/run/lock/socthink-auto-deploy.lock}"
 API_BASE="${SOCTHINK_GITHUB_API:-https://api.github.com}"
+DEBUG_FILE="$APP/public/local-assets/auto-deploy-status.json"
+
+write_debug() {
+  local state="$1" rc="${2:-0}" command_text="${3:-}" line_no="${4:-0}"
+  mkdir -p "$(dirname "$DEBUG_FILE")"
+  python3 - "$DEBUG_FILE" "$state" "$rc" "$command_text" "$line_no" "${TARGET_SHA:-}" "${PREV_SHA:-}" <<'PYDBG'
+import json,sys,datetime
+path,state,rc,command,line,target,prev=sys.argv[1:]
+payload={
+  "time": datetime.datetime.now(datetime.timezone.utc).isoformat(),
+  "state": state,
+  "rc": int(rc or 0),
+  "command": command[:240],
+  "line": int(line or 0),
+  "targetSha": target or None,
+  "previousSha": prev or None,
+}
+with open(path,"w",encoding="utf-8") as fh: json.dump(payload,fh,ensure_ascii=False)
+PYDBG
+}
 
 log() {
   printf '%s %s\n' "$(date -Iseconds)" "$*"
@@ -164,9 +184,10 @@ wait_local_ready() {
 }
 
 rollback() {
-  local rc=$?
+  local rc="${1:-1}" failed_command="${2:-unknown}" failed_line="${3:-0}"
   trap - ERR
-  log "AUTO_DEPLOY=ROLLBACK from=$TARGET_SHA to=$PREV_SHA exit=$rc"
+  write_debug "rollback" "$rc" "$failed_command" "$failed_line" || true
+  log "AUTO_DEPLOY=ROLLBACK from=$TARGET_SHA to=$PREV_SHA exit=$rc command=$failed_command line=$failed_line"
   cd "$APP"
   git reset --hard "$PREV_SHA" || true
   npm ci || true
@@ -177,8 +198,9 @@ rollback() {
   wait_local_ready || true
   exit "$rc"
 }
-trap rollback ERR
+trap 'rollback "$?" "$BASH_COMMAND" "$LINENO"' ERR
 
+write_debug "start" 0 "" 0
 log "AUTO_DEPLOY=START from=$PREV_SHA to=$TARGET_SHA"
 git cat-file -e "$TARGET_SHA^{commit}"
 ensure_in_place_runtime
@@ -192,6 +214,7 @@ npm ci
 npm run build
 
 write_release_receipt "$TARGET_SHA"
+write_debug "restart" 0 "systemctl restart $SERVICE" 0
 systemctl restart "$SERVICE"
 wait_local_ready
 
@@ -207,6 +230,7 @@ assert payload.get("deployedSha") == expected, (payload, expected)
 assert payload.get("gitSha") == expected, (payload, expected)
 PY
 
+write_debug "smoke" 0 "python3 scripts/smoke_test.py" 0
 python3 scripts/smoke_test.py --base "$LOCAL_BASE"
 test "$(git rev-parse HEAD)" = "$TARGET_SHA"
 
@@ -214,6 +238,7 @@ trap - ERR
 rm -f "$PREBUILT_BACKUP" 2>/dev/null || true
 # Keep the installed runner synchronized with the verified repository copy.
 install -m 0755 "$APP/ops/release/auto_deploy_server.sh" /usr/local/sbin/socthink-auto-deploy
+write_debug "pass" 0 "" 0
 log "AUTO_DEPLOY=PASS sha=$TARGET_SHA"
 
 for _ in $(seq 1 15); do
