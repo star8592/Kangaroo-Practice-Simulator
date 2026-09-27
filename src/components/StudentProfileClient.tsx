@@ -55,7 +55,7 @@ export default function StudentProfileClient({ user, welcome = false }: { user: 
       setGrade(data.user.grade);
       setSchool(data.user.school || "");
       setAvatarKey(data.user.avatarKey || DEFAULT_STUDENT_AVATAR);
-      setMessage("资料已保存。新的姓名、年级和头像已经生效。");
+      setMessage("资料已保存，新的姓名、年级和头像已经生效。");
       window.dispatchEvent(new Event("student-profile-updated"));
       router.refresh();
     } catch (e) {
@@ -90,7 +90,7 @@ export default function StudentProfileClient({ user, welcome = false }: { user: 
       setCurrentPin("");
       setNewPin("");
       setConfirmPin("");
-      setPinMessage("PIN 已修改，当前设备仍保持登录，其他旧会话已失效。");
+      setPinMessage("PIN 已修改，当前设备保持登录，其他旧会话已失效。");
     } catch (e) {
       setPinError(e instanceof Error ? e.message : String(e));
     } finally {
@@ -99,39 +99,45 @@ export default function StudentProfileClient({ user, welcome = false }: { user: 
   }
 
   return (
-    <div className="student-shell">
-      <div className="report-actions" style={{ justifyContent: "flex-start", marginTop: 0 }}>
-        <Link className="secondary-button" href="/student">← 返回学习报告</Link>
+    <div className={`student-shell ${styles.shell}`}>
+      <div className={styles.backRow}>
+        <Link className={styles.backLink} href="/student">← 返回学习报告</Link>
       </div>
 
       {welcome && !user.onboardingCompleted && (
-        <section className="report-card" style={{ marginBottom: 18 }}>
-          <span className="eyebrow">第一次使用</span>
-          <h2>先花 20 秒确认你的资料</h2>
-          <p>选一个喜欢的头像，确认姓名或昵称和年级，然后点“保存我的资料”。完成后就可以开始训练。</p>
+        <section className={styles.welcomeNote}>
+          <span>第一次使用</span>
+          <div>
+            <strong>先确认一下你的资料</strong>
+            <p>选头像、确认姓名和年级，保存后就可以开始训练。</p>
+          </div>
         </section>
       )}
 
-      <section className="student-hero">
-        <div>
-          <span className="eyebrow">MY PROFILE</span>
-          <h1>{studentAvatarEmoji(avatarKey)} 我的资料</h1>
-          <p>这里的信息用于考试、口算打印、学习报告和年级推荐。</p>
+      <section className={`student-hero ${styles.hero}`}>
+        <div className={styles.heroCopy}>
+          <span className="eyebrow">个人资料</span>
+          <h1>我的学习档案</h1>
+          <p>这些信息会用于考试、口算打印、学习报告和年级推荐。</p>
         </div>
-        <div className="readiness-ring" aria-hidden="true">
-          <strong style={{ fontSize: 44 }}>{studentAvatarEmoji(avatarKey)}</strong>
-          <span>{grade} 年级</span>
-          <small>{name || "学生档案"}</small>
+        <div className={styles.profilePreview} aria-label="当前学生资料预览">
+          <span className={styles.previewAvatar}>{studentAvatarEmoji(avatarKey)}</span>
+          <div>
+            <strong>{name || "学生档案"}</strong>
+            <small>{grade} 年级{school ? ` · ${school}` : ""}</small>
+          </div>
         </div>
       </section>
 
       <section className={`report-card ${styles.profileCard}`}>
         <form className={styles.profileForm} onSubmit={save}>
-          <div>
-            <span className="eyebrow">EDIT PROFILE</span>
-            <h2>设置自己的显示资料</h2>
-            <p>姓名可以填写真实姓名，也可以填写平时使用的昵称。</p>
-          </div>
+          <header className={styles.sectionHead}>
+            <div>
+              <span className={styles.kicker}>基本信息</span>
+              <h2>设置学生资料</h2>
+              <p>姓名可以填写真实姓名，也可以填写平时使用的昵称。</p>
+            </div>
+          </header>
 
           <div className={styles.avatarPicker}>
             <span className={styles.label}>选择头像</span>
@@ -186,15 +192,20 @@ export default function StudentProfileClient({ user, welcome = false }: { user: 
             </label>
           </div>
 
-          <div className={`login-data-note ${styles.loginNote}`}>
-            <b>登录信息</b>
-            <span>登录名：{user.username}</span>
-            <span>准考证号：{user.candidateNo}</span>
-            <span>这两项用于识别账号，学生本人不能在这里修改。</span>
+          <div className={styles.accountMeta}>
+            <div>
+              <span>登录名</span>
+              <strong>{user.username}</strong>
+            </div>
+            <div>
+              <span>准考证号</span>
+              <strong>{user.candidateNo}</strong>
+            </div>
+            <p>登录名和准考证号用于识别账号，学生本人不能在这里修改。</p>
           </div>
 
           {error && <div className="login-error">{error}</div>}
-          {message && <div className="login-data-note"><b>保存成功</b><span>{message}</span></div>}
+          {message && <div className={styles.successMessage}>{message}</div>}
 
           <div className={`student-edit-actions ${styles.actions}`}>
             <Link className="secondary-button" href="/student">取消</Link>
@@ -202,21 +213,27 @@ export default function StudentProfileClient({ user, welcome = false }: { user: 
               className="primary-button"
               disabled={busy || !name.trim() || grade < 1 || grade > 13}
             >
-              {busy ? "保存中…" : "保存我的资料"}
+              {busy ? "保存中…" : "保存资料"}
             </button>
           </div>
         </form>
       </section>
 
-      <section className={`report-card ${styles.profileCard} ${styles.securityCard}`}>
-        <form className={styles.profileForm} onSubmit={changePin}>
+      <details className={styles.securityPanel}>
+        <summary>
           <div>
-            <span className="eyebrow">ACCOUNT SECURITY</span>
-            <h2>修改学生 PIN</h2>
-            <p>需要先输入当前 PIN。修改后，其他设备上的旧登录会自动失效。</p>
+            <span className={styles.securityIcon}>🔒</span>
+            <div>
+              <strong>账号安全</strong>
+              <small>修改学生 PIN</small>
+            </div>
           </div>
+          <span className={styles.securityAction}>展开</span>
+        </summary>
 
-          <div className={`${styles.fields} ${styles.pinFields}`}>
+        <form className={styles.securityForm} onSubmit={changePin}>
+          <p>需要先输入当前 PIN。修改后，其他设备上的旧登录会自动失效。</p>
+          <div className={styles.pinFields}>
             <label>
               <span>当前 PIN</span>
               <input
@@ -253,9 +270,9 @@ export default function StudentProfileClient({ user, welcome = false }: { user: 
           </div>
 
           {pinError && <div className="login-error">{pinError}</div>}
-          {pinMessage && <div className="login-data-note"><b>修改成功</b><span>{pinMessage}</span></div>}
+          {pinMessage && <div className={styles.successMessage}>{pinMessage}</div>}
 
-          <div className={`student-edit-actions ${styles.actions}`}>
+          <div className={styles.securityButtons}>
             <button
               className="primary-button"
               disabled={pinBusy || !currentPin || !newPin || !confirmPin}
@@ -264,7 +281,7 @@ export default function StudentProfileClient({ user, welcome = false }: { user: 
             </button>
           </div>
         </form>
-      </section>
+      </details>
     </div>
   );
 }
