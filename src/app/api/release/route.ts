@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { NextResponse } from "next/server";
+import { listTrainingExamProfiles } from "@/lib/training-question-bank";
 
 export const dynamic = "force-dynamic";
 
@@ -29,6 +30,26 @@ function readGitHead(root: string) {
   return null;
 }
 
+function trainingInventory() {
+  try {
+    const profiles = listTrainingExamProfiles();
+    const papers = profiles.filter((profile) => profile.paperType !== "smart");
+    const competitions = ["kangaroo", "australian-amc", "maa-amc", "cemc"] as const;
+    return {
+      papers: papers.length,
+      smartProfiles: profiles.length - papers.length,
+      byCompetition: Object.fromEntries(
+        competitions.map((competitionId) => [
+          competitionId,
+          papers.filter((profile) => profile.competitionId === competitionId).length,
+        ]),
+      ),
+    };
+  } catch {
+    return null;
+  }
+}
+
 export async function GET() {
   const root = process.cwd();
   const deployedSha = readText(path.join(root, ".release", "deployed_sha")) || null;
@@ -38,5 +59,6 @@ export async function GET() {
     version: readText(path.join(root, "VERSION")) || "dev",
     deployedSha,
     gitSha: readGitHead(root) || deployedSha,
+    trainingInventory: trainingInventory(),
   });
 }
