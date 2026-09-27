@@ -242,6 +242,18 @@ def main():
             },
         )
         assert code == 200 and full["score"] == 100
+        attempt_id = full.get("attemptId")
+        assert attempt_id, full
+
+        with client.open(base + f"/report/{attempt_id}") as report_page:
+            report_html = report_page.read().decode("utf-8")
+            assert "数学竞赛学习诊断报告" in report_html
+            assert attempt_id in report_html
+
+        with client.open(base + f"/api/reports/{attempt_id}/pdf") as pdf_response:
+            pdf_bytes = pdf_response.read()
+            assert pdf_response.headers.get_content_type() == "application/pdf"
+            assert pdf_bytes.startswith(b"%PDF-") and len(pdf_bytes) > 1000
 
         code, start = req(client, base + "/api/exam-sessions", "POST", {"examId": PREA})
         assert code == 200
@@ -320,6 +332,8 @@ def main():
                     "pre_a_distribution": {"3": 10, "4": 10, "5": 2, "6": 2, "8": 1},
                     "pre_a_untimed": True,
                     "pre_a_full_score": 100,
+                    "diagnostic_report": "PASS",
+                    "diagnostic_pdf": "PASS",
                     "pre_a_blank_score": 0,
                     "amc_middle_primary_minutes": 60,
                     "amc_middle_primary_max": 135,
