@@ -1,0 +1,48 @@
+name: Production Receipt
+
+on:
+  workflow_run:
+    workflows: ["CI"]
+    types: [completed]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: production-receipt
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    if: ${{ github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Wait for exact commit on production
+        env:
+          EXPECTED_SHA: ${{ github.event.workflow_run.head_sha }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          for i in $(seq 1 90); do
+            payload="$(curl -fsS --max-time 10 https://socthink.cn/api/release 2>/dev/null || true)"
+            if PAYLOAD="$payload" python3 - <<'PY'
+          import json, os, sys
+          try:
+              data=json.loads(os.environ.get("PAYLOAD", ""))
+          except Exception:
+              sys.exit(1)
+          expected=os.environ["EXPECTED_SHA"]
+          if data.get("deployedSha")==expected and data.get("gitSha")==expected:
+              print("PRODUCTION_RECEIPT=PASS", expected)
+              sys.exit(0)
+          sys.exit(1)
+          PY
+            then
+              exit 0
+            fi
+            sleep 5
+          done
+          echo "Production did not reach $EXPECTED_SHA within the verification window" >&2
+          curl -fsS --max-time 10 https://socthink.cn/api/release || true
+          exit 1
