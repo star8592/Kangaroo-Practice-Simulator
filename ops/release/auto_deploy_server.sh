@@ -99,9 +99,26 @@ then
 fi
 
 PREV_SHA="$HEAD_SHA"
-PREBUILT_DROPIN="/etc/systemd/system/${SERVICE}.d/90-prebuilt-runtime.conf"
+SERVICE_DROPIN_DIR="/etc/systemd/system/${SERVICE}.d"
+PREBUILT_DROPIN="${SERVICE_DROPIN_DIR}/90-prebuilt-runtime.conf"
+IN_PLACE_DROPIN="${SERVICE_DROPIN_DIR}/90-auto-deploy-runtime.conf"
 PREBUILT_BACKUP="/tmp/socthink-auto-deploy-prebuilt-${TARGET_SHA}.conf"
 PREBUILT_RECONCILED=0
+
+ensure_in_place_runtime() {
+  local node_bin
+  node_bin="$(command -v node)"
+  mkdir -p "$SERVICE_DROPIN_DIR"
+  cat > "$IN_PLACE_DROPIN" <<EOF
+[Service]
+WorkingDirectory=$APP
+ExecStart=
+ExecStart=$node_bin $APP/node_modules/next/dist/bin/next start
+Environment=NODE_ENV=production
+Environment=PORT=3000
+Environment=HOSTNAME=127.0.0.1
+EOF
+}
 
 reconcile_prebuilt_runtime() {
   if [[ ! -f "$PREBUILT_DROPIN" ]]; then
@@ -112,6 +129,7 @@ reconcile_prebuilt_runtime() {
     return 1
   fi
   cp -a "$PREBUILT_DROPIN" "$PREBUILT_BACKUP"
+  ensure_in_place_runtime
   rm -f "$PREBUILT_DROPIN"
   systemctl daemon-reload
   PREBUILT_RECONCILED=1
@@ -163,7 +181,9 @@ trap rollback ERR
 
 log "AUTO_DEPLOY=START from=$PREV_SHA to=$TARGET_SHA"
 git cat-file -e "$TARGET_SHA^{commit}"
+ensure_in_place_runtime
 reconcile_prebuilt_runtime
+systemctl daemon-reload
 git reset --hard "$TARGET_SHA"
 
 # Never run git clean here. private/, public/local-assets/, generated runtime
