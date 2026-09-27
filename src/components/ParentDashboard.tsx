@@ -2,6 +2,7 @@
 
 import { FormEvent, useEffect, useState } from "react";
 import { studentAvatarEmoji } from "@/lib/student-avatar";
+import reportStyles from "./ParentDashboardReports.module.css";
 
 type Student = {
   id: string;
@@ -20,6 +21,14 @@ type Student = {
     arithmeticSessions: number;
     latestExamAt: number | null;
   };
+  recentReports: Array<{
+    attemptId: string;
+    examId: string;
+    examName: string;
+    submittedAt: number;
+    scorePct: number;
+    accuracy: number;
+  }>;
 };
 
 function relativeTime(value?: number | null) {
@@ -274,6 +283,25 @@ export default function ParentDashboard() {
                   <small>口算 {summary.arithmeticSessions} 轮</small>
                 </article>
               </div>
+
+              {student.recentReports?.length > 0 && (
+                <div className={reportStyles.list}>
+                  <div className={reportStyles.head}>
+                    <strong>最近诊断报告</strong>
+                    <span>每次正式考试自动生成</span>
+                  </div>
+                  {student.recentReports.slice(0, 3).map((report) => (
+                    <a className={reportStyles.row} key={report.attemptId} href={`/parent/report/${student.id}/${report.attemptId}`}>
+                      <span>
+                        <b>{report.examName}</b>
+                        <small>{new Date(report.submittedAt).toLocaleDateString("zh-CN")}</small>
+                      </span>
+                      <strong>{Math.round(report.scorePct * 100)}%</strong>
+                      <em>查看报告 →</em>
+                    </a>
+                  ))}
+                </div>
+              )}
 
               <p>
                 <b>最近活动：</b>{relativeTime(activityAt)}<br />
