@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
+import styles from "./StudentProfileClient.module.css";
 import {
   DEFAULT_STUDENT_AVATAR,
   STUDENT_AVATARS,
@@ -124,73 +125,68 @@ export default function StudentProfileClient({ user, welcome = false }: { user: 
         </div>
       </section>
 
-      <section className="report-card" style={{ maxWidth: 760, margin: "22px auto 0" }}>
-        <form className="student-edit-form" onSubmit={save}>
+      <section className={`report-card ${styles.profileCard}`}>
+        <form className={styles.profileForm} onSubmit={save}>
           <div>
             <span className="eyebrow">EDIT PROFILE</span>
             <h2>设置自己的显示资料</h2>
             <p>姓名可以填写真实姓名，也可以填写平时使用的昵称。</p>
           </div>
 
-          <div>
-            <span style={{ display: "block", fontWeight: 800, marginBottom: 8 }}>选择头像</span>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(105px,1fr))", gap: 10 }}>
+          <div className={styles.avatarPicker}>
+            <span className={styles.label}>选择头像</span>
+            <div className={styles.avatarGrid}>
               {STUDENT_AVATARS.map((avatar) => (
                 <button
                   key={avatar.key}
                   type="button"
                   onClick={() => setAvatarKey(avatar.key)}
                   aria-pressed={avatarKey === avatar.key}
-                  style={{
-                    minHeight: 76,
-                    borderRadius: 14,
-                    border: avatarKey === avatar.key ? "2px solid var(--accent)" : "1px solid var(--line)",
-                    background: avatarKey === avatar.key ? "#fff8f4" : "#fff",
-                    cursor: "pointer",
-                    font: "inherit",
-                  }}
+                  className={`${styles.avatarOption} ${avatarKey === avatar.key ? styles.selected : ""}`}
                 >
-                  <span style={{ display: "block", fontSize: 30 }}>{avatar.emoji}</span>
+                  <span>{avatar.emoji}</span>
                   <small>{avatar.label}</small>
                 </button>
               ))}
             </div>
           </div>
 
-          <label>
-            <span>姓名 / 昵称</span>
-            <input
-              required
-              maxLength={50}
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="例如：可乐"
-            />
-          </label>
+          <div className={styles.fields}>
+            <label>
+              <span>姓名 / 昵称</span>
+              <input
+                required
+                maxLength={50}
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="例如：可乐"
+              />
+            </label>
 
-          <label>
-            <span>年级</span>
-            <input
-              required
-              type="number"
-              min={1}
-              max={13}
-              value={grade}
-              onChange={(e) => setGrade(Number(e.target.value))}
-            />
-          </label>
+            <label>
+              <span>年级</span>
+              <input
+                required
+                type="number"
+                min={1}
+                max={13}
+                value={grade}
+                onChange={(e) => setGrade(Number(e.target.value))}
+              />
+            </label>
 
-          <label>
-            <span>学校（可选）</span>
-            <input
-              maxLength={80}
-              value={school}
-              onChange={(e) => setSchool(e.target.value)}
-              placeholder="可不填写"
-            />
-          </label>
+            <label>
+              <span>学校（可选）</span>
+              <input
+                maxLength={80}
+                value={school}
+                onChange={(e) => setSchool(e.target.value)}
+                placeholder="可不填写"
+              />
+            </label>
+          </div>
 
-          <div className="login-data-note">
+          <div className={`login-data-note ${styles.loginNote}`}>
             <b>登录信息</b>
             <span>登录名：{user.username}</span>
             <span>准考证号：{user.candidateNo}</span>
@@ -200,7 +196,7 @@ export default function StudentProfileClient({ user, welcome = false }: { user: 
           {error && <div className="login-error">{error}</div>}
           {message && <div className="login-data-note"><b>保存成功</b><span>{message}</span></div>}
 
-          <div className="student-edit-actions">
+          <div className={`student-edit-actions ${styles.actions}`}>
             <Link className="secondary-button" href="/student">取消</Link>
             <button
               className="primary-button"
@@ -212,52 +208,54 @@ export default function StudentProfileClient({ user, welcome = false }: { user: 
         </form>
       </section>
 
-      <section className="report-card" style={{ maxWidth: 760, margin: "18px auto 0" }}>
-        <form className="student-edit-form" onSubmit={changePin}>
+      <section className={`report-card ${styles.profileCard} ${styles.securityCard}`}>
+        <form className={styles.profileForm} onSubmit={changePin}>
           <div>
             <span className="eyebrow">ACCOUNT SECURITY</span>
             <h2>修改学生 PIN</h2>
             <p>需要先输入当前 PIN。修改后，其他设备上的旧登录会自动失效。</p>
           </div>
 
-          <label>
-            <span>当前 PIN</span>
-            <input
-              type="password"
-              inputMode="numeric"
-              autoComplete="current-password"
-              value={currentPin}
-              onChange={(e) => setCurrentPin(e.target.value.replace(/\D/g, "").slice(0, 12))}
-              required
-            />
-          </label>
-          <label>
-            <span>新 PIN（4–12 位数字）</span>
-            <input
-              type="password"
-              inputMode="numeric"
-              autoComplete="new-password"
-              value={newPin}
-              onChange={(e) => setNewPin(e.target.value.replace(/\D/g, "").slice(0, 12))}
-              required
-            />
-          </label>
-          <label>
-            <span>再次输入新 PIN</span>
-            <input
-              type="password"
-              inputMode="numeric"
-              autoComplete="new-password"
-              value={confirmPin}
-              onChange={(e) => setConfirmPin(e.target.value.replace(/\D/g, "").slice(0, 12))}
-              required
-            />
-          </label>
+          <div className={`${styles.fields} ${styles.pinFields}`}>
+            <label>
+              <span>当前 PIN</span>
+              <input
+                type="password"
+                inputMode="numeric"
+                autoComplete="current-password"
+                value={currentPin}
+                onChange={(e) => setCurrentPin(e.target.value.replace(/\D/g, "").slice(0, 12))}
+                required
+              />
+            </label>
+            <label>
+              <span>新 PIN（4–12 位数字）</span>
+              <input
+                type="password"
+                inputMode="numeric"
+                autoComplete="new-password"
+                value={newPin}
+                onChange={(e) => setNewPin(e.target.value.replace(/\D/g, "").slice(0, 12))}
+                required
+              />
+            </label>
+            <label>
+              <span>再次输入新 PIN</span>
+              <input
+                type="password"
+                inputMode="numeric"
+                autoComplete="new-password"
+                value={confirmPin}
+                onChange={(e) => setConfirmPin(e.target.value.replace(/\D/g, "").slice(0, 12))}
+                required
+              />
+            </label>
+          </div>
 
           {pinError && <div className="login-error">{pinError}</div>}
           {pinMessage && <div className="login-data-note"><b>修改成功</b><span>{pinMessage}</span></div>}
 
-          <div className="student-edit-actions">
+          <div className={`student-edit-actions ${styles.actions}`}>
             <button
               className="primary-button"
               disabled={pinBusy || !currentPin || !newPin || !confirmPin}

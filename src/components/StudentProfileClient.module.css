@@ -1,0 +1,144 @@
+.profileCard {
+  max-width: 880px;
+  margin: 22px auto 0;
+  padding: 34px 38px;
+}
+
+.securityCard { margin-top: 18px; }
+
+.profileForm {
+  display: grid;
+  gap: 24px;
+}
+
+.profileForm > div:first-child {
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--line);
+}
+
+.profileForm h2 {
+  margin: 3px 0 7px;
+  font-size: 28px;
+}
+
+.profileForm p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.65;
+}
+
+.label {
+  display: block;
+  font-weight: 850;
+  font-size: 13px;
+  margin-bottom: 10px;
+}
+
+.avatarGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.avatarOption {
+  min-height: 82px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #fff;
+  cursor: pointer;
+  font: inherit;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 4px;
+  transition: border-color .15s ease, background .15s ease, transform .15s ease;
+}
+
+.avatarOption:hover {
+  border-color: #c9cfc9;
+  transform: translateY(-1px);
+}
+
+.avatarOption.selected {
+  border: 2px solid var(--accent);
+  background: #fff8f4;
+}
+
+.avatarOption > span {
+  display: block;
+  font-size: 30px;
+  line-height: 1;
+}
+
+.avatarOption small {
+  font-size: 12px;
+  font-weight: 750;
+}
+
+.fields {
+  display: grid;
+  grid-template-columns: 1.35fr .55fr 1.35fr;
+  gap: 14px;
+}
+
+.fields label {
+  display: grid;
+  gap: 8px;
+  font-weight: 800;
+  font-size: 13px;
+  min-width: 0;
+}
+
+.fields input {
+  width: 100%;
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 14px 15px;
+  font-size: 16px;
+  background: #fff;
+}
+
+.fields input:focus {
+  outline: 2px solid var(--accent);
+  border-color: transparent;
+}
+
+.loginNote {
+  margin-top: 0;
+  padding: 16px 18px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #f8faf7;
+}
+
+.actions {
+  justify-content: flex-end;
+  padding-top: 2px;
+}
+
+.actions :global(.primary-button),
+.actions :global(.secondary-button) {
+  min-width: 132px;
+  text-align: center;
+}
+
+.pinFields {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+@media (max-width: 760px) {
+  .profileCard { padding: 26px 22px; }
+  .avatarGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .fields,
+  .pinFields { grid-template-columns: 1fr; }
+  .actions {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+  .actions :global(.primary-button),
+  .actions :global(.secondary-button) {
+    width: 100%;
+  }
+}
