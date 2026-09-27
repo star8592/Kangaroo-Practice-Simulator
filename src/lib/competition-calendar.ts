@@ -17,9 +17,21 @@ export type CompetitionCalendarEvent = {
   verifiedOn: string;
 };
 
-// Keep this deliberately small: only dates confirmed by an organizer are listed.
-// Regional competitions are omitted until the relevant region/date is unambiguous.
+// Keep this deliberately small: only organizer-confirmed dates relevant to the
+// site's main China-facing audience are listed. International windows are used
+// only when there is no separate China date.
 export const COMPETITION_CALENDAR: CompetitionCalendarEvent[] = [
+  {
+    id: "australian-amc-china-2026",
+    competitionId: "australian-amc",
+    titleZh: "澳洲 AMC",
+    titleEn: "Australian AMC",
+    startDate: "2026-10-11",
+    scopeZh: "中国赛区",
+    scopeEn: "China region",
+    sourceUrl: "https://www.seedasdan.asia/amc/",
+    verifiedOn: "2026-09-27",
+  },
   {
     id: "maa-amc-10-12-a-2026",
     competitionId: "maa-amc",
@@ -41,14 +53,15 @@ export const COMPETITION_CALENDAR: CompetitionCalendarEvent[] = [
     verifiedOn: "2026-09-27",
   },
   {
-    id: "maa-amc8-2027",
+    id: "maa-amc8-china-2027",
     competitionId: "maa-amc",
     stageIds: ["maa-amc8"],
     titleZh: "AMC 8",
     titleEn: "AMC 8",
-    startDate: "2027-01-21",
-    endDate: "2027-01-27",
-    sourceUrl: "https://maa.org/amcreg/",
+    startDate: "2027-01-22",
+    scopeZh: "中国大陆统一开考",
+    scopeEn: "Mainland China",
+    sourceUrl: "https://www.seedasdan.asia/amc8/",
     verifiedOn: "2026-09-27",
   },
   {
@@ -73,6 +86,17 @@ export const COMPETITION_CALENDAR: CompetitionCalendarEvent[] = [
     scopeZh: "北美、南美以外赛区",
     scopeEn: "Outside North & South America",
     sourceUrl: "https://cemc.uwaterloo.ca/contests/pcf",
+    verifiedOn: "2026-09-27",
+  },
+  {
+    id: "kangaroo-china-2027",
+    competitionId: "kangaroo",
+    titleZh: "袋鼠数学",
+    titleEn: "Math Kangaroo",
+    startDate: "2027-03-27",
+    scopeZh: "中国赛区",
+    scopeEn: "China region",
+    sourceUrl: "https://www.seedasdan.asia/mkchina/",
     verifiedOn: "2026-09-27",
   },
   {
