@@ -10,6 +10,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 FORBIDDEN_EXACT = {
     "scripts/import_level_a.py",
+    "scripts/create_student.mjs",
     "ops/data/seed_production.sh",
     "ops/release/changelog.sh",
     "ops/release/deploy_production.sh",
