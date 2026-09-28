@@ -8,7 +8,7 @@ Stop architectural expansion and move to a stable product loop.
 
 - Competition, Arithmetic, Solution separated as domains
 - Student Profile as shared capability layer
-- Learning Event pipeline defined
+- Typed learning-event contract connected directly to the profile engine
 - Existing systems connected through adapters
 
 ## Remaining before v1 freeze
@@ -23,7 +23,7 @@ Stop architectural expansion and move to a stable product loop.
 
 - Connect real exam events
 - Connect arithmetic sessions
-- Connect solution feedback
+- Connect solution feedback when real solution-interaction telemetry is persisted
 - Generate explainable student reports
 
 ### 3. Product Validation

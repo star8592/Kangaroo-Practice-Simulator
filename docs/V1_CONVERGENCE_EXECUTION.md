@@ -4,7 +4,7 @@
 
 Stop expanding architecture and move the platform into a usable product loop.
 
-## Remaining milestones
+## Current convergence state
 
 ### 1. Arithmetic Domain
 
@@ -18,13 +18,16 @@ Extract arithmetic capability into a stable training engine:
 
 ### 2. Profile Integration
 
-Connect existing learning records:
+Connected learning records:
 
 - competition attempts
 - arithmetic sessions
+
+Pending only when real telemetry exists:
+
 - solution interactions
 
-into the unified learning event pipeline.
+through typed adapters directly into the shared profile engine. The former standalone event-pipeline/validator layer was removed because it had no runtime callers.
 
 ### 3. Product Acceptance
 

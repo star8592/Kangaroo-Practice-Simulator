@@ -1,9 +1,18 @@
 import type { AnswerEventPayload, LearningEvent } from "./events/types";
-import type {
-  RecommendationPriority,
-  RecommendationReason,
-  TrainingRecommendation,
-} from "./recommendation-types";
+
+export type RecommendationPriority = "low" | "medium" | "high";
+export type RecommendationReason =
+  | "accuracy_low"
+  | "insufficient_attempts"
+  | "needs_reinforcement"
+  | "stable_skill";
+
+export interface TrainingRecommendation {
+  skill: string;
+  priority: RecommendationPriority;
+  reason: RecommendationReason;
+  message: string;
+}
 
 const MIN_EVIDENCE = 4;
 
@@ -75,5 +84,3 @@ export function recommendTraining(events: LearningEvent[]): TrainingRecommendati
       return rank[b.priority] - rank[a.priority] || a.skill.localeCompare(b.skill);
     });
 }
-
-export type { RecommendationPriority, RecommendationReason, TrainingRecommendation };
