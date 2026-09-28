@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { publicUserById } from "@/lib/auth";
 import { buildDiagnosticReport } from "@/lib/diagnostic-report";
+import { renderDiagnosticReportHtml } from "@/lib/diagnostic-report-html";
 import { renderDiagnosticReportPdfFromHtml } from "@/lib/diagnostic-report-pdf";
 import { familyOwnsStudent } from "@/lib/family-store";
 import { parentFromSessionToken, PARENT_SESSION_COOKIE } from "@/lib/parent-auth";
@@ -18,10 +19,7 @@ export async function GET(req:NextRequest,{params}:{params:Promise<{studentId:st
   const report=buildDiagnosticReport(student,attemptId);
   if(!report)return NextResponse.json({error:"报告不存在"},{status:404});
   try{
-    const pageUrl=new URL(`/parent/report/${encodeURIComponent(studentId)}/${encodeURIComponent(attemptId)}`,req.url);
-    const page=await fetch(pageUrl,{headers:{cookie:req.headers.get("cookie")||""},cache:"no-store"});
-    if(!page.ok)throw new Error(`report page ${page.status}`);
-    const html=await page.text();
+    const html=renderDiagnosticReportHtml(report);
     const pdf=renderDiagnosticReportPdfFromHtml(html);
     return new NextResponse(pdf,{headers:{"content-type":"application/pdf","content-disposition":`attachment; filename="${report.meta.reportId}.pdf"`,"cache-control":"private, no-store"}});
   }catch(e){
