@@ -329,14 +329,23 @@
   gap: 20px;
   padding: 13px 0;
   border-top: 1px solid var(--line);
+  color: inherit;
+  text-decoration: none;
 }
 
 .trendRow:first-child { border-top: 0; }
+.trendRow:hover .trendLink { color: var(--accent-dark); }
 .trendRow > div { min-width: 0; display: grid; gap: 4px; }
 .trendRow b { font-size: 12px; }
 .trendRow small,
 .trendScores span { color: var(--muted); font-size: 10px; }
 .trendScores { flex: 0 0 auto; text-align: right; }
+.trendLink {
+  color: var(--accent-dark);
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 800;
+}
 
 .focusChips {
   display: flex;
