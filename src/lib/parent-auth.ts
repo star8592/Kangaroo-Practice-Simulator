@@ -1,7 +1,6 @@
 import crypto from "node:crypto";
-import fs from "node:fs";
-import path from "node:path";
 import { hashScryptSecret, readSignedJsonToken, signJsonToken, verifyScryptSecret } from "./auth-crypto";
+import { atomicWriteJson, readJsonArray, readOrCreateSecret, userDataPath } from "./user-data-store";
 
 export type ParentUser={
   id:string;
@@ -20,22 +19,19 @@ export type ParentUser={
 export type PublicParent=Omit<ParentUser,"passwordHash">;
 export const PARENT_SESSION_COOKIE="socthink_parent_session";
 
-const DIR=path.join(process.cwd(),"private","users");
-const FILE=path.join(DIR,"parents.json");
-const SECRET=path.join(DIR,"parent-session-secret.txt");
+const FILE=userDataPath("parents.json");
+const SECRET=userDataPath("parent-session-secret.txt");
 
-function ensure(){fs.mkdirSync(DIR,{recursive:true})}
-function sessionSecret(){ensure();if(!fs.existsSync(SECRET))fs.writeFileSync(SECRET,crypto.randomBytes(48).toString("hex"),{mode:0o600});return fs.readFileSync(SECRET,"utf8").trim()}
+function sessionSecret(){return readOrCreateSecret(SECRET)}
 function normalizeEmail(x:string){return x.trim().toLowerCase()}
-function atomicJson(file:string,value:unknown){ensure();const tmp=file+".tmp";fs.writeFileSync(tmp,JSON.stringify(value,null,2));fs.renameSync(tmp,file)}
 export function validEmail(email:string){return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizeEmail(email))&&email.length<=254}
 export function validatePassword(password:string){if(password.length<8)return "密码至少 8 位";if(password.length>128)return "密码过长";return null}
 export function hashPassword(password:string){return hashScryptSecret(password)}
 function verifyPassword(password:string,encoded:string){return verifyScryptSecret(password,encoded)}
 function pub(u:ParentUser):PublicParent{const {passwordHash,...x}=u;void passwordHash;return x}
 
-function loadParents():ParentUser[]{ensure();if(!fs.existsSync(FILE))return[];try{const x=JSON.parse(fs.readFileSync(FILE,"utf8"));return Array.isArray(x)?x.map((u:ParentUser)=>({...u,email:normalizeEmail(u.email),role:"parent",active:u.active!==false,sessionVersion:Math.max(1,Number(u.sessionVersion)||1)})):[]}catch{return[]}}
-function saveParents(rows:ParentUser[]){atomicJson(FILE,rows)}
+function loadParents():ParentUser[]{return readJsonArray<ParentUser>(FILE).map(u=>({...u,email:normalizeEmail(u.email),role:"parent",active:u.active!==false,sessionVersion:Math.max(1,Number(u.sessionVersion)||1)}))}
+function saveParents(rows:ParentUser[]){atomicWriteJson(FILE,rows)}
 export function parentByEmail(email:string){const k=normalizeEmail(email);return loadParents().find(x=>x.email===k)}
 
 export function createParent(input:{email:string;name:string;passwordHash:string;termsAcceptedAt:number;guardianConfirmedAt:number}){

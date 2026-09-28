@@ -1,8 +1,7 @@
 import crypto from "node:crypto";
-import fs from "node:fs";
-import path from "node:path";
 import { DEFAULT_STUDENT_AVATAR, isStudentAvatarKey } from "./student-avatar";
 import { hashScryptSecret, readSignedJsonToken, signJsonToken, verifyScryptSecret } from "./auth-crypto";
+import { atomicWriteJson, readJsonArray, readOrCreateSecret, userDataPath } from "./user-data-store";
 
 export type StudentUser={
  id:string;username:string;candidateNo:string;name:string;grade:number;school?:string;avatarKey?:string;onboardingCompleted?:boolean;
@@ -11,14 +10,13 @@ export type StudentUser={
 };
 export type PublicStudent=Omit<StudentUser,"pinHash">;
 export const SESSION_COOKIE="kangaroo_session";
-const DIR=path.join(process.cwd(),"private","users"),USERS=path.join(DIR,"users.json"),SECRET=path.join(DIR,"session-secret.txt");
-function ensure(){fs.mkdirSync(DIR,{recursive:true})}
-function secret(){ensure();if(!fs.existsSync(SECRET))fs.writeFileSync(SECRET,crypto.randomBytes(48).toString("hex"),{mode:0o600});return fs.readFileSync(SECRET,"utf8").trim()}
+const USERS=userDataPath("users.json"),SECRET=userDataPath("session-secret.txt");
+function secret(){return readOrCreateSecret(SECRET)}
 function hashPin(pin:string){return hashScryptSecret(pin)}
 function verifyPin(pin:string,encoded:string){return verifyScryptSecret(pin,encoded)}
 function normalize(u:StudentUser):StudentUser{const role=u.role==="admin"?"admin":"student";return{...u,role,sessionVersion:Math.max(1,Number(u.sessionVersion)||1),avatarKey:role==="student"?(isStudentAvatarKey(u.avatarKey)?u.avatarKey:DEFAULT_STUDENT_AVATAR):u.avatarKey,onboardingCompleted:role==="student"?u.onboardingCompleted===true:u.onboardingCompleted}}
-export function loadUsers():StudentUser[]{ensure();if(!fs.existsSync(USERS))return[];try{const x=JSON.parse(fs.readFileSync(USERS,"utf8"));return Array.isArray(x)?x.map(normalize):[]}catch{return[]}}
-function saveUsers(x:StudentUser[]){ensure();const tmp=`${USERS}.tmp`;fs.writeFileSync(tmp,JSON.stringify(x.map(normalize),null,2));fs.renameSync(tmp,USERS)}
+export function loadUsers():StudentUser[]{return readJsonArray<StudentUser>(USERS).map(normalize)}
+function saveUsers(x:StudentUser[]){atomicWriteJson(USERS,x.map(normalize))}
 function pub(u:StudentUser):PublicStudent{const{pinHash,...x}=normalize(u);void pinHash;return x}
 export function authenticate(k0:string,pin:string){
  const k=k0.trim().toLowerCase(),users=loadUsers(),u=users.find(x=>x.active&&(x.username.toLowerCase()===k||x.candidateNo.toLowerCase()===k));

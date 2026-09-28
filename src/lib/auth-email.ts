@@ -1,10 +1,9 @@
 import fs from "node:fs";
-import path from "node:path";
 import nodemailer from "nodemailer";
+import {ensureUserDataDir,userDataPath} from "./user-data-store";
 
 type EmailKind="verify-email"|"reset-password";
-const DIR=path.join(process.cwd(),"private","users");
-const OUTBOX=path.join(DIR,"email-outbox.jsonl");
+const OUTBOX=userDataPath("email-outbox.jsonl");
 
 function provider(){
   const p=(process.env.AUTH_EMAIL_PROVIDER||"").trim().toLowerCase();
@@ -35,7 +34,7 @@ export async function sendAuthCode(input:{to:string;code:string;kind:EmailKind})
   if(p==="disabled")throw new Error("邮箱服务尚未配置");
   if(p==="outbox"){
     if(process.env.NODE_ENV==="production")throw new Error("生产环境禁止使用本地 outbox 邮件模式");
-    fs.mkdirSync(DIR,{recursive:true});fs.appendFileSync(OUTBOX,JSON.stringify({at:Date.now(),to:input.to,kind:input.kind,code:input.code})+"\n");
+    ensureUserDataDir();fs.appendFileSync(OUTBOX,JSON.stringify({at:Date.now(),to:input.to,kind:input.kind,code:input.code})+"\n");
     return;
   }
   if(p==="resend"){

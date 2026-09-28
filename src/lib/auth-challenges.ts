@@ -1,19 +1,16 @@
 import crypto from "node:crypto";
-import fs from "node:fs";
-import path from "node:path";
+import {atomicWriteJson,readJsonArray,readOrCreateSecret,userDataPath} from "./user-data-store";
 
 export type AuthPurpose="register"|"reset-password";
 type Challenge={
   id:string;purpose:AuthPurpose;email:string;codeHash:string;createdAt:number;expiresAt:number;resendAfter:number;attempts:number;
   payload?:{name?:string;passwordHash?:string;termsAcceptedAt?:number;guardianConfirmedAt?:number};
 };
-const DIR=path.join(process.cwd(),"private","users");
-const FILE=path.join(DIR,"auth-challenges.json");
-const SECRET=path.join(DIR,"auth-challenge-secret.txt");
-function ensure(){fs.mkdirSync(DIR,{recursive:true})}
-function secret(){ensure();if(!fs.existsSync(SECRET))fs.writeFileSync(SECRET,crypto.randomBytes(48).toString("hex"),{mode:0o600});return fs.readFileSync(SECRET,"utf8").trim()}
-function load():Challenge[]{ensure();if(!fs.existsSync(FILE))return[];try{const x=JSON.parse(fs.readFileSync(FILE,"utf8"));return Array.isArray(x)?x:[]}catch{return[]}}
-function save(rows:Challenge[]){ensure();const tmp=FILE+".tmp";fs.writeFileSync(tmp,JSON.stringify(rows,null,2));fs.renameSync(tmp,FILE)}
+const FILE=userDataPath("auth-challenges.json");
+const SECRET=userDataPath("auth-challenge-secret.txt");
+function secret(){return readOrCreateSecret(SECRET)}
+function load():Challenge[]{return readJsonArray<Challenge>(FILE)}
+function save(rows:Challenge[]){atomicWriteJson(FILE,rows)}
 function hash(purpose:AuthPurpose,email:string,code:string){return crypto.createHmac("sha256",secret()).update(purpose+"|"+email.trim().toLowerCase()+"|"+code).digest("hex")}
 function prune(rows:Challenge[],now=Date.now()){return rows.filter(x=>x.expiresAt>now&&x.attempts<6)}
 export function newCode(){return String(crypto.randomInt(0,1_000_000)).padStart(6,"0")}
