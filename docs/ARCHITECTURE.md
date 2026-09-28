@@ -29,15 +29,15 @@ See `ops/release/SOCTHINK_DEPLOYMENT.md` for the full production SOP.
 
 ## Student profile flow
 
-Competition attempts and arithmetic sessions remain authoritative in their existing stores. Their adapters normalize persisted records into the shared typed `LearningEvent` contract. The profile engine and recommendation rules consume those events directly; there is no second event-processing or validation pipeline.
+`src/lib/student-analytics.ts` is the single student-profile implementation. It reads authoritative exam attempts and arithmetic sessions directly, then produces the evidence, confidence, trends and next-step recommendations used by student/admin surfaces. There is no parallel profile event framework.
 
 ```text
-exam attempts ──> exam adapter ──┐
-                                 ├─> typed learning events ─> profile snapshot + recommendations
-arithmetic ────> arithmetic adapter ┘
+exam attempts ──┐
+                ├─> student analytics ─> student/admin profile + training recommendations
+arithmetic ─────┘
 ```
 
-Solution interactions will join this flow only after real solution telemetry is persisted. Validation belongs at API/persistence boundaries; the profile layer should not duplicate those checks.
+When a future source such as solution-interaction telemetry becomes real persisted product data, it should be integrated into this same analytics boundary rather than introducing a second profile architecture.
 
 ## v1 convergence rule
 

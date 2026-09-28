@@ -25,6 +25,7 @@ FORBIDDEN_PREFIXES = (
     "ops/deploy/",
     ".release-tmp/",
     ".ci-check",
+    "src/domains/profile/",
 )
 REQUIRED_PATHS = {
     "ops/automation/quality_gate.sh",
