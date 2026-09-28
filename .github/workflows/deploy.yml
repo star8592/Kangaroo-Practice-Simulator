@@ -1,10 +1,11 @@
 name: Deploy Production
 
-# Production currently deploys from the authorized workstation over its
-# existing passwordless SSH path. Keep this workflow manual until dedicated
-# GitHub Actions production credentials are intentionally configured.
+# Production may be triggered manually or by a main-branch push. The deploy
+# job runs the full public quality gate before touching production.
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
 
 jobs:
   build-and-deploy:
