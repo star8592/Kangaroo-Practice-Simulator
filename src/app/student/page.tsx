@@ -24,8 +24,8 @@ export default async function StudentPage() {
     <div className={`student-shell ${styles.shell}`}>
       <section className={`student-hero ${styles.hero}`}>
         <div className={styles.heroMain}>
-          <span className={styles.heroLabel}>学习档案</span>
-          <h1>{studentAvatarEmoji(user.avatarKey)} {user.name} 的数学学习画像</h1>
+          <span className={styles.heroLabel}>学习报告</span>
+          <h1>{studentAvatarEmoji(user.avatarKey)} {user.name} 的数学学习报告</h1>
           <p className={styles.heroMeta}>
             {user.candidateNo} · {user.grade} 年级{user.school ? ` · ${user.school}` : ""}
           </p>
@@ -145,13 +145,17 @@ export default async function StudentPage() {
         {a.trend.length ? (
           <div className={styles.trendList}>
             {a.trend.map((x) => (
-              <div className={styles.trendRow} key={x.id}>
+              <Link className={styles.trendRow} key={x.id} href={`/report/${x.id}`}>
                 <div>
                   <b>{x.examId}</b>
                   <small>{new Date(x.submittedAt).toLocaleDateString("zh-CN")} · 用时 {Math.floor(x.elapsedSeconds / 60)}:{String(x.elapsedSeconds % 60).padStart(2, "0")}</small>
                 </div>
-                <div className={styles.trendScores}><b>得分率 {pc(x.scorePct)}</b><span>正确率 {pc(x.accuracy)}</span></div>
-              </div>
+                <div className={styles.trendScores}>
+                  <b>得分率 {pc(x.scorePct)}</b>
+                  <span>正确率 {pc(x.accuracy)}</span>
+                  <em className={styles.trendLink}>查看诊断 →</em>
+                </div>
+              </Link>
             ))}
           </div>
         ) : <p className={styles.cardBodyText}>还没有正式考试记录。</p>}
