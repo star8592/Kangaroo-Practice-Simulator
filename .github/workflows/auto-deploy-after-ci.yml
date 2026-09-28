@@ -1,0 +1,148 @@
+name: Auto Deploy Production After CI
+
+on:
+  workflow_run:
+    workflows: ["CI"]
+    types: [completed]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: production-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    if: >-
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.head_branch == 'main'
+    runs-on: ubuntu-latest
+    env:
+      TARGET_SHA: ${{ github.event.workflow_run.head_sha }}
+      SERVER_HOST: ${{ secrets.SERVER_HOST || 'socthink.cn' }}
+      SERVER_USER: ${{ secrets.SERVER_USER || 'root' }}
+      APP_DIR: ${{ secrets.APP_DIR || '/opt/socthink-math' }}
+      SERVER_SERVICE: ${{ secrets.SERVER_SERVICE || 'socthink-math.service' }}
+      SERVER_SSH_KEY: ${{ secrets.SERVER_SSH_KEY || secrets.SSH_PRIVATE_KEY || secrets.DEPLOY_SSH_KEY || secrets.SSH_KEY }}
+      SERVER_PASSWORD: ${{ secrets.SERVER_PASSWORD || secrets.SSH_PASSWORD || secrets.DEPLOY_PASSWORD }}
+
+    steps:
+      - name: Checkout exact tested commit
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.TARGET_SHA }}
+
+      - name: Validate deployment credentials
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$TARGET_SHA"
+          test -n "$SERVER_HOST"
+          test -n "$SERVER_USER"
+          test -n "$APP_DIR"
+          test -n "$SERVER_SERVICE"
+          if [ -z "$SERVER_SSH_KEY" ] && [ -z "$SERVER_PASSWORD" ]; then
+            echo "::error::No production SSH credential is configured."
+            exit 1
+          fi
+          echo "DEPLOYMENT_CREDENTIAL=PASS"
+
+      - name: Deploy exact green commit
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ env.SERVER_HOST }}
+          username: ${{ env.SERVER_USER }}
+          key: ${{ env.SERVER_SSH_KEY }}
+          password: ${{ env.SERVER_PASSWORD }}
+          script_stop: true
+          script: |
+            set -Eeuo pipefail
+            APP='${{ env.APP_DIR }}'
+            SERVICE='${{ env.SERVER_SERVICE }}'
+            TARGET_SHA='${{ env.TARGET_SHA }}'
+            PREV_SHA=""
+
+            exec 9>/run/lock/socthink-production-deploy.lock
+            flock -w 120 9
+
+            rollback() {
+              rc=$?
+              trap - ERR
+              echo "deployment failed (exit $rc); attempting rollback" >&2
+              if [ -n "$PREV_SHA" ]; then
+                cd "$APP"
+                git reset --hard "$PREV_SHA" || true
+                npm ci || true
+                npm run build || true
+                mkdir -p .release
+                printf '%s\n' "$PREV_SHA" > .release/deployed_sha
+                git show "$PREV_SHA:VERSION" 2>/dev/null | tr -d '\r' > .release/deployed_version || printf '%s\n' unknown > .release/deployed_version
+                date -Iseconds > .release/deployed_at
+                systemctl restart "$SERVICE" || true
+              fi
+              exit "$rc"
+            }
+            trap rollback ERR
+
+            cd "$APP"
+            PREV_SHA="$(git rev-parse HEAD 2>/dev/null || true)"
+            git remote set-url origin https://github.com/star8592/Kangaroo-Practice-Simulator.git
+            git fetch --prune origin main
+            git cat-file -e "$TARGET_SHA^{commit}"
+            git reset --hard "$TARGET_SHA"
+
+            npm ci
+            npm run build
+
+            mkdir -p .release
+            printf '%s\n' "$TARGET_SHA" > .release/deployed_sha
+            git show "$TARGET_SHA:VERSION" 2>/dev/null | tr -d '\r' > .release/deployed_version || printf '%s\n' unknown > .release/deployed_version
+            date -Iseconds > .release/deployed_at
+
+            systemctl restart "$SERVICE"
+            for _ in $(seq 1 60); do
+              if curl -fsS --max-time 5 http://127.0.0.1:3000/api/release >/dev/null 2>&1; then
+                break
+              fi
+              sleep 1
+            done
+
+            RELEASE="$(curl -fsS --max-time 10 http://127.0.0.1:3000/api/release)"
+            RELEASE_PAYLOAD="$RELEASE" EXPECTED_SHA="$TARGET_SHA" python3 - <<'PY'
+            import json, os
+            data=json.loads(os.environ['RELEASE_PAYLOAD'])
+            expected=os.environ['EXPECTED_SHA']
+            assert data.get('deployedSha') == expected, (data, expected)
+            assert data.get('gitSha') == expected, (data, expected)
+            PY
+
+            python3 scripts/smoke_test.py --base http://127.0.0.1:3000
+            test "$(git rev-parse HEAD)" = "$TARGET_SHA"
+            trap - ERR
+            echo "AUTO_DEPLOY_PRODUCTION=PASS sha=$TARGET_SHA"
+
+      - name: Verify public exact commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          for _ in $(seq 1 60); do
+            payload="$(curl -fsS --max-time 10 https://socthink.cn/api/release 2>/dev/null || true)"
+            if PAYLOAD="$payload" EXPECTED_SHA="$TARGET_SHA" python3 - <<'PY'
+            import json, os, sys
+            try:
+                data=json.loads(os.environ.get('PAYLOAD',''))
+            except Exception:
+                sys.exit(1)
+            expected=os.environ['EXPECTED_SHA']
+            sys.exit(0 if data.get('deployedSha') == expected and data.get('gitSha') == expected else 1)
+            PY
+            then
+              echo "PUBLIC_DEPLOYMENT_RECEIPT=PASS $TARGET_SHA"
+              exit 0
+            fi
+            sleep 5
+          done
+          echo "::error::Public production did not reach $TARGET_SHA"
+          curl -fsS --max-time 10 https://socthink.cn/api/release || true
+          exit 1
