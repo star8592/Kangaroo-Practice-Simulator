@@ -23,6 +23,10 @@ fi
 step "arithmetic regression" npm run test:arithmetic
 step "A4 personalization regression" npm run test:arithmetic-print
 step "eslint" npm run lint -- --max-warnings=0
+# Next-generated route validators can retain deleted/renamed routes until the next build.
+# Remove only generated type outputs before standalone tsc; the production build below
+# regenerates and validates the current route tree.
+step "clear stale Next route types" rm -rf .next/types .next/dev/types
 step "typescript" npx tsc --noEmit
 if [[ -d private/solutions ]]; then
   step "solution experience V2 tagged contract" python3 scripts/validate_solution_standard_v2.py --enforce-tagged --show 0

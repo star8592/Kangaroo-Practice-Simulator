@@ -146,6 +146,12 @@ def main():
         assert code == 200 and login["user"]["id"] == uid
 
         exam = assert_private_exam(client, base, PREA, 25)
+        legacy_level_a = assert_private_exam(client, base, "level-a", 25)
+        assert legacy_level_a["profile"]["competitionId"] == "australian-amc"
+        assert legacy_level_a["profile"]["formatId"] == "australian-amc-pre-a"
+        with client.open(base + "/exam/level-a") as legacy_page:
+            assert legacy_page.status == 200
+
         qs = exam["questions"]
         profile = exam["profile"]
         pts = [q["points"] for q in qs]
@@ -329,6 +335,7 @@ def main():
                     "auth": "PASS",
                     "private_training": "PASS",
                     "pre_a_questions": 25,
+                    "level_a_compat": True,
                     "pre_a_distribution": {"3": 10, "4": 10, "5": 2, "6": 2, "8": 1},
                     "pre_a_untimed": True,
                     "pre_a_full_score": 100,
