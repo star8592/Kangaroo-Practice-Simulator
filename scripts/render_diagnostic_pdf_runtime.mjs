@@ -20,7 +20,6 @@ process.env.TMPDIR=runtimeTmp;
 const require=createRequire(runtimePackage);
 const chromium=require("@sparticuz/chromium");
 const puppeteer=require("puppeteer-core");
-chromium.setGraphicsMode=false;
 
 const browser=await puppeteer.launch({
   args:[...chromium.args,"--disable-dev-shm-usage"],
