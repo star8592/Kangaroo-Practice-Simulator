@@ -48,7 +48,7 @@ export default function SessionNav() {
         </>
       ) : (
         <>
-          <Link href="/student">学习报告</Link>
+          <a href="/student">学习报告</a>
           <Link href="/student/settings">我的资料</Link>
         </>
       )}
