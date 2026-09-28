@@ -11,8 +11,8 @@ raw PDF / HTML / image
   -> extraction / OCR
   -> SOURCE_VERIFIED
   -> translation + visual review
-  -> STUDENT_READY
-  -> production student surface
+       ├─> TRAINING_READY -> authenticated private-training surface
+       └─> STUDENT_READY  -> student-facing production surface
 ```
 
 ### SOURCE_VERIFIED
@@ -27,6 +27,26 @@ DRY_RUN=0 bash ops/data/promote_verified_sources.sh
 ```
 
 This promotion is intentionally not allowed to change the student-ready exam surface. It updates canonical source text and provenance only.
+
+### TRAINING_READY
+
+`TRAINING_READY` is the broader authenticated training surface. It may include technically complete material that is appropriate for signed-in practice but has not yet passed every public/student-facing localization gate.
+
+Build the manifest (optionally filter one competition with `COMPETITION_ID`):
+
+```bash
+npm run data:training-manifest
+COMPETITION_ID=maa-amc npm run data:training-manifest
+```
+
+Preview or publish only changed training bundles and referenced assets:
+
+```bash
+DRY_RUN=1 npm run data:publish-training
+DRY_RUN=0 npm run data:publish-training
+```
+
+This channel is private training data only; it must not be treated as evidence that a bundle is `STUDENT_READY`.
 
 ### STUDENT_READY
 
@@ -65,13 +85,14 @@ DRY_RUN=0 bash ops/data/promote_student_ready.sh
 1. Application code deployed on production must match local `origin/main` before any data promotion.
 2. Never rsync the entire `private/exams` directory.
 3. SOURCE_VERIFIED promotion must not change the student-ready profile surface.
-4. STUDENT_READY promotion copies only changed ready bundles and their referenced assets.
-5. Every touched production file is backed up before mutation.
-6. File hashes are checked after transfer.
-7. STUDENT_READY releases rebuild the Next.js production bundle because some exam surfaces may be statically rendered.
-8. Failed STUDENT_READY builds restore the previous data snapshot and rebuild the previous production state.
-9. Public smoke tests must pass after promotion.
-10. Runtime and ingestion corpora remain outside Git; Git stores the release machinery, not the private question corpus.
+4. TRAINING_READY promotion is restricted to authenticated private-training data and must not widen the student-ready surface.
+5. STUDENT_READY promotion copies only changed ready bundles and their referenced assets.
+6. Every touched production file is backed up before mutation.
+7. File hashes are checked after transfer.
+8. STUDENT_READY releases rebuild the Next.js production bundle because some exam surfaces may be statically rendered.
+9. Failed STUDENT_READY builds restore the previous data snapshot and rebuild the previous production state.
+10. Public smoke tests must pass after promotion.
+11. Runtime and ingestion corpora remain outside Git; Git stores the release machinery, not the private question corpus.
 
 ## Current baseline
 
