@@ -245,24 +245,40 @@ ssh root@socthink.cn 'journalctl -u socthink-math.service -f'
 
 ## 4. 正式发布入口
 
-正式发布脚本：
+常规发布不再由开发机主动 SSH 推送。唯一日常路径是：
 
 ~~~text
-ops/release/publish_socthink.sh
+push main
+    ↓
+GitHub Actions CI success
+    ↓
+生产机 socthink-auto-deploy.timer 拉取并再次核验同一 SHA 的 CI
+    ↓
+生产构建 / restart / 本机 smoke
+    ↓
+公网 /api/release
+    ↓
+Production Receipt success
 ~~~
 
-标准发布命令只有一条：
+人工发布只作为故障恢复：
 
 ~~~bash
 cd /mnt/disk1/Code/Kangaroo-Practice-Simulator
 bash ops/release/publish_socthink.sh
 ~~~
 
-正常情况下不要绕开该脚本手工部署。
+生产机编译受限或需要不可变运行时包时，可使用：
+
+~~~bash
+bash ops/release/publish_prebuilt_socthink.sh
+~~~
+
+不要同时启动两条生产部署路径；人工接管前先停掉或确认自动发布器没有正在执行。
 
 ---
 
-## 5. 发布脚本完整流程
+## 5. 手动源码恢复发布脚本完整流程
 
 ### 5.1 锁定 GitHub 目标 SHA
 
@@ -745,35 +761,34 @@ PUBLIC_RELEASE=PASS
 
 ## 17. 标准发布 SOP
 
-### Step 1：开发必须先进入 GitHub
+### Step 1：开发必须先进入 GitHub main
 
-所有正式修改完成后提交到 main。
+所有正式修改必须提交并推送到 `main`。生产服务器不接受未进入 GitHub 的代码 hotfix。
 
-### Step 2：执行唯一发布命令
+### Step 2：等待同一 SHA 的 CI 绿色
+
+生产机自动发布器只接受 `.github/workflows/ci.yml` 对目标 SHA 的 `completed + success`。CI 缺失、失败或仍在运行时不得发布。
+
+### Step 3：由生产机拉取式自动发布
+
+`socthink-auto-deploy.timer` 发现新的绿色 `origin/main` 后执行精确 SHA 部署、构建、重启和本机 smoke test。无需把生产 SSH 私钥存进 GitHub Actions。
+
+### Step 4：以 Production Receipt / 公网 SHA 为最终验收
+
+~~~bash
+curl -sS https://socthink.cn/api/release
+~~~
+
+`deployedSha` 与 `gitSha` 必须都等于该次 GitHub `main` SHA，并且 Production Receipt 必须成功。否则不得宣布上线。
+
+### Step 5：仅在自动发布故障时人工接管
 
 ~~~bash
 cd /mnt/disk1/Code/Kangaroo-Practice-Simulator
 bash ops/release/publish_socthink.sh
 ~~~
 
-### Step 3：等待最终成功标志
-
-成功必须看到类似：
-
-~~~text
-PUBLIC_RELEASE=PASS 1.0.0 <SHA>
-
-[publish] SUCCESS:
-https://socthink.cn is running 1.0.0 @ <SHA>
-~~~
-
-如果脚本中途退出，不得宣布上线。
-
-### Step 4：独立公网复核
-
-~~~bash
-curl -sS https://socthink.cn/api/release
-~~~
+人工恢复路径仍需遵守完全相同的 SHA、smoke、回滚和公网回执标准。
 
 ---
 
@@ -1127,34 +1142,29 @@ nano src/...
 
 ## 26. GitHub Actions 与生产发布
 
-当前 GitHub Actions 主要负责仓库代码构建验证。
-
-真正的 socthink.cn 发布固定走：
+当前职责固定如下：
 
 ~~~text
-本地测试节点
-    ↓
-publish_socthink.sh
-    ↓
-免密 SSH
+GitHub Actions CI
+    └─ 负责构建、测试与质量门
+
+生产机 socthink-auto-deploy.timer
+    └─ 只部署 CI 已绿色的 origin/main 精确 SHA
+
+GitHub Actions Production Receipt
+    └─ 只验证公网最终 deployedSha/gitSha
+
+Deploy Production workflow
+    └─ 仅保留 workflow_dispatch 手动应急，不参与日常 main push
 ~~~
 
-这是因为本地已经具备 root@socthink.cn 的免密连接能力。
+这种结构避免把 root SSH 私钥作为日常自动发布前提，也避免同时维护两套会在每次 `main` push 竞争执行的自动部署逻辑。
 
-如果未来改成 GitHub Actions 自动部署，需要正式配置并验证：
-
-~~~text
-SERVER_HOST
-SERVER_USER
-SERVER_SSH_KEY
-APP_DIR
-~~~
-
-在完成迁移前，不要同时维护两套不同的生产发布逻辑。
+如果生产机自动发布故障，开发机可通过现有免密 SSH 执行 `ops/release/publish_socthink.sh` 人工恢复；恢复后仍必须通过公网 `/api/release` 核对精确 SHA。
 
 ---
 
-## 27. 发布脚本可配置参数
+## 27. 手动源码恢复发布脚本可配置参数
 
 脚本支持环境变量：
 
@@ -1210,7 +1220,17 @@ LOCAL_TEST_PORT=3037
 
 ## 29. 最常用命令速查
 
-### 正式发布
+### 日常发布
+
+推送 `main` 后由 CI + 生产机自动发布器完成，无需手工执行部署命令。
+
+### 查看自动发布器
+
+~~~bash
+ssh root@socthink.cn 'systemctl status socthink-auto-deploy.timer --no-pager -l'
+~~~
+
+### 手动恢复发布
 
 ~~~bash
 cd /mnt/disk1/Code/Kangaroo-Practice-Simulator
@@ -1268,24 +1288,26 @@ ssh root@socthink.cn 'cd /opt/socthink-math && python3 scripts/smoke_test.py --b
 今后针对 socthink.cn，统一执行：
 
 ~~~text
-GitHub 是唯一代码源
+GitHub main 是唯一代码源
         ↓
-本地主机只负责测试和发起部署
+CI 必须对同一 SHA 通过
         ↓
-生产服务器只拉 GitHub 精确 SHA
+生产机主动拉取 origin/main 精确 SHA
         ↓
 运行数据不进入 Git 清理范围
         ↓
-本地/远端双重 smoke
+生产本机 build / restart / smoke
         ↓
 公网 /api/release 精确核验
         ↓
-失败自动回滚
+Production Receipt 验收
+        ↓
+失败自动回滚；必要时才人工 SSH 接管
 ~~~
 
 最重要的一句话：
 
-> 只有当 https://socthink.cn/api/release 返回的 deployedSha 与 GitHub origin/main 完全一致时，才能宣布“发布完成”。
+> 只有当 `https://socthink.cn/api/release` 返回的 `deployedSha` 与 `gitSha` 都等于目标 GitHub `main` SHA，并且 Production Receipt 成功时，才能宣布“发布完成”。
 
 ---
 

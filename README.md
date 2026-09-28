@@ -105,12 +105,14 @@ GitHub 不保存正式题库、账号、PIN、考试记录或学生行为数据�
 
 ## 生产发布与运维
 
-生产站点为 **https://socthink.cn**。正式发布统一使用 GitHub main 作为唯一代码源，并通过本地测试节点执行验证后，再免密 SSH 发布到生产服务器。
+生产站点为 **https://socthink.cn**。GitHub `main` 是唯一代码源。日常发布走 **main → CI → 生产机拉取式自动部署 → Production Receipt**；只有故障恢复或人工接管时才使用手动发布脚本。
 
 完整 SOP、生产目录、systemd/Nginx 架构、数据保护、版本识别、自动回滚、故障排查及验收标准见：
 
 - **ops/release/SOCTHINK_DEPLOYMENT.md**
-- 正式发布脚本：**ops/release/publish_socthink.sh**
+- 自动部署执行器：**ops/release/auto_deploy_server.sh**
+- 手动源码恢复发布：**ops/release/publish_socthink.sh**
+- 预构建运行时发布：**ops/release/publish_prebuilt_socthink.sh**
 - 公网版本身份接口：**https://socthink.cn/api/release**
 
-发布是否完成，以公网接口返回的 deployedSha 与 GitHub origin/main 完全一致为最终标准。
+发布是否完成，以公网接口返回的 `deployedSha` 与 GitHub `origin/main` 完全一致且 Production Receipt 成功为最终标准。
