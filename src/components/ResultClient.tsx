@@ -10,8 +10,8 @@ type Attempt={examId?:string;profile?:ExamProfile;lang?:DisplayLang;grade:GradeW
 function scoreText(n:number){ return Number.isInteger(n)?String(n):n.toFixed(2).replace(/0+$/,"").replace(/\.$/,""); }
 
 const UI={
-  zh:{noResult:"暂无考试结果",backList:"返回考试列表",result:"本次成绩",time:"完成时间",correct:"正确",wrong:"错误",blank:"空题",difficulty:"按难度",points:"分题",concepts:"知识点表现",review:"逐题复盘",diagnostic:"专业诊断报告",again:"再考一次",same:"同卷重做",newMix:"换一套新卷",list:"考试列表"},
-  en:{noResult:"No exam result yet",backList:"Back to exams",result:"Your result",time:"Time used",correct:"Correct",wrong:"Wrong",blank:"Blank",difficulty:"By difficulty",points:"-point",concepts:"Performance by skill",review:"Review answers",diagnostic:"Professional diagnostic",again:"Try again",same:"Retry same paper",newMix:"New mixed paper",list:"Exam list"},
+  zh:{noResult:"暂无考试结果",backList:"返回考试列表",result:"本次成绩",time:"完成时间",correct:"正确",wrong:"错误",blank:"空题",difficulty:"按难度",points:"分题",concepts:"知识点表现",review:"逐题复盘",diagnostic:"查看本次诊断",again:"再考一次",same:"同卷重做",newMix:"换一套新卷",list:"考试列表"},
+  en:{noResult:"No exam result yet",backList:"Back to exams",result:"Your result",time:"Time used",correct:"Correct",wrong:"Wrong",blank:"Blank",difficulty:"By difficulty",points:"-point",concepts:"Performance by skill",review:"Review answers",diagnostic:"View this diagnostic",again:"Try again",same:"Retry same paper",newMix:"New mixed paper",list:"Exam list"},
 } as const;
 
 export default function ResultClient(){
