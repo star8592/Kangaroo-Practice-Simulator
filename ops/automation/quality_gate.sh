@@ -26,6 +26,7 @@ step "grade-one narration bundle" python3 scripts/test_grade1_narration_bundle.p
 step "auto-deploy contract" bash ops/release/test_auto_deploy_contract.sh
 step "auth email SMTP contract" bash ops/release/test_auth_email_smtp_contract.sh
 step "repository hygiene" python3 scripts/audit_repository_hygiene.py
+step "competition ingestion regression" python3 scripts/test_import_pipeline.py
 step "eslint" npm run lint -- --max-warnings=0
 # Next-generated route validators can retain deleted/renamed routes until the next build.
 # Remove only generated type outputs before standalone tsc; the production build below
