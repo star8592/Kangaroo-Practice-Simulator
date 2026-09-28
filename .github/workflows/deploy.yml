@@ -1,11 +1,9 @@
 name: Deploy Production
 
-# Production may be triggered manually or by a main-branch push. The deploy
-# job runs the full public quality gate before touching production.
+# Emergency/manual SSH deployment only. Main-branch production publication is
+# handled by the primary release path and verified by production-receipt.yml.
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
 
 jobs:
   build-and-deploy:
