@@ -5,7 +5,13 @@ import { execFileSync } from "node:child_process";
 
 function chromeBinaries(){
   const configured=process.env.CHROME_BIN?.trim();
-  return configured?[configured]:["/usr/bin/google-chrome","/usr/bin/chromium","/usr/bin/chromium-browser"];
+  return configured?[configured]:[
+    "/usr/bin/google-chrome",
+    "/usr/bin/google-chrome-stable",
+    "/usr/bin/chromium",
+    "/usr/bin/chromium-browser",
+    "/snap/bin/chromium",
+  ];
 }
 
 export function renderDiagnosticReportPdfFromHtml(html:string){
@@ -21,6 +27,7 @@ export function renderDiagnosticReportPdfFromHtml(html:string){
     ];
     let launched=false,lastError:unknown=null;
     for(const chrome of chromeBinaries()){
+      if(!fs.existsSync(chrome))continue;
       try{
         execFileSync(/* turbopackIgnore: true */ chrome,args,{timeout:45000,stdio:"pipe",env:{...process.env,HOME:dir}});
         launched=true;break;
