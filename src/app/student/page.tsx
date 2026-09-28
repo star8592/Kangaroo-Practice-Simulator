@@ -1,6 +1,7 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import ReportDownloadButton from "@/components/ReportDownloadButton";
 import { SESSION_COOKIE, userFromSessionToken } from "@/lib/auth";
 import { buildStudentAnalytics } from "@/lib/student-analytics";
 import { studentAvatarEmoji } from "@/lib/student-avatar";
@@ -145,7 +146,7 @@ export default async function StudentPage() {
         {a.trend.length ? (
           <div className={styles.trendList}>
             {a.trend.map((x) => (
-              <Link className={styles.trendRow} key={x.id} href={`/report/${x.id}`}>
+              <div className={styles.trendRow} key={x.id}>
                 <div>
                   <b>{x.examId}</b>
                   <small>{new Date(x.submittedAt).toLocaleDateString("zh-CN")} · 用时 {Math.floor(x.elapsedSeconds / 60)}:{String(x.elapsedSeconds % 60).padStart(2, "0")}</small>
@@ -153,9 +154,12 @@ export default async function StudentPage() {
                 <div className={styles.trendScores}>
                   <b>得分率 {pc(x.scorePct)}</b>
                   <span>正确率 {pc(x.accuracy)}</span>
-                  <em className={styles.trendLink}>查看诊断 →</em>
+                  <div style={{display:"flex",gap:8,justifyContent:"flex-end",alignItems:"center",marginTop:5,flexWrap:"wrap"}}>
+                    <Link className="secondary-button" style={{padding:"8px 10px",fontSize:10}} href={`/report/${encodeURIComponent(x.id)}`}>查看报告</Link>
+                    <ReportDownloadButton href={`/api/reports/${encodeURIComponent(x.id)}/pdf`} label="下载 PDF" className="secondary-button" />
+                  </div>
                 </div>
-              </Link>
+              </div>
             ))}
           </div>
         ) : <p className={styles.cardBodyText}>还没有正式考试记录。</p>}
