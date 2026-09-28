@@ -16,6 +16,40 @@ if [[ "${EUID}" -ne 0 || "$APP_REAL" != "$EXPECTED_APP" ]]; then
   exit 0
 fi
 
+has_pdf_browser() {
+  command -v google-chrome >/dev/null 2>&1 \
+    || command -v google-chrome-stable >/dev/null 2>&1 \
+    || command -v chromium >/dev/null 2>&1 \
+    || command -v chromium-browser >/dev/null 2>&1 \
+    || [[ -x /snap/bin/chromium ]]
+}
+
+ensure_pdf_browser() {
+  if has_pdf_browser; then
+    echo "BOOTSTRAP_PDF_RUNTIME=READY"
+    return 0
+  fi
+
+  echo "BOOTSTRAP_PDF_RUNTIME=INSTALLING"
+  if command -v apt-get >/dev/null 2>&1; then
+    apt-get update
+    DEBIAN_FRONTEND=noninteractive apt-get install -y chromium-browser || true
+    if ! has_pdf_browser; then
+      DEBIAN_FRONTEND=noninteractive apt-get install -y chromium || true
+    fi
+  fi
+  if ! has_pdf_browser && command -v snap >/dev/null 2>&1; then
+    snap install chromium || true
+  fi
+  if ! has_pdf_browser; then
+    echo "BOOTSTRAP_PDF_RUNTIME=ERROR browser_unavailable" >&2
+    exit 2
+  fi
+  echo "BOOTSTRAP_PDF_RUNTIME=INSTALLED"
+}
+
+ensure_pdf_browser
+
 node_bin="$(command -v node)"
 mkdir -p "$DROPIN_DIR"
 cat > "$IN_PLACE_DROPIN" <<EOF2
