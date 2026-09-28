@@ -18,7 +18,8 @@ fs.mkdirSync(runtimeTmp,{recursive:true});
 process.env.TMPDIR=runtimeTmp;
 
 const require=createRequire(runtimePackage);
-const chromium=require("@sparticuz/chromium");
+const chromiumModule=require("@sparticuz/chromium");
+const chromium=chromiumModule.default||chromiumModule;
 const puppeteer=require("puppeteer-core");
 
 const browser=await puppeteer.launch({
