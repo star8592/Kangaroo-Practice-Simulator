@@ -23,6 +23,8 @@ fi
 step "arithmetic regression" npm run test:arithmetic
 step "A4 personalization regression" npm run test:arithmetic-print
 step "grade-one narration bundle" python3 scripts/test_grade1_narration_bundle.py
+step "auto-deploy contract" bash ops/release/test_auto_deploy_contract.sh
+step "auth email SMTP contract" bash ops/release/test_auth_email_smtp_contract.sh
 step "eslint" npm run lint -- --max-warnings=0
 # Next-generated route validators can retain deleted/renamed routes until the next build.
 # Remove only generated type outputs before standalone tsc; the production build below
