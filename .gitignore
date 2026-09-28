@@ -64,3 +64,11 @@ __pycache__/
 # local ingestion/audit outputs
 /competition-agent/importer/data/
 /reports/
+
+# local release / verification scratch (may contain credentials and large build artifacts)
+/.release-tmp/
+/.ci-check*/
+/.ci-check*.log
+
+# generated solution media is runtime/release data; existing tracked golden fixtures remain tracked
+/public/generated-solutions/*

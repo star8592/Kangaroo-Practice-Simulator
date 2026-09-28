@@ -75,13 +75,24 @@ fi
 log "preflight production SSH"
 "$SSH_BIN" -o BatchMode=yes -o ConnectTimeout=10 "$REMOTE_HOST" 'echo SSH_OK' | grep -q SSH_OK
 
+REMOTE_DATA_SHA="$("$SSH_BIN" "$REMOTE_HOST" "cat '$PERSIST_ROOT/.release/data-promotions/pre-a-grade1-v2.sha256' 2>/dev/null || cat '$PERSIST_ROOT/.release/data-promotions/pre-a-grade1-prebuilt.sha256' 2>/dev/null || true")"
+DATA_CURRENT=0
+if [ "$REMOTE_DATA_SHA" = "$DATA_SHA" ]; then
+  DATA_CURRENT=1
+  log "grade-one production data already matches $DATA_SHA; skip data upload"
+fi
+
 REMOTE_TMP="/tmp/kps-prebuilt-$TARGET_SHA"
 "$SSH_BIN" "$REMOTE_HOST" "mkdir -p '$REMOTE_TMP'"
-log "upload prebuilt runtime and verified grade-one payload"
-"$SCP_BIN" "$RUNTIME_PAYLOAD" "$RUNTIME_META" "$DATA_PAYLOAD" "$DATA_META" "$REMOTE_HOST:$REMOTE_TMP/"
+log "upload prebuilt runtime"
+"$SCP_BIN" "$RUNTIME_PAYLOAD" "$RUNTIME_META" "$REMOTE_HOST:$REMOTE_TMP/"
+if [ "$DATA_CURRENT" != "1" ]; then
+  log "upload verified grade-one payload"
+  "$SCP_BIN" "$DATA_PAYLOAD" "$DATA_META" "$REMOTE_HOST:$REMOTE_TMP/"
+fi
 
 log "promote runtime and data without compiling on production"
-"$SSH_BIN" "$REMOTE_HOST" bash -s --   "$PERSIST_ROOT" "$REMOTE_SERVICE" "$RELEASE_ROOT" "$TARGET_SHA" "$VERSION" "$REMOTE_TMP" <<'REMOTE'
+"$SSH_BIN" "$REMOTE_HOST" bash -s --   "$PERSIST_ROOT" "$REMOTE_SERVICE" "$RELEASE_ROOT" "$TARGET_SHA" "$VERSION" "$REMOTE_TMP" "$DATA_CURRENT" "$DATA_SHA" <<'REMOTE'
 set -Eeuo pipefail
 APP="$1"
 SERVICE="$2"
