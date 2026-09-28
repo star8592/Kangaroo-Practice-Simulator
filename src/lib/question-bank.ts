@@ -1,11 +1,9 @@
 import fs from "node:fs";
 import path from "node:path";
-import type { ExamBundle, ExamProfile, PublicQuestion, Question } from "./types";
-import { buildSmartBundle, mixedProfiles, parseSmartExamId } from "./mixed-exam";
-import { normalizeExamProfile } from "./competition-format";
+import type { ExamBundle, PublicQuestion, Question } from "./types";
+import { listStoredExamProfiles, loadStoredExamBundle } from "./exam-bundle-store";
 
 const BANK_PATH = path.join(process.cwd(), "private", "question-bank.json");
-const EXAMS_DIR = path.join(process.cwd(), "private", "exams");
 const RIGHTS_REGISTRY_PATH = path.join(
   process.cwd(),
   "private",
@@ -41,11 +39,6 @@ function sourceAllowsPublicQuestionDisplay(sourceRegistryId: unknown) {
     }
   }
   return publicRightsBySource.get(sourceRegistryId) === true;
-}
-
-function safeExamId(examId: string) {
-  if (!/^[a-zA-Z0-9_-]+$/.test(examId)) throw new Error("Invalid exam id");
-  return examId;
 }
 
 function text(value: unknown) {
@@ -139,59 +132,12 @@ export function isExamBundleStudentReady(bundle: ExamBundle) {
   return Boolean(bundle.questions.length && bundle.questions.every(isStudentReady));
 }
 
-function normalizeBundle(raw: ExamBundle): ExamBundle {
-  return { ...raw, profile: normalizeExamProfile(raw.profile) };
-}
-
-function loadReadyArchiveBundles(): ExamBundle[] {
-  if (!fs.existsSync(EXAMS_DIR)) return [];
-  const bundles: ExamBundle[] = [];
-  for (const name of fs
-    .readdirSync(EXAMS_DIR)
-    .filter((x) => x.endsWith(".json"))
-    .sort()) {
-    if (name.includes("before-bilingual")) continue;
-    try {
-      const raw = JSON.parse(
-        fs.readFileSync(path.join(EXAMS_DIR, name), "utf8"),
-      ) as ExamBundle;
-      const bundle = normalizeBundle(raw);
-      if (bundle.profile.country === "Mixed") continue;
-      if (isExamBundleStudentReady(bundle)) bundles.push(bundle);
-    } catch {}
-  }
-  return bundles;
-}
-
 export function loadExamBundle(examId: string): ExamBundle {
-  const id = safeExamId(examId);
-  if (id === "level-a") return loadExamBundle("au-amc-pre-a-sample-1");
-  const file = path.join(EXAMS_DIR, `${id}.json`);
-  if (fs.existsSync(file)) {
-    return normalizeBundle(
-      JSON.parse(fs.readFileSync(file, "utf8")) as ExamBundle,
-    );
-  }
-  const smart = parseSmartExamId(id);
-  if (smart) {
-    return buildSmartBundle(
-      smart.baseId,
-      smart.seed,
-      loadReadyArchiveBundles(),
-    );
-  }
-  throw new Error(`Local exam bundle not found: ${id}`);
+  return loadStoredExamBundle(examId, { gate: isExamBundleStudentReady });
 }
 
-export function listExamProfiles(): ExamProfile[] {
-  const archives = loadReadyArchiveBundles();
-  const profiles: ExamProfile[] = [...mixedProfiles(archives)];
-  for (const bundle of archives) {
-    if (!profiles.some((p) => p.id === bundle.profile.id)) {
-      profiles.push({ ...bundle.profile, studentReady: true });
-    }
-  }
-  return profiles;
+export function listExamProfiles() {
+  return listStoredExamProfiles(isExamBundleStudentReady);
 }
 
 export function publicQuestions(questions: Question[]): PublicQuestion[] {

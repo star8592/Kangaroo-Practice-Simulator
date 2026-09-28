@@ -1,23 +1,17 @@
-import fs from "node:fs";
-import path from "node:path";
-import type { ExamBundle, ExamProfile, PublicQuestion, Question } from "./types";
-import { buildSmartBundle, mixedProfiles, parseSmartExamId } from "./mixed-exam";
-import { normalizeExamProfile } from "./competition-format";
+import type { ExamBundle, PublicQuestion, Question } from "./types";
+import { listStoredExamProfiles, loadStoredExamBundle } from "./exam-bundle-store";
 
-const EXAMS_DIR = path.join(process.cwd(), "private", "exams");
 const text = (value: unknown) => typeof value === "string" ? value.trim() : "";
 
-function safeExamId(examId: string) {
-  if (!/^[a-zA-Z0-9_-]+$/.test(examId)) throw new Error("Invalid exam id");
-  return examId;
-}
-
 function hasVisual(q: Question) {
-  return Boolean(q.studentAssetUrl || q.studentAssetUrlZh || q.studentAssetUrlEn || q.assetUrl || q.assetUrlZh || q.assetUrlEn);
-}
-
-function normalizeBundle(raw: ExamBundle): ExamBundle {
-  return { ...raw, profile: normalizeExamProfile(raw.profile) };
+  return Boolean(
+    q.studentAssetUrl ||
+      q.studentAssetUrlZh ||
+      q.studentAssetUrlEn ||
+      q.assetUrl ||
+      q.assetUrlZh ||
+      q.assetUrlEn,
+  );
 }
 
 /** Authenticated private-training gate; independent of public distribution flags. */
@@ -36,41 +30,17 @@ export function isExamBundleTrainingReady(bundle: ExamBundle) {
   return Boolean(bundle.profile.id && bundle.profile.questionCount > 0 && bundle.questions.length === bundle.profile.questionCount && bundle.questions.every(isTrainingReadyQuestion));
 }
 
-function loadTrainingArchiveBundles(): ExamBundle[] {
-  if (!fs.existsSync(EXAMS_DIR)) return [];
-  const bundles: ExamBundle[] = [];
-  for (const name of fs.readdirSync(EXAMS_DIR).filter((x) => x.endsWith(".json")).sort()) {
-    if (name.includes("before-bilingual")) continue;
-    try {
-      const bundle = normalizeBundle(JSON.parse(fs.readFileSync(path.join(EXAMS_DIR, name), "utf8")) as ExamBundle);
-      if (bundle.profile.country === "Mixed") continue;
-      if (isExamBundleTrainingReady(bundle)) bundles.push(bundle);
-    } catch {}
-  }
-  return bundles;
-}
-
 export function loadTrainingExamBundle(examId: string): ExamBundle {
-  const id = safeExamId(examId);
-  if (id === "level-a") return loadTrainingExamBundle("au-amc-pre-a-sample-1");
-  const file = path.join(EXAMS_DIR, `${id}.json`);
-  if (fs.existsSync(file)) {
-    const bundle = normalizeBundle(JSON.parse(fs.readFileSync(file, "utf8")) as ExamBundle);
-    if (!isExamBundleTrainingReady(bundle)) throw new Error(`Training exam is incomplete: ${id}`);
-    return bundle;
-  }
-  const smart = parseSmartExamId(id);
-  if (smart) return buildSmartBundle(smart.baseId, smart.seed, loadTrainingArchiveBundles());
-  throw new Error(`Local training exam bundle not found: ${id}`);
+  return loadStoredExamBundle(examId, {
+    gate: isExamBundleTrainingReady,
+    requireReadyDirect: true,
+    incompleteMessage: (id) => `Training exam is incomplete: ${id}`,
+    missingMessage: (id) => `Local training exam bundle not found: ${id}`,
+  });
 }
 
-export function listTrainingExamProfiles(): ExamProfile[] {
-  const archives = loadTrainingArchiveBundles();
-  const profiles: ExamProfile[] = [...mixedProfiles(archives)];
-  for (const bundle of archives) {
-    if (!profiles.some((profile) => profile.id === bundle.profile.id)) profiles.push({ ...bundle.profile, studentReady: true });
-  }
-  return profiles;
+export function listTrainingExamProfiles() {
+  return listStoredExamProfiles(isExamBundleTrainingReady);
 }
 
 export function trainingQuestions(questions: Question[]): PublicQuestion[] {
