@@ -13,11 +13,11 @@ export const SESSION_COOKIE="kangaroo_session";
 const DIR=path.join(process.cwd(),"private","users"),USERS=path.join(DIR,"users.json"),SECRET=path.join(DIR,"session-secret.txt");
 function ensure(){fs.mkdirSync(DIR,{recursive:true})}
 function secret(){ensure();if(!fs.existsSync(SECRET))fs.writeFileSync(SECRET,crypto.randomBytes(48).toString("hex"),{mode:0o600});return fs.readFileSync(SECRET,"utf8").trim()}
-export function hashPin(pin:string){const salt=crypto.randomBytes(16).toString("hex");return `scrypt$${salt}$${crypto.scryptSync(pin,salt,32).toString("hex")}`}
+function hashPin(pin:string){const salt=crypto.randomBytes(16).toString("hex");return `scrypt$${salt}$${crypto.scryptSync(pin,salt,32).toString("hex")}`}
 function verifyPin(pin:string,encoded:string){const[k,salt,expected]=encoded.split("$");if(k!=="scrypt"||!salt||!expected)return false;const a=crypto.scryptSync(pin,salt,32),b=Buffer.from(expected,"hex");return a.length===b.length&&crypto.timingSafeEqual(a,b)}
 function normalize(u:StudentUser):StudentUser{const role=u.role==="admin"?"admin":"student";return{...u,role,sessionVersion:Math.max(1,Number(u.sessionVersion)||1),avatarKey:role==="student"?(isStudentAvatarKey(u.avatarKey)?u.avatarKey:DEFAULT_STUDENT_AVATAR):u.avatarKey,onboardingCompleted:role==="student"?u.onboardingCompleted===true:u.onboardingCompleted}}
 export function loadUsers():StudentUser[]{ensure();if(!fs.existsSync(USERS))return[];try{const x=JSON.parse(fs.readFileSync(USERS,"utf8"));return Array.isArray(x)?x.map(normalize):[]}catch{return[]}}
-export function saveUsers(x:StudentUser[]){ensure();const tmp=`${USERS}.tmp`;fs.writeFileSync(tmp,JSON.stringify(x.map(normalize),null,2));fs.renameSync(tmp,USERS)}
+function saveUsers(x:StudentUser[]){ensure();const tmp=`${USERS}.tmp`;fs.writeFileSync(tmp,JSON.stringify(x.map(normalize),null,2));fs.renameSync(tmp,USERS)}
 function pub(u:StudentUser):PublicStudent{const{pinHash,...x}=normalize(u);void pinHash;return x}
 export function authenticate(k0:string,pin:string){
  const k=k0.trim().toLowerCase(),users=loadUsers(),u=users.find(x=>x.active&&(x.username.toLowerCase()===k||x.candidateNo.toLowerCase()===k));
@@ -34,7 +34,6 @@ export function userFromSessionToken(t:string|undefined|null):PublicStudent|null
 export const isAdmin=(u:PublicStudent|null|undefined)=>u?.role==="admin";
 export function createStudent(input:{username:string;candidateNo:string;name:string;grade:number;school?:string;pin:string}){const users=loadUsers(),username=input.username.trim(),candidateNo=input.candidateNo.trim(),name=input.name.trim();if(!username||!candidateNo||!name||input.pin.length<4)throw new Error("学生信息或 PIN 不完整");if(users.some(x=>x.username.toLowerCase()===username.toLowerCase()))throw new Error("用户名已存在");if(users.some(x=>x.candidateNo.toLowerCase()===candidateNo.toLowerCase()))throw new Error("准考证号已存在");const u:StudentUser={id:`stu_${crypto.randomBytes(8).toString("hex")}`,username,candidateNo,name,grade:input.grade,school:input.school?.trim()||undefined,avatarKey:DEFAULT_STUDENT_AVATAR,onboardingCompleted:false,pinHash:hashPin(input.pin),createdAt:Date.now(),active:true,role:"student",sessionVersion:1};users.push(u);saveUsers(users);return pub(u)}
 export function createAdmin(input:{username:string;name:string;pin:string}){const users=loadUsers(),username=input.username.trim(),name=input.name.trim(),candidateNo=`ADMIN-${username}`;if(!username||!name||input.pin.length<6)throw new Error("管理员信息不完整或 PIN 少于 6 位");if(users.some(x=>x.username.toLowerCase()===username.toLowerCase()))throw new Error("用户名已存在");if(users.some(x=>x.candidateNo.toLowerCase()===candidateNo.toLowerCase()))throw new Error("管理员编号已存在");const u:StudentUser={id:`adm_${crypto.randomBytes(8).toString("hex")}`,username,candidateNo,name,grade:0,pinHash:hashPin(input.pin),createdAt:Date.now(),active:true,role:"admin",sessionVersion:1};users.push(u);saveUsers(users);return pub(u)}
-export function listPublicUsers(){return loadUsers().map(pub)}
 export function updateStudent(id:string,patch:{name?:string;grade?:number;school?:string;avatarKey?:string;onboardingCompleted?:boolean;pin?:string;active?:boolean}){
  const users=loadUsers(),u=users.find(x=>x.id===id&&x.role==="student");if(!u)throw new Error("学生不存在");
  if(patch.name!==undefined)u.name=patch.name.trim().slice(0,50);

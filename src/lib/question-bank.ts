@@ -1,6 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
-import type { ExamBundle, PublicQuestion, Question } from "./types";
+import type { ExamBundle, Question } from "./types";
 import { listStoredExamProfiles, loadStoredExamBundle } from "./exam-bundle-store";
 
 const BANK_PATH = path.join(process.cwd(), "private", "question-bank.json");
@@ -138,53 +138,4 @@ export function loadExamBundle(examId: string): ExamBundle {
 
 export function listExamProfiles() {
   return listStoredExamProfiles(isExamBundleStudentReady);
-}
-
-export function publicQuestions(questions: Question[]): PublicQuestion[] {
-  return questions.map((q) => {
-    if (!isStudentReady(q)) {
-      throw new Error(`Question ${q.id} is not bilingual student-ready`);
-    }
-
-    const localized = hasBilingualText(q);
-    const zh = q.localized?.zh;
-    const en = q.localized?.en;
-    const commonVisual = q.studentAssetUrl || q.assetUrl;
-    const zhVisual =
-      q.studentAssetUrlZh || q.assetUrlZh || commonVisual;
-    const enVisual =
-      q.studentAssetUrlEn || q.assetUrlEn || commonVisual;
-
-    const stem =
-      text(zh?.stem) ||
-      (hasCjk(q.stem) ? q.stem : "请查看下方中英双语原题图。");
-    const stemEn =
-      text(en?.stem) ||
-      text(q.stemEn) ||
-      "See the bilingual problem image below.";
-
-    return {
-      id: q.id,
-      year: q.year,
-      level: q.level,
-      grades: q.grades,
-      language: "zh/en",
-      questionNo: q.questionNo,
-      points: q.points,
-      answerMode: q.answerMode,
-      concept: localized ? "official_original" : q.concept,
-      stem,
-      stemEn,
-      choices: zh?.choices?.length ? zh.choices : q.choices,
-      choicesEn: en?.choices?.length
-        ? en.choices
-        : q.choicesEn?.length
-          ? q.choicesEn
-          : q.choices,
-      assetUrl: commonVisual,
-      assetUrlZh: zhVisual,
-      assetUrlEn: enVisual,
-      verified: Boolean(q.verified || q.review?.verified),
-    };
-  });
 }

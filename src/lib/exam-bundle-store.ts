@@ -24,7 +24,7 @@ function normalizeBundle(raw: ExamBundle): ExamBundle {
   return { ...raw, profile: normalizeExamProfile(raw.profile) };
 }
 
-export function loadArchiveBundles(gate: BundleGate): ExamBundle[] {
+function loadArchiveBundles(gate: BundleGate): ExamBundle[] {
   if (!fs.existsSync(EXAMS_DIR)) return [];
   const bundles: ExamBundle[] = [];
   for (const name of fs.readdirSync(EXAMS_DIR).filter((x) => x.endsWith(".json")).sort()) {

@@ -33,10 +33,9 @@ export function hashPassword(password:string){const salt=crypto.randomBytes(16).
 function verifyPassword(password:string,encoded:string){const [kind,salt,expected]=encoded.split("$");if(kind!=="scrypt"||!salt||!expected)return false;const a=crypto.scryptSync(password,salt,32),b=Buffer.from(expected,"hex");return a.length===b.length&&crypto.timingSafeEqual(a,b)}
 function pub(u:ParentUser):PublicParent{const {passwordHash,...x}=u;void passwordHash;return x}
 
-export function loadParents():ParentUser[]{ensure();if(!fs.existsSync(FILE))return[];try{const x=JSON.parse(fs.readFileSync(FILE,"utf8"));return Array.isArray(x)?x.map((u:ParentUser)=>({...u,email:normalizeEmail(u.email),role:"parent",active:u.active!==false,sessionVersion:Math.max(1,Number(u.sessionVersion)||1)})):[]}catch{return[]}}
-export function saveParents(rows:ParentUser[]){atomicJson(FILE,rows)}
+function loadParents():ParentUser[]{ensure();if(!fs.existsSync(FILE))return[];try{const x=JSON.parse(fs.readFileSync(FILE,"utf8"));return Array.isArray(x)?x.map((u:ParentUser)=>({...u,email:normalizeEmail(u.email),role:"parent",active:u.active!==false,sessionVersion:Math.max(1,Number(u.sessionVersion)||1)})):[]}catch{return[]}}
+function saveParents(rows:ParentUser[]){atomicJson(FILE,rows)}
 export function parentByEmail(email:string){const k=normalizeEmail(email);return loadParents().find(x=>x.email===k)}
-export function publicParentById(id:string){const u=loadParents().find(x=>x.id===id&&x.active);return u?pub(u):null}
 
 export function createParent(input:{email:string;name:string;passwordHash:string;termsAcceptedAt:number;guardianConfirmedAt:number}){
   const rows=loadParents(),email=normalizeEmail(input.email),name=input.name.trim().slice(0,60);
