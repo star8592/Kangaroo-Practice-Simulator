@@ -288,8 +288,8 @@ export default function ParentDashboard() {
               {student.recentReports?.length > 0 && (
                 <div className={reportStyles.list}>
                   <div className={reportStyles.head}>
-                    <strong>最近诊断报告</strong>
-                    <span>每次正式考试自动生成</span>
+                    <strong>最近考试</strong>
+                    <span>点击查看单次诊断</span>
                   </div>
                   {student.recentReports.slice(0, 3).map((report) => (
                     <a className={reportStyles.row} key={report.attemptId} href={`/parent/report/${student.id}/${report.attemptId}`}>
@@ -298,7 +298,7 @@ export default function ParentDashboard() {
                         <small>{new Date(report.submittedAt).toLocaleDateString("zh-CN")}</small>
                       </span>
                       <strong>{Math.round(report.scorePct * 100)}%</strong>
-                      <em>查看报告 →</em>
+                      <em>诊断 →</em>
                     </a>
                   ))}
                 </div>
