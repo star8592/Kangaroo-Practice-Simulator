@@ -1,6 +1,7 @@
 import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
+import { hashScryptSecret, readSignedJsonToken, signJsonToken, verifyScryptSecret } from "./auth-crypto";
 
 export type ParentUser={
   id:string;
@@ -29,8 +30,8 @@ function normalizeEmail(x:string){return x.trim().toLowerCase()}
 function atomicJson(file:string,value:unknown){ensure();const tmp=file+".tmp";fs.writeFileSync(tmp,JSON.stringify(value,null,2));fs.renameSync(tmp,file)}
 export function validEmail(email:string){return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizeEmail(email))&&email.length<=254}
 export function validatePassword(password:string){if(password.length<8)return "密码至少 8 位";if(password.length>128)return "密码过长";return null}
-export function hashPassword(password:string){const salt=crypto.randomBytes(16).toString("hex");return "scrypt$"+salt+"$"+crypto.scryptSync(password,salt,32).toString("hex")}
-function verifyPassword(password:string,encoded:string){const [kind,salt,expected]=encoded.split("$");if(kind!=="scrypt"||!salt||!expected)return false;const a=crypto.scryptSync(password,salt,32),b=Buffer.from(expected,"hex");return a.length===b.length&&crypto.timingSafeEqual(a,b)}
+export function hashPassword(password:string){return hashScryptSecret(password)}
+function verifyPassword(password:string,encoded:string){return verifyScryptSecret(password,encoded)}
 function pub(u:ParentUser):PublicParent{const {passwordHash,...x}=u;void passwordHash;return x}
 
 function loadParents():ParentUser[]{ensure();if(!fs.existsSync(FILE))return[];try{const x=JSON.parse(fs.readFileSync(FILE,"utf8"));return Array.isArray(x)?x.map((u:ParentUser)=>({...u,email:normalizeEmail(u.email),role:"parent",active:u.active!==false,sessionVersion:Math.max(1,Number(u.sessionVersion)||1)})):[]}catch{return[]}}
@@ -61,14 +62,11 @@ export function resetParentPassword(email0:string,newPassword:string){
 
 export function createParentSessionToken(uid:string,ttl=604800){
   const u=loadParents().find(x=>x.id===uid&&x.active);if(!u)throw new Error("家长账号不存在或已停用");
-  const body=Buffer.from(JSON.stringify({uid,ver:u.sessionVersion||1,exp:Math.floor(Date.now()/1000)+ttl})).toString("base64url");
-  const sig=crypto.createHmac("sha256",sessionSecret()).update(body).digest("base64url");
-  return body+"."+sig;
+  return signJsonToken({uid,ver:u.sessionVersion||1,exp:Math.floor(Date.now()/1000)+ttl},sessionSecret());
 }
 
 export function parentFromSessionToken(token:string|undefined|null):PublicParent|null{
-  if(!token)return null;const [body,sig]=token.split(".");if(!body||!sig)return null;
-  const expected=crypto.createHmac("sha256",sessionSecret()).update(body).digest("base64url");
-  const a=Buffer.from(sig),b=Buffer.from(expected);if(a.length!==b.length||!crypto.timingSafeEqual(a,b))return null;
-  try{const x=JSON.parse(Buffer.from(body,"base64url").toString()) as {uid?:string;ver?:number;exp?:number};if(!x.uid||!x.exp||x.exp<Math.floor(Date.now()/1000))return null;const u=loadParents().find(v=>v.id===x.uid&&v.active);if(!u||(u.sessionVersion||1)!==(x.ver??1))return null;return pub(u)}catch{return null}
+  const x=readSignedJsonToken<{uid?:string;ver?:number;exp?:number}>(token,sessionSecret());
+  if(!x?.uid||!x.exp||x.exp<Math.floor(Date.now()/1000))return null;
+  const u=loadParents().find(v=>v.id===x.uid&&v.active);if(!u||(u.sessionVersion||1)!==(x.ver??1))return null;return pub(u)
 }

@@ -25,6 +25,7 @@ step "A4 personalization regression" npm run test:arithmetic-print
 step "grade-one narration bundle" python3 scripts/test_grade1_narration_bundle.py
 step "auto-deploy contract" bash ops/release/test_auto_deploy_contract.sh
 step "auth email SMTP contract" bash ops/release/test_auth_email_smtp_contract.sh
+step "parent auth regression" npm run test:parent-auth
 step "repository hygiene" python3 scripts/audit_repository_hygiene.py
 step "competition ingestion regression" python3 scripts/test_import_pipeline.py
 step "eslint" npm run lint -- --max-warnings=0
