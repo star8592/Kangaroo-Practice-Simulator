@@ -175,6 +175,8 @@ root@socthink.cn
 ssh -o BatchMode=yes -o ConnectTimeout=10 root@socthink.cn 'echo SSH_OK'
 ~~~
 
+开发机使用用户现有的 OpenSSH 配置和免密凭据；不要通过 `-F /dev/null` 绕开已有 SSH 配置。GitHub Actions 未配置生产 SSH Secret 也不代表开发机到生产服务器的 SSH 不可用。
+
 预期：
 
 ~~~text
