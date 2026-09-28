@@ -21,6 +21,15 @@ Next.js application
 
 Student identity and attempt data are server-side. Browser storage is limited to transient exam UI state and legacy-resume compatibility; the server remains authoritative for authenticated users, grading, analytics, reports, and training history.
 
+
+## Source-ingestion boundary
+
+`competition-agent/` is the dedicated source-document preparation layer. It owns competition-file discovery, born-digital PDF extraction, OCR fallback, question structure recovery, translation preparation and normalized dataset generation. It does not serve student requests and it does not own production runtime data.
+
+The web/runtime layer remains under `src/`. Solution delivery and visualization are implemented in the current web/runtime modules (`src/lib/solution-*`, `src/components/*Scene*`, and `SmartSolutionPlayer`); there is no separate `solution-engine/` subsystem.
+
+Reproducible one-off and competition-specific data operations remain under `scripts/`, while promotion of verified runtime datasets is controlled by `ops/data/`. Generated/private corpora stay outside Git.
+
 ## Production flow
 
 Normal production publication is `main` → GitHub CI → the production server pull-based deployer → `/api/release` receipt verification. Manual `ops/release/publish_socthink.sh` is the source-based recovery path. `ops/release/publish_prebuilt_socthink.sh` is the immutable prebuilt-runtime alternative for constrained production hosts.
