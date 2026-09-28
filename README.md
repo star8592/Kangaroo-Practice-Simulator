@@ -54,7 +54,7 @@ npm run test:smoke -- --base http://127.0.0.1:3027
 
 - **美国 MAA AMC**：独立使用 `maa-amc`，与澳洲 `australian-amc` 完全隔离。AMC 8 为 25 题 / 40 分钟 / 每题 1 分；AMC 10/12 为 25 题 / 75 分钟 / 答对 6 分、空题 1.5 分、答错 0 分；AIME 使用整数填答赛制。当前已接入 MAA 官方公开的 2023 AMC 8 与 2022 AMC 10A Sample Competition，后续历史卷仅从官方公开、授权或用户自有资料导入。
 
-旧的 `private/question-bank.json` 与 `scripts/import_level_a.py` 仅作为历史兼容数据保留，不再出现在学生端；旧 `/level-a` 入口兼容映射到 AMC Pre-A 官方样题 1。
+旧的 `private/question-bank.json` 仅作为历史兼容/管理员聚合数据保留，不再作为学生端正式分类来源；旧 `level-a` 标识与 `/level-a` 入口继续兼容映射到 AMC Pre-A 官方样题 1。新数据统一走竞赛专用导入管线。
 
 ## 学生数据模型
 
