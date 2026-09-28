@@ -3,7 +3,6 @@
 import { FormEvent, useEffect, useState } from "react";
 import { studentAvatarEmoji } from "@/lib/student-avatar";
 import styles from "./ParentDashboard.module.css";
-import reportStyles from "./ParentDashboardReports.module.css";
 
 type Student = {
   id: string;
@@ -286,13 +285,13 @@ export default function ParentDashboard() {
               </div>
 
               {student.recentReports?.length > 0 && (
-                <div className={reportStyles.list}>
-                  <div className={reportStyles.head}>
+                <div className={styles.reportList}>
+                  <div className={styles.reportListHead}>
                     <strong>最近考试</strong>
                     <span>点击查看单次诊断</span>
                   </div>
                   {student.recentReports.slice(0, 3).map((report) => (
-                    <a className={reportStyles.row} key={report.attemptId} href={`/parent/report/${student.id}/${report.attemptId}`}>
+                    <a className={styles.reportRow} key={report.attemptId} href={`/parent/report/${student.id}/${report.attemptId}`}>
                       <span>
                         <b>{report.examName}</b>
                         <small>{new Date(report.submittedAt).toLocaleDateString("zh-CN")}</small>
