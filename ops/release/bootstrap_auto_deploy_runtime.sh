@@ -11,10 +11,42 @@ PREBUILT_DROPIN="$DROPIN_DIR/90-prebuilt-runtime.conf"
 IN_PLACE_DROPIN="$DROPIN_DIR/90-auto-deploy-runtime.conf"
 RUNNER_SRC="$EXPECTED_APP/ops/release/auto_deploy_server.sh"
 RUNNER_DST="/usr/local/sbin/socthink-auto-deploy"
+PDF_RUNTIME_DIR="$EXPECTED_APP/.runtime/pdf-browser"
+PDF_RUNTIME_VERSION="chromium-153.0.0_puppeteer-25.12.0"
 
 if [[ "${EUID}" -ne 0 || "$APP_REAL" != "$EXPECTED_APP" ]]; then
   exit 0
 fi
+
+ensure_pdf_runtime() {
+  local marker="$PDF_RUNTIME_DIR/.runtime-version"
+  if [[ -f "$marker" ]] && [[ "$(cat "$marker")" == "$PDF_RUNTIME_VERSION" ]] \
+    && [[ -f "$PDF_RUNTIME_DIR/node_modules/@sparticuz/chromium/package.json" ]] \
+    && [[ -f "$PDF_RUNTIME_DIR/node_modules/puppeteer-core/package.json" ]]; then
+    echo "BOOTSTRAP_PDF_RUNTIME=READY version=$PDF_RUNTIME_VERSION"
+    return 0
+  fi
+
+  echo "BOOTSTRAP_PDF_RUNTIME=INSTALL version=$PDF_RUNTIME_VERSION"
+  mkdir -p "$PDF_RUNTIME_DIR"
+  printf '%s\n' '{"private":true}' > "$PDF_RUNTIME_DIR/package.json"
+  rm -rf "$PDF_RUNTIME_DIR/node_modules"
+  npm install \
+    --prefix "$PDF_RUNTIME_DIR" \
+    --no-save \
+    --no-package-lock \
+    --omit=dev \
+    --no-audit \
+    --no-fund \
+    @sparticuz/chromium@153.0.0 \
+    puppeteer-core@25.12.0
+  test -f "$PDF_RUNTIME_DIR/node_modules/@sparticuz/chromium/package.json"
+  test -f "$PDF_RUNTIME_DIR/node_modules/puppeteer-core/package.json"
+  printf '%s\n' "$PDF_RUNTIME_VERSION" > "$marker"
+  echo "BOOTSTRAP_PDF_RUNTIME=READY version=$PDF_RUNTIME_VERSION"
+}
+
+ensure_pdf_runtime
 
 node_bin="$(command -v node)"
 mkdir -p "$DROPIN_DIR"
