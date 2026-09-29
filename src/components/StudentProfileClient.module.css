@@ -53,52 +53,54 @@
 }
 
 .hero {
-  min-height: 190px;
-  padding: 34px 38px;
-  border-radius: 24px;
-  gap: 28px;
+  min-height: 172px;
+  padding: 30px 34px;
+  border-radius: 21px;
+  gap: 24px;
 }
 
 .heroCopy { min-width: 0; }
 
 .heroCopy :global(.eyebrow) {
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 
 .heroCopy h1 {
-  margin: 0 0 9px;
-  font-size: 36px;
-  letter-spacing: -.035em;
+  margin: 0 0 8px;
+  font-size: 33px;
+  line-height: 1.12;
+  letter-spacing: -.032em;
 }
 
 .heroCopy p {
-  max-width: 560px;
+  max-width: 540px;
   margin: 0;
-  line-height: 1.7;
+  font-size: 12px;
+  line-height: 1.65;
 }
 
 .profilePreview {
   flex: 0 0 auto;
-  min-width: 230px;
-  max-width: 300px;
+  min-width: 218px;
+  max-width: 280px;
   display: flex;
   align-items: center;
-  gap: 13px;
-  padding: 15px 17px;
-  border: 1px solid rgba(255,255,255,.13);
-  border-radius: 16px;
-  background: rgba(255,255,255,.07);
+  gap: 12px;
+  padding: 13px 15px;
+  border: 1px solid rgba(255,255,255,.11);
+  border-radius: 14px;
+  background: rgba(255,255,255,.055);
 }
 
 .previewAvatar {
-  width: 52px;
-  height: 52px;
-  flex: 0 0 52px;
+  width: 48px;
+  height: 48px;
+  flex: 0 0 48px;
   display: grid;
   place-items: center;
-  border-radius: 15px;
-  background: rgba(255,255,255,.11);
-  font-size: 30px;
+  border-radius: 13px;
+  background: rgba(255,255,255,.09);
+  font-size: 27px;
 }
 
 .profilePreview div {
@@ -111,15 +113,15 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-size: 16px;
+  font-size: 15px;
 }
 
 .profilePreview small {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  color: #bdc7c0;
-  font-size: 11px;
+  color: #b5c1b9;
+  font-size: 10px;
 }
 
 .profileCard {
@@ -422,9 +424,9 @@
   .hero {
     min-height: 0;
     display: grid;
-    padding: 28px 24px;
+    padding: 25px 22px;
   }
-  .heroCopy h1 { font-size: 31px; }
+  .heroCopy h1 { font-size: 29px; }
   .profilePreview {
     min-width: 0;
     max-width: none;
