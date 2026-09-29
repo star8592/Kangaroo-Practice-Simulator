@@ -137,13 +137,13 @@
 }
 
 .sectionHead {
-  padding-bottom: 17px;
+  padding-bottom: 15px;
   border-bottom: 1px solid var(--line);
 }
 
 .kicker {
   display: block;
-  margin-bottom: 5px;
+  margin-bottom: 4px;
   color: var(--accent-dark);
   font-size: 10px;
   font-weight: 900;
@@ -151,16 +151,17 @@
 }
 
 .sectionHead h2 {
-  margin: 0 0 6px;
-  font-size: 26px;
-  letter-spacing: -.025em;
+  margin: 0 0 5px;
+  font-size: 24px;
+  line-height: 1.2;
+  letter-spacing: -.022em;
 }
 
 .sectionHead p {
   margin: 0;
   color: var(--muted);
-  font-size: 13px;
-  line-height: 1.65;
+  font-size: 12px;
+  line-height: 1.6;
 }
 
 .label {
@@ -321,12 +322,18 @@
 
 .actions {
   justify-content: flex-end;
-  margin-top: -2px;
+  gap: 8px;
+  margin-top: 0;
+  padding-top: 2px;
 }
 
 .actions :global(.primary-button),
 .actions :global(.secondary-button) {
-  min-width: 120px;
+  min-width: 112px;
+  min-height: 42px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-size: 12px;
 }
 
 .securityPanel {
