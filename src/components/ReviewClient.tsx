@@ -19,28 +19,30 @@ export default function ReviewClient(){
     return raw ? JSON.parse(raw) : null;
   });
   const [mode,setMode]=useState<"all"|"wrong">("wrong");
+  const [questionLang,setQuestionLang]=useState<DisplayLang>("zh");
   const solutionBook=useMemo(()=>solutionBookForExam(a?.examId),[a?.examId]);
-  const lang:DisplayLang=a?.lang==="en"?"en":"zh"; const ui=UI[lang];
+  const ui=UI.zh;
+  const hasBilingual=Boolean(a?.questions.some(q=>Boolean(q.stemEn)||Boolean(q.choicesEn?.length)));
   const rows=useMemo(()=>{
     if(!a)return [];
     return a.grade.items.map(item=>({item,q:a.questions.find(q=>q.id===item.questionId)})).filter(x=>x.q).filter(x=>mode==="all"||x.item.correct!==true);
   },[a,mode]);
   if(!a)return <div className="center-card"><h2>{ui.none}</h2><Link className="primary-button" href="/">{ui.start}</Link></div>;
   return <div className="review-shell">
-    <div className="section-heading"><div><span className="eyebrow">REVIEW</span><h1>{ui.title}</h1><p>{ui.desc}</p></div><div className="segmented"><button className={mode==="wrong"?"active":""} onClick={()=>setMode("wrong")}>{ui.wrongOnly}</button><button className={mode==="all"?"active":""} onClick={()=>setMode("all")}>{ui.all}</button></div></div>
-    {solutionBook&&!hasExactQuestionMapping(solutionBook)&&<SolutionBookViewer book={solutionBook} lang={lang} />}
+    <div className="section-heading"><div><span className="eyebrow">错题复盘</span><h1>{ui.title}</h1><p>{ui.desc}</p></div><div><div className="segmented"><button className={mode==="wrong"?"active":""} onClick={()=>setMode("wrong")}>{ui.wrongOnly}</button><button className={mode==="all"?"active":""} onClick={()=>setMode("all")}>{ui.all}</button></div>{hasBilingual&&<div className="segmented" style={{marginTop:8}}><button className={questionLang==="zh"?"active":""} onClick={()=>setQuestionLang("zh")}>中文题面</button><button className={questionLang==="en"?"active":""} onClick={()=>setQuestionLang("en")}>英文原题</button></div>}</div></div>
+    {solutionBook&&!hasExactQuestionMapping(solutionBook)&&<SolutionBookViewer book={solutionBook} lang="zh" />}
     <div className="review-list">
       {rows.map(({item,q})=>{
-        const stem=lang==="en"&&q!.stemEn?q!.stemEn:q!.stem;
-        const choices=lang==="en"&&q!.choicesEn?.length?q!.choicesEn:q!.choices;
+        const stem=questionLang==="en"&&q!.stemEn?q!.stemEn:q!.stem;
+        const choices=questionLang==="en"&&q!.choicesEn?.length?q!.choicesEn:q!.choices;
         const status=item.correct===true?ui.correct:item.correct===false?ui.wrong:ui.blank;
-        const assetUrl=lang==="en"?(q!.assetUrlEn||q!.assetUrl):(q!.assetUrlZh||q!.assetUrl);
+        const assetUrl=questionLang==="en"?(q!.assetUrlEn||q!.assetUrl):(q!.assetUrlZh||q!.assetUrl);
         return <article className="review-card" key={item.questionId}>
-          <div className="review-card-head"><div><strong>Q{item.questionNo}</strong><span className={`status ${item.correct===true?"ok":item.correct===false?"bad":"blank"}`}>{status}</span></div><span>{item.points} {ui.points} · {conceptLabel(item.concept,lang)}</span></div>
+          <div className="review-card-head"><div><strong>Q{item.questionNo}</strong><span className={`status ${item.correct===true?"ok":item.correct===false?"bad":"blank"}`}>{status}</span></div><span>{item.points} {ui.points} · {conceptLabel(item.concept,"zh")}</span></div>
           <h2>{stem}</h2>
           <div className="review-choices">{choices.map(c=><div key={c.key} className={[item.selected===c.key?"picked":"",item.correctAnswer===c.key?"correct-choice":""].join(" ")}><span>{c.key}</span>{c.label}</div>)}</div>
           <div className="solution-box"><strong>{ui.answer} {item.correctAnswer}</strong><p>{item.solution||ui.noSolution}</p></div>
-          {solutionBook&&hasExactQuestionMapping(solutionBook)&&<SolutionBookViewer book={solutionBook} questionNo={item.questionNo} lang={lang} />}
+          {solutionBook&&hasExactQuestionMapping(solutionBook)&&<SolutionBookViewer book={solutionBook} questionNo={item.questionNo} lang="zh" />}
           <SmartSolutionPlayer questionId={item.questionId} questionNo={item.questionNo} stem={stem} solution={item.solution} answer={item.correctAnswer} concept={item.concept} assetUrl={assetUrl} />
         </article>;
       })}

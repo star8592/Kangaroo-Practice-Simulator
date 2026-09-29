@@ -22,6 +22,7 @@ fi
 
 step "arithmetic regression" npm run test:arithmetic
 step "A4 personalization regression" npm run test:arithmetic-print
+step "Chinese-default UI audit" python3 scripts/audit_chinese_ui.py
 step "grade-one narration bundle" python3 scripts/test_grade1_narration_bundle.py
 step "auto-deploy contract" bash ops/release/test_auto_deploy_contract.sh
 step "auth email SMTP contract" bash ops/release/test_auth_email_smtp_contract.sh

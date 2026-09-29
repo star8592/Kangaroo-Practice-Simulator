@@ -37,20 +37,32 @@ export default function ArithmeticPrintClient({
   initialSeed,
   studentName,
   sessions,
+  initialMode = "smart",
+  initialManualSkillId,
+  initialQuestions,
+  initialSheetCount = 5,
+  initialAnswers = true,
+  exportMode = false,
 }: {
   initialGrade: ArithmeticGrade;
   initialSeed: number;
   studentName: string;
   sessions: ArithmeticSession[];
+  initialMode?: ArithmeticPrintMode;
+  initialManualSkillId?: string;
+  initialQuestions?: number;
+  initialSheetCount?: number;
+  initialAnswers?: boolean;
+  exportMode?: boolean;
 }) {
   const [grade, setGrade] = useState<ArithmeticGrade>(initialGrade);
-  const [mode, setMode] = useState<ArithmeticPrintMode>("smart");
+  const [mode, setMode] = useState<ArithmeticPrintMode>(initialMode);
   const [manualSkillId, setManualSkillId] = useState(
-    GRADE_PROFILES[initialGrade].skills[0]?.id ?? "",
+    initialManualSkillId ?? GRADE_PROFILES[initialGrade].skills[0]?.id ?? "",
   );
-  const [questions, setQuestions] = useState<number>(initialGrade <= 2 ? 40 : 60);
-  const [sheetCount, setSheetCount] = useState<number>(5);
-  const [answers, setAnswers] = useState(true);
+  const [questions, setQuestions] = useState<number>(initialQuestions ?? (initialGrade <= 2 ? 40 : 60));
+  const [sheetCount, setSheetCount] = useState<number>(initialSheetCount);
+  const [answers, setAnswers] = useState(initialAnswers);
   const [seed, setSeed] = useState(initialSeed);
 
   const profile = GRADE_PROFILES[grade];
@@ -113,12 +125,22 @@ export default function ArithmeticPrintClient({
     setSeed(Date.now());
   }
 
+  const pdfQuery = new URLSearchParams({
+    grade: String(grade),
+    mode,
+    manualSkillId,
+    questions: String(questions),
+    sheets: String(sheetCount),
+    answers: answers ? "1" : "0",
+    seed: String(seed),
+  }).toString();
+
   return (
     <div className="print-workspace">
-      <div className="print-screen-shell screen-only">
+      <div className={`print-screen-shell screen-only${exportMode ? " export-hidden" : ""}`}>
         <div className="print-screen-head">
           <div>
-            <span className="eyebrow">PAPER PRACTICE</span>
+            <span className="eyebrow">纸笔训练</span>
             <h1>A4 口算批量打印</h1>
             <p>
               默认使用该学生自己的口算历史生成个性化纸笔训练；也可切换年级综合或老师指定专项。
@@ -131,7 +153,7 @@ export default function ArithmeticPrintClient({
 
         <section className="personalized-print-card">
           <div>
-            <span className="eyebrow">PERSONALIZED FOR</span>
+            <span className="eyebrow">个性化生成</span>
             <h2>为 {studentName} 生成</h2>
           </div>
           {mode === "smart" ? (
@@ -275,13 +297,16 @@ export default function ArithmeticPrintClient({
           <button className="secondary-button" type="button" onClick={() => setSeed(Date.now())}>
             ↻ 换一批题
           </button>
-          <button className="primary-button" type="button" onClick={() => window.print()}>
-            打印 / 另存为 PDF
+          <button className="secondary-button" type="button" onClick={() => window.print()}>
+            打印纸张
           </button>
+          <a className="primary-button" href={`/api/arithmetic/print/pdf?${pdfQuery}`}>
+            下载 PDF（推荐）
+          </a>
         </div>
 
         <p className="print-note">
-          打印预览中请选择 A4、纵向、缩放 100%。同一练习编号可用于核对对应答案页。
+          下载 PDF 由服务器固定生成 A4 文件；直接打印纸张时请选择 A4、纵向、缩放 100%。
         </p>
       </div>
 

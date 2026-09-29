@@ -21,8 +21,8 @@ export default function ResultClient(){
     const raw = localStorage.getItem("math-competition-last-attempt") || localStorage.getItem("kangaroo-last-attempt");
     return raw ? JSON.parse(raw) : null;
   });
-  const lang:DisplayLang=a?.lang==="en"?"en":"zh";
-  const ui=UI[lang];
+  const lang:DisplayLang="zh";
+  const ui=UI.zh;
   if(!a)return <div className="center-card"><h2>{ui.noResult}</h2><Link className="primary-button" href="/">{ui.backList}</Link></div>;
   const g=a.grade; const attemptId=g.attemptId; const pct=Math.round((g.score/g.maxScore)*100); const mins=Math.floor(a.elapsedSeconds/60); const secs=a.elapsedSeconds%60;
   const examId=a.examId??"level-a";
@@ -30,7 +30,7 @@ export default function ResultClient(){
   const mixedBase=mixedMatch?.[1]??null;
   const title=lang==="zh" ? (a.profile?.nameZh||a.profile?.name||"LEVEL A") : (a.profile?.nameEn||a.profile?.name||"LEVEL A");
   return <div className="report-shell">
-    <section className="score-hero"><div><span className="eyebrow">{title} · RESULT</span><h1>{ui.result}</h1><p>{ui.time} {mins}:{String(secs).padStart(2,"0")}</p></div><div className="score-ring"><strong>{scoreText(g.score)}</strong><span>/ {scoreText(g.maxScore)}</span><small>{pct}%</small></div></section>
+    <section className="score-hero"><div><span className="eyebrow">{title} · {lang==="zh"?"成绩":"RESULT"}</span><h1>{ui.result}</h1><p>{ui.time} {mins}:{String(secs).padStart(2,"0")}</p></div><div className="score-ring"><strong>{scoreText(g.score)}</strong><span>/ {scoreText(g.maxScore)}</span><small>{pct}%</small></div></section>
     <section className="result-stats"><article><strong>{g.correct}</strong><span>{ui.correct}</span></article><article><strong>{g.wrong}</strong><span>{ui.wrong}</span></article><article><strong>{g.blank}</strong><span>{ui.blank}</span></article></section>
     <section className="report-grid">
       <article className="report-card"><h2>{ui.difficulty}</h2>{a.profile?.competitionId==="maa-amc"&&g.byPosition?Object.entries(g.byPosition).map(([name,v])=><div className="metric-row" key={name}><span>{name}</span><div className="metric-bar"><i style={{width:`${(v.correct/v.total)*100}%`}}/></div><strong>{v.correct}/{v.total}</strong></div>):Object.entries(g.byPoints).sort().map(([p,v])=><div className="metric-row" key={p}><span>{lang==="zh"?`${p} ${ui.points}`:`${p}${ui.points}`}</span><div className="metric-bar"><i style={{width:`${(v.correct/v.total)*100}%`}}/></div><strong>{v.correct}/{v.total}</strong></div>)}</article>
