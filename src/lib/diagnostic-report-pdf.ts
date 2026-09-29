@@ -47,6 +47,10 @@ function renderWithRuntimeBrowser(htmlPath:string,pdfPath:string,home:string){
   });
 }
 
+function validPdf(pdfPath:string){
+  return fs.existsSync(pdfPath)&&fs.statSync(pdfPath).size>=1000;
+}
+
 export function renderDiagnosticReportPdfFromHtml(html:string){
   const dir=fs.mkdtempSync(path.join(os.tmpdir(),"math-diagnostic-pdf-"));
   const htmlPath=path.join(dir,"report.html");
@@ -54,26 +58,30 @@ export function renderDiagnosticReportPdfFromHtml(html:string){
   const profilePath=path.join(dir,"chrome-profile");
   try{
     fs.writeFileSync(htmlPath,forceLightPdfHtml(html),"utf8");
-    const chrome=systemChrome();
+    let runtimeError:unknown=null;
+    try{
+      renderWithRuntimeBrowser(htmlPath,pdfPath,dir);
+    }catch(error){
+      runtimeError=error;
+    }
+
     let systemError:unknown=null;
-    if(chrome){
-      try{
-        renderWithChrome(htmlPath,pdfPath,profilePath,chrome,dir);
-      }catch(error){
-        systemError=error;
-      }
-    }
-    if(!fs.existsSync(pdfPath)||fs.statSync(pdfPath).size<1000){
-      try{
-        renderWithRuntimeBrowser(htmlPath,pdfPath,dir);
-      }catch(error){
-        if(systemError instanceof Error){
-          throw new Error(`PDF rendering failed with system browser (${systemError.message}) and runtime browser (${error instanceof Error?error.message:String(error)})`);
+    if(!validPdf(pdfPath)){
+      const chrome=systemChrome();
+      if(chrome){
+        try{
+          renderWithChrome(htmlPath,pdfPath,profilePath,chrome,dir);
+        }catch(error){
+          systemError=error;
         }
-        throw error;
       }
     }
-    if(!fs.existsSync(pdfPath)||fs.statSync(pdfPath).size<1000)throw new Error("PDF output missing");
+
+    if(!validPdf(pdfPath)){
+      const runtimeMessage=runtimeError instanceof Error?runtimeError.message:String(runtimeError||"unavailable");
+      const systemMessage=systemError instanceof Error?systemError.message:String(systemError||"unavailable");
+      throw new Error(`PDF rendering failed with runtime browser (${runtimeMessage}) and system browser (${systemMessage})`);
+    }
     return fs.readFileSync(pdfPath);
   }finally{
     fs.rmSync(dir,{recursive:true,force:true});
