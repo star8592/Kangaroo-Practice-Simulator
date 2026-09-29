@@ -20,6 +20,6 @@ export async function GET(req:NextRequest,{params}:{params:Promise<{studentId:st
   return diagnosticReportPdfResponse(
     req,
     `/parent/report/${encodeURIComponent(studentId)}/${encodeURIComponent(attemptId)}`,
-    `${report.meta.reportId}.pdf`,
+    `${report.meta.reportId}-print-white.pdf`,
   );
 }
