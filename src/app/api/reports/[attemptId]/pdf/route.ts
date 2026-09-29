@@ -15,6 +15,6 @@ export async function GET(req:NextRequest,{params}:{params:Promise<{attemptId:st
   return diagnosticReportPdfResponse(
     req,
     `/report/${encodeURIComponent(attemptId)}`,
-    `${report.meta.reportId}.pdf`,
+    `${report.meta.reportId}-print-white.pdf`,
   );
 }
