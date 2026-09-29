@@ -3,6 +3,13 @@ import os from "node:os";
 import path from "node:path";
 import { execFileSync } from "node:child_process";
 
+const PDF_LIGHT_STYLE = `<style id="diagnostic-pdf-light-theme">html,body{background:#fff!important;color:#17211c!important;color-scheme:light!important}body{margin:0!important}.diagnostic-report{background:#fff!important}.diagnostic-report .report-page{background:#fff!important;color:#17211c!important}</style>`;
+
+function forceLightPdfHtml(html:string){
+  if(html.includes("</head>"))return html.replace("</head>",`${PDF_LIGHT_STYLE}</head>`);
+  return `${PDF_LIGHT_STYLE}${html}`;
+}
+
 function systemChrome(){
   const configured=process.env.CHROME_BIN?.trim();
   const candidates=configured?[configured]:[
@@ -20,6 +27,8 @@ function renderWithChrome(htmlPath:string,pdfPath:string,profilePath:string,chro
     "--no-sandbox",
     "--disable-gpu",
     "--disable-dev-shm-usage",
+    "--disable-features=WebContentsForceDark,AutoDarkMode",
+    "--force-color-profile=srgb",
     "--allow-file-access-from-files",
     "--no-pdf-header-footer",
     `--user-data-dir=${profilePath}`,
@@ -44,7 +53,7 @@ export function renderDiagnosticReportPdfFromHtml(html:string){
   const pdfPath=path.join(dir,"report.pdf");
   const profilePath=path.join(dir,"chrome-profile");
   try{
-    fs.writeFileSync(htmlPath,html,"utf8");
+    fs.writeFileSync(htmlPath,forceLightPdfHtml(html),"utf8");
     const chrome=systemChrome();
     let systemError:unknown=null;
     if(chrome){
