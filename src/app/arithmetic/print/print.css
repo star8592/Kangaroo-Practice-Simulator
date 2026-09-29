@@ -68,12 +68,37 @@
 
 @page{size:A4 portrait;margin:0}
 @media print{
-  html,body{background:#fff!important}
+  html,body{width:210mm!important;margin:0!important;padding:0!important;background:#fff!important}
   body{print-color-adjust:exact;-webkit-print-color-adjust:exact}
   .site-header,.site-footer,.screen-only{display:none!important}
   main{padding:0!important;margin:0!important;max-width:none!important}
   .print-workspace{background:#fff!important;padding:0!important;margin:0!important}
-  .print-pages{display:block!important}
-  .a4-sheet{width:210mm!important;height:297mm!important;min-height:297mm!important;max-height:297mm!important;padding:10mm 12mm 9mm!important;box-shadow:none!important;margin:0!important;break-after:page;page-break-after:always;overflow:hidden}
+  .print-pages{display:block!important;margin:0!important;padding:0!important}
+  .a4-sheet{
+    position:relative!important;
+    display:block!important;
+    box-sizing:border-box!important;
+    width:210mm!important;
+    height:296mm!important;
+    min-height:296mm!important;
+    max-height:296mm!important;
+    padding:10mm 12mm 18mm!important;
+    margin:0!important;
+    box-shadow:none!important;
+    overflow:hidden!important;
+    break-inside:avoid-page!important;
+    page-break-inside:avoid!important;
+    break-after:page;
+    page-break-after:always;
+  }
   .a4-sheet:last-child{break-after:auto;page-break-after:auto}
+  .a4-sheet .paper-footer{
+    position:absolute!important;
+    left:12mm!important;
+    right:12mm!important;
+    bottom:7mm!important;
+    margin:0!important;
+    padding-top:2.5mm!important;
+  }
+  .answer-sheet .paper-footer{margin-top:0!important}
 }
