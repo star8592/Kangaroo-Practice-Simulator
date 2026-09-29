@@ -23,19 +23,29 @@ const chromium=chromiumModule.default||chromiumModule;
 const puppeteer=require("puppeteer-core");
 
 const browser=await puppeteer.launch({
-  args:[...chromium.args,"--disable-dev-shm-usage"],
+  args:[...chromium.args,"--disable-dev-shm-usage","--disable-features=WebContentsForceDark,AutoDarkMode","--force-color-profile=srgb"],
   executablePath:await chromium.executablePath(),
   headless:"shell",
 });
 try{
   const page=await browser.newPage();
   const html=fs.readFileSync(htmlPath,"utf8");
+  await page.emulateMediaType("print");
+  await page.emulateMediaFeatures([{name:"prefers-color-scheme",value:"light"}]);
   await page.setContent(html,{waitUntil:"load",timeout:30000});
+  await page.addStyleTag({content:"html,body{background:#fff!important;color:#17211c!important;color-scheme:light!important}.diagnostic-report{background:#fff!important}.diagnostic-report .report-page{background:#fff!important;color:#17211c!important}"});
+  await page.evaluate(()=>{
+    document.documentElement.style.background="#fff";
+    document.documentElement.style.colorScheme="light";
+    document.body.style.background="#fff";
+    document.body.style.colorScheme="light";
+  });
   await page.evaluate(()=>document.fonts?.ready);
   await page.pdf({
     path:pdfPath,
     format:"A4",
     printBackground:true,
+    omitBackground:false,
     preferCSSPageSize:true,
   });
 }finally{
