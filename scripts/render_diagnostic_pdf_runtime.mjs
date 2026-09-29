@@ -41,6 +41,14 @@ try{
     document.body.style.colorScheme="light";
   });
   await page.evaluate(()=>document.fonts?.ready);
+  const backgrounds=await page.evaluate(()=>{
+    const nodes=[document.documentElement,document.body,...document.querySelectorAll(".diagnostic-report .report-page")];
+    return nodes.map(node=>getComputedStyle(node).backgroundColor);
+  });
+  const isWhite=value=>value==="rgb(255, 255, 255)"||value==="rgba(255, 255, 255, 1)";
+  if(backgrounds.length<2||!backgrounds.every(isWhite)){
+    throw new Error(`Diagnostic PDF background must be white: ${backgrounds.join(", ")}`);
+  }
   await page.pdf({
     path:pdfPath,
     format:"A4",
