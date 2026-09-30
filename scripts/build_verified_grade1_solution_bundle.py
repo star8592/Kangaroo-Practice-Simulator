@@ -22,7 +22,9 @@ for p in sorted(EXAMS.glob('*.json')):
     except Exception: continue
     if not isinstance(d,dict): continue
     profile=d.get('profile') or {}
-    if str(profile.get('gradeBand') or '')!='1-2': continue
+    grade_band=str(profile.get('gradeBand') or '')
+    grades=str(profile.get('grades') or '')
+    if grade_band!='1-2' and grades not in {'Grades 1–2','Grades 1-2'}: continue
     exams.append((p,profile,d.get('questions') or []))
 
 if not exams:
