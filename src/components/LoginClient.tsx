@@ -51,7 +51,7 @@ export default function LoginClient({ nextPath }: { nextPath: string }) {
               <div className={styles.trustItem}><i>✓</i><span>不提前展示正确答案</span></div>
             </div>
           </div>
-          <div className={styles.brandBottom}>Math Competition Learning Lab</div>
+          <div className={styles.brandBottom}>国际数学竞赛训练中心</div>
         </aside>
 
         <div className={styles.formPanel}>

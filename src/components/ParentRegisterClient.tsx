@@ -86,7 +86,7 @@ export default function ParentRegisterClient() {
               <div className={styles.trustItem}><i>3</i><span>创建孩子账号</span></div>
             </div>
           </div>
-          <div className={styles.brandBottom}>Secure Family Onboarding</div>
+          <div className={styles.brandBottom}>家庭安全注册</div>
         </aside>
 
         <div className={styles.formPanel}>
