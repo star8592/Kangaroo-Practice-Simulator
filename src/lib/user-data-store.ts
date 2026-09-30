@@ -2,7 +2,9 @@ import fs from "node:fs";
 import path from "node:path";
 import crypto from "node:crypto";
 
-export const USER_DATA_DIR = path.join(process.cwd(), "private", "users");
+export const USER_DATA_DIR = process.env.SOCTHINK_USER_DATA_DIR?.trim()
+  ? path.resolve(process.env.SOCTHINK_USER_DATA_DIR.trim())
+  : path.join(process.cwd(), "private", "users");
 
 export function userDataPath(name: string) {
   return path.join(USER_DATA_DIR, name);
