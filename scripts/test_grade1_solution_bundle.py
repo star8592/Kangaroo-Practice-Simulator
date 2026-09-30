@@ -11,14 +11,22 @@ expected_exams={
   "au-amc-pre-a-sample-1":25,
   "au-amc-pre-a-sample-2":25,
   "kangaroo-grade1-2-official-samples-2006-2026":63,
+  "at-2014-felix":15,
+  "at-2015-felix":15,
+  "at-2016-felix":15,
+  "at-2017-felix":15,
+  "at-2018-felix":15,
+  "at-2019-felix":15,
+  "at-2022-felix":15,
 }
 if b.get("version")!=1: errors.append("bundle version must be 1")
 if b.get("scope")!="gradeBand:1-2": errors.append("bundle scope mismatch")
 if b.get("examQuestionCounts")!=expected_exams: errors.append(f"exam coverage mismatch {b.get('examQuestionCounts')}")
-if b.get("questionCount")!=113 or len(sol)!=113: errors.append(f"questionCount bundle={b.get('questionCount')} solutions={len(sol)}")
+if b.get("questionCount")!=218 or len(sol)!=218: errors.append(f"questionCount bundle={b.get('questionCount')} solutions={len(sol)}")
 if sum(k.startswith("au-amc-pre-a-s1-q") for k in sol)!=25: errors.append("Pre-A sample 1 coverage != 25")
 if sum(k.startswith("au-amc-pre-a-s2-q") for k in sol)!=25: errors.append("Pre-A sample 2 coverage != 25")
 if sum(k.startswith("mk-g12-") for k in sol)!=63: errors.append("Kangaroo G1-2 coverage != 63")
+if sum(k.startswith("at-") and "-felix-q" in k for k in sol)!=105: errors.append("Austria Felix G1-2 coverage != 105")
 for qid,s in sol.items():
     v=s.get("verification") or {}; scenes=s.get("scenes") or []
     if s.get("version")!=1 or s.get("quality")!="verified": errors.append(f"{qid}: bad quality/version")

@@ -3,7 +3,7 @@ import { loadVerifiedSolution } from "../src/lib/solution-store";
 
 const rows = (bundle as { solutions: Record<string, unknown> }).solutions;
 const ids = Object.keys(rows);
-if (ids.length !== 113) throw new Error(`expected 113 bundled grade-one solutions, got ${ids.length}`);
+if (ids.length !== 218) throw new Error(`expected 218 bundled grade-one solutions, got ${ids.length}`);
 for (const id of ids) {
   const solution = loadVerifiedSolution(id);
   if (!solution) throw new Error(`${id}: store returned null`);
