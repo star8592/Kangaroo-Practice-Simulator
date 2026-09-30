@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import type { SolutionStoryboard, SolutionScene } from "@/lib/solution-storyboard";
+import grade1Bundle from "../../data/verified-solutions/grade1-v1.json";
 
 type StoredStoryboard = {
   version?: number;
@@ -16,19 +17,28 @@ type StoredStoryboard = {
 
 const DIR = path.join(process.cwd(), "private", "solutions");
 const GRADE1_NARRATION_VERSION = "v1";
-const GRADE1_ID = /^au-amc-pre-a-s[12]-q(?:0[1-9]|1\d|2[0-5])$/;
+const GRADE1_ID = /^(?:au-amc-pre-a-s[12]-q(?:0[1-9]|1\d|2[0-5])|mk-g12-\d{4}-(?:3pt|4pt|5pt))$/;
+const BUNDLED_GRADE1 = (grade1Bundle as unknown as { solutions: Record<string, StoredStoryboard> }).solutions;
 
-function withBundledGrade1Narration(questionId: string, scenes: SolutionScene[]) {
-  if (!GRADE1_ID.test(questionId)) return scenes;
+function withDeployableAudio(questionId: string, scenes: SolutionScene[]) {
   return scenes.map((scene, index) => {
-    const filename = `scene-${String(index + 1).padStart(2, "0")}.mp3`;
-    const relative = path.join("grade1-narration", GRADE1_NARRATION_VERSION, questionId, filename);
-    const absolute = path.join(process.cwd(), "public", relative);
-    if (!fs.existsSync(absolute)) return scene;
-    return {
-      ...scene,
-      audioUrl: `/${relative.split(path.sep).join("/")}`,
-    };
+    if (GRADE1_ID.test(questionId)) {
+      const filename = `scene-${String(index + 1).padStart(2, "0")}.mp3`;
+      const relative = path.join("grade1-narration", GRADE1_NARRATION_VERSION, questionId, filename);
+      const absolute = path.join(process.cwd(), "public", relative);
+      if (fs.existsSync(absolute)) {
+        return { ...scene, audioUrl: `/${relative.split(path.sep).join("/")}` };
+      }
+    }
+    if (scene.audioUrl?.startsWith("/generated-solutions/")) {
+      const absolute = path.join(process.cwd(), "public", scene.audioUrl.slice(1));
+      if (!fs.existsSync(absolute)) {
+        const { audioUrl: _audioUrl, ...rest } = scene;
+        void _audioUrl;
+        return rest;
+      }
+    }
+    return scene;
   });
 }
 
@@ -49,10 +59,11 @@ function validScene(scene: SolutionScene) {
 
 export function loadVerifiedSolution(questionId: string): SolutionStoryboard | null {
   if (!safeQuestionId(questionId)) return null;
+  const bundled = BUNDLED_GRADE1[questionId];
   const file = path.join(DIR, questionId + ".json");
-  if (!fs.existsSync(file)) return null;
+  if (!bundled && !fs.existsSync(file)) return null;
   try {
-    const raw = JSON.parse(fs.readFileSync(file, "utf8")) as StoredStoryboard;
+    const raw = bundled || JSON.parse(fs.readFileSync(file, "utf8")) as StoredStoryboard;
     const verification = raw.verification;
     if (
       raw.version !== 1 ||
@@ -71,7 +82,7 @@ export function loadVerifiedSolution(questionId: string): SolutionStoryboard | n
       version: 1,
       quality: "verified",
       requiresGeneration: false,
-      scenes: withBundledGrade1Narration(questionId, raw.scenes),
+      scenes: withDeployableAudio(questionId, raw.scenes),
     };
   } catch {
     return null;
