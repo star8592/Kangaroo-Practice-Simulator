@@ -11,13 +11,9 @@ for (const id of ids) {
   if (solution.scenes.length < 2) throw new Error(`${id}: insufficient scenes`);
   for (const scene of solution.scenes) {
     if (!scene.narration.trim()) throw new Error(`${id}: blank narration`);
-    if (scene.audioUrl?.startsWith("/generated-solutions/")) {
-      throw new Error(`${id}: non-deployable runtime audio leaked: ${scene.audioUrl}`);
+    if (!scene.audioUrl?.startsWith("/grade1-narration/v1/")) {
+      throw new Error(`${id}: deployable narration missing: ${scene.audioUrl}`);
     }
   }
-}
-const preA = loadVerifiedSolution("au-amc-pre-a-s1-q01");
-if (!preA?.scenes.every((scene) => scene.audioUrl?.startsWith("/grade1-narration/v1/"))) {
-  throw new Error("Pre-A bundled narration was not attached");
 }
 console.log(`GRADE1_SOLUTION_STORE=PASS questions=${ids.length}`);

@@ -17,12 +17,11 @@ type StoredStoryboard = {
 
 const DIR = path.join(process.cwd(), "private", "solutions");
 const GRADE1_NARRATION_VERSION = "v1";
-const GRADE1_ID = /^(?:au-amc-pre-a-s[12]-q(?:0[1-9]|1\d|2[0-5])|mk-g12-\d{4}-(?:3pt|4pt|5pt))$/;
 const BUNDLED_GRADE1 = (grade1Bundle as unknown as { solutions: Record<string, StoredStoryboard> }).solutions;
 
 function withDeployableAudio(questionId: string, scenes: SolutionScene[]) {
   return scenes.map((scene, index) => {
-    if (GRADE1_ID.test(questionId)) {
+    if (BUNDLED_GRADE1[questionId]) {
       const filename = `scene-${String(index + 1).padStart(2, "0")}.mp3`;
       const relative = path.join("grade1-narration", GRADE1_NARRATION_VERSION, questionId, filename);
       const absolute = path.join(process.cwd(), "public", relative);
