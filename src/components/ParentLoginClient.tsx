@@ -96,7 +96,7 @@ export default function ParentLoginClient() {
               <div className={styles.trustItem}><i>✓</i><span>邮箱验证与密码找回</span></div>
             </div>
           </div>
-          <div className={styles.brandBottom}>Parent Learning Console</div>
+          <div className={styles.brandBottom}>家长学习中心</div>
         </aside>
 
         <div className={styles.formPanel}>

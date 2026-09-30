@@ -262,7 +262,7 @@ export default function ExamClient({examId,user}:{examId:string;user:PublicStude
    :`${Math.round(profile.durationSeconds/60)} ${lang==="zh"?"分钟":"min"}`;
 
  if(!started)return <div className="report-shell"><section className="candidate-card">
-  <span className="eyebrow">CANDIDATE CHECK-IN</span><h1>{ui.candidate}</h1>
+  <span className="eyebrow">{lang==="zh"?"考生确认":"CANDIDATE CHECK-IN"}</span><h1>{ui.candidate}</h1>
   <div className="candidate-grid"><div><span>姓名</span><strong>{user.name}</strong></div><div><span>准考证号</span><strong>{user.candidateNo}</strong></div><div><span>年级</span><strong>{user.grade} 年级</strong></div><div><span>试卷</span><strong>{title}</strong></div><div><span>题量</span><strong>{profile.questionCount} 题</strong></div><div><span>考试时间</span><strong>{timeLabel}</strong></div>{formatLabel&&<div><span>赛制模板</span><strong>{formatLabel}</strong></div>}</div>
   {rulesSummary&&<div className="candidate-rules"><strong>{lang==="zh"?"赛制说明":"Format rules"}</strong><p>{rulesSummary}</p></div>}
   <div className="candidate-notice">{profile.paperType==="practice"
@@ -277,7 +277,7 @@ export default function ExamClient({examId,user}:{examId:string;user:PublicStude
   const allLocked=sectionIndex>=timingSections.length;
   const next=allLocked?null:timingSections[sectionIndex],previous=timingSections[Math.max(0,sectionIndex-1)];
   return <div className="report-shell"><section className="candidate-card section-break-card">
-   <span className="eyebrow">AIME SECTION CONTROL</span>
+   <span className="eyebrow">{lang==="zh"?"AIME 分段控制":"AIME SECTION CONTROL"}</span>
    <h1>{allLocked?(lang==="zh"?"两部分均已锁定":"Both parts are locked"):ui.sectionLocked}</h1>
    <div className="candidate-rules"><strong>{allLocked?(lang==="zh"?"可以提交成绩":"Ready to submit"):(lang==="zh"?`${previous?.labelZh||"上一部分"}已保存`:`${previous?.labelEn||"Previous part"} saved`)}</strong>
     <p>{allLocked
