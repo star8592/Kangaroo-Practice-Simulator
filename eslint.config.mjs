@@ -11,6 +11,7 @@ const eslintConfig = defineConfig([
     ".next.*/**",
     "out/**",
     "build/**",
+    "tools/math-verifier/.lake/**",
     "next-env.d.ts",
   ]),
 ]);
