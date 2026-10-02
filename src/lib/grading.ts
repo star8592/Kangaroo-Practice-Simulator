@@ -20,7 +20,8 @@ export function gradeExam(questions: Question[], answers: Record<string, string>
     const selected = answers[q.id] ?? null;
     const isBlank = !selected;
     const isCorrect = !isBlank && answersEqual(q, selected);
-    const delta = isBlank ? (profile.blankScoreValue ?? 0) : isCorrect ? q.points : wrongDelta(q, profile);
+    const blankCredit = blank < (profile.blankScoreMaxQuestions ?? Infinity) ? (profile.blankScoreValue ?? 0) : 0;
+    const delta = isBlank ? blankCredit : isCorrect ? q.points : wrongDelta(q, profile);
     score += delta;
     if (isBlank) blank += 1; else if (isCorrect) correct += 1; else wrong += 1;
     const p = String(q.points);

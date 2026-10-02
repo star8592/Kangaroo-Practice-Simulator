@@ -30,6 +30,7 @@ step "auto-deploy contract" bash ops/release/test_auto_deploy_contract.sh
 step "auth email SMTP contract" bash ops/release/test_auth_email_smtp_contract.sh
 step "parent auth regression" npm run test:parent-auth
 step "repository hygiene" python3 scripts/audit_repository_hygiene.py
+step "CEMC scoring regression" npx tsx scripts/test_cemc_scoring.ts
 step "competition ingestion regression" python3 scripts/test_import_pipeline.py
 step "eslint" npm run lint -- --max-warnings=0
 # Next-generated route validators can retain deleted/renamed routes until the next build.

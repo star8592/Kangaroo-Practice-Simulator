@@ -44,6 +44,15 @@ export function normalizeExamProfile(input:ExamProfile):ExamProfile{
     return {...p,competitionId:"maa-amc"};
   }
   if(p.country==="Canada CEMC"||p.competitionId==="cemc") {
+    // Repair legacy objective bundles; do not apply this rule to Euclid/written formats.
+    if (["cemc-gauss-7", "cemc-gauss-8", "cemc-pascal", "cemc-cayley", "cemc-fermat"].includes(p.formatId || "")) {
+      p.blankScoreValue = 2;
+      p.blankScoreMaxQuestions = 10;
+      const zh = "空题每题2分，最多计10道空题（20分）。";
+      const en = "Unanswered questions earn 2 points each, up to 10 questions (20 points).";
+      if (!p.rulesSummaryZh?.includes(zh)) p.rulesSummaryZh = `${p.rulesSummaryZh || ""} ${zh}`.trim();
+      if (!p.rulesSummaryEn?.includes(en)) p.rulesSummaryEn = `${p.rulesSummaryEn || ""} ${en}`.trim();
+    }
     return {...p,competitionId:"cemc",paperType:p.paperType||"past",timingMode:p.timingMode||"official",formatLabelZh:p.formatLabelZh||"加拿大 CEMC 正式赛制",formatLabelEn:p.formatLabelEn||"CEMC official format"};
   }
   if(p.country==="Mixed") return p;

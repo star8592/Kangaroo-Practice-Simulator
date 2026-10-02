@@ -24,7 +24,7 @@ checks={
     'must_not':['<div className="eyebrow">COMPETITION FORMAT LAB</div>','<span className="eyebrow">COMPETITIONS</span>','<span className="eyebrow">MAA AMC PATHWAY</span>','<span className="eyebrow">SMART BY FORMAT</span>','<span className="eyebrow">OFFICIAL SAMPLES</span>','<span className="eyebrow">OFFICIAL PRACTICE</span>','<span className="eyebrow">PAST PAPERS</span>'],
   },
   'src/components/ArithmeticDashboard.tsx':{
-    'must':['智能口算训练','学生画像','年级模型','个性化模型'],
+    'must':['智能口算训练','学生画像','本年级训练标准','aria-label="选择年级"','个性化模型'],
     'must_not':['ADAPTIVE MENTAL MATH','STUDENT PROFILE','GRADE PROFILES','PERSONAL MODEL'],
   },
   'src/components/LoginClient.tsx':{

@@ -315,11 +315,11 @@ def build_bundle(record):
         )
 
     rules_zh = (
-        "25题，60分钟；1–10题每题5分，11–20题每题6分，21–25题每题8分；答错不倒扣。"
+        "25题，60分钟；1–10题每题5分，11–20题每题6分，21–25题每题8分；答错不倒扣。空题每题2分，最多计10道空题（20分）。"
     )
     rules_en = (
         "25 questions in 60 minutes; Q1–10 are worth 5 points each, "
-        "Q11–20 6 points each, Q21–25 8 points each; no penalty for incorrect answers."
+        "Q11–20 6 points each, Q21–25 8 points each; no penalty for incorrect answers. Unanswered questions earn 2 points each, up to 10 questions (20 points)."
     )
     if comp != "Gauss" and year >= 2022:
         rules_zh += " 1–20题为选择题，21–25题为0–99整数填答。"
@@ -339,7 +339,8 @@ def build_bundle(record):
         "maxScore": 150,
         "wrongPenaltyMode": "fixed",
         "wrongPenaltyValue": 0,
-        "blankScoreValue": 0,
+        "blankScoreValue": 2,
+        "blankScoreMaxQuestions": 10,
         "country": "Canada CEMC",
         "year": year,
         "language": "en",
