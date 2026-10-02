@@ -1,5 +1,6 @@
 import { CLEVER_NODE_GUIDE, GRADE_PROFILES, type ArithmeticGrade, type CleverNode, type MentalStrategy } from "./arithmetic";
 import type { ArithmeticItem } from "./arithmetic-generator";
+import { isEquivalentArithmeticAnswer, numericAnswerValue } from "./arithmetic-answer";
 
 export type ErrorReason="correct"|"slow_recall"|"impulsive"|"hesitation"|"near_miss"|"operation_confusion"|"place_value"|"fact_gap"|"strategy_missed"|"unknown";
 export type ArithmeticAttempt={item:ArithmeticItem;answer:string;numericAnswer:number|null;correct:boolean;presentedAt:number;firstInputAt:number|null;submittedAt:number;firstInputMs:number;entryMs:number;responseMs:number;edits:number;backspaces:number;reason:ErrorReason;telemetryVersion?:2|3};
@@ -26,18 +27,18 @@ function inferNode(item:ArithmeticItem):CleverNode{
  return"fact_recall";
 }
 export function classifyAttempt(item:ArithmeticItem,raw:string,responseMs:number,firstInputMs:number,edits:number,backspaces:number):ErrorReason{
- const x=Number(raw); const correct=raw.trim()!==""&&Number.isFinite(x)&&Math.abs(x-item.answer)<1e-9;
+ const x=numericAnswerValue(raw),expected=typeof item.answer==="number"?item.answer:numericAnswerValue(String(item.answer));const correct=isEquivalentArithmeticAnswer(item,raw);
  if(correct){if(edits>=2||backspaces>=2)return"hesitation";if(firstInputMs>item.expectedMs*1.35)return item.strategy==="fact_recall"?"slow_recall":"strategy_missed";return"correct";}
  if(responseMs<item.expectedMs*.42&&firstInputMs<item.expectedMs*.3)return"impulsive";
  if(firstInputMs>item.expectedMs*1.35||edits>=2||backspaces>=2)return"hesitation";
- if(Number.isFinite(x)&&Math.abs(x-item.answer)===1)return"near_miss";
- const ns=parseNumbers(item.prompt); if(Number.isFinite(x)&&ns.length>=2){const [a,b]=ns;if(Math.abs(x-(a+b))<1e-9||Math.abs(x-(a-b))<1e-9||Math.abs(x-a*b)<1e-9)return"operation_confusion";if(Math.abs(x-item.answer)%10===0||Math.abs(x-item.answer)%100===0)return"place_value";}
+ if(x!==null&&expected!==null&&Math.abs(x-expected)===1)return"near_miss";
+ const ns=parseNumbers(item.prompt);if(x!==null&&expected!==null&&ns.length>=2){const [a,b]=ns;if(Math.abs(x-(a+b))<1e-9||Math.abs(x-(a-b))<1e-9||Math.abs(x-a*b)<1e-9)return"operation_confusion";if(Math.abs(x-expected)%10===0||Math.abs(x-expected)%100===0)return"place_value";}
  if(item.strategy==="fact_recall")return"fact_gap";
  return"unknown";
 }
 export function finalizeAttempt(item:ArithmeticItem,raw:string,t:{presentedAt:number;firstInputAt:number|null;submittedAt:number;edits:number;backspaces:number}):ArithmeticAttempt{
- const numeric=raw.trim()===""?null:Number(raw);const correct=numeric!==null&&Number.isFinite(numeric)&&Math.abs(numeric-item.answer)<1e-9;const responseMs=Math.max(1,t.submittedAt-t.presentedAt);const firstInputMs=t.firstInputAt?Math.max(0,t.firstInputAt-t.presentedAt):responseMs;
- const entryMs=Math.max(0,responseMs-firstInputMs);return{item,answer:raw,numericAnswer:numeric!==null&&Number.isFinite(numeric)?numeric:null,correct,presentedAt:t.presentedAt,firstInputAt:t.firstInputAt,submittedAt:t.submittedAt,firstInputMs,entryMs,responseMs,edits:t.edits,backspaces:t.backspaces,reason:classifyAttempt(item,raw,responseMs,firstInputMs,t.edits,t.backspaces),telemetryVersion:3};
+ const numeric=numericAnswerValue(raw);const correct=isEquivalentArithmeticAnswer(item,raw);const responseMs=Math.max(1,t.submittedAt-t.presentedAt);const firstInputMs=t.firstInputAt?Math.max(0,t.firstInputAt-t.presentedAt):responseMs;
+ const entryMs=Math.max(0,responseMs-firstInputMs);return{item,answer:raw,numericAnswer:numeric,correct,presentedAt:t.presentedAt,firstInputAt:t.firstInputAt,submittedAt:t.submittedAt,firstInputMs,entryMs,responseMs,edits:t.edits,backspaces:t.backspaces,reason:classifyAttempt(item,raw,responseMs,firstInputMs,t.edits,t.backspaces),telemetryVersion:3};
 }
 function normalizeLegacyAttempt(a:ArithmeticAttempt):ArithmeticAttempt{
  if(a.telemetryVersion===3)return a;

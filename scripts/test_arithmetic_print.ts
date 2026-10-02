@@ -22,7 +22,8 @@ function attempt(
     difficulty: 2,
     meta: {},
   };
-  const numericAnswer = correct ? item.answer : item.answer + 1;
+  const base = typeof item.answer === "number" ? item.answer : Number(item.answer);
+  const numericAnswer = correct ? base : base + 1;
   return {
     item,
     answer: String(numericAnswer),
