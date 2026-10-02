@@ -8,8 +8,8 @@ checks={
     'must_not':['const lang:DisplayLang=a?.lang==="en"?"en":"zh"','<span className="eyebrow">REVIEW</span>'],
   },
   'src/components/ResultClient.tsx':{
-    'must':['const lang:DisplayLang="zh"','const ui=UI.zh'],
-    'must_not':['const lang:DisplayLang=a?.lang==="en"?"en":"zh"'],
+    'must':['useSiteLanguage','const ui=UI[lang]','本次成绩','No exam result yet','Your result','Review answers'],
+    'must_not':['const lang:DisplayLang="zh"','const lang:DisplayLang=a?.lang==="en"?"en":"zh"','const ui=UI.zh'],
   },
   'src/components/ArithmeticSessionClient.tsx':{
     'must':['个性化诊断'],
