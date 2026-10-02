@@ -89,7 +89,7 @@ export default function ParentLoginClient() {
             <div className={styles.mark}>家</div>
             <span className={styles.brandEyebrow}>家长中心</span>
             <h1>看见孩子真正的学习变化<span>账号、训练与诊断统一管理</span></h1>
-            <p>把正式模拟、口算行为和阶段诊断放在同一个孩子档案里，减少零散记录带来的判断偏差。</p>
+            <p>把正式模拟、计算行为和阶段诊断放在同一个孩子档案里，减少零散记录带来的判断偏差。</p>
             <div className={styles.trustList}>
               <div className={styles.trustItem}><i>✓</i><span>孩子账号集中管理</span></div>
               <div className={styles.trustItem}><i>✓</i><span>诊断报告自动归档</span></div>

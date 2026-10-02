@@ -9,7 +9,7 @@ import { loadArithmeticSessions } from "@/lib/arithmetic-session-store";
 function clampGrade(value: string | undefined, fallback: number): ArithmeticGrade {
   const parsed = Number(value);
   const grade = Number.isFinite(parsed) ? parsed : fallback;
-  return Math.min(6, Math.max(1, Math.round(grade))) as ArithmeticGrade;
+  return Math.min(12, Math.max(1, Math.round(grade))) as ArithmeticGrade;
 }
 
 function stableSeed(value: string, grade: ArithmeticGrade) {

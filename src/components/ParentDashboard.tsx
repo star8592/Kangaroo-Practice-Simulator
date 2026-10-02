@@ -179,7 +179,7 @@ export default function ParentDashboard() {
         <div>
           <span className={styles.kicker}>家庭中心</span>
           <h1>家庭与孩子账号</h1>
-          <p>创建和管理孩子账号，同时查看最近是否登录、做过几套模拟和口算训练。</p>
+          <p>创建和管理孩子账号，同时查看最近是否登录、做过几套模拟和计算训练。</p>
         </div>
         <button className="primary-button" onClick={() => setShow((value) => !value)}>
           {show ? "收起" : "+ 添加孩子"}
@@ -280,7 +280,7 @@ export default function ParentDashboard() {
                 <article>
                   <span>累计正确率</span>
                   <strong>{summary.accuracy === null ? "—" : `${Math.round(summary.accuracy * 100)}%`}</strong>
-                  <small>口算 {summary.arithmeticSessions} 轮</small>
+                  <small>计算 {summary.arithmeticSessions} 轮</small>
                 </article>
               </div>
 

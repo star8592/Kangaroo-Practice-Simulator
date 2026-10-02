@@ -15,7 +15,7 @@ export default async function ArithmeticPrintExport({searchParams}:{searchParams
   const user=userFromSessionToken(jar.get(SESSION_COOKIE)?.value);
   if(!user)notFound();
   const p=await searchParams;
-  const grade=toInt(p.grade,user.grade,1,6) as ArithmeticGrade;
+  const grade=toInt(p.grade,user.grade,1,12) as ArithmeticGrade;
   const questions=toInt(p.questions,grade<=2?40:60,20,80);
   const sheets=toInt(p.sheets,5,1,20);
   const seed=toInt(p.seed,8592,1,2147483647);

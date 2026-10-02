@@ -118,7 +118,7 @@ export default function StudentProfileClient({ user, welcome = false }: { user: 
         <div className={styles.heroCopy}>
           <span className="eyebrow">个人资料</span>
           <h1>我的学习档案</h1>
-          <p>这些信息会用于考试、口算打印、学习报告和年级推荐。</p>
+          <p>这些信息会用于考试、计算打印、学习报告和年级推荐。</p>
         </div>
         <div className={styles.profilePreview} aria-label="当前学生资料预览">
           <span className={styles.previewAvatar}>{studentAvatarEmoji(avatarKey)}</span>

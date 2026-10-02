@@ -133,7 +133,7 @@ export default function AdminStudents() {
         <div>
           <span className={styles.kicker}>学生管理</span>
           <h1>学生账号与学习画像</h1>
-          <p>统一管理学生身份、正式模拟、口算训练和行为画像。</p>
+          <p>统一管理学生身份、正式模拟、计算训练和行为画像。</p>
         </div>
         <button className="primary-button" onClick={() => setShowCreate((value) => !value)}>
           {showCreate ? "收起" : "+ 创建学生"}
@@ -190,7 +190,7 @@ export default function AdminStudents() {
 
       <section className={styles.tableCard}>
         <div className={`${styles.row} ${styles.head}`}>
-          <span>学生</span><span>年级</span><span>正式模拟</span><span>正确率</span><span>口算</span><span>建议 / 操作</span>
+          <span>学生</span><span>年级</span><span>正式模拟</span><span>正确率</span><span>计算</span><span>建议 / 操作</span>
         </div>
         {rows.map((row) => (
           <div className={`${styles.row} ${row.active ? "" : styles.disabled}`} key={row.id}>

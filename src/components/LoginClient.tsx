@@ -44,7 +44,7 @@ export default function LoginClient({ nextPath }: { nextPath: string }) {
             <div className={styles.mark}>{SITE_BRAND.mark}</div>
             <span className={styles.brandEyebrow}>学生学习系统</span>
             <h1>{SITE_BRAND.loginTitleZh}<span>{SITE_BRAND.loginSubtitleZh}</span></h1>
-            <p>从竞赛模拟、口算训练到错因分析，每一次练习都会进入同一份长期学习档案。</p>
+            <p>从竞赛模拟、计算训练到错因分析，每一次练习都会进入同一份长期学习档案。</p>
             <div className={styles.trustList}>
               <div className={styles.trustItem}><i>✓</i><span>训练记录持续积累</span></div>
               <div className={styles.trustItem}><i>✓</i><span>个人数据独立建模</span></div>

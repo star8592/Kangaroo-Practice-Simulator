@@ -14,7 +14,7 @@ export async function POST(req: NextRequest) {
   }
 
   const body = await req.json().catch(() => ({}));
-  const grade = Math.min(6, Math.max(1, Number(body.grade) || 1)) as ArithmeticSession["grade"];
+  const grade = Math.min(12, Math.max(1, Number(body.grade) || 1)) as ArithmeticSession["grade"];
 
   let sessions: ArithmeticSession[] = [];
   if (fs.existsSync(FILE)) {

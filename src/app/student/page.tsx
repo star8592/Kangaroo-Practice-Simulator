@@ -181,16 +181,16 @@ export default async function StudentPage() {
       <section className={styles.dashboardGrid}>
         <article className={`report-card ${styles.card}`}>
           <header className={styles.cardHead}>
-            <span className={styles.sectionLabel}>口算模型</span>
-            <h2>口算与巧算画像</h2>
+            <span className={styles.sectionLabel}>计算模型</span>
+            <h2>计算与巧算画像</h2>
           </header>
           {a.arithmetic.plan ? (
             <>
               {a.arithmetic.plan.summaryZh.slice(0, 5).map((x, i) => <p className={styles.cardBodyText} key={i}>{x}</p>)}
               <div className={styles.focusChips}>{a.arithmetic.plan.focusSkills.map((x) => <span key={x}>{x}</span>)}</div>
             </>
-          ) : <p className={styles.cardBodyText}>还没有口算行为数据，先完成一次 20 题基线诊断。</p>}
-          <div className={styles.cardAction}><Link className="primary-button" href="/arithmetic">进入口算诊断</Link></div>
+          ) : <p className={styles.cardBodyText}>还没有计算行为数据，先完成一次 20 题基线诊断。</p>}
+          <div className={styles.cardAction}><Link className="primary-button" href="/arithmetic">进入计算诊断</Link></div>
         </article>
 
         <article className={`report-card ${styles.card}`}>
@@ -200,7 +200,7 @@ export default async function StudentPage() {
           </header>
           <div className={styles.principle}>
             <p>不会因为一道题慢就判定“不会”，不会把单次错误写成稳定弱项，也不会把离开页面的时间算成思考时间。</p>
-            <p>正式考试、口算、修改答案、空题、难度、前后程表现会分别建模，再生成训练建议。</p>
+            <p>正式考试、计算、修改答案、空题、难度、前后程表现会分别建模，再生成训练建议。</p>
           </div>
         </article>
       </section>

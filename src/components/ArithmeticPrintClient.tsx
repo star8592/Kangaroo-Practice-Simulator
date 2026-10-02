@@ -113,7 +113,7 @@ export default function ArithmeticPrintClient({
         ? `智能个性化 · 本卷重点：${[...focusSkills, ...focusNodes].slice(0, 4).join(" · ")} · 配题 ${firstMix.repair}重点 + ${firstMix.consolidate}巩固 + ${firstMix.review}复习`
         : evidenceQuestions > 0
           ? `智能均衡巩固 · 最近 ${evidenceQuestions} 题没有形成稳定弱项，本卷不额外加权`
-          : "智能模式 · 暂无该年级口算数据，本卷先按年级标准建立基础覆盖"
+          : "智能模式 · 暂无该年级计算数据，本卷先按年级标准建立基础覆盖"
       : mode === "manual"
         ? `老师指定专项 · ${manualSkill?.labelZh ?? ""}`
         : "年级综合训练 · 按本年级技能权重配题";
@@ -141,13 +141,13 @@ export default function ArithmeticPrintClient({
         <div className="print-screen-head">
           <div>
             <span className="eyebrow">纸笔训练</span>
-            <h1>A4 口算批量打印</h1>
+            <h1>A4 计算批量打印</h1>
             <p>
-              默认使用该学生自己的口算历史生成个性化纸笔训练；也可切换年级综合或老师指定专项。
+              默认使用该学生自己的计算历史生成个性化纸笔训练；也可切换年级综合或老师指定专项。
             </p>
           </div>
           <Link className="secondary-button" href="/arithmetic">
-            返回口算中心
+            返回计算中心
           </Link>
         </div>
 
@@ -159,7 +159,7 @@ export default function ArithmeticPrintClient({
           {mode === "smart" ? (
             evidenceQuestions === 0 ? (
               <p>
-                这个年级还没有口算行为数据。系统不会凭空制造“弱项”，本批先按年级标准均衡出题；完成在线诊断后再自动个性化。
+                这个年级还没有计算行为数据。系统不会凭空制造“弱项”，本批先按年级标准均衡出题；完成在线诊断后再自动个性化。
               </p>
             ) : hasSmartFocus ? (
               <div className="personalized-copy">
@@ -195,7 +195,7 @@ export default function ArithmeticPrintClient({
               value={grade}
               onChange={(e) => changeGrade(Number(e.target.value) as ArithmeticGrade)}
             >
-              {([1, 2, 3, 4, 5, 6] as ArithmeticGrade[]).map((g) => (
+              {([1,2,3,4,5,6,7,8,9,10,11,12] as ArithmeticGrade[]).map((g) => (
                 <option key={g} value={g}>
                   {GRADE_PROFILES[g].titleZh}
                 </option>
@@ -310,12 +310,12 @@ export default function ArithmeticPrintClient({
         </p>
       </div>
 
-      <div className="print-pages" aria-label="A4 口算练习卷预览">
+      <div className="print-pages" aria-label="A4 计算练习卷预览">
         {worksheets.map((sheet) => (
           <section className="a4-sheet exercise-sheet" key={sheet.code}>
             <header className="paper-header">
               <div>
-                <span>袋鼠数学 · 纸笔口算</span>
+                <span>袋鼠数学 · 纸笔计算</span>
                 <h2>{profile.titleZh} · {modeTitle}</h2>
               </div>
               <small>{sheet.code}</small>
