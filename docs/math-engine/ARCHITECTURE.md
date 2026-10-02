@@ -28,3 +28,11 @@ Pólya-style planning and reflection, representation research, worked-example fa
 
 ## v1 boundary
 Ship the smallest closed loop first: arithmetic entity mapping, structure discovery, scaffolded coaching, learner evidence and reports. Algebra shares the same object model from day one so primary-school shortcuts do not become an architectural dead end.
+
+## Evidence-first learner profile
+
+The learner profile is derived only from observed signals. V1 reports fluency, independence, hint reliance and strategy-use evidence. It intentionally does not infer creativity, deep understanding or transfer unless the training surface has directly collected evidence for those claims.
+
+## Legacy arithmetic bridge
+
+Existing arithmetic attempts are converted into `MathEntity` and `LearnerSignal` records instead of being discarded. This allows the production arithmetic trainer to feed the new engine incrementally while keeping the current student experience stable.
