@@ -4,7 +4,7 @@ from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 checks={
   'src/components/ReviewClient.tsx':{
-    'must':['const ui=UI.zh','中文题面','英文原题','<span className="eyebrow">错题复盘</span>'],
+    'must':['useSiteLanguage','const ui=UI[lang]','错题复盘','中文题面','英文原题','No exam available for review','Answer review'],
     'must_not':['const lang:DisplayLang=a?.lang==="en"?"en":"zh"','<span className="eyebrow">REVIEW</span>'],
   },
   'src/components/ResultClient.tsx':{
