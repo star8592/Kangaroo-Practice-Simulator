@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import type { ExamProfile, GradeResult } from "@/lib/types";
 import { conceptLabel, type DisplayLang } from "@/lib/display";
+import { useSiteLanguage } from "@/lib/site-language";
 
 type GradeWithAttempt=GradeResult & {attemptId?:string};
 type Attempt={examId?:string;profile?:ExamProfile;lang?:DisplayLang;grade:GradeWithAttempt;elapsedSeconds:number;submittedAt:number};
@@ -16,13 +17,13 @@ const UI={
 
 export default function ResultClient(){
   const router=useRouter();
+  const lang=useSiteLanguage();
   const [a] = useState<Attempt|null>(() => {
     if (typeof window === "undefined") return null;
     const raw = localStorage.getItem("math-competition-last-attempt") || localStorage.getItem("kangaroo-last-attempt");
     return raw ? JSON.parse(raw) : null;
   });
-  const lang:DisplayLang="zh";
-  const ui=UI.zh;
+  const ui=UI[lang];
   if(!a)return <div className="center-card"><h2>{ui.noResult}</h2><Link className="primary-button" href="/">{ui.backList}</Link></div>;
   const g=a.grade; const attemptId=g.attemptId; const pct=Math.round((g.score/g.maxScore)*100); const mins=Math.floor(a.elapsedSeconds/60); const secs=a.elapsedSeconds%60;
   const examId=a.examId??"level-a";
