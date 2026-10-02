@@ -47,4 +47,5 @@ jobs:
         run: |
           ./bin/verify.sh fixtures/Smoke.lean
           ./bin/verify.sh fixtures/Amc10Pilot.lean
+          ./bin/verify.sh fixtures/AmcPilotBatch2.lean
           lake build

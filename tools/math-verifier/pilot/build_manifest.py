@@ -12,6 +12,15 @@ def valid_stem(s: str) -> bool:
         return False
     if t.upper().startswith("AMC ") and "QUESTION " in t.upper() and "?" not in t and len(t) < 100:
         return False
+    low = t.lower()
+    placeholders = [
+        "see the official bilingual problem image below",
+        "see the official problem image below",
+        "please see the image below",
+        "problem image below",
+    ]
+    if any(x in low for x in placeholders):
+        return False
     return True
 
 def bucket(q):
@@ -28,9 +37,11 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--limit", type=int, default=100)
     ap.add_argument("--out", default="pilot/manifest.jsonl")
+    ap.add_argument("--exams-dir", default="../../private/exams")
     a = ap.parse_args()
     rows = []
-    for f in sorted(glob.glob("../../private/exams/maa-amc*.json")):
+    pattern = str(Path(a.exams_dir) / "maa-amc*.json")
+    for f in sorted(glob.glob(pattern)):
         try:
             data = json.load(open(f, encoding="utf-8"))
         except Exception:
@@ -41,7 +52,7 @@ def main():
                 continue
             rows.append({
                 "problem_id": q.get("id"),
-                "source_file": os.path.relpath(f, "../.."),
+                "source_file": os.path.relpath(f, Path(a.exams_dir).parent.parent),
                 "competition": q.get("level"),
                 "year": q.get("year"),
                 "question_no": q.get("questionNo"),

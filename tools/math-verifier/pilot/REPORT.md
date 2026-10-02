@@ -40,3 +40,10 @@ This is now treated as a data-quality gate. Placeholder records will not be labe
 2. Formalize at least 25 problems before evaluating automation rates.
 3. Record first-pass proof success, repair count, unsupported count, and verification latency.
 4. Only surface `Formally Verified` to students when an exact stored theorem has passed the pinned verifier.
+
+## 2026-10-02 Batch 2
+
+- Added 6 passing Lean proofs: AMC10A Q4/Q6/Q7/Q16 and AMC8 2024 Q1/Q3.
+- Cumulative passing proof fixtures: 9 problems.
+- Tightened placeholder filtering; image-only prompts are no longer counted as complete stems.
+- Added `--exams-dir` so private local question banks can generate manifests without being required in CI.
