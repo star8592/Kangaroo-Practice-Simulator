@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://socthink.cn/schemas/math-verification-result.schema.json",
+  "title": "Math Verification Result",
+  "type": "object",
+  "required": ["problem_id", "status", "method", "verified_at"],
+  "properties": {
+    "problem_id": {"type": "string", "minLength": 1},
+    "competition": {"type": ["string", "null"]},
+    "year": {"type": ["integer", "null"]},
+    "domain": {"type": "string"},
+    "status": {"enum": ["verified", "failed", "unsupported", "pending"]},
+    "method": {"enum": ["deterministic", "symbolic", "lean", "human_reviewed"]},
+    "formal_statement": {"type": ["string", "null"]},
+    "proof_source": {"type": ["string", "null"]},
+    "lean_toolchain": {"type": ["string", "null"]},
+    "mathlib_revision": {"type": ["string", "null"]},
+    "duration_ms": {"type": ["integer", "null"], "minimum": 0},
+    "attempts": {"type": "integer", "minimum": 1, "default": 1},
+    "error": {"type": ["string", "null"]},
+    "verified_at": {"type": "string", "format": "date-time"}
+  },
+  "additionalProperties": true
+}
