@@ -1,0 +1,50 @@
+name: Math Verifier
+
+on:
+  pull_request:
+    paths:
+      - "tools/math-verifier/**"
+      - "schemas/math-verification-result.schema.json"
+      - ".github/workflows/math-verifier.yml"
+  push:
+    branches: [main]
+    paths:
+      - "tools/math-verifier/**"
+      - "schemas/math-verification-result.schema.json"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: math-verifier-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lean:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Install project toolchain
+        working-directory: tools/math-verifier
+        run: elan toolchain install "$(cat lean-toolchain)"
+
+      - name: Fetch mathlib cache
+        working-directory: tools/math-verifier
+        run: |
+          lake update
+          lake exe cache get
+
+      - name: Verify fixtures
+        working-directory: tools/math-verifier
+        run: |
+          ./bin/verify.sh fixtures/Smoke.lean
+          ./bin/verify.sh fixtures/Amc10Pilot.lean
+          lake build
