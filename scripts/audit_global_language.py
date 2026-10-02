@@ -11,6 +11,7 @@ checks = {
     "src/lib/site-language.ts": ["useSyncExternalStore", "socthink.lang", "socthink_lang=", "socthink:language-change"],
     "src/components/GlobalLanguageSwitch.module.css": ["@media(max-width:760px)", "position:fixed", "z-index:70"],
     "src/components/ReviewClient.tsx": ["useSiteLanguage", "const ui=UI[lang]", "Answer review", "中文题面", "Original English"],
+    "src/components/ResultClient.tsx": ["useSiteLanguage", "const ui=UI[lang]", "Your result", "Review answers"],
     "src/app/student/page.tsx": ["socthink_lang", "Learning report", "Training readiness index", "Download PDF"],
     "src/components/StudentProfileClient.tsx": ["useSiteLanguage", "My learning profile", "Save profile", "Account security"],
     "src/components/HomeLanguageBridge.tsx": ["useSiteLanguage", "HomeClient"],
