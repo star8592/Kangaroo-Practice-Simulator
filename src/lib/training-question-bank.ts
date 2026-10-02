@@ -16,7 +16,12 @@ function hasVisual(q: Question) {
 
 /** Authenticated private-training gate; independent of public distribution flags. */
 export function isTrainingReadyQuestion(q: Question) {
-  if (q.examReady === false || q.review?.needsReview === true || !text(q.answer)) return false;
+  const sourceVerifiedOriginal = Boolean(
+    (q.verified || q.review?.verified) &&
+      q.review?.translationStatus === "source-verified" &&
+      q.review?.visualVerified === true,
+  );
+  if ((!sourceVerifiedOriginal && (q.examReady === false || q.review?.needsReview === true)) || !text(q.answer)) return false;
   if (!text(q.stem) && !text(q.stemEn) && !text(q.localized?.zh?.stem) && !text(q.localized?.en?.stem) && !hasVisual(q)) return false;
   const mode = q.answerMode || (q.choices?.length ? "choice" : "integer");
   if (mode === "choice") {
