@@ -61,7 +61,8 @@
     "data:cemc-gpt-packet": "python3 scripts/build_cemc_gpt_review_packet.py",
     "test:cemc-gpt-review": "python3 scripts/validate_cemc_gpt_review.py",
     "test:private-gates": "npm run test:rights && npm run test:rights-bindings && python3 scripts/brand_audit.py && npm run test:arithmetic-print && npm run test:competition-identity && npm run test:maa && npm run test:maa-library && npm run test:aime-sections && npm run test:maa-smart && npm run test:solution-books && npm run test:verified-storyboards && npm run test:maa-verified-store",
-    "postbuild": "bash ops/release/bootstrap_auto_deploy_runtime.sh"
+    "postbuild": "bash ops/release/bootstrap_auto_deploy_runtime.sh",
+    "test:math-engine": "tsx scripts/test_math_engine.ts"
   },
   "dependencies": {
     "next": "16.3.5",

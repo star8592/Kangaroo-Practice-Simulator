@@ -1,0 +1,11 @@
+export type MathDomain="arithmetic"|"algebra"|"geometry"|"functions"|"probability";
+export type RepresentationKind="numeric"|"symbolic"|"visual"|"relational"|"verbal";
+export type TransformationKind="split"|"combine"|"substitute"|"compensate"|"factor"|"expand"|"regroup"|"simplify"|"equivalent_form";
+export type LearningGoal="fluency"|"accuracy"|"structure"|"representation"|"strategy"|"reasoning"|"transfer";
+export type TrainingPolicy="exam"|"discovery"|"competition";
+export type CurriculumTag="CN"|"US"|"UK"|"AU"|"SG"|"GLOBAL";
+export type MathRepresentation={id:string;kind:RepresentationKind;form:string;purpose?:string};
+export type MathTransformation={id:string;kind:TransformationKind;from:string;to:string;reason:string;cost?:number};
+export type MathEntity={id:string;domain:MathDomain;canonical:string;representations:MathRepresentation[];structures:string[];transformations:MathTransformation[];goals:LearningGoal[];curricula:CurriculumTag[]};
+export type MasteryStage="unknown"|"recognized"|"assisted"|"independent"|"automatic"|"transfer";
+export type LearnerSignal={entityId:string;strategyId?:string;stage:MasteryStage;correct:boolean;latencyMs:number;hintLevel:number;transformations:string[];timestamp:number};
