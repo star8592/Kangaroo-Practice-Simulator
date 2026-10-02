@@ -66,3 +66,12 @@ This allows a public verification badge to be invalidated when its proof source 
 
 The AMC 10A 2022 source PDF was also tested with the audited recovery utility: all 25 problem blocks were recovered from the native text layer, and 10 were conservatively flagged for visual review because PDF text extraction damaged mathematical symbols.
 
+
+## Batch 4 — 2022 AMC 10A
+
+Six additional real problems passed the pinned Lean verifier: Q10, Q12, Q17, Q18, Q19, and Q24.
+Cumulative real AMC coverage is now **16 verified problems**.
+
+Q24 is a useful verification-gate example: an earlier draft encoded the answer as 500, while the official solution and exact finite enumeration establish 1296. The incorrect draft was not promoted into the verified set.
+
+Batch 4 verification time is about 4 seconds locally, so these proofs are suitable for CI.
