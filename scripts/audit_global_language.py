@@ -18,6 +18,9 @@ checks = {
     "src/components/ArithmeticDashboard.tsx": ["useSiteLanguage", "const lang=useSiteLanguage(),ui=UI[lang]", "ADAPTIVE CALCULATION", "Start adaptive training", "Four-dimensional skill profile", "K12_GRADE_NOTE_EN", "skill.labelEn"],
     "src/lib/arithmetic-grade-guide.ts": ["headlineEn", "goalEn", "trainingEn", "watchEn", "Build number sense and fluency within 20", "Reduce calculation losses in comprehensive exams"],
     "src/lib/k12-grade-system.ts": ["K12_GRADE_NOTE_EN", "Grade names are aligned by typical entry age"],
+    "src/components/ArithmeticPrintClient.tsx": ["useSiteLanguage", "initialLang", "Batch A4 calculation worksheets", "Download PDF (recommended)", "lang}).toString()", "profile.titleEn"],
+    "src/app/api/arithmetic/print/pdf/route.ts": ["\"lang\"", "/arithmetic/print/export?"],
+    "src/app/arithmetic/print/export/page.tsx": ["toLang", "initialLang={lang}"],
 }
 errors=[]
 for rel,tokens in checks.items():
