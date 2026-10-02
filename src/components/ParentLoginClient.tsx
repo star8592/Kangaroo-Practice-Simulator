@@ -103,10 +103,12 @@ export default function ParentLoginClient() {
           <div className={styles.formInner}>
             <span className={styles.formKicker}>{reset ? "密码重置" : "家长登录"}</span>
             <h2>{reset ? "重新设置密码" : "进入家长中心"}</h2>
-            <p className={styles.formLead}>{reset ? "输入邮件中的 6 位验证码，并设置新的登录密码。" : "使用已验证的邮箱与密码登录。"}</p>
+            <p className={styles.formLead}>{reset ? "输入邮件中的 6 位验证码，并设置新的登录密码。" : "使用微信快捷登录，或使用已验证的邮箱与密码登录。"}</p>
 
             {!reset ? (
               <>
+                <a href="/api/auth/parent/wechat/start" className={`primary-button ${styles.primaryAction}`}>微信登录 / 注册</a>
+                <div style={{display:"flex",alignItems:"center",gap:12,margin:"18px 0",color:"#94a3b8",fontSize:12}}><span style={{height:1,background:"#e2e8f0",flex:1}}/><span>或使用邮箱</span><span style={{height:1,background:"#e2e8f0",flex:1}}/></div>
                 <form onSubmit={submit} className={styles.form}>
                   <label className={styles.field}><span>邮箱</span><input name="email" type="email" required autoComplete="email" placeholder="name@example.com" /></label>
                   <label className={styles.field}><span>密码</span><input name="password" type="password" required autoComplete="current-password" placeholder="输入登录密码" /></label>
