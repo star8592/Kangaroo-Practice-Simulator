@@ -39,3 +39,4 @@ export const K12_GRADE_CROSSWALK = Object.fromEntries(
 ) as Record<ArithmeticGrade,K12GradeCrosswalk>;
 
 export const K12_GRADE_NOTE = "年级名称按典型入学年龄做对照，不代表不同国家课程标准完全等价。K / Reception / Foundation 应作为独立学前数感轨道，不与 Grade 1 混用。";
+export const K12_GRADE_NOTE_EN = "Grade names are aligned by typical entry age and do not imply identical curricula across countries. K / Reception / Foundation is a separate early-numeracy track and is not merged into Grade 1.";
