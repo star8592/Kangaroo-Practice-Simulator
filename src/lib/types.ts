@@ -20,6 +20,7 @@ export type ExamProfile = {
   wrongPenaltyMode: "fixed" | "quarter-points";
   wrongPenaltyValue: number;
   blankScoreValue?: number;
+  blankScoreMaxQuestions?: number;
   country?: string;
   year?: number;
   language?: string;
