@@ -15,6 +15,9 @@ checks = {
     "src/app/student/page.tsx": ["socthink_lang", "Learning report", "Training readiness index", "Download PDF"],
     "src/components/StudentProfileClient.tsx": ["useSiteLanguage", "My learning profile", "Save profile", "Account security"],
     "src/components/HomeLanguageBridge.tsx": ["useSiteLanguage", "HomeClient"],
+    "src/components/ArithmeticDashboard.tsx": ["useSiteLanguage", "const lang=useSiteLanguage(),ui=UI[lang]", "ADAPTIVE CALCULATION", "Start adaptive training", "Four-dimensional skill profile", "K12_GRADE_NOTE_EN", "skill.labelEn"],
+    "src/lib/arithmetic-grade-guide.ts": ["headlineEn", "goalEn", "trainingEn", "watchEn", "Build number sense and fluency within 20", "Reduce calculation-driven errors in mixed exams"],
+    "src/lib/k12-grade-system.ts": ["K12_GRADE_NOTE_EN", "Grade names are aligned by typical entry age"],
 }
 errors=[]
 for rel,tokens in checks.items():
