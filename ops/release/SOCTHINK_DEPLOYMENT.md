@@ -403,7 +403,7 @@ MAA AMC
 考试 session
 管理员权限隔离
 学生分析
-口算 session
+计算 session
 个性化下一轮 API
 session revocation
 ~~~
@@ -557,7 +557,7 @@ session
 题库
 解题数据
 分析结果
-口算历史
+计算历史
 ~~~
 
 public/local-assets 主要包含：
