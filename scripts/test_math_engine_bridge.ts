@@ -9,4 +9,7 @@ const signal=arithmeticAttemptToSignal(attempt);assert.equal(signal.grade,4);ass
 entity.representations.push({id:"bridge-r2",kind:"numeric",form:"37×(100-1)",purpose:"看见整百补偿"});
 const task=buildStructureDiscoveryTask(entity);assert(task.choices.some(x=>x.label.replace(/\s/g,"").includes("100−1")));assert(task.strategyIds.includes("round_compensation"));
 const profile=buildLearnerProfile([signal,{...signal,stage:"assisted",hintLevel:2}]);assert.equal(profile.independence.score,50);assert.equal(profile.hintReliance.score,50);
+
+const division:ArithmeticItem={id:"div-102-6",grade:3,skillId:"division",prompt:"102 ÷ 6 = ?",answer:17,strategy:"split",strategyNode:"split_place",expectedMs:6000,difficulty:2,meta:{}};
+const divisionEntity=arithmeticItemToEntity(division);const divisionTask=buildStructureDiscoveryTask(divisionEntity);assert(divisionTask.choices.length>=2);assert(divisionTask.choices.some(x=>x.preferred&&x.label.includes("60")&&x.label.includes("42")));
 console.log("math engine arithmetic bridge: PASS");
