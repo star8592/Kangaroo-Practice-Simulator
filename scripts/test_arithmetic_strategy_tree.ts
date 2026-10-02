@@ -12,7 +12,7 @@ function attempt(i:number,node:CleverNode,ms:number,correct=true):ArithmeticAtte
     strategy:compensation?"compensation":"fact_recall",
     strategyNode:node,expectedMs:compensation?5000:3000,difficulty:2,meta:{}
   };
-  const answer=correct?item.answer:item.answer+1;
+  const base=typeof item.answer==="number"?item.answer:Number(item.answer);const answer=correct?base:base+1;
   return {item,answer:String(answer),numericAnswer:answer,correct,
     presentedAt:0,firstInputAt:ms,submittedAt:ms+400,
     firstInputMs:ms,entryMs:400,responseMs:ms+400,
@@ -60,7 +60,7 @@ const probeAttempts=diagnostic.map((item)=>{
   const role=item.meta.probeRole;const node=item.meta.probeNode;
   const slow=role==="strategy"&&node==="add_compensation";
   const ms=slow?6500:2200;
-  const answer=item.answer;
+  const answer=typeof item.answer==="number"?item.answer:Number(item.answer);
   return {item,answer:String(answer),numericAnswer:answer,correct:true,presentedAt:0,firstInputAt:ms,submittedAt:ms+300,firstInputMs:ms,entryMs:300,responseMs:ms+300,edits:0,backspaces:0,reason:"correct" as const,telemetryVersion:3 as const};
 });
 const probePlan=buildTrainingPlan(2,[{id:"probe",studentId:"test",grade:2,mode:"diagnostic",startedAt:1,finishedAt:2,attempts:probeAttempts}]);

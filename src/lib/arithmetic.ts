@@ -51,7 +51,7 @@ export const GRADE_PROFILES:Record<ArithmeticGrade,GradeProfile> = {
 
   7:{grade:7,titleZh:"七年级计算",titleEn:"Grade 7 Calculation",targetAccuracy:.93,targetMedianMs:8500,skills:[
     {id:"signed",labelZh:"正负数四则",labelEn:"Signed-number arithmetic",weight:3,targetMs:7000,strategies:["fact_recall","place_value"]},
-    {id:"algebra_value",labelZh:"整式代值",labelEn:"Algebraic substitution",weight:3,targetMs:8500,strategies:["split","distributive"]},
+    {id:"algebra_value",labelZh:"整式化简与代值",labelEn:"Algebraic simplification and substitution",weight:3,targetMs:8500,strategies:["split","distributive"]},
     {id:"linear_eq",labelZh:"一元一次方程",labelEn:"Linear equations",weight:3,targetMs:10000,strategies:["split","compensation"]},
     {id:"ratio_percent",labelZh:"比例与百分数",labelEn:"Ratio and percent",weight:1,targetMs:8000,strategies:["place_value","fact_recall"]},
   ]},
@@ -59,11 +59,11 @@ export const GRADE_PROFILES:Record<ArithmeticGrade,GradeProfile> = {
     {id:"power",labelZh:"幂与科学记数",labelEn:"Powers and scientific notation",weight:2,targetMs:8500,strategies:["fact_recall","place_value"]},
     {id:"root",labelZh:"平方根与算术平方根",labelEn:"Square roots",weight:2,targetMs:8000,strategies:["fact_recall"]},
     {id:"linear_eq",labelZh:"一次方程与比例",labelEn:"Linear equations and proportions",weight:3,targetMs:10000,strategies:["split","compensation"]},
-    {id:"algebra_value",labelZh:"整式乘法与代值",labelEn:"Polynomial evaluation",weight:3,targetMs:10000,strategies:["distributive","split"]},
+    {id:"algebra_value",labelZh:"整式乘法与化简",labelEn:"Polynomial multiplication and simplification",weight:3,targetMs:10000,strategies:["distributive","split"]},
   ]},
   9:{grade:9,titleZh:"九年级计算",titleEn:"Grade 9 Calculation",targetAccuracy:.92,targetMedianMs:10500,skills:[
     {id:"quadratic_value",labelZh:"二次式代值",labelEn:"Quadratic evaluation",weight:3,targetMs:10000,strategies:["distributive","split"]},
-    {id:"root",labelZh:"根式数值计算",labelEn:"Radical evaluation",weight:2,targetMs:9000,strategies:["fact_recall"]},
+    {id:"root",labelZh:"根式化简与计算",labelEn:"Radical simplification and evaluation",weight:2,targetMs:9000,strategies:["fact_recall"]},
     {id:"function",labelZh:"函数代值",labelEn:"Function evaluation",weight:3,targetMs:10000,strategies:["split","distributive"]},
     {id:"probability",labelZh:"基础概率",labelEn:"Basic probability",weight:2,targetMs:9000,strategies:["fact_recall","place_value"]},
   ]},
