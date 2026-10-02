@@ -7,9 +7,14 @@ checks = {
     "src/components/SiteHeader.tsx": ["GlobalLanguageSwitch", "useSiteLanguage", "SITE_BRAND.nameEn", "Mock exams", "Review"],
     "src/components/SessionNav.tsx": ["useSiteLanguage", "Student login", "Learning report", "Sign out"],
     "src/components/SiteFooter.tsx": ["useSiteLanguage", "All rights reserved"],
-    "src/components/GlobalLanguageSwitch.tsx": ["useSiteLanguage", "setSiteLanguage", ">中文</button>", ">EN</button>"],
+    "src/components/GlobalLanguageSwitch.tsx": ["useSiteLanguage", "setSiteLanguage", "router.refresh()", ">中文</button>", ">EN</button>"],
     "src/lib/site-language.ts": ["useSyncExternalStore", "socthink.lang", "socthink_lang=", "socthink:language-change"],
     "src/components/GlobalLanguageSwitch.module.css": ["@media(max-width:760px)", "position:fixed", "z-index:70"],
+    "src/components/ReviewClient.tsx": ["useSiteLanguage", "const ui=UI[lang]", "Answer review", "中文题面", "Original English"],
+    "src/components/ResultClient.tsx": ["useSiteLanguage", "const ui=UI[lang]", "Your result", "Review answers"],
+    "src/app/student/page.tsx": ["socthink_lang", "Learning report", "Training readiness index", "Download PDF"],
+    "src/components/StudentProfileClient.tsx": ["useSiteLanguage", "My learning profile", "Save profile", "Account security"],
+    "src/components/HomeLanguageBridge.tsx": ["useSiteLanguage", "HomeClient"],
 }
 errors=[]
 for rel,tokens in checks.items():
