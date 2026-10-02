@@ -58,4 +58,11 @@ The verifier now records proof provenance rather than only a PASS/FAIL bit:
 - verification duration and UTC timestamp
 
 This allows a public verification badge to be invalidated when its proof source changes. The bootstrap script also now installs the exact project toolchain from `lean-toolchain`; it no longer falls back to the moving `mathlib4:lean-toolchain` initializer.
+## Batch 3
+
+- AMC 10A 2022 Q20 — arithmetic + geometric sequence reconstruction: PASS
+- The first nonlinear proof attempt was rejected for CI use because it was too slow. The accepted proof reduces the system to `b(r-1)^2 = 28`, derives a finite integer range from positivity, and closes the cases with `omega`.
+- Cumulative real contest problems formally verified: **10**.
+
+The AMC 10A 2022 source PDF was also tested with the audited recovery utility: all 25 problem blocks were recovered from the native text layer, and 10 were conservatively flagged for visual review because PDF text extraction damaged mathematical symbols.
 
