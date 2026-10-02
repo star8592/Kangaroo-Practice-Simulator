@@ -47,3 +47,15 @@ This is now treated as a data-quality gate. Placeholder records will not be labe
 - Cumulative passing proof fixtures: 9 problems.
 - Tightened placeholder filtering; image-only prompts are no longer counted as complete stems.
 - Added `--exams-dir` so private local question banks can generate manifests without being required in CI.
+## Verification provenance hardening
+
+The verifier now records proof provenance rather than only a PASS/FAIL bit:
+
+- SHA-256 of the exact Lean proof source
+- pinned Lean toolchain
+- exact Mathlib git revision
+- verifier repository revision
+- verification duration and UTC timestamp
+
+This allows a public verification badge to be invalidated when its proof source changes. The bootstrap script also now installs the exact project toolchain from `lean-toolchain`; it no longer falls back to the moving `mathlib4:lean-toolchain` initializer.
+
