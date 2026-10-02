@@ -20,3 +20,6 @@ CEMC 官方 https://cemc.uwaterloo.ca/online-ordering-terms-and-conditions 明�
 
 ## 发布阻塞与计分修正
 官方2023Gauss7及2025Fermat确认空题每题2分、最多10题。已实现旧数据兼容、导入器修正及评分上限，增加边界和AMC回归测试，并接入CI。TypeScript检查通过。自动审批拒绝直接推送main，要求用户明确授权该发布路径，因此本次转为独立分支评审。数据同步主动停止并触发脚本回滚，不将未修正计分的试卷作为已上线成果。用户批准后应先合并修复、通过CI及生产回执，再重新运行COMPETITION_ID=cemc的数据发布与真实学生入口验收。
+
+## CI附带修复
+既有中文审计仍匹配已删除的“年级模型”，改为校验实际“本年级训练标准”和中文年级选择标签。既有StructureDiscoveryClient在render中读取时间导致React purity检查失败；随机种子由服务端传入保证首屏一致，题目计时在effect和点击事件中更新。未禁用任何CI规则。
