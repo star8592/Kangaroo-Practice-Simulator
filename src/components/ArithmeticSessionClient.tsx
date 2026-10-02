@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { coachingSteps } from "@/lib/arithmetic-coaching";
 import { useEffect,useRef,useState } from "react";
-import { GRADE_PROFILES,STRATEGY_GUIDE,type ArithmeticGrade,type ArithmeticStrategy } from "@/lib/arithmetic";
+import { GRADE_PROFILES,STRATEGY_GUIDE,type ArithmeticGrade,type MentalStrategy } from "@/lib/arithmetic";
 import { generateArithmeticSet,generateDiagnosticSet,type ArithmeticItem } from "@/lib/arithmetic-generator";
 import { buildTrainingPlan,finalizeAttempt,type ArithmeticAttempt,type ArithmeticSession,type ErrorReason,type TrainingPlan } from "@/lib/arithmetic-analytics";
 import { useSiteLanguage } from "@/lib/site-language";
@@ -30,7 +30,7 @@ export default function ArithmeticSessionClient({grade,mode,seed,studentId}:{gra
  const item=items[idx];
  const symbolic=Boolean(item.answerKind&&item.answerKind!=="number");
  const skillLabel=(id:string)=>lang==="zh"?(profile.skills.find(s=>s.id===id)?.labelZh||id):humanize(id);
- const strategyLabel=(strategy:ArithmeticStrategy)=>lang==="zh"?STRATEGY_GUIDE[strategy].zh:humanize(strategy);
+ const strategyLabel=(strategy:MentalStrategy)=>lang==="zh"?STRATEGY_GUIDE[strategy].zh:humanize(strategy);
  const gradeTitle=lang==="zh"?profile.titleZh:`Grade ${grade} Calculation`;
  const resetForNext=(ts:number)=>{setRaw("");setEdits(0);setBackspaces(0);setFeedback(null);firstInputAt.current=null;presentedAt.current=ts;setTimeout(()=>{interactionLock.current=false;inputRef.current?.focus()},0)};
  const finish=async(all:ArithmeticAttempt[],ts:number)=>{const finishedAt=performance.timeOrigin+ts;const session:ArithmeticSession={id:`arith-${studentId}-g${grade}-${sessionSeed.current}-${mode}`,studentId,grade,mode,startedAt:finishedAt-all.reduce((sum,a)=>sum+a.responseMs,0),finishedAt,attempts:all};setSaving(true);try{await fetch('/api/arithmetic/sessions',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(session)})}catch{}const next=[...history,session];try{localStorage.setItem(`kangaroo-arithmetic-last-${studentId}`,JSON.stringify(session))}catch{}setHistory(next);setDone(buildTrainingPlan(grade,next));setSaving(false)};
