@@ -9,7 +9,7 @@ export function buildLearnerProfile(signals:LearnerSignal[]):MathematicalLearner
  const evidence=Math.min(100,Math.round(n/20*100));
  const correct=signals.filter(s=>s.correct);const fastIndependent=correct.filter(s=>s.stage==="automatic"||s.stage==="transfer").length;
  const independent=correct.filter(s=>s.stage==="independent"||s.stage==="automatic"||s.stage==="transfer").length;
- const hinted=signals.filter(s=>s.hintLevel>0).length;const strategy=signals.filter(s=>Boolean(s.strategyId)&&s.transformations.length>0&&s.correct).length;
+ const hinted=signals.filter(s=>s.hintLevel>0).length;const strategy=signals.filter(s=>Boolean(s.strategyId)&&s.transformations.length>0&&s.correct&&s.efficient!==false).length;
  const metric=(value:number|null):EvidenceMetric=>({score:n?value:null,evidence,samples:n});
  return {fluency:metric(n?pct(fastIndependent/n):null),independence:metric(n?pct(independent/n):null),hintReliance:metric(n?pct(hinted/n):null),strategyEvidence:metric(n?pct(strategy/n):null),stageCounts};
 }
