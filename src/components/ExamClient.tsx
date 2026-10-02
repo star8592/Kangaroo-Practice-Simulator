@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import type { ExamProfile,PublicQuestion } from "@/lib/types";
 import type { PublicStudent } from "@/lib/auth";
+import { COMPETITION_BRAND,competitionStageBrand,type CompetitionBrandId } from "@/lib/competition-brand";
 
 type Event={type:string;questionId?:string;at:number;value?:string};
 type Lang="zh"|"en";
@@ -255,6 +256,9 @@ export default function ExamClient({examId,user}:{examId:string;user:PublicStude
  const grades=lang==="zh"?(profile.gradesZh||profile.grades):(profile.gradesEn||profile.grades);
  const formatLabel=lang==="zh"?(profile.formatLabelZh||""):(profile.formatLabelEn||"");
  const rulesSummary=lang==="zh"?(profile.rulesSummaryZh||""):(profile.rulesSummaryEn||"");
+ const competitionBrand=profile.competitionId?COMPETITION_BRAND[profile.competitionId as CompetitionBrandId]:null;
+ const stageBrand=competitionStageBrand(profile.competitionId,profile.formatId,title);
+ const examBrand=<div className="exam-brand"><b>{stageBrand.label}</b><span>{stageBrand.series}</span></div>;
  const timeLabel=split
   ? timingSections.map(s=>`${lang==="zh"?s.labelZh:s.labelEn} ${Math.round(s.durationSeconds/60)} ${lang==="zh"?"分钟":"min"}`).join(" + ")
   : profile.timingMode==="untimed"?(lang==="zh"?"不限时":"Untimed")
@@ -262,6 +266,7 @@ export default function ExamClient({examId,user}:{examId:string;user:PublicStude
    :`${Math.round(profile.durationSeconds/60)} ${lang==="zh"?"分钟":"min"}`;
 
  if(!started)return <div className="report-shell"><section className="candidate-card">
+  <div className="candidate-brand-row">{examBrand}{competitionBrand&&<a href={competitionBrand.officialUrl} target="_blank" rel="noreferrer">{lang==="zh"?"主办方官网":"Official site"} ↗</a>}</div>
   <span className="eyebrow">{lang==="zh"?"考生确认":"CANDIDATE CHECK-IN"}</span><h1>{ui.candidate}</h1>
   <div className="candidate-grid"><div><span>姓名</span><strong>{user.name}</strong></div><div><span>准考证号</span><strong>{user.candidateNo}</strong></div><div><span>年级</span><strong>{user.grade} 年级</strong></div><div><span>试卷</span><strong>{title}</strong></div><div><span>题量</span><strong>{profile.questionCount} 题</strong></div><div><span>考试时间</span><strong>{timeLabel}</strong></div>{formatLabel&&<div><span>赛制模板</span><strong>{formatLabel}</strong></div>}</div>
   {rulesSummary&&<div className="candidate-rules"><strong>{lang==="zh"?"赛制说明":"Format rules"}</strong><p>{rulesSummary}</p></div>}
@@ -296,7 +301,7 @@ export default function ExamClient({examId,user}:{examId:string;user:PublicStude
  const submitLabel=split&&section?`${ui.lockSection} · ${sectionLabel}`:ui.submit;
 
  return <div className="exam-shell">
-  <header className="exam-topbar"><div><span className="exam-kicker">{title}</span><strong>{user.name} · {user.candidateNo} · {grades}</strong></div>
+  <header className="exam-topbar"><div><div className="exam-title-brand">{examBrand}<span className="exam-kicker">{title}</span></div><strong>{user.name} · {user.candidateNo} · {grades}</strong></div>
    <div className={profile.timingMode==="untimed"?"timer":seconds<600?"timer danger":"timer"}><span>{profile.timingMode==="untimed"?(profile.paperType==="practice"?(lang==="zh"?"训练模式":"Practice mode"):(lang==="zh"?"样题模式":"Sample mode")):timerLabel}</span><strong>{profile.timingMode==="untimed"?(lang==="zh"?"不限时":"UNTIMED"):`${minutes}:${secs}`}</strong></div>
    <button className="ghost-button" onClick={()=>setShowSubmit(true)}>{submitLabel}</button>
   </header>
