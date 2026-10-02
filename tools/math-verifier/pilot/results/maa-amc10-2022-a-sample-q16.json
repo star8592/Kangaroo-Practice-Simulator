@@ -1,0 +1,18 @@
+{
+  "problem_id": "maa-amc10-2022-a-sample-q16",
+  "competition": "AMC 10A",
+  "year": 2022,
+  "domain": "algebra",
+  "status": "verified",
+  "method": "lean",
+  "formal_statement": null,
+  "proof_source": "tools/math-verifier/fixtures/AmcPilotBatch2.lean",
+  "source_sha256": "fc8379592f474b571afc728bdcc05715cc28389b55c98c67bff092dfc0c8beca",
+  "verifier_revision": "ca8bc669a17130c10ecbaa8f64989e99ec50d733",
+  "lean_toolchain": "leanprover/lean4:v4.34.1",
+  "mathlib_revision": "d13f23b723b8a846827a245b89c10fc7d3f11612",
+  "duration_ms": 3045,
+  "attempts": 1,
+  "error": null,
+  "verified_at": "2026-10-02T14:33:25.848519Z"
+}

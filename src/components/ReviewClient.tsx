@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { useMemo,useState } from "react";
 import type { GradeResult, PublicQuestion } from "@/lib/types";
+import MathVerificationBadge from "@/components/MathVerificationBadge";
 import { conceptLabel, type DisplayLang } from "@/lib/display";
 import SmartSolutionPlayer from "@/components/SmartSolutionPlayer";
 import SolutionBookViewer from "@/components/SolutionBookViewer";
@@ -38,7 +39,7 @@ export default function ReviewClient(){
         const status=item.correct===true?ui.correct:item.correct===false?ui.wrong:ui.blank;
         const assetUrl=questionLang==="en"?(q!.assetUrlEn||q!.assetUrl):(q!.assetUrlZh||q!.assetUrl);
         return <article className="review-card" key={item.questionId}>
-          <div className="review-card-head"><div><strong>Q{item.questionNo}</strong><span className={`status ${item.correct===true?"ok":item.correct===false?"bad":"blank"}`}>{status}</span></div><span>{item.points} {ui.points} · {conceptLabel(item.concept,"zh")}</span></div>
+          <div className="review-card-head"><div><strong>Q{item.questionNo}</strong><span className={`status ${item.correct===true?"ok":item.correct===false?"bad":"blank"}`}>{status}</span></div><div className="review-trust"><span>{item.points} {ui.points} · {conceptLabel(item.concept,"zh")}</span><MathVerificationBadge verification={q!.mathVerification} lang={questionLang}/></div></div>
           <h2>{stem}</h2>
           <div className="review-choices">{choices.map(c=><div key={c.key} className={[item.selected===c.key?"picked":"",item.correctAnswer===c.key?"correct-choice":""].join(" ")}><span>{c.key}</span>{c.label}</div>)}</div>
           <div className="solution-box"><strong>{ui.answer} {item.correctAnswer}</strong><p>{item.solution||ui.noSolution}</p></div>

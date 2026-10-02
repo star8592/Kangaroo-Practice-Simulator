@@ -1,4 +1,5 @@
 import type { ExamBundle, PublicQuestion, Question } from "./types";
+import { mathVerificationForQuestion } from "./math-verification";
 import { listStoredExamProfiles, loadStoredExamBundle } from "./exam-bundle-store";
 
 const text = (value: unknown) => typeof value === "string" ? value.trim() : "";
@@ -72,6 +73,7 @@ export function trainingQuestions(questions: Question[]): PublicQuestion[] {
       assetUrlZh: q.studentAssetUrlZh || q.assetUrlZh || commonVisual,
       assetUrlEn: q.studentAssetUrlEn || q.assetUrlEn || commonVisual,
       verified: Boolean(q.verified || q.review?.verified),
+      mathVerification: mathVerificationForQuestion(q.id),
     };
   });
 }

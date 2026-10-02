@@ -52,6 +52,20 @@ export type ExamProfile = {
   rulesSummaryEn?: string;
 };
 
+export type MathVerification = {
+  status: "verified" | "failed" | "unsupported" | "pending";
+  method: "deterministic" | "symbolic" | "lean" | "human_reviewed";
+  competition?: string | null;
+  year?: number | null;
+  domain?: string | null;
+  proofSource?: string | null;
+  sourceSha256?: string | null;
+  leanToolchain?: string | null;
+  mathlibRevision?: string | null;
+  verifierRevision?: string | null;
+  verifiedAt?: string | null;
+};
+
 export type Question = {
   id: string;
   year: number;
@@ -76,6 +90,7 @@ export type Question = {
   studentAssetUrlZh?: string;
   studentAssetUrlEn?: string;
   verified?: boolean;
+  mathVerification?: MathVerification;
   sourceMeta?: unknown;
   localized?: { zh?: LocalizedText; en?: LocalizedText };
   review?: {
