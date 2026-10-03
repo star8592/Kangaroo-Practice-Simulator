@@ -36,3 +36,23 @@ The learner profile is derived only from observed signals. V1 reports fluency, i
 ## Legacy arithmetic bridge
 
 Existing arithmetic attempts are converted into `MathEntity` and `LearnerSignal` records instead of being discarded. This allows the production arithmetic trainer to feed the new engine incrementally while keeping the current student experience stable.
+
+## Frozen three-layer boundary
+
+The engine now enforces three separable concerns:
+
+1. **Mathematical semantics** — mathematical truth, representations, invariants and legal transformations.
+2. **Cognitive evidence** — what the learner actually did: perceive, represent, chunk, transform, search, evaluate, execute, verify, reflect and transfer.
+3. **Teaching policy** — which intervention to choose next for a specific learning goal.
+
+The operational loop is:
+
+`Task -> Observation stream -> Learner evidence -> Candidate intervention -> Outcome -> Evidence update`
+
+Teaching policies can therefore evolve or be A/B tested without redefining mathematical truth. Cognitive measurements remain contextual evidence rather than permanent learner labels.
+
+## Experiment boundary
+
+Immediate performance is not sufficient evidence of learning. Experiments should separately measure immediate success, delayed retention and transfer. Observational correlations must not be reported as causal effects; causal claims require randomized or otherwise defensible designs.
+
+For child learners, event collection should be minimal and focused on learning interactions, with pseudonymous identifiers where practical.
