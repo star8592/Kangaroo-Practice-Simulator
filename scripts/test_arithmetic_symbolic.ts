@@ -9,6 +9,8 @@ assert.equal(isEquivalentArithmeticAnswer({answer:"3/4",answerKind:"fraction",re
 assert.equal(isEquivalentArithmeticAnswer({answer:"2√3",answerKind:"radical"},"sqrt(12)"),true);
 assert.equal(isEquivalentArithmeticAnswer({answer:"2√3",answerKind:"radical",requireSimplified:true},"√12"),false);
 assert.equal(isEquivalentArithmeticAnswer({answer:"2√3",answerKind:"radical",requireSimplified:true},"2sqrt(3)"),true);
+assert.equal(isEquivalentArithmeticAnswer({answer:"√3/2",answerKind:"radical",requireSimplified:true},"sqrt(3)/2"),true);
+assert.equal(isEquivalentArithmeticAnswer({answer:"√3/2",answerKind:"radical",requireSimplified:true},"√12/4"),false);
 assert.equal(isEquivalentArithmeticAnswer({answer:"5x+12",answerKind:"expression"},"3(x+4)+2x"),true);
 assert.equal(isEquivalentArithmeticAnswer({answer:"x^2+5x+6",answerKind:"expression"},"(x+2)(x+3)"),true);
 assert.equal(isEquivalentArithmeticAnswer({answer:"x^2-9",answerKind:"expression"},"(x-3)(x+3)"),true);

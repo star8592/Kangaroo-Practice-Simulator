@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { SESSION_COOKIE, userFromSessionToken } from "@/lib/auth";
 import { loadArithmeticSessions } from "@/lib/arithmetic-session-store";
 import { buildMathEngineSnapshot, type TrainingPolicy } from "@/lib/math-engine";
+import { loadLearnerSignals } from "@/lib/math-engine/signal-store";
 
 const POLICIES = new Set<TrainingPolicy>(["exam", "discovery", "competition"]);
 
@@ -21,5 +22,6 @@ export async function GET(request: NextRequest) {
   }
 
   const sessions = loadArithmeticSessions(user.id, 500).filter((session) => grade === undefined || session.grade === grade);
-  return NextResponse.json(buildMathEngineSnapshot(sessions, policyRaw as TrainingPolicy));
+  const signals = loadLearnerSignals(user.id, 1000).filter((signal) => grade === undefined || signal.grade === grade);
+  return NextResponse.json(buildMathEngineSnapshot(sessions, policyRaw as TrainingPolicy, signals));
 }

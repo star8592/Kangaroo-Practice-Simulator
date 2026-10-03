@@ -15,13 +15,13 @@ export function numericAnswerValue(raw:string){
  const f=parseFraction(raw);if(f)return f.value;const x=Number(clean(raw));return Number.isFinite(x)?x:null;
 }
 
-type Radical={coeff:number;radicand:number;simplifiedCoeff:number;simplifiedRadicand:number;isSimplified:boolean};
-function simplifyRadical(coeff:number,radicand:number){let outside=1,inside=radicand;for(let k=2;k*k<=inside;k++){while(inside%(k*k)===0){outside*=k;inside/=k*k}}return{coeff:coeff*outside,radicand:inside}}
+type Radical={num:number;den:number;radicand:number;simplifiedNum:number;simplifiedDen:number;simplifiedRadicand:number;isSimplified:boolean};
+function simplifyRadical(num:number,den:number,radicand:number){let outside=1,inside=radicand;for(let k=2;k*k<=inside;k++){while(inside%(k*k)===0){outside*=k;inside/=k*k}}num*=outside;const d=gcd(num,den);return{num:num/d,den:den/d,radicand:inside}}
 function parseRadical(raw:string):Radical|null{
  const s=clean(raw).replace(/sqrt\((\d+)\)/gi,"√$1").replace(/\*/g,"");
- const m=s.match(/^([+-]?)(\d*)√(\d+)$/);if(!m)return null;
- const sign=m[1]==="-"?-1:1,coeff=sign*(m[2]?Number(m[2]):1),radicand=Number(m[3]);if(!Number.isInteger(radicand)||radicand<0)return null;
- const reduced=simplifyRadical(coeff,radicand);return{coeff,radicand,simplifiedCoeff:reduced.coeff,simplifiedRadicand:reduced.radicand,isSimplified:reduced.radicand===radicand};
+ const m=s.match(/^([+-]?)(\d*)√(\d+)(?:\/(\d+))?$/);if(!m)return null;
+ const sign=m[1]==="-"?-1:1,num=sign*(m[2]?Number(m[2]):1),radicand=Number(m[3]),den=m[4]?Number(m[4]):1;if(!den||!Number.isInteger(radicand)||radicand<0)return null;
+ const reduced=simplifyRadical(num,den,radicand);return{num,den,radicand,simplifiedNum:reduced.num,simplifiedDen:reduced.den,simplifiedRadicand:reduced.radicand,isSimplified:reduced.radicand===radicand&&gcd(num,den)===1};
 }
 
 type Token={kind:"num"|"x"|"op"|"lp"|"rp";value:string};
@@ -50,6 +50,6 @@ export function isEquivalentArithmeticAnswer(spec:ArithmeticAnswerSpec,raw:strin
  if(!raw.trim())return false;const kind=spec.answerKind||(typeof spec.answer==="number"?"number":"expression");
  if(kind==="number"){const got=numericAnswerValue(raw),want=typeof spec.answer==="number"?spec.answer:numericAnswerValue(String(spec.answer));return got!==null&&want!==null&&Math.abs(got-want)<EPS}
  if(kind==="fraction"){const got=parseFraction(raw),want=parseFraction(String(spec.answer));if(!got||!want)return false;if(spec.requireSimplified&&!got.simplified)return false;return got.reducedNum===want.reducedNum&&got.reducedDen===want.reducedDen}
- if(kind==="radical"){const got=parseRadical(raw),want=parseRadical(String(spec.answer));if(!got||!want)return false;if(spec.requireSimplified&&!got.isSimplified)return false;return got.simplifiedCoeff===want.simplifiedCoeff&&got.simplifiedRadicand===want.simplifiedRadicand}
+ if(kind==="radical"){const got=parseRadical(raw),want=parseRadical(String(spec.answer));if(!got||!want)return false;if(spec.requireSimplified&&!got.isSimplified)return false;return got.simplifiedNum===want.simplifiedNum&&got.simplifiedDen===want.simplifiedDen&&got.simplifiedRadicand===want.simplifiedRadicand}
  return samePoly(parsePolynomial(raw),parsePolynomial(String(spec.answer)));
 }
