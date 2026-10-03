@@ -32,6 +32,8 @@ export type CognitivePrimitive =
   | "reflect"
   | "transfer";
 
+export type EvidenceSource = "observed" | "inferred";
+
 export type CognitiveObservation = {
   primitive: CognitivePrimitive;
   entityId: string;
@@ -42,6 +44,8 @@ export type CognitiveObservation = {
   success?: boolean;
   hintLevel?: number;
   transformationIds?: string[];
+  source?: EvidenceSource;
+  confidence?: number;
   timestamp: number;
 };
 
