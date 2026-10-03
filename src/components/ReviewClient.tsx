@@ -2,17 +2,20 @@
 import Link from "next/link";
 import { useMemo,useState } from "react";
 import type { GradeResult, PublicQuestion } from "@/lib/types";
+import MathVerificationBadge from "@/components/MathVerificationBadge";
 import { conceptLabel, type DisplayLang } from "@/lib/display";
+import { useSiteLanguage } from "@/lib/site-language";
 import SmartSolutionPlayer from "@/components/SmartSolutionPlayer";
 import SolutionBookViewer from "@/components/SolutionBookViewer";
 import { hasExactQuestionMapping, solutionBookForExam } from "@/lib/solution-books";
 
 type Attempt={examId?:string;lang?:DisplayLang;grade:GradeResult;answers:Record<string,string>;questions:PublicQuestion[]};
 const UI={
- zh:{none:"还没有可复盘的考试",start:"开始考试",title:"逐题复盘",desc:"优先处理错题和空题，再回看全部答题轨迹。",wrongOnly:"错题 / 空题",all:"全部",correct:"正确",wrong:"错误",blank:"未作答",points:"分",answer:"答案",noSolution:"暂无解析。"},
- en:{none:"No exam available for review",start:"Start exam",title:"Answer review",desc:"Review wrong and blank answers first, then inspect the full attempt.",wrongOnly:"Wrong / Blank",all:"All",correct:"Correct",wrong:"Wrong",blank:"Blank",points:"pts",answer:"Answer",noSolution:"No solution yet."},
+ zh:{eyebrow:"错题复盘",none:"还没有可复盘的考试",start:"开始考试",title:"逐题复盘",desc:"优先处理错题和空题，再回看全部答题轨迹。",wrongOnly:"错题 / 空题",all:"全部",correct:"正确",wrong:"错误",blank:"未作答",points:"分",answer:"答案",noSolution:"暂无解析。",questionZh:"中文题面",questionEn:"英文原题"},
+ en:{eyebrow:"REVIEW",none:"No exam available for review",start:"Start exam",title:"Answer review",desc:"Review wrong and blank answers first, then inspect the full attempt.",wrongOnly:"Wrong / Blank",all:"All",correct:"Correct",wrong:"Wrong",blank:"Blank",points:"pts",answer:"Answer",noSolution:"No solution yet.",questionZh:"Chinese",questionEn:"Original English"},
 } as const;
 export default function ReviewClient(){
+  const lang=useSiteLanguage();
   const [a] = useState<Attempt|null>(() => {
     if (typeof window === "undefined") return null;
     const raw = localStorage.getItem("math-competition-last-attempt") || localStorage.getItem("kangaroo-last-attempt");
@@ -21,7 +24,7 @@ export default function ReviewClient(){
   const [mode,setMode]=useState<"all"|"wrong">("wrong");
   const [questionLang,setQuestionLang]=useState<DisplayLang>("zh");
   const solutionBook=useMemo(()=>solutionBookForExam(a?.examId),[a?.examId]);
-  const ui=UI.zh;
+  const ui=UI[lang];
   const hasBilingual=Boolean(a?.questions.some(q=>Boolean(q.stemEn)||Boolean(q.choicesEn?.length)));
   const rows=useMemo(()=>{
     if(!a)return [];
@@ -29,8 +32,8 @@ export default function ReviewClient(){
   },[a,mode]);
   if(!a)return <div className="center-card"><h2>{ui.none}</h2><Link className="primary-button" href="/">{ui.start}</Link></div>;
   return <div className="review-shell">
-    <div className="section-heading"><div><span className="eyebrow">错题复盘</span><h1>{ui.title}</h1><p>{ui.desc}</p></div><div><div className="segmented"><button className={mode==="wrong"?"active":""} onClick={()=>setMode("wrong")}>{ui.wrongOnly}</button><button className={mode==="all"?"active":""} onClick={()=>setMode("all")}>{ui.all}</button></div>{hasBilingual&&<div className="segmented" style={{marginTop:8}}><button className={questionLang==="zh"?"active":""} onClick={()=>setQuestionLang("zh")}>中文题面</button><button className={questionLang==="en"?"active":""} onClick={()=>setQuestionLang("en")}>英文原题</button></div>}</div></div>
-    {solutionBook&&!hasExactQuestionMapping(solutionBook)&&<SolutionBookViewer book={solutionBook} lang="zh" />}
+    <div className="section-heading"><div><span className="eyebrow">{ui.eyebrow}</span><h1>{ui.title}</h1><p>{ui.desc}</p></div><div><div className="segmented"><button className={mode==="wrong"?"active":""} onClick={()=>setMode("wrong")}>{ui.wrongOnly}</button><button className={mode==="all"?"active":""} onClick={()=>setMode("all")}>{ui.all}</button></div>{hasBilingual&&<div className="segmented" style={{marginTop:8}}><button className={questionLang==="zh"?"active":""} onClick={()=>setQuestionLang("zh")}>{ui.questionZh}</button><button className={questionLang==="en"?"active":""} onClick={()=>setQuestionLang("en")}>{ui.questionEn}</button></div>}</div></div>
+    {solutionBook&&!hasExactQuestionMapping(solutionBook)&&<SolutionBookViewer book={solutionBook} lang={questionLang} />}
     <div className="review-list">
       {rows.map(({item,q})=>{
         const stem=questionLang==="en"&&q!.stemEn?q!.stemEn:q!.stem;
@@ -38,11 +41,11 @@ export default function ReviewClient(){
         const status=item.correct===true?ui.correct:item.correct===false?ui.wrong:ui.blank;
         const assetUrl=questionLang==="en"?(q!.assetUrlEn||q!.assetUrl):(q!.assetUrlZh||q!.assetUrl);
         return <article className="review-card" key={item.questionId}>
-          <div className="review-card-head"><div><strong>Q{item.questionNo}</strong><span className={`status ${item.correct===true?"ok":item.correct===false?"bad":"blank"}`}>{status}</span></div><span>{item.points} {ui.points} · {conceptLabel(item.concept,"zh")}</span></div>
+          <div className="review-card-head"><div><strong>Q{item.questionNo}</strong><span className={`status ${item.correct===true?"ok":item.correct===false?"bad":"blank"}`}>{status}</span></div><div className="review-trust"><span>{item.points} {ui.points} · {conceptLabel(item.concept,lang)}</span><MathVerificationBadge verification={q!.mathVerification} lang={lang}/></div></div>
           <h2>{stem}</h2>
           <div className="review-choices">{choices.map(c=><div key={c.key} className={[item.selected===c.key?"picked":"",item.correctAnswer===c.key?"correct-choice":""].join(" ")}><span>{c.key}</span>{c.label}</div>)}</div>
           <div className="solution-box"><strong>{ui.answer} {item.correctAnswer}</strong><p>{item.solution||ui.noSolution}</p></div>
-          {solutionBook&&hasExactQuestionMapping(solutionBook)&&<SolutionBookViewer book={solutionBook} questionNo={item.questionNo} lang="zh" />}
+          {solutionBook&&hasExactQuestionMapping(solutionBook)&&<SolutionBookViewer book={solutionBook} questionNo={item.questionNo} lang={questionLang} />}
           <SmartSolutionPlayer questionId={item.questionId} questionNo={item.questionNo} stem={stem} solution={item.solution} answer={item.correctAnswer} concept={item.concept} assetUrl={assetUrl} />
         </article>;
       })}

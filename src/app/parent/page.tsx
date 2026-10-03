@@ -16,7 +16,7 @@ export default async function Page() {
         <div>
           <span>家长账号</span>
           <strong>{user.name}</strong>
-          <small>{user.email}</small>
+          <small>{user.email || (user.wechatId ? "微信账号" : "家长账号")}</small>
         </div>
         <ParentLogoutButton />
       </header>

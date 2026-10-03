@@ -3,7 +3,7 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
 if ! command -v curl >/dev/null || ! command -v git >/dev/null; then
-  echo 'git and curl are required' >&2
+  echo "git and curl are required" >&2
   exit 2
 fi
 

@@ -12,7 +12,7 @@ export async function GET(req:NextRequest){
   if(!user)return NextResponse.json({error:"请先登录"},{status:401});
   try{
     const allowed=new URLSearchParams();
-    for(const key of ["grade","mode","manualSkillId","questions","sheets","answers","seed"]){const value=req.nextUrl.searchParams.get(key);if(value!==null)allowed.set(key,value)}
+    for(const key of ["grade","mode","manualSkillId","questions","sheets","answers","seed","lang"]){const value=req.nextUrl.searchParams.get(key);if(value!==null)allowed.set(key,value)}
     const sheets=Math.min(20,Math.max(1,Number(req.nextUrl.searchParams.get("sheets"))||5));
     const answers=req.nextUrl.searchParams.get("answers")!=="0";
     const expectedPages=sheets*(answers?2:1);

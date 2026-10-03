@@ -4,10 +4,13 @@ import { atomicWriteJson, readJsonArray, readOrCreateSecret, userDataPath } from
 
 export type ParentUser={
   id:string;
-  email:string;
+  email?:string;
   name:string;
-  passwordHash:string;
-  emailVerifiedAt:number;
+  passwordHash?:string;
+  emailVerifiedAt?:number;
+  wechatId?:string;
+  wechatOpenId?:string;
+  wechatAvatarUrl?:string;
   termsAcceptedAt:number;
   guardianConfirmedAt:number;
   createdAt:number;
@@ -23,16 +26,17 @@ const FILE=userDataPath("parents.json");
 const SECRET=userDataPath("parent-session-secret.txt");
 
 function sessionSecret(){return readOrCreateSecret(SECRET)}
-function normalizeEmail(x:string){return x.trim().toLowerCase()}
+function normalizeEmail(x:string|undefined){return (x||"").trim().toLowerCase()}
 export function validEmail(email:string){return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizeEmail(email))&&email.length<=254}
 export function validatePassword(password:string){if(password.length<8)return "密码至少 8 位";if(password.length>128)return "密码过长";return null}
 export function hashPassword(password:string){return hashScryptSecret(password)}
 function verifyPassword(password:string,encoded:string){return verifyScryptSecret(password,encoded)}
 function pub(u:ParentUser):PublicParent{const {passwordHash,...x}=u;void passwordHash;return x}
 
-function loadParents():ParentUser[]{return readJsonArray<ParentUser>(FILE).map(u=>({...u,email:normalizeEmail(u.email),role:"parent",active:u.active!==false,sessionVersion:Math.max(1,Number(u.sessionVersion)||1)}))}
+function loadParents():ParentUser[]{return readJsonArray<ParentUser>(FILE).map(u=>({...u,email:normalizeEmail(u.email)||undefined,role:"parent",active:u.active!==false,sessionVersion:Math.max(1,Number(u.sessionVersion)||1)}))}
 function saveParents(rows:ParentUser[]){atomicWriteJson(FILE,rows)}
-export function parentByEmail(email:string){const k=normalizeEmail(email);return loadParents().find(x=>x.email===k)}
+export function parentByEmail(email:string){const k=normalizeEmail(email);return k?loadParents().find(x=>x.email===k):undefined}
+export function parentByWechatId(wechatId:string){const k=wechatId.trim();return k?loadParents().find(x=>x.wechatId===k||x.wechatOpenId===k):undefined}
 
 export function createParent(input:{email:string;name:string;passwordHash:string;termsAcceptedAt:number;guardianConfirmedAt:number}){
   const rows=loadParents(),email=normalizeEmail(input.email),name=input.name.trim().slice(0,60);
@@ -45,8 +49,25 @@ export function createParent(input:{email:string;name:string;passwordHash:string
 
 export function authenticateParent(email0:string,password:string){
   const email=normalizeEmail(email0),rows=loadParents(),u=rows.find(x=>x.email===email&&x.active);
-  if(!u||!verifyPassword(password,u.passwordHash))return null;
+  if(!u||!u.passwordHash||!verifyPassword(password,u.passwordHash))return null;
   u.lastLoginAt=Date.now();saveParents(rows);return pub(u);
+}
+
+export function authenticateOrCreateWechatParent(input:{wechatId:string;openId?:string;name?:string;avatarUrl?:string}){
+  const rows=loadParents(),wechatId=input.wechatId.trim(),openId=input.openId?.trim();
+  if(!wechatId)throw new Error("微信用户标识缺失");
+  let u=rows.find(x=>x.wechatId===wechatId||(openId&&x.wechatOpenId===openId));
+  if(!u){
+    u={id:"par_"+crypto.randomBytes(9).toString("hex"),name:(input.name||"微信家长").trim().slice(0,60)||"微信家长",wechatId,wechatOpenId:openId,wechatAvatarUrl:input.avatarUrl?.trim()||undefined,termsAcceptedAt:Date.now(),guardianConfirmedAt:Date.now(),createdAt:Date.now(),active:true,role:"parent",sessionVersion:1};
+    rows.push(u);
+  }else{
+    u.wechatId=wechatId;
+    if(openId)u.wechatOpenId=openId;
+    if(input.name&&!u.name)u.name=input.name.trim().slice(0,60);
+    if(input.avatarUrl)u.wechatAvatarUrl=input.avatarUrl.trim();
+    u.lastLoginAt=Date.now();
+  }
+  saveParents(rows);return pub(u);
 }
 
 export function resetParentPassword(email0:string,newPassword:string){

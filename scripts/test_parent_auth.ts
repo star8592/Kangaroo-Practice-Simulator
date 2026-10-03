@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import assert from "node:assert/strict";
 import {issueChallenge,verifyChallenge} from "../src/lib/auth-challenges";
-import {authenticateParent,createParent,createParentSessionToken,hashPassword,parentFromSessionToken,resetParentPassword} from "../src/lib/parent-auth";
+import {authenticateOrCreateWechatParent,authenticateParent,createParent,createParentSessionToken,hashPassword,parentFromSessionToken,resetParentPassword} from "../src/lib/parent-auth";
 import {addStudentToFamily,familyOwnsStudent,publicFamilyStudents} from "../src/lib/family-store";
 import {createStudent} from "../src/lib/auth";
 
@@ -27,6 +27,10 @@ try{
  resetParentPassword(email,"NewPass1234");
  assert.equal(parentFromSessionToken(old),null);
  assert.equal(authenticateParent(email,"NewPass1234")?.id,p.id);
+ const wx=authenticateOrCreateWechatParent({wechatId:"union_test_001",openId:"openid_test_001",name:"微信家长"});
+ assert.equal(wx.email,undefined);
+ assert.equal(authenticateOrCreateWechatParent({wechatId:"union_test_001",openId:"openid_test_001",name:"新昵称"}).id,wx.id);
+ assert.equal(parentFromSessionToken(createParentSessionToken(wx.id))?.wechatId,"union_test_001");
  const s=createStudent({username:"family_test_"+Date.now(),candidateNo:"FT"+Date.now(),name:"Kid",grade:1,pin:"1234"});
  addStudentToFamily(p.id,s.id);
  assert.equal(familyOwnsStudent(p.id,s.id),true);

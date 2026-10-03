@@ -47,4 +47,14 @@ jobs:
         run: |
           ./bin/verify.sh fixtures/Smoke.lean
           ./bin/verify.sh fixtures/Amc10Pilot.lean
+          ./bin/verify.sh fixtures/AmcPilotBatch2.lean
+          ./bin/verify.sh fixtures/AmcPilotBatch3.lean
+          ./bin/verify.sh fixtures/AmcPilotBatch4.lean
+          ./bin/verify-record.py fixtures/Smoke.lean --problem-id fixture:smoke --domain smoke --output /tmp/math-verification-smoke.json
+          python3 -c "import json; d=json.load(open('/tmp/math-verification-smoke.json')); assert d['status']=='verified' and len(d['source_sha256'])==64"
           lake build
+
+      - name: Verify public verification index
+        run: |
+          python3 tools/math-verifier/pilot/build_public_index.py
+          git diff --exit-code -- src/lib/generated/math-verification-index.json

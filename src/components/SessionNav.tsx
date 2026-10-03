@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { studentAvatarEmoji } from "@/lib/student-avatar";
+import { useSiteLanguage } from "@/lib/site-language";
 
 type U = {
   name: string;
@@ -14,6 +15,7 @@ type U = {
 
 export default function SessionNav() {
   const router = useRouter();
+  const lang = useSiteLanguage();
   const [user, setUser] = useState<U | null | undefined>(undefined);
 
   const reloadUser = useCallback(() => {
@@ -37,26 +39,26 @@ export default function SessionNav() {
   }
 
   if (user === undefined) return <span className="nav-session">…</span>;
-  if (!user) return <Link href="/login">考生登录</Link>;
+  if (!user) return <Link href="/login">{lang==="zh"?"考生登录":"Student login"}</Link>;
 
   return (
     <>
       {user.role === "admin" ? (
         <>
-          <Link href="/admin/students">学生管理</Link>
-          <Link href="/admin/questions">题库审核</Link>
+          <Link href="/admin/students">{lang==="zh"?"学生管理":"Students"}</Link>
+          <Link href="/admin/questions">{lang==="zh"?"题库审核":"Question review"}</Link>
         </>
       ) : (
         <>
-          <a href="/student">学习报告</a>
-          <Link href="/student/settings">我的资料</Link>
+          <a href="/student">{lang==="zh"?"学习报告":"Learning report"}</a>
+          <Link href="/student/settings">{lang==="zh"?"我的资料":"Profile"}</Link>
         </>
       )}
       <span className="nav-candidate">
         {user.role === "student" ? `${studentAvatarEmoji(user.avatarKey)} ` : ""}
         {user.name}
       </span>
-      <button className="nav-logout" onClick={logout}>退出</button>
+      <button className="nav-logout" onClick={logout}>{lang==="zh"?"退出":"Sign out"}</button>
     </>
   );
 }

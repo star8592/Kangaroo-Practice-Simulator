@@ -6,9 +6,11 @@ import { SESSION_COOKIE, userFromSessionToken } from "@/lib/auth";
 import { GRADE_PROFILES, type ArithmeticGrade } from "@/lib/arithmetic";
 import { loadArithmeticSessions } from "@/lib/arithmetic-session-store";
 import type { ArithmeticPrintMode } from "@/lib/arithmetic-print";
+import type { SiteLang } from "@/lib/site-language";
 
 function toInt(value:string|undefined,fallback:number,min:number,max:number){const n=Number(value);return Number.isFinite(n)?Math.min(max,Math.max(min,Math.round(n))):fallback}
 function toMode(value:string|undefined):ArithmeticPrintMode{return value==="manual"||value==="mixed"?value:"smart"}
+function toLang(value:string|undefined):SiteLang{return value==="en"?"en":"zh"}
 
 export default async function ArithmeticPrintExport({searchParams}:{searchParams:Promise<Record<string,string|undefined>>}){
   const jar=await cookies();
@@ -20,7 +22,8 @@ export default async function ArithmeticPrintExport({searchParams}:{searchParams
   const sheets=toInt(p.sheets,5,1,20);
   const seed=toInt(p.seed,8592,1,2147483647);
   const mode=toMode(p.mode);
+  const lang=toLang(p.lang);
   const fallbackSkill=GRADE_PROFILES[grade].skills[0]?.id??"";
   const manualSkillId=GRADE_PROFILES[grade].skills.some(s=>s.id===p.manualSkillId)?p.manualSkillId!:fallbackSkill;
-  return <ArithmeticPrintClient initialGrade={grade} initialSeed={seed} studentName={user.name} sessions={loadArithmeticSessions(user.id,500)} initialMode={mode} initialManualSkillId={manualSkillId} initialQuestions={questions} initialSheetCount={sheets} initialAnswers={p.answers!=="0"} exportMode/>;
+  return <ArithmeticPrintClient initialGrade={grade} initialSeed={seed} studentName={user.name} sessions={loadArithmeticSessions(user.id,500)} initialMode={mode} initialManualSkillId={manualSkillId} initialQuestions={questions} initialSheetCount={sheets} initialAnswers={p.answers!=="0"} initialLang={lang} exportMode/>;
 }
