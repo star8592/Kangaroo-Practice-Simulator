@@ -4,7 +4,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 checks = {
     "src/app/layout.tsx": ["<SiteHeader/>", "<SiteFooter/>"],
-    "src/components/SiteHeader.tsx": ["GlobalLanguageSwitch", "useSiteLanguage", "SITE_BRAND.nameEn", "Mock exams", "Review"],
+    "src/app/page.tsx": ["PublicHome"],
+    "src/components/PublicHome.tsx": ["useSiteLanguage", "K12 MATH SKILLS", "Calculation training", "Competition practice", "Long-term learner profile"],
+    "src/components/SiteHeader.tsx": ["GlobalLanguageSwitch", "useSiteLanguage", "SITE_BRAND.nameEn", "Competition practice", "Review"],
     "src/components/SessionNav.tsx": ["useSiteLanguage", "Student login", "Learning report", "Sign out"],
     "src/components/SiteFooter.tsx": ["useSiteLanguage", "All rights reserved"],
     "src/components/GlobalLanguageSwitch.tsx": ["useSiteLanguage", "setSiteLanguage", "router.refresh()", ">中文</button>", ">EN</button>"],
