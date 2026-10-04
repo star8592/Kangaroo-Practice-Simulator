@@ -13,3 +13,5 @@
 .guideMeta b{font-size:12px}
 .guideMeta span{font-size:12px;line-height:1.65}
 @media(max-width:650px){.guideSkills{grid-template-columns:1fr}.guideSkills article{padding:13px}.gradeGuideIntro p{font-size:13px}}
+
+.curriculumCount{display:flex;align-items:baseline;gap:6px;margin-top:8px;flex-wrap:wrap}.curriculumCount b{font-size:22px;color:#214c34}.curriculumCount span{font-size:11px;color:#6f7e75;font-weight:800}.curriculumCount i{font-style:normal;color:#a4afa8;margin:0 2px}.strategyChips{display:flex;flex-wrap:wrap;gap:6px}.strategyChips em{font-style:normal;padding:6px 8px;border-radius:8px;background:#edf5ef;color:#376448;font-size:11px;line-height:1.45;font-weight:750}.guideSkills article p{display:none}
