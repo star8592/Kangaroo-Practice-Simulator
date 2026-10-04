@@ -30,6 +30,7 @@ step "grade-one solution store" npx tsx scripts/test_grade1_solution_store.ts
 step "auto-deploy contract" bash ops/release/test_auto_deploy_contract.sh
 step "auth email SMTP contract" bash ops/release/test_auth_email_smtp_contract.sh
 step "parent auth regression" npm run test:parent-auth
+step "wechat auth regression" npm run test:wechat-auth
 step "repository hygiene" python3 scripts/audit_repository_hygiene.py
 step "CEMC scoring regression" npx tsx scripts/test_cemc_scoring.ts
 step "competition ingestion regression" python3 scripts/test_import_pipeline.py

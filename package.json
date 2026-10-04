@@ -67,7 +67,8 @@
     "test:arithmetic-coaching": "tsx scripts/test_arithmetic_coaching.ts",
     "audit:arithmetic-coaching": "tsx scripts/audit_arithmetic_coaching.ts",
     "test:math-engine-cognition": "tsx scripts/test_math_engine_cognition.ts",
-    "test:math-verification": "tsx scripts/test_math_verification_registry.ts"
+    "test:math-verification": "tsx scripts/test_math_verification_registry.ts",
+    "test:wechat-auth": "tsx scripts/test_wechat_parent_auth.ts"
   },
   "dependencies": {
     "next": "16.3.5",
