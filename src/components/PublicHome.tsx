@@ -5,46 +5,70 @@ import { useSiteLanguage } from "@/lib/site-language";
 
 const UI={
  zh:{
-  eye:"K12 数学能力训练",title1:"先看见价值，",title2:"再开始训练",copy:"面向 G1–G12 的计算能力训练与数学竞赛实战平台。首页公开浏览；只有在真正开始训练、考试或查看个人学习数据时才需要登录。",
-  calc:"计算训练",calcDesc:"从基础运算到代数、函数、概率与统计，覆盖 G1–G12。支持诊断、自适应训练、限时训练、巧算策略与学习画像。",calcCta:"进入计算训练",
-  comp:"竞赛实战",compDesc:"袋鼠数学、澳洲 AMC、美国 AMC、CEMC 等赛制与试卷集中浏览。可以先了解竞赛，再在开始答题时登录。",compCta:"浏览竞赛中心",
-  profile:"长期学习画像",profileDesc:"训练记录、速度、正确率、错因与考试表现进入同一份长期档案，帮助学生和家长看到真实进步。",profileCta:"查看我的学习报告",
-  path:"学习路径",p1:"1. 选择年级与训练目标",p2:"2. 诊断计算基础与薄弱点",p3:"3. 自适应训练与错题回炉",p4:"4. 用竞赛实战检验迁移能力",
-  login:"已有账号，直接登录",register:"家长注册",
+  eye:"SOC THINK · K12 数学成长系统",
+  title1:"先知道孩子卡在哪里，",title2:"再决定下一步练什么",
+  copy:"面向 G1–G12 的数学能力诊断、计算训练与国际竞赛实战平台。用训练数据发现薄弱点，把下一步练习从“凭感觉刷题”变成有依据的学习路径。",
+  primary:"开始能力诊断",competition:"查看国际数学竞赛",login:"已有账号登录",register:"家长免费注册",
+  loop:"一次训练，应该回答四个问题",
+  s1:"现在在哪里",s1d:"从年级、正确率、速度和题型表现建立当前能力基线。",
+  s2:"为什么会错",s2d:"区分知识缺口、计算失误、策略不足和速度问题，而不是只记录对错。",
+  s3:"下一步练什么",s3d:"根据薄弱点进入针对性计算训练、错题复盘或竞赛题型训练。",
+  s4:"有没有进步",s4d:"持续记录正确率、速度、错因和考试表现，让家长和学生看到变化。",
+  modes:"两种训练场景，一份长期学习画像",
+  calc:"计算与基础能力",calcDesc:"覆盖 G1–G12，从基础运算延伸到代数、函数、概率与统计。支持诊断、自适应训练、限时训练和巧算策略。",calcCta:"进入计算训练",
+  comp:"国际数学竞赛",compDesc:"袋鼠数学、澳洲 AMC、美国 AMC、CEMC 等按各自真实赛制组织。先了解赛事，再用真题、样题和模拟考试检验迁移能力。",compCta:"进入竞赛中心",
+  profile:"学习结果不是一次分数",profileDesc:"训练记录、速度、正确率、错因与考试表现汇入长期档案。登录后可继续上次进度并查看个人学习报告。",profileCta:"查看我的学习报告",
  },
  en:{
-  eye:"K12 MATH SKILLS",title1:"See the value first,",title2:"then start training",copy:"A G1–G12 calculation and math competition practice platform. Public pages are open to browse; sign-in is required only when starting training, an exam, or viewing personal learning data.",
-  calc:"Calculation training",calcDesc:"From arithmetic to algebra, functions, probability and statistics across G1–G12, with diagnostics, adaptive practice, timed work, strategy training and learner profiles.",calcCta:"Open calculation training",
-  comp:"Competition practice",compDesc:"Browse Math Kangaroo, Australian AMC, MAA AMC, CEMC and more before signing in to actually start a paper.",compCta:"Browse competitions",
-  profile:"Long-term learner profile",profileDesc:"Accuracy, speed, errors, practice history and mock-exam performance feed one long-term learner record.",profileCta:"View my report",
-  path:"Learning path",p1:"1. Choose grade and goal",p2:"2. Diagnose fluency and weak skills",p3:"3. Adaptive practice and error review",p4:"4. Validate transfer with competition problems",
-  login:"Sign in",register:"Parent registration",
+  eye:"SOC THINK · K12 MATH GROWTH",
+  title1:"Find where learning gets stuck.",title2:"Then know exactly what to practice next.",
+  copy:"A G1–G12 math diagnostic, fluency and competition practice platform. Turn practice data into clear weak-skill signals and an evidence-based next step.",
+  primary:"Start a diagnostic",competition:"Explore competitions",login:"Sign in",register:"Parent registration",
+  loop:"Every practice session should answer four questions",
+  s1:"Where am I now?",s1d:"Build a baseline from grade, accuracy, speed and performance by skill.",
+  s2:"Why did I miss it?",s2d:"Separate knowledge gaps, calculation errors, weak strategy and fluency issues.",
+  s3:"What should I do next?",s3d:"Move into targeted fluency, error review or competition practice based on evidence.",
+  s4:"Am I improving?",s4d:"Track accuracy, speed, error patterns and exam performance over time.",
+  modes:"Two practice modes. One long-term learner profile.",
+  calc:"Fluency & core skills",calcDesc:"G1–G12 practice from arithmetic through algebra, functions, probability and statistics, with diagnostics and adaptive practice.",calcCta:"Open calculation training",
+  comp:"Math competitions",compDesc:"Math Kangaroo, Australian AMC, MAA AMC and CEMC organized by their real formats, with papers, samples and mock exams.",compCta:"Open competition center",
+  profile:"More than a one-time score",profileDesc:"Accuracy, speed, errors, practice history and mock-exam performance build one long-term learner record.",profileCta:"View my learning report",
  },
 } as const;
 
 export default function PublicHome(){
  const lang=useSiteLanguage(),ui=UI[lang];
- return <div className="home-shell">
-  <section className="hero-card">
+ const steps=[[ui.s1,ui.s1d],[ui.s2,ui.s2d],[ui.s3,ui.s3d],[ui.s4,ui.s4d]];
+ return <div className="home-shell public-home">
+  <section className="hero-card home-hero">
    <div className="eyebrow">{ui.eye}</div>
    <h1>{ui.title1}<br/><span>{ui.title2}</span></h1>
    <p className="hero-copy">{ui.copy}</p>
    <div className="hero-actions">
-    <Link className="primary-button" href="/arithmetic">{ui.calcCta}</Link>
-    <Link className="secondary-button" href="/competitions">{ui.compCta}</Link>
+    <Link className="primary-button" href="/arithmetic">{ui.primary}</Link>
+    <Link className="secondary-button" href="/competitions">{ui.competition}</Link>
+   </div>
+   <div className="home-auth-links">
+    <Link href="/login">{ui.login}</Link><span>·</span><Link href="/parent/register">{ui.register}</Link>
    </div>
   </section>
 
-  <section className="feature-grid" aria-label={ui.path}>
-   <article><div className="feature-index">01 · G1–G12</div><h2>{ui.calc}</h2><p>{ui.calcDesc}</p><Link className="primary-button" href="/arithmetic">{ui.calcCta}</Link></article>
-   <article><div className="feature-index">02 · PRACTICE</div><h2>{ui.comp}</h2><p>{ui.compDesc}</p><Link className="secondary-button" href="/competitions">{ui.compCta}</Link></article>
-   <article><div className="feature-index">03 · PROFILE</div><h2>{ui.profile}</h2><p>{ui.profileDesc}</p><Link className="secondary-button" href="/student">{ui.profileCta}</Link></article>
+  <section className="home-loop" aria-label={ui.loop}>
+   <div className="section-heading"><div><span className="eyebrow">DIAGNOSE → PRACTICE → REVIEW → GROW</span><h1>{ui.loop}</h1></div></div>
+   <div className="home-step-grid">{steps.map(([title,desc],i)=><article key={title}><div className="feature-index">0{i+1}</div><h2>{title}</h2><p>{desc}</p></article>)}</div>
   </section>
 
-  <section className="section-heading" style={{marginTop:72}}><div><span className="eyebrow">{ui.path}</span><h1>{ui.path}</h1><p>{ui.p1} · {ui.p2} · {ui.p3} · {ui.p4}</p></div></section>
-  <div className="hero-actions">
-   <Link className="secondary-button" href="/login">{ui.login}</Link>
-   <Link className="secondary-button" href="/parent/register">{ui.register}</Link>
-  </div>
+  <section className="home-modes">
+   <div className="section-heading"><div><span className="eyebrow">PRACTICE</span><h1>{ui.modes}</h1></div></div>
+   <div className="home-mode-grid">
+    <article><div className="feature-index">CORE · G1–G12</div><h2>{ui.calc}</h2><p>{ui.calcDesc}</p><Link className="primary-button" href="/arithmetic">{ui.calcCta}</Link></article>
+    <article><div className="feature-index">COMPETITION</div><h2>{ui.comp}</h2><p>{ui.compDesc}</p><Link className="secondary-button" href="/competitions">{ui.compCta}</Link></article>
+   </div>
+  </section>
+
+  <section className="home-profile">
+   <div><span className="eyebrow">LEARNER PROFILE</span><h2>{ui.profile}</h2><p>{ui.profileDesc}</p></div>
+   <Link className="secondary-button" href="/student">{ui.profileCta}</Link>
+  </section>
  </div>;
 }
