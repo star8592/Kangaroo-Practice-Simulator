@@ -44,7 +44,7 @@ export default function DiagnosticReportView({report}:{report:DiagnosticReport})
     </Page>
 
     {qPages.map((rows,chunkIndex)=><Page report={report} page={p++} total={total} key={`q-${chunkIndex}`}>
-      <div className="dr-kicker">逐题复盘</div><h1 className="dr-title">完整题目与作答证据{qPages.length>1?` · ${chunkIndex+1}/${qPages.length}`:""}</h1><p className="dr-subtitle">复盘必须回到原题：重新读取题干与选项，再对照当时作答、正确答案、用时和修改轨迹。</p>
+      <div className="dr-kicker">逐题证据 · 逐题复盘</div><h1 className="dr-title">完整题目与作答证据{qPages.length>1?` · ${chunkIndex+1}/${qPages.length}`:""}</h1><p className="dr-subtitle">复盘必须回到原题：重新读取题干与选项，再对照当时作答、正确答案、用时和修改轨迹。</p>
       <div className="dr-section dr-review-list">{rows.map(q=><article className="dr-review-card" key={q.questionId}>
         <div className="dr-review-head"><div><strong>Q{q.no}</strong><span className={`dr-result ${q.result==="正确"?"ok":q.result==="错误"?"bad":"blank"}`}>{q.result}</span></div><div><span>{q.concept}</span><span>{q.points} 分</span><span className="dr-pattern">{q.pattern}</span></div></div>
         <h3 className="dr-review-stem">{q.stem}</h3>
