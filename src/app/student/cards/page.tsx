@@ -1,0 +1,9 @@
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
+import Link from "next/link";
+import { SESSION_COOKIE, userFromSessionToken } from "@/lib/auth";
+import { loadExamAttempts } from "@/lib/attempt-store";
+import { buildMathCards } from "@/lib/math-cardbook";
+import styles from "./CardsPage.module.css";
+export const dynamic="force-dynamic";
+export default async function StudentCardsPage(){const jar=await cookies();const user=userFromSessionToken(jar.get(SESSION_COOKIE)?.value);if(!user)redirect("/login?next=/student/cards");const lang=jar.get("socthink_lang")?.value==="en"?"en":"zh";const cards=buildMathCards(loadExamAttempts(user.id,500));return <main className={styles.page}><div className={styles.top}><div><span className={styles.eyebrow}>MY CARD BOOK</span><h1>{lang==="zh"?"我的卡册":"My Card Book"}</h1><p>{lang==="zh"?`已经收集 ${cards.length} 张数学卡`:`${cards.length} math cards collected`}</p></div><Link className="secondary-button" href="/student">{lang==="zh"?"返回学习报告":"Back to report"}</Link></div>{cards.length?<div className={styles.grid}>{cards.map(card=><article className={styles.card} key={card.id}><div className={styles.rarity}>{card.rarity}</div><div className={styles.icon}>★</div><h2>{card.title}</h2><p>{card.subtitle}</p><strong>{card.score}/{card.maxScore}</strong><small>{new Date(card.completedAt).toLocaleDateString(lang==="zh"?"zh-CN":"en-US")}</small><Link href={card.examId?"/exam/"+encodeURIComponent(card.examId):"/competitions"}>{lang==="zh"?"再挑战 →":"Challenge again →"}</Link></article>)}</div>:<div className={styles.empty}><div>🃏</div><h2>{lang==="zh"?"你的第一张卡正在等你":"Your first card is waiting"}</h2><p>{lang==="zh"?"完成一次数学竞赛挑战，就能把第一张卡收进卡册。":"Complete a math challenge to collect your first card."}</p><Link className="primary-button" href="/competitions">{lang==="zh"?"去挑战":"Start a challenge"}</Link></div>}</main>}

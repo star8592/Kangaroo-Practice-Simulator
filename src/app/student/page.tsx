@@ -33,7 +33,7 @@ export default async function StudentPage() {
           <span className={styles.heroLabel}>{ui.report}</span>
           <h1>{studentAvatarEmoji(user.avatarKey)} {lang==="zh"?`${user.name} ${ui.titleSuffix}`:`${user.name}${ui.titleSuffix}`}</h1>
           <p className={styles.heroMeta}>{user.candidateNo} · {lang==="zh"?`${user.grade} ${ui.grade}`:`${ui.grade} ${user.grade}`}{user.school ? ` · ${user.school}` : ""}</p>
-          <div className={styles.heroActions}><Link className="secondary-button" href="/student/settings">{ui.edit}</Link></div>
+          <div className={styles.heroActions}><Link className="secondary-button" href="/student/settings">{ui.edit}</Link><Link className="primary-button" href="/student/cards">{lang==="zh"?"我的卡册":"My Card Book"}</Link></div>
         </div>
         <div className={styles.readinessCard}>
           <div className={styles.readinessHead}><strong>{a.readiness ?? "—"}</strong><span>{a.readiness === null ? ui.pending : "/ 100"}</span></div>

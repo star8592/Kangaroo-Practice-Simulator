@@ -1,0 +1,6 @@
+import type { ExamAttemptRecord } from "./attempt-store";
+export type MathCardRarity = "普通" | "稀有" | "超稀有" | "传说" | "神话";
+export type MathCard = { id:string; kind:"竞赛卡"|"成就卡"; title:string; subtitle:string; rarity:MathCardRarity; examId?:string; competitionId?:string; score?:number; maxScore?:number; completedAt:number; unlockText:string };
+function rarityForPercent(pct:number):MathCardRarity { if(pct>=96)return "神话"; if(pct>=90)return "传说"; if(pct>=80)return "超稀有"; if(pct>=70)return "稀有"; return "普通"; }
+function competitionName(id?:string){if(id==="kangaroo")return "袋鼠数学";if(id==="maa-amc")return "美国 MAA 数学竞赛";if(id==="cemc")return "加拿大 CEMC 数学竞赛";return id||"数学挑战";}
+export function buildMathCards(attempts:ExamAttemptRecord[]):MathCard[]{return attempts.filter(a=>a.profile.paperType!=="practice").map(a=>{const pct=a.grade.maxScore>0?Math.round(a.grade.score/a.grade.maxScore*100):0;return{id:"exam:"+a.id,kind:"竞赛卡" as const,title:"数学挑战者",subtitle:competitionName(a.profile.competitionId)+(a.profile.year?" · "+a.profile.year:""),rarity:rarityForPercent(pct),examId:a.examId,competitionId:a.profile.competitionId,score:a.grade.score,maxScore:a.grade.maxScore,completedAt:a.submittedAt,unlockText:"完成这次挑战："+a.grade.score+"/"+a.grade.maxScore};}).reverse();}
