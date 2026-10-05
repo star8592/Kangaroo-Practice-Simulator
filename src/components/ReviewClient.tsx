@@ -73,7 +73,7 @@ const UI = {
 } as const;
 
 function answersEqual(mode: "choice" | "integer" | undefined, got: string, want: string) {
-  if (mode === "integer" && /^\d{1,3}$/.test(got) && /^\d{1,3}$/.test(want)) {
+  if (mode === "integer" && /^\d+$/.test(got) && /^\d+$/.test(want)) {
     return Number(got) === Number(want);
   }
   return got === want;
@@ -184,7 +184,7 @@ export default function ReviewClient({ initialAttempt = null }: { initialAttempt
                   className="review-retry-input"
                   inputMode="numeric"
                   value={retryValue}
-                  onChange={e => setRetryAnswers(x => ({ ...x, [item.questionId]: e.target.value.replace(/\D/g, "").slice(0, 3) }))}
+                  onChange={e => setRetryAnswers(x => ({ ...x, [item.questionId]: e.target.value.replace(/\D/g, "") }))}
                   placeholder={ui.integerPlaceholder}
                 />
               : <div className="review-retry-choices">
