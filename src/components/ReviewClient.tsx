@@ -1,10 +1,9 @@
 "use client";
 import Link from "next/link";
 import { useMemo,useState } from "react";
-import type { DisplayLang } from "@/lib/display";
 import type { ReviewAttemptPayload } from "@/lib/review-attempt";
 import MathVerificationBadge from "@/components/MathVerificationBadge";
-import { conceptLabel } from "@/lib/display";
+import { conceptLabel, type DisplayLang } from "@/lib/display";
 import { useSiteLanguage } from "@/lib/site-language";
 import SmartSolutionPlayer from "@/components/SmartSolutionPlayer";
 import SolutionBookViewer from "@/components/SolutionBookViewer";
