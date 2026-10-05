@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { buildTrainingPlan, type ArithmeticSession } from "@/lib/arithmetic-analytics";
-import { SESSION_COOKIE, userFromSessionToken } from "@/lib/auth";
+import { userFromRequest } from "@/lib/auth";
 
 import fs from "node:fs";
 import path from "node:path";
@@ -8,7 +8,7 @@ import path from "node:path";
 const FILE = path.join(process.cwd(), "private", "arithmetic", "sessions.jsonl");
 
 export async function POST(req: NextRequest) {
-  const user = userFromSessionToken(req.cookies.get(SESSION_COOKIE)?.value);
+  const user = userFromRequest(req);
   if (!user) {
     return NextResponse.json({ error: "请先登录" }, { status: 401 });
   }

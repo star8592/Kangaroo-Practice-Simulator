@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { SESSION_COOKIE, userFromSessionToken } from "@/lib/auth";
+import { userFromRequest } from "@/lib/auth";
 import { loadVerifiedSolution } from "@/lib/solution-store";
 import { hasSubmittedQuestion } from "@/lib/attempt-store";
 import { activeExamSessionsForUser } from "@/lib/exam-session";
@@ -19,7 +19,7 @@ export async function GET(
   req: NextRequest,
   ctx: { params: Promise<{ questionId: string }> },
 ) {
-  const user = userFromSessionToken(req.cookies.get(SESSION_COOKIE)?.value);
+  const user = userFromRequest(req);
   if (!user) return NextResponse.json({ error: "请先登录" }, { status: 401 });
 
   const { questionId } = await ctx.params;

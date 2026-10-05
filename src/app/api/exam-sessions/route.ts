@@ -1,9 +1,9 @@
 import { NextRequest,NextResponse } from "next/server";
-import { SESSION_COOKIE,userFromSessionToken } from "@/lib/auth";
+import { userFromRequest } from "@/lib/auth";
 import { isExamBundleTrainingReady,loadTrainingExamBundle } from "@/lib/training-question-bank";
 import { activeExamSession,lockExamSection,saveExamSectionDraft,startExamSection,startExamSession } from "@/lib/exam-session";
 
-const user=(r:NextRequest)=>userFromSessionToken(r.cookies.get(SESSION_COOKIE)?.value);
+const user=(r:NextRequest)=>userFromRequest(r);
 
 export async function GET(r:NextRequest){
   const u=user(r);
