@@ -17,7 +17,7 @@ async function main() {
 
   if (response.status !== 200) throw new Error(`print route returned ${response.status}`);
   if (!html.includes("智能个性化（默认）")) throw new Error("smart print mode missing");
-  if (!html.includes("PERSONALIZED FOR")) throw new Error("personalization panel missing");
+  if (!html.includes("class=\"personalized-print-card\"")) throw new Error("personalization panel missing");
 
   const questionCount = (html.match(/class="print-question"/g) || []).length;
   const sheetCount = (html.match(/class="a4-sheet/g) || []).length;
