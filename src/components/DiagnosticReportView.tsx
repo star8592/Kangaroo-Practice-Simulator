@@ -13,7 +13,7 @@ function SectionHead({title,desc}:{title:string;desc?:string}){return <div class
 function Bar({name,value,count,extra}:{name:string;value:number;count:number;extra?:string}){return <div className="dr-bar-row"><div className="name">{name}</div><div className="dr-bar"><i style={{width:`${Math.max(2,Math.round(value*100))}%`}}/></div><div className="value"><strong>{pct(value)}</strong><small>{extra||`${count}题`}</small></div></div>}
 
 export default function DiagnosticReportView({report}:{report:DiagnosticReport}){
-  const qPages=chunks(report.questions,18);
+  const qPages=chunks(report.questions,4);
   const total=5+qPages.length;
   const topFindings=[...report.findings].sort((a,b)=>({priority:0,watch:1,strength:2}[a.kind]-{priority:0,watch:1,strength:2}[b.kind])).slice(0,3);
   let p=1;
@@ -43,9 +43,20 @@ export default function DiagnosticReportView({report}:{report:DiagnosticReport})
     </Page>
 
     {qPages.map((rows,chunkIndex)=><Page report={report} page={p++} total={total} key={`q-${chunkIndex}`}>
-      <div className="dr-kicker">逐题证据</div><h1 className="dr-title">逐题诊断地图{qPages.length>1?` · ${chunkIndex+1}/${qPages.length}`:""}</h1><p className="dr-subtitle">逐题展示结果、用时和可观察行为模式。它是上页所有诊断结论的证据层。</p>
-      <div className="dr-section"><table className="dr-table"><colgroup><col style={{width:"7%"}}/><col style={{width:"10%"}}/><col style={{width:"19%"}}/><col style={{width:"8%"}}/><col style={{width:"12%"}}/><col style={{width:"12%"}}/><col style={{width:"8%"}}/><col style={{width:"24%"}}/></colgroup><thead><tr><th>题号</th><th>结果</th><th>能力标签</th><th>分值</th><th>有效用时</th><th>首次作答</th><th>修改</th><th>行为模式</th></tr></thead><tbody>{rows.map(q=><tr key={q.no}><td className="num">Q{q.no}</td><td className={`dr-result ${q.result==="正确"?"ok":q.result==="错误"?"bad":"blank"}`}>{q.result}</td><td>{q.concept}</td><td>{q.points}</td><td>{sec(q.dwellSeconds)}</td><td>{q.firstAnswerSeconds===null?"—":sec(q.firstAnswerSeconds)}</td><td>{q.answerChanges}</td><td><span className="dr-pattern">{q.pattern}</span></td></tr>)}</tbody></table></div>
-      <div className="dr-section"><div className="dr-note">“快速失分”“耗时失分”等标签是行为描述，不等同于错因结论。真正的概念错因仍需结合题目内容和复盘过程确认。</div></div>
+      <div className="dr-kicker">逐题复盘</div><h1 className="dr-title">完整题目与作答证据{qPages.length>1?` · ${chunkIndex+1}/${qPages.length}`:""}</h1><p className="dr-subtitle">复盘必须回到原题：重新读取题干与选项，再对照当时作答、正确答案、用时和修改轨迹。</p>
+      <div className="dr-section dr-review-list">{rows.map(q=><article className="dr-review-card" key={q.questionId}>
+        <div className="dr-review-head"><div><strong>Q{q.no}</strong><span className={`dr-result ${q.result==="正确"?"ok":q.result==="错误"?"bad":"blank"}`}>{q.result}</span></div><div><span>{q.concept}</span><span>{q.points} 分</span><span className="dr-pattern">{q.pattern}</span></div></div>
+        <h3 className="dr-review-stem">{q.stem}</h3>
+        {q.assetUrlZh&&<img className="dr-review-asset" src={q.assetUrlZh} alt={`第 ${q.no} 题图示`}/>}
+        {q.choices.length>0?<div className="dr-review-choices">{q.choices.map(choice=>{
+          const picked=q.selected===choice.key,correct=q.correctAnswer===choice.key;
+          return <div className={["dr-review-choice",picked?"picked":"",correct?"correct":""].filter(Boolean).join(" ")} key={choice.key}>
+            <strong>{choice.key}</strong><span>{choice.label}</span>{picked&&<em>你的答案</em>}{correct&&<em>正确答案</em>}
+          </div>;
+        })}</div>:<div className="dr-review-answer"><span>你的答案：<strong>{q.selected||"未作答"}</strong></span><span>正确答案：<strong>{q.correctAnswer}</strong></span></div>}
+        <div className="dr-review-evidence"><span>你的答案 <strong>{q.selected||"未作答"}</strong></span><span>正确答案 <strong>{q.correctAnswer}</strong></span><span>有效用时 <strong>{sec(q.dwellSeconds)}</strong></span><span>首次作答 <strong>{q.firstAnswerSeconds===null?"—":sec(q.firstAnswerSeconds)}</strong></span><span>修改 <strong>{q.answerChanges} 次</strong></span></div>
+      </article>)}</div>
+      <div className="dr-section"><div className="dr-note">先遮住“正确答案”重新做，再打开答案核对。行为标签只描述当时发生了什么，真正错因仍应结合解题过程确认。</div></div>
     </Page>)}
 
     <Page report={report} page={p++} total={total}>
