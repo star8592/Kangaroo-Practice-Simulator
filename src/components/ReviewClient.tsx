@@ -95,7 +95,7 @@ export default function ReviewClient({ initialAttempt = null }: { initialAttempt
   const [showSolutionBook, setShowSolutionBook] = useState(false);
 
   const solutionBook = useMemo(() => solutionBookForExam(a?.examId), [a?.examId]);
-  const ui = UI[lang];
+  const ui=UI[lang];
   const hasBilingual = Boolean(a?.questions.some(q => Boolean(q.stemEn) || Boolean(q.choicesEn?.length)));
   const rows = useMemo(() => {
     if (!a) return [];
