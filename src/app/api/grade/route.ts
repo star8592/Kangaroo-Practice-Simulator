@@ -1,7 +1,7 @@
 import { NextRequest,NextResponse } from "next/server";
 import { gradeExam } from "@/lib/grading";
 import { isExamBundleTrainingReady,loadTrainingExamBundle } from "@/lib/training-question-bank";
-import { SESSION_COOKIE,userFromSessionToken } from "@/lib/auth";
+import { userFromRequest } from "@/lib/auth";
 import { appendExamAttempt,type ExamEvent } from "@/lib/attempt-store";
 import {
   activeSectionElapsedSeconds,
@@ -26,7 +26,7 @@ function events(v:unknown,s:number,e:number):ExamEvent[]{
 
 export async function POST(r:NextRequest){
   try{
-    const u=userFromSessionToken(r.cookies.get(SESSION_COOKIE)?.value);
+    const u=userFromRequest(r);
     if(!u)return NextResponse.json({error:"请先登录考生账号"},{status:401});
     const b=await r.json(),id=String(b?.examId||"level-a"),sid=String(b?.sessionId||"");
     const valid=validateExamSession(sid,u.id,id);

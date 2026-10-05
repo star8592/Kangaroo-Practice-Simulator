@@ -72,3 +72,9 @@ __pycache__/
 
 # generated solution media is runtime/release data; existing tracked golden fixtures remain tracked
 /public/generated-solutions/*
+
+# independent WeChat miniapp build outputs
+/apps/miniapp/node_modules/
+/apps/miniapp/dist/
+
+/apps/miniapp/.swc/

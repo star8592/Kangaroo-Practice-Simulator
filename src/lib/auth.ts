@@ -29,6 +29,13 @@ export function userFromSessionToken(t:string|undefined|null):PublicStudent|null
  const x=readSignedJsonToken<{uid?:string;ver?:number;exp?:number}>(t,secret());if(!x?.uid||!x.exp||x.exp<Math.floor(Date.now()/1000))return null;
  const u=loadUsers().find(v=>v.id===x.uid&&v.active);if(!u)return null;const tokenVersion=x.ver??1;if((u.sessionVersion||1)!==tokenVersion)return null;return pub(u)
 }
+export type SessionRequestLike={headers:{get:(name:string)=>string|null};cookies?:{get:(name:string)=>{value:string}|undefined}};
+export function sessionTokenFromRequest(req:SessionRequestLike){
+ const auth=req.headers.get("authorization")?.trim()||"";
+ if(/^Bearer\s+/i.test(auth))return auth.replace(/^Bearer\s+/i,"").trim();
+ return req.cookies?.get(SESSION_COOKIE)?.value;
+}
+export function userFromRequest(req:SessionRequestLike){return userFromSessionToken(sessionTokenFromRequest(req))}
 export const isAdmin=(u:PublicStudent|null|undefined)=>u?.role==="admin";
 export function createStudent(input:{username:string;candidateNo:string;name:string;grade:number;school?:string;pin:string}){const users=loadUsers(),username=input.username.trim(),candidateNo=input.candidateNo.trim(),name=input.name.trim();if(!username||!candidateNo||!name||input.pin.length<4)throw new Error("学生信息或 PIN 不完整");if(users.some(x=>x.username.toLowerCase()===username.toLowerCase()))throw new Error("用户名已存在");if(users.some(x=>x.candidateNo.toLowerCase()===candidateNo.toLowerCase()))throw new Error("准考证号已存在");const u:StudentUser={id:`stu_${crypto.randomBytes(8).toString("hex")}`,username,candidateNo,name,grade:input.grade,school:input.school?.trim()||undefined,avatarKey:DEFAULT_STUDENT_AVATAR,onboardingCompleted:false,pinHash:hashPin(input.pin),createdAt:Date.now(),active:true,role:"student",sessionVersion:1};users.push(u);saveUsers(users);return pub(u)}
 export function createAdmin(input:{username:string;name:string;pin:string}){const users=loadUsers(),username=input.username.trim(),name=input.name.trim(),candidateNo=`ADMIN-${username}`;if(!username||!name||input.pin.length<6)throw new Error("管理员信息不完整或 PIN 少于 6 位");if(users.some(x=>x.username.toLowerCase()===username.toLowerCase()))throw new Error("用户名已存在");if(users.some(x=>x.candidateNo.toLowerCase()===candidateNo.toLowerCase()))throw new Error("管理员编号已存在");const u:StudentUser={id:`adm_${crypto.randomBytes(8).toString("hex")}`,username,candidateNo,name,grade:0,pinHash:hashPin(input.pin),createdAt:Date.now(),active:true,role:"admin",sessionVersion:1};users.push(u);saveUsers(users);return pub(u)}

@@ -68,7 +68,9 @@
     "audit:arithmetic-coaching": "tsx scripts/audit_arithmetic_coaching.ts",
     "test:math-engine-cognition": "tsx scripts/test_math_engine_cognition.ts",
     "test:math-verification": "tsx scripts/test_math_verification_registry.ts",
-    "test:wechat-auth": "tsx scripts/test_wechat_parent_auth.ts"
+    "test:wechat-auth": "tsx scripts/test_wechat_parent_auth.ts",
+    "verify:miniapp": "bash ops/automation/miniapp_quality_gate.sh",
+    "test:miniapp-contract": "tsx scripts/test_miniapp_contract.ts"
   },
   "dependencies": {
     "next": "16.3.5",

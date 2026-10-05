@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { SESSION_COOKIE, updateStudent, userFromSessionToken } from "@/lib/auth";
+import { updateStudent, userFromRequest } from "@/lib/auth";
 
 function currentUser(req: NextRequest) {
-  return userFromSessionToken(req.cookies.get(SESSION_COOKIE)?.value);
+  return userFromRequest(req);
 }
 
 export async function GET(req: NextRequest) {

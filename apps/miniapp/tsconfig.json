@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "target": "es2017",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "jsx": "react-jsx",
+    "resolveJsonModule": true,
+    "types": [
+      "@tarojs/taro",
+      "@tarojs/components"
+    ]
+  },
+  "include": [
+    "src",
+    "config",
+    "types"
+  ]
+}

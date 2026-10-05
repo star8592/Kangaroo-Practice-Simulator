@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { SESSION_COOKIE, userFromSessionToken } from "@/lib/auth";
+import { userFromRequest } from "@/lib/auth";
 import { COMPETITION_COMPANIONS } from "@/lib/competition-companion";
 import {
   getCompetitionCompanionProgress,
@@ -7,7 +7,7 @@ import {
 } from "@/lib/competition-companion-progress";
 
 function currentUser(req: NextRequest) {
-  return userFromSessionToken(req.cookies.get(SESSION_COOKIE)?.value);
+  return userFromRequest(req);
 }
 
 export async function GET(req: NextRequest) {
