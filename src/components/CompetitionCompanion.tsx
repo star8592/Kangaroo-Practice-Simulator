@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { companionTaskState, type CompetitionCompanion as Companion, type CompanionLang } from "@/lib/competition-companion";
 import styles from "./CompetitionCompanion.module.css";
 
@@ -31,12 +31,10 @@ export default function CompetitionCompanion({companion,lang,today}:{companion:C
  },[companion.id]);
 
  const completed=new Set(progress.completedTaskIds);
- const next=useMemo(()=>{
-   const incomplete=companion.tasks.filter(task=>!completed.has(task.id));
-   return incomplete.find(task=>companionTaskState(task,today)!=="upcoming")
-     || incomplete.find(task=>companionTaskState(task,today)==="upcoming")
-     || companion.tasks[companion.tasks.length-1];
- },[companion.tasks,progress.completedTaskIds,today]);
+ const incomplete=companion.tasks.filter(task=>!completed.has(task.id));
+ const next=incomplete.find(task=>companionTaskState(task,today)!=="upcoming")
+   || incomplete.find(task=>companionTaskState(task,today)==="upcoming")
+   || companion.tasks[companion.tasks.length-1];
  const nextIsCompleted=completed.has(next.id);
  const state=companionTaskState(next,today);
  const completedCount=companion.tasks.filter(task=>completed.has(task.id)).length;
