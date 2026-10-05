@@ -1,6 +1,7 @@
 import type { PublicStudent } from "./auth";
 import { loadExamAttempts, type ExamAttemptRecord, type QuestionBehavior } from "./attempt-store";
 import { conceptLabel } from "./display";
+import { loadTrainingExamBundle, trainingQuestions } from "./training-question-bank";
 
 export type DiagnosticConfidence = "高" | "中" | "探索性";
 export type DiagnosticFindingKind = "strength" | "priority" | "watch";
@@ -15,7 +16,28 @@ export type DiagnosticReport = {
   phases: Array<{ label: string; count: number; correct: number; accuracy: number; avgSeconds: number }>;
   behavior: { answerChanges: number; changedQuestions: number; correctToWrong: number; wrongToCorrect: number; rushedWrong: number; stuckWrong: number; slowCorrect: number; tabAwayCount: number; unanswered: number };
   findings: Array<{ kind: DiagnosticFindingKind; title: string; evidence: string; action: string; confidence: DiagnosticConfidence }>;
-  questions: Array<{ no: number; points: number; concept: string; result: "正确" | "错误" | "未作答"; selected: string | null; correctAnswer: string; dwellSeconds: number; firstAnswerSeconds: number | null; answerChanges: number; pattern: string }>;
+  questions: Array<{
+    questionId: string;
+    no: number;
+    points: number;
+    concept: string;
+    result: "正确" | "错误" | "未作答";
+    selected: string | null;
+    correctAnswer: string;
+    dwellSeconds: number;
+    firstAnswerSeconds: number | null;
+    answerChanges: number;
+    pattern: string;
+    stem: string;
+    stemEn?: string;
+    choices: Array<{ key: string; label: string }>;
+    choicesEn?: Array<{ key: string; label: string }>;
+    answerMode?: "choice" | "integer";
+    assetUrl?: string;
+    assetUrlZh?: string;
+    assetUrlEn?: string;
+    solution?: string;
+  }>;
   plan: Array<{ priority: 1 | 2 | 3; title: string; why: string; prescription: string; successCriterion: string }>;
   trend: Array<{ attemptId: string; submittedAt: number; scorePct: number; accuracy: number; examName: string }>;
   parentGuide: string[];
@@ -27,6 +49,15 @@ const mean = (xs: number[]) => xs.length ? xs.reduce((a, b) => a + b, 0) / xs.le
 function median(xs: number[]) { if (!xs.length) return 0; const a = [...xs].sort((x, y) => x - y); const m = Math.floor(a.length / 2); return a.length % 2 ? a[m] : (a[m - 1] + a[m]) / 2; }
 function confidenceFromCount(count: number): DiagnosticConfidence { if (count >= 8) return "高"; if (count >= 4) return "中"; return "探索性"; }
 function examCompetitionKey(a: ExamAttemptRecord) { return a.profile.competitionId || a.profile.formatId || a.examId.split("-").slice(0, 2).join("-"); }
+
+function currentQuestionMap(examId: string) {
+  try {
+    const bundle = loadTrainingExamBundle(examId);
+    return new Map(trainingQuestions(bundle.questions).map(q => [q.id, q]));
+  } catch {
+    return new Map();
+  }
+}
 function questionPattern(q: QuestionBehavior, typicalMs: number) {
   if (q.correct === null) return "未作答";
   if (q.correct === false && q.answerHistory.slice(0, -1).includes(q.correctAnswer)) return "复查改错";
@@ -45,6 +76,8 @@ export function buildDiagnosticReport(user: PublicStudent, attemptId: string): D
   if (!attempt) return null;
 
   const qs = attempt.questions;
+  const currentQuestions = currentQuestionMap(attempt.examId);
+  const gradeItems = new Map(attempt.grade.items.map(item => [item.questionId, item]));
   const answered = qs.filter(q => q.selected !== null);
   const correct = qs.filter(q => q.correct === true).length;
   const wrong = qs.filter(q => q.correct === false).length;
@@ -121,7 +154,35 @@ export function buildDiagnosticReport(user: PublicStudent, attemptId: string): D
     skills, difficulty, phases,
     behavior: { answerChanges: qs.reduce((n, q) => n + q.answerChanges, 0), changedQuestions: changed.length, correctToWrong: correctToWrong.length, wrongToCorrect: wrongToCorrect.length, rushedWrong: rushedWrong.length, stuckWrong: stuckWrong.length, slowCorrect: slowCorrect.length, tabAwayCount: qs.reduce((n, q) => n + q.tabAwayCount, 0), unanswered: blank },
     findings: findings.slice(0, 7),
-    questions: qs.map(q => ({ no: q.questionNo, points: q.points, concept: conceptLabel(q.concept === "official_original" ? "综合能力" : q.concept, "zh"), result: q.correct === true ? "正确" : q.correct === false ? "错误" : "未作答", selected: q.selected, correctAnswer: q.correctAnswer, dwellSeconds: q.dwellMs / 1000, firstAnswerSeconds: q.firstAnswerMs === null ? null : q.firstAnswerMs / 1000, answerChanges: q.answerChanges, pattern: questionPattern(q, typicalMs) })),
+    questions: qs.map(q => {
+      const saved = q.reviewSnapshot;
+      const current = currentQuestions.get(q.questionId);
+      const item = gradeItems.get(q.questionId);
+      const choices = saved?.choices?.length ? saved.choices : current?.choices || [];
+      const choicesEn = saved?.choicesEn?.length ? saved.choicesEn : current?.choicesEn;
+      return {
+        questionId: q.questionId,
+        no: q.questionNo,
+        points: q.points,
+        concept: conceptLabel(q.concept === "official_original" ? "综合能力" : q.concept, "zh"),
+        result: q.correct === true ? "正确" : q.correct === false ? "错误" : "未作答",
+        selected: q.selected,
+        correctAnswer: q.correctAnswer,
+        dwellSeconds: q.dwellMs / 1000,
+        firstAnswerSeconds: q.firstAnswerMs === null ? null : q.firstAnswerMs / 1000,
+        answerChanges: q.answerChanges,
+        pattern: questionPattern(q, typicalMs),
+        stem: saved?.stem || current?.stem || "该历史记录暂未恢复题干，请从原试卷核对本题。",
+        stemEn: saved?.stemEn || current?.stemEn,
+        choices,
+        choicesEn,
+        answerMode: saved?.answerMode || current?.answerMode || (choices.length ? "choice" : "integer"),
+        assetUrl: saved?.assetUrl || current?.assetUrl,
+        assetUrlZh: saved?.assetUrlZh || current?.assetUrlZh || saved?.assetUrl || current?.assetUrl,
+        assetUrlEn: saved?.assetUrlEn || current?.assetUrlEn || saved?.assetUrl || current?.assetUrl,
+        solution: item?.solution,
+      };
+    }),
     plan, trend,
     parentGuide: [`先讨论“哪三件事最值得改”，不要只围绕 ${Math.round(scorePct * 100)}% 的得分率评价孩子。`, "本轮只执行报告中的前三项训练处方；不要同时额外叠加大量机械刷题。", "复测时尽量保持相同计时规则和独立作答环境，才能判断改变来自能力提升还是测试条件变化。", "对“粗心、畏难、注意力差”等标签保持克制；报告只描述可观察行为，并要求跨测评重复出现后再升级结论。"],
     benchmarkNote: "本报告目前不生成未经验证的“全国排名/全国百分位”。如无官方常模或足够大的可审计参考样本，只使用学生自身历史表现、同一试卷内行为数据和题目结构证据。",

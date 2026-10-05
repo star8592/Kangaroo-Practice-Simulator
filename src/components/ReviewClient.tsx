@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useMemo,useState } from "react";
-import type { GradeResult, PublicQuestion } from "@/lib/types";
+import type { ReviewAttemptPayload } from "@/lib/review-attempt";
 import MathVerificationBadge from "@/components/MathVerificationBadge";
 import { conceptLabel, type DisplayLang } from "@/lib/display";
 import { useSiteLanguage } from "@/lib/site-language";
@@ -9,14 +9,15 @@ import SmartSolutionPlayer from "@/components/SmartSolutionPlayer";
 import SolutionBookViewer from "@/components/SolutionBookViewer";
 import { hasExactQuestionMapping, solutionBookForExam } from "@/lib/solution-books";
 
-type Attempt={examId?:string;lang?:DisplayLang;grade:GradeResult;answers:Record<string,string>;questions:PublicQuestion[]};
+type Attempt=ReviewAttemptPayload & {lang?:DisplayLang};
 const UI={
  zh:{eyebrow:"错题复盘",none:"还没有可复盘的考试",start:"开始考试",title:"逐题复盘",desc:"优先处理错题和空题，再回看全部答题轨迹。",wrongOnly:"错题 / 空题",all:"全部",correct:"正确",wrong:"错误",blank:"未作答",points:"分",answer:"答案",noSolution:"暂无解析。",questionZh:"中文题面",questionEn:"英文原题"},
  en:{eyebrow:"REVIEW",none:"No exam available for review",start:"Start exam",title:"Answer review",desc:"Review wrong and blank answers first, then inspect the full attempt.",wrongOnly:"Wrong / Blank",all:"All",correct:"Correct",wrong:"Wrong",blank:"Blank",points:"pts",answer:"Answer",noSolution:"No solution yet.",questionZh:"Chinese",questionEn:"Original English"},
 } as const;
-export default function ReviewClient(){
+export default function ReviewClient({initialAttempt=null}:{initialAttempt?:Attempt|null}){
   const lang=useSiteLanguage();
   const [a] = useState<Attempt|null>(() => {
+    if(initialAttempt)return initialAttempt;
     if (typeof window === "undefined") return null;
     const raw = localStorage.getItem("math-competition-last-attempt") || localStorage.getItem("kangaroo-last-attempt");
     return raw ? JSON.parse(raw) : null;
