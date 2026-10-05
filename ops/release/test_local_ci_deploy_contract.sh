@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+set -euo pipefail
+ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
+LOCAL="$ROOT/ops/release/local_ci_deploy.sh"
+SERVER="$ROOT/ops/release/auto_deploy_server.sh"
+
+bash -n "$LOCAL"
+bash -n "$SERVER"
+grep -q 'npm run verify:public' "$LOCAL"
+grep -q 'origin/$BRANCH' "$LOCAL"
+grep -q -- '-F /dev/null' "$LOCAL"
+grep -q 'BatchMode=yes' "$LOCAL"
+grep -q 'SOCTHINK_CI_SOURCE=local' "$LOCAL"
+grep -q 'SOCTHINK_VERIFIED_SHA' "$LOCAL"
+grep -q 'deployedSha' "$LOCAL"
+grep -q 'gitSha' "$LOCAL"
+grep -q 'CI_SOURCE="${SOCTHINK_CI_SOURCE:-github}"' "$SERVER"
+grep -q 'local_ci_sha_mismatch' "$SERVER"
+grep -q 'CI_GREEN source=local' "$SERVER"
+grep -q 'AUTO_DEPLOY=ROLLBACK' "$SERVER"
+echo "LOCAL_CI_DEPLOY_CONTRACT=PASS"

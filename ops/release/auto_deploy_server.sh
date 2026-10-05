@@ -9,6 +9,8 @@ LOCAL_BASE="${SOCTHINK_LOCAL_BASE:-http://127.0.0.1:3000}"
 PUBLIC_BASE="${SOCTHINK_PUBLIC_BASE:-https://socthink.cn}"
 LOCK_FILE="${SOCTHINK_DEPLOY_LOCK:-/run/lock/socthink-auto-deploy.lock}"
 API_BASE="${SOCTHINK_GITHUB_API:-https://api.github.com}"
+CI_SOURCE="${SOCTHINK_CI_SOURCE:-github}"
+VERIFIED_SHA="${SOCTHINK_VERIFIED_SHA:-}"
 DEBUG_FILE="$APP/public/local-assets/auto-deploy-status.json"
 
 write_debug() {
@@ -79,16 +81,24 @@ if [[ "$TARGET_SHA" == "$HEAD_SHA" && "$TARGET_SHA" == "$DEPLOYED_SHA" ]]; then
   exit 0
 fi
 
-CI_JSON="$(mktemp)"
-trap 'rm -f "$CI_JSON"' EXIT
+case "$CI_SOURCE" in
+  local)
+    if [[ -z "$VERIFIED_SHA" || "$VERIFIED_SHA" != "$TARGET_SHA" ]]; then
+      log "AUTO_DEPLOY=ERROR reason=local_ci_sha_mismatch target=$TARGET_SHA verified=${VERIFIED_SHA:-missing}"
+      exit 2
+    fi
+    log "CI_GREEN source=local sha=$TARGET_SHA"
+    ;;
+  github)
+    CI_JSON="$(mktemp)"
+    trap 'rm -f "$CI_JSON"' EXIT
+    CI_URL="${API_BASE}/repos/${REPO}/actions/runs?head_sha=${TARGET_SHA}&per_page=20"
+    if ! curl -fsS       --retry 2       --retry-delay 2       --connect-timeout 10       --max-time 30       -H 'Accept: application/vnd.github+json'       -H 'User-Agent: socthink-auto-deploy/1'       "$CI_URL" >"$CI_JSON"; then
+      log "AUTO_DEPLOY=SKIP reason=ci_api_unavailable sha=$TARGET_SHA"
+      exit 0
+    fi
 
-CI_URL="${API_BASE}/repos/${REPO}/actions/runs?head_sha=${TARGET_SHA}&per_page=20"
-if ! curl -fsS   --retry 2   --retry-delay 2   --connect-timeout 10   --max-time 30   -H 'Accept: application/vnd.github+json'   -H 'User-Agent: socthink-auto-deploy/1'   "$CI_URL" >"$CI_JSON"; then
-  log "AUTO_DEPLOY=SKIP reason=ci_api_unavailable sha=$TARGET_SHA"
-  exit 0
-fi
-
-if ! python3 - "$CI_JSON" "$TARGET_SHA" <<'PY'
+    if ! python3 - "$CI_JSON" "$TARGET_SHA" <<'PYCI'
 import json
 import sys
 
@@ -112,11 +122,18 @@ if not green:
     print("CI_NOT_GREEN " + (",".join(states) if states else "missing"), file=sys.stderr)
     raise SystemExit(1)
 print("CI_GREEN", sha)
-PY
-then
-  log "AUTO_DEPLOY=SKIP reason=ci_not_green sha=$TARGET_SHA"
-  exit 0
-fi
+PYCI
+    then
+      log "AUTO_DEPLOY=SKIP reason=ci_not_green sha=$TARGET_SHA"
+      exit 0
+    fi
+    log "CI_GREEN source=github sha=$TARGET_SHA"
+    ;;
+  *)
+    log "AUTO_DEPLOY=ERROR reason=invalid_ci_source source=$CI_SOURCE"
+    exit 2
+    ;;
+esac
 
 PREV_SHA="$HEAD_SHA"
 SERVICE_DROPIN_DIR="/etc/systemd/system/${SERVICE}.d"

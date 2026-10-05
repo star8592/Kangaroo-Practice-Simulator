@@ -28,6 +28,7 @@ step "grade-one narration bundle" python3 scripts/test_grade1_narration_bundle.p
 step "grade-one verified solution bundle" python3 scripts/test_grade1_solution_bundle.py
 step "grade-one solution store" npx tsx scripts/test_grade1_solution_store.ts
 step "auto-deploy contract" bash ops/release/test_auto_deploy_contract.sh
+step "local CI deploy contract" bash ops/release/test_local_ci_deploy_contract.sh
 step "auth email SMTP contract" bash ops/release/test_auth_email_smtp_contract.sh
 step "parent auth regression" npm run test:parent-auth
 step "wechat auth regression" npm run test:wechat-auth
