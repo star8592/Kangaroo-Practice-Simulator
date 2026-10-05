@@ -1,5 +1,6 @@
 export type CompanionLang = "zh" | "en";
 export type ExamMode = "online-home" | "offline";
+export type CompanionCompetitionId = "kangaroo" | "australian-amc" | "maa-amc" | "cemc";
 
 export type CompanionTask = {
   id: string; date: string; endDate?: string; time?: string;
@@ -10,7 +11,8 @@ export type CompanionTask = {
 };
 
 export type CompetitionCompanion = {
-  id: string; competitionId: "australian-amc"; season: number; mode: ExamMode;
+  id: string; competitionId: CompanionCompetitionId; season: number; mode: ExamMode;
+  stageIds?: string[]; gradeBands?: string[]; region?: string;
   titleZh: string; titleEn: string; sourceLabelZh: string; sourceLabelEn: string;
   sourceUrl: string; officialSiteUrl: string; verifiedOn: string; expiresAfter: string;
   tasks: CompanionTask[];
