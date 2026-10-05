@@ -1,3 +1,4 @@
+import Image from "next/image";
 import type { DiagnosticReport } from "@/lib/diagnostic-report";
 
 const pct=(v:number)=>`${Math.round(v*100)}%`;
@@ -13,7 +14,7 @@ function SectionHead({title,desc}:{title:string;desc?:string}){return <div class
 function Bar({name,value,count,extra}:{name:string;value:number;count:number;extra?:string}){return <div className="dr-bar-row"><div className="name">{name}</div><div className="dr-bar"><i style={{width:`${Math.max(2,Math.round(value*100))}%`}}/></div><div className="value"><strong>{pct(value)}</strong><small>{extra||`${count}题`}</small></div></div>}
 
 export default function DiagnosticReportView({report}:{report:DiagnosticReport}){
-  const qPages=chunks(report.questions,4);
+  const qPages=chunks(report.questions,3);
   const total=5+qPages.length;
   const topFindings=[...report.findings].sort((a,b)=>({priority:0,watch:1,strength:2}[a.kind]-{priority:0,watch:1,strength:2}[b.kind])).slice(0,3);
   let p=1;
@@ -47,7 +48,7 @@ export default function DiagnosticReportView({report}:{report:DiagnosticReport})
       <div className="dr-section dr-review-list">{rows.map(q=><article className="dr-review-card" key={q.questionId}>
         <div className="dr-review-head"><div><strong>Q{q.no}</strong><span className={`dr-result ${q.result==="正确"?"ok":q.result==="错误"?"bad":"blank"}`}>{q.result}</span></div><div><span>{q.concept}</span><span>{q.points} 分</span><span className="dr-pattern">{q.pattern}</span></div></div>
         <h3 className="dr-review-stem">{q.stem}</h3>
-        {q.assetUrlZh&&<img className="dr-review-asset" src={q.assetUrlZh} alt={`第 ${q.no} 题图示`}/>}
+        {q.assetUrlZh&&<Image className="dr-review-asset" src={q.assetUrlZh} alt={`第 ${q.no} 题图示`} width={900} height={500} unoptimized/>}
         {q.choices.length>0?<div className="dr-review-choices">{q.choices.map(choice=>{
           const picked=q.selected===choice.key,correct=q.correctAnswer===choice.key;
           return <div className={["dr-review-choice",picked?"picked":"",correct?"correct":""].filter(Boolean).join(" ")} key={choice.key}>
