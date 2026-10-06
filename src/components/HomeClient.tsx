@@ -2,7 +2,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import type { ExamProfile } from "@/lib/types";
 import { COMPETITION_INTRO } from "@/lib/competition-intro";
 import { COMPETITION_BRAND,competitionStageBrand } from "@/lib/competition-brand";
@@ -41,12 +41,15 @@ function yearOf(exam:ExamProfile){return exam.year??0;}
 function competitionOf(exam:ExamProfile):CompetitionFilter|null{return exam.competitionId||null;}
 
 const UI={
- zh:{title1:"国际数学竞赛",title2:"仿真考试实验室",copy:"袋鼠数学、澳洲 AMC 与美国 MAA AMC 使用各自独立的赛制模板。真题、官方样题和智能组卷都继承对应的题量、计分、题型与时间规则。",admin:"我的学习报告",chooseCompetition:"选择竞赛",chooseCompetitionDesc:"先选竞赛，再选年级与赛制。智能组卷只从同一赛制模板内选题。",choose:"选择训练学段",chooseDesc:"不同赛区、组别或样题可能采用不同赛制，系统会分别处理。",all:"全部年级",questions:"题",minutes:"分钟",max:"满分",start:"开始考试",open:"进入",smart:"智能组卷",smartDesc:"严格按当前赛制模板选题，不跨赛区、不跨题量、不跨计分规则。",past:"历年真题",samples:"官方样题",practice:"官方专项训练",papers:"套",regions:"个来源",range:"年份",exams:"套试卷",items:"道题",smartReady:"可智能组卷",rules:"赛制"},
+ zh:{title1:"国际数学竞赛",title2:"仿真考试实验室",copy:"袋鼠数学、澳洲 AMC 与美国 MAA AMC 使用各自独立的赛制模板。真题、官方样题和智能组卷都继承对应的题量、计分、题型与时间规则。",admin:"我的学习报告",chooseCompetition:"赛事大厅",chooseCompetitionDesc:"澳洲 AMC、美国 MAA AMC、加拿大 CEMC、袋鼠数学都是独立赛事业务。先进入赛事，再选择年级、组别和赛制。智能组卷只从同一赛制模板内选题。",choose:"选择训练学段",chooseDesc:"不同赛区、组别或样题可能采用不同赛制，系统会分别处理。",all:"全部年级",questions:"题",minutes:"分钟",max:"满分",start:"开始考试",open:"进入",smart:"智能组卷",smartDesc:"严格按当前赛制模板选题，不跨赛区、不跨题量、不跨计分规则。",past:"历年真题",samples:"官方样题",practice:"官方专项训练",papers:"套",regions:"个来源",range:"年份",exams:"套试卷",items:"道题",smartReady:"可智能组卷",rules:"赛制"},
  en:{title1:"Math Competitions",title2:"Mock Exam Lab",copy:"Math Kangaroo, Australian AMC and MAA AMC use independent competition formats. Past papers, official samples and smart mocks inherit the exact question count, scoring, answer format and timing model of their format.",admin:"My learning report",chooseCompetition:"Choose a competition",chooseCompetitionDesc:"Choose the competition, grade and format first. Smart mocks only sample from papers using that exact format.",choose:"Choose a grade band",chooseDesc:"Different divisions, countries or sample sets may use different formats and are kept separate.",all:"All grades",questions:"questions",minutes:"min",max:"Max",start:"Start exam",open:"Open",smart:"Smart mock",smartDesc:"Generated strictly within one format; no mixing of country, question count, scoring or timing rules.",past:"Past papers",samples:"Official samples",practice:"Official practice sets",papers:"papers",regions:"sources",range:"Years",exams:"papers",items:"questions",smartReady:"Smart mock available",rules:"Format"},
 } as const;
 
 export default function HomeClient({exams,today}:{exams:ExamProfile[];today:string}){
- const [lang,setLang]=useState<Lang>("zh"),[competition,setCompetition]=useState<CompetitionFilter>("kangaroo"),[grade,setGrade]=useState<GradeFilter>("all"),[region,setRegion]=useState("all"),[maaStage,setMaaStage]=useState<MaaStage>("all");
+ const searchParams=useSearchParams();
+ const requestedCompetition=searchParams.get("c");
+ const initialCompetition:CompetitionFilter=COMPETITION_OPTIONS.includes(requestedCompetition as CompetitionFilter)?requestedCompetition as CompetitionFilter:"australian-amc";
+ const [lang,setLang]=useState<Lang>("zh"),[competition,setCompetition]=useState<CompetitionFilter>(initialCompetition),[grade,setGrade]=useState<GradeFilter>("all"),[region,setRegion]=useState("all"),[maaStage,setMaaStage]=useState<MaaStage>("all");
  const router=useRouter(),ui=UI[lang];
  const meta={kangaroo:{zh:"袋鼠数学",en:"Math Kangaroo",zhDesc:"按国家/年级保留真实赛制差异",enDesc:"Country- and grade-specific formats preserved"},"australian-amc":{zh:"澳洲 AMC（AMT）",en:"Australian AMC (AMT)",zhDesc:"正式 AMC + 官方 Pre-A 样题",enDesc:"Official Australian AMC + Pre-A samples"},"maa-amc":{zh:"美国 AMC（MAA）",en:"MAA American Mathematics Competitions",zhDesc:"AMC 8 / AMC 10 / AMC 12 / AIME 独立赛制",enDesc:"AMC 8 / AMC 10 / AMC 12 / AIME formats"},cemc:{zh:"加拿大 CEMC",en:"Waterloo CEMC",zhDesc:"Gauss / Pascal / Cayley / Fermat / Euclid",enDesc:"Gauss / Pascal / Cayley / Fermat / Euclid"}} as const;
  const label=(k:CompetitionFilter)=>lang==="zh"?meta[k].zh:meta[k].en,desc=(k:CompetitionFilter)=>lang==="zh"?meta[k].zhDesc:meta[k].enDesc;
