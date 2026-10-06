@@ -4,7 +4,7 @@ Last updated: 2026-10-04
 
 ## 0. Scope lock
 
-本方案只属于 `star8592/Kangaroo-Practice-Simulator`（数学竞赛/训练项目）。
+本方案只属于 `star8592/Kangaroo-Practice-Simulator`（数学竞赛/训练项目）。\n\n本功能同时受 `docs/features/THIN_GAME_LAYER_V1_1.md` 约束：游戏反馈必须服务于数学主线，不能形成第二套主流程。
 本轮目标是给真实小学生/中学生测试一套“看得懂、马上有感觉、愿意继续”的卡牌化奖励体验；不把儿童前台做成成人化的 Achievement/Profile 系统。
 
 ## 1. Product decision
