@@ -13,6 +13,7 @@ CI_SOURCE="${SOCTHINK_CI_SOURCE:-github}"
 VERIFIED_SHA="${SOCTHINK_VERIFIED_SHA:-}"
 RELEASE_ROOT="${SOCTHINK_RELEASE_ROOT:-/opt/socthink-releases}"
 BUILD_ROOT="${SOCTHINK_BUILD_ROOT:-/opt/socthink-builds}"
+RELEASE_KEEP="${SOCTHINK_RELEASE_KEEP:-3}"
 CURRENT="$RELEASE_ROOT/current"
 CANDIDATE_PORT="${SOCTHINK_CANDIDATE_PORT:-3097}"
 PDF_RUNTIME_DIR="$APP/.runtime/pdf-browser"
@@ -130,6 +131,31 @@ cleanup_build(){
   git worktree remove --force "$BUILD_SRC" >/dev/null 2>&1 || true
   git worktree prune >/dev/null 2>&1 || true
   rm -rf "$BUILD_OUT"
+}
+
+prune_old_releases(){
+  python3 - "$RELEASE_ROOT" "$CURRENT" "$RELEASE_KEEP" <<'PYPRUNE'
+import os,shutil,sys
+root,current,keep_raw=sys.argv[1:]
+keep=max(1,int(keep_raw))
+current_real=os.path.realpath(current) if os.path.lexists(current) else ""
+rows=[]
+for name in os.listdir(root):
+    path=os.path.join(root,name)
+    if name.startswith("current") or os.path.islink(path) or not os.path.isdir(path):
+        continue
+    rows.append((os.stat(path).st_mtime,path))
+rows.sort(reverse=True)
+kept=1 if current_real else 0
+for _,path in rows:
+    if path==current_real:
+        continue
+    if kept<keep:
+        kept+=1
+        continue
+    shutil.rmtree(path)
+    print("AUTO_DEPLOY_PRUNE",path)
+PYPRUNE
 }
 
 restore_runtime(){
@@ -255,7 +281,8 @@ rm -f "$IMMUTABLE_BACKUP" 2>/dev/null || true
 cleanup_build
 trap - ERR
 write_debug "pass" 0 "" 0
-log "AUTO_DEPLOY=PASS sha=$TARGET_SHA runtime=immutable current=$(readlink -f "$CURRENT")"
+prune_old_releases
+log "AUTO_DEPLOY=PASS sha=$TARGET_SHA runtime=immutable current=$(readlink -f "$CURRENT") releases_keep=$RELEASE_KEEP"
 
 for _ in $(seq 1 15); do
   if PUBLIC_RELEASE="$(curl -fsS --max-time 10 "$PUBLIC_BASE/api/release" 2>/dev/null)"; then
