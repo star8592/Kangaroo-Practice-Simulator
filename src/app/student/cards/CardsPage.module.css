@@ -133,6 +133,21 @@
   line-height: 1.65;
 }
 
+.goalChoices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 12px;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.goalChoices a {
+  color: var(--accent-dark);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
 .progressWrap {
   width: min(520px, 100%);
   margin: 0 0 16px;
