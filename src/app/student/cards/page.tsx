@@ -14,7 +14,6 @@ const RARITY_EN: Record<string,string> = {
   "神话":"Mythic",
 };
 
-const NEW_CARD_WINDOW_MS = 7 * 24 * 60 * 60 * 1000;
 
 function rarityLabel(value:string|undefined,lang:"zh"|"en"){
   if (!value) return lang==="zh"?"新卡":"NEW";
@@ -32,7 +31,7 @@ export default async function StudentCardsPage() {
   const cards = buildMathCards(loadExamAttempts(user.id, 500));
   const stats = buildCardbookStats(cards);
   const goal = buildCardbookGoal(cards);
-  const now = Date.now();
+  const latestUnlockAt = cards.reduce((latest, card) => Math.max(latest, card.completedAt), 0);
   const goalHref = goal.mode === "upgrade" && goal.examId
     ? "/exam/" + encodeURIComponent(goal.examId)
     : "/competitions";
@@ -91,7 +90,7 @@ export default async function StudentCardsPage() {
 
       <div className={styles.grid}>
         {cards.map(card => {
-          const isNew = card.completedAt > 0 && now - card.completedAt >= 0 && now - card.completedAt <= NEW_CARD_WINDOW_MS;
+          const isNew = card.completedAt > 0 && card.completedAt === latestUnlockAt;
           const title = lang === "zh" ? card.title : card.titleEn;
           const subtitle = lang === "zh" ? card.subtitle : card.subtitleEn;
           const unlockText = lang === "zh" ? card.unlockText : card.unlockTextEn;
