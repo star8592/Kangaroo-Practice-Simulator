@@ -2,7 +2,8 @@ import assert from "node:assert/strict";
 import { buildArithmeticMilestone, type ArithmeticAttempt, type ArithmeticSession } from "../src/lib/arithmetic-analytics";
 import type { ArithmeticItem } from "../src/lib/arithmetic-generator";
 
-let attemptCounter=0;\nfunction makeAttempt(skillId:string,correct:boolean,ms=600):ArithmeticAttempt{
+let attemptCounter=0;
+function makeAttempt(skillId:string,correct:boolean,ms=600):ArithmeticAttempt{
   const item:ArithmeticItem={
     id:"item-"+(++attemptCounter),
     grade:2,
