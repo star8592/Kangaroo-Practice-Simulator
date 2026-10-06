@@ -30,7 +30,8 @@ export default async function StudentCardsPage() {
   if (!user) redirect("/login?next=/student/cards");
 
   const lang = jar.get("socthink_lang")?.value === "en" ? "en" : "zh";
-  const cards = [...buildMathCards(loadExamAttempts(user.id, 500)), ...buildArithmeticHonorCards(loadArithmeticSessions(user.id, 500))]\n    .sort((a,b)=>b.completedAt-a.completedAt);
+  const cards = [...buildMathCards(loadExamAttempts(user.id, 500)), ...buildArithmeticHonorCards(loadArithmeticSessions(user.id, 500))]
+    .sort((a,b)=>b.completedAt-a.completedAt);
   const stats = buildCardbookStats(cards);
   const goal = buildCardbookGoal(cards);
   const latestUnlockAt = cards.reduce((latest, card) => Math.max(latest, card.completedAt), 0);
