@@ -8,6 +8,7 @@ import {
   familyOwnsStudent,
   publicFamilyStudents,
 } from "@/lib/family-store";
+import { buildStudentAttention } from "@/lib/academic-events/student-attention";
 import {
   parentFromSessionToken,
   PARENT_SESSION_COOKIE,
@@ -38,8 +39,11 @@ export async function GET(req: NextRequest) {
           ? attempt.questions.filter((question) => question.correct === true).length / attempt.questions.length
           : 0,
       }));
+    const today = new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Shanghai" });
+    const attention = buildStudentAttention(student, today);
     return {
       ...student,
+      attention,
       summary: {
         examAttempts: analytics.overview.examAttempts,
         totalQuestions: analytics.overview.totalQuestions,
