@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test:arithmetic": "tsx scripts/test_arithmetic_strategy_tree.ts && tsx scripts/test_arithmetic_symbolic.ts",
+    "test:arithmetic": "tsx scripts/test_arithmetic_strategy_tree.ts && tsx scripts/test_arithmetic_symbolic.ts && tsx scripts/test_arithmetic_input.ts && tsx scripts/test_arithmetic_display.ts",
     "test:arithmetic-print": "tsx scripts/test_arithmetic_print.ts",
     "admin:create": "tsx scripts/create_admin.ts",
     "test:smoke": "python3 scripts/smoke_test.py",
