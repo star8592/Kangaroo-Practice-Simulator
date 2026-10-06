@@ -5,6 +5,7 @@ import { useMemo, useState } from "react";
 import { CLEVER_NODE_GUIDE,GRADE_PROFILES,type ArithmeticGrade } from "@/lib/arithmetic";
 import { buildTrainingPlan,type ArithmeticSession } from "@/lib/arithmetic-analytics";
 import { makeArithmeticWorksheet,type ArithmeticPrintMode } from "@/lib/arithmetic-print";
+import { formatArithmeticDisplay } from "@/lib/arithmetic-display";
 import { useSiteLanguage,type SiteLang } from "@/lib/site-language";
 
 const QUESTION_OPTIONS = [20, 30, 40, 50, 60, 80] as const;
@@ -30,7 +31,7 @@ const UI={
 } as const;
 
 function printablePrompt(prompt:string,lang:SiteLang){
- return prompt.replace(/□/g,"______").replace(/\?（填小数）/g,lang==="zh"?"______（填小数）":"______ (decimal)").replace(/\?/g,"______");
+ return formatArithmeticDisplay(prompt.replace(/□/g,"______").replace(/\?（填小数）/g,lang==="zh"?"______（填小数）":"______ (decimal)").replace(/\?/g,"______"));
 }
 function gridClass(count:number){if(count<=40)return"print-question-grid cols-2";if(count<=60)return"print-question-grid cols-3";return"print-question-grid cols-4"}
 
@@ -89,7 +90,7 @@ export default function ArithmeticPrintClient({initialGrade,initialSeed,studentN
 
   <div className="print-pages" aria-label={ui.preview}>
    {worksheets.map(sheet=><section className="a4-sheet exercise-sheet" key={sheet.code}><header className="paper-header"><div><span>{ui.paperBrand}</span><h2>{profileTitle} · {modeTitle}</h2></div><small>{sheet.code}</small></header><div className="paper-meta"><span>{ui.name}: <b>{studentName||"________"}</b></span><span>{ui.date}: ________</span><span>{ui.time}: ____ {ui.minutes} ____ s</span><span>{ui.correct}: ____ / {questions}</span></div><div className="paper-plan">{paperPlan}</div><div className={gridClass(questions)}>{sheet.items.map((item,idx)=><div className="print-question" key={item.id}><b>{idx+1}.</b><span>{printablePrompt(item.prompt,lang)}</span></div>)}</div><footer className="paper-footer"><span>{ui.paperFooter}</span><span>{sheet.index+1} / {sheetCount}</span></footer></section>)}
-   {answers&&worksheets.map(sheet=><section className="a4-sheet answer-sheet" key={`answer-${sheet.code}`}><header className="paper-header"><div><span>{ui.answerBrand}</span><h2>{ui.answer} · {profileTitle} · {modeTitle}</h2></div><small>{sheet.code}</small></header><div className="answer-warning">{paperPlan}</div><div className="answer-grid">{sheet.items.map((item,idx)=><div key={item.id}><b>{idx+1}.</b><span>{item.answer}</span></div>)}</div><footer className="paper-footer"><span>{ui.practiceCode}: {sheet.code}</span><span>{ui.answer} {sheet.index+1} / {sheetCount}</span></footer></section>)}
+   {answers&&worksheets.map(sheet=><section className="a4-sheet answer-sheet" key={`answer-${sheet.code}`}><header className="paper-header"><div><span>{ui.answerBrand}</span><h2>{ui.answer} · {profileTitle} · {modeTitle}</h2></div><small>{sheet.code}</small></header><div className="answer-warning">{paperPlan}</div><div className="answer-grid">{sheet.items.map((item,idx)=><div key={item.id}><b>{idx+1}.</b><span>{formatArithmeticDisplay(item.answer)}</span></div>)}</div><footer className="paper-footer"><span>{ui.practiceCode}: {sheet.code}</span><span>{ui.answer} {sheet.index+1} / {sheetCount}</span></footer></section>)}
   </div>
  </div>;
 }
