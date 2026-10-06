@@ -1,0 +1,449 @@
+{
+  "source": {
+    "id": "basis-aseeder-fall-2026-image",
+    "label": "2026 秋季学期 ASEEDER 国际理科测评一览表（用户提供学校资料）",
+    "authority": "school",
+    "observedAt": "2026-10-06",
+    "season": 2026,
+    "region": "CN",
+    "verification": "raw",
+    "note": "学校/ASEEDER赛历导入源；日期进入用户行动面前仍需按官方/区域来源逐字段核验。"
+  },
+  "events": [
+    {
+      "id": "australian-amc",
+      "programId": "amt",
+      "kind": "competition",
+      "titleZh": "澳大利亚数学测评 AMC",
+      "titleEn": "Australian Mathematics Competition",
+      "minGrade": 1,
+      "maxGrade": 12
+    },
+    {
+      "id": "ukmt-smc",
+      "programId": "ukmt",
+      "kind": "competition",
+      "titleZh": "英国数学测评（高级）SMC",
+      "titleEn": "UKMT Senior Mathematical Challenge",
+      "minGrade": 12,
+      "maxGrade": 12
+    },
+    {
+      "id": "seamo",
+      "programId": "seamo",
+      "kind": "competition",
+      "titleZh": "新加坡亚太数学奥林匹克 SEAMO",
+      "titleEn": "SEAMO",
+      "minGrade": 1,
+      "maxGrade": 12
+    },
+    {
+      "id": "cemc-comc",
+      "programId": "cemc",
+      "kind": "competition",
+      "titleZh": "加拿大数学测评（高级）COMC",
+      "titleEn": "Canadian Open Mathematics Challenge",
+      "minGrade": 8,
+      "maxGrade": 12
+    },
+    {
+      "id": "maa-amc10-12",
+      "programId": "maa",
+      "kind": "competition",
+      "titleZh": "美国数学测评 AMC 10/12",
+      "titleEn": "MAA AMC 10/12",
+      "minGrade": 8,
+      "maxGrade": 12
+    },
+    {
+      "id": "ukmt-bmo1",
+      "programId": "ukmt",
+      "kind": "competition",
+      "titleZh": "英国数学奥林匹克 BMO Round 1",
+      "titleEn": "BMO Round 1",
+      "minGrade": 10,
+      "maxGrade": 12
+    },
+    {
+      "id": "cemc-cjmc",
+      "programId": "cemc",
+      "kind": "competition",
+      "titleZh": "加拿大数学测评（初级）CJMC",
+      "titleEn": "Canadian Junior Mathematics Contest",
+      "minGrade": 1,
+      "maxGrade": 8
+    },
+    {
+      "id": "maa-amc8",
+      "programId": "maa",
+      "kind": "competition",
+      "titleZh": "美国数学测评 AMC 8",
+      "titleEn": "MAA AMC 8",
+      "minGrade": 1,
+      "maxGrade": 8
+    },
+    {
+      "id": "maa-aime",
+      "programId": "maa",
+      "kind": "competition",
+      "titleZh": "美国数学邀请赛 AIME",
+      "titleEn": "AIME",
+      "minGrade": 8,
+      "maxGrade": 12
+    }
+  ],
+  "sessions": [
+    {
+      "id": "au-amc-cn-2026",
+      "eventId": "australian-amc",
+      "season": 2026,
+      "region": "CN",
+      "mode": "mixed",
+      "language": "中英文",
+      "sourceIds": [
+        "basis-aseeder-fall-2026-image"
+      ],
+      "milestoneIds": [
+        "au-amc-cn-2026-registration-deadline-1",
+        "au-amc-cn-2026-exam-2"
+      ]
+    },
+    {
+      "id": "ukmt-smc-cn-2026",
+      "eventId": "ukmt-smc",
+      "season": 2026,
+      "region": "CN",
+      "mode": "mixed",
+      "language": "中英文",
+      "sourceIds": [
+        "basis-aseeder-fall-2026-image"
+      ],
+      "milestoneIds": [
+        "ukmt-smc-cn-2026-registration-deadline-1",
+        "ukmt-smc-cn-2026-exam-2"
+      ]
+    },
+    {
+      "id": "seamo-cn-2026",
+      "eventId": "seamo",
+      "season": 2026,
+      "region": "CN",
+      "mode": "mixed",
+      "language": "中英文",
+      "sourceIds": [
+        "basis-aseeder-fall-2026-image"
+      ],
+      "milestoneIds": [
+        "seamo-cn-2026-registration-deadline-1",
+        "seamo-cn-2026-exam-2"
+      ]
+    },
+    {
+      "id": "comc-cn-2026",
+      "eventId": "cemc-comc",
+      "season": 2026,
+      "region": "CN",
+      "mode": "mixed",
+      "language": "英文",
+      "sourceIds": [
+        "basis-aseeder-fall-2026-image"
+      ],
+      "milestoneIds": [
+        "comc-cn-2026-registration-deadline-1",
+        "comc-cn-2026-exam-2"
+      ]
+    },
+    {
+      "id": "maa-amc10-12-a-cn-2026",
+      "eventId": "maa-amc10-12",
+      "season": 2026,
+      "region": "CN",
+      "mode": "mixed",
+      "language": "中英文",
+      "sourceIds": [
+        "basis-aseeder-fall-2026-image"
+      ],
+      "milestoneIds": [
+        "maa-amc10-12-a-cn-2026-registration-deadline-1",
+        "maa-amc10-12-a-cn-2026-exam-2"
+      ]
+    },
+    {
+      "id": "maa-amc10-12-b-cn-2026",
+      "eventId": "maa-amc10-12",
+      "season": 2026,
+      "region": "CN",
+      "mode": "mixed",
+      "language": "中英文",
+      "sourceIds": [
+        "basis-aseeder-fall-2026-image"
+      ],
+      "milestoneIds": [
+        "maa-amc10-12-b-cn-2026-registration-deadline-1",
+        "maa-amc10-12-b-cn-2026-exam-2"
+      ]
+    },
+    {
+      "id": "ukmt-bmo1-cn-2026",
+      "eventId": "ukmt-bmo1",
+      "season": 2026,
+      "region": "CN",
+      "mode": "school-paper",
+      "language": "英文",
+      "sourceIds": [
+        "basis-aseeder-fall-2026-image"
+      ],
+      "milestoneIds": [
+        "ukmt-bmo1-cn-2026-registration-deadline-1",
+        "ukmt-bmo1-cn-2026-exam-2"
+      ]
+    },
+    {
+      "id": "cemc-cjmc-cn-2026",
+      "eventId": "cemc-cjmc",
+      "season": 2026,
+      "region": "CN",
+      "mode": "mixed",
+      "language": "中英文",
+      "sourceIds": [
+        "basis-aseeder-fall-2026-image"
+      ],
+      "milestoneIds": [
+        "cemc-cjmc-cn-2026-registration-deadline-1",
+        "cemc-cjmc-cn-2026-exam-2"
+      ]
+    },
+    {
+      "id": "maa-amc8-cn-2027",
+      "eventId": "maa-amc8",
+      "season": 2027,
+      "region": "CN",
+      "mode": "mixed",
+      "language": "中英文",
+      "sourceIds": [
+        "basis-aseeder-fall-2026-image"
+      ],
+      "milestoneIds": [
+        "maa-amc8-cn-2027-registration-deadline-1",
+        "maa-amc8-cn-2027-exam-2"
+      ]
+    },
+    {
+      "id": "maa-aime-cn-2027",
+      "eventId": "maa-aime",
+      "season": 2027,
+      "region": "CN",
+      "mode": "mixed",
+      "language": "待定",
+      "sourceIds": [
+        "basis-aseeder-fall-2026-image"
+      ],
+      "milestoneIds": [
+        "maa-aime-cn-2027-registration-deadline-1",
+        "maa-aime-cn-2027-exam-2"
+      ]
+    }
+  ],
+  "milestones": [
+    {
+      "id": "au-amc-cn-2026-registration-deadline-1",
+      "sessionId": "au-amc-cn-2026",
+      "kind": "registration-deadline",
+      "start": "2026-09-28",
+      "titleZh": "报名截止",
+      "titleEn": "报名截止",
+      "sourceId": "basis-aseeder-fall-2026-image",
+      "consequence": "important"
+    },
+    {
+      "id": "au-amc-cn-2026-exam-2",
+      "sessionId": "au-amc-cn-2026",
+      "kind": "exam",
+      "start": "2026-10-11",
+      "titleZh": "澳大利亚数学测评 AMC",
+      "titleEn": "澳大利亚数学测评 AMC",
+      "sourceId": "basis-aseeder-fall-2026-image",
+      "consequence": "critical"
+    },
+    {
+      "id": "ukmt-smc-cn-2026-registration-deadline-1",
+      "sessionId": "ukmt-smc-cn-2026",
+      "kind": "registration-deadline",
+      "start": "2026-09-28",
+      "titleZh": "报名截止",
+      "titleEn": "报名截止",
+      "sourceId": "basis-aseeder-fall-2026-image",
+      "consequence": "important"
+    },
+    {
+      "id": "ukmt-smc-cn-2026-exam-2",
+      "sessionId": "ukmt-smc-cn-2026",
+      "kind": "exam",
+      "start": "2026-10-08",
+      "titleZh": "英国数学测评（高级）SMC",
+      "titleEn": "英国数学测评（高级）SMC",
+      "sourceId": "basis-aseeder-fall-2026-image",
+      "consequence": "critical"
+    },
+    {
+      "id": "seamo-cn-2026-registration-deadline-1",
+      "sessionId": "seamo-cn-2026",
+      "kind": "registration-deadline",
+      "start": "2026-10-13",
+      "titleZh": "报名截止",
+      "titleEn": "报名截止",
+      "sourceId": "basis-aseeder-fall-2026-image",
+      "consequence": "important"
+    },
+    {
+      "id": "seamo-cn-2026-exam-2",
+      "sessionId": "seamo-cn-2026",
+      "kind": "exam",
+      "start": "2026-10-24",
+      "titleZh": "SEAMO",
+      "titleEn": "SEAMO",
+      "sourceId": "basis-aseeder-fall-2026-image",
+      "consequence": "critical"
+    },
+    {
+      "id": "comc-cn-2026-registration-deadline-1",
+      "sessionId": "comc-cn-2026",
+      "kind": "registration-deadline",
+      "start": "2026-10-19",
+      "titleZh": "报名截止",
+      "titleEn": "报名截止",
+      "sourceId": "basis-aseeder-fall-2026-image",
+      "consequence": "important"
+    },
+    {
+      "id": "comc-cn-2026-exam-2",
+      "sessionId": "comc-cn-2026",
+      "kind": "exam",
+      "start": "2026-10-30",
+      "titleZh": "加拿大数学测评（高级）COMC",
+      "titleEn": "加拿大数学测评（高级）COMC",
+      "sourceId": "basis-aseeder-fall-2026-image",
+      "consequence": "critical"
+    },
+    {
+      "id": "maa-amc10-12-a-cn-2026-registration-deadline-1",
+      "sessionId": "maa-amc10-12-a-cn-2026",
+      "kind": "registration-deadline",
+      "start": "2026-10-27",
+      "titleZh": "A卷报名截止",
+      "titleEn": "A卷报名截止",
+      "sourceId": "basis-aseeder-fall-2026-image",
+      "consequence": "important"
+    },
+    {
+      "id": "maa-amc10-12-a-cn-2026-exam-2",
+      "sessionId": "maa-amc10-12-a-cn-2026",
+      "kind": "exam",
+      "start": "2026-11-06",
+      "titleZh": "AMC 10/12 A卷",
+      "titleEn": "AMC 10/12 A卷",
+      "sourceId": "basis-aseeder-fall-2026-image",
+      "consequence": "critical"
+    },
+    {
+      "id": "maa-amc10-12-b-cn-2026-registration-deadline-1",
+      "sessionId": "maa-amc10-12-b-cn-2026",
+      "kind": "registration-deadline",
+      "start": "2026-11-03",
+      "titleZh": "B卷报名截止",
+      "titleEn": "B卷报名截止",
+      "sourceId": "basis-aseeder-fall-2026-image",
+      "consequence": "important"
+    },
+    {
+      "id": "maa-amc10-12-b-cn-2026-exam-2",
+      "sessionId": "maa-amc10-12-b-cn-2026",
+      "kind": "exam",
+      "start": "2026-11-14",
+      "titleZh": "AMC 10/12 B卷",
+      "titleEn": "AMC 10/12 B卷",
+      "sourceId": "basis-aseeder-fall-2026-image",
+      "consequence": "critical"
+    },
+    {
+      "id": "ukmt-bmo1-cn-2026-registration-deadline-1",
+      "sessionId": "ukmt-bmo1-cn-2026",
+      "kind": "registration-deadline",
+      "start": "2026-11-09",
+      "titleZh": "报名截止",
+      "titleEn": "报名截止",
+      "sourceId": "basis-aseeder-fall-2026-image",
+      "consequence": "important"
+    },
+    {
+      "id": "ukmt-bmo1-cn-2026-exam-2",
+      "sessionId": "ukmt-bmo1-cn-2026",
+      "kind": "exam",
+      "start": "2026-11-19",
+      "titleZh": "BMO Round 1",
+      "titleEn": "BMO Round 1",
+      "sourceId": "basis-aseeder-fall-2026-image",
+      "consequence": "critical"
+    },
+    {
+      "id": "cemc-cjmc-cn-2026-registration-deadline-1",
+      "sessionId": "cemc-cjmc-cn-2026",
+      "kind": "registration-deadline",
+      "start": "2026-11-10",
+      "titleZh": "报名截止",
+      "titleEn": "报名截止",
+      "sourceId": "basis-aseeder-fall-2026-image",
+      "consequence": "important"
+    },
+    {
+      "id": "cemc-cjmc-cn-2026-exam-2",
+      "sessionId": "cemc-cjmc-cn-2026",
+      "kind": "exam",
+      "start": "2026-11-20",
+      "titleZh": "CJMC",
+      "titleEn": "CJMC",
+      "sourceId": "basis-aseeder-fall-2026-image",
+      "consequence": "critical"
+    },
+    {
+      "id": "maa-amc8-cn-2027-registration-deadline-1",
+      "sessionId": "maa-amc8-cn-2027",
+      "kind": "registration-deadline",
+      "start": "2027-01-12",
+      "titleZh": "报名截止",
+      "titleEn": "报名截止",
+      "sourceId": "basis-aseeder-fall-2026-image",
+      "consequence": "important"
+    },
+    {
+      "id": "maa-amc8-cn-2027-exam-2",
+      "sessionId": "maa-amc8-cn-2027",
+      "kind": "exam",
+      "start": "2027-01-22",
+      "titleZh": "AMC 8",
+      "titleEn": "AMC 8",
+      "sourceId": "basis-aseeder-fall-2026-image",
+      "consequence": "critical"
+    },
+    {
+      "id": "maa-aime-cn-2027-registration-deadline-1",
+      "sessionId": "maa-aime-cn-2027",
+      "kind": "registration-deadline",
+      "start": "2027-02-01",
+      "titleZh": "报名截止（待定）",
+      "titleEn": "报名截止（待定）",
+      "sourceId": "basis-aseeder-fall-2026-image",
+      "consequence": "important"
+    },
+    {
+      "id": "maa-aime-cn-2027-exam-2",
+      "sessionId": "maa-aime-cn-2027",
+      "kind": "exam",
+      "start": "2027-02-11",
+      "titleZh": "AIME（待定）",
+      "titleEn": "AIME（待定）",
+      "sourceId": "basis-aseeder-fall-2026-image",
+      "consequence": "critical"
+    }
+  ]
+}
