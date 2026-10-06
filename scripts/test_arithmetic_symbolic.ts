@@ -15,6 +15,9 @@ assert.equal(isEquivalentArithmeticAnswer({answer:"5x+12",answerKind:"expression
 assert.equal(isEquivalentArithmeticAnswer({answer:"x^2+5x+6",answerKind:"expression"},"(x+2)(x+3)"),true);
 assert.equal(isEquivalentArithmeticAnswer({answer:"x^2-9",answerKind:"expression"},"(x-3)(x+3)"),true);
 assert.equal(isEquivalentArithmeticAnswer({answer:"2x+1",answerKind:"expression"},"2x-1"),false);
+assert.equal(isEquivalentArithmeticAnswer({answer:"π/6",answerKind:"pi"},"2π/12"),true);
+assert.equal(isEquivalentArithmeticAnswer({answer:"π/6",answerKind:"pi",requireSimplified:true},"2π/12"),false);
+assert.equal(isEquivalentArithmeticAnswer({answer:"3π/4",answerKind:"pi",requireSimplified:true},"3pi/4"),true);
 console.log("arithmetic symbolic answers: PASS");
 
 import { generateArithmeticSet } from "../src/lib/arithmetic-generator";
@@ -47,3 +50,20 @@ for(const grade of [10,11] as const){
 }
 assert(exactTrigSymbolic>500,`expected broad exact trig symbolic coverage, got ${exactTrigSymbolic}`);
 console.log(`arithmetic exact trig generation: PASS symbolic=${exactTrigSymbolic}`);
+let piAngleAnswers=0;
+let reverseAngleAnswers=0;
+for(const grade of [10,11] as const){
+ for(let seed=1;seed<=100;seed++){
+  const trig=generateArithmeticSet(grade,48,seed,["trig"]).filter(x=>x.skillId==="trig");
+  for(const item of trig){
+   if(item.answerKind==="pi"){
+    piAngleAnswers++;
+    assert.equal(isEquivalentArithmeticAnswer(item,String(item.answer)),true);
+   }
+   if(item.prompt.includes("rad = ?°"))reverseAngleAnswers++;
+  }
+ }
+}
+assert(piAngleAnswers>300,`expected broad degree-to-radian coverage, got ${piAngleAnswers}`);
+assert(reverseAngleAnswers>200,`expected broad radian-to-degree coverage, got ${reverseAngleAnswers}`);
+console.log(`arithmetic radian conversion: PASS pi=${piAngleAnswers} reverse=${reverseAngleAnswers}`);

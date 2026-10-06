@@ -70,12 +70,12 @@ export const GRADE_PROFILES:Record<ArithmeticGrade,GradeProfile> = {
   10:{grade:10,titleZh:"高一计算",titleEn:"Grade 10 Calculation",targetAccuracy:.91,targetMedianMs:11500,skills:[
     {id:"function",labelZh:"函数与分段代值",labelEn:"Function evaluation",weight:3,targetMs:10500,strategies:["split","distributive"]},
     {id:"power",labelZh:"指数运算",labelEn:"Exponents",weight:2,targetMs:9500,strategies:["fact_recall","place_value"]},
-    {id:"trig",labelZh:"特殊角三角函数",labelEn:"Special-angle trigonometry",weight:2,targetMs:8500,strategies:["fact_recall"]},
+    {id:"trig",labelZh:"特殊角与弧度",labelEn:"Special angles and radians",weight:2,targetMs:8500,strategies:["fact_recall"]},
     {id:"sequence",labelZh:"等差数列",labelEn:"Arithmetic sequences",weight:3,targetMs:11000,strategies:["split","distributive"]},
   ]},
   11:{grade:11,titleZh:"高二计算",titleEn:"Grade 11 Calculation",targetAccuracy:.90,targetMedianMs:12500,skills:[
     {id:"log",labelZh:"指数与对数数值",labelEn:"Exponential and logarithmic values",weight:2,targetMs:10000,strategies:["fact_recall"]},
-    {id:"trig",labelZh:"三角函数数值",labelEn:"Trigonometric values",weight:2,targetMs:9500,strategies:["fact_recall"]},
+    {id:"trig",labelZh:"三角函数与弧度",labelEn:"Trigonometry and radians",weight:2,targetMs:9500,strategies:["fact_recall"]},
     {id:"sequence",labelZh:"数列通项与求和",labelEn:"Sequences and sums",weight:3,targetMs:12000,strategies:["split","distributive"]},
     {id:"probability",labelZh:"概率与组合计数",labelEn:"Probability and counting",weight:3,targetMs:12500,strategies:["fact_recall","split"]},
   ]},

@@ -1,4 +1,4 @@
-export type ArithmeticAnswerKind="number"|"fraction"|"radical"|"expression";
+export type ArithmeticAnswerKind="number"|"fraction"|"radical"|"pi"|"expression";
 export type ArithmeticAnswerValue=number|string;
 export type ArithmeticAnswerSpec={answer:ArithmeticAnswerValue;answerKind?:ArithmeticAnswerKind;requireSimplified?:boolean};
 
@@ -13,6 +13,37 @@ export function parseFraction(raw:string){
 }
 export function numericAnswerValue(raw:string){
  const f=parseFraction(raw);if(f)return f.value;const x=Number(clean(raw));return Number.isFinite(x)?x:null;
+}
+
+type PiMultiple={num:number;den:number;reducedNum:number;reducedDen:number;isSimplified:boolean};
+function decimalRatio(raw:string){
+ const negative=raw.startsWith("-"),positive=raw.startsWith("+"),body=(negative||positive)?raw.slice(1):raw;
+ if(!/^\d+(?:\.\d+)?$/.test(body))return null;
+ const [whole,frac=""]=body.split(".");
+ const scale=10**frac.length;
+ let num=Number(whole)*scale+Number(frac||0);
+ if(negative)num=-num;
+ const d=gcd(num,scale);
+ return{num,den:scale,reducedNum:num/d,reducedDen:scale/d,usedDecimal:frac.length>0};
+}
+function parsePiMultiple(raw:string):PiMultiple|null{
+ const s=clean(raw).toLowerCase().replace(/pi/g,"π").replace(/\*/g,"");
+ let rawNum=0,rawDen=1,usedDecimal=false;
+ const trailing=s.match(/^([+-]?)(\d*(?:\.\d+)?)π(?:\/([+-]?\d+))?$/);
+ if(trailing){
+  const sign=trailing[1]==="-"?-1:1,coef=trailing[2]||"1",ratio=decimalRatio(coef);
+  if(!ratio)return null;
+  rawNum=sign*Math.abs(ratio.num);rawDen=ratio.den*(trailing[3]?Number(trailing[3]):1);usedDecimal=ratio.usedDecimal;
+ }else{
+  const leading=s.match(/^([+-]?\d+(?:\.\d+)?)\/([+-]?\d+)π$/);
+  if(!leading)return null;
+  const ratio=decimalRatio(leading[1]);if(!ratio)return null;
+  rawNum=ratio.num;rawDen=ratio.den*Number(leading[2]);usedDecimal=ratio.usedDecimal;
+ }
+ if(!rawDen)return null;
+ if(rawDen<0){rawNum=-rawNum;rawDen=-rawDen}
+ const d=gcd(rawNum,rawDen);
+ return{num:rawNum,den:rawDen,reducedNum:rawNum/d,reducedDen:rawDen/d,isSimplified:!usedDecimal&&d===1};
 }
 
 type Radical={num:number;den:number;radicand:number;simplifiedNum:number;simplifiedDen:number;simplifiedRadicand:number;isSimplified:boolean};
@@ -51,5 +82,6 @@ export function isEquivalentArithmeticAnswer(spec:ArithmeticAnswerSpec,raw:strin
  if(kind==="number"){const got=numericAnswerValue(raw),want=typeof spec.answer==="number"?spec.answer:numericAnswerValue(String(spec.answer));return got!==null&&want!==null&&Math.abs(got-want)<EPS}
  if(kind==="fraction"){const got=parseFraction(raw),want=parseFraction(String(spec.answer));if(!got||!want)return false;if(spec.requireSimplified&&!got.simplified)return false;return got.reducedNum===want.reducedNum&&got.reducedDen===want.reducedDen}
  if(kind==="radical"){const got=parseRadical(raw),want=parseRadical(String(spec.answer));if(!got||!want)return false;if(spec.requireSimplified&&!got.isSimplified)return false;return got.simplifiedNum===want.simplifiedNum&&got.simplifiedDen===want.simplifiedDen&&got.simplifiedRadicand===want.simplifiedRadicand}
+ if(kind==="pi"){const got=parsePiMultiple(raw),want=parsePiMultiple(String(spec.answer));if(!got||!want)return false;if(spec.requireSimplified&&!got.isSimplified)return false;return got.reducedNum===want.reducedNum&&got.reducedDen===want.reducedDen}
  return samePoly(parsePolynomial(raw),parsePolynomial(String(spec.answer)));
 }

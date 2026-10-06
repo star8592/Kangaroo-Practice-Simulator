@@ -289,6 +289,6 @@
 .symbolic-math-keypad .key-back{background:#f4f5f2}
 .symbolic-math-keypad .key-enter{grid-column:span 2;background:var(--accent);border-color:var(--accent);font-size:16px}
 .symbolic-math-keypad .key-enter:disabled,.symbolic-math-keypad button:disabled{opacity:.35}
-.symbolic-math-keypad.kind-fraction,.symbolic-math-keypad.kind-radical{grid-template-columns:repeat(3,minmax(62px,1fr))}
+.symbolic-math-keypad.kind-fraction,.symbolic-math-keypad.kind-radical,.symbolic-math-keypad.kind-pi{grid-template-columns:repeat(3,minmax(62px,1fr))}
 .math-input-hint{max-width:620px;width:100%;margin:10px auto 0;padding:10px 13px;border-radius:11px;border:1px solid #efc8a8;background:#fff6ee;color:#8e4f24;font-size:12px;font-weight:800;text-align:center}
 @media(max-width:600px){.math-answer-preview{min-height:56px}.math-answer-preview strong{font-size:25px}.symbolic-math-keypad button{min-height:48px;font-size:17px}}

@@ -11,6 +11,14 @@ function MathPreview({raw,kind}:{raw:string;kind:ArithmeticAnswerKind|undefined}
   const m=normalized.match(/^([+-]?\d+)\/([+-]?\d+)$/);
   if(m)return <span className="math-preview-fraction" aria-label={formatArithmeticDisplay(normalized)}><span>{m[1]}</span><span>{m[2]}</span></span>;
  }
+ if(kind==="pi"){
+  const m=normalized.replace(/pi/gi,"π").match(/^([+-]?\d*)π(?:\/(\d+))?$/);
+  if(m){
+   const coefficient=m[1]&&m[1]!=="1"?(m[1]==="-1"?"−":m[1]):"";
+   const numerator=<span>{coefficient}π</span>;
+   return m[2]?<span className="math-preview-fraction" aria-label={formatArithmeticDisplay(normalized)}><span>{numerator}</span><span>{m[2]}</span></span>:numerator;
+  }
+ }
  if(kind==="radical"){
   const m=normalized.replace(/sqrt\((\d+)\)/gi,"√$1").match(/^([+-]?\d*)√(\d+)(?:\/(\d+))?$/);
   if(m){

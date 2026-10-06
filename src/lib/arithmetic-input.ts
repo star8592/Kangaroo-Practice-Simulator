@@ -16,7 +16,8 @@ export function normalizeArithmeticInput(raw:string):string{
     .replace(/÷/g,"/")
     .replace(/根号/g,"√")
     .replace(/平方/g,"^2")
-    .replace(/立方/g,"^3");
+    .replace(/立方/g,"^3")
+    .replace(/pi/gi,"π");
   text=text.normalize("NFKC")
     .replace(/[﹣－]/g,"-")
     .replace(/[／]/g,"/")
@@ -24,6 +25,7 @@ export function normalizeArithmeticInput(raw:string):string{
     .replace(/[（]/g,"(")
     .replace(/[）]/g,")")
     .replace(/[，]/g,",")
+    .replace(/pi/gi,"π")
     .replace(/\s+/g,"");
   return text;
 }
@@ -56,6 +58,13 @@ export function mathInputKeys(kind:ArithmeticAnswerKind|undefined):MathInputKey[
     {label:"4",insert:"4"},{label:"5",insert:"5"},{label:"6",insert:"6"},
     {label:"1",insert:"1"},{label:"2",insert:"2"},{label:"3",insert:"3"},
     {label:"−",insert:"-"},{label:"0",insert:"0"},{label:"√",insert:"√"},
+    {label:"a/b",insert:"/"},
+  ];
+  if(kind==="pi")return[
+    {label:"7",insert:"7"},{label:"8",insert:"8"},{label:"9",insert:"9"},
+    {label:"4",insert:"4"},{label:"5",insert:"5"},{label:"6",insert:"6"},
+    {label:"1",insert:"1"},{label:"2",insert:"2"},{label:"3",insert:"3"},
+    {label:"−",insert:"-"},{label:"0",insert:"0"},{label:"π",insert:"π"},
     {label:"a/b",insert:"/"},
   ];
   if(kind==="expression")return[
