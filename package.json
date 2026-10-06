@@ -70,7 +70,9 @@
     "test:math-verification": "tsx scripts/test_math_verification_registry.ts",
     "test:wechat-auth": "tsx scripts/test_wechat_parent_auth.ts",
     "verify:miniapp": "bash ops/automation/miniapp_quality_gate.sh",
-    "test:miniapp-contract": "tsx scripts/test_miniapp_contract.ts"
+    "test:miniapp-contract": "tsx scripts/test_miniapp_contract.ts",
+    "miniapp:preview": "bash ops/release/miniapp_ci.sh preview",
+    "miniapp:upload": "bash ops/release/miniapp_ci.sh upload"
   },
   "dependencies": {
     "next": "16.3.5",
