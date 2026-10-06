@@ -39,7 +39,12 @@ export default function SessionNav() {
   }
 
   if (user === undefined) return <span className="nav-session">…</span>;
-  if (!user) return <Link href="/login">{lang==="zh"?"考生登录":"Student login"}</Link>;
+  if (!user) return (
+    <>
+      <Link className="nav-parent-login" href="/parent/login">{lang==="zh"?"家长登录":"Parent login"}</Link>
+      <Link className="nav-student-login" href="/login">{lang==="zh"?"学生登录":"Student login"}</Link>
+    </>
+  );
 
   return (
     <>
