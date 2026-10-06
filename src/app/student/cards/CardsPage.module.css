@@ -31,6 +31,75 @@
   font-size: 13px;
 }
 
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin: 0 0 18px;
+}
+
+.stats article {
+  padding: 14px 16px;
+  border: 1px solid #eadfbf;
+  border-radius: 18px;
+  background: #fffdf7;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.stats strong {
+  font-size: 24px;
+}
+
+.stats span {
+  color: #756b58;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.achievementCard {
+  background: linear-gradient(150deg, #fffaf0, #ffeab0);
+  border-color: #dfc170;
+}
+
+.newBadge {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  z-index: 2;
+  padding: 4px 7px;
+  border-radius: 999px;
+  background: #1f7a4d;
+  color: #fff;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: .04em;
+}
+
+.kind {
+  margin-bottom: 6px;
+  color: #8a7d63;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: .08em;
+}
+
+.unlocked {
+  color: #b57f13;
+}
+
+.card em {
+  min-height: 30px;
+  margin-top: 8px;
+  color: #7f735f;
+  font-size: 9px;
+  font-style: normal;
+  line-height: 1.5;
+}
+
 .nextGoal {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 260px;
@@ -237,6 +306,10 @@
 }
 
 @media (max-width: 800px) {
+  .stats {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+
   .nextGoal {
     grid-template-columns: 1fr;
   }
@@ -260,6 +333,14 @@
 }
 
 @media (max-width: 480px) {
+  .stats {
+    grid-template-columns: 1fr;
+  }
+
+  .stats article {
+    padding: 12px 14px;
+  }
+
   .nextGoal {
     padding: 16px;
   }
