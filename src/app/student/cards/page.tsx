@@ -3,6 +3,8 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { SESSION_COOKIE, userFromSessionToken } from "@/lib/auth";
 import { loadExamAttempts } from "@/lib/attempt-store";
+import { loadArithmeticSessions } from "@/lib/arithmetic-session-store";
+import { buildArithmeticHonorCards } from "@/lib/arithmetic-honors";
 import { buildCardbookGoal, buildCardbookStats, buildMathCards } from "@/lib/math-cardbook";
 import styles from "./CardsPage.module.css";
 
@@ -28,7 +30,8 @@ export default async function StudentCardsPage() {
   if (!user) redirect("/login?next=/student/cards");
 
   const lang = jar.get("socthink_lang")?.value === "en" ? "en" : "zh";
-  const cards = buildMathCards(loadExamAttempts(user.id, 500));
+  const cards = [...buildMathCards(loadExamAttempts(user.id, 500)), ...buildArithmeticHonorCards(loadArithmeticSessions(user.id, 500))]
+    .sort((a,b)=>b.completedAt-a.completedAt);
   const stats = buildCardbookStats(cards);
   const goal = buildCardbookGoal(cards);
   const latestUnlockAt = cards.reduce((latest, card) => Math.max(latest, card.completedAt), 0);
@@ -37,8 +40,8 @@ export default async function StudentCardsPage() {
     : "/competitions";
 
   const goalTitle = goal.mode === "upgrade"
-    ? (lang === "zh" ? `下一张：${goal.targetRarity}卡` : `Next: ${rarityLabel(goal.targetRarity,lang)} card`)
-    : (lang === "zh" ? "下一张：新的挑战卡" : "Next: a new challenge card");
+    ? (lang === "zh" ? `推荐：冲击${goal.targetRarity}卡` : `Recommended: aim for a ${rarityLabel(goal.targetRarity,lang)} card`)
+    : (lang === "zh" ? "推荐：尝试一套新的正式挑战" : "Recommended: try a new full challenge");
   const goalBody = goal.mode === "upgrade"
     ? (lang === "zh"
       ? `目前最好成绩 ${goal.currentPercent}%，冲到 ${goal.targetPercent}% 就能升级。`
@@ -66,7 +69,7 @@ export default async function StudentCardsPage() {
 
       <section className={styles.nextGoal}>
         <div className={styles.goalCopy}>
-          <span className={styles.eyebrow}>NEXT CARD</span>
+          <span className={styles.eyebrow}>RECOMMENDED</span>
           <h2>{goalTitle}</h2>
           <p>{goalBody}</p>
           {goal.mode === "upgrade" && goal.targetPercent ? <div className={styles.progressWrap}>
@@ -78,13 +81,17 @@ export default async function StudentCardsPage() {
               ? (lang === "zh" ? "再挑战这套" : "Try this paper again")
               : (lang === "zh" ? "找一套新挑战" : "Find a new challenge")}
           </Link>
+          <div className={styles.goalChoices}>
+            <Link href="/competitions">{lang === "zh" ? "浏览全部竞赛" : "Browse all challenges"}</Link>
+            <Link href="/arithmetic">{lang === "zh" ? "去计算训练" : "Calculation training"}</Link>
+          </div>
         </div>
-        <div className={styles.lockedCard} aria-label={lang === "zh" ? "下一张未解锁卡" : "Next locked card"}>
+        <div className={styles.lockedCard} aria-label={lang === "zh" ? "推荐解锁目标" : "Recommended unlock goal"}>
           <div className={styles.lockedRarity}>{rarityLabel(goal.targetRarity,lang)}</div>
           <div className={styles.lock}>🔒</div>
-          <strong>{lang === "zh" ? "下一张卡" : "Next Card"}</strong>
+          <strong>{lang === "zh" ? "可解锁荣誉" : "Unlockable Honor"}</strong>
           <span>{goal.targetPercent ? `${goal.targetPercent}%+` : "?"}</span>
-          <small>{lang === "zh" ? "继续挑战来解锁" : "Keep challenging to unlock"}</small>
+          <small>{lang === "zh" ? "这是建议，不影响自由选择" : "A suggestion, never a restriction"}</small>
         </div>
       </section>
 
@@ -106,7 +113,7 @@ export default async function StudentCardsPage() {
               : <strong className={styles.unlocked}>{lang === "zh" ? "已解锁" : "Unlocked"}</strong>}
             <small>{new Date(card.completedAt).toLocaleDateString(lang === "zh" ? "zh-CN" : "en-US")}</small>
             <em>{unlockText}</em>
-            <Link href={card.examId ? "/exam/" + encodeURIComponent(card.examId) : "/competitions"}>
+            <Link href={card.href || (card.examId ? "/exam/" + encodeURIComponent(card.examId) : "/competitions")}>
               {card.kind === "成就卡"
                 ? (lang === "zh" ? "继续收集 →" : "Keep collecting →")
                 : (lang === "zh" ? "再挑战 →" : "Challenge again →")}
@@ -117,7 +124,7 @@ export default async function StudentCardsPage() {
     </> : <div className={styles.empty}>
       <div>🃏</div>
       <h2>{lang === "zh" ? "你的第一张卡正在等你" : "Your first card is waiting"}</h2>
-      <p>{lang === "zh" ? "完成一次数学竞赛挑战，就能把第一张卡和“初次出征”成就一起收进卡册。" : "Complete a math challenge to collect your first card and the First Challenge achievement."}</p>
+      <p>{lang === "zh" ? "完成一次正式竞赛挑战，或在计算训练里达成真正里程碑，都会留下可回看的数学荣誉。" : "Complete a formal challenge or reach a meaningful calculation milestone to create a lasting math honor."}</p>
       <Link className="primary-button" href="/competitions">{lang === "zh" ? "去挑战" : "Start a challenge"}</Link>
     </div>}
   </main>;

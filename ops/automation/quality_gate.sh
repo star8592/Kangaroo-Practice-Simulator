@@ -23,6 +23,7 @@ fi
 step "dependency security audit" npm run audit:security
 step "arithmetic regression" npm run test:arithmetic
 step "arithmetic milestones" npx tsx scripts/test_arithmetic_milestones.ts
+step "persistent arithmetic honors" npx tsx scripts/test_arithmetic_honors.ts
 step "A4 personalization regression" npm run test:arithmetic-print
 step "Chinese-default UI audit" python3 scripts/audit_chinese_ui.py
 step "global bilingual navigation audit" python3 scripts/audit_global_language.py
