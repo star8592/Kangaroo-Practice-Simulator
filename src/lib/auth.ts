@@ -25,7 +25,10 @@ export function authenticate(k0:string,pin:string){
 }
 export function publicUserById(id:string){const u=loadUsers().find(x=>x.id===id&&x.active);return u?pub(u):null}
 export function createSessionToken(uid:string,ttl=604800){const u=loadUsers().find(x=>x.id===uid&&x.active);if(!u)throw new Error("用户不存在或已停用");return signJsonToken({uid,ver:u.sessionVersion||1,exp:Math.floor(Date.now()/1000)+ttl},secret())}
+export function createGuestSessionToken(ttl=7200){const id=`guest_${crypto.randomBytes(10).toString("hex")}`;return signJsonToken({uid:id,guest:true,exp:Math.floor(Date.now()/1000)+ttl},secret())}
+export function guestUserFromSessionToken(t:string|undefined|null):PublicStudent|null{const x=readSignedJsonToken<{uid?:string;guest?:boolean;exp?:number}>(t,secret());if(!x?.guest||!x.uid?.startsWith("guest_")||!x.exp||x.exp<Math.floor(Date.now()/1000))return null;return{id:x.uid,username:"guest",candidateNo:"GUEST",name:"游客体验",grade:6,school:"Socthink",avatarKey:DEFAULT_STUDENT_AVATAR,onboardingCompleted:true,createdAt:Date.now(),active:true,role:"student",sessionVersion:1}}
 export function userFromSessionToken(t:string|undefined|null):PublicStudent|null{
+ const guest=guestUserFromSessionToken(t);if(guest)return guest;
  const x=readSignedJsonToken<{uid?:string;ver?:number;exp?:number}>(t,secret());if(!x?.uid||!x.exp||x.exp<Math.floor(Date.now()/1000))return null;
  const u=loadUsers().find(v=>v.id===x.uid&&v.active);if(!u)return null;const tokenVersion=x.ver??1;if((u.sessionVersion||1)!==tokenVersion)return null;return pub(u)
 }
