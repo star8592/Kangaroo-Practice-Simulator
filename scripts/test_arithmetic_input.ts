@@ -8,6 +8,7 @@ assert.equal(normalizeArithmeticInput("x²−9"),"x^2-9");
 assert.equal(normalizeArithmeticInput("6÷8"),"6/8");
 
 assert.deepEqual(assessArithmeticAnswer({answer:"3/4",answerKind:"fraction",requireSimplified:true},"6/8"),{status:"needs_simplification"});
+assert.deepEqual(assessArithmeticAnswer({answer:"1/2",answerKind:"fraction",requireSimplified:true},"0.5"),{status:"needs_simplification"});
 assert.deepEqual(assessArithmeticAnswer({answer:"2√3",answerKind:"radical",requireSimplified:true},"√12"),{status:"needs_simplification"});
 assert.deepEqual(assessArithmeticAnswer({answer:"x^2+5x+6",answerKind:"expression"},"(x+2)(x+3)"),{status:"correct"});
 assert.deepEqual(assessArithmeticAnswer({answer:"x^2+2x+1",answerKind:"expression"},"x平方+2x+1"),{status:"correct"});

@@ -34,3 +34,16 @@ assert(radicalItem,"grade 9 should generate simplified radical answers");
 const radicalAttempt=finalizeAttempt(radicalItem,String(radicalItem.answer),{presentedAt:0,firstInputAt:1000,submittedAt:2500,edits:0,backspaces:0});
 assert.equal(radicalAttempt.correct,true);
 console.log(`arithmetic symbolic generation: PASS symbolic=${symbolicCount}`);
+let exactTrigSymbolic=0;
+for(const grade of [10,11] as const){
+ for(let seed=1;seed<=80;seed++){
+  const trig=generateArithmeticSet(grade,40,seed,["trig"]).filter(x=>x.skillId==="trig");
+  exactTrigSymbolic+=trig.filter(x=>x.answerKind==="fraction"||x.answerKind==="radical").length;
+  for(const item of trig.filter(x=>x.answerKind==="fraction"||x.answerKind==="radical").slice(0,2)){
+   const attempt=finalizeAttempt(item,String(item.answer),{presentedAt:0,firstInputAt:500,submittedAt:1500,edits:0,backspaces:0});
+   assert.equal(attempt.correct,true,`exact trig answer should be accepted: ${item.prompt} -> ${item.answer}`);
+  }
+ }
+}
+assert(exactTrigSymbolic>500,`expected broad exact trig symbolic coverage, got ${exactTrigSymbolic}`);
+console.log(`arithmetic exact trig generation: PASS symbolic=${exactTrigSymbolic}`);

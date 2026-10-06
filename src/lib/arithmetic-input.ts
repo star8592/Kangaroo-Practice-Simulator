@@ -1,5 +1,5 @@
 import type { ArithmeticAnswerKind, ArithmeticAnswerSpec } from "./arithmetic-answer";
-import { isEquivalentArithmeticAnswer } from "./arithmetic-answer";
+import { isEquivalentArithmeticAnswer,numericAnswerValue } from "./arithmetic-answer";
 
 export type ArithmeticAnswerAssessment =
   | {status:"correct"}
@@ -31,8 +31,14 @@ export function normalizeArithmeticInput(raw:string):string{
 export function assessArithmeticAnswer(spec:ArithmeticAnswerSpec,raw:string):ArithmeticAnswerAssessment{
   const normalized=normalizeArithmeticInput(raw);
   if(isEquivalentArithmeticAnswer(spec,normalized))return{status:"correct"};
-  if(spec.requireSimplified&&isEquivalentArithmeticAnswer({...spec,requireSimplified:false},normalized)){
-    return{status:"needs_simplification"};
+  if(spec.requireSimplified){
+    if(isEquivalentArithmeticAnswer({...spec,requireSimplified:false},normalized)){
+      return{status:"needs_simplification"};
+    }
+    if(spec.answerKind==="fraction"){
+      const got=numericAnswerValue(normalized),want=numericAnswerValue(String(spec.answer));
+      if(got!==null&&want!==null&&Math.abs(got-want)<1e-9)return{status:"needs_simplification"};
+    }
   }
   return{status:"incorrect"};
 }
