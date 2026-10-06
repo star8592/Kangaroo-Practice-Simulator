@@ -1,0 +1,11 @@
+export type AcademicProgramKind="competition"|"standardized-exam";
+export type SourceAuthority="organizer"|"regional-operator"|"school"|"trusted-import"|"user";
+export type VerificationState="raw"|"verified"|"superseded";
+export type EnrollmentState="eligible"|"interested"|"planned"|"registered"|"confirmed"|"preparing"|"ready"|"taken"|"result-pending"|"result-known"|"awarded"|"closed";
+export type MilestoneKind="registration-deadline"|"mock"|"device-check"|"check-in"|"exam"|"submission-deadline"|"score-release"|"result"|"certificate";
+export type AcademicSource={id:string;label:string;authority:SourceAuthority;observedAt:string;season:number;region?:string;school?:string;verification:VerificationState;note?:string};
+export type AcademicEvent={id:string;programId:string;kind:AcademicProgramKind;titleZh:string;titleEn:string;minGrade?:number;maxGrade?:number;qualification?:string};
+export type AcademicMilestone={id:string;sessionId:string;kind:MilestoneKind;start:string;end?:string;titleZh:string;titleEn:string;sourceId:string;actionZh?:string;actionEn?:string;consequence:"critical"|"important"|"informational"};
+export type AcademicSession={id:string;eventId:string;season:number;region:string;mode:"school-paper"|"school-computer"|"online-home"|"onsite"|"mixed";language?:string;sourceIds:string[];milestoneIds:string[]};
+export type StudentAcademicContext={grade:number;region?:string;school?:string;enrollments:Record<string,EnrollmentState>;completedMilestoneIds?:string[];explicitInterestEventIds?:string[]};
+export type AttentionItem={milestone:AcademicMilestone;session:AcademicSession;event:AcademicEvent;priority:"P0"|"P1"|"P2"|"P3"|"P4"|"P5";daysUntil:number;reasonZh:string;reasonEn:string};
