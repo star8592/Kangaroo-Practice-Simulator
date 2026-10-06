@@ -3,6 +3,7 @@ Description=Check Socthink math main for a CI-green release
 
 [Timer]
 OnBootSec=90s
+OnActiveSec=30s
 OnUnitActiveSec=2min
 RandomizedDelaySec=15s
 Persistent=true
