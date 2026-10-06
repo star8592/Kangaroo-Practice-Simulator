@@ -90,6 +90,78 @@
       "titleEn": "AIME",
       "minGrade": 8,
       "maxGrade": 12
+    },
+    {
+      "id": "cml",
+      "programId": "cml",
+      "kind": "competition",
+      "titleZh": "北美数学联盟趣味活动 CML",
+      "titleEn": "Continental Math League",
+      "minGrade": 1,
+      "maxGrade": 9
+    },
+    {
+      "id": "bebras",
+      "programId": "bebras",
+      "kind": "competition",
+      "titleZh": "海狸国际计算思维挑战 Bebras",
+      "titleEn": "Bebras Challenge",
+      "minGrade": 1,
+      "maxGrade": 12
+    },
+    {
+      "id": "mkt",
+      "programId": "kangaroo",
+      "kind": "competition",
+      "titleZh": "袋鼠数学团体趣味挑战 MKT",
+      "titleEn": "Math Kangaroo Team Challenge",
+      "minGrade": 1,
+      "maxGrade": 12
+    },
+    {
+      "id": "mathleague",
+      "programId": "mathleague",
+      "kind": "competition",
+      "titleZh": "MathLeague 联合杯资格轮",
+      "titleEn": "MathLeague Qualifying Round",
+      "minGrade": 3,
+      "maxGrade": 12
+    },
+    {
+      "id": "ukmt-imc",
+      "programId": "ukmt",
+      "kind": "competition",
+      "titleZh": "英国数学测评（中级）IMC",
+      "titleEn": "UKMT Intermediate Mathematical Challenge",
+      "minGrade": 1,
+      "maxGrade": 10
+    },
+    {
+      "id": "ukmt-bmo2",
+      "programId": "ukmt",
+      "kind": "competition",
+      "titleZh": "英国数学奥林匹克 BMO Round 2",
+      "titleEn": "BMO Round 2",
+      "minGrade": 10,
+      "maxGrade": 12
+    },
+    {
+      "id": "arml-power-1",
+      "programId": "arml",
+      "kind": "competition",
+      "titleZh": "ARML Power Round I",
+      "titleEn": "ARML Power Round I",
+      "minGrade": 10,
+      "maxGrade": 12
+    },
+    {
+      "id": "arml-power-2",
+      "programId": "arml",
+      "kind": "competition",
+      "titleZh": "ARML Power Round II",
+      "titleEn": "ARML Power Round II",
+      "minGrade": 10,
+      "maxGrade": 12
     }
   ],
   "sessions": [
@@ -241,6 +313,126 @@
       "milestoneIds": [
         "maa-aime-cn-2027-registration-deadline-1",
         "maa-aime-cn-2027-exam-2"
+      ]
+    },
+    {
+      "id": "cml-cn-2026",
+      "eventId": "cml",
+      "season": 2026,
+      "region": "CN",
+      "mode": "mixed",
+      "language": "中英文",
+      "sourceIds": [
+        "basis-aseeder-fall-2026-image"
+      ],
+      "milestoneIds": [
+        "cml-cn-2026-registration-deadline-1",
+        "cml-cn-2026-exam-2"
+      ]
+    },
+    {
+      "id": "bebras-cn-2026",
+      "eventId": "bebras",
+      "season": 2026,
+      "region": "CN",
+      "mode": "mixed",
+      "language": "中英文",
+      "sourceIds": [
+        "basis-aseeder-fall-2026-image"
+      ],
+      "milestoneIds": [
+        "bebras-cn-2026-registration-deadline-1",
+        "bebras-cn-2026-exam-2"
+      ]
+    },
+    {
+      "id": "mkt-cn-2026",
+      "eventId": "mkt",
+      "season": 2026,
+      "region": "CN",
+      "mode": "mixed",
+      "language": "中英文",
+      "sourceIds": [
+        "basis-aseeder-fall-2026-image"
+      ],
+      "milestoneIds": [
+        "mkt-cn-2026-registration-deadline-1",
+        "mkt-cn-2026-exam-2"
+      ]
+    },
+    {
+      "id": "mathleague-cn-2026-r1",
+      "eventId": "mathleague",
+      "season": 2026,
+      "region": "CN",
+      "mode": "mixed",
+      "language": "中英文",
+      "sourceIds": [
+        "basis-aseeder-fall-2026-image"
+      ],
+      "milestoneIds": [
+        "mathleague-cn-2026-r1-registration-deadline-1",
+        "mathleague-cn-2026-r1-exam-2"
+      ]
+    },
+    {
+      "id": "ukmt-imc-cn-2027",
+      "eventId": "ukmt-imc",
+      "season": 2027,
+      "region": "CN",
+      "mode": "mixed",
+      "language": "中英文",
+      "sourceIds": [
+        "basis-aseeder-fall-2026-image"
+      ],
+      "milestoneIds": [
+        "ukmt-imc-cn-2027-registration-deadline-1",
+        "ukmt-imc-cn-2027-exam-2"
+      ]
+    },
+    {
+      "id": "ukmt-bmo2-cn-2027",
+      "eventId": "ukmt-bmo2",
+      "season": 2027,
+      "region": "CN",
+      "mode": "school-paper",
+      "language": "英文",
+      "sourceIds": [
+        "basis-aseeder-fall-2026-image"
+      ],
+      "milestoneIds": [
+        "ukmt-bmo2-cn-2027-registration-deadline-1",
+        "ukmt-bmo2-cn-2027-exam-2"
+      ]
+    },
+    {
+      "id": "arml-power-1-cn-2026",
+      "eventId": "arml-power-1",
+      "season": 2026,
+      "region": "CN",
+      "mode": "mixed",
+      "language": "英文",
+      "sourceIds": [
+        "basis-aseeder-fall-2026-image"
+      ],
+      "milestoneIds": [
+        "arml-power-1-cn-2026-registration-deadline-1",
+        "arml-power-1-cn-2026-exam-2"
+      ]
+    },
+    {
+      "id": "arml-power-2-cn-2027",
+      "eventId": "arml-power-2",
+      "season": 2027,
+      "region": "CN",
+      "mode": "mixed",
+      "language": "英文",
+      "sourceIds": [
+        "basis-aseeder-fall-2026-image"
+      ],
+      "milestoneIds": [
+        "arml-power-2-cn-2027-registration-deadline-1",
+        "arml-power-2-cn-2027-exam-2"
       ]
     }
   ],
@@ -442,6 +634,166 @@
       "start": "2027-02-11",
       "titleZh": "AIME（待定）",
       "titleEn": "AIME（待定）",
+      "sourceId": "basis-aseeder-fall-2026-image",
+      "consequence": "critical"
+    },
+    {
+      "id": "cml-cn-2026-registration-deadline-1",
+      "sessionId": "cml-cn-2026",
+      "kind": "registration-deadline",
+      "start": "2026-11-10",
+      "titleZh": "报名截止",
+      "titleEn": "Registration deadline",
+      "sourceId": "basis-aseeder-fall-2026-image",
+      "consequence": "important"
+    },
+    {
+      "id": "cml-cn-2026-exam-2",
+      "sessionId": "cml-cn-2026",
+      "kind": "exam",
+      "start": "2026-11-21",
+      "titleZh": "北美数学联盟趣味活动 CML",
+      "titleEn": "Continental Math League",
+      "sourceId": "basis-aseeder-fall-2026-image",
+      "consequence": "critical"
+    },
+    {
+      "id": "bebras-cn-2026-registration-deadline-1",
+      "sessionId": "bebras-cn-2026",
+      "kind": "registration-deadline",
+      "start": "2026-12-08",
+      "titleZh": "报名截止",
+      "titleEn": "Registration deadline",
+      "sourceId": "basis-aseeder-fall-2026-image",
+      "consequence": "important"
+    },
+    {
+      "id": "bebras-cn-2026-exam-2",
+      "sessionId": "bebras-cn-2026",
+      "kind": "exam",
+      "start": "2026-12-01",
+      "titleZh": "海狸国际计算思维挑战 Bebras",
+      "titleEn": "Bebras Challenge",
+      "sourceId": "basis-aseeder-fall-2026-image",
+      "consequence": "critical"
+    },
+    {
+      "id": "mkt-cn-2026-registration-deadline-1",
+      "sessionId": "mkt-cn-2026",
+      "kind": "registration-deadline",
+      "start": "2026-11-24",
+      "titleZh": "报名截止",
+      "titleEn": "Registration deadline",
+      "sourceId": "basis-aseeder-fall-2026-image",
+      "consequence": "important"
+    },
+    {
+      "id": "mkt-cn-2026-exam-2",
+      "sessionId": "mkt-cn-2026",
+      "kind": "exam",
+      "start": "2026-12-04",
+      "titleZh": "袋鼠数学团体趣味挑战 MKT",
+      "titleEn": "Math Kangaroo Team Challenge",
+      "sourceId": "basis-aseeder-fall-2026-image",
+      "consequence": "critical"
+    },
+    {
+      "id": "mathleague-cn-2026-r1-registration-deadline-1",
+      "sessionId": "mathleague-cn-2026-r1",
+      "kind": "registration-deadline",
+      "start": "2026-12-15",
+      "titleZh": "报名截止",
+      "titleEn": "Registration deadline",
+      "sourceId": "basis-aseeder-fall-2026-image",
+      "consequence": "important"
+    },
+    {
+      "id": "mathleague-cn-2026-r1-exam-2",
+      "sessionId": "mathleague-cn-2026-r1",
+      "kind": "exam",
+      "start": "2026-12-27",
+      "titleZh": "MathLeague 联合杯资格轮",
+      "titleEn": "MathLeague Qualifying Round",
+      "sourceId": "basis-aseeder-fall-2026-image",
+      "consequence": "critical"
+    },
+    {
+      "id": "ukmt-imc-cn-2027-registration-deadline-1",
+      "sessionId": "ukmt-imc-cn-2027",
+      "kind": "registration-deadline",
+      "start": "2027-01-18",
+      "titleZh": "报名截止",
+      "titleEn": "Registration deadline",
+      "sourceId": "basis-aseeder-fall-2026-image",
+      "consequence": "important"
+    },
+    {
+      "id": "ukmt-imc-cn-2027-exam-2",
+      "sessionId": "ukmt-imc-cn-2027",
+      "kind": "exam",
+      "start": "2027-01-28",
+      "titleZh": "英国数学测评（中级）IMC",
+      "titleEn": "UKMT Intermediate Mathematical Challenge",
+      "sourceId": "basis-aseeder-fall-2026-image",
+      "consequence": "critical"
+    },
+    {
+      "id": "ukmt-bmo2-cn-2027-registration-deadline-1",
+      "sessionId": "ukmt-bmo2-cn-2027",
+      "kind": "registration-deadline",
+      "start": "2027-01-11",
+      "titleZh": "报名截止",
+      "titleEn": "Registration deadline",
+      "sourceId": "basis-aseeder-fall-2026-image",
+      "consequence": "important"
+    },
+    {
+      "id": "ukmt-bmo2-cn-2027-exam-2",
+      "sessionId": "ukmt-bmo2-cn-2027",
+      "kind": "exam",
+      "start": "2027-01-21",
+      "titleZh": "英国数学奥林匹克 BMO Round 2",
+      "titleEn": "BMO Round 2",
+      "sourceId": "basis-aseeder-fall-2026-image",
+      "consequence": "critical"
+    },
+    {
+      "id": "arml-power-1-cn-2026-registration-deadline-1",
+      "sessionId": "arml-power-1-cn-2026",
+      "kind": "registration-deadline",
+      "start": "2026-10-13",
+      "titleZh": "报名截止",
+      "titleEn": "Registration deadline",
+      "sourceId": "basis-aseeder-fall-2026-image",
+      "consequence": "important"
+    },
+    {
+      "id": "arml-power-1-cn-2026-exam-2",
+      "sessionId": "arml-power-1-cn-2026",
+      "kind": "exam",
+      "start": "2026-10-24",
+      "titleZh": "ARML Power Round I",
+      "titleEn": "ARML Power Round I",
+      "sourceId": "basis-aseeder-fall-2026-image",
+      "consequence": "critical"
+    },
+    {
+      "id": "arml-power-2-cn-2027-registration-deadline-1",
+      "sessionId": "arml-power-2-cn-2027",
+      "kind": "registration-deadline",
+      "start": "2027-02-09",
+      "titleZh": "报名截止",
+      "titleEn": "Registration deadline",
+      "sourceId": "basis-aseeder-fall-2026-image",
+      "consequence": "important"
+    },
+    {
+      "id": "arml-power-2-cn-2027-exam-2",
+      "sessionId": "arml-power-2-cn-2027",
+      "kind": "exam",
+      "start": "2027-02-20",
+      "titleZh": "ARML Power Round II",
+      "titleEn": "ARML Power Round II",
       "sourceId": "basis-aseeder-fall-2026-image",
       "consequence": "critical"
     }
