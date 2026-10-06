@@ -68,7 +68,7 @@
     "audit:arithmetic-coaching": "tsx scripts/audit_arithmetic_coaching.ts",
     "test:math-engine-cognition": "tsx scripts/test_math_engine_cognition.ts",
     "test:math-verification": "tsx scripts/test_math_verification_registry.ts",
-    "test:wechat-auth": "tsx scripts/test_wechat_parent_auth.ts",
+    "test:wechat-auth": "tsx scripts/test_wechat_parent_auth.ts && tsx scripts/test_wechat_qr_login.ts",
     "verify:miniapp": "bash ops/automation/miniapp_quality_gate.sh",
     "test:miniapp-contract": "tsx scripts/test_miniapp_contract.ts",
     "miniapp:preview": "bash ops/release/miniapp_ci.sh preview",
@@ -78,22 +78,24 @@
   "dependencies": {
     "next": "16.3.8",
     "nodemailer": "^10.0.10",
+    "qrcode": "^1.5.4",
     "react": "19.2.8",
     "react-dom": "19.2.8",
     "three": "^0.186.0"
   },
   "devDependencies": {
+    "@eslint/js": "10.0.1",
     "@types/node": "^20",
     "@types/nodemailer": "^8.0.2",
+    "@types/qrcode": "^1.5.6",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@types/three": "^0.186.0",
     "eslint": "10.0.1",
-    "tsx": "^4.23.13",
-    "typescript": "^5",
-    "@eslint/js": "10.0.1",
     "eslint-plugin-react-hooks": "7.1.1",
     "globals": "17.13.0",
+    "tsx": "^4.23.13",
+    "typescript": "^5",
     "typescript-eslint": "8.71.1"
   },
   "overrides": {
