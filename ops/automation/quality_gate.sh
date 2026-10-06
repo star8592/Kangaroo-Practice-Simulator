@@ -27,6 +27,7 @@ step "global bilingual navigation audit" python3 scripts/audit_global_language.p
 step "grade-one narration bundle" python3 scripts/test_grade1_narration_bundle.py
 step "grade-one verified solution bundle" python3 scripts/test_grade1_solution_bundle.py
 step "grade-one solution store" npx tsx scripts/test_grade1_solution_store.ts
+step "math cardbook progression" npx tsx scripts/test_math_cardbook.ts
 step "auto-deploy contract" bash ops/release/test_auto_deploy_contract.sh
 step "miniapp backend contract" npm run test:miniapp-contract
 step "local CI deploy contract" bash ops/release/test_local_ci_deploy_contract.sh
