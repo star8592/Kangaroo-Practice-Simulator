@@ -20,6 +20,7 @@ if [[ "${INSTALL_DEPS:-0}" == "1" ]]; then
   step "install locked dependencies" npm ci
 fi
 
+step "dependency security audit" npm run audit:security
 step "arithmetic regression" npm run test:arithmetic
 step "A4 personalization regression" npm run test:arithmetic-print
 step "Chinese-default UI audit" python3 scripts/audit_chinese_ui.py

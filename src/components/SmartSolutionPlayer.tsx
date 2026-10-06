@@ -19,7 +19,6 @@ type Props = {
 function SourceImage({ url }: { url: string }) {
   return (
     <div className="solution-source-frame">
-      {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src={url} alt="原题图，用于交互讲解" />
       <div className="solution-scanline" />
     </div>

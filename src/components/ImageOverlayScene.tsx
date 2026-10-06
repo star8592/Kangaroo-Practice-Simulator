@@ -18,7 +18,6 @@ export default function ImageOverlayScene({
   const selected=picks.find(p=>p.id===picked);
   return <div className="image-overlay-scene">
     <div className="image-overlay-wrap">
-      {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src={url} alt="原题图交互标注" />
       <svg className="image-overlay-svg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
         {traces.map(t=><polyline key={t.id} className={"image-overlay-trace "+(t.hot?"hot":"")} points={t.points.map(([x,y])=>x+","+y).join(" ")}/>)}

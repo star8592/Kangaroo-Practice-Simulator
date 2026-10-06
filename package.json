@@ -72,10 +72,11 @@
     "verify:miniapp": "bash ops/automation/miniapp_quality_gate.sh",
     "test:miniapp-contract": "tsx scripts/test_miniapp_contract.ts",
     "miniapp:preview": "bash ops/release/miniapp_ci.sh preview",
-    "miniapp:upload": "bash ops/release/miniapp_ci.sh upload"
+    "miniapp:upload": "bash ops/release/miniapp_ci.sh upload",
+    "audit:security": "npm audit --audit-level=high"
   },
   "dependencies": {
-    "next": "16.3.5",
+    "next": "16.3.8",
     "nodemailer": "^10.0.10",
     "react": "19.2.8",
     "react-dom": "19.2.8",
@@ -88,8 +89,15 @@
     "@types/react-dom": "^19",
     "@types/three": "^0.186.0",
     "eslint": "^9",
-    "eslint-config-next": "16.3.5",
     "tsx": "^4.23.13",
-    "typescript": "^5"
+    "typescript": "^5",
+    "@eslint/js": "9.39.5",
+    "eslint-plugin-react": "7.37.5",
+    "eslint-plugin-react-hooks": "7.1.1",
+    "globals": "17.13.0",
+    "typescript-eslint": "8.71.1"
+  },
+  "overrides": {
+    "source-map-js": "1.2.2"
   }
 }
