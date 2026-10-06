@@ -81,6 +81,10 @@ export default async function StudentCardsPage() {
               ? (lang === "zh" ? "再挑战这套" : "Try this paper again")
               : (lang === "zh" ? "找一套新挑战" : "Find a new challenge")}
           </Link>
+          <div className={styles.goalChoices}>
+            <Link href="/competitions">{lang === "zh" ? "浏览全部竞赛" : "Browse all challenges"}</Link>
+            <Link href="/arithmetic">{lang === "zh" ? "去计算训练" : "Calculation training"}</Link>
+          </div>
         </div>
         <div className={styles.lockedCard} aria-label={lang === "zh" ? "推荐解锁目标" : "Recommended unlock goal"}>
           <div className={styles.lockedRarity}>{rarityLabel(goal.targetRarity,lang)}</div>
