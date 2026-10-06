@@ -2,7 +2,7 @@
   "miniprogramRoot": "./dist",
   "projectname": "Socthink Math",
   "description": "计算训练、竞赛实战与赛事管理",
-  "appid": "touristappid",
+  "appid": "wxbedb9b3142d93f95",
   "compileType": "miniprogram",
   "setting": {
     "urlCheck": true,
