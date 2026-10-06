@@ -3,6 +3,8 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { SESSION_COOKIE, userFromSessionToken } from "@/lib/auth";
 import { loadExamAttempts } from "@/lib/attempt-store";
+import { loadArithmeticSessions } from "@/lib/arithmetic-session-store";
+import { buildArithmeticHonorCards } from "@/lib/arithmetic-honors";
 import { buildCardbookGoal, buildCardbookStats, buildMathCards } from "@/lib/math-cardbook";
 import styles from "./CardsPage.module.css";
 
@@ -28,7 +30,7 @@ export default async function StudentCardsPage() {
   if (!user) redirect("/login?next=/student/cards");
 
   const lang = jar.get("socthink_lang")?.value === "en" ? "en" : "zh";
-  const cards = buildMathCards(loadExamAttempts(user.id, 500));
+  const cards = [...buildMathCards(loadExamAttempts(user.id, 500)), ...buildArithmeticHonorCards(loadArithmeticSessions(user.id, 500))]\n    .sort((a,b)=>b.completedAt-a.completedAt);
   const stats = buildCardbookStats(cards);
   const goal = buildCardbookGoal(cards);
   const latestUnlockAt = cards.reduce((latest, card) => Math.max(latest, card.completedAt), 0);
@@ -106,7 +108,7 @@ export default async function StudentCardsPage() {
               : <strong className={styles.unlocked}>{lang === "zh" ? "已解锁" : "Unlocked"}</strong>}
             <small>{new Date(card.completedAt).toLocaleDateString(lang === "zh" ? "zh-CN" : "en-US")}</small>
             <em>{unlockText}</em>
-            <Link href={card.examId ? "/exam/" + encodeURIComponent(card.examId) : "/competitions"}>
+            <Link href={card.href || (card.examId ? "/exam/" + encodeURIComponent(card.examId) : "/competitions")}>
               {card.kind === "成就卡"
                 ? (lang === "zh" ? "继续收集 →" : "Keep collecting →")
                 : (lang === "zh" ? "再挑战 →" : "Challenge again →")}
@@ -117,7 +119,7 @@ export default async function StudentCardsPage() {
     </> : <div className={styles.empty}>
       <div>🃏</div>
       <h2>{lang === "zh" ? "你的第一张卡正在等你" : "Your first card is waiting"}</h2>
-      <p>{lang === "zh" ? "完成一次数学竞赛挑战，就能把第一张卡和“初次出征”成就一起收进卡册。" : "Complete a math challenge to collect your first card and the First Challenge achievement."}</p>
+      <p>{lang === "zh" ? "完成一次正式竞赛挑战，或在计算训练里达成真正里程碑，都会留下可回看的数学荣誉。" : "Complete a formal challenge or reach a meaningful calculation milestone to create a lasting math honor."}</p>
       <Link className="primary-button" href="/competitions">{lang === "zh" ? "去挑战" : "Start a challenge"}</Link>
     </div>}
   </main>;
