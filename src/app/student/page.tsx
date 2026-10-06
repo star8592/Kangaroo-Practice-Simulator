@@ -49,7 +49,7 @@ export default async function StudentPage() {
       <p className={styles.modelNote}>{ui.modelNote}</p>
 
       {attention.doNow && <section className={styles.attentionSection}>
-        <div className={styles.attentionHeading}><div><span>{lang==="zh"?"今天":"TODAY"}</span><h2>{lang==="zh"?"现在最重要的一件事":"The one thing to do now"}</h2></div><Link href="/competitions">{lang==="zh"?"完整赛历":"Full calendar"} →</Link></div>
+        <div className={styles.attentionHeading}><div><span>{lang==="zh"?"今天":"TODAY"}</span><h2>{lang==="zh"?"现在最重要的一件事":"The one thing to do now"}</h2></div><Link href="/student/calendar">{lang==="zh"?"完整赛历":"Full calendar"} →</Link></div>
         <article className={styles.doNowCard}>
           <div className={styles.attentionDate}><b>{attention.doNow.daysUntil<=0?(lang==="zh"?"现在":"NOW"):`${attention.doNow.daysUntil}D`}</b><span>{attention.doNow.milestone.start.slice(5)}</span></div>
           <div><small>{lang==="zh"?attention.doNow.event.titleZh:attention.doNow.event.titleEn}</small><h3>{lang==="zh"?attention.doNow.milestone.titleZh:attention.doNow.milestone.titleEn}</h3><p>{lang==="zh"?attention.doNow.reasonZh:attention.doNow.reasonEn}</p></div>

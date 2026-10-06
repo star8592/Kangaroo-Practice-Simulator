@@ -1,0 +1,12 @@
+import assert from "node:assert/strict";
+import {lifecycleStage} from "../src/lib/academic-events/calendar";
+import type {AcademicMilestone} from "../src/lib/academic-events/types";
+const m=(kind:AcademicMilestone["kind"],start:string):AcademicMilestone=>({id:kind+start,sessionId:"s",kind,start,titleZh:kind,titleEn:kind,sourceId:"x",consequence:"critical"});
+assert.equal(lifecycleStage("planned",[m("registration-deadline","2026-10-10"),m("exam","2026-11-01")],"2026-10-06"),"报名");
+assert.equal(lifecycleStage("registered",[m("mock","2026-10-08"),m("exam","2026-10-11")],"2026-10-06"),"备赛");
+assert.equal(lifecycleStage("ready",[m("exam","2026-10-11")],"2026-10-06"),"待考试");
+assert.equal(lifecycleStage("taken",[m("exam","2026-10-05")],"2026-10-06"),"考试完成");
+assert.equal(lifecycleStage("result-pending",[],"2026-10-06"),"等待成绩");
+assert.equal(lifecycleStage("awarded",[],"2026-10-06"),"成绩/证书");
+assert.equal(lifecycleStage("closed",[],"2026-10-06"),"已结束");
+console.log("ACADEMIC_LIFECYCLE=PASS");
