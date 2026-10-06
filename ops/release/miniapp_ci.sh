@@ -27,7 +27,7 @@ if [[ ! -f "$CACHE/node_modules/miniprogram-ci/package.json" ]]; then
   npm --prefix "$CACHE" install --no-audit --no-fund --save-exact "miniprogram-ci@$CI_VERSION"
 fi
 
-MODULE_PATH="$(NODE_PATH="$CACHE/node_modules" node -p "require.resolve(\'miniprogram-ci\')")"
+MODULE_PATH="$(NODE_PATH="$CACHE/node_modules" node -p "require.resolve('miniprogram-ci')")"
 NODE_PATH="$CACHE/node_modules" \
 MINIAPP_CI_MODULE="$MODULE_PATH" \
 MINIAPP_MODE="$MODE" \
