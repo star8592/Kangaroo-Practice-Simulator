@@ -1,4 +1,4 @@
-import { GRADE_PROFILES, type ArithmeticGrade } from "./arithmetic";
+import { GRADE_PROFILES } from "./arithmetic";
 import { buildArithmeticMilestone, type ArithmeticSession } from "./arithmetic-analytics";
 import type { MathCard } from "./math-cardbook";
 
