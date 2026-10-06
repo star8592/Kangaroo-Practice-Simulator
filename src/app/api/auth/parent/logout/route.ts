@@ -13,7 +13,13 @@ export async function POST(req: NextRequest) {
     maxAge: 0,
   });
 
-  if (req.nextUrl.hostname === "socthink.cn" || req.nextUrl.hostname.endsWith(".socthink.cn")) {
+  const requestHost = (
+    req.headers.get("x-forwarded-host") ||
+    req.headers.get("host") ||
+    req.nextUrl.hostname
+  ).split(":")[0].toLowerCase();
+
+  if (requestHost === "socthink.cn" || requestHost.endsWith(".socthink.cn")) {
     const attributes = [
       PARENT_SESSION_COOKIE + "=",
       "Path=/",
