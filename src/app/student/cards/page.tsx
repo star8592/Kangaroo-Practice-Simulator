@@ -39,9 +39,7 @@ export default async function StudentCardsPage() {
     ? "/exam/" + encodeURIComponent(goal.examId)
     : "/competitions";
 
-  const goalTitle = goal.mode === "upgrade"
-    ? (lang === "zh" ? `下一张：${goal.targetRarity}卡` : `Next: ${rarityLabel(goal.targetRarity,lang)} card`)
-    : (lang === "zh" ? "下一张：新的挑战卡" : "Next: a new challenge card");
+  const goalTitle = goal.mode === "upgrade"\n    ? (lang === "zh" ? `推荐：冲击${goal.targetRarity}卡` : `Recommended: aim for a ${rarityLabel(goal.targetRarity,lang)} card`)\n    : (lang === "zh" ? "推荐：尝试一套新的正式挑战" : "Recommended: try a new full challenge");
   const goalBody = goal.mode === "upgrade"
     ? (lang === "zh"
       ? `目前最好成绩 ${goal.currentPercent}%，冲到 ${goal.targetPercent}% 就能升级。`
@@ -69,7 +67,7 @@ export default async function StudentCardsPage() {
 
       <section className={styles.nextGoal}>
         <div className={styles.goalCopy}>
-          <span className={styles.eyebrow}>NEXT CARD</span>
+          <span className={styles.eyebrow}>RECOMMENDED</span>
           <h2>{goalTitle}</h2>
           <p>{goalBody}</p>
           {goal.mode === "upgrade" && goal.targetPercent ? <div className={styles.progressWrap}>
@@ -82,12 +80,12 @@ export default async function StudentCardsPage() {
               : (lang === "zh" ? "找一套新挑战" : "Find a new challenge")}
           </Link>
         </div>
-        <div className={styles.lockedCard} aria-label={lang === "zh" ? "下一张未解锁卡" : "Next locked card"}>
+        <div className={styles.lockedCard} aria-label={lang === "zh" ? "推荐解锁目标" : "Recommended unlock goal"}>
           <div className={styles.lockedRarity}>{rarityLabel(goal.targetRarity,lang)}</div>
           <div className={styles.lock}>🔒</div>
-          <strong>{lang === "zh" ? "下一张卡" : "Next Card"}</strong>
+          <strong>{lang === "zh" ? "可解锁荣誉" : "Unlockable Honor"}</strong>
           <span>{goal.targetPercent ? `${goal.targetPercent}%+` : "?"}</span>
-          <small>{lang === "zh" ? "继续挑战来解锁" : "Keep challenging to unlock"}</small>
+          <small>{lang === "zh" ? "这是建议，不影响自由选择" : "A suggestion, never a restriction"}</small>
         </div>
       </section>
 
