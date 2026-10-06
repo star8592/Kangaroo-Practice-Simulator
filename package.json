@@ -88,11 +88,10 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@types/three": "^0.186.0",
-    "eslint": "^9",
+    "eslint": "10.0.1",
     "tsx": "^4.23.13",
     "typescript": "^5",
-    "@eslint/js": "9.39.5",
-    "eslint-plugin-react": "7.37.5",
+    "@eslint/js": "10.0.1",
     "eslint-plugin-react-hooks": "7.1.1",
     "globals": "17.13.0",
     "typescript-eslint": "8.71.1"
