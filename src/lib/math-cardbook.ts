@@ -33,6 +33,89 @@ export type CardbookStats = {
   mythic: number;
 };
 
+export type ExamCardResultState = {
+  state: "new" | "upgrade" | "complete";
+  previousBestPercent?: number;
+  previousBestScore?: number;
+  previousBestMaxScore?: number;
+  currentPercent: number;
+  currentScore: number;
+  currentMaxScore: number;
+  bestPercent: number;
+  bestScore: number;
+  bestMaxScore: number;
+  rarityBefore?: MathCardRarity;
+  rarityAfter: MathCardRarity;
+  rarityUpgraded: boolean;
+  nextTargetPercent?: number;
+  nextTargetRarity?: MathCardRarity;
+};
+
+function nextRarityTarget(pct: number): { percent: number; rarity: MathCardRarity } | null {
+  if (pct < 70) return { percent: 70, rarity: "稀有" };
+  if (pct < 80) return { percent: 80, rarity: "超稀有" };
+  if (pct < 90) return { percent: 90, rarity: "传说" };
+  if (pct < 96) return { percent: 96, rarity: "神话" };
+  return null;
+}
+
+export function buildExamCardResultState(attempts: ExamAttemptRecord[], attemptId: string): ExamCardResultState | null {
+  const current = attempts.find(a => a.id === attemptId);
+  if (!current || current.profile.paperType === "practice") return null;
+
+  const currentPercent = percent(current.grade.score, current.grade.maxScore);
+  const prior = attempts
+    .filter(a =>
+      a.id !== current.id
+      && a.examId === current.examId
+      && a.profile.paperType !== "practice"
+      && a.submittedAt <= current.submittedAt
+    )
+    .sort((a, b) => b.submittedAt - a.submittedAt);
+
+  let previousBest: ExamAttemptRecord | undefined;
+  let previousBestPercent = -1;
+  for (const candidate of prior) {
+    const pct = percent(candidate.grade.score, candidate.grade.maxScore);
+    if (!previousBest || pct > previousBestPercent || (pct === previousBestPercent && candidate.submittedAt > previousBest.submittedAt)) {
+      previousBest = candidate;
+      previousBestPercent = pct;
+    }
+  }
+
+  const state: ExamCardResultState["state"] = !previousBest
+    ? "new"
+    : currentPercent > previousBestPercent
+      ? "upgrade"
+      : "complete";
+
+  const bestIsCurrent = !previousBest || currentPercent > previousBestPercent;
+  const bestScore = bestIsCurrent ? current.grade.score : previousBest.grade.score;
+  const bestMaxScore = bestIsCurrent ? current.grade.maxScore : previousBest.grade.maxScore;
+  const bestPercent = bestIsCurrent ? currentPercent : previousBestPercent;
+  const rarityBefore = previousBest ? rarityForPercent(previousBestPercent) : undefined;
+  const rarityAfter = rarityForPercent(bestPercent);
+  const next = nextRarityTarget(bestPercent);
+
+  return {
+    state,
+    previousBestPercent: previousBest ? previousBestPercent : undefined,
+    previousBestScore: previousBest?.grade.score,
+    previousBestMaxScore: previousBest?.grade.maxScore,
+    currentPercent,
+    currentScore: current.grade.score,
+    currentMaxScore: current.grade.maxScore,
+    bestPercent,
+    bestScore,
+    bestMaxScore,
+    rarityBefore,
+    rarityAfter,
+    rarityUpgraded: Boolean(rarityBefore && rarityBefore !== rarityAfter),
+    nextTargetPercent: next?.percent,
+    nextTargetRarity: next?.rarity,
+  };
+}
+
 function rarityForPercent(pct: number): MathCardRarity {
   if (pct >= 96) return "神话";
   if (pct >= 90) return "传说";
