@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
+import { COMPETITION_BRAND } from "@/lib/competition-brand";
 import { useSiteLanguage } from "@/lib/site-language";
 
 const UI={
@@ -16,7 +18,7 @@ const UI={
   s4:"有没有进步",s4d:"持续记录正确率、速度、错因和考试表现，让家长和学生看到变化。",
   modes:"两种训练场景，一份长期学习画像",
   calc:"计算与基础能力",calcDesc:"覆盖 G1–G12，从基础运算延伸到代数、函数、概率与统计。支持诊断、自适应训练、限时训练和巧算策略。",calcCta:"进入计算训练",
-  comp:"国际数学竞赛",compDesc:"袋鼠数学、澳洲 AMC、美国 AMC、CEMC 等按各自真实赛制组织。先了解赛事，再用真题、样题和模拟考试检验迁移能力。",compCta:"进入竞赛中心",
+  comp:"国际数学竞赛",compDesc:"不是单一袋鼠题库。澳洲 AMC、美国 MAA AMC、加拿大 CEMC 与袋鼠数学都有独立赛事入口，并逐步接入真题、模拟、参赛流程和考试管家。",compCta:"进入全部竞赛",
   profile:"学习结果不是一次分数",profileDesc:"训练记录、速度、正确率、错因与考试表现汇入长期档案。登录后可继续上次进度并查看个人学习报告。",profileCta:"查看我的学习报告",
  },
  en:{
@@ -39,6 +41,12 @@ const UI={
 export default function PublicHome(){
  const lang=useSiteLanguage(),ui=UI[lang];
  const steps=[[ui.s1,ui.s1d],[ui.s2,ui.s2d],[ui.s3,ui.s3d],[ui.s4,ui.s4d]];
+ const competitions=[
+  {id:"australian-amc",zh:"澳洲 AMC",en:"Australian AMC",subZh:"Pre-A / A / B · 真题 · 模拟 · 参赛管家",subEn:"Pre-A / A / B · papers · mocks · exam companion"},
+  {id:"maa-amc",zh:"美国 MAA AMC",en:"MAA AMC",subZh:"AMC 8 / 10 / 12 / AIME",subEn:"AMC 8 / 10 / 12 / AIME"},
+  {id:"cemc",zh:"加拿大 CEMC",en:"Waterloo CEMC",subZh:"Gauss / Pascal / Cayley / Fermat / Euclid",subEn:"Gauss / Pascal / Cayley / Fermat / Euclid"},
+  {id:"kangaroo",zh:"袋鼠数学",en:"Math Kangaroo",subZh:"多国家 / 多年级真实赛制",subEn:"Country- and grade-specific formats"},
+ ] as const;
  return <div className="home-shell public-home">
   <section className="hero-card home-hero">
    <div className="eyebrow">{ui.eye}</div>
@@ -56,6 +64,11 @@ export default function PublicHome(){
   <section className="home-loop" aria-label={ui.loop}>
    <div className="section-heading"><div><span className="eyebrow">DIAGNOSE → PRACTICE → REVIEW → GROW</span><h1>{ui.loop}</h1></div></div>
    <div className="home-step-grid">{steps.map(([title,desc],i)=><article key={title}><div className="feature-index">0{i+1}</div><h2>{title}</h2><p>{desc}</p></article>)}</div>
+  </section>
+
+  <section className="home-competition-showcase">
+   <div className="section-heading"><div><span className="eyebrow">COMPETITION HUB</span><h1>{lang==="zh"?"不止袋鼠：每项赛事都是独立业务入口":"More than Kangaroo: each competition has its own hub"}</h1><p>{lang==="zh"?"从了解赛事、历年真题、仿真模拟，到参赛准备和考试流程，按赛事分别组织。":"Each competition is organized from discovery and past papers through mocks and exam-day preparation."}</p></div></div>
+   <div className="home-competition-grid">{competitions.map(c=>{const b=COMPETITION_BRAND[c.id];return <Link key={c.id} className="home-competition-card" href={`/competitions?c=${c.id}`}><div className="competition-brand">{b.logo?<Image src={b.logo} alt={lang==="zh"?c.zh:c.en} width={156} height={44}/>:<div className="competition-brand-wordmark"><b>{b.short}</b><span>{b.mark}</span></div>}</div><strong>{lang==="zh"?c.zh:c.en}</strong><span>{lang==="zh"?c.subZh:c.subEn}</span><em>{lang==="zh"?"进入赛事中心 →":"Open hub →"}</em></Link>})}</div>
   </section>
 
   <section className="home-modes">
