@@ -12,6 +12,16 @@ export type CleverNodeMetric={node:CleverNode;attempts:number;correct:number;acc
 export type ProbeStatus="insufficient"|"monitor"|"strategy_gap"|"general_slow"|"efficient";
 export type ProbeMetric={node:CleverNode;pairs:number;gapPairs:number;controlMedianMs:number;strategyMedianMs:number;slowdownRatio:number;status:ProbeStatus};
 export type TrainingPlan={grade:ArithmeticGrade;focusSkills:string[];accuracyFocusSkills:string[];fluencyFocusSkills:string[];monitorSkills:string[];focusStrategies:MentalStrategy[];focusNodes:CleverNode[];reasons:{code:ErrorReason;count:number}[];summaryZh:string[];summaryEn:string[];metrics:SkillMetric[];strategyMetrics:StrategyMetric[];nodeMetrics:CleverNodeMetric[];probeMetrics:ProbeMetric[]};
+export type ArithmeticMilestoneCode="first_perfect_set"|"accuracy_personal_best"|"skill_stable_recovery";
+export type ArithmeticMilestone={
+  code:ArithmeticMilestoneCode;
+  grade:ArithmeticGrade;
+  accuracy:number;
+  previousBestAccuracy?:number;
+  improvementPoints?:number;
+  skillId?:string;
+};
+
 
 function median(xs:number[]){if(!xs.length)return 0;const a=[...xs].sort((x,y)=>x-y);const m=Math.floor(a.length/2);return a.length%2?a[m]:(a[m-1]+a[m])/2;}
 function mean(xs:number[]){return xs.length?xs.reduce((a,b)=>a+b,0)/xs.length:0;}
@@ -46,6 +56,60 @@ function normalizeLegacyAttempt(a:ArithmeticAttempt):ArithmeticAttempt{
  const edits=a.telemetryVersion===2?a.edits:(a.backspaces>0?Math.min(a.edits,a.backspaces):0);const entryMs=a.entryMs??Math.max(0,a.responseMs-a.firstInputMs);
  return {...a,entryMs,edits,reason:classifyAttempt(a.item,a.answer,a.responseMs,a.firstInputMs,edits,a.backspaces),telemetryVersion:3};
 }
+function sessionAccuracy(session:ArithmeticSession){
+ const total=session.attempts.length;
+ return total?session.attempts.filter(a=>a.correct).length/total:0;
+}
+function stableSkillInSession(session:ArithmeticSession,skillId:string,targetAccuracy:number,targetMs:number){
+ const xs=session.attempts.filter(a=>a.item.skillId===skillId);
+ if(xs.length<3)return false;
+ const accuracy=xs.filter(a=>a.correct).length/xs.length;
+ const med=median(xs.map(a=>a.firstInputMs));
+ return accuracy>=targetAccuracy&&med>0&&med<=targetMs*1.1;
+}
+export function buildArithmeticMilestone(grade:ArithmeticGrade,history:ArithmeticSession[],current:ArithmeticSession):ArithmeticMilestone|null{
+ const profile=GRADE_PROFILES[grade];
+ const prior=history
+  .filter(s=>s.grade===grade&&s.id!==current.id&&s.finishedAt<=current.finishedAt)
+  .sort((a,b)=>a.finishedAt-b.finishedAt);
+ const accuracy=sessionAccuracy(current);
+
+ const perfect=current.attempts.length>=20&&current.attempts.every(a=>a.correct);
+ const hadPerfect=prior.some(s=>s.attempts.length>=20&&s.attempts.every(a=>a.correct));
+ if(perfect&&!hadPerfect)return{code:"first_perfect_set",grade,accuracy};
+
+ const previous=prior.at(-1);
+ const older=prior.slice(0,-1);
+ if(previous&&older.length){
+  const earlierPlan=buildTrainingPlan(grade,older);
+  const weakSkills=earlierPlan.metrics
+   .filter(m=>m.status==="needs_accuracy"||m.status==="needs_fluency")
+   .map(m=>m.skillId);
+  for(const skillId of weakSkills){
+   const skill=profile.skills.find(s=>s.id===skillId);
+   if(!skill)continue;
+   if(
+    stableSkillInSession(previous,skillId,profile.targetAccuracy,skill.targetMs)
+    &&stableSkillInSession(current,skillId,profile.targetAccuracy,skill.targetMs)
+   )return{code:"skill_stable_recovery",grade,accuracy,skillId};
+  }
+ }
+
+ const eligiblePrior=prior.filter(s=>s.attempts.length>=12);
+ if(current.attempts.length>=12&&eligiblePrior.length){
+  const previousBest=Math.max(...eligiblePrior.map(sessionAccuracy));
+  const improvementPoints=Math.round((accuracy-previousBest)*100);
+  if(improvementPoints>=5)return{
+   code:"accuracy_personal_best",
+   grade,
+   accuracy,
+   previousBestAccuracy:previousBest,
+   improvementPoints,
+  };
+ }
+ return null;
+}
+
 export function buildTrainingPlan(grade:ArithmeticGrade,sessions:ArithmeticSession[]):TrainingPlan{
  const profile=GRADE_PROFILES[grade];const gradeSessions=sessions.filter(s=>s.grade===grade);const attempts=gradeSessions.flatMap(s=>s.attempts).slice(-240).map(normalizeLegacyAttempt);const bySkill=new Map<string,ArithmeticAttempt[]>();
  for(const a of attempts){const x=bySkill.get(a.item.skillId)||[];x.push(a);bySkill.set(a.item.skillId,x)}
