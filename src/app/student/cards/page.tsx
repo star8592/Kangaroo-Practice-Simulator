@@ -39,7 +39,9 @@ export default async function StudentCardsPage() {
     ? "/exam/" + encodeURIComponent(goal.examId)
     : "/competitions";
 
-  const goalTitle = goal.mode === "upgrade"\n    ? (lang === "zh" ? `推荐：冲击${goal.targetRarity}卡` : `Recommended: aim for a ${rarityLabel(goal.targetRarity,lang)} card`)\n    : (lang === "zh" ? "推荐：尝试一套新的正式挑战" : "Recommended: try a new full challenge");
+  const goalTitle = goal.mode === "upgrade"
+    ? (lang === "zh" ? `推荐：冲击${goal.targetRarity}卡` : `Recommended: aim for a ${rarityLabel(goal.targetRarity,lang)} card`)
+    : (lang === "zh" ? "推荐：尝试一套新的正式挑战" : "Recommended: try a new full challenge");
   const goalBody = goal.mode === "upgrade"
     ? (lang === "zh"
       ? `目前最好成绩 ${goal.currentPercent}%，冲到 ${goal.targetPercent}% 就能升级。`
