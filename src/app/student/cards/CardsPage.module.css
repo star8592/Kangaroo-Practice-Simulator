@@ -1,2 +1,278 @@
-.page{max-width:1080px;margin:0 auto;padding:34px 20px 60px}.top{display:flex;align-items:end;justify-content:space-between;gap:20px;margin-bottom:24px}.eyebrow{font-size:10px;font-weight:900;letter-spacing:.1em;color:var(--accent)}.page h1{margin:6px 0;font-size:38px;letter-spacing:-.04em}.top p{margin:0;color:var(--muted);font-size:13px}.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}.card{position:relative;min-height:330px;padding:20px;border-radius:22px;border:1px solid #eadfbf;background:linear-gradient(150deg,#fffdf7,#fff2c9);box-shadow:0 14px 30px rgba(83,61,23,.1);display:flex;flex-direction:column;align-items:center;text-align:center;overflow:hidden}.rarity{align-self:flex-end;position:relative;z-index:1;padding:4px 8px;border-radius:999px;background:rgba(255,255,255,.65);font-size:9px;font-weight:900}.icon{margin:22px 0 16px;width:92px;height:92px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.65);font-size:46px;color:#d69a20}.card h2{margin:0;font-size:20px}.card p{min-height:36px;margin:7px 0;color:#756b58;font-size:11px;line-height:1.5}.card>strong{font-size:22px}.card>small{margin-top:4px;color:#8b806c;font-size:9px}.card>a{margin-top:auto;color:var(--accent-dark);font-size:11px;font-weight:900}.empty{padding:70px 20px;text-align:center;border:1px dashed #d9d0bd;border-radius:24px;background:#fffdf7}.empty>div{font-size:54px}.empty h2{margin:14px 0 6px}.empty p{margin:0 auto 20px;max-width:420px;color:var(--muted);font-size:12px}@media(max-width:800px){.nextGoal{grid-template-columns:1fr}.lockedCard{min-height:190px}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.top{align-items:flex-start;flex-direction:column}.page h1{font-size:32px}}@media(max-width:480px){.nextGoal{padding:16px}.goalCopy h2{font-size:22px}.grid{grid-template-columns:1fr}.card{min-height:300px}}
-.nextGoal{display:grid;grid-template-columns:minmax(0,1fr) 260px;gap:20px;align-items:stretch;margin:0 0 24px;padding:22px;border:1px solid #eadfbf;border-radius:24px;background:linear-gradient(135deg,#fffdf7,#fff7dc);box-shadow:0 12px 28px rgba(83,61,23,.08)}.goalCopy{display:flex;flex-direction:column;align-items:flex-start;justify-content:center}.goalCopy h2{margin:6px 0 8px;font-size:26px}.goalCopy p{max-width:620px;margin:0 0 14px;color:#756b58;font-size:12px;line-height:1.65}.progressWrap{width:min(520px,100%);margin:0 0 16px}.progressLabels{display:flex;justify-content:space-between;margin-bottom:6px;font-size:10px;color:#7d735f}.progressLabels strong{color:#2c2518}.progress{height:10px;border-radius:999px;background:#eee3c8;overflow:hidden}.progress i{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,#e5af3e,#ffcf63)}.lockedCard{min-height:230px;padding:16px;border:2px dashed #d8c79d;border-radius:20px;background:rgba(255,255,255,.48);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}.lockedRarity{align-self:flex-end;padding:4px 8px;border-radius:999px;background:#fff;font-size:9px;font-weight:900}.lock{margin:18px 0 10px;font-size:42px}.lockedCard>strong{font-size:20px}.lockedCard>span{margin-top:4px;font-size:26px;font-weight:900;color:#c18c23}.lockedCard>small{margin-top:8px;color:#847a67;font-size:9px}
+.page {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 34px 20px 60px;
+}
+
+.top {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 24px;
+}
+
+.eyebrow {
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: .1em;
+  color: var(--accent);
+}
+
+.page h1 {
+  margin: 6px 0;
+  font-size: 38px;
+  letter-spacing: -.04em;
+}
+
+.top p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.nextGoal {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 260px;
+  gap: 20px;
+  align-items: stretch;
+  margin: 0 0 24px;
+  padding: 22px;
+  border: 1px solid #eadfbf;
+  border-radius: 24px;
+  background: linear-gradient(135deg, #fffdf7, #fff7dc);
+  box-shadow: 0 12px 28px rgba(83, 61, 23, .08);
+}
+
+.goalCopy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.goalCopy h2 {
+  margin: 6px 0 8px;
+  font-size: 26px;
+}
+
+.goalCopy p {
+  max-width: 620px;
+  margin: 0 0 14px;
+  color: #756b58;
+  font-size: 12px;
+  line-height: 1.65;
+}
+
+.progressWrap {
+  width: min(520px, 100%);
+  margin: 0 0 16px;
+}
+
+.progressLabels {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 6px;
+  font-size: 10px;
+  color: #7d735f;
+}
+
+.progressLabels strong {
+  color: #2c2518;
+}
+
+.progress {
+  height: 10px;
+  border-radius: 999px;
+  background: #eee3c8;
+  overflow: hidden;
+}
+
+.progress i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #e5af3e, #ffcf63);
+}
+
+.lockedCard {
+  min-height: 230px;
+  padding: 16px;
+  border: 2px dashed #d8c79d;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, .48);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.lockedRarity {
+  align-self: flex-end;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: #fff;
+  font-size: 9px;
+  font-weight: 900;
+}
+
+.lock {
+  margin: 18px 0 10px;
+  font-size: 42px;
+}
+
+.lockedCard > strong {
+  font-size: 20px;
+}
+
+.lockedCard > span {
+  margin-top: 4px;
+  font-size: 26px;
+  font-weight: 900;
+  color: #c18c23;
+}
+
+.lockedCard > small {
+  margin-top: 8px;
+  color: #847a67;
+  font-size: 9px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.card {
+  position: relative;
+  min-height: 330px;
+  padding: 20px;
+  border-radius: 22px;
+  border: 1px solid #eadfbf;
+  background: linear-gradient(150deg, #fffdf7, #fff2c9);
+  box-shadow: 0 14px 30px rgba(83, 61, 23, .1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  overflow: hidden;
+}
+
+.rarity {
+  align-self: flex-end;
+  position: relative;
+  z-index: 1;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .65);
+  font-size: 9px;
+  font-weight: 900;
+}
+
+.icon {
+  margin: 22px 0 16px;
+  width: 92px;
+  height: 92px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: rgba(255, 255, 255, .65);
+  font-size: 46px;
+  color: #d69a20;
+}
+
+.card h2 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.card p {
+  min-height: 36px;
+  margin: 7px 0;
+  color: #756b58;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.card > strong {
+  font-size: 22px;
+}
+
+.card > small {
+  margin-top: 4px;
+  color: #8b806c;
+  font-size: 9px;
+}
+
+.card > a {
+  margin-top: auto;
+  color: var(--accent-dark);
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.empty {
+  padding: 70px 20px;
+  text-align: center;
+  border: 1px dashed #d9d0bd;
+  border-radius: 24px;
+  background: #fffdf7;
+}
+
+.empty > div {
+  font-size: 54px;
+}
+
+.empty h2 {
+  margin: 14px 0 6px;
+}
+
+.empty p {
+  margin: 0 auto 20px;
+  max-width: 420px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+@media (max-width: 800px) {
+  .nextGoal {
+    grid-template-columns: 1fr;
+  }
+
+  .lockedCard {
+    min-height: 190px;
+  }
+
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .top {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .page h1 {
+    font-size: 32px;
+  }
+}
+
+@media (max-width: 480px) {
+  .nextGoal {
+    padding: 16px;
+  }
+
+  .goalCopy h2 {
+    font-size: 22px;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .card {
+    min-height: 300px;
+  }
+}
