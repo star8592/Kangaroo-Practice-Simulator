@@ -89,10 +89,14 @@ export function buildExamCardResultState(attempts: ExamAttemptRecord[], attemptI
       ? "upgrade"
       : "complete";
 
-  const bestIsCurrent = !previousBest || currentPercent > previousBestPercent;
-  const bestScore = bestIsCurrent ? current.grade.score : previousBest.grade.score;
-  const bestMaxScore = bestIsCurrent ? current.grade.maxScore : previousBest.grade.maxScore;
-  const bestPercent = bestIsCurrent ? currentPercent : previousBestPercent;
+  let bestScore = current.grade.score;
+  let bestMaxScore = current.grade.maxScore;
+  let bestPercent = currentPercent;
+  if (previousBest && currentPercent <= previousBestPercent) {
+    bestScore = previousBest.grade.score;
+    bestMaxScore = previousBest.grade.maxScore;
+    bestPercent = previousBestPercent;
+  }
   const rarityBefore = previousBest ? rarityForPercent(previousBestPercent) : undefined;
   const rarityAfter = rarityForPercent(bestPercent);
   const next = nextRarityTarget(bestPercent);
