@@ -6,6 +6,7 @@ import { SESSION_COOKIE, userFromSessionToken } from "@/lib/auth";
 import { buildStudentAnalytics } from "@/lib/student-analytics";
 import { studentAvatarEmoji } from "@/lib/student-avatar";
 import styles from "./StudentDashboard.module.css";
+import { buildStudentAttention } from "@/lib/academic-events/student-attention";
 
 export const dynamic = "force-dynamic";
 
@@ -25,6 +26,8 @@ export default async function StudentPage() {
   const ui=UI[lang];
   const a = buildStudentAnalytics(user);
   const o = a.overview;
+  const today = new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Shanghai" });
+  const attention = buildStudentAttention(user, today);
 
   return (
     <div className={`student-shell ${styles.shell}`}>
@@ -44,6 +47,16 @@ export default async function StudentPage() {
       </section>
 
       <p className={styles.modelNote}>{ui.modelNote}</p>
+
+      {attention.doNow && <section className={styles.attentionSection}>
+        <div className={styles.attentionHeading}><div><span>{lang==="zh"?"今天":"TODAY"}</span><h2>{lang==="zh"?"现在最重要的一件事":"The one thing to do now"}</h2></div><Link href="/competitions">{lang==="zh"?"完整赛历":"Full calendar"} →</Link></div>
+        <article className={styles.doNowCard}>
+          <div className={styles.attentionDate}><b>{attention.doNow.daysUntil<=0?(lang==="zh"?"现在":"NOW"):`${attention.doNow.daysUntil}D`}</b><span>{attention.doNow.milestone.start.slice(5)}</span></div>
+          <div><small>{lang==="zh"?attention.doNow.event.titleZh:attention.doNow.event.titleEn}</small><h3>{lang==="zh"?attention.doNow.milestone.titleZh:attention.doNow.milestone.titleEn}</h3><p>{lang==="zh"?attention.doNow.reasonZh:attention.doNow.reasonEn}</p></div>
+        </article>
+        {attention.next.length>0 && <div className={styles.nextAttention}><strong>{lang==="zh"?"接下来":"NEXT"}</strong>{attention.next.map(x=><div key={x.milestone.id}><span>{x.milestone.start.slice(5)}</span><b>{lang==="zh"?x.milestone.titleZh:x.milestone.titleEn}</b><small>{lang==="zh"?x.reasonZh:x.reasonEn}</small></div>)}</div>}
+        {attention.hiddenCount>0&&<p className={styles.attentionHidden}>{lang==="zh"?`另有 ${attention.hiddenCount} 项已收进完整赛历，避免干扰当前任务。`:`${attention.hiddenCount} more items are kept in the full calendar to reduce distraction.`}</p>}
+      </section>}
 
       <section className={styles.kpiGrid}>
         <article className={styles.kpi}><span>{ui.formal}</span><strong>{o.examAttempts}</strong><small>{ui.records}</small></article>
