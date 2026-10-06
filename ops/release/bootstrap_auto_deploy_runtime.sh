@@ -11,6 +11,10 @@ PREBUILT_DROPIN="$DROPIN_DIR/90-prebuilt-runtime.conf"
 IN_PLACE_DROPIN="$DROPIN_DIR/90-auto-deploy-runtime.conf"
 RUNNER_SRC="$EXPECTED_APP/ops/release/auto_deploy_server.sh"
 RUNNER_DST="/usr/local/sbin/socthink-auto-deploy"
+AUTO_SERVICE_SRC="$EXPECTED_APP/ops/release/systemd/socthink-auto-deploy.service"
+AUTO_TIMER_SRC="$EXPECTED_APP/ops/release/systemd/socthink-auto-deploy.timer"
+AUTO_SERVICE_DST="/etc/systemd/system/socthink-auto-deploy.service"
+AUTO_TIMER_DST="/etc/systemd/system/socthink-auto-deploy.timer"
 PDF_RUNTIME_DIR="$EXPECTED_APP/.runtime/pdf-browser"
 PDF_RUNTIME_VERSION="chromium-153.0.0_puppeteer-25.12.0"
 
@@ -73,9 +77,21 @@ if [[ -f "$PREBUILT_DROPIN" ]]; then
   echo "BOOTSTRAP_AUTO_DEPLOY=RUNTIME_MODE prebuilt_to_in_place backup=$backup"
 fi
 
-systemctl daemon-reload
-
 if [[ -f "$RUNNER_SRC" ]]; then
   install -m 0755 "$RUNNER_SRC" "$RUNNER_DST"
   echo "BOOTSTRAP_AUTO_DEPLOY=RUNNER_UPDATED"
+fi
+
+if [[ -f "$AUTO_SERVICE_SRC" && -f "$AUTO_TIMER_SRC" ]]; then
+  install -m 0644 "$AUTO_SERVICE_SRC" "$AUTO_SERVICE_DST"
+  install -m 0644 "$AUTO_TIMER_SRC" "$AUTO_TIMER_DST"
+  systemctl daemon-reload
+  systemctl enable --now socthink-auto-deploy.timer
+  systemctl is-enabled --quiet socthink-auto-deploy.timer
+  systemctl is-active --quiet socthink-auto-deploy.timer
+  echo "BOOTSTRAP_AUTO_DEPLOY=TIMER_READY"
+else
+  systemctl daemon-reload
+  echo "BOOTSTRAP_AUTO_DEPLOY=ERROR timer_units_missing" >&2
+  exit 2
 fi
