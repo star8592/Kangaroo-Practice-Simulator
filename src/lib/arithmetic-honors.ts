@@ -2,7 +2,6 @@ import { GRADE_PROFILES, type ArithmeticGrade } from "./arithmetic";
 import { buildArithmeticMilestone, type ArithmeticSession } from "./arithmetic-analytics";
 import type { MathCard } from "./math-cardbook";
 
-function gradeLabel(grade:ArithmeticGrade){return `G${grade}`;}
 
 export function buildArithmeticHonorCards(sessions:ArithmeticSession[]):MathCard[]{
   const sorted=[...sessions].sort((a,b)=>a.finishedAt-b.finishedAt);
