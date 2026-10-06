@@ -2,9 +2,9 @@ import assert from "node:assert/strict";
 import { buildArithmeticMilestone, type ArithmeticAttempt, type ArithmeticSession } from "../src/lib/arithmetic-analytics";
 import type { ArithmeticItem } from "../src/lib/arithmetic-generator";
 
-function makeAttempt(skillId:string,correct:boolean,ms=600):ArithmeticAttempt{
+let attemptCounter=0;\nfunction makeAttempt(skillId:string,correct:boolean,ms=600):ArithmeticAttempt{
   const item:ArithmeticItem={
-    id:Math.random().toString(36),
+    id:"item-"+(++attemptCounter),
     grade:2,
     skillId,
     prompt:"38 + 29 = ?",
