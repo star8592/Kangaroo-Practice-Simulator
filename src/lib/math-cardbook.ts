@@ -16,6 +16,7 @@ export type MathCard = {
   completedAt: number;
   unlockText: string;
   unlockTextEn: string;
+  href?: string;
 };
 
 export type CardbookGoal = {
