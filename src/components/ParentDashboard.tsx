@@ -4,6 +4,8 @@ import { FormEvent, useEffect, useState } from "react";
 import { studentAvatarEmoji } from "@/lib/student-avatar";
 import styles from "./ParentDashboard.module.css";
 
+type AttentionItem = { milestone:{id:string;sessionId:string;start:string;titleZh:string}; event:{titleZh:string}; priority:string; daysUntil:number; reasonZh:string };
+
 type Student = {
   id: string;
   username: string;
@@ -21,6 +23,7 @@ type Student = {
     arithmeticSessions: number;
     latestExamAt: number | null;
   };
+  attention?: { doNow: AttentionItem | null; next: AttentionItem[]; hiddenCount: number };
   recentReports: Array<{
     attemptId: string;
     examId: string;
@@ -270,6 +273,17 @@ export default function ParentDashboard() {
               <span className={styles.kicker}>学生档案</span>
               <h2>{studentAvatarEmoji(student.avatarKey)} {student.name}</h2>
               <p>{student.grade} 年级{student.school ? " · " + student.school : ""}</p>
+
+              {student.attention?.doNow && <div className={styles.attentionBox}>
+                <span>现在最重要</span>
+                <strong>{student.attention.doNow.milestone.titleZh}</strong>
+                <small>{student.attention.doNow.event.titleZh} · {student.attention.doNow.reasonZh}</small>
+                <div className={styles.enrollmentActions}>
+                  <button onClick={async()=>{await fetch("/api/academic-events/enrollment",{method:"PATCH",headers:{"content-type":"application/json"},body:JSON.stringify({studentId:student.id,sessionId:student.attention!.doNow!.milestone.sessionId,state:"registered"})});await load()}}>已报名</button>
+                  <button onClick={async()=>{await fetch("/api/academic-events/enrollment",{method:"PATCH",headers:{"content-type":"application/json"},body:JSON.stringify({studentId:student.id,sessionId:student.attention!.doNow!.milestone.sessionId,state:"planned"})});await load()}}>计划参加</button>
+                  <button onClick={async()=>{await fetch("/api/academic-events/enrollment",{method:"PATCH",headers:{"content-type":"application/json"},body:JSON.stringify({studentId:student.id,sessionId:student.attention!.doNow!.milestone.sessionId,state:"closed"})});await load()}}>不参加</button>
+                </div>
+              </div>}
 
               <div className={styles.kpiGrid}>
                 <article>
