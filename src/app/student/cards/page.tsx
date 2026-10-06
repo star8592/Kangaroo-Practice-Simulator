@@ -6,6 +6,19 @@ import { loadExamAttempts } from "@/lib/attempt-store";
 import { buildCardbookGoal, buildMathCards } from "@/lib/math-cardbook";
 import styles from "./CardsPage.module.css";
 
+const RARITY_EN: Record<string,string> = {
+  "普通":"Common",
+  "稀有":"Rare",
+  "超稀有":"Epic",
+  "传说":"Legendary",
+  "神话":"Mythic",
+};
+
+function rarityLabel(value:string|undefined,lang:"zh"|"en"){
+  if (!value) return lang==="zh"?"新卡":"NEW";
+  return lang==="zh"?value:(RARITY_EN[value]||value);
+}
+
 export const dynamic = "force-dynamic";
 
 export default async function StudentCardsPage() {
@@ -21,7 +34,7 @@ export default async function StudentCardsPage() {
     : "/competitions";
 
   const goalTitle = goal.mode === "upgrade"
-    ? (lang === "zh" ? `下一张：${goal.targetRarity}卡` : `Next: ${goal.targetRarity} card`)
+    ? (lang === "zh" ? `下一张：${goal.targetRarity}卡` : `Next: ${rarityLabel(goal.targetRarity,lang)} card`)
     : (lang === "zh" ? "下一张：新的挑战卡" : "Next: a new challenge card");
   const goalBody = goal.mode === "upgrade"
     ? (lang === "zh"
@@ -58,7 +71,7 @@ export default async function StudentCardsPage() {
           </Link>
         </div>
         <div className={styles.lockedCard} aria-label={lang === "zh" ? "下一张未解锁卡" : "Next locked card"}>
-          <div className={styles.lockedRarity}>{goal.targetRarity || (lang === "zh" ? "新卡" : "NEW")}</div>
+          <div className={styles.lockedRarity}>{rarityLabel(goal.targetRarity,lang)}</div>
           <div className={styles.lock}>🔒</div>
           <strong>{lang === "zh" ? "下一张卡" : "Next Card"}</strong>
           <span>{goal.targetPercent ? `${goal.targetPercent}%+` : "?"}</span>
@@ -68,9 +81,9 @@ export default async function StudentCardsPage() {
 
       <div className={styles.grid}>
         {cards.map(card => <article className={styles.card} key={card.id}>
-          <div className={styles.rarity}>{card.rarity}</div>
+          <div className={styles.rarity}>{rarityLabel(card.rarity,lang)}</div>
           <div className={styles.icon}>★</div>
-          <h2>{card.title}</h2>
+          <h2>{lang === "zh" ? card.title : "Math Challenger"}</h2>
           <p>{card.subtitle}</p>
           <strong>{card.score}/{card.maxScore}</strong>
           <small>{new Date(card.completedAt).toLocaleDateString(lang === "zh" ? "zh-CN" : "en-US")}</small>
