@@ -48,6 +48,8 @@ date -Iseconds > "$OUT/runtime/.release/deployed_at"
 printf '%s\n' "$VERSION" > "$OUT/runtime/VERSION"
 cp scripts/smoke_test.py "$OUT/runtime/scripts/"
 cp scripts/test_pre_a_grade1_ready.py "$OUT/runtime/scripts/"
+cp scripts/render_arithmetic_pdf_runtime.mjs "$OUT/runtime/scripts/"
+cp scripts/render_diagnostic_pdf_runtime.mjs "$OUT/runtime/scripts/"
 
 # No private/runtime user data may be embedded in a release artifact.
 if [ -e "$OUT/runtime/private" ]; then

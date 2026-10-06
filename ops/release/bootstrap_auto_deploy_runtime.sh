@@ -1,14 +1,13 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
-# One-time bridge from the immutable prebuilt service override to the regular
-# CI-green pull deployer. Outside the exact production checkout this is a no-op.
 APP_REAL="$(pwd -P)"
 EXPECTED_APP="/opt/socthink-math"
 SERVICE="socthink-math.service"
 DROPIN_DIR="/etc/systemd/system/${SERVICE}.d"
-PREBUILT_DROPIN="$DROPIN_DIR/90-prebuilt-runtime.conf"
+IMMUTABLE_DROPIN="$DROPIN_DIR/95-immutable-runtime.conf"
 IN_PLACE_DROPIN="$DROPIN_DIR/90-auto-deploy-runtime.conf"
+PREBUILT_DROPIN="$DROPIN_DIR/90-prebuilt-runtime.conf"
 RUNNER_SRC="$EXPECTED_APP/ops/release/auto_deploy_server.sh"
 RUNNER_DST="/usr/local/sbin/socthink-auto-deploy"
 AUTO_SERVICE_SRC="$EXPECTED_APP/ops/release/systemd/socthink-auto-deploy.service"
@@ -22,7 +21,7 @@ if [[ "${EUID}" -ne 0 || "$APP_REAL" != "$EXPECTED_APP" ]]; then
   exit 0
 fi
 
-ensure_pdf_runtime() {
+ensure_pdf_runtime(){
   local marker="$PDF_RUNTIME_DIR/.runtime-version"
   if [[ -f "$marker" ]] && [[ "$(cat "$marker")" == "$PDF_RUNTIME_VERSION" ]] \
     && [[ -f "$PDF_RUNTIME_DIR/node_modules/@sparticuz/chromium/package.json" ]] \
@@ -30,20 +29,12 @@ ensure_pdf_runtime() {
     echo "BOOTSTRAP_PDF_RUNTIME=READY version=$PDF_RUNTIME_VERSION"
     return 0
   fi
-
   echo "BOOTSTRAP_PDF_RUNTIME=INSTALL version=$PDF_RUNTIME_VERSION"
   mkdir -p "$PDF_RUNTIME_DIR"
   printf '%s\n' '{"private":true}' > "$PDF_RUNTIME_DIR/package.json"
   rm -rf "$PDF_RUNTIME_DIR/node_modules"
-  npm install \
-    --prefix "$PDF_RUNTIME_DIR" \
-    --no-save \
-    --no-package-lock \
-    --omit=dev \
-    --no-audit \
-    --no-fund \
-    @sparticuz/chromium@153.0.0 \
-    puppeteer-core@25.12.0
+  npm install --prefix "$PDF_RUNTIME_DIR" --no-save --no-package-lock --omit=dev --no-audit --no-fund \
+    @sparticuz/chromium@153.0.0 puppeteer-core@25.12.0
   test -f "$PDF_RUNTIME_DIR/node_modules/@sparticuz/chromium/package.json"
   test -f "$PDF_RUNTIME_DIR/node_modules/puppeteer-core/package.json"
   printf '%s\n' "$PDF_RUNTIME_VERSION" > "$marker"
@@ -51,10 +42,18 @@ ensure_pdf_runtime() {
 }
 
 ensure_pdf_runtime
-
 node_bin="$(command -v node)"
 mkdir -p "$DROPIN_DIR"
-cat > "$IN_PLACE_DROPIN" <<EOF2
+
+# During the one-time migration, production may still be running in-place.
+# Preserve an existing immutable/prebuilt runtime; otherwise keep a known-good
+# in-place fallback until the new deployer has built and smoke-tested a release.
+if [[ -f "$IMMUTABLE_DROPIN" ]]; then
+  echo "BOOTSTRAP_AUTO_DEPLOY=RUNTIME_MODE immutable_preserved"
+elif [[ -f "$PREBUILT_DROPIN" ]]; then
+  echo "BOOTSTRAP_AUTO_DEPLOY=RUNTIME_MODE prebuilt_preserved"
+else
+  cat > "$IN_PLACE_DROPIN" <<EOF
 [Service]
 WorkingDirectory=$EXPECTED_APP
 ExecStart=
@@ -62,19 +61,8 @@ ExecStart=$node_bin $EXPECTED_APP/node_modules/next/dist/bin/next start
 Environment=NODE_ENV=production
 Environment=PORT=3000
 Environment=HOSTNAME=127.0.0.1
-EOF2
-
-echo "BOOTSTRAP_AUTO_DEPLOY=IN_PLACE_DROPIN_READY file=$IN_PLACE_DROPIN"
-
-if [[ -f "$PREBUILT_DROPIN" ]]; then
-  grep -q '/opt/socthink-releases/current' "$PREBUILT_DROPIN" || {
-    echo "BOOTSTRAP_AUTO_DEPLOY=ERROR unexpected_dropin=$PREBUILT_DROPIN" >&2
-    exit 2
-  }
-  backup="${PREBUILT_DROPIN}.migrated-$(date +%Y%m%d-%H%M%S)"
-  cp -a "$PREBUILT_DROPIN" "$backup"
-  rm -f "$PREBUILT_DROPIN"
-  echo "BOOTSTRAP_AUTO_DEPLOY=RUNTIME_MODE prebuilt_to_in_place backup=$backup"
+EOF
+  echo "BOOTSTRAP_AUTO_DEPLOY=RUNTIME_MODE in_place_fallback"
 fi
 
 if [[ -f "$RUNNER_SRC" ]]; then
