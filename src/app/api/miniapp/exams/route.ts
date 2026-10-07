@@ -19,6 +19,7 @@ export async function GET(req: NextRequest) {
       maxScore: x.maxScore,
       durationSeconds: x.durationSeconds,
       competitionId: x.competitionId,
+      paperType: x.paperType,
       timingSections: x.timingSections || [],
       miniappReady: !(x.timingSections || []).length,
     }));

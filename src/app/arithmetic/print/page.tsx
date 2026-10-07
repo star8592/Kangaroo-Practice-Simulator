@@ -25,11 +25,13 @@ export default async function ArithmeticPrintPage({
 }: {
   searchParams: Promise<{ grade?: string }>;
 }) {
+  const params = await searchParams;
   const jar = await cookies();
   const user = userFromSessionToken(jar.get(SESSION_COOKIE)?.value);
-  if (!user) redirect("/login?next=/arithmetic/print");
-
-  const params = await searchParams;
+  if (!user) {
+    const target = `/arithmetic/print${params.grade ? `?grade=${encodeURIComponent(params.grade)}` : ""}`;
+    redirect(`/api/auth/guest/start?next=${encodeURIComponent(target)}`);
+  }
   const grade = clampGrade(params.grade, user.grade);
   const sessions = loadArithmeticSessions(user.id, 500);
 
