@@ -7,8 +7,10 @@
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  gap: var(--space-6);
-  margin-bottom: var(--space-6);
+  gap: var(--page-heading-gap);
+  margin-bottom: var(--page-heading-gap);
+  padding-bottom: var(--panel-padding-compact);
+  border-bottom: var(--page-heading-rule);
 }
 
 .kicker {
@@ -122,8 +124,8 @@
 .row:last-child { border-bottom: 0; }
 
 .head {
-  min-height: 42px;
-  background: #f7f9f6;
+  min-height: var(--table-head-height);
+  background: var(--surface-subtle);
   color: #77837b;
   font-size: 9px;
   font-weight: 900;
@@ -185,9 +187,9 @@
 
 .status {
   justify-self: start;
-  padding: 5px 8px;
-  border-radius: 999px;
-  font-size: 9px;
+  padding: 6px 9px;
+  border-radius: var(--radius-pill);
+  font-size: 10px;
   font-style: normal;
   font-weight: 900;
 }
@@ -203,10 +205,15 @@
 }
 
 .empty {
-  padding: 48px 24px;
+  min-height: var(--empty-min-height);
+  display: grid;
+  place-items: center;
+  padding: var(--panel-padding);
+  background: var(--surface-subtle);
   color: var(--muted);
   text-align: center;
   font-size: 12px;
+  line-height: 1.6;
 }
 
 .errorCard {

@@ -330,7 +330,7 @@
 .actions :global(.primary-button),
 .actions :global(.secondary-button) {
   min-width: 112px;
-  min-height: 42px;
+  min-height: var(--control-height);
   padding: 10px 14px;
   border-radius: 10px;
   font-size: 12px;

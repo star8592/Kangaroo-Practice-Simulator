@@ -60,6 +60,15 @@ Use the shared global button classes for primary, secondary and ghost actions. F
 
 Ordinary product surfaces — candidate cards, analysis panels, empty states, parent diagnosis panels, competition introductions, training launchpads, exam companions, loading/center cards and result stat cards — share the standard surface border, radius token and soft shadow. Specialized visual systems such as achievement cards, mathematical diagrams and animated solution players may intentionally diverge when the difference carries product meaning.
 
+## Information and action hierarchy
+
+- Route-level page headers use a 24px heading gap and a shared bottom rule when the page has management or account actions.
+- Primary actions are visually dominant; secondary and ghost actions must not compete with them. All shared actions expose the same hover, focus-visible and disabled behavior.
+- Dense management tables use a 44px header row and a 64px standard data row; question-review rows may be taller when two-line content requires it.
+- Inline table actions use compact 30px controls rather than tiny underlined text links.
+- Empty states reserve enough vertical space to read as a deliberate product state, not missing content; standard empty regions use a 144px minimum height.
+- Status pills share one pill radius and type scale. Color communicates state but should not be the only semantic cue.
+
 ## Governance
 
 `scripts/audit_design_system.py` is part of the public quality gate. Any new route-level shell must map to a defined layout tier instead of adding a new arbitrary width.

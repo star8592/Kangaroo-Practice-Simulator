@@ -14,6 +14,11 @@ required_tokens = [
     "--page-gutter-mobile:14px",
     "--page-top-tablet:36px",
     "--page-top-compact:28px",
+    "--page-heading-gap:24px",
+    "--control-height-compact:30px",
+    "--table-head-height:44px",
+    "--table-row-height:64px",
+    "--empty-min-height:144px",
     "--surface-subtle:#f7f9f6",
     "--field-border:#d9dfda",
     "--focus-ring:0 0 0 3px rgba(255,122,69,.10)",
@@ -38,9 +43,9 @@ checks = {
     ],
     "src/components/SiteHeader.module.css": ["var(--layout-wide)", "var(--header-height)", "var(--page-gutter-mobile)", "@media(max-width:1080px)", "@media(max-width:760px)"],
     "src/components/AuthExperience.module.css": ["var(--layout-auth)", "var(--page-gutter-tablet)", "var(--page-gutter-mobile)", "var(--field-border)", "var(--focus-ring)"],
-    "src/components/ParentDashboard.module.css": ["max-width: var(--layout-standard)", "padding-top: var(--page-top)", "var(--radius-card)", "var(--page-top-compact)"],
-    "src/components/AdminQuestions.module.css": ["max-width: var(--layout-standard)", "padding-top: var(--page-top)", "var(--field-border)", "var(--focus-ring)", "var(--page-top-compact)"],
-    "src/components/AdminStudents.module.css": ["max-width: var(--layout-standard)", "padding-top: var(--page-top)", "var(--radius-card)", "var(--page-top-compact)"],
+    "src/components/ParentDashboard.module.css": ["max-width: var(--layout-standard)", "padding-top: var(--page-top)", "var(--radius-card)", "var(--page-top-compact)", "var(--page-heading-rule)", "var(--empty-min-height)"],
+    "src/components/AdminQuestions.module.css": ["max-width: var(--layout-standard)", "padding-top: var(--page-top)", "var(--field-border)", "var(--focus-ring)", "var(--page-top-compact)", "var(--page-heading-rule)", "var(--table-head-height)", "var(--empty-min-height)"],
+    "src/components/AdminStudents.module.css": ["max-width: var(--layout-standard)", "padding-top: var(--page-top)", "var(--radius-card)", "var(--page-top-compact)", "var(--page-heading-rule)", "var(--field-border)", "var(--focus-ring)", "var(--table-row-height)", "var(--control-height-compact)", "var(--empty-min-height)"],
     "src/components/StudentProfileClient.module.css": ["max-width: var(--layout-standard)", "padding-top: var(--page-top)", "var(--field-border)", "var(--focus-ring)", "var(--page-top-compact)"],
     "src/app/student/StudentDashboard.module.css": ["max-width: var(--layout-standard)", "padding-top: var(--page-top)", "var(--radius-card)", "var(--page-top-compact)"],
     "src/app/student/cards/CardsPage.module.css": ["max-width: var(--layout-standard)", "var(--page-gutter-mobile)"],
@@ -92,6 +97,15 @@ for selector in (
 
 if ".site-header{" in globals_css:
     errors.append("src/app/globals.css: obsolete legacy .site-header rules still present")
+
+for token in (
+    ".primary-button:focus-visible",
+    ".primary-button:disabled",
+    ".section-heading{display:flex",
+    ".status{padding:5px 9px;border-radius:var(--radius-pill)",
+):
+    if token not in globals_css:
+        errors.append(f"src/app/globals.css: missing interaction hierarchy contract {token!r}")
 
 if errors:
     print("DESIGN_SYSTEM_AUDIT=FAIL")

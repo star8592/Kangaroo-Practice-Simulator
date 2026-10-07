@@ -369,7 +369,11 @@
 }
 
 .empty {
-  padding: 18px;
+  min-height: 112px;
+  display: grid;
+  align-content: center;
+  padding: var(--panel-padding-compact);
+  border: 1px dashed #d5ddd6;
   border-radius: var(--radius-soft);
   background: var(--surface-subtle);
 }
