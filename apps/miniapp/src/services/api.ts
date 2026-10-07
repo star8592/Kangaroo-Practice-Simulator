@@ -11,17 +11,19 @@ export const authStore = {
   clear() { Taro.removeStorageSync(TOKEN_KEY); Taro.removeStorageSync(USER_KEY) }
 }
 
-let guestPending: Promise<void> | null = null
-export async function ensureGuestSession(force = false): Promise<void> {
+let loginPending: Promise<void> | null = null
+export async function ensureWechatSession(force = false): Promise<void> {
   if (!force && authStore.token()) return
-  if (!guestPending) {
-    guestPending = (async () => {
-      const res = await Taro.request<any>({url: BASE + '/api/auth/miniapp/guest',method:'POST',header:{'content-type':'application/json'}})
-      if (res.statusCode < 200 || res.statusCode >= 300 || !res.data?.accessToken) throw new Error('游客会话暂不可用，请稍后重试')
+  if (!loginPending) {
+    loginPending = (async () => {
+      const login = await Taro.login()
+      if (!login.code) throw new Error('微信登录失败，请重试')
+      const res = await Taro.request<any>({url: BASE + '/api/auth/miniapp/wechat',method:'POST',data:{code:login.code},header:{'content-type':'application/json'}})
+      if (res.statusCode < 200 || res.statusCode >= 300 || !res.data?.accessToken) throw new Error(res.data?.error || '微信登录暂不可用，请稍后重试')
       authStore.save(res.data.accessToken,res.data.user)
-    })().finally(() => { guestPending = null })
+    })().finally(() => { loginPending = null })
   }
-  return guestPending
+  return loginPending
 }
 export async function api<T = any>(path: string, options: { method?: 'GET'|'POST'|'PATCH'; data?: unknown; auth?: boolean } = {}): Promise<T> {
   // Public catalogues must remain available even if identity services are unavailable.
@@ -31,26 +33,26 @@ export async function api<T = any>(path: string, options: { method?: 'GET'|'POST
   })
   let token = authStore.token()
   if (!token && options.auth !== false) {
-    try { await ensureGuestSession(); token = authStore.token() } catch { /* Public endpoints may still succeed. */ }
+    await ensureWechatSession(); token = authStore.token()
   }
   let res = await request(token)
   if (res.statusCode === 401 && options.auth !== false) {
-    const isGuest = authStore.user()?.username === 'guest' || authStore.user()?.candidateNo === 'GUEST'
+    const isWechat = authStore.user()?.username === 'wechat' || authStore.user()?.candidateNo === 'WECHAT'
     const method = options.method || 'GET'
     const data = options.data as Record<string, unknown> | undefined
-    // A stale guest token is safe to replace only before a new activity starts.
+    // A stale WeChat token is safe to replace only before a new activity starts.
     // Never rotate identity during check/finish or other stateful writes: their
     // server tickets are bound to the original guest identity.
-    const safeGuestRetry = method === 'GET' || (
+    const safeWechatRetry = method === 'GET' || (
       method === 'POST' &&
       (path === '/api/miniapp/arithmetic/session' && data?.action === 'start')
     )
-    if (isGuest && safeGuestRetry) {
+    if (isWechat && safeWechatRetry) {
       authStore.clear()
-      try { await ensureGuestSession(true); res = await request(authStore.token()) } catch { /* preserve original response */ }
+      try { await ensureWechatSession(true); res = await request(authStore.token()) } catch { /* preserve original response */ }
     }
   }
-  if (res.statusCode === 401 && options.auth !== false && authStore.user()?.username !== 'guest') {
+  if (res.statusCode === 401 && options.auth !== false && authStore.user()?.username !== 'wechat') {
     throw new Error('登录已失效，请重新登录；当前作答不会被自动清除')
   }
   if (res.statusCode < 200 || res.statusCode >= 300) {
