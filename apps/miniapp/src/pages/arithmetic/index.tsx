@@ -14,13 +14,14 @@ export default function ArithmeticPage(){
   const [raw,setRaw]=useState('')
   const [feedback,setFeedback]=useState<any>(null)
   const [responses,setResponses]=useState<ResponseRow[]>([])
+  const responsesRef=useRef<ResponseRow[]>([])
   const [result,setResult]=useState<any>(null)
   const started=useRef(Date.now()); const firstInput=useRef<number|null>(null)
 
   const start=async(mode='adaptive')=>{
     try{
       const s=await api('/api/miniapp/arithmetic/session',{method:'POST',data:{action:'start',grade,mode}})
-      setSession(s);setIdx(0);setRaw('');setFeedback(null);setResponses([]);setResult(null)
+      setSession(s);setIdx(0);setRaw('');setFeedback(null);setResponses([]);responsesRef.current=[];setResult(null)
       started.current=Date.now();firstInput.current=null
     }catch(e){Taro.showToast({title:e instanceof Error?e.message:'无法开始',icon:'none'})}
   }
@@ -31,13 +32,13 @@ export default function ArithmeticPage(){
     const row={questionId:q.id,answer:raw,responseMs:Math.max(1,now-started.current),firstInputMs:Math.max(0,(firstInput.current||now)-started.current),edits:0,backspaces:0}
     try{
       const f=await api('/api/miniapp/arithmetic/session',{method:'POST',data:{action:'check',token:session.token,index:idx,...row}})
-      setFeedback(f);setResponses(x=>[...x,row])
+      setFeedback(f);responsesRef.current=[...responsesRef.current,row];setResponses(responsesRef.current)
     }catch(e){Taro.showToast({title:e instanceof Error?e.message:'提交失败',icon:'none'})}
   }
   const next=async()=>{
     if(idx+1>=session.questions.length){
       try{
-        const r=await api('/api/miniapp/arithmetic/session',{method:'POST',data:{action:'finish',token:session.token,responses}})
+        const r=await api('/api/miniapp/arithmetic/session',{method:'POST',data:{action:'finish',token:session.token,responses:responsesRef.current}})
         setResult(r)
       }catch(e){Taro.showToast({title:e instanceof Error?e.message:'保存失败',icon:'none'})}
       return
