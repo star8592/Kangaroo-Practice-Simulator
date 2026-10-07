@@ -58,6 +58,8 @@ Avoid horizontal page scrolling. Dense tables may use an explicit internal horiz
 
 Use the shared global button classes for primary, secondary and ghost actions. Forms should use one visual language for label, control height, focus state and validation. Do not create a new page-specific button or card treatment unless the interaction meaning is genuinely different.
 
+Ordinary product surfaces — candidate cards, analysis panels, empty states, parent diagnosis panels, competition introductions, training launchpads, exam companions, loading/center cards and result stat cards — share the standard surface border, radius token and soft shadow. Specialized visual systems such as achievement cards, mathematical diagrams and animated solution players may intentionally diverge when the difference carries product meaning.
+
 ## Governance
 
 `scripts/audit_design_system.py` is part of the public quality gate. Any new route-level shell must map to a defined layout tier instead of adding a new arbitrary width.

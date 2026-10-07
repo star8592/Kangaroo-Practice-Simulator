@@ -71,7 +71,24 @@ for css in sorted((ROOT / "src").rglob("*.css")):
             if width and "var(--layout-" not in width.group(1):
                 errors.append(f"{css.relative_to(ROOT)}: .{selector} uses literal max-width {width.group(1)!r}")
 
+
+# Product surfaces must share the same surface/radius/shadow language.
 globals_css = (ROOT / "src/app/globals.css").read_text(encoding="utf-8")
+for selector in (
+    ".candidate-card", ".analysis-section", ".diagnostic-empty-state",
+    ".parent-diagnosis-card", ".competition-intro", ".training-launchpad",
+    ".exam-companion", ".center-card", ".result-stats article",
+):
+    match = re.search(re.escape(selector) + r"\{([^}]*)\}", globals_css, re.S)
+    if not match:
+        errors.append(f"src/app/globals.css: missing governed product surface {selector}")
+        continue
+    body = match.group(1)
+    if "var(--radius-" not in body:
+        errors.append(f"src/app/globals.css: {selector} must use a radius token")
+    if "var(--shadow-soft)" not in body:
+        errors.append(f"src/app/globals.css: {selector} must use --shadow-soft")
+
 if ".site-header{" in globals_css:
     errors.append("src/app/globals.css: obsolete legacy .site-header rules still present")
 
