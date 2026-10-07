@@ -73,7 +73,9 @@
     "test:miniapp-contract": "tsx scripts/test_miniapp_contract.ts",
     "miniapp:preview": "bash ops/release/miniapp_ci.sh preview",
     "miniapp:upload": "bash ops/release/miniapp_ci.sh upload",
-    "audit:security": "npm audit --audit-level=high"
+    "audit:security": "npm audit --audit-level=high",
+    "test:miniapp-parity": "tsx scripts/audit_miniapp_web_parity.ts",
+    "test:miniapp-live": "tsx scripts/smoke_miniapp_live.ts"
   },
   "dependencies": {
     "next": "16.3.8",
