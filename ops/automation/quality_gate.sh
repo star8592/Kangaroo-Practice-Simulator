@@ -37,6 +37,7 @@ step "miniapp backend contract" npm run test:miniapp-contract
 step "local CI deploy contract" bash ops/release/test_local_ci_deploy_contract.sh
 step "auth email SMTP contract" bash ops/release/test_auth_email_smtp_contract.sh
 step "parent auth regression" npm run test:parent-auth
+step "guest bootstrap reverse-proxy regression" npx tsx scripts/test_guest_bootstrap.ts
 step "wechat auth regression" npm run test:wechat-auth
 step "repository hygiene" python3 scripts/audit_repository_hygiene.py
 step "CEMC scoring regression" npx tsx scripts/test_cemc_scoring.ts

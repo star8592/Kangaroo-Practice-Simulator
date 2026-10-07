@@ -9,10 +9,13 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "invalid destination" }, { status: 400 });
   }
   const existing = userFromSessionToken(req.cookies.get(SESSION_COOKIE)?.value);
-  const response = NextResponse.redirect(new URL(target, req.nextUrl.origin));
+  // Use a relative Location header. Production sits behind a reverse proxy, so
+  // req.nextUrl.origin can be the internal localhost origin and must never leak
+  // into a browser redirect. Relative redirects stay on the public origin.
+  const response = new NextResponse(null, { status: 307, headers: { location: target } });
   if (!existing) {
     response.cookies.set(SESSION_COOKIE, createGuestSessionToken(), {
-      httpOnly: true, sameSite: "lax", secure: req.nextUrl.protocol === "https:", path: "/", maxAge: 7200,
+      httpOnly: true, sameSite: "lax", secure: process.env.NODE_ENV === "production", path: "/", maxAge: 7200,
     });
   }
   return response;
