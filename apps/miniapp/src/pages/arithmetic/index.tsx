@@ -18,7 +18,6 @@ export default function ArithmeticPage(){
   const started=useRef(Date.now()); const firstInput=useRef<number|null>(null)
 
   const start=async(mode='adaptive')=>{
-    if(goLoginIfNeeded())return
     try{
       const s=await api('/api/miniapp/arithmetic/session',{method:'POST',data:{action:'start',grade,mode}})
       setSession(s);setIdx(0);setRaw('');setFeedback(null);setResponses([]);setResult(null)

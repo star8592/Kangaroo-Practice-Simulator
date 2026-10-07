@@ -11,33 +11,40 @@ export const authStore = {
   clear() { Taro.removeStorageSync(TOKEN_KEY); Taro.removeStorageSync(USER_KEY) }
 }
 
-export async function api<T = any>(path: string, options: { method?: 'GET'|'POST'|'PATCH'; data?: unknown; auth?: boolean } = {}) {
-  const token = authStore.token()
-  const res = await Taro.request<T>({
-    url: BASE + path,
-    method: options.method || 'GET',
-    data: options.data,
-    header: {
-      'content-type': 'application/json',
-      ...(options.auth === false || !token ? {} : { Authorization: `Bearer ${token}` })
-    }
+let guestPending: Promise<void> | null = null
+export async function ensureGuestSession(): Promise<void> {
+  if (authStore.token()) return
+  if (!guestPending) {
+    guestPending = (async () => {
+      const res = await Taro.request<any>({url: BASE + '/api/auth/miniapp/guest',method:'POST',header:{'content-type':'application/json'}})
+      if (res.statusCode < 200 || res.statusCode >= 300 || !res.data?.accessToken) throw new Error('游客会话暂不可用，请稍后重试')
+      authStore.save(res.data.accessToken,res.data.user)
+    })().finally(() => { guestPending = null })
+  }
+  return guestPending
+}
+export async function api<T = any>(path: string, options: { method?: 'GET'|'POST'|'PATCH'; data?: unknown; auth?: boolean } = {}): Promise<T> {
+  // Public catalogues must remain available even if identity services are unavailable.
+  const request = async (token: string) => Taro.request<T>({
+    url: BASE + path, method: options.method || 'GET', data: options.data,
+    header: {'content-type':'application/json', ...(options.auth === false || !token ? {} : {Authorization: `Bearer ${token}`})}
   })
+  let token = authStore.token()
+  if (!token && options.auth !== false) {
+    try { await ensureGuestSession(); token = authStore.token() } catch { /* Public endpoints may still succeed. */ }
+  }
+  let res = await request(token)
   if (res.statusCode === 401 && options.auth !== false) {
-    authStore.clear()
-    Taro.reLaunch({ url: '/pages/login/index' })
-    throw new Error('登录已失效')
+    // Never redirect away from an active exam or erase its answers.
+    // Only safe GETs may be retried: POSTs can have side effects or be bound to an existing exam session.
+    if ((options.method || 'GET') === 'GET') {
+      authStore.clear()
+      try { await ensureGuestSession(); res = await request(authStore.token()) } catch { /* preserve original response */ }
+    }
   }
   if (res.statusCode < 200 || res.statusCode >= 300) {
-    const message = (res.data as any)?.error || `请求失败（${res.statusCode}）`
-    throw new Error(message)
+    throw new Error((res.data as any)?.error || `请求失败（${res.statusCode}）`)
   }
   return res.data
 }
-
-export const goLoginIfNeeded = () => {
-  if (!authStore.token()) {
-    Taro.reLaunch({ url: '/pages/login/index' })
-    return true
-  }
-  return false
-}
+export const goLoginIfNeeded = () => false

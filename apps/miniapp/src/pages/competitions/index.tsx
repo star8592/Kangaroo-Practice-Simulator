@@ -5,7 +5,7 @@ import { api, goLoginIfNeeded } from '../../services/api'
 
 export default function CompetitionsPage(){
   const [exams,setExams]=useState<any[]>([])
-  useEffect(()=>{if(goLoginIfNeeded())return;api<any>('/api/miniapp/exams').then(x=>setExams(x.exams||[])).catch(()=>{})},[])
+  useEffect(()=>{api<any>('/api/miniapp/exams').then(x=>setExams(x.exams||[])).catch(()=>{})},[])
   return <View className='page'>
     <View className='hero'><Text className='big'>竞赛实战</Text><View>按正式比赛流程完成一场训练，而不是只浏览题库。</View></View>
     <View className='card'><View className='card-title'>赛事服务</View><View className='muted'>何时模考、当天带什么、官方流程，一条时间线管到底。</View><Button className='secondary' onClick={()=>Taro.navigateTo({url:'/pages/events/index'})}>查看我的比赛</Button></View>

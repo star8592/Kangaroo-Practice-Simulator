@@ -6,7 +6,7 @@ import { api, authStore, goLoginIfNeeded } from '../../services/api'
 export default function HomePage(){
   const [analytics,setAnalytics]=useState<any>(null)
   const user=authStore.user()
-  useEffect(()=>{if(goLoginIfNeeded())return;api('/api/student/analytics').then(setAnalytics).catch(()=>{})},[])
+  useEffect(()=>{api('/api/student/analytics').then(setAnalytics).catch(()=>{})},[])
   const accuracy=Math.round(Number(analytics?.overview?.accuracy||0)*100)
   return <View className='page'>
     <View className='hero'><View className='muted' style='color:#cbd5e1'>你好，{user?.name||'同学'}</View><Text className='big'>今天先完成 10 分钟计算</Text><View><Text>保持计算手感，再去打竞赛实战。</Text></View><Button className='primary' style='background:#fff;color:#111827' onClick={()=>Taro.switchTab({url:'/pages/arithmetic/index'})}>开始今日计算</Button></View>
