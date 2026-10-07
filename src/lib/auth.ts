@@ -26,8 +26,21 @@ export function authenticate(k0:string,pin:string){
 export function publicUserById(id:string){const u=loadUsers().find(x=>x.id===id&&x.active);return u?pub(u):null}
 export function createSessionToken(uid:string,ttl=604800){const u=loadUsers().find(x=>x.id===uid&&x.active);if(!u)throw new Error("用户不存在或已停用");return signJsonToken({uid,ver:u.sessionVersion||1,exp:Math.floor(Date.now()/1000)+ttl},secret())}
 export function createGuestSessionToken(ttl=7200){const id=`guest_${crypto.randomBytes(10).toString("hex")}`;return signJsonToken({uid:id,guest:true,exp:Math.floor(Date.now()/1000)+ttl},secret())}
+// A stable, pseudonymous mini-program identity. The raw OpenID is never stored
+// in the client token or exposed in API responses.
+export function createMiniappWechatSessionToken(openid:string, ttl=604800){
+ if(!openid || openid.length>256)throw new Error("invalid openid");
+ const uid=`wx_${crypto.createHmac("sha256",secret()).update(openid).digest("hex").slice(0,32)}`;
+ return signJsonToken({uid,wx:true,exp:Math.floor(Date.now()/1000)+ttl},secret());
+}
+export function miniappWechatUserFromSessionToken(t:string|undefined|null):PublicStudent|null{
+ const x=readSignedJsonToken<{uid?:string;wx?:boolean;exp?:number}>(t,secret());
+ if(!x?.wx||!/^wx_[0-9a-f]{32}$/.test(x.uid||"")||!x.exp||x.exp<Math.floor(Date.now()/1000))return null;
+ return {id:x.uid!,username:"wechat",candidateNo:"WECHAT",name:"微信学习档案",grade:6,avatarKey:DEFAULT_STUDENT_AVATAR,onboardingCompleted:true,createdAt:0,active:true,role:"student",sessionVersion:1};
+}
 export function guestUserFromSessionToken(t:string|undefined|null):PublicStudent|null{const x=readSignedJsonToken<{uid?:string;guest?:boolean;exp?:number}>(t,secret());if(!x?.guest||!x.uid?.startsWith("guest_")||!x.exp||x.exp<Math.floor(Date.now()/1000))return null;return{id:x.uid,username:"guest",candidateNo:"GUEST",name:"游客体验",grade:6,school:"Socthink",avatarKey:DEFAULT_STUDENT_AVATAR,onboardingCompleted:true,createdAt:Date.now(),active:true,role:"student",sessionVersion:1}}
 export function userFromSessionToken(t:string|undefined|null):PublicStudent|null{
+ const wx=miniappWechatUserFromSessionToken(t);if(wx)return wx;
  const guest=guestUserFromSessionToken(t);if(guest)return guest;
  const x=readSignedJsonToken<{uid?:string;ver?:number;exp?:number}>(t,secret());if(!x?.uid||!x.exp||x.exp<Math.floor(Date.now()/1000))return null;
  const u=loadUsers().find(v=>v.id===x.uid&&v.active);if(!u)return null;const tokenVersion=x.ver??1;if((u.sessionVersion||1)!==tokenVersion)return null;return pub(u)
