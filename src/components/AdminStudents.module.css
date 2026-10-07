@@ -7,8 +7,8 @@
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  gap: 24px;
-  margin-bottom: 22px;
+  gap: var(--space-6);
+  margin-bottom: var(--space-6);
 }
 
 .heading h1 {
@@ -50,9 +50,9 @@
   min-width: 0;
   height: var(--control-height);
   border: 1px solid var(--line);
-  border-radius: 9px;
+  border-radius: var(--radius-control);
   padding: 0 12px;
-  background: #fff;
+  background: var(--panel);
   color: var(--ink);
   font-size: 12px;
 }
@@ -71,7 +71,7 @@
   gap: 11px;
   margin: 14px 0 18px;
   padding: 20px;
-  border-radius: 15px;
+  border-radius: var(--radius-card);
 }
 
 .editForm { grid-template-columns: 1.4fr 1fr .55fr 1.1fr auto; }
@@ -176,9 +176,8 @@
 }
 
 @media (max-width: 700px) {
-  .shell { padding-top: 24px; }
+  .shell { padding-top: var(--page-top-compact); }
   .heading { align-items: stretch; flex-direction: column; }
-  .heading h1 { font-size: 30px; }
   .heading :global(.primary-button) { width: 100%; }
   .createForm,
   .editForm,

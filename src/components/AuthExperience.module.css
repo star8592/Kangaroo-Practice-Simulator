@@ -58,7 +58,7 @@
   place-items: center;
   margin-bottom: 30px;
   border: 1px solid rgba(255,255,255,.16);
-  border-radius: 14px;
+  border-radius: var(--radius-soft);
   background: rgba(255,255,255,.07);
   font-size: 25px;
   box-shadow: inset 0 1px rgba(255,255,255,.06);
@@ -198,9 +198,9 @@
 .field input {
   width: 100%;
   height: var(--control-height-lg);
-  border: 1px solid #d9dfda;
-  border-radius: 11px;
-  background: #fff;
+  border: 1px solid var(--field-border);
+  border-radius: var(--radius-control);
+  background: var(--panel);
   padding: 0 14px;
   color: var(--ink);
   font-size: 14px;
@@ -209,27 +209,27 @@
 
 .field input::placeholder { color: #aab3ac; }
 
-.field input:hover { border-color: #c5cec7; }
+.field input:hover { border-color: var(--field-hover); }
 
 .field input:focus {
-  border-color: rgba(255,122,69,.85);
+  border-color: var(--accent);
   outline: 0;
-  box-shadow: 0 0 0 3px rgba(255,122,69,.11);
-  background: #fffefd;
+  box-shadow: var(--focus-ring);
+  background: var(--panel);
 }
 
 .primaryAction {
   width: 100%;
   min-height: var(--control-height-lg);
   margin-top: 2px;
-  border-radius: 11px;
+  border-radius: var(--radius-control);
   box-shadow: 0 8px 24px rgba(232,92,37,.15);
 }
 
 .error {
   padding: 11px 13px;
   border: 1px solid #efd1cd;
-  border-radius: 10px;
+  border-radius: var(--radius-control);
   background: #fff5f3;
   color: #97483f;
   font-size: 11px;
@@ -239,7 +239,7 @@
 .success {
   padding: 11px 13px;
   border: 1px solid #cde2d1;
-  border-radius: 10px;
+  border-radius: var(--radius-control);
   background: #eff8f0;
   color: #2e6840;
   font-size: 11px;
@@ -253,8 +253,8 @@
   margin-top: 16px;
   padding: 12px 13px;
   border: 1px solid #e5e9e4;
-  border-radius: 11px;
-  background: #f8faf7;
+  border-radius: var(--radius-control);
+  background: var(--surface-subtle);
 }
 
 .noteIcon {
@@ -277,7 +277,7 @@
   margin-top: 20px;
   padding: 16px;
   border: 1px solid #f0d4c7;
-  border-radius: 14px;
+  border-radius: var(--radius-soft);
   background: linear-gradient(180deg, #fff8f4, #fffdfb);
 }
 
@@ -324,8 +324,8 @@
 .forgotForm input {
   min-width: 0;
   height: 42px;
-  border: 1px solid #d9dfda;
-  border-radius: 10px;
+  border: 1px solid var(--field-border);
+  border-radius: var(--radius-control);
   padding: 0 12px;
   font-size: 11px;
 }
@@ -378,7 +378,7 @@
   margin: 0 0 16px;
   padding: 11px 13px;
   border: 1px solid #ebd7a4;
-  border-radius: 10px;
+  border-radius: var(--radius-control);
   background: #fff9ea;
   color: #765d20;
   font-size: 10px;
@@ -388,7 +388,7 @@
 .verifyEmail {
   margin: 0 0 14px;
   padding: 11px 13px;
-  border-radius: 10px;
+  border-radius: var(--radius-control);
   background: #f6f8f5;
   color: var(--muted);
   font-size: 10px;

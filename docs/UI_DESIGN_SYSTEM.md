@@ -20,6 +20,8 @@ Route containers must use the CSS variables in `globals.css`; do not introduce a
 - Tablet gutter: 20px
 - Mobile gutter: 14px
 - Standard page top: 48px
+- Tablet page top: 36px
+- Compact/mobile page top: 28px
 - Standard page bottom: 88px
 
 Component-internal spacing uses the shared 4/8/12/16/20/24/32/40/48/64 scale.
@@ -31,6 +33,8 @@ Component-internal spacing uses the shared 4/8/12/16/20/24/32/40/48/64 scale.
 - Major panels: 22px radius.
 - Hero surfaces: 28px radius.
 - Ordinary cards use the shared light border and soft shadow.
+- Ordinary fields use the shared field border, control height and focus ring; local pages must not invent a second focus language.
+- Subtle informational surfaces use `--surface-subtle` rather than page-specific near-white colors.
 - Large shadows are reserved for hero, modal and floating account surfaces.
 
 ## Typography hierarchy
@@ -45,8 +49,8 @@ Component-internal spacing uses the shared 4/8/12/16/20/24/32/40/48/64 scale.
 
 - Desktop: full content width and desktop navigation.
 - <=1080px: navigation collapses; complex grids may reduce columns.
-- <=760px: tablet gutters and stacked page headers.
-- <=600px: mobile gutter, mobile page title size, single-column priority flow.
+- <=760px: tablet gutters, 32px page titles and stacked page headers.
+- <=600px: 14px mobile gutter, 30px page titles, 28px compact page top and single-column priority flow.
 
 Avoid horizontal page scrolling. Dense tables may use an explicit internal horizontal scroller.
 
