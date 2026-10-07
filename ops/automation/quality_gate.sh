@@ -27,6 +27,7 @@ step "persistent arithmetic honors" npx tsx scripts/test_arithmetic_honors.ts
 step "A4 personalization regression" npm run test:arithmetic-print
 step "Chinese-default UI audit" python3 scripts/audit_chinese_ui.py
 step "global bilingual navigation audit" python3 scripts/audit_global_language.py
+step "design system audit" python3 scripts/audit_design_system.py
 step "grade-one narration bundle" python3 scripts/test_grade1_narration_bundle.py
 step "grade-one verified solution bundle" python3 scripts/test_grade1_solution_bundle.py
 step "grade-one solution store" npx tsx scripts/test_grade1_solution_store.ts

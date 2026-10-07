@@ -1,0 +1,549 @@
+.header{
+  position:sticky;
+  top:0;
+  z-index:80;
+  border-bottom:1px solid rgba(23,35,29,.08);
+  background:rgba(248,250,247,.92);
+  backdrop-filter:saturate(150%) blur(18px);
+  -webkit-backdrop-filter:saturate(150%) blur(18px);
+}
+
+.inner{
+  width:min(100%,var(--layout-wide));
+  min-height:var(--header-height);
+  margin:0 auto;
+  padding:0 28px;
+  display:grid;
+  grid-template-columns:minmax(250px,1fr) auto minmax(250px,1fr);
+  align-items:center;
+  gap:22px;
+}
+
+.brand{
+  min-width:0;
+  display:inline-flex;
+  align-items:center;
+  gap:11px;
+  justify-self:start;
+}
+
+.brandMark{
+  width:36px;
+  height:36px;
+  flex:0 0 36px;
+  display:grid;
+  place-items:center;
+  border-radius:11px;
+  background:#17231d;
+  color:#fff;
+  font-size:14px;
+  font-weight:950;
+  box-shadow:0 8px 22px rgba(23,35,29,.12);
+}
+
+.brandCopy{
+  min-width:0;
+  display:grid;
+  gap:2px;
+}
+
+.brandCopy strong{
+  overflow:hidden;
+  color:#17231d;
+  font-size:13px;
+  font-weight:900;
+  letter-spacing:-.018em;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+.brandCopy small{
+  color:#879088;
+  font-size:8px;
+  font-weight:800;
+  letter-spacing:.09em;
+  text-transform:uppercase;
+}
+
+.primaryNav{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:4px;
+  padding:4px;
+  border:1px solid rgba(23,35,29,.07);
+  border-radius:13px;
+  background:rgba(255,255,255,.58);
+}
+
+.primaryNav a{
+  min-height:38px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:0 13px;
+  border-radius:9px;
+  color:#58635d;
+  font-size:12px;
+  font-weight:780;
+  white-space:nowrap;
+  transition:background .16s ease,color .16s ease,box-shadow .16s ease;
+}
+
+.primaryNav a:hover{
+  background:#fff;
+  color:#17231d;
+}
+
+.primaryNav a.activeNav{
+  background:#fff;
+  color:#17231d;
+  box-shadow:0 3px 12px rgba(23,35,29,.08);
+}
+
+.actions{
+  min-width:0;
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap:9px;
+}
+
+.languageDesktop{display:block}
+
+.menuButton{
+  width:40px;
+  height:40px;
+  display:none;
+  place-items:center;
+  padding:0;
+  border:1px solid #dfe5df;
+  border-radius:11px;
+  background:#fff;
+  color:#314038;
+}
+
+.menuButton svg{
+  width:19px;
+  height:19px;
+  fill:none;
+  stroke:currentColor;
+  stroke-width:1.8;
+  stroke-linecap:round;
+}
+
+.mobilePanel{display:none}
+
+.accountSkeleton{
+  width:116px;
+  height:40px;
+  border-radius:11px;
+  background:linear-gradient(90deg,#edf0ec,#f7f9f6,#edf0ec);
+  background-size:200% 100%;
+  animation:headerShimmer 1.4s linear infinite;
+}
+
+@keyframes headerShimmer{to{background-position:-200% 0}}
+
+.guestActions{
+  display:flex;
+  align-items:center;
+  gap:7px;
+}
+
+.guestStudent{
+  min-height:39px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:0 11px;
+  border-radius:10px;
+  color:#59665e;
+  font-size:11px;
+  font-weight:850;
+}
+
+.guestStudent:hover{
+  background:#fff;
+  color:#17231d;
+}
+
+.guestParent{
+  min-height:42px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:0 12px;
+  border:1px solid rgba(255,122,69,.38);
+  border-radius:11px;
+  background:#fff5ef;
+  color:#8d3f21;
+  box-shadow:0 6px 18px rgba(232,92,37,.08);
+}
+
+.guestParent span{
+  font-size:11px;
+  font-weight:950;
+  white-space:nowrap;
+}
+
+.guestParent small{
+  padding-left:8px;
+  border-left:1px solid rgba(141,63,33,.16);
+  color:#b06647;
+  font-size:8px;
+  font-weight:850;
+  white-space:nowrap;
+}
+
+.guestParent:hover{
+  border-color:#ff9a70;
+  background:#ffede4;
+}
+
+.accountRoot{position:relative}
+
+.accountTrigger{
+  min-height:44px;
+  display:flex;
+  align-items:center;
+  gap:9px;
+  max-width:220px;
+  padding:4px 8px 4px 5px;
+  border:1px solid #dfe5df;
+  border-radius:13px;
+  background:#fff;
+  color:#17231d;
+  box-shadow:0 3px 14px rgba(23,35,29,.04);
+}
+
+.accountTrigger:hover,
+.accountTrigger[aria-expanded="true"]{
+  border-color:#cfd8d1;
+  box-shadow:0 8px 24px rgba(23,35,29,.08);
+}
+
+.accountAvatar,
+.accountAvatarLarge{
+  display:grid;
+  place-items:center;
+  flex:0 0 auto;
+  border-radius:10px;
+  font-weight:950;
+}
+
+.accountAvatar{
+  width:34px;
+  height:34px;
+  font-size:15px;
+}
+
+.accountAvatarLarge{
+  width:44px;
+  height:44px;
+  border-radius:13px;
+  font-size:18px;
+}
+
+.avatar_student{background:#edf5ef;color:#28603d}
+.avatar_parent{background:#fff0e7;color:#a44b25}
+.avatar_admin{background:#e9edf8;color:#334b85}
+
+.accountIdentity{
+  min-width:0;
+  display:grid;
+  gap:1px;
+  text-align:left;
+}
+
+.accountIdentity strong{
+  max-width:110px;
+  overflow:hidden;
+  font-size:11px;
+  font-weight:900;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+.accountIdentity small{
+  color:#859087;
+  font-size:8px;
+  font-weight:750;
+}
+
+.chevron{
+  width:16px;
+  height:16px;
+  margin-left:1px;
+  color:#89938c;
+  transition:transform .16s ease;
+}
+
+.chevron svg{
+  width:100%;
+  height:100%;
+  fill:none;
+  stroke:currentColor;
+  stroke-width:1.7;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+
+.chevronOpen{transform:rotate(180deg)}
+
+.accountMenu{
+  position:absolute;
+  top:calc(100% + 10px);
+  right:0;
+  width:310px;
+  padding:8px;
+  border:1px solid rgba(23,35,29,.1);
+  border-radius:17px;
+  background:#fff;
+  box-shadow:0 22px 65px rgba(23,35,29,.16);
+  animation:accountMenuIn .13s ease-out;
+}
+
+@keyframes accountMenuIn{
+  from{opacity:0;transform:translateY(-4px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+.accountSummary{
+  display:flex;
+  align-items:center;
+  gap:11px;
+  padding:10px 10px 13px;
+}
+
+.accountSummary div{
+  min-width:0;
+  display:grid;
+  gap:3px;
+}
+
+.accountSummary strong{
+  overflow:hidden;
+  font-size:13px;
+  font-weight:900;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+.accountSummary span{
+  overflow:hidden;
+  color:#7a867e;
+  font-size:9px;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+.accountMenuLinks{
+  display:grid;
+  gap:2px;
+  padding:6px 0;
+  border-top:1px solid #edf0ed;
+  border-bottom:1px solid #edf0ed;
+}
+
+.accountMenuLinks a{
+  min-height:54px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+  padding:8px 10px;
+  border-radius:10px;
+  color:#26352d;
+}
+
+.accountMenuLinks a:hover{background:#f6f8f5}
+
+.accountMenuLinks a>span{
+  min-width:0;
+  display:grid;
+  gap:3px;
+}
+
+.accountMenuLinks b{
+  font-size:11px;
+  font-weight:900;
+}
+
+.accountMenuLinks small{
+  color:#89938c;
+  font-size:9px;
+  line-height:1.45;
+}
+
+.accountMenuLinks svg{
+  width:16px;
+  height:16px;
+  flex:0 0 16px;
+  fill:none;
+  stroke:#a0a9a3;
+  stroke-width:1.6;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+
+.accountSwitch{
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:8px;
+  align-items:center;
+  padding:9px 4px 2px;
+}
+
+.accountSwitch a,
+.accountSwitch button{
+  min-height:34px;
+  display:flex;
+  align-items:center;
+  border:0;
+  border-radius:8px;
+  background:transparent;
+  color:#69756d;
+  font-size:9px;
+  font-weight:820;
+}
+
+.accountSwitch a{padding:0 7px}
+.accountSwitch button{padding:0 7px}
+.accountSwitch a:hover,
+.accountSwitch button:hover{background:#f5f7f4;color:#17231d}
+
+@media(max-width:1080px){
+  .inner{
+    grid-template-columns:minmax(190px,1fr) auto;
+    gap:14px;
+  }
+
+  .primaryNav{display:none}
+  .menuButton{display:grid}
+
+  .mobilePanel{
+    width:min(100%,var(--layout-wide));
+    margin:0 auto;
+    padding:0 20px 14px;
+  }
+
+  .mobilePanelOpen{
+    display:grid;
+    grid-template-columns:minmax(0,1fr) auto;
+    gap:16px;
+    border-top:1px solid rgba(23,35,29,.06);
+  }
+
+  .mobilePanel nav{
+    display:grid;
+    grid-template-columns:repeat(4,minmax(0,1fr));
+    gap:7px;
+    padding-top:12px;
+  }
+
+  .mobilePanel nav a{
+    min-height:46px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:8px;
+    padding:0 13px;
+    border:1px solid #e4e8e3;
+    border-radius:11px;
+    background:#fff;
+    color:#526058;
+    font-size:11px;
+    font-weight:850;
+  }
+
+  .mobilePanel nav a.mobileActive{
+    border-color:#d2dbd4;
+    background:#eef4ef;
+    color:#1e432e;
+  }
+
+  .mobilePanel nav svg{
+    width:15px;
+    height:15px;
+    fill:none;
+    stroke:currentColor;
+    stroke-width:1.6;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+  }
+
+  .mobileLanguage{display:none}
+}
+
+@media(max-width:760px){
+  .header{background:rgba(250,251,249,.97)}
+
+  .inner{
+    min-height:var(--header-height-mobile);
+    grid-template-columns:minmax(0,1fr) auto;
+    padding:0 var(--page-gutter-mobile);
+    gap:8px;
+  }
+
+  .brand{gap:8px}
+  .brandMark{width:32px;height:32px;flex-basis:32px;border-radius:10px}
+  .brandCopy strong{max-width:150px;font-size:11px}
+  .brandCopy small{display:none}
+
+  .actions{gap:6px}
+  .languageDesktop{display:none}
+
+  .guestActions{gap:3px}
+  .guestStudent{min-height:36px;padding:0 8px;font-size:10px}
+  .guestParent{min-height:38px;padding:0 9px}
+  .guestParent span{font-size:10px}
+  .guestParent small{display:none}
+
+  .accountTrigger{
+    min-height:39px;
+    max-width:128px;
+    padding:3px 6px 3px 4px;
+  }
+
+  .accountAvatar{width:31px;height:31px}
+  .accountIdentity strong{max-width:58px;font-size:10px}
+  .accountIdentity small{display:none}
+  .chevron{width:14px;height:14px}
+
+  .menuButton{width:38px;height:38px}
+
+  .accountMenu{
+    position:fixed;
+    top:68px;
+    right:var(--page-gutter-mobile);
+    left:var(--page-gutter-mobile);
+    width:auto;
+  }
+
+  .mobilePanelOpen{
+    grid-template-columns:1fr;
+    padding:0 var(--page-gutter-mobile) 12px;
+  }
+
+  .mobilePanel nav{
+    grid-template-columns:1fr 1fr;
+    padding-top:10px;
+  }
+
+  .mobileLanguage{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:10px 2px 0;
+    color:#7a867e;
+    font-size:10px;
+    font-weight:800;
+  }
+}
+
+@media(max-width:420px){
+  .brandCopy strong{max-width:112px}
+  .guestStudent{display:none}
+  .mobilePanel nav{grid-template-columns:1fr}
+}

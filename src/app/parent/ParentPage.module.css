@@ -1,7 +1,7 @@
 .accountBar {
-  max-width: 1080px;
+  max-width: var(--layout-standard);
   margin: 0 auto;
-  padding: 28px 28px 0;
+  padding: 28px var(--page-gutter) 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -47,7 +47,7 @@
 
 @media (max-width: 700px) {
   .accountBar {
-    padding: 18px 14px 0;
+    padding: 18px var(--page-gutter-mobile) 0;
   }
   .accountBar > div {
     display: grid;

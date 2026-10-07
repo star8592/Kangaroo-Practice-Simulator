@@ -1,12 +1,12 @@
 .shell {
-  max-width: 1080px;
-  padding-top: 30px;
+  max-width: var(--layout-standard);
+  padding-top: var(--page-top);
 }
 
 .hero {
   min-height: 220px;
   padding: 38px 42px;
-  border-radius: 24px;
+  border-radius: var(--radius-hero);
   gap: 34px;
 }
 
@@ -26,7 +26,7 @@
 
 .hero h1 {
   margin: 0 0 10px;
-  font-size: 38px;
+  font-size: var(--title-page);
   letter-spacing: -.04em;
 }
 

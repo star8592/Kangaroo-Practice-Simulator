@@ -1,6 +1,6 @@
 .shell {
-  max-width: 1080px;
-  padding-top: 18px;
+  max-width: var(--layout-standard);
+  padding-top: var(--page-top);
 }
 
 .heading {
@@ -15,7 +15,7 @@
 
 .heading h1 {
   margin: 0 0 7px;
-  font-size: 34px;
+  font-size: var(--title-page);
   letter-spacing: -.035em;
 }
 
@@ -43,15 +43,15 @@
   margin: 16px 0 22px;
   padding: 16px;
   border: 1px solid var(--line);
-  border-radius: 16px;
-  background: #fff;
+  border-radius: var(--radius-card);
+  background: var(--panel);
 }
 
 .createForm input,
 .formCard input {
   width: 100%;
   min-width: 0;
-  height: 46px;
+  height: var(--control-height);
   border: 1px solid var(--line);
   border-radius: 10px;
   background: #fff;
@@ -110,7 +110,7 @@
 .actions :global(.primary-button),
 .actions :global(.secondary-button) {
   min-width: 102px;
-  min-height: 44px;
+  min-height: var(--control-height);
   padding: 11px 14px;
 }
 

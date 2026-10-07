@@ -81,10 +81,10 @@ export default function LoginClient({ nextPath }: { nextPath: string }) {
             </div>
 
             <div className={styles.switchBox}>
-              <span className={styles.switchTitle}>家长入口</span>
-              <p className={styles.switchText}>家长使用已验证邮箱管理孩子账号、查看诊断报告和找回密码。</p>
+              <span className={styles.switchTitle}>家长登录 / 注册</span>
+              <p className={styles.switchText}>家长可直接微信扫码进入；首次扫码自动创建家长账号，也可以继续使用邮箱方式。</p>
               <div className={styles.switchActions}>
-                <Link className="secondary-button" href="/parent/login">家长登录</Link>
+                <Link className="primary-button" href="/parent/login">微信扫码进入家长中心</Link>
                 <Link className="secondary-button" href="/parent/register">邮箱注册</Link>
               </div>
             </div>

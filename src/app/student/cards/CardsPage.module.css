@@ -1,7 +1,7 @@
 .page {
-  max-width: 1080px;
+  max-width: var(--layout-standard);
   margin: 0 auto;
-  padding: 34px 20px 60px;
+  padding: var(--page-top) var(--page-gutter) var(--page-bottom);
 }
 
 .top {
@@ -21,7 +21,7 @@
 
 .page h1 {
   margin: 6px 0;
-  font-size: 38px;
+  font-size: var(--title-page);
   letter-spacing: -.04em;
 }
 
@@ -371,4 +371,12 @@
   .card {
     min-height: 300px;
   }
+}
+
+@media (max-width: 760px) {
+  .page { padding: 36px var(--page-gutter-tablet) 72px; }
+}
+
+@media (max-width: 600px) {
+  .page { padding-left: var(--page-gutter-mobile); padding-right: var(--page-gutter-mobile); }
 }

@@ -1,1 +1,31 @@
-.switcher{display:inline-flex;align-items:center;gap:3px;flex:0 0 auto;padding:3px;border:1px solid rgba(23,48,38,.18);border-radius:10px;background:#f4f7f3;white-space:nowrap}.switcher button{border:0;border-radius:7px;background:transparent;color:#607068;font-size:11px;font-weight:900;line-height:1;padding:7px 9px;cursor:pointer}.switcher button.active{background:#173026;color:#fff;box-shadow:0 2px 8px rgba(23,48,38,.16)}@media(max-width:760px){.switcher{position:fixed;right:12px;bottom:12px;z-index:70;box-shadow:0 8px 24px rgba(23,48,38,.18);background:#fff}.switcher button{padding:8px 10px;font-size:12px}}
+.switcher{
+  display:inline-flex;
+  align-items:center;
+  gap:2px;
+  flex:0 0 auto;
+  padding:2px;
+  border:1px solid #dfe5df;
+  border-radius:9px;
+  background:#fff;
+  white-space:nowrap;
+}
+.switcher button{
+  min-width:32px;
+  height:30px;
+  border:0;
+  border-radius:7px;
+  background:transparent;
+  color:#7b867f;
+  font-size:9px;
+  font-weight:900;
+  line-height:1;
+  padding:0 7px;
+  cursor:pointer;
+}
+.switcher button.active{
+  background:#eef3ef;
+  color:#24352c;
+}
+.switcher button:hover:not(.active){
+  color:#26372e;
+}

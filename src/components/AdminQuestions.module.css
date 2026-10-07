@@ -1,6 +1,6 @@
 .shell {
-  max-width: 1180px;
-  padding-top: 34px;
+  max-width: var(--layout-standard);
+  padding-top: var(--page-top);
 }
 
 .heading {
@@ -22,7 +22,7 @@
 
 .heading h1 {
   margin: 0 0 7px;
-  font-size: 36px;
+  font-size: var(--title-page);
   letter-spacing: -.035em;
 }
 
@@ -76,7 +76,7 @@
 .toolbar input,
 .toolbar select {
   width: 100%;
-  height: 43px;
+  height: var(--control-height);
   border: 1px solid #d9dfda;
   border-radius: 10px;
   background: #fff;
@@ -103,8 +103,8 @@
 .table {
   overflow: hidden;
   border: 1px solid var(--line);
-  border-radius: 16px;
-  background: #fff;
+  border-radius: var(--radius-card);
+  background: var(--panel);
   box-shadow: 0 12px 36px rgba(31,47,38,.04);
 }
 
@@ -213,8 +213,8 @@
   margin: 80px auto;
   padding: 28px;
   border: 1px solid #ecd4cf;
-  border-radius: 16px;
-  background: #fff;
+  border-radius: var(--radius-card);
+  background: var(--panel);
   box-shadow: 0 16px 42px rgba(31,47,38,.06);
 }
 

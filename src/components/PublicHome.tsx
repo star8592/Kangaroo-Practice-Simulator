@@ -10,7 +10,7 @@ const UI={
   eye:"SOC THINK · K12 数学成长系统",
   title1:"先知道孩子卡在哪里，",title2:"再决定下一步练什么",
   copy:"面向 G1–G12 的数学能力诊断、计算训练与国际竞赛实战平台。用训练数据发现薄弱点，把下一步练习从“凭感觉刷题”变成有依据的学习路径。",
-  primary:"开始能力诊断",competition:"查看国际数学竞赛",login:"已有账号登录",register:"家长免费注册",
+  primary:"开始能力诊断",competition:"查看国际数学竞赛",login:"学生登录",register:"家长登录 / 注册 · 微信扫码",
   loop:"一次训练，应该回答四个问题",
   s1:"现在在哪里",s1d:"从年级、正确率、速度和题型表现建立当前能力基线。",
   s2:"为什么会错",s2d:"区分知识缺口、计算失误、策略不足和速度问题，而不是只记录对错。",
@@ -25,7 +25,7 @@ const UI={
   eye:"SOC THINK · K12 MATH GROWTH",
   title1:"Find where learning gets stuck.",title2:"Then know exactly what to practice next.",
   copy:"A G1–G12 math diagnostic, fluency and competition practice platform. Turn practice data into clear weak-skill signals and an evidence-based next step.",
-  primary:"Start a diagnostic",competition:"Explore competitions",login:"Sign in",register:"Parent registration",
+  primary:"Start a diagnostic",competition:"Explore competitions",login:"Student login",register:"Parent login / register · WeChat",
   loop:"Every practice session should answer four questions",
   s1:"Where am I now?",s1d:"Build a baseline from grade, accuracy, speed and performance by skill.",
   s2:"Why did I miss it?",s2d:"Separate knowledge gaps, calculation errors, weak strategy and fluency issues.",
@@ -57,7 +57,8 @@ export default function PublicHome(){
     <Link className="secondary-button" href="/competitions">{ui.competition}</Link>
    </div>
    <div className="home-auth-links">
-    <Link href="/login">{ui.login}</Link><span>·</span><Link href="/parent/register">{ui.register}</Link>
+    <Link className="home-parent-entry" href="/parent/login">{ui.register}</Link>
+    <Link className="home-student-entry" href="/login">{ui.login}</Link>
    </div>
   </section>
 
