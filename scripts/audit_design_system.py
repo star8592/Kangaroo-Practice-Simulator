@@ -24,6 +24,7 @@ required_tokens = [
     "--control-height-lg:48px",
     "--header-height:72px",
     "--title-page:36px",
+    "--title-hero:48px",
 ]
 
 checks = {
