@@ -482,7 +482,7 @@
   .inner{
     min-height:var(--header-height-mobile);
     grid-template-columns:minmax(0,1fr) auto;
-    padding:0 12px;
+    padding:0 var(--page-gutter-mobile);
     gap:8px;
   }
 
@@ -516,14 +516,14 @@
   .accountMenu{
     position:fixed;
     top:68px;
-    right:10px;
-    left:10px;
+    right:var(--page-gutter-mobile);
+    left:var(--page-gutter-mobile);
     width:auto;
   }
 
   .mobilePanelOpen{
     grid-template-columns:1fr;
-    padding:0 12px 12px;
+    padding:0 var(--page-gutter-mobile) 12px;
   }
 
   .mobilePanel nav{
