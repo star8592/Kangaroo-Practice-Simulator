@@ -12,8 +12,8 @@ export const authStore = {
 }
 
 let guestPending: Promise<void> | null = null
-export async function ensureGuestSession(): Promise<void> {
-  if (authStore.token()) return
+export async function ensureGuestSession(force = false): Promise<void> {
+  if (!force && authStore.token()) return
   if (!guestPending) {
     guestPending = (async () => {
       const res = await Taro.request<any>({url: BASE + '/api/auth/miniapp/guest',method:'POST',header:{'content-type':'application/json'}})
@@ -35,11 +35,19 @@ export async function api<T = any>(path: string, options: { method?: 'GET'|'POST
   }
   let res = await request(token)
   if (res.statusCode === 401 && options.auth !== false) {
-    // Never redirect away from an active exam or erase its answers.
-    // Only safe GETs may be retried: POSTs can have side effects or be bound to an existing exam session.
-    if ((options.method || 'GET') === 'GET' && (authStore.user()?.username === 'guest' || authStore.user()?.candidateNo === 'GUEST')) {
+    const isGuest = authStore.user()?.username === 'guest' || authStore.user()?.candidateNo === 'GUEST'
+    const method = options.method || 'GET'
+    const data = options.data as Record<string, unknown> | undefined
+    // A stale guest token is safe to replace only before a new activity starts.
+    // Never rotate identity during check/finish or other stateful writes: their
+    // server tickets are bound to the original guest identity.
+    const safeGuestRetry = method === 'GET' || (
+      method === 'POST' &&
+      (path === '/api/miniapp/arithmetic/session' && data?.action === 'start')
+    )
+    if (isGuest && safeGuestRetry) {
       authStore.clear()
-      try { await ensureGuestSession(); res = await request(authStore.token()) } catch { /* preserve original response */ }
+      try { await ensureGuestSession(true); res = await request(authStore.token()) } catch { /* preserve original response */ }
     }
   }
   if (res.statusCode === 401 && options.auth !== false && authStore.user()?.username !== 'guest') {
