@@ -1,6 +1,6 @@
 .shell {
-  max-width: 1040px;
-  padding-top: 30px;
+  max-width: var(--layout-standard);
+  padding-top: var(--page-top);
 }
 
 .backRow {
@@ -55,7 +55,7 @@
 .hero {
   min-height: 172px;
   padding: 30px 34px;
-  border-radius: 21px;
+  border-radius: var(--radius-panel);
   gap: 24px;
 }
 
@@ -67,7 +67,7 @@
 
 .heroCopy h1 {
   margin: 0 0 8px;
-  font-size: 33px;
+  font-size: var(--title-page);
   line-height: 1.12;
   letter-spacing: -.032em;
 }
@@ -250,7 +250,7 @@
 .pinFields input {
   width: 100%;
   min-width: 0;
-  height: 46px;
+  height: var(--control-height);
   border: 1px solid #dfe4df;
   border-radius: 10px;
   background: #fff;

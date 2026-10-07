@@ -1,5 +1,5 @@
 .shell {
-  width: min(1080px, calc(100% - 32px));
+  width: min(var(--layout-auth), calc(100% - (var(--page-gutter) * 2)));
   min-height: calc(100vh - 128px);
   margin: 0 auto;
   padding: 42px 0 54px;
@@ -13,7 +13,7 @@
   grid-template-columns: minmax(0, .92fr) minmax(420px, 1.08fr);
   overflow: hidden;
   border: 1px solid rgba(25, 47, 35, .11);
-  border-radius: 28px;
+  border-radius: var(--radius-hero);
   background: #fff;
   box-shadow: 0 26px 80px rgba(31, 47, 38, .11), 0 2px 8px rgba(31, 47, 38, .04);
 }
@@ -197,7 +197,7 @@
 
 .field input {
   width: 100%;
-  height: 49px;
+  height: var(--control-height-lg);
   border: 1px solid #d9dfda;
   border-radius: 11px;
   background: #fff;
@@ -220,7 +220,7 @@
 
 .primaryAction {
   width: 100%;
-  min-height: 49px;
+  min-height: var(--control-height-lg);
   margin-top: 2px;
   border-radius: 11px;
   box-shadow: 0 8px 24px rgba(232,92,37,.15);
@@ -398,7 +398,7 @@
 .verifyEmail b { color: var(--ink); }
 
 @media (max-width: 840px) {
-  .shell { width: min(720px, calc(100% - 24px)); padding: 24px 0 38px; }
+  .shell { width: min(720px, calc(100% - (var(--page-gutter-tablet) * 2))); padding: 24px 0 38px; }
   .frame { grid-template-columns: 1fr; border-radius: 22px; }
   .brandPanel { min-height: 0; padding: 28px 28px 26px; }
   .brandPanel h1 { font-size: 34px; }
@@ -410,7 +410,7 @@
 }
 
 @media (max-width: 520px) {
-  .shell { width: calc(100% - 16px); padding: 12px 0 24px; }
+  .shell { width: calc(100% - (var(--page-gutter-mobile) * 2)); padding: 12px 0 24px; }
   .frame { border-radius: 18px; }
   .brandPanel { padding: 24px 22px; }
   .mark { margin-bottom: 20px; }
