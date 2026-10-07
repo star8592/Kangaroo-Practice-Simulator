@@ -37,10 +37,13 @@ export async function api<T = any>(path: string, options: { method?: 'GET'|'POST
   if (res.statusCode === 401 && options.auth !== false) {
     // Never redirect away from an active exam or erase its answers.
     // Only safe GETs may be retried: POSTs can have side effects or be bound to an existing exam session.
-    if ((options.method || 'GET') === 'GET') {
+    if ((options.method || 'GET') === 'GET' && (authStore.user()?.username === 'guest' || authStore.user()?.candidateNo === 'GUEST')) {
       authStore.clear()
       try { await ensureGuestSession(); res = await request(authStore.token()) } catch { /* preserve original response */ }
     }
+  }
+  if (res.statusCode === 401 && options.auth !== false && authStore.user()?.username !== 'guest') {
+    throw new Error('登录已失效，请重新登录；当前作答不会被自动清除')
   }
   if (res.statusCode < 200 || res.statusCode >= 300) {
     throw new Error((res.data as any)?.error || `请求失败（${res.statusCode}）`)
