@@ -16,6 +16,21 @@ fi
 PERM="$(node -e 'const fs=require("fs"); process.stdout.write(((fs.statSync(process.argv[1]).mode)&0o777).toString(8))' "$KEY")"
 [[ "$PERM" == "600" ]] || { echo "MINIAPP_CI=FAIL reason=private_key_permissions mode=$PERM expected=600" >&2; exit 4; }
 
+# Previews can be generated before field-testing, but code uploads require
+# real DevTools and physical Android test evidence for this exact Git SHA.
+if [[ "$MODE" == "upload" ]]; then
+  SOURCE_SHA="$(git -C "$ROOT" rev-parse HEAD)"
+  [[ -z "$(git -C "$ROOT" status --porcelain)" ]] || {
+    echo "MINIAPP_CI=BLOCKED reason=dirty_checkout" >&2; exit 3;
+  }
+  REMOTE_SHA="$(git -C "$ROOT" ls-remote origin refs/heads/main | cut -f1)"
+  [[ -n "$REMOTE_SHA" && "$SOURCE_SHA" == "$REMOTE_SHA" ]] || {
+    echo "MINIAPP_CI=BLOCKED reason=not_exact_remote_main" >&2; exit 3;
+  }
+  RECEIPT="${MINIAPP_QA_RECEIPT:-$ROOT/.release-tmp/miniapp-qa/release-receipt.json}"
+  node "$ROOT/scripts/verify_miniapp_qa_receipt.mjs" "$RECEIPT" "$SOURCE_SHA"
+fi
+
 # Never preview or upload an unverified/stale dist tree.
 bash "$ROOT/ops/automation/miniapp_quality_gate.sh"
 
