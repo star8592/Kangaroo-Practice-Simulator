@@ -33,6 +33,36 @@ jobs:
       - name: Public quality gate
         run: npm run verify:public
 
+  web-browser-click-e2e:
+    name: Web browser click E2E (desktop + mobile)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install locked dependencies
+        run: npm ci
+      - name: Install Chromium for actual button clicks
+        run: npx playwright install --with-deps chromium
+      - name: Build candidate Web app
+        run: npm run build
+      - name: Browser click and login-gate E2E
+        env:
+          E2E_ALLOW_SYNTHETIC_FIXTURE: "1"
+        run: npm run test:e2e:smoke
+      - name: Preserve screenshots and traces on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: browser-e2e-failure-evidence
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 14
+
   billing-ledger:
     runs-on: ubuntu-latest
     timeout-minutes: 8

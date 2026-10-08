@@ -77,7 +77,11 @@
     "audit:security": "npm audit --audit-level=high",
     "test:miniapp-parity": "tsx scripts/audit_miniapp_web_parity.ts",
     "test:miniapp-live": "tsx scripts/smoke_miniapp_live.ts",
-    "test:exam-access": "tsx scripts/test_guest_exam_access.ts && tsx scripts/test_guest_exam_routes.ts && tsx scripts/test_access_policy.ts && tsx scripts/test_access_catalog.ts"
+    "test:exam-access": "tsx scripts/test_guest_exam_access.ts && tsx scripts/test_guest_exam_routes.ts && tsx scripts/test_access_policy.ts && tsx scripts/test_access_catalog.ts",
+    "test:exam-access-live": "node scripts/smoke_exam_access_live.mjs",
+    "test:exam-access-live-contract": "node --test scripts/test_smoke_exam_access_live.mjs",
+    "test:e2e:smoke": "playwright test",
+    "test:engineering-contract": "node --test scripts/test_engineering_contracts.mjs"
   },
   "dependencies": {
     "next": "16.3.8",
@@ -90,6 +94,7 @@
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",
+    "@playwright/test": "1.64.0",
     "@types/node": "^20",
     "@types/nodemailer": "^8.0.2",
     "@types/pg": "^8.15.6",

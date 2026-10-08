@@ -48,3 +48,8 @@ jobs:
           echo "Production did not reach $EXPECTED_SHA within the verification window" >&2
           curl -fsS --max-time 10 https://socthink.cn/api/release || true
           exit 1
+      - name: Verify live access policy (anonymous + signed guests)
+        env:
+          BASE_URL: https://socthink.cn
+          EXPECTED_SHA: ${{ github.event.workflow_run.head_sha }}
+        run: node scripts/smoke_exam_access_live.mjs

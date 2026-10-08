@@ -78,3 +78,7 @@ __pycache__/
 /apps/miniapp/dist/
 
 /apps/miniapp/.swc/
+
+playwright-report/
+
+test-results/
