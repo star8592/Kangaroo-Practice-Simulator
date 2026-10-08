@@ -18,6 +18,8 @@ test("critical exam routes use the shared server-side authorization guard",()=>{
   assert.match(guest,/target\.startsWith\("\/exam\/"\)/);
 });
 test("release wiring includes candidate, active, public receipt and daily watchdog",()=>{
+  const build=read("ops/release/build_prebuilt_runtime.sh");
+  assert.match(build,/cp scripts\/smoke_exam_access_live\.mjs/,"immutable runtime must include the deployed live guard");
   const release=read("ops/release/auto_deploy_server.sh");
   const count=(release.match(/smoke_exam_access_live\.mjs/g)||[]).length;
   assert.ok(count>=2,"candidate and promoted runtime must both run live guard");
