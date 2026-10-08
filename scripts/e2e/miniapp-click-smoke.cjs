@@ -46,6 +46,13 @@ try{
  const button=await paper.$('.primary')
  assert.ok(button,'competition list without ready paper')
  steps.push('competition nonempty + actionable')
+ const buttonLabel=String(await button.text())
+ if(buttonLabel.includes('登录后开始')){
+   steps.push('guest sees sign-in gate for complete exam')
+   report('BLOCKED',steps,'Full examination E2E requires verified non-guest WeChat or student identity')
+   process.exitCode=3
+   return
+ }
  await button.tap()
  await page.waitFor(800)
  const exam=await app.currentPage()
