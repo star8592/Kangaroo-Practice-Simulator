@@ -1,0 +1,28 @@
+.page{max-width:var(--layout-standard);margin:auto;padding:48px 28px 90px}
+.hero{background:#182b20;color:white;border-radius:24px;padding:36px 42px}
+.hero small{font-size:12px;color:#bad4c1;font-weight:750;letter-spacing:.1em}
+.hero h1{font-size:38px;line-height:1.2;margin:13px 0 12px}
+.hero p{font-size:15px;line-height:1.8;color:#d2ddd4;max-width:750px}
+.status{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:24px}
+.status b{padding:9px 14px;border-radius:999px;background:#e5f1e6;color:#225638;font-size:12px}
+.status span{font-size:12px;color:#cfdbd2}
+.cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin:24px 0 36px}
+.card{padding:23px 19px;border:1px solid #dde6de;border-radius:18px;background:white;min-height:185px}
+.card.current{border-color:#56846b;box-shadow:0 0 0 2px rgba(44,115,66,.12)}
+.card small{display:block;color:#617267;font-size:11px;letter-spacing:.05em}
+.card h2{font-size:21px;margin:10px 0 12px}
+.card p{font-size:13px;color:#53645a;line-height:1.65;margin:0}
+.card em{font-style:normal;display:block;font-size:11px;color:#51735c;margin-top:16px}
+.tableOuter{overflow-x:auto;border:1px solid #dce6de;border-radius:18px;background:#fff}
+.table{width:100%;border-collapse:collapse;min-width:710px}
+.table th,.table td{border-bottom:1px solid #edf0ed;padding:15px 18px;text-align:center;font-size:13px}
+.table th:first-child,.table td:first-child{text-align:left;min-width:240px}
+.table th{background:#f5f8f5;font-size:12px;color:#3c5544}
+.yes{color:#23673e;font-weight:900}
+.no{color:#a8b1a9}
+.note{font-size:13px;line-height:1.8;color:#53685a;margin-top:20px}
+.actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:24px}
+.actions a{border-radius:12px;padding:12px 18px;text-decoration:none;font-size:13px;font-weight:750;background:#234e36;color:white}
+.actions a + a{background:#fff;color:#234e36;border:1px solid #b8d1c1}
+@media(max-width:870px){.cards{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){.page{padding:26px 16px 64px}.hero{padding:28px 24px}.hero h1{font-size:29px}.cards{grid-template-columns:1fr 1fr;gap:9px}.card{padding:18px 13px;min-height:180px}.card h2{font-size:17px}.card p{font-size:12px}}
