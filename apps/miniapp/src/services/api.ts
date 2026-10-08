@@ -12,7 +12,9 @@ export const authStore = {
 }
 
 let loginPending: Promise<void> | null = null
-export async function ensureWechatSession(force = false): Promise<void> {
+// Explicit account switching must not fall back to a NEW guest identity:
+// that would hide the existing student's or guest's prior records.
+export async function ensureWechatSession(force = false, allowGuestFallback = true): Promise<void> {
   if (!force && authStore.token()) return
   if (!loginPending) {
     loginPending = (async () => {
@@ -34,6 +36,8 @@ export async function ensureWechatSession(force = false): Promise<void> {
       } catch (error) {
         primaryError = error instanceof Error ? error.message : primaryError
       }
+
+      if (!allowGuestFallback) throw new Error(primaryError)
 
       // Availability safety net: students must still be able to train when the
       // WeChat identity endpoint, credentials, or backend release is unavailable.

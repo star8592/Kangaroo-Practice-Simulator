@@ -10,9 +10,24 @@ export default function LoginPage() {
   const [showLegacy,setShowLegacy]=useState(false)
 
   const wechat=async()=>{
+    const current=authStore.user()
+    if(current&&(current.username==='guest'||current.candidateNo==='GUEST'||(current.username!=='wechat'&&current.candidateNo!=='WECHAT'))){
+      const guest=current.username==='guest'||current.candidateNo==='GUEST'
+      const choice=await Taro.showModal({
+        title:'切换到微信学习档案',
+        content:guest?'当前是临时游客，旧游客成绩不会自动并入微信档案。请先完成正在做的题目。确定切换吗？':'站内学生账号与微信学习档案尚未自动关联。切换后不会显示原学生账号的成绩，确定切换吗？',
+        confirmText:'切换',
+        cancelText:'暂不'
+      })
+      if(!choice.confirm)return
+    }
     setBusy(true)
     try{
-      await ensureWechatSession(true)
+      await ensureWechatSession(true, false)
+      const verified=authStore.user()
+      if(verified?.username!=='wechat'&&verified?.candidateNo!=='WECHAT'){
+        throw new Error('微信身份暂未连接，已保留原来的登录状态')
+      }
       await Taro.switchTab({url:'/pages/home/index'})
     }catch(e){
       Taro.showToast({title:e instanceof Error?e.message:'微信登录暂不可用',icon:'none'})
