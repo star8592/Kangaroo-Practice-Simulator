@@ -39,6 +39,12 @@ function save(x:ExamSessionRecord[]){
   fs.writeFileSync(F,JSON.stringify(x.filter(r=>r.startedAt>Date.now()-12096e5).slice(-2000),null,2));
 }
 
+/** Read a particular session only for its authenticated owner. */
+export function ownedExamSession(id:string,u:string,e:string):ExamSessionRecord|null{
+  if(!id||!u||!e)return null;
+  return all().find(x=>x.id===id&&x.userId===u&&x.examId===e)??null;
+}
+
 export function activeExamSession(u:string,e:string){
   return all().filter(x=>x.userId===u&&x.examId===e&&!x.completedAt&&x.expiresAt>Date.now()).sort((a,b)=>b.startedAt-a.startedAt)[0]??null;
 }

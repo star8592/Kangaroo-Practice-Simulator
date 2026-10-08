@@ -40,6 +40,11 @@ assert.ok(exam.indexOf("const data:any=await api('/api/exams/'") < exam.indexOf(
 assert.ok(list.includes('makeExamLoginPath(examId)'),'exam catalogue guest route missing')
 assert.ok(list.includes('重新加载试卷')&&list.includes('loadError'),'catalogue must distinguish failed load from truly empty')
 assert.ok(home.includes('makeExamLoginPath(id)'),'homepage recommended exam must require registered identity')
+assert.ok(exam.includes('findCommittedResult(id,saved.sessionId)'),'a lost submission must be recovered before starting a new sitting')
+assert.ok(exam.includes('if(submitting.current)return'),'two taps before state changes must not show concurrent submit modals')
+assert.ok(exam.indexOf('if(result)return') < exam.indexOf('if(!bundle)return'),
+  'a recovered result must render without re-downloading the exam bundle')
+
 assert.ok(list.includes('void openWebExam(String(ex.id))')&&list.includes('Taro.setClipboardData'),'unsupported split-exam must offer a working copyable Web link')
 assert.ok(login.includes('pendingExam.current')&&login.includes('await Taro.redirectTo({url:makeExamPath(pendingExam.current)})'),'login must resume intended paper')
 

@@ -75,7 +75,9 @@ export async function api<T = any>(path: string, options: { method?: 'GET'|'POST
     const data = options.data as Record<string, unknown> | undefined
     // Identity rotation is safe only before a new activity starts. Never rotate
     // during check/finish because server tickets are bound to the original user.
-    const safeRetry = method === 'GET' || (
+    // A result recovery GET is bound to a particular user and signed sitting.
+    // Do not silently rotate identity and discard the original local draft.
+    const safeRetry = (method === 'GET' && path.split('?')[0] !== '/api/exam-sessions/recovery') || (
       method === 'POST' &&
       path === '/api/miniapp/arithmetic/session' &&
       data?.action === 'start'

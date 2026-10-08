@@ -38,6 +38,7 @@ export type QuestionBehavior = {
 export type ExamAttemptRecord = {
   id: string;
   userId: string;
+  sessionId?: string;
   candidateNo: string;
   examId: string;
   profile: {
@@ -99,6 +100,7 @@ function reviewSnapshot(q: Question): QuestionReviewSnapshot {
 
 export function appendExamAttempt(a: {
   user: PublicStudent;
+  sessionId?: string;
   bundle: ExamBundle;
   grade: GradeResult;
   events: ExamEvent[];
@@ -142,6 +144,7 @@ export function appendExamAttempt(a: {
   const r: ExamAttemptRecord = {
     id: `att_${crypto.randomBytes(9).toString("hex")}`,
     userId: a.user.id,
+    sessionId: a.sessionId,
     candidateNo: a.user.candidateNo,
     examId: a.bundle.profile.id,
     profile: {
@@ -181,4 +184,19 @@ export function loadExamAttempts(uid: string, limit = 300): ExamAttemptRecord[] 
 
 export function hasSubmittedQuestion(uid: string, questionId: string) {
   return loadExamAttempts(uid, 2000).some(a => a.questions.some(q => q.questionId === questionId));
+}
+
+
+/** Find the persisted result for a precisely-owned signed examination session. */
+export function findExamAttemptForSession(uid: string, examId: string, sessionId: string): ExamAttemptRecord | null {
+  if (!uid || !examId || !sessionId || !fs.existsSync(F)) return null;
+  const lines = fs.readFileSync(F, "utf8").split("\n");
+  for (let i = lines.length - 1; i >= 0; i--) {
+    if (!lines[i]) continue;
+    try {
+      const attempt = JSON.parse(lines[i]) as ExamAttemptRecord;
+      if (attempt.userId === uid && attempt.examId === examId && attempt.sessionId === sessionId) return attempt;
+    } catch { /* Corrupted unrelated line must not reveal or shadow another student's result. */ }
+  }
+  return null;
 }

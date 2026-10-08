@@ -102,10 +102,26 @@ test("real exam card click, registered login, start, answer and submit",async({p
   await expect(page).toHaveURL(new RegExp("/exam/"+fixtureExamId+"$"),{timeout:15000});
   await page.getByRole("button",{name:"确认信息并开始考试"}).click();
   await expect(page.locator(".question-stem")).toContainText("2 + 2");
+  const sidResponse=await page.request.get("/api/exam-sessions?examId="+fixtureExamId);
+  expect(sidResponse.status()).toBe(200);
+  const active=await sidResponse.json();
+  const sid=active.session.id as string;
   await page.locator(".choice-list button").nth(1).click();
   await page.getByRole("button",{name:"交卷",exact:true}).click();
   await page.getByRole("button",{name:"确认提交"}).click();
   await expect(page).toHaveURL(/\/result(?:\?|$)/,{timeout:15000});
   await expect(page.getByRole("heading",{name:"本次成绩"})).toBeVisible();
   await expect(page.getByRole("link",{name:"逐题复盘"})).toBeVisible();
+  // Production code uses the same exact authenticated recovery endpoint.
+  const receipt=await page.request.get("/api/exam-sessions/recovery?examId="+fixtureExamId+"&sessionId="+sid);
+  expect(receipt.status()).toBe(200);
+  const recovered=await receipt.json();
+  expect(recovered.status).toBe("completed");
+  expect(recovered.result.attemptId).toMatch(/^att_/);
+  expect(recovered.result.correct).toBe(1);
+  const duplicate=await page.request.post("/api/grade",{data:{
+    examId:fixtureExamId,sessionId:sid,answers:{"e2e-browser-amc12-q01":"B"},events:[]
+  }});
+  expect(duplicate.status()).toBe(200);
+  expect((await duplicate.json()).attemptId).toBe(recovered.result.attemptId);
 });
