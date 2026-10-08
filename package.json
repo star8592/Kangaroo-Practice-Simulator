@@ -83,7 +83,8 @@
     "test:e2e:smoke": "playwright test",
     "test:engineering-contract": "node --test scripts/test_engineering_contracts.mjs",
     "test:miniapp-exam-entry": "tsx scripts/test_miniapp_exam_entry.ts",
-    "test:miniapp-ui-devtools": "node scripts/miniapp_devtools_e2e.mjs"
+    "test:miniapp-ui-devtools": "node scripts/miniapp_devtools_e2e.mjs",
+    "test:miniapp-arithmetic-idempotency": "tsx scripts/test_miniapp_arithmetic_idempotency.ts"
   },
   "dependencies": {
     "next": "16.3.8",

@@ -5,6 +5,7 @@ import type { ArithmeticGrade, CleverNode } from "./arithmetic";
 import type { PublicStudent } from "./auth";
 import { readOrCreateSecret, userDataPath } from "./user-data-store";
 import fs from "node:fs";
+import crypto from "node:crypto";
 import path from "node:path";
 
 type Mode = "diagnostic" | "adaptive" | "speed";
@@ -73,7 +74,7 @@ export function startMiniappArithmetic(user: PublicStudent, grade: ArithmeticGra
     uid: user.id,
     grade,
     mode,
-    seed: Math.floor(startedAt % 2147483647),
+    seed: crypto.randomInt(1, 2147483647), // unique across simultaneous devices and same-ms starts
     count,
     focusSkills,
     focusNodes,
@@ -120,6 +121,31 @@ export function checkMiniappArithmetic(user: PublicStudent, token: string, index
   };
 }
 
+function finishedResult(
+  grade: ArithmeticGrade,
+  stored: ArithmeticSession,
+  history: ArithmeticSession[],
+  submitted: ArithmeticSession["attempts"],
+) {
+  // A lost HTTP response is retryable; different answers to the same ticket
+  // must never overwrite or duplicate an already submitted assessment.
+  const signature = (rows: ArithmeticSession["attempts"]) => JSON.stringify(
+    rows.map(x => [x.item.id, x.answer, x.responseMs, x.firstInputMs, x.edits, x.backspaces]),
+  );
+  if (signature(stored.attempts) !== signature(submitted)) {
+    throw new Error("本轮成绩已经提交，不能修改原答案");
+  }
+  const snapshot = history.filter(x => x.finishedAt <= stored.finishedAt);
+  const plan = buildTrainingPlan(grade, snapshot);
+  const correct = stored.attempts.filter(x => x.correct).length;
+  const total = stored.attempts.length;
+  return {
+    ok: true, correct, total,
+    accuracy: total ? correct / total : 0,
+    plan: { focusSkills: plan.focusSkills, focusNodes: plan.focusNodes, summary: plan.summaryZh },
+  };
+}
+
 export function finishMiniappArithmetic(user: PublicStudent, token: string, responses: MiniArithmeticResponse[]) {
   const ticket = validTicket(user, token);
   const items = generate(ticket);
@@ -147,14 +173,40 @@ export function finishMiniappArithmetic(user: PublicStudent, token: string, resp
     finishedAt,
     attempts,
   };
-  fs.mkdirSync(path.dirname(SESSION_FILE), { recursive: true });
-  fs.appendFileSync(SESSION_FILE, JSON.stringify(session) + "\n");
-  const plan = buildTrainingPlan(ticket.grade, previousSessions(user.id));
-  return {
-    ok: true,
-    correct: attempts.filter(x => x.correct).length,
-    total: attempts.length,
-    accuracy: attempts.length ? attempts.filter(x => x.correct).length / attempts.length : 0,
-    plan: { focusSkills: plan.focusSkills, focusNodes: plan.focusNodes, summary: plan.summaryZh },
-  };
+  // A timeout or double tap can replay finish. Serialize by a per-session
+  // atomic directory lock shared by workers using the same data directory.
+  const lockRoot = path.join(path.dirname(SESSION_FILE), ".finish-locks");
+  fs.mkdirSync(lockRoot, { recursive: true });
+  const lockPath = path.join(lockRoot, crypto.createHash("sha256").update(session.id).digest("hex"));
+  let locked = false;
+  try {
+    try {
+      fs.mkdirSync(lockPath);
+      locked = true;
+    } catch (error) {
+      if ((error as NodeJS.ErrnoException).code !== "EEXIST") throw error;
+      const prior = previousSessions(user.id);
+      const existing = prior.find(x => x.id === session.id);
+      if (existing) return finishedResult(ticket.grade, existing, prior, attempts);
+      // A worker killed while saving may leave an orphaned lock. Only recover
+      // locks older than 10 minutes; a live concurrent writer is not disturbed.
+      const stale = Date.now() - fs.statSync(lockPath).mtimeMs > 10 * 60 * 1000;
+      if (!stale) throw new Error("正在保存本轮成绩，请稍后重试，答案不会丢失", { cause: error });
+      try {
+        fs.rmdirSync(lockPath);
+        fs.mkdirSync(lockPath);
+        locked = true;
+      } catch (error) {
+        throw new Error("正在恢复本轮成绩，请稍后重试", { cause: error });
+      }
+    }
+    // Check the persisted record under the lock, not only before it.
+    const previous = previousSessions(user.id);
+    const existing = previous.find(x => x.id === session.id);
+    if (existing) return finishedResult(ticket.grade, existing, previous, attempts);
+    fs.appendFileSync(SESSION_FILE, JSON.stringify(session) + "\n");
+    return finishedResult(ticket.grade, session, [...previous, session], attempts);
+  } finally {
+    if (locked) fs.rmdirSync(lockPath);
+  }
 }

@@ -7,7 +7,22 @@ export default function ReviewPage(){
   const [data,setData]=useState<any>(null)
   const [retry,setRetry]=useState<Record<string,string>>({})
   const [revealed,setRevealed]=useState<Record<string,boolean>>({})
-  useLoad(async params=>{try{setData(await api(`/api/miniapp/review?attemptId=${encodeURIComponent(String(params.attemptId||''))}`))}catch(e){Taro.showToast({title:e instanceof Error?e.message:'载入复盘失败',icon:'none'})}})
+  const [attemptId,setAttemptId]=useState('')
+  const [error,setError]=useState('')
+  const [loading,setLoading]=useState(true)
+  const load=async(id:string)=>{
+    setError('');setLoading(true)
+    try{
+      if(!id)throw new Error('缺少复盘编号，请从成绩页重新进入')
+      const response:any=await api('/api/miniapp/review?attemptId='+encodeURIComponent(id))
+      if(!Array.isArray(response?.questions)||!response?.grade)throw new Error('复盘内容格式异常')
+      setData(response)
+    }catch(e){
+      setError(e instanceof Error?e.message:'复盘内容暂时不可用')
+    }finally{setLoading(false)}
+  }
+  useLoad(params=>{const id=String(params.attemptId||'');setAttemptId(id);void load(id)})
+  if(error)return <View className='page'><View className='card'><View className='card-title'>复盘暂时无法载入</View><View>{error}</View><Button className='primary' disabled={loading||!attemptId} onClick={()=>void load(attemptId)}>重新加载复盘</Button><Button className='secondary' onClick={()=>Taro.switchTab({url:'/pages/competitions/index'})}>返回竞赛</Button></View></View>
   if(!data)return <View className='page'><View className='card'>正在恢复原题与作答记录…</View></View>
   const grade=new Map((data.grade?.items||[]).map((x:any)=>[x.questionId,x]))
   return <View className='page'><View className='hero'><Text className='big'>逐题复盘</Text><View>错题先重新做，再揭示原答案和解析。</View></View>{data.questions.map((q:any)=>{const g:any=grade.get(q.id);const wrong=g?.correct!==true;const show=!wrong||revealed[q.id];const asset=q.assetUrlZh||q.assetUrl;return <View className='card' key={q.id}><View className='row'><View className='card-title'>第 {q.questionNo} 题</View><Text className={g?.correct?'good':'bad'}>{g?.correct?'原作答正确':'需要复盘'}</Text></View><View>{q.stem}</View>{asset&&<Image mode='widthFix' style='width:100%;margin-top:20rpx' src={asset.startsWith('/')?'https://socthink.cn'+asset:asset}/>}
