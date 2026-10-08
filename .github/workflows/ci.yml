@@ -64,3 +64,28 @@ jobs:
           SOCTHINK_BILLING_TEST_ISOLATED: "1"
           SOCTHINK_BILLING_DATABASE_URL: postgres://postgres:ci_only_password@127.0.0.1:5432/socthink_billing_ci
         run: npm run test:billing-ledger
+
+  # Independent miniapp checks: main Web build does not compile Taro/WeApp.
+  # Passing this job does NOT constitute WeChat simulator or real-device E2E approval.
+  miniapp-build-and-contract:
+    name: Miniapp build and API contracts
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install locked Web dependencies
+        run: npm ci
+      - name: Miniapp arithmetic session contract
+        run: npm run test:miniapp-contract
+      - name: Miniapp WeChat identity contract (mocked provider)
+        run: npx tsx scripts/test_miniapp_wechat_auth.ts
+      - name: Miniapp and Web data parity
+        run: npm run test:miniapp-parity
+      - name: Typecheck and compile actual WeChat miniapp artifacts
+        run: npm run verify:miniapp
