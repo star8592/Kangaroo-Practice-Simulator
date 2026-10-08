@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Button, Text, View } from '@tarojs/components'
 import Taro from '@tarojs/taro'
-import { api, goLoginIfNeeded } from '../../services/api'
+import { api } from '../../services/api'
 
 export default function EventsPage(){
   const [rows,setRows]=useState<any[]>([])
