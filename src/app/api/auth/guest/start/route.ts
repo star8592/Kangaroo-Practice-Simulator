@@ -8,6 +8,10 @@ export async function GET(req: NextRequest) {
   if (!target.startsWith("/") || target.startsWith("//") || target.includes("\\") || /[\r\n]/.test(target)) {
     return NextResponse.json({ error: "invalid destination" }, { status: 400 });
   }
+  // Guest bootstrap is only for public/basic training, never full exams.
+  if (target.startsWith("/exam/")) {
+    return new NextResponse(null, { status: 307, headers: { location: "/login?next=" + encodeURIComponent(target) } });
+  }
   const existing = userFromSessionToken(req.cookies.get(SESSION_COOKIE)?.value);
   // Use a relative Location header. Production sits behind a reverse proxy, so
   // req.nextUrl.origin can be the internal localhost origin and must never leak

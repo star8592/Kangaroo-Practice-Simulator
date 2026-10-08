@@ -2,6 +2,7 @@ import { NextRequest,NextResponse } from "next/server";
 import { gradeExam } from "@/lib/grading";
 import { isExamBundleTrainingReady,loadTrainingExamBundle } from "@/lib/training-question-bank";
 import { userFromRequest } from "@/lib/auth";
+import { hasFullExamAccess } from "@/lib/exam-access";
 import { appendExamAttempt,type ExamEvent } from "@/lib/attempt-store";
 import {
   activeSectionElapsedSeconds,
@@ -27,7 +28,7 @@ function events(v:unknown,s:number,e:number):ExamEvent[]{
 export async function POST(r:NextRequest){
   try{
     const u=userFromRequest(r);
-    if(!u)return NextResponse.json({error:"请先登录考生账号"},{status:401});
+    if(!hasFullExamAccess(u))return NextResponse.json({error:"请先登录正式考生账号"},{status:401});
     const b=await r.json(),id=String(b?.examId||"level-a"),sid=String(b?.sessionId||"");
     const valid=validateExamSession(sid,u.id,id);
     if(!valid.ok)return NextResponse.json({error:valid.error},{status:409});

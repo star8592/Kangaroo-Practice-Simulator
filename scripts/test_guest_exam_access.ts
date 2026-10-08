@@ -1,0 +1,15 @@
+import assert from "node:assert/strict";
+import { hasFullExamAccess } from "../src/lib/exam-access";
+import { canAccess } from "../src/lib/access-policy";
+const guest={id:"guest_a1b2c3",role:"student" as const};
+const registered={id:"stu_a1b2c3",role:"student" as const};
+const wechat={id:"wx_abcdef012345",role:"student" as const};
+const admin={id:"adm_a1b2c3",role:"admin" as const};
+assert.equal(hasFullExamAccess(null),false);
+assert.equal(hasFullExamAccess(guest),false);
+assert.equal(hasFullExamAccess(registered),true);
+assert.equal(hasFullExamAccess(wechat),true);
+assert.equal(hasFullExamAccess(admin),true);
+assert.equal(canAccess("public_sample_exam",{kind:"guest"}).allowed,true);
+assert.equal(canAccess("arithmetic_basic",{kind:"guest"}).allowed,true);
+console.log("GUEST_EXAM_ACCESS_PASS");
