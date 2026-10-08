@@ -200,6 +200,12 @@ export default function SessionNav() {
               </>
             )}
 
+            <Link href={role === "parent" ? "/membership?identity=parent" : "/membership"} onClick={close} role="menuitem">
+              <span><b>{lang === "zh" ? "会员权益与权限" : "Membership access"}</b>
+              <small>{lang === "zh" ? "了解免费功能与高级服务" : "Free and advanced features"}</small></span>
+              <MenuArrow />
+            </Link>
+
             {role === "admin" && (
               <>
                 <Link href="/admin/students" onClick={close} role="menuitem">

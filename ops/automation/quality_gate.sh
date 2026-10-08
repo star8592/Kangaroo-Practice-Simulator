@@ -35,6 +35,7 @@ step "math cardbook progression" npx tsx scripts/test_math_cardbook.ts
 step "auto-deploy contract" bash ops/release/test_auto_deploy_contract.sh
 step "miniapp backend contract" npm run test:miniapp-contract
 step "miniapp web parity" npm run test:miniapp-parity
+step "public membership benefits catalog" npx tsx scripts/test_access_catalog.ts
 step "local CI deploy contract" bash ops/release/test_local_ci_deploy_contract.sh
 step "auth email SMTP contract" bash ops/release/test_auth_email_smtp_contract.sh
 step "parent auth regression" npm run test:parent-auth
