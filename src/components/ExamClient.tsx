@@ -39,14 +39,14 @@ const UI={
  }
 } as const;
 
-export default function ExamClient({examId,user}:{examId:string;user:PublicStudent}){
+export default function ExamClient({examId,user,initialProfile,initialQuestions}:{examId:string;user:PublicStudent;initialProfile:ExamProfile;initialQuestions:PublicQuestion[]}){
  const router=useRouter();
- const[questions,setQuestions]=useState<PublicQuestion[]>([]);
- const[profile,setProfile]=useState<ExamProfile|null>(null);
+ const questions=initialQuestions;
+ const profile=initialProfile;
  const[index,setIndex]=useState(0);
  const[answers,setAnswers]=useState<Record<string,string>>({});
  const[flagged,setFlagged]=useState<Record<string,boolean>>({});
- const[seconds,setSeconds]=useState(0);
+ const[seconds,setSeconds]=useState(initialProfile.timingSections?.[0]?.durationSeconds??initialProfile.durationSeconds);
  const[lang,setLang]=useState<Lang>("zh");
  const[events,setEvents]=useState<Event[]>([]);
  const[started,setStarted]=useState(false);
@@ -65,18 +65,16 @@ export default function ExamClient({examId,user}:{examId:string;user:PublicStude
  const legacyStorageKey=`kangaroo-active-${examId}`;
 
  useEffect(()=>{
-  Promise.all([
-   fetch(`/api/exams/${encodeURIComponent(examId)}`).then(r=>r.json()),
-   fetch(`/api/exam-sessions?examId=${encodeURIComponent(examId)}`).then(r=>r.json()).catch(()=>({session:null}))
-  ]).then(([data,s])=>{
-   if(data.error)throw new Error(data.error);
-   setQuestions(data.questions);setProfile(data.profile);
-   const firstSection=data.profile.timingSections?.[0];
-   setSeconds(firstSection?.durationSeconds??data.profile.durationSeconds);
-   setLang("zh");
-   if(s?.session)setResumeSession(s.session);
-  }).catch(e=>setError(String(e.message||e)));
+  // SSR provides the complete verified exam. Fetch only the optional resume
+  // session; network problems here must not hide an otherwise valid paper.
+  let cancelled=false;
+  fetch("/api/exam-sessions?examId="+encodeURIComponent(examId))
+    .then(async response=>response.ok?response.json():{session:null})
+    .then(data=>{if(!cancelled&&data?.session)setResumeSession(data.session)})
+    .catch(()=>{});
+  return()=>{cancelled=true};
  },[examId]);
+
 
  const timingSections=profile?.timingSections||[];
  const split=timingSections.length>0;
