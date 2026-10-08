@@ -222,6 +222,8 @@ for _ in $(seq 1 60); do
 done
 test "$READY" = "1"
 python3 scripts/smoke_test.py --base "http://127.0.0.1:${CANDIDATE_PORT}"
+BASE_URL="http://127.0.0.1:${CANDIDATE_PORT}" EXPECTED_SHA="$TARGET_SHA" \
+  node scripts/smoke_exam_access_live.mjs
 CANDIDATE_RELEASE="$(curl -fsS "http://127.0.0.1:${CANDIDATE_PORT}/api/release")"
 RELEASE_PAYLOAD="$CANDIDATE_RELEASE" EXPECTED_SHA="$TARGET_SHA" python3 - <<'PY'
 import json,os
@@ -264,6 +266,8 @@ assert p.get("gitSha")==e,(p,e)
 PY
 write_debug "smoke" 0 "python3 scripts/smoke_test.py" 0
 python3 "$REL/scripts/smoke_test.py" --base "$LOCAL_BASE"
+BASE_URL="$LOCAL_BASE" EXPECTED_SHA="$TARGET_SHA" \
+  node "$REL/scripts/smoke_exam_access_live.mjs"
 
 # Only after the immutable runtime is fully verified do we advance the source/control checkout.
 cd "$APP"

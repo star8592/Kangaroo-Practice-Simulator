@@ -37,5 +37,9 @@ jobs:
         run: npm ci
       - name: Verify live guest, catalogue, analytics and arithmetic start
         run: npm run test:miniapp-live
+      - name: Deny signed Web and miniapp guests from complete exams
+        env:
+          BASE_URL: https://socthink.cn
+        run: npm run test:exam-access-live
       - name: Clarify evidence boundary
         run: echo 'API smoke does NOT prove that WeChat buttons or wx.request work on a real phone.'
