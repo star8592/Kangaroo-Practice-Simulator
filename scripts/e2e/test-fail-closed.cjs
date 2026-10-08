@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 'use strict'
+/* eslint-disable @typescript-eslint/no-require-imports -- official WeChat automator and Node CLI use CommonJS */
 const assert=require('node:assert/strict')
 const fs=require('node:fs')
 const os=require('node:os')
