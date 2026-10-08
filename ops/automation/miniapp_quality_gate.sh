@@ -2,6 +2,9 @@
 set -Eeuo pipefail
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 APP="$ROOT/apps/miniapp"
+cd "$ROOT"
+npm run test:miniapp-exam-entry
+node scripts/test_miniapp_device_gate.mjs
 cd "$APP"
 [[ -f package-lock.json ]] || { echo 'MINIAPP_QUALITY_GATE=FAIL reason=missing_lockfile' >&2; exit 2; }
 npm ci

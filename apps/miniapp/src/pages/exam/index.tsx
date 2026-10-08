@@ -1,7 +1,8 @@
 import { useRef, useState } from 'react'
 import { Button, Image, Input, Text, View } from '@tarojs/components'
 import Taro, { useLoad } from '@tarojs/taro'
-import { api, authStore } from '../../services/api'
+import { api, authStore, ensureWechatSession } from '../../services/api'
+import { canStartFullExam, makeExamLoginPath, parseRequestedExam } from '../../services/exam-access'
 
 type Draft={examId:string;sessionId:string;userId:string;idx:number;answers:Record<string,string>;events:any[];savedAt:number}
 const key=(id:string)=>`socthink_exam_draft_v2:${id}`
@@ -21,6 +22,7 @@ export default function ExamPage(){
   const [result,setResult]=useState<any>(null)
   const [busy,setBusy]=useState(false)
   const [error,setError]=useState('')
+  const [requiresLogin,setRequiresLogin]=useState(false)
   const current=useRef<Draft|null>(null)
   const persist=(patch:Partial<Draft>)=>{
     if(!current.current)return
@@ -28,16 +30,22 @@ export default function ExamPage(){
   }
 
   useLoad(async params=>{
-    const id=decodeURIComponent(String(params.examId||''));setExamId(id)
-    if(!id){setError('试卷编号缺失，请返回竞赛列表重新选择。');return}
+    const id=parseRequestedExam(params.examId);setExamId(id)
+    if(!id){setError('试卷编号缺失或无效，请返回竞赛列表重新选择。');return}
     try{
-      // Server is authoritative. A local draft is only restored when its owner and
-      // session both match the active server session; never mix two identities.
-      const active:any=await api(`/api/exam-sessions?examId=${encodeURIComponent(id)}`)
+      if(!authStore.token())await ensureWechatSession()
+      if(!canStartFullExam(authStore.user())){
+        setRequiresLogin(true)
+        setError('完整竞赛考试需要微信或正式学生账号登录；游客可以继续使用基础计算。')
+        return
+      }
+      // Reject unsupported split timing before creating a server-side session.
+      const data:any=await api('/api/exams/'+encodeURIComponent(id))
+      if((data.profile?.timingSections||[]).length){setError('这套试卷采用分段计时，请在 Web 端完成。');return}
+      // Server session is authoritative. Match the active exam to this identity.
+      const active:any=await api('/api/exam-sessions?examId='+encodeURIComponent(id))
       const server=active.session || (await api<any>('/api/exam-sessions',{method:'POST',data:{examId:id}})).session
       if(!server?.id)throw new Error('无法建立考试会话')
-      const data:any=await api(`/api/exams/${encodeURIComponent(id)}`)
-      if((data.profile?.timingSections||[]).length){setError('这套试卷采用分段计时，请在 Web 端完成。');return}
       const uid=String(authStore.user()?.id||'')
       const saved=readDraft(id)
       const restored=saved && saved.sessionId===server.id && saved.userId===uid?saved:null
@@ -49,7 +57,7 @@ export default function ExamPage(){
       setAnswers(draft.answers);setEvents(draft.events)
     }catch(e){setError(e instanceof Error?e.message:'试卷载入失败')}
   })
-  if(error)return <View className='page'><View className='card'><View className='card-title'>暂时无法继续考试</View><View>{error}</View><Button className='secondary' onClick={()=>Taro.switchTab({url:'/pages/competitions/index'})}>返回竞赛列表</Button></View></View>
+  if(error)return <View className='page'><View className='card'><View className='card-title'>{requiresLogin?'登录后继续考试':'暂时无法继续考试'}</View><View>{error}</View>{requiresLogin&&<Button className='primary' onClick={()=>Taro.redirectTo({url:makeExamLoginPath(examId)})}>微信登录后继续</Button>}<Button className='secondary' onClick={()=>Taro.switchTab({url:'/pages/competitions/index'})}>返回竞赛列表</Button></View></View>
   if(!bundle)return <View className='page'><View className='card'>正在载入试卷与恢复作答记录…</View></View>
   if(result)return <View className='page'><View className='hero'><Text className='big'>{result.score} / {result.maxScore}</Text><View>答对 {result.correct} · 答错 {result.wrong} · 空白 {result.blank}</View></View><Button className='primary' onClick={()=>Taro.redirectTo({url:`/pages/review/index?attemptId=${encodeURIComponent(result.attemptId)}`})}>逐题复盘</Button><Button className='secondary' onClick={()=>Taro.switchTab({url:'/pages/competitions/index'})}>返回竞赛</Button></View>
 
