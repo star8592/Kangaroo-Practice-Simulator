@@ -32,3 +32,35 @@ jobs:
 
       - name: Public quality gate
         run: npm run verify:public
+
+  billing-ledger:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_PASSWORD: ci_only_password
+          POSTGRES_DB: socthink_billing_ci
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d socthink_billing_ci"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install locked dependencies
+        run: npm ci
+      - name: PostgreSQL ledger integration tests
+        env:
+          SOCTHINK_BILLING_TEST_ISOLATED: "1"
+          SOCTHINK_BILLING_DATABASE_URL: postgres://postgres:ci_only_password@127.0.0.1:5432/socthink_billing_ci
+        run: npm run test:billing-ledger
