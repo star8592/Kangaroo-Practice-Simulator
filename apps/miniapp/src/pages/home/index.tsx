@@ -1,13 +1,24 @@
 import { useEffect, useState } from 'react'
 import { Button, Text, View } from '@tarojs/components'
 import Taro from '@tarojs/taro'
-import { api, authStore } from '../../services/api'
+import { api, authStore, ensureWechatSession } from '../../services/api'
+import { canStartFullExam, makeExamLoginPath, makeExamPath } from '../../services/exam-access'
 
 export default function HomePage(){
   const [analytics,setAnalytics]=useState<any>(null)
   const user=authStore.user()
   const greeting=user?.username==='guest'?'同学':user?.username==='wechat'?'同学':user?.name||'同学'
   useEffect(()=>{api('/api/student/analytics').then(setAnalytics).catch(()=>{})},[])
+
+  const openRecommendedExam=async(id:string)=>{
+    try {
+      if(!authStore.token())await ensureWechatSession()
+      const url=canStartFullExam(authStore.user())?makeExamPath(id):makeExamLoginPath(id)
+      await Taro.navigateTo({url})
+    }catch(e){
+      Taro.showToast({title:e instanceof Error?e.message:'无法打开试卷，请重试',icon:'none'})
+    }
+  }
 
   const openArithmetic=async()=>{
     try{await Taro.switchTab({url:'/pages/arithmetic/index'})}
@@ -67,7 +78,7 @@ export default function HomePage(){
 
     {recommendedExams.length>0&&<View className='card'>
       <View className='card-title'>推荐下一套试卷</View>
-      {recommendedExams.map((ex:any)=><View key={ex.id} style='margin-top:16rpx'><View>{ex.name}</View><View className='muted'>{ex.country||''} · {ex.year||''} · {ex.questionCount} 题</View><Button className='secondary' onClick={()=>Taro.navigateTo({url:`/pages/exam/index?examId=${encodeURIComponent(ex.id)}`})}>开始这套</Button></View>)}
+      {recommendedExams.map((ex:any)=><View key={ex.id} style='margin-top:16rpx'><View>{ex.name}</View><View className='muted'>{ex.country||''} · {ex.year||''} · {ex.questionCount} 题</View><Button className='secondary' onClick={()=>void openRecommendedExam(String(ex.id))}>开始这套</Button></View>)}
     </View>}
 
     <View className='card'><View className='card-title'>我的比赛</View><View className='muted'>倒计时 · 模考 · 考前清单 · 成绩</View><Button className='secondary' onClick={()=>Taro.navigateTo({url:'/pages/events/index'})}>进入赛事服务</Button></View>

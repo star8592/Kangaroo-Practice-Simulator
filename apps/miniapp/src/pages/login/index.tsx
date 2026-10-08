@@ -1,13 +1,24 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { Button, Input, Text, View } from '@tarojs/components'
-import Taro from '@tarojs/taro'
+import Taro, { useLoad } from '@tarojs/taro'
 import { api, authStore, ensureWechatSession } from '../../services/api'
+import { makeExamPath, parseRequestedExam } from '../../services/exam-access'
 
 export default function LoginPage() {
   const [account,setAccount]=useState('')
   const [pin,setPin]=useState('')
   const [busy,setBusy]=useState(false)
   const [showLegacy,setShowLegacy]=useState(false)
+  const pendingExam=useRef('')
+  useLoad(params=>{pendingExam.current=parseRequestedExam(params.nextExam)})
+  const finishLogin=async()=>{
+    if(pendingExam.current){
+      await Taro.redirectTo({url:makeExamPath(pendingExam.current)})
+    }else{
+      await Taro.switchTab({url:'/pages/home/index'})
+    }
+  }
+
 
   const wechat=async()=>{
     const current=authStore.user()
@@ -28,7 +39,7 @@ export default function LoginPage() {
       if(verified?.username!=='wechat'&&verified?.candidateNo!=='WECHAT'){
         throw new Error('微信身份暂未连接，已保留原来的登录状态')
       }
-      await Taro.switchTab({url:'/pages/home/index'})
+      await finishLogin()
     }catch(e){
       Taro.showToast({title:e instanceof Error?e.message:'微信登录暂不可用',icon:'none'})
     }finally{setBusy(false)}
@@ -40,7 +51,7 @@ export default function LoginPage() {
     try{
       const data=await api<any>('/api/auth/miniapp/login',{method:'POST',auth:false,data:{username:account,pin}})
       authStore.save(data.accessToken,data.user)
-      await Taro.switchTab({url:'/pages/home/index'})
+      await finishLogin()
     }catch(e){
       Taro.showToast({title:e instanceof Error?e.message:'登录失败',icon:'none'})
     }finally{setBusy(false)}
