@@ -18,6 +18,13 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
+      # workflow_run executes from the default branch; explicit checkout is
+      # required to ensure the tested script exists and matches the CI SHA.
+      - name: Checkout exact CI commit for smoke test
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+          persist-credentials: false
       - name: Wait for exact commit on production
         env:
           EXPECTED_SHA: ${{ github.event.workflow_run.head_sha }}
