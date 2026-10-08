@@ -39,6 +39,7 @@
     "test:pre-a-grade1": "python3 scripts/test_pre_a_grade1_ready.py",
     "solution:factory:publish": "python3 scripts/run_solution_factory.py --publish",
     "test:parent-auth": "tsx scripts/test_parent_auth.ts",
+    "test:billing-ledger": "tsx scripts/test_billing_ledger.ts",
     "test:rights": "python3 scripts/validate_competition_source_registry.py",
     "data:collection-plan": "python3 scripts/build_competition_collection_plan.py",
     "data:rights-review": "python3 scripts/build_rights_review_queue.py",
@@ -80,6 +81,7 @@
   "dependencies": {
     "next": "16.3.8",
     "nodemailer": "^10.0.10",
+    "pg": "^8.22.0",
     "qrcode": "^1.5.4",
     "react": "19.2.8",
     "react-dom": "19.2.8",
@@ -89,6 +91,7 @@
     "@eslint/js": "10.0.1",
     "@types/node": "^20",
     "@types/nodemailer": "^8.0.2",
+    "@types/pg": "^8.15.6",
     "@types/qrcode": "^1.5.6",
     "@types/react": "^19",
     "@types/react-dom": "^19",
