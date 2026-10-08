@@ -81,7 +81,7 @@ test("anonymous and arithmetic guest cannot enter full exam",async({page,context
   await page.goto("/");
   await page.getByRole("link",{name:/开始能力诊断|Start a diagnostic/}).first().click();
   await expect(page).toHaveURL(/\/arithmetic(?:\?|$)/,{timeout:15000});
-  expect((await context.cookies()).some(c=>c.name==="kangaroo_session")).toBe(true);
+  // The URL can settle before the redirected response cookie has been committed.\n  // Wait for the browser session itself, not only navigation completion.\n  await expect.poll(async()=> (await context.cookies()).some(c=>c.name==="kangaroo_session"),{timeout:10000}).toBe(true);
   await page.goto(protectedExam);
   await expect(page).toHaveURL(/\/login\?next=/);
   await expect(page.locator('input[type="password"]')).toBeVisible();
