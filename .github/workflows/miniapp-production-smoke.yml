@@ -1,0 +1,41 @@
+name: Miniapp Production API Smoke
+
+on:
+  schedule:
+    # UTC 02:20 each day; read-only catalogue checks and a disposable guest start.
+    - cron: '20 2 * * *'
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - 'apps/miniapp/**'
+      - 'src/app/api/miniapp/**'
+      - 'src/app/api/auth/miniapp/**'
+      - 'scripts/smoke_miniapp_live.ts'
+      - '.github/workflows/miniapp-production-smoke.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: miniapp-live-production
+  cancel-in-progress: true
+
+jobs:
+  production-api-smoke:
+    name: Miniapp production API smoke (NOT GUI E2E)
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install locked dependencies
+        run: npm ci
+      - name: Verify live guest, catalogue, analytics and arithmetic start
+        run: npm run test:miniapp-live
+      - name: Clarify evidence boundary
+        run: echo 'API smoke does NOT prove that WeChat buttons or wx.request work on a real phone.'
