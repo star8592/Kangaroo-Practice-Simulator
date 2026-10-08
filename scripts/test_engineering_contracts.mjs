@@ -29,6 +29,9 @@ test("release wiring includes candidate, active, public receipt and daily watchd
     "production receipt MUST check out exact CI commit before executing smoke");
   const watchdog=read(".github/workflows/miniapp-production-smoke.yml");
   assert.match(watchdog,/test:exam-access-live/);
+  assert.match(watchdog,/git checkout --detach "\$DEPLOYED_SHA"/,
+    "daily miniapp smoke must match the deployed SHA, not future main");
+  assert.match(watchdog,/EXPECTED_SHA:/,"production smoke must verify SHA stability");
   const gate=read("ops/automation/quality_gate.sh");
   assert.match(gate,/test:exam-access-live-contract/);
   assert.match(gate,/test:exam-access/);
