@@ -42,6 +42,7 @@ step "auth email SMTP contract" bash ops/release/test_auth_email_smtp_contract.s
 step "parent auth regression" npm run test:parent-auth
 step "guest bootstrap reverse-proxy regression" npx tsx scripts/test_guest_bootstrap.ts
 step "guest/full-exam authorization regression" npm run test:exam-access
+step "miniapp arithmetic grading idempotency and UI recovery" npm run test:miniapp-arithmetic-idempotency
 step "live access smoke gate positive and mutation negative tests" npm run test:exam-access-live-contract
 step "enforce end-to-end release wiring" npm run test:engineering-contract
 step "wechat auth regression" npm run test:wechat-auth
