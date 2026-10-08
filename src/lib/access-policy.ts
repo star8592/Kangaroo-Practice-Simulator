@@ -83,7 +83,7 @@ const CAPS: Record<Capability, {
   competition_catalog:             { guest: true,  free: true,  requiredPlan: "free" },
   public_sample_exam:              { guest: true,  free: true,  requiredPlan: "free" },
   arithmetic_basic:                { guest: true,  free: true,  requiredPlan: "free" },
-  exam_basic:                      { guest: true,  free: true,  requiredPlan: "free" },
+  exam_basic:                      { guest: false, free: true,  requiredPlan: "free" },
   exam_premium:                    { guest: false, free: false, requiredPlan: "plus" },
   grading_basic:                   { guest: true,  free: true,  requiredPlan: "free" },
   solution_basic:                  { guest: true,  free: true,  requiredPlan: "free" },
@@ -103,7 +103,7 @@ const CAPS: Record<Capability, {
   personalized_exam:              { guest: false, free: false, requiredPlan: "plus" },
   personalized_study_plan:        { guest: false, free: false, requiredPlan: "plus" },
 };
-export const ACCESS_POLICY_VERSION = "2026-10-08-v1";
+export const ACCESS_POLICY_VERSION = "2026-10-08-v2";
 export const CAPABILITIES = Object.freeze(Object.keys(CAPS) as Capability[]);
 
 export function classifyStudentIdentity(user: {

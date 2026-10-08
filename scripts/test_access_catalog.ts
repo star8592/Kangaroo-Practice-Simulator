@@ -8,6 +8,8 @@ assert.deepEqual(catalog.plans.map(p=>p.id),["guest","free","plus","pro"]);
 assert.ok(catalog.plans.every(p=>p.checkoutAvailable===false));
 const find=(id:string)=>catalog.features.find(f=>f.id===id)?.tiers;
 assert.equal(find("public_sample_exam")?.guest,true);
+assert.equal(find("exam_basic")?.guest,false);
+assert.equal(find("exam_basic")?.free,true);
 assert.equal(find("arithmetic_basic")?.guest,true);
 assert.equal(find("exam_premium")?.guest,false);
 assert.equal(find("exam_premium")?.free,false);

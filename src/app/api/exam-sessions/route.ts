@@ -1,5 +1,6 @@
 import { NextRequest,NextResponse } from "next/server";
 import { userFromRequest } from "@/lib/auth";
+import { hasFullExamAccess } from "@/lib/exam-access";
 import { isExamBundleTrainingReady,loadTrainingExamBundle } from "@/lib/training-question-bank";
 import { activeExamSession,lockExamSection,saveExamSectionDraft,startExamSection,startExamSession } from "@/lib/exam-session";
 
@@ -7,7 +8,7 @@ const user=(r:NextRequest)=>userFromRequest(r);
 
 export async function GET(r:NextRequest){
   const u=user(r);
-  if(!u)return NextResponse.json({error:"请先登录考生账号"},{status:401});
+  if(!hasFullExamAccess(u))return NextResponse.json({error:"请先登录正式考生账号"},{status:401});
   const id=r.nextUrl.searchParams.get("examId")||"";
   return id?NextResponse.json({session:activeExamSession(u.id,id)}):NextResponse.json({error:"missing examId"},{status:400});
 }
@@ -15,7 +16,7 @@ export async function GET(r:NextRequest){
 export async function POST(r:NextRequest){
   try{
     const u=user(r);
-    if(!u)return NextResponse.json({error:"请先登录考生账号"},{status:401});
+    if(!hasFullExamAccess(u))return NextResponse.json({error:"请先登录正式考生账号"},{status:401});
     const b=await r.json(),id=String(b?.examId||""),bundle=loadTrainingExamBundle(id);
     if(!isExamBundleTrainingReady(bundle))return NextResponse.json({error:"Exam is not training-ready"},{status:404});
     return NextResponse.json({
@@ -30,7 +31,7 @@ export async function POST(r:NextRequest){
 export async function PATCH(r:NextRequest){
   try{
     const u=user(r);
-    if(!u)return NextResponse.json({error:"请先登录考生账号"},{status:401});
+    if(!hasFullExamAccess(u))return NextResponse.json({error:"请先登录正式考生账号"},{status:401});
     const b=await r.json(),id=String(b?.examId||""),sid=String(b?.sessionId||""),action=String(b?.action||"");
     const bundle=loadTrainingExamBundle(id),sections=bundle.profile.timingSections||[];
     if(!sections.length)return NextResponse.json({error:"该考试不是分段计时赛制"},{status:400});

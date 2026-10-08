@@ -77,7 +77,8 @@
     "audit:security": "npm audit --audit-level=high",
     "test:miniapp-parity": "tsx scripts/audit_miniapp_web_parity.ts",
     "test:miniapp-live": "tsx scripts/smoke_miniapp_live.ts",
-    "test:miniapp-click-e2e": "node scripts/e2e/miniapp-click-smoke.cjs"
+    "test:miniapp-click-e2e": "node scripts/e2e/miniapp-click-smoke.cjs",
+    "test:exam-access": "tsx scripts/test_guest_exam_access.ts && tsx scripts/test_guest_exam_routes.ts && tsx scripts/test_access_policy.ts && tsx scripts/test_access_catalog.ts"
   },
   "dependencies": {
     "next": "16.3.8",

@@ -28,6 +28,9 @@ assert.equal(classifyStudentIdentity({ id: "wx_abc", role: "student" }), "studen
 assert.equal(classifyStudentIdentity({ id: "adm_abc", role: "admin" }), "admin");
 assert.equal(classifyStudentIdentity(null), "anonymous");
 assert.equal(canAccess("public_sample_exam", guest).allowed, true);
+assert.equal(canAccess("exam_basic", guest).reason, "login_required");
+assert.equal(canAccess("exam_basic", {kind:"anonymous"}).reason, "login_required");
+assert.equal(canAccess("exam_basic", free).allowed, true);
 assert.equal(canAccess("arithmetic_basic", guest).allowed, true);
 assert.equal(canAccess("grading_basic", guest).allowed, true);
 assert.equal(canAccess("mistake_book", guest).reason, "login_required");
