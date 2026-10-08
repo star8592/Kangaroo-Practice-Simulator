@@ -36,6 +36,7 @@ step "auto-deploy contract" bash ops/release/test_auto_deploy_contract.sh
 step "miniapp backend contract" npm run test:miniapp-contract
 step "miniapp web parity" npm run test:miniapp-parity
 step "public membership benefits catalog" npx tsx scripts/test_access_catalog.ts
+step "payment configuration safeguards (no real credentials)" node scripts/test_wechat_pay_readiness.mjs
 step "local CI deploy contract" bash ops/release/test_local_ci_deploy_contract.sh
 step "auth email SMTP contract" bash ops/release/test_auth_email_smtp_contract.sh
 step "parent auth regression" npm run test:parent-auth
