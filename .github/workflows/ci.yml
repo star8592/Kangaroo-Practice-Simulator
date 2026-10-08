@@ -87,5 +87,7 @@ jobs:
         run: npx tsx scripts/test_miniapp_wechat_auth.ts
       - name: Miniapp and Web data parity
         run: npm run test:miniapp-parity
+      - name: Unverified WeChat build cannot be uploaded
+        run: node scripts/e2e/test-fail-closed.cjs
       - name: Typecheck and compile actual WeChat miniapp artifacts
         run: npm run verify:miniapp

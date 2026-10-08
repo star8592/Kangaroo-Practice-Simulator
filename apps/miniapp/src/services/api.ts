@@ -4,6 +4,29 @@ const BASE = process.env.TARO_APP_API_BASE || 'https://socthink.cn'
 const TOKEN_KEY = 'socthink_access_token'
 const USER_KEY = 'socthink_user'
 
+// wx.request domain validation can block requests before they reach the server.
+export function normalizeMiniappNetworkError(error: unknown): Error {
+  const message = String((error as { errMsg?: string; message?: string })?.errMsg
+    || (error as Error)?.message || error || '')
+  if (/domain list|request.*(合法域名|域名)|not in domain|url not in/i.test(message)) {
+    return new Error('微信阻止了网络请求，请联系管理员检查小程序服务器合法域名配置。')
+  }
+  if (/timeout|timed out/i.test(message)) return new Error('连接服务器超时，请检查网络并重试。')
+  if (/request:fail|network|connect|fetch|ERR_/i.test(message)) {
+    return new Error('无法连接服务器，请重试；持续失败请联系管理员检查微信网络配置。')
+  }
+  return error instanceof Error ? error : new Error(message || '无法连接服务，请重试。')
+}
+
+async function miniappRequest<T>(path: string, settings: Parameters<typeof Taro.request<T>>[0]) {
+  try { return await Taro.request<T>({ ...settings, timeout: 12000 }) }
+  catch (error) {
+    const issue = normalizeMiniappNetworkError(error)
+    console.error('[miniapp/network]', path, issue.message)
+    throw issue
+  }
+}
+
 export const authStore = {
   token: () => String(Taro.getStorageSync(TOKEN_KEY) || ''),
   user: () => Taro.getStorageSync(USER_KEY) || null,
@@ -22,7 +45,7 @@ export async function ensureWechatSession(force = false, allowGuestFallback = tr
       try {
         const login = await Taro.login()
         if (!login.code) throw new Error('微信登录失败，请重试')
-        const res = await Taro.request<any>({
+        const res = await miniappRequest<any>('/api/auth/miniapp/wechat', {
           url: BASE + '/api/auth/miniapp/wechat',
           method: 'POST',
           data: { code: login.code },
@@ -41,7 +64,7 @@ export async function ensureWechatSession(force = false, allowGuestFallback = tr
 
       // Availability safety net: students must still be able to train when the
       // WeChat identity endpoint, credentials, or backend release is unavailable.
-      const guest = await Taro.request<any>({
+      const guest = await miniappRequest<any>('/api/auth/miniapp/guest', {
         url: BASE + '/api/auth/miniapp/guest',
         method: 'POST',
         header: { 'content-type': 'application/json' }
@@ -57,7 +80,7 @@ export async function ensureWechatSession(force = false, allowGuestFallback = tr
 }
 
 export async function api<T = any>(path: string, options: { method?: 'GET'|'POST'|'PATCH'; data?: unknown; auth?: boolean } = {}): Promise<T> {
-  const request = async (token: string) => Taro.request<T>({
+  const request = async (token: string) => miniappRequest<T>(path, {
     url: BASE + path, method: options.method || 'GET', data: options.data,
     header: {'content-type':'application/json', ...(options.auth === false || !token ? {} : {Authorization: `Bearer ${token}`})}
   })

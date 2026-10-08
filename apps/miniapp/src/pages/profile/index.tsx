@@ -1,9 +1,11 @@
+import { useState } from 'react'
 import { Button, Text, View } from '@tarojs/components'
-import Taro from '@tarojs/taro'
+import Taro, { useDidShow } from '@tarojs/taro'
 import { authStore } from '../../services/api'
 
 export default function ProfilePage(){
-  const u=authStore.user()
+  const [u,setUser]=useState<any>(()=>authStore.user())
+  useDidShow(()=>setUser(authStore.user()))
   const isWechat=u?.username==='wechat'||u?.candidateNo==='WECHAT'
   const isGuest=u?.username==='guest'||u?.candidateNo==='GUEST'
   return <View className='page'>

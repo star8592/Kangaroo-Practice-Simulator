@@ -76,7 +76,8 @@
     "miniapp:upload": "bash ops/release/miniapp_ci.sh upload",
     "audit:security": "npm audit --audit-level=high",
     "test:miniapp-parity": "tsx scripts/audit_miniapp_web_parity.ts",
-    "test:miniapp-live": "tsx scripts/smoke_miniapp_live.ts"
+    "test:miniapp-live": "tsx scripts/smoke_miniapp_live.ts",
+    "test:miniapp-click-e2e": "node scripts/e2e/miniapp-click-smoke.cjs"
   },
   "dependencies": {
     "next": "16.3.8",

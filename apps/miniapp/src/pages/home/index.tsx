@@ -1,13 +1,25 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Button, Text, View } from '@tarojs/components'
-import Taro from '@tarojs/taro'
-import { api, authStore } from '../../services/api'
+import Taro, { useDidShow } from '@tarojs/taro'
+import { api, authStore, ensureWechatSession } from '../../services/api'
 
 export default function HomePage(){
   const [analytics,setAnalytics]=useState<any>(null)
-  const user=authStore.user()
+  const [user,setUser]=useState<any>(()=>authStore.user())
+  const [connectionError,setConnectionError]=useState('')
   const greeting=user?.username==='guest'?'同学':user?.username==='wechat'?'同学':user?.name||'同学'
-  useEffect(()=>{api('/api/student/analytics').then(setAnalytics).catch(()=>{})},[])
+  const load=async()=>{
+    setConnectionError('')
+    try{
+      await ensureWechatSession()
+      setUser(authStore.user())
+      setAnalytics(await api('/api/student/analytics'))
+    }catch(e){
+      setUser(authStore.user())
+      setConnectionError(e instanceof Error?e.message:'小程序无法连接服务器，请检查网络')
+    }
+  }
+  useDidShow(()=>{void load()})
 
   const openArithmetic=async()=>{
     try{await Taro.switchTab({url:'/pages/arithmetic/index'})}
@@ -30,12 +42,18 @@ export default function HomePage(){
   return <View className='page'>
     <View className='hero'>
       <View className='muted' style='color:#cbd5e1'>你好，{greeting}</View>
+      <View className='identity-hint'>{user?.username==='wechat'?'✓ 微信身份已连接':user?.username==='guest'?'临时游客体验 · 尚未连接微信学习档案':user?.id?'已登录学生账号':'正在连接学习服务…'}</View>
       <Text className='big'>{hasHistory?'继续今天的数学训练':'从今天的计算训练开始'}</Text>
       <View><Text>{hasHistory?'保持计算手感，也可以直接进入竞赛实战。':'无需注册或填写资料，直接开始计算，做完就能看到成绩和讲解。'}</Text></View>
       <Button className='primary hero-primary' onClick={openArithmetic}>{hasHistory?'继续计算训练':'开始计算训练'}</Button>
       <Button className='hero-secondary' onClick={()=>Taro.switchTab({url:'/pages/competitions/index'})}>进入竞赛实战</Button>
     </View>
 
+    {!!connectionError&&<View className='card error-card'>
+      <View className='card-title'>学习服务尚未连接</View>
+      <View className='bad network-error'>{connectionError}</View>
+      <Button className='primary' onClick={()=>{void load()}}>重新连接</Button>
+    </View>}
     {hasHistory&&<View className='grid2'>
       <View className='card'><View className='card-title'>计算训练</View><Text className='big'>{arithmeticSessions}</Text><View className='muted'>累计训练轮次</View></View>
       <View className='card'><View className='card-title'>竞赛实战</View><Text className='big'>{examAttempts}</Text><View className='muted'>已完成试卷</View></View>

@@ -4,6 +4,11 @@ MODE="${1:-}"
 [[ "$MODE" == "preview" || "$MODE" == "upload" ]] || { echo "usage: $0 preview|upload" >&2; exit 2; }
 
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
+
+# Uploads need proof that the exact SHA passed real WeChat UI interaction.
+if [[ "$MODE" == "upload" ]]; then
+  node "$ROOT/scripts/e2e/verify-miniapp-upload.cjs"
+fi
 APP="$ROOT/apps/miniapp"
 APPID="$(node -e "const x=require('$APP/project.config.json'); process.stdout.write(String(x.appid||''))")"
 [[ "$APPID" =~ ^wx[A-Za-z0-9]{16}$ ]] || { echo "MINIAPP_CI=FAIL reason=invalid_appid" >&2; exit 2; }
