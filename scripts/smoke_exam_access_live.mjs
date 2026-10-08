@@ -24,6 +24,7 @@ async function expectDenied(base, headers, subject) {
   const cases = [
     ["GET", "/api/exams/"+EXAM_ID],
     ["GET", "/api/exam-sessions?examId="+EXAM_ID],
+    ["GET", "/api/exam-sessions/recovery?examId="+EXAM_ID+"&sessionId=invalid"],
     ["POST", "/api/exam-sessions"],
     ["PATCH", "/api/exam-sessions"],
     ["POST", "/api/grade"],

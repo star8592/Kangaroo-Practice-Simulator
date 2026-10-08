@@ -24,11 +24,19 @@ export default function ExamPage(){
   const [error,setError]=useState('')
   const [requiresLogin,setRequiresLogin]=useState(false)
   const current=useRef<Draft|null>(null)
+  const submitting=useRef(false)
   const persist=(patch:Partial<Draft>)=>{
     if(!current.current)return
     const d={...current.current,...patch,savedAt:Date.now()};current.current=d;saveDraft(d)
   }
 
+  const findCommittedResult=async(id:string,sid:string)=>{
+    const response:any=await api('/api/exam-sessions/recovery?examId='+encodeURIComponent(id)+'&sessionId='+encodeURIComponent(sid))
+    return response?.status==='completed'&&response?.result?.attemptId?response.result:null
+  }
+  const acceptResult=(id:string,data:any)=>{
+    clearDraft(id);current.current=null;setResult(data)
+  }
   useLoad(async params=>{
     const id=parseRequestedExam(params.examId);setExamId(id)
     if(!id){setError('试卷编号缺失或无效，请返回竞赛列表重新选择。');return}
@@ -39,6 +47,18 @@ export default function ExamPage(){
         setError('完整竞赛考试需要微信或正式学生账号登录；游客可以继续使用基础计算。')
         return
       }
+      // A lost grading response can leave a committed result under a saved
+      // session. Recover before creating any new sitting.
+      const saved=readDraft(id)
+      const uid=String(authStore.user()?.id||'')
+      if(saved&&saved.userId===uid){
+        try{
+          const recovered=await findCommittedResult(id,saved.sessionId)
+          if(recovered){setSessionId(saved.sessionId);acceptResult(id,recovered);return}
+        }catch(e){
+          if(!(e instanceof Error&&(e.message.includes('404')||e.message.includes('考试会话不存在'))))throw e
+        }
+      }
       // Reject unsupported split timing before creating a server-side session.
       const data:any=await api('/api/exams/'+encodeURIComponent(id))
       if((data.profile?.timingSections||[]).length){setError('这套试卷采用分段计时，请在 Web 端完成。');return}
@@ -46,8 +66,6 @@ export default function ExamPage(){
       const active:any=await api('/api/exam-sessions?examId='+encodeURIComponent(id))
       const server=active.session || (await api<any>('/api/exam-sessions',{method:'POST',data:{examId:id}})).session
       if(!server?.id)throw new Error('无法建立考试会话')
-      const uid=String(authStore.user()?.id||'')
-      const saved=readDraft(id)
       const restored=saved && saved.sessionId===server.id && saved.userId===uid?saved:null
       if(saved&&!restored)clearDraft(id)
       const first=data.questions?.[0]
@@ -58,9 +76,9 @@ export default function ExamPage(){
     }catch(e){setError(e instanceof Error?e.message:'试卷载入失败')}
   })
   if(error)return <View className='page'><View className='card'><View className='card-title'>{requiresLogin?'登录后继续考试':'暂时无法继续考试'}</View><View>{error}</View>{requiresLogin&&<Button className='primary' onClick={()=>Taro.redirectTo({url:makeExamLoginPath(examId)})}>微信登录后继续</Button>}<Button className='secondary' onClick={()=>Taro.switchTab({url:'/pages/competitions/index'})}>返回竞赛列表</Button></View></View>
-  if(!bundle)return <View className='page'><View className='card'>正在载入试卷与恢复作答记录…</View></View>
   if(result)return <View className='page'><View className='hero'><Text className='big'>{result.score} / {result.maxScore}</Text><View>答对 {result.correct} · 答错 {result.wrong} · 空白 {result.blank}</View></View><Button className='primary' onClick={()=>Taro.redirectTo({url:`/pages/review/index?attemptId=${encodeURIComponent(result.attemptId)}`})}>逐题复盘</Button><Button className='secondary' onClick={()=>Taro.switchTab({url:'/pages/competitions/index'})}>返回竞赛</Button></View>
 
+  if(!bundle)return <View className='page'><View className='card'>正在载入试卷与恢复作答记录…</View></View>
   const q=bundle.questions[idx]
   const choose=(value:string)=>{
     const next={...answers,[q.id]:value},ev={type:'answer_selected',questionId:q.id,value,at:Date.now()}
@@ -72,16 +90,28 @@ export default function ExamPage(){
     setEvents(nextEvents);setIdx(next);persist({idx:next,events:nextEvents})
   }
   const submit=async()=>{
-    if(busy)return
-    const confirmed=await Taro.showModal({title:'确认交卷',content:`已作答 ${Object.values(answers).filter(x=>x.trim()).length}/${bundle.questions.length} 题。交卷后不能修改，确定提交吗？`})
-    if(!confirmed.confirm)return
-    setBusy(true)
+    if(submitting.current)return
+    submitting.current=true
     try{
-      const snapshot=current.current
-      const r:any=await api('/api/grade',{method:'POST',data:{examId,sessionId,answers:snapshot?.answers||answers,events:snapshot?.events||events,lang:'zh'}})
-      clearDraft(examId);current.current=null;setResult(r)
-    }catch(e){Taro.showToast({title:e instanceof Error?e.message:'交卷失败，答案已保存在本机',icon:'none'})}
-    finally{setBusy(false)}
+      const confirmed=await Taro.showModal({title:'确认交卷',content:`已作答 ${Object.values(answers).filter(x=>x.trim()).length}/${bundle.questions.length} 题。交卷后不能修改，确定提交吗？`})
+      if(!confirmed.confirm)return
+      setBusy(true)
+      try{
+        const snapshot=current.current
+        const data:any=await api('/api/grade',{method:'POST',data:{examId,sessionId,answers:snapshot?.answers||answers,events:snapshot?.events||events,lang:'zh'}})
+        if(!data?.attemptId)throw new Error('成绩回执无效，请尝试恢复')
+        acceptResult(examId,data)
+      }catch(e){
+        // A server may commit the grade before the phone loses its connection.
+        try{
+          const recovered=await findCommittedResult(examId,sessionId)
+          if(recovered){acceptResult(examId,recovered);return}
+        }catch{/* Preserve the original error and local answer draft. */}
+        Taro.showToast({title:e instanceof Error?e.message:'交卷失败，答案已保存在本机',icon:'none'})
+      }
+    }finally{
+      setBusy(false);submitting.current=false
+    }
   }
   const asset=q.assetUrlZh||q.assetUrl
   return <View className='page'>

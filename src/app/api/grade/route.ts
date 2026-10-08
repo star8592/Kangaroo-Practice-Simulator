@@ -4,6 +4,7 @@ import { isExamBundleTrainingReady,loadTrainingExamBundle } from "@/lib/training
 import { userFromRequest } from "@/lib/auth";
 import { hasFullExamAccess } from "@/lib/exam-access";
 import { appendExamAttempt,type ExamEvent } from "@/lib/attempt-store";
+import { withExamSubmitLock } from "@/lib/exam-submit-recovery";
 import {
   activeSectionElapsedSeconds,
   allExamSectionsLocked,
@@ -30,6 +31,9 @@ export async function POST(r:NextRequest){
     const u=userFromRequest(r);
     if(!hasFullExamAccess(u))return NextResponse.json({error:"请先登录正式考生账号"},{status:401});
     const b=await r.json(),id=String(b?.examId||"level-a"),sid=String(b?.sessionId||"");
+    // A lost network response must not create a second attempt or strand the
+    // student without a result. Lock before validating or writing the ticket.
+    const result=withExamSubmitLock(u.id,id,sid,()=>{
     const valid=validateExamSession(sid,u.id,id);
     if(!valid.ok)return NextResponse.json({error:valid.error},{status:409});
     const bundle=loadTrainingExamBundle(id);
@@ -54,9 +58,11 @@ export async function POST(r:NextRequest){
 
     const es=events(b?.events,valid.session.startedAt,submittedAt);
     es.push({type:"server_submit",at:submittedAt});
-    const a=appendExamAttempt({user:u,bundle,grade:g,events:es,startedAt:valid.session.startedAt,submittedAt,elapsedSeconds});
+    const a=appendExamAttempt({user:u,sessionId:sid,bundle,grade:g,events:es,startedAt:valid.session.startedAt,submittedAt,elapsedSeconds});
     completeExamSession(sid,a.id,submittedAt);
-    return NextResponse.json({...g,attemptId:a.id,elapsedSeconds,submittedAt});
+    return {...g,attemptId:a.id,elapsedSeconds,submittedAt};
+    });
+    return result instanceof Response ? result : NextResponse.json(result);
   }catch(e){
     return NextResponse.json({error:e instanceof Error?e.message:"Unable to grade exam"},{status:500});
   }

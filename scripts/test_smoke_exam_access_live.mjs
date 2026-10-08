@@ -21,7 +21,7 @@ async function scenario({broken=false}={}) {
     }
     if(url.pathname==="/api/auth/miniapp/guest")return json({accessToken:"fixture-token-not-real"});
     if(url.pathname==="/api/miniapp/exams")return json({exams:[]});
-    if(url.pathname.startsWith("/api/exams/")||url.pathname==="/api/exam-sessions"||url.pathname==="/api/grade")
+    if(url.pathname.startsWith("/api/exams/")||url.pathname==="/api/exam-sessions/recovery"||url.pathname==="/api/exam-sessions"||url.pathname==="/api/grade")
       return write(401,"{}",{"content-type":"application/json"});
     return write(404);
   });
@@ -35,9 +35,9 @@ test("signed web and miniapp guests are denied every full exam route",async()=>{
   const s=await scenario();
   try {
     const r=await verifyExamAccess(s.base,{expectedSha:"TEST"});
-    assert.equal(r.webGuestDenied,5);
-    assert.equal(r.miniappGuestDenied,5);
-    assert.equal(r.anonymousDenied,5);
+    assert.equal(r.webGuestDenied,6);
+    assert.equal(r.miniappGuestDenied,6);
+    assert.equal(r.anonymousDenied,6);
   } finally {await s.close();}
 });
 
