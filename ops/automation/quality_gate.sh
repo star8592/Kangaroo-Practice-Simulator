@@ -40,6 +40,7 @@ step "local CI deploy contract" bash ops/release/test_local_ci_deploy_contract.s
 step "auth email SMTP contract" bash ops/release/test_auth_email_smtp_contract.sh
 step "parent auth regression" npm run test:parent-auth
 step "guest bootstrap reverse-proxy regression" npx tsx scripts/test_guest_bootstrap.ts
+step "guest/full-exam authorization regression" npm run test:exam-access
 step "wechat auth regression" npm run test:wechat-auth
 step "miniapp auth install contract" bash ops/release/test_wechat_miniapp_auth_contract.sh
 step "repository hygiene" python3 scripts/audit_repository_hygiene.py
