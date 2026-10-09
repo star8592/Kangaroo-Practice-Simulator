@@ -102,7 +102,7 @@ for (const needle of [
 for (const needle of ['/api/miniapp/world-competitions','x.event.nameZh','/api/miniapp/exams','ex.name','ex.year','ex.grades','ex.questionCount','ex.miniappReady']) {
   assert.ok(surfaces.competitions.includes(needle), `competition UI mapping missing: ${needle}`)
 }
-for (const needle of ['/api/miniapp/world-competitions','/api/competition-follow','following','chosen.event.nameZh','t.titleZh','t.detailZh','t.checklistZh']) {
+for (const needle of ['/api/miniapp/world-competitions','/api/competition-follow','following','我的关注','下一步行动','nextFocus','chosen.event.nameZh','t.titleZh','t.detailZh','t.checklistZh']) {
   assert.ok(surfaces.events.includes(needle), `event UI mapping missing: ${needle}`)
 }
 for (const needle of ['/api/miniapp/review','q.stem','assetUrlZh','correctAnswer','solution']) {

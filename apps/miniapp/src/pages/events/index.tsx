@@ -48,6 +48,12 @@ export default function EventsPage(){
   },[rows.length])
   const visible=useMemo(()=>rows.filter(x=>(region==='all'||x.event.region===region)&&(stage==='all'||!x.event.referenceStages||x.event.referenceStages.includes(stage))),[rows,region,stage])
   const chosen=rows.find(x=>x.event.id===selected)||visible[0]
+  const followed=rows.filter(x=>x.following===true)
+  const nextFocus=followed.map(x=>{
+    const done=new Set(x.progress?.completedTaskIds||[])
+    return {row:x,task:x.companion?.tasks.find(t=>!done.has(t.id))}
+  }).filter(x=>x.task).slice(0,3)
+
   const toggle=async(c:WorldEntry,t:{id:string})=>{
     if(!c.progress||!c.companion){Taro.showToast({title:'请登录学生账号后保存',icon:'none'});return}
     const done=c.progress.completedTaskIds.includes(t.id)
@@ -84,6 +90,19 @@ export default function EventsPage(){
     <View className='hero'><Text className='big'>全球数学赛事管家</Text>
       <View>同一套流程管理全球赛事：核实资格、报名准备、模拟、设备调试、比赛、成绩与证书。</View>
     </View>
+    <View className='section-title'>我的关注 · {followed.length} 项</View>
+    {nextFocus.length>0?<View className='card'>
+      <View className='card-title'>下一步行动 · 最多三项</View>
+      {nextFocus.map(x=><View key={x.row.event.id}>
+        <View className='card-title'>{x.row.event.nameZh}</View>
+        <View>{x.task?.titleZh}</View>
+        <Button className='secondary' onClick={()=>{
+          setRegion('all');setStage('all');setSelected(x.row.event.id)
+          void Taro.pageScrollTo({selector:'#world-detail',duration:150}).catch(()=>{})
+        }}>打开备赛清单</Button>
+      </View>)}
+      <View className='muted'>关注不代表报名；无官方核验日期的待办不显示倒计时。</View>
+    </View>:<View className='muted'>关注任意赛事后，会在这里集中显示下一步任务。</View>}
     <View className='competition-tabs'>
       {regions.map(r=><Button key={r.id} className={region===r.id?'competition-tab active':'competition-tab'} onClick={()=>{
         setRegion(r.id)
