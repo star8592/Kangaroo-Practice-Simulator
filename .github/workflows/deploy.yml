@@ -1,227 +1,73 @@
-name: Deploy Production
+name: Manual Production Reconcile
 
-# Emergency/manual SSH deployment only. Main-branch production publication is
-# handled by the primary release path and verified by production-receipt.yml.
+# Emergency/manual re-trigger only. Canonical server service remains the sole
+# builder, candidate validator, immutable publisher and rollback executor.
 on:
   workflow_dispatch:
+    inputs:
+      expected_sha:
+        description: "Exact main Git SHA to reconcile in production"
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: production-manual-reconcile
+  cancel-in-progress: false
 
 jobs:
-  build-and-deploy:
+  reconcile:
     runs-on: ubuntu-latest
+    timeout-minutes: 25
     env:
       SERVER_HOST: ${{ secrets.SERVER_HOST || 'socthink.cn' }}
       SERVER_USER: ${{ secrets.SERVER_USER || 'root' }}
-      APP_DIR: ${{ secrets.APP_DIR || '/opt/socthink-math' }}
-      SERVER_SERVICE: ${{ secrets.SERVER_SERVICE || 'socthink-math.service' }}
       SERVER_SSH_KEY: ${{ secrets.SERVER_SSH_KEY || secrets.SSH_PRIVATE_KEY || secrets.DEPLOY_SSH_KEY || secrets.SSH_KEY }}
-      SERVER_PASSWORD: ${{ secrets.SERVER_PASSWORD || secrets.SSH_PASSWORD || secrets.DEPLOY_PASSWORD }}
-
+      TARGET_SHA: ${{ github.sha }}
+      REQUESTED_SHA: ${{ inputs.expected_sha }}
     steps:
-      - name: Checkout
+      - name: Checkout exact dispatch commit for public receipt validation
         uses: actions/checkout@v4
-
-      - name: Checkout one-time Pre-A payload
-        uses: actions/checkout@v4
-        with:
-          ref: release-data/pre-a-grade1-20260923
-          path: release-data
-          sparse-checkout: release-payloads
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: npm
-
-      - name: Install
-        run: npm ci
-
-      - name: Public quality gate
-        run: npm run verify:public
-
-      - name: Validate deployment credentials
+      - name: Require main ref, exact main commit and SSH key
         shell: bash
         run: |
-          set -euo pipefail
-          test -n "$SERVER_HOST"
-          test -n "$SERVER_USER"
-          test -n "$APP_DIR"
-          test -n "$SERVER_SERVICE"
-          if [ -z "$SERVER_SSH_KEY" ] && [ -z "$SERVER_PASSWORD" ]; then
-            echo "::error::No production SSH credential is configured. Supported secrets: SERVER_SSH_KEY/SSH_PRIVATE_KEY/DEPLOY_SSH_KEY/SSH_KEY or SERVER_PASSWORD/SSH_PASSWORD/DEPLOY_PASSWORD."
-            exit 1
-          fi
-          test -f release-data/release-payloads/pre-a-grade1-payload.tar.gz
-          echo "DEPLOYMENT_CREDENTIAL=PASS"
-
-      - name: Deploy exact commit to production
+          set -Eeuo pipefail
+          [[ "${{ github.ref }}" == "refs/heads/main" ]] || { echo "Main branch only"; exit 1; }
+          [[ "$TARGET_SHA" =~ ^[0-9a-f]{40}$ ]] || exit 1
+          [[ "$REQUESTED_SHA" == "$TARGET_SHA" ]] || { echo "Explicit requested SHA differs from main"; exit 1; }
+          [[ -n "$SERVER_SSH_KEY" ]] || { echo "::error::SSH private key required; password-based deployment disabled"; exit 1; }
+      - name: Trigger canonical CI-gated auto-deployer
         uses: appleboy/ssh-action@v1
         with:
           host: ${{ env.SERVER_HOST }}
           username: ${{ env.SERVER_USER }}
           key: ${{ env.SERVER_SSH_KEY }}
-          password: ${{ env.SERVER_PASSWORD }}
           script_stop: true
+          command_timeout: 20m
           script: |
             set -Eeuo pipefail
-            APP='${{ env.APP_DIR }}'
-            SERVICE='${{ env.SERVER_SERVICE }}'
             TARGET_SHA='${{ github.sha }}'
-            PREV_SHA=""
-
-            rollback() {
-              rc=$?
-              trap - ERR
-              echo "deployment failed (exit $rc); attempting rollback" >&2
-              if [ -n "$PREV_SHA" ]; then
-                cd "$APP"
-                git reset --hard "$PREV_SHA" || true
-                npm ci || true
-                npm run build || true
-                mkdir -p .release
-                printf '%s\n' "$PREV_SHA" > .release/deployed_sha
-                git show "$PREV_SHA:VERSION" 2>/dev/null | tr -d '\r' > .release/deployed_version || printf '%s\n' unknown > .release/deployed_version
-                date -Iseconds > .release/deployed_at
-                systemctl restart "$SERVICE" || true
-              fi
-              exit "$rc"
-            }
-            trap rollback ERR
-
-            cd "$APP"
-            PREV_SHA="$(git rev-parse HEAD 2>/dev/null || true)"
-            git remote set-url origin https://github.com/star8592/Kangaroo-Practice-Simulator.git
-            git fetch --prune origin main
-            git cat-file -e "$TARGET_SHA^{commit}"
-            git reset --hard "$TARGET_SHA"
-
-            # Never run git clean: private/, public/local-assets/ and runtime data
-            # are intentionally outside Git and must survive code deployments.
-            npm ci
-            npm run build
-
-            mkdir -p .release
-            printf '%s\n' "$TARGET_SHA" > .release/deployed_sha
-            cat VERSION | tr -d '\r' > .release/deployed_version
-            date -Iseconds > .release/deployed_at
-
-            systemctl restart "$SERVICE"
-            for _ in $(seq 1 60); do
-              if curl -fsS http://127.0.0.1:3000/api/release >/dev/null 2>&1; then
-                break
-              fi
-              sleep 1
-            done
-
-            curl -fsS http://127.0.0.1:3000/api/release
-            echo
-            python3 scripts/smoke_test.py --base http://127.0.0.1:3000
-            test "$(git rev-parse HEAD)" = "$TARGET_SHA"
-            trap - ERR
-
-      - name: Upload Pre-A grade-one payload
-        uses: appleboy/scp-action@v1
-        with:
-          host: ${{ env.SERVER_HOST }}
-          username: ${{ env.SERVER_USER }}
-          key: ${{ env.SERVER_SSH_KEY }}
-          password: ${{ env.SERVER_PASSWORD }}
-          source: release-data/release-payloads/pre-a-grade1-payload.tar.gz,release-data/release-payloads/pre-a-grade1-payload.txt
-          target: /tmp/kps-pre-a-grade1
-          strip_components: 2
-          overwrite: true
-
-      - name: Install and verify Pre-A grade-one data
-        uses: appleboy/ssh-action@v1
-        with:
-          host: ${{ env.SERVER_HOST }}
-          username: ${{ env.SERVER_USER }}
-          key: ${{ env.SERVER_SSH_KEY }}
-          password: ${{ env.SERVER_PASSWORD }}
-          script_stop: true
-          script: |
-            set -Eeuo pipefail
-            APP='${{ env.APP_DIR }}'
-            SERVICE='${{ env.SERVER_SERVICE }}'
-            PAYLOAD='/tmp/kps-pre-a-grade1/pre-a-grade1-payload.tar.gz'
-            META='/tmp/kps-pre-a-grade1/pre-a-grade1-payload.txt'
-            EXPECTED_SHA="$(awk '$1 == "sha256" { print $2 }' "$META")"
-            test -n "$EXPECTED_SHA"
-            MARKER="$APP/.release/data-promotions/pre-a-grade1-20260923.sha256"
-            STAMP="$(date +%Y%m%d-%H%M%S)"
-            BACKUP="/opt/socthink-math-backups/pre-a-grade1-$STAMP.tar.gz"
-            LIST="/tmp/pre-a-grade1-backup-$STAMP.txt"
-
-            echo "$EXPECTED_SHA  $PAYLOAD" | sha256sum -c -
-            cd "$APP"
-
-            if [ -f "$MARKER" ] && [ "$(cat "$MARKER")" = "$EXPECTED_SHA" ]; then
-              python3 scripts/test_pre_a_grade1_ready.py
-              echo "PRE_A_DATA_ALREADY_CURRENT=PASS"
+            APP='/opt/socthink-math'
+            test -d "$APP/.git"
+            REMOTE_SHA="$(git -C "$APP" ls-remote origin refs/heads/main | cut -f1)"
+            test "$REMOTE_SHA" = "$TARGET_SHA"
+            # This service validates CI green, smoke tests a candidate,
+            # atomically promotes an immutable runtime and rolls back on failure.
+            systemctl start socthink-auto-deploy.service
+            test "$(cat "$APP/.release/deployed_sha")" = "$TARGET_SHA"
+      - name: Verify exact public SHA and guest privacy gates
+        shell: bash
+        env:
+          EXPECTED_SHA: ${{ github.sha }}
+        run: |
+          set -Eeuo pipefail
+          for attempt in $(seq 1 24); do
+            if python3 scripts/smoke_production_public.py --base https://socthink.cn --sha "$EXPECTED_SHA"; then
               exit 0
             fi
-
-            : > "$LIST"
-            find private/solutions -maxdepth 1 -type f -name 'au-amc-pre-a-*.json' -print >> "$LIST" 2>/dev/null || true
-            find private/exams -maxdepth 1 -type f -name 'au-amc-pre-a-sample-*.json' -print >> "$LIST" 2>/dev/null || true
-            find public/generated-solutions -maxdepth 1 -mindepth 1 -type d -name 'au-amc-pre-a-*' -print >> "$LIST" 2>/dev/null || true
-            if [ -d public/local-assets/australian-amc/pre-a ]; then
-              printf '%s\n' public/local-assets/australian-amc/pre-a >> "$LIST"
-            fi
-            sort -u -o "$LIST" "$LIST"
-            mkdir -p "$(dirname "$BACKUP")"
-            if [ -s "$LIST" ]; then
-              tar -czf "$BACKUP" -T "$LIST"
-            else
-              tar -czf "$BACKUP" --files-from=/dev/null
-            fi
-
-            rollback_data() {
-              rc=$?
-              trap - ERR
-              echo "Pre-A data promotion failed (exit $rc); restoring $BACKUP" >&2
-              cd "$APP"
-              rm -f private/solutions/au-amc-pre-a-*.json private/exams/au-amc-pre-a-sample-*.json || true
-              rm -rf public/generated-solutions/au-amc-pre-a-* public/local-assets/australian-amc/pre-a || true
-              tar -xzf "$BACKUP" -C "$APP" || true
-              npm run build || true
-              systemctl restart "$SERVICE" || true
-              exit "$rc"
-            }
-            trap rollback_data ERR
-
-            tar -xzf "$PAYLOAD" -C "$APP"
-            python3 scripts/test_pre_a_grade1_ready.py
-            npm run build
-            systemctl restart "$SERVICE"
-            for _ in $(seq 1 60); do
-              if curl -fsS http://127.0.0.1:3000/api/release >/dev/null 2>&1; then
-                break
-              fi
-              sleep 1
-            done
-            python3 scripts/smoke_test.py --base http://127.0.0.1:3000
-            mkdir -p "$(dirname "$MARKER")"
-            printf '%s\n' "$EXPECTED_SHA" > "$MARKER"
-            trap - ERR
-            echo "PRE_A_DATA_PROMOTION=PASS backup=$BACKUP"
-
-      - name: Verify public deployment receipt and Pre-A assets
-        shell: bash
-        run: |
-          set -euo pipefail
-          for _ in $(seq 1 30); do
-            if payload="$(curl -fsS https://socthink.cn/api/release 2>/dev/null)"; then
-              if PAYLOAD="$payload" python3 -c 'import json, os; d=json.loads(os.environ["PAYLOAD"]); expected=os.environ["GITHUB_SHA"]; assert d.get("ok") is True, d; assert d.get("deployedSha")==expected, (d,expected); assert d.get("gitSha")==expected, (d,expected); print("PUBLIC_DEPLOYMENT_RECEIPT=PASS", expected)'; then
-                break
-              fi
-            fi
-            sleep 2
+            sleep 5
           done
-
-          payload="$(curl -fsS https://socthink.cn/api/release)"
-          PAYLOAD="$payload" python3 -c 'import json, os; d=json.loads(os.environ["PAYLOAD"]); expected=os.environ["GITHUB_SHA"]; assert d.get("deployedSha")==expected and d.get("gitSha")==expected, (d,expected)'
-          curl -fsS -o /dev/null https://socthink.cn/generated-solutions/au-amc-pre-a-s1-q01/scene-01.wav
-          curl -fsS -o /dev/null https://socthink.cn/local-assets/australian-amc/pre-a/sample-1/zh/q01.png
-          curl -fsS https://socthink.cn/ | grep -q "Math Competition Lab"
-          echo "PUBLIC_PRE_A_GRADE1=PASS"
+          echo "::error::Production receipt or anonymous privacy checks failed"
+          exit 1
