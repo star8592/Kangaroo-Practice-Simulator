@@ -3,6 +3,9 @@ import { Button, Text, View } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import { api, authStore, ensureWechatSession } from '../../services/api'
 
+type Notice={id:string;eventId:string;titleZh:string;date:string;daysUntil:number;detailZh:string;sourceUrl:string}
+type Intelligence={region:string|null;notices:Notice[];next:Notice[];followedCount:number;reviewedEditionCount:number}
+const participationRegions=[{id:'',name:'选择参赛地区'},{id:'CN',name:'中国'},{id:'US',name:'美国'},{id:'AU',name:'澳大利亚'},{id:'CA',name:'加拿大'},{id:'GB',name:'英国'}]
 type WorldEntry = {
   event:{
     id:string;region:string;nameZh:string;summaryZh:string;sourceUrl:string;referenceStages?:string[];
@@ -30,6 +33,16 @@ export default function EventsPage(){
   const [error,setError]=useState('')
   const [saving,setSaving]=useState('')
   const [followError,setFollowError]=useState('')
+  const [intel,setIntel]=useState<Intelligence|null>(null)
+  const [intelError,setIntelError]=useState('')
+  const [intelBusy,setIntelBusy]=useState(false)
+  const loadIntelligence=async()=>{
+    try {
+      const result=await api<Intelligence>('/api/competition-intelligence')
+      setIntel(result);setIntelError('')
+    }catch{setIntel(null);setIntelError('登录正式微信学习档案后，可保存赛区并查看个性化情报。')}
+  }
+
   const load=async()=>{
     setLoading(true);setError('')
     try{
@@ -40,7 +53,7 @@ export default function EventsPage(){
       setError(e instanceof Error?e.message:'赛事暂时无法载入')
     }finally{setLoading(false)}
   }
-  useEffect(()=>{void load()},[])
+  useEffect(()=>{void load();void loadIntelligence()},[])
   useEffect(()=>{
     if(rows.length&&Taro.getCurrentInstance().router?.params?.competition){
       void Taro.pageScrollTo({selector:'#world-detail',duration:150}).catch(()=>{})
@@ -79,7 +92,7 @@ export default function EventsPage(){
       await api('/api/competition-follow',{method:'PATCH',data:{
         eventId:item.event.id,following:!item.following,
       }})
-      await load()
+      await load();await loadIntelligence()
     }catch(e){
       const msg=e instanceof Error?e.message:'关注保存失败'
       setFollowError(msg)
@@ -89,6 +102,39 @@ export default function EventsPage(){
   return <View className='page'>
     <View className='hero'><Text className='big'>全球数学赛事管家</Text>
       <View>同一套流程管理全球赛事：核实资格、报名准备、模拟、设备调试、比赛、成绩与证书。</View>
+    </View>
+    <View className='section-title'>赛事情报与截止提醒</View>
+    <View className='card'>
+      <View className='muted'>只根据已关注赛事、拟参赛赛区与可追溯的有效来源生成正式日期提醒。未核验的学校信息不会触发倒计时。</View>
+      {intel ? <View>
+        <View className='card-title'>计划参赛地区</View>
+        <View className='competition-tabs'>
+          {participationRegions.map(r=><Button key={r.id} disabled={intelBusy}
+            className={(intel.region||'')===r.id?'competition-tab active':'competition-tab'}
+            onClick={async()=>{
+              setIntelBusy(true);setIntelError('')
+              try{
+                const x=await api<Intelligence>('/api/competition-intelligence',{
+                  method:'PATCH',data:{region:r.id||null}
+                })
+                setIntel(x)
+              }catch{setIntelError('保存赛区失败，请稍后重试。')}
+              finally{setIntelBusy(false)}
+            }}>{r.name}</Button>)}
+        </View>
+        {intel.next.length?intel.next.map(n=><View key={n.id} className='card'>
+          <View className='card-title'>{n.titleZh}</View>
+          <View>{n.date} · 还有 {n.daysUntil} 天</View><View className='muted'>{n.detailZh}</View>
+          <Button className='secondary' onClick={()=>{
+            setRegion('all');setStage('all');setSelected(n.eventId)
+            void Taro.pageScrollTo({selector:'#world-detail',duration:150}).catch(()=>{})
+          }}>查看赛事清单及来源</Button>
+        </View>):<View className='muted'>{intel.region?
+          '当前关注赛事暂无已核验的临近日期；备赛任务仍可正常使用。':
+          '先选择拟参赛地区，才能识别当地节点。'}</View>}
+      </View>:<Button className='secondary' onClick={()=>void loadIntelligence()}>登录/刷新赛事情报</Button>}
+      {!!intelError&&<View className='muted'>{intelError}</View>}
+      <View className='muted'>当前为站内查询，不代表微信订阅消息已开通。</View>
     </View>
     <View className='section-title'>我的关注 · {followed.length} 项</View>
     {nextFocus.length>0?<View className='card'>

@@ -11,6 +11,7 @@ const usersFile=path.join(fixtureRoot,"users","users.json");
 const sessionsFile=path.join(fixtureRoot,"users","exam-sessions.json");
 const attemptsFile=path.join(fixtureRoot,"users","exam-attempts.jsonl");
 const followsFile=path.join(fixtureRoot,"users","world-competition-follows.json");
+const regionsFile=path.join(fixtureRoot,"users","world-competition-regions.json");
 let account:{id:string;username:string;pin:string}|undefined;
 
 function readArray(file:string):Record<string,unknown>[] {
@@ -57,6 +58,7 @@ test.afterAll(()=>{
   if(fs.existsSync(usersFile))fs.writeFileSync(usersFile,JSON.stringify(readArray(usersFile).filter(x=>x.id!==account?.id)));
   if(fs.existsSync(sessionsFile))fs.writeFileSync(sessionsFile,JSON.stringify(readArray(sessionsFile).filter(x=>x.userId!==account?.id)));
   if(fs.existsSync(followsFile))fs.writeFileSync(followsFile,JSON.stringify(readArray(followsFile).filter(x=>x.userId!==account?.id)));
+  if(fs.existsSync(regionsFile))fs.writeFileSync(regionsFile,JSON.stringify(readArray(regionsFile).filter(x=>x.userId!==account?.id)));
   if(fs.existsSync(attemptsFile)){
     const remaining=fs.readFileSync(attemptsFile,"utf8").split("\n").filter(line=>line.trim()&&JSON.parse(line).userId!==account?.id);
     fs.writeFileSync(attemptsFile,remaining.length?remaining.join("\n")+"\n":"");
@@ -151,4 +153,27 @@ test("logged-in student follows UKMT and sees it in their personal calendar", as
   await expect(page).toHaveURL(/\/competitions\?event=ukmt$/);
   await hub.getByRole("button",{name:/已关注 · 取消关注/}).click();
   await expect(hub.getByRole("button",{name:"＋ 关注赛事"})).toBeVisible();
+});
+
+
+test("student can select competition alert region without fabricating dates",async({page,request})=>{
+  const anonymous=await request.get("/api/competition-intelligence");
+  expect(anonymous.status()).toBe(401);
+  const denied=await request.patch("/api/competition-intelligence",{data:{region:"GB"}});
+  expect(denied.status()).toBe(401);
+  if(!account)throw new Error("synthetic student fixture missing");
+  await page.goto("/login?next=/student/calendar");
+  await page.getByLabel("学生账号 / 准考证号").fill(account.username);
+  await page.getByLabel("学生 PIN").fill(account.pin);
+  await page.getByRole("button",{name:"登录学生系统"}).click();
+  await expect(page).toHaveURL(/\/student\/calendar(?:\?|$)/,{timeout:15000});
+  const alerts=page.getByRole("region",{name:"赛事情报与提醒"});
+  await expect(alerts.getByRole("heading",{name:"我的赛事情报"})).toBeVisible();
+  await expect(alerts.getByText("请选择计划参赛地区，才能筛选对应赛区的公告。")).toBeVisible();
+  await alerts.getByLabel("计划参赛地区").selectOption("GB");
+  await expect(alerts.getByText(/当前关注赛事|还没有关注赛事/)).toBeVisible();
+  await page.reload();
+  await expect(alerts.getByLabel("计划参赛地区")).toHaveValue("GB");
+  await alerts.getByLabel("计划参赛地区").selectOption("");
+  await expect(alerts.getByLabel("计划参赛地区")).toHaveValue("");
 });

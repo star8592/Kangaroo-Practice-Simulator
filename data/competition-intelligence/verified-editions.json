@@ -1,0 +1,47 @@
+[
+  {
+    "id": "maa-amc10-12-us-2026",
+    "eventId": "maa-amc",
+    "sessionId": "maa-amc10-12-us-2026",
+    "season": 2026,
+    "region": "US",
+    "titleZh": "美国 MAA AMC 10/12（美国考点）",
+    "sourceUrl": "https://maa.org/amcreg/",
+    "sourceAuthority": "organizer",
+    "verifiedBy": "model-assisted-official-page-review",
+    "verifiedAt": "2026-10-09",
+    "validThrough": "2026-11-13",
+    "verification": "verified",
+    "maxGrade": 12,
+    "milestones": [
+      {
+        "id": "manager-regular-registration",
+        "kind": "registration-deadline",
+        "date": "2026-10-15",
+        "titleZh": "考点管理人常规登记截止（非学生报名截止）",
+        "audience": "competition-manager"
+      },
+      {
+        "id": "manager-late-registration",
+        "kind": "registration-deadline",
+        "date": "2026-10-28",
+        "titleZh": "老考点管理人延迟登记截止（非学生报名截止）",
+        "audience": "competition-manager"
+      },
+      {
+        "id": "exam-a",
+        "kind": "exam",
+        "date": "2026-11-05",
+        "titleZh": "AMC 10/12 A 考试日",
+        "audience": "participant"
+      },
+      {
+        "id": "exam-b",
+        "kind": "exam",
+        "date": "2026-11-13",
+        "titleZh": "AMC 10/12 B 考试日",
+        "audience": "participant"
+      }
+    ]
+  }
+]

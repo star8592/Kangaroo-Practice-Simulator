@@ -4,6 +4,7 @@ import Link from "next/link";
 import {SESSION_COOKIE,userFromSessionToken} from "@/lib/auth";
 import {buildAcademicCalendar} from "@/lib/academic-events/calendar";
 import {buildWorldFollowedCalendar} from "@/lib/world-followed-calendar";
+import CompetitionIntelligencePanel from "@/components/CompetitionIntelligencePanel";
 import styles from "./page.module.css";
 export const dynamic="force-dynamic";
 
@@ -21,6 +22,7 @@ export default async function Page(){
         <p>关注全球赛事，不等于已报名某届比赛。这里分别记录备赛待办与已经核验的具体考试日期。</p></div>
       <Link className="secondary-button" href="/competitions">发现更多赛事</Link>
     </header>
+    <CompetitionIntelligencePanel/>
     <section className={styles.session} aria-label="接下来最值得做的三件事">
       <div className={styles.sessionHead}><h2>下一步行动</h2><strong>最多显示三项</strong></div>
       {nextActions.length?nextActions.map(x=><article className={styles.focusTask} key={x.eventId}>
@@ -39,7 +41,7 @@ export default async function Page(){
       </article>):<section className={styles.empty}><h2>暂未关注赛事</h2><p>你可以自由关注世界各地的数学赛事。关注后在这里集中管理备赛，不必重复搜索信息。</p><Link className="primary-button" href="/competitions">选择想关注的赛事</Link></section>}
     </section>
     <section aria-label="已核验的具体比赛场次">
-      <h2 className={styles.groupTitle}>具体考试场次与日期</h2>
+      <h2 className={styles.groupTitle}>已登记场次与已核验日期</h2>
       {rows.length?rows.map(row=><section className={styles.session} key={row.session.id}>
         <div className={styles.sessionHead}><div><small>{row.session.season} · {row.session.region}</small><h2>{row.event.titleZh}</h2></div><strong>{row.stage}</strong></div>
         <div className={styles.timeline}>{row.milestones.map(m=><article key={m.id} className={m.start<today?styles.past:""}><time>{m.start.slice(5)}</time><i/><div><b>{m.titleZh}</b><small>{m.kind}</small></div></article>)}</div>
