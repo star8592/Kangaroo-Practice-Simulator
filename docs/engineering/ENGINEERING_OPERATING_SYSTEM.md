@@ -60,3 +60,7 @@ ops/engineering/controls.json 是机器可检查的控制目录；scripts/verify
 ## GOV-03 实施入口（2026-10-10）
 
 每日加密备份及实测隔离恢复详细操作和已知边界：docs/engineering/VERIFIED_BACKUP_RESTORE_20261010.md。首次生产验收前不能将备份从 OPEN 改为 PASS；异机保护、密钥异地保存及跨主机恢复仍需独立验收。
+
+
+## 异机加密备份（2026-10-10）
+在每日云端独立解密恢复验证基础上，本地 15TB 数据盘的 SSH 只读密文拉取与哈希回读流程详见 docs/engineering/OFFSITE_ENCRYPTED_BACKUP_20261010.md。**密码封存与跨机器解密恢复仍为 OPEN**，不能以密文复制成功冒充完整灾难恢复。
