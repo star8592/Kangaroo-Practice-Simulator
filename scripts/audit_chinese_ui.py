@@ -20,7 +20,7 @@ checks={
     'must_not':['Professional Diagnostic Report','Professional Learning Diagnostic','Ability & Strategy Profile','Evidence-based Findings','Personalized Prescription','Question-level Evidence','Growth Record & Methodology'],
   },
   'src/components/HomeClient.tsx':{
-    'must':['国际数学竞赛训练','竞赛分类','MAA AMC 晋级路径','年级分组','按赛制智能组卷','官方样题','官方专项训练','历年试卷'],
+    'must':['国内外数学竞赛训练','中国数学赛事管家','竞赛分类','MAA AMC 晋级路径','年级分组','按赛制智能组卷','官方样题','官方专项训练','历年试卷'],
     'must_not':['<div className="eyebrow">COMPETITION FORMAT LAB</div>','<span className="eyebrow">COMPETITIONS</span>','<span className="eyebrow">MAA AMC PATHWAY</span>','<span className="eyebrow">SMART BY FORMAT</span>','<span className="eyebrow">OFFICIAL SAMPLES</span>','<span className="eyebrow">OFFICIAL PRACTICE</span>','<span className="eyebrow">PAST PAPERS</span>'],
   },
   'src/components/ArithmeticDashboard.tsx':{
