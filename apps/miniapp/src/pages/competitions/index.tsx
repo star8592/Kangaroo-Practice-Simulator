@@ -14,6 +14,8 @@ const groups=[
 
 export default function CompetitionsPage(){
   const [exams,setExams]=useState<any[]>([])
+  const [worldEntries,setWorldEntries]=useState<any[]>([])
+  const [worldError,setWorldError]=useState('')
   const [competition,setCompetition]=useState('all')
   const [limit,setLimit]=useState(24)
   const [loading,setLoading]=useState(true)
@@ -34,7 +36,15 @@ export default function CompetitionsPage(){
       setLoading(false)
     }
   }
-  useEffect(()=>{void loadExams()},[])
+  const loadWorld=async()=>{
+    try{
+      const data=await api<any>('/api/miniapp/world-competitions')
+      if(!Array.isArray(data.entries))throw new Error('全球赛事列表格式异常')
+      setWorldEntries(data.entries)
+      setWorldError('')
+    }catch(e){setWorldError(e instanceof Error?e.message:'全球赛事读取失败')}
+  }
+  useEffect(()=>{void loadExams();void loadWorld()},[])
   useDidShow(()=>setRegistered(canStartFullExam(authStore.user())))
 
   const openExam=async(ex:any)=>{
@@ -60,9 +70,18 @@ export default function CompetitionsPage(){
   }
   const filtered=useMemo(()=>competition==='all'?exams:exams.filter(x=>x.competitionId===competition),[exams,competition])
   return <View className='page'>
-    <View className='hero'><View className='eyebrow'>竞赛实战</View><Text className='big'>选赛事，再选一套试卷</Text><View className='hero-copy'>与 Web 使用同一套题库、赛制和评分规则；智能组卷也只在同一赛制内选题。</View></View>
+    <View className='hero'><View className='eyebrow'>WORLD MATH COMPETITION COMPANION</View><Text className='big'>全球数学赛事管家</Text><View className='hero-copy'>世界各地赛事平等展示。查比赛、核实资格、管理备赛；有已入库真题的赛事还可直接模拟。</View></View>
+    <View className='section-title'>世界赛事目录</View>
+    {worldEntries.map(x=><View key={x.event.id} className='card'>
+      <View className='muted'>{x.event.region==='CN'?'中国':x.event.region==='US'?'美国':x.event.region==='AU'?'澳大利亚':x.event.region==='CA'?'加拿大':x.event.region==='GB'?'英国':'全球性'}</View>
+      <View className='card-title'>{x.event.nameZh}</View>
+      <View>{x.event.summaryZh}</View>
+      <Button className='primary' onClick={()=>Taro.navigateTo({url:'/pages/events/index?competition='+encodeURIComponent(x.event.id)})}>查看赛事管家</Button>
+    </View>)}
+    {worldError&&<View className='card'><View>{worldError}</View><Button onClick={()=>void loadWorld()}>重新加载赛事目录</Button></View>}
+    <View className='section-title'>模拟考试与真题训练</View>
     <View className='competition-tabs'>{groups.filter(g=>g.id==='all'||exams.some(x=>x.competitionId===g.id)).map(g=><Button key={g.id} className={competition===g.id?'competition-tab active':'competition-tab'} onClick={()=>{setCompetition(g.id);setLimit(24)}}>{g.label}</Button>)}</View>
-    <View className='card'><View className='card-title'>赛事服务</View><View className='muted'>何时模考、当天带什么、官方流程，一条时间线管到底。</View><Button className='secondary' onClick={()=>Taro.navigateTo({url:'/pages/events/index'})}>查看我的比赛</Button><Button className='secondary' onClick={()=>Taro.navigateTo({url:'/pages/events/index?section=china'})}>中国数学赛事（华杯·希望杯·走美杯）</Button></View>
+    <View className='card'><View className='card-title'>我的赛事流程</View><View className='muted'>所有地区赛事共用一套准备、检查、复盘和完成进度。</View><Button className='secondary' onClick={()=>Taro.navigateTo({url:'/pages/events/index'})}>打开全球赛事管家</Button></View>
     <View className='section-title'>{competition==='all'?'可训练试卷':groups.find(g=>g.id===competition)?.label}</View>
     <View className='muted list-summary'>{loading?'正在读取试卷…':loadError?'试卷加载失败，可重试':`共 ${filtered.length} 套，先展示最相关的 ${Math.min(limit,filtered.length)} 套`}</View>
     {filtered.slice(0,limit).map(ex=><View className='card exam-card' key={ex.id}><View className='row'><View className='exam-card-title'><View className='card-title'>{ex.name}</View><View className='muted'>{ex.year||''} · {ex.grades} · {ex.questionCount} 题</View></View><Text className={ex.miniappReady?'status-ready':'status-web'}>{ex.miniappReady?(registered?'可实战':'登录后可实战'):'Web'}</Text></View><Button className={ex.miniappReady?'primary':'secondary'} onClick={()=>ex.miniappReady?void openExam(ex):void openWebExam(String(ex.id))}>{ex.miniappReady?(registered?'开始实战':'登录后实战'):'复制网页版考试链接'}</Button></View>)}

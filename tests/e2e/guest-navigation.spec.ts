@@ -63,9 +63,9 @@ test.afterAll(()=>{
 
 test("homepage competition CTA opens competition centre",async({page})=>{
   await page.goto("/");
-  await page.getByRole("link",{name:/查看国际数学竞赛|Explore competitions/}).first().click();
+  await page.getByRole("link",{name:/探索全球数学赛事|Explore competitions/}).first().click();
   await expect(page).toHaveURL(/\/competitions(?:\?|$)/);
-  await expect(page.getByRole("heading",{name:/赛事大厅|Choose a competition/})).toBeVisible();
+  await expect(page.getByRole("region",{name:/全球数学赛事管家|World math competition companion/})).toBeVisible();
 });
 test("homepage student login CTA opens usable login form",async({page})=>{
   await page.goto("/");

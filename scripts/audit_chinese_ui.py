@@ -19,9 +19,17 @@ checks={
     'must':['国际数学竞赛训练中心 · 专业诊断报告','学习诊断总览','能力与策略画像','基于证据的诊断结论','个性化训练处方','逐题证据','成长记录与方法说明'],
     'must_not':['Professional Diagnostic Report','Professional Learning Diagnostic','Ability & Strategy Profile','Evidence-based Findings','Personalized Prescription','Question-level Evidence','Growth Record & Methodology'],
   },
+  'src/components/PublicHome.tsx':{
+    'must':['WORLD_COMPETITIONS','worldRegionName','全球数学赛事，一站式管理','探索全球数学赛事','/competitions?event='],
+    'must_not':['查看国际数学竞赛','不止袋鼠：每项赛事都是独立业务入口'],
+  },
   'src/components/HomeClient.tsx':{
-    'must':['国内外数学竞赛训练','中国数学赛事管家','竞赛分类','MAA AMC 晋级路径','年级分组','按赛制智能组卷','官方样题','官方专项训练','历年试卷'],
+    'must':['全球数学赛事服务','全球数学赛事管家','WorldCompetitionHub','已入库赛制','MAA AMC 晋级路径','年级分组','按赛制智能组卷','官方样题','官方专项训练','历年试卷'],
     'must_not':['<div className="eyebrow">COMPETITION FORMAT LAB</div>','<span className="eyebrow">COMPETITIONS</span>','<span className="eyebrow">MAA AMC PATHWAY</span>','<span className="eyebrow">SMART BY FORMAT</span>','<span className="eyebrow">OFFICIAL SAMPLES</span>','<span className="eyebrow">OFFICIAL PRACTICE</span>','<span className="eyebrow">PAST PAPERS</span>'],
+  },
+  'src/components/WorldCompetitionHub.tsx':{
+    'must':['全球数学赛事管家','世界赛事目录','按地区筛选赛事','WORLD_REGION_OPTIONS','WORLD_COMPETITIONS','CompetitionCompanion','查看赛事管家'],
+    'must_not':['中国数学赛事管家'],
   },
   'src/components/ArithmeticDashboard.tsx':{
     'must':['智能计算训练','学生画像','这个年级要练到什么程度','gradeAria:"选择年级"','aria-label={ui.gradeAria}','个性化模型','ADAPTIVE CALCULATION','Four-dimensional skill profile','useSiteLanguage'],

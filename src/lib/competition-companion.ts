@@ -1,8 +1,10 @@
 import { CHINA_MATH_COMPANIONS } from "./china-math-companion";
+import { WORLD_PREPARATION_COMPANIONS } from "./world-preparation";
+import { WORLD_COMPETITIONS } from "./world-competitions";
 
 export type CompanionLang = "zh" | "en";
 export type ExamMode = "online-home" | "offline" | "varies";
-export type CompanionCompetitionId = "kangaroo" | "australian-amc" | "maa-amc" | "cemc" | "china-math";
+export type CompanionCompetitionId = "kangaroo" | "australian-amc" | "maa-amc" | "cemc" | "china-math" | "world-math";
 
 export type CompanionTask = {
   id: string; date?: string; endDate?: string; time?: string;
@@ -58,7 +60,7 @@ export const COMPETITION_COMPANIONS: CompetitionCompanion[] = [{
       checklistZh:["提前完成早餐和洗手间安排","09:00 起进入监考会议","09:30 登录考试系统","09:45 完成身份核验","10:00 开始考试"],
       checklistEn:["Finish breakfast and restroom break early","Join proctoring from 09:00","Log in at 09:30","Complete identity check at 09:45","Start at 10:00"] }
   ]
-}, ...CHINA_MATH_COMPANIONS];
+}, ...CHINA_MATH_COMPANIONS, ...WORLD_PREPARATION_COMPANIONS];
 
 export function getCompetitionCompanion(competitionId: CompetitionCompanion["competitionId"], today: string) {
   return COMPETITION_COMPANIONS.filter(x=>x.competitionId===competitionId).filter(x=>x.expiresAfter>=today).sort((a,b)=>b.season-a.season)[0] || null;
@@ -69,4 +71,18 @@ export function companionTaskState(task: CompanionTask, today: string) {
   if(today<task.date)return "upcoming" as const;
   if(today>end)return "past" as const;
   return "current" as const;
+}
+
+// Same entry point for Chinese, regional, and worldwide competitions.
+export function getWorldCompanion(worldId: string, today: string): CompetitionCompanion | null {
+  const event = WORLD_COMPETITIONS.find(x => x.id === worldId);
+  if (!event) return null;
+  if (event.region === "CN") {
+    return COMPETITION_COMPANIONS.find(x => x.id === event.companionId) || null;
+  }
+  const official = COMPETITION_COMPANIONS
+    .filter(x => x.registrationVerified !== false && x.competitionId === event.trainingId
+       && x.expiresAfter >= today)
+    .sort((a,b) => b.season - a.season)[0];
+  return official || COMPETITION_COMPANIONS.find(x => x.id === "world-" + worldId + "-readiness") || null;
 }
