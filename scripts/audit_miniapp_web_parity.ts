@@ -9,6 +9,8 @@ import { COMPETITION_COMPANIONS } from '../src/lib/competition-companion'
 import { GET as getAnalytics } from '../src/app/api/student/analytics/route'
 import { GET as getMiniappExams } from '../src/app/api/miniapp/exams/route'
 import { GET as getMiniappCompanions } from '../src/app/api/miniapp/companions/route'
+import { GET as getMiniappChinaCompetitions } from '../src/app/api/miniapp/china-competitions/route'
+import { CHINA_MATH_EVENTS } from '../src/lib/china-math-competitions'
 
 async function main(){
 const root = process.cwd()
@@ -55,8 +57,17 @@ const companionResponse = await getMiniappCompanions(request('/api/miniapp/compa
 assert.equal(companionResponse.status, 200)
 const companionPayload = await companionResponse.json()
 const today = new Date().toISOString().slice(0, 10)
-const expectedCompanionIds = COMPETITION_COMPANIONS.filter(x => x.expiresAfter >= today).map(x => x.id)
-assert.deepEqual(companionPayload.companions.map((x: {id:string}) => x.id), expectedCompanionIds, 'competition companion parity failed')
+const expectedCompanionIds = COMPETITION_COMPANIONS.filter(x => x.expiresAfter >= today && x.registrationVerified !== false).map(x => x.id)
+assert.deepEqual(companionPayload.companions.map((x: {id:string}) => x.id), expectedCompanionIds, 'active competition companion parity failed')
+const domesticResponse = await getMiniappChinaCompetitions(request('/api/miniapp/china-competitions'))
+assert.equal(domesticResponse.status, 200)
+const domesticPayload = await domesticResponse.json()
+assert.deepEqual(domesticPayload.entries.map((x: {event:{id:string}}) => x.event.id), CHINA_MATH_EVENTS.map(x => x.id), 'China math competition catalogue parity failed')
+for(const entry of domesticPayload.entries){
+  assert.equal(entry.companion.registrationVerified, false, 'historical entries cannot claim open registration')
+  assert.ok(entry.companion.tasks.every((x: {date?: string}) => !x.date), 'unverified schedules cannot show a countdown')
+}
+
 
 const surfaces = {
   home: fs.readFileSync(path.join(root, 'apps/miniapp/src/pages/home/index.tsx'), 'utf8'),
@@ -75,7 +86,7 @@ for (const needle of [
 for (const needle of ['/api/miniapp/exams','ex.name','ex.year','ex.grades','ex.questionCount','ex.miniappReady']) {
   assert.ok(surfaces.competitions.includes(needle), `competition UI mapping missing: ${needle}`)
 }
-for (const needle of ['/api/miniapp/companions','c.titleZh','t.titleZh','t.detailZh','t.checklistZh']) {
+for (const needle of ['/api/miniapp/companions','/api/miniapp/china-competitions','c.titleZh','t.titleZh','t.detailZh','t.checklistZh','x.event.nameZh']) {
   assert.ok(surfaces.events.includes(needle), `event UI mapping missing: ${needle}`)
 }
 for (const needle of ['/api/miniapp/review','q.stem','assetUrlZh','correctAnswer','solution']) {
@@ -93,6 +104,7 @@ console.log(JSON.stringify({
   exams: expectedExams.length,
   byCompetition,
   activeCompanions: expectedCompanionIds.length,
+  domesticDirectory: CHINA_MATH_EVENTS.length,
   uiSurfaces: Object.keys(surfaces),
 }))
 
