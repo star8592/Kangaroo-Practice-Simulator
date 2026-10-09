@@ -1,16 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
-import { COMPETITION_BRAND } from "@/lib/competition-brand";
+import { WORLD_COMPETITIONS, worldRegionName } from "@/lib/world-competitions";
 import { useSiteLanguage } from "@/lib/site-language";
 
 const UI={
  zh:{
   eye:"SOC THINK · K12 数学成长系统",
   title1:"先知道孩子卡在哪里，",title2:"再决定下一步练什么",
-  copy:"面向 G1–G12 的数学能力诊断、计算训练与国际竞赛实战平台。用训练数据发现薄弱点，把下一步练习从“凭感觉刷题”变成有依据的学习路径。",
-  primary:"开始能力诊断",competition:"查看国际数学竞赛",login:"学生登录",register:"家长登录 / 注册 · 微信扫码",
+  copy:"面向 G1–G12 的数学能力诊断、计算训练与全球数学赛事服务平台。用训练数据发现薄弱点，把下一步练习从“凭感觉刷题”变成有依据的学习路径。",
+  primary:"开始能力诊断",competition:"探索全球数学赛事",login:"学生登录",register:"家长登录 / 注册 · 微信扫码",
   loop:"一次训练，应该回答四个问题",
   s1:"现在在哪里",s1d:"从年级、正确率、速度和题型表现建立当前能力基线。",
   s2:"为什么会错",s2d:"区分知识缺口、计算失误、策略不足和速度问题，而不是只记录对错。",
@@ -18,7 +17,7 @@ const UI={
   s4:"有没有进步",s4d:"持续记录正确率、速度、错因和考试表现，让家长和学生看到变化。",
   modes:"两种训练场景，一份长期学习画像",
   calc:"计算与基础能力",calcDesc:"覆盖 G1–G12，从基础运算延伸到代数、函数、概率与统计。支持诊断、自适应训练、限时训练和巧算策略。",calcCta:"进入计算训练",
-  comp:"国际数学竞赛",compDesc:"不是单一袋鼠题库。澳洲 AMC、美国 MAA AMC、加拿大 CEMC 与袋鼠数学都有独立赛事入口，并逐步接入真题、模拟、参赛流程和考试管家。",compCta:"进入全部竞赛",
+  comp:"全球数学赛事管家",compDesc:"中国、美国、澳洲、加拿大、英国和全球性数学赛事使用同一套赛事管理体系；赛制训练按真实题库分别呈现。",compCta:"查看全球赛事",
   profile:"学习结果不是一次分数",profileDesc:"训练记录、速度、正确率、错因与考试表现汇入长期档案。登录后可继续上次进度并查看个人学习报告。",profileCta:"查看我的学习报告",
  },
  en:{
@@ -33,7 +32,7 @@ const UI={
   s4:"Am I improving?",s4d:"Track accuracy, speed, error patterns and exam performance over time.",
   modes:"Two practice modes. One long-term learner profile.",
   calc:"Fluency & core skills",calcDesc:"G1–G12 practice from arithmetic through algebra, functions, probability and statistics, with diagnostics and adaptive practice.",calcCta:"Open calculation training",
-  comp:"Math competitions",compDesc:"Math Kangaroo, Australian AMC, MAA AMC and CEMC organized by their real formats, with papers, samples and mock exams.",compCta:"Open competition center",
+  comp:"World Math Competition Companion",compDesc:"Mathematics events from China and worldwide share one event directory, preparation journey and progress management system.",compCta:"Open competition center",
   profile:"More than a one-time score",profileDesc:"Accuracy, speed, errors, practice history and mock-exam performance build one long-term learner record.",profileCta:"View my learning report",
  },
 } as const;
@@ -41,12 +40,8 @@ const UI={
 export default function PublicHome(){
  const lang=useSiteLanguage(),ui=UI[lang];
  const steps=[[ui.s1,ui.s1d],[ui.s2,ui.s2d],[ui.s3,ui.s3d],[ui.s4,ui.s4d]];
- const competitions=[
-  {id:"australian-amc",zh:"澳洲 AMC",en:"Australian AMC",subZh:"Pre-A / A / B · 真题 · 模拟 · 参赛管家",subEn:"Pre-A / A / B · papers · mocks · exam companion"},
-  {id:"maa-amc",zh:"美国 MAA AMC",en:"MAA AMC",subZh:"AMC 8 / 10 / 12 / AIME",subEn:"AMC 8 / 10 / 12 / AIME"},
-  {id:"cemc",zh:"加拿大 CEMC",en:"Waterloo CEMC",subZh:"Gauss / Pascal / Cayley / Fermat / Euclid",subEn:"Gauss / Pascal / Cayley / Fermat / Euclid"},
-  {id:"kangaroo",zh:"袋鼠数学",en:"Math Kangaroo",subZh:"多国家 / 多年级真实赛制",subEn:"Country- and grade-specific formats"},
- ] as const;
+ const competitions=WORLD_COMPETITIONS;
+
  return <div className="home-shell public-home">
   <section className="hero-card home-hero">
    <div className="eyebrow">{ui.eye}</div>
@@ -68,8 +63,8 @@ export default function PublicHome(){
   </section>
 
   <section className="home-competition-showcase">
-   <div className="section-heading"><div><span className="eyebrow">COMPETITION HUB</span><h1>{lang==="zh"?"不止袋鼠：每项赛事都是独立业务入口":"More than Kangaroo: each competition has its own hub"}</h1><p>{lang==="zh"?"从了解赛事、历年真题、仿真模拟，到参赛准备和考试流程，按赛事分别组织。":"Each competition is organized from discovery and past papers through mocks and exam-day preparation."}</p></div></div>
-   <div className="home-competition-grid">{competitions.map(c=>{const b=COMPETITION_BRAND[c.id];return <Link key={c.id} className="home-competition-card" href={`/competitions?c=${c.id}`}><div className="competition-brand">{b.logo?<Image src={b.logo} alt={lang==="zh"?c.zh:c.en} width={156} height={44}/>:<div className="competition-brand-wordmark"><b>{b.short}</b><span>{b.mark}</span></div>}</div><strong>{lang==="zh"?c.zh:c.en}</strong><span>{lang==="zh"?c.subZh:c.subEn}</span><em>{lang==="zh"?"进入赛事中心 →":"Open hub →"}</em></Link>})}</div>
+   <div className="section-heading"><div><span className="eyebrow">COMPETITION HUB</span><h1>{lang==="zh"?"全球数学赛事，一站式管理":"One worldwide companion for math competitions"}</h1><p>{lang==="zh"?"中国与世界其他地区的数学赛事平等呈现；从赛事介绍到备赛、参赛和成绩归档，统一管理。":"Each competition is organized from discovery and past papers through mocks and exam-day preparation."}</p></div></div>
+   <div className="home-competition-grid">{competitions.map(c=> <Link key={c.id} className="home-competition-card" href={"/competitions?event="+encodeURIComponent(c.id)}><div className="competition-brand"><div className="competition-brand-wordmark"><b>{worldRegionName(c.region,lang)}</b><span>WORLD MATH</span></div></div><strong>{lang==="zh"?c.nameZh:c.nameEn}</strong><span>{lang==="zh"?c.summaryZh:c.summaryEn}</span><em>{lang==="zh"?"查看赛事管家 →":"Open companion →"}</em></Link>)}</div>
   </section>
 
   <section className="home-modes">

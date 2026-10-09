@@ -5,7 +5,8 @@ ROOT = Path(__file__).resolve().parents[1]
 checks = {
     "src/app/layout.tsx": ["<SiteHeader/>", "<SiteFooter/>"],
     "src/app/page.tsx": ["PublicHome"],
-    "src/components/PublicHome.tsx": ["useSiteLanguage", "SOC THINK · K12 MATH GROWTH", "Start a diagnostic", "Math competitions", "More than a one-time score"],
+    "src/components/PublicHome.tsx": ["useSiteLanguage", "SOC THINK · K12 MATH GROWTH", "Start a diagnostic", "World Math Competition Companion", "More than a one-time score"],
+    "src/components/WorldCompetitionHub.tsx": ["World Math Competition Companion", "WORLD MATH COMPETITION COMPANION", "Filter events by region", "Open companion", "WORLD_REGION_OPTIONS"],
     "src/components/SiteHeader.tsx": ["GlobalLanguageSwitch", "useSiteLanguage", "usePathname", "SITE_BRAND.nameEn", "Competitions", "Review", "Verification", "mobilePanel"],
     "src/components/SessionNav.tsx": ["useSiteLanguage", "Student login", "Parent center", "Learning report", "Sign out", "/api/auth/parent/me", "accountMenu"],
     "src/components/SiteFooter.tsx": ["useSiteLanguage", "All rights reserved"],

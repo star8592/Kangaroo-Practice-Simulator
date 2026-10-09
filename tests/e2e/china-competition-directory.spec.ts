@@ -1,48 +1,68 @@
 import { test, expect } from "@playwright/test";
 
-test("China competition catalogue opens real advisory timelines", async ({ page }) => {
+test("world companion has one equal-ranking directory and real navigation", async ({ page }) => {
   await page.goto("/competitions");
-  await expect(page.getByRole("link", { name: "中国数学赛事管家 ↓" })).toBeVisible();
-  await page.getByRole("link", { name: "中国数学赛事管家 ↓" }).click();
-  await expect(page).toHaveURL(/#china-math-companion$/);
-  const directory = page.getByRole("region", { name: "中国数学竞赛管家" });
-  await expect(directory).toBeVisible();
-  await expect(directory.getByText("华罗庚金杯少年数学邀请赛（华杯赛）").first()).toBeVisible();
-  await expect(directory.getByText("全国中学生数学奥林匹克竞赛").first()).toBeVisible();
-  await expect(directory.getByText("历史赛事 · 内地当届报名未核验")).toBeVisible();
+  await expect(page.getByRole("link",{name:"探索全球赛事 ↓"})).toBeVisible();
+  await page.getByRole("link",{name:"探索全球赛事 ↓"}).click();
+  await expect(page).toHaveURL(/#world-competition-hub$/);
+  const hub = page.getByRole("region",{name:"全球数学赛事管家"});
+  await expect(hub).toBeVisible();
+  const cards = hub.locator('[aria-label="世界赛事目录"] article');
+  await expect(cards).toHaveCount(10);
+  await expect(cards.filter({hasText:"华罗庚金杯"})).toHaveCount(1);
+  await expect(cards.filter({hasText:"美国 AMC / AIME"})).toHaveCount(1);
+  await expect(cards.filter({hasText:"英国 UKMT"})).toHaveCount(1);
 
-  await directory.getByRole("button", { name: "查看流程与准备" }).first().click();
-  await expect(directory.getByText("走进美妙的数学花园（走美杯） · 备赛管家")).toBeVisible();
-  await expect(directory.getByText("线上调试或线下赴考检查")).toBeVisible();
-  await expect(directory.getByText("时间待当届公告").first()).toBeVisible();
-  await expect(directory.getByText("本届报名未确认")).toBeVisible();
+  await hub.getByRole("button",{name:"中国",exact:true}).click();
+  await expect(cards).toHaveCount(5);
+  await hub.getByRole("button",{name:"美国",exact:true}).click();
+  await expect(cards).toHaveCount(1);
+  await hub.getByRole("button",{name:"全部地区"}).click();
+  await expect(cards).toHaveCount(10);
 
-  await directory.getByRole("button", { name: "查看流程与准备" }).nth(1).click();
-  await expect(directory.getByText("希望杯数学邀请赛 · 备赛管家")).toBeVisible();
-  await expect(directory.getByText("国际活动有信息 · 内地资格待核验").first()).toBeVisible();
+  await cards.filter({hasText:"华罗庚金杯"}).getByRole("button",{name:"查看赛事管家"}).click();
+  await expect(hub.getByText("华罗庚金杯少年数学邀请赛（华杯赛） · 备赛管家")).toBeVisible();
+  await expect(hub.getByText("时间待当届公告").first()).toBeVisible();
+  await expect(hub.getByText("本届报名未确认")).toBeVisible();
 
-  await expect(directory.getByRole("link", { name: /登录并保存进度/ })).toBeVisible();
+  await cards.filter({hasText:"英国 UKMT"}).getByRole("button",{name:"查看赛事管家"}).click();
+  await expect(hub.getByText("英国 UKMT · 参赛准备")).toBeVisible();
+  await expect(hub.getByText("核实当地赛区与参赛资格").first()).toBeVisible();
+  await expect(hub.getByRole("link",{name:/登录并保存进度/})).toBeVisible();
+});
+
+test("worldwide public directory is read-only to anonymous visitors", async ({ request }) => {
+  const r = await request.get("/api/miniapp/world-competitions");
+  expect(r.status()).toBe(200);
+  const body = await r.json();
+  expect(body.entries).toHaveLength(10);
+  expect(body.entries.filter((e: {event:{region:string}}) => e.event.region === "CN")).toHaveLength(5);
+  for (const e of body.entries) {
+    expect(e.progress).toBeNull();
+    expect(e.companion).toBeTruthy();
+    if (e.companion.registrationVerified === false) {
+      expect(e.companion.tasks.every((t: {date?:string})=>!t.date)).toBeTruthy();
+    }
+  }
+  for (const id of ["china-huabei-readiness","world-ukmt-readiness"]) {
+    const get = await request.get("/api/competition-companion/progress?companionId="+id);
+    expect(get.status()).toBe(401);
+    const patch = await request.patch("/api/competition-companion/progress",{
+      data:{companionId:id,taskId:"verify",completed:true},
+    });
+    expect(patch.status()).toBe(401);
+  }
 });
 
 
-test("guest reads only public China catalog and cannot write progress", async ({ request }) => {
-  const response = await request.get("/api/miniapp/china-competitions");
-  expect(response.status()).toBe(200);
-  const result = await response.json();
-  expect(result.entries).toHaveLength(5);
-  for (const entry of result.entries) {
-    expect(entry.progress).toBeNull();
-    expect(entry.companion.registrationVerified).toBe(false);
-    for (const task of entry.companion.tasks) {
-      expect(task.date).toBeUndefined();
-      expect(task.kind).toBe("site");
-    }
-  }
-  const item = result.entries[0];
-  const getProgress = await request.get("/api/competition-companion/progress?companionId=" + item.companion.id);
-  expect(getProgress.status()).toBe(401);
-  const patchProgress = await request.patch("/api/competition-companion/progress", {
-    data: { companionId: item.companion.id, taskId: item.companion.tasks[0].id, completed: true },
-  });
-  expect(patchProgress.status()).toBe(401);
+test("public home lists China and world events at one level with direct links", async ({page}) => {
+  await page.goto("/");
+  const cards=page.locator(".home-competition-card");
+  await expect(cards).toHaveCount(10);
+  await expect(cards.filter({hasText:"华罗庚金杯"})).toHaveCount(1);
+  await expect(cards.filter({hasText:"英国 UKMT"})).toHaveCount(1);
+  await cards.filter({hasText:"华罗庚金杯"}).click();
+  await expect(page).toHaveURL(/\/competitions\?event=huabei$/);
+  const hub=page.getByRole("region",{name:"全球数学赛事管家"});
+  await expect(hub.getByText("华罗庚金杯少年数学邀请赛（华杯赛） · 备赛管家")).toBeVisible();
 });

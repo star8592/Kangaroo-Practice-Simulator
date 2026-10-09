@@ -11,6 +11,8 @@ import { GET as getMiniappExams } from '../src/app/api/miniapp/exams/route'
 import { GET as getMiniappCompanions } from '../src/app/api/miniapp/companions/route'
 import { GET as getMiniappChinaCompetitions } from '../src/app/api/miniapp/china-competitions/route'
 import { CHINA_MATH_EVENTS } from '../src/lib/china-math-competitions'
+import { WORLD_COMPETITIONS } from '../src/lib/world-competitions'
+import { GET as getMiniappWorldCompetitions } from '../src/app/api/miniapp/world-competitions/route'
 
 async function main(){
 const root = process.cwd()
@@ -68,6 +70,19 @@ for(const entry of domesticPayload.entries){
   assert.ok(entry.companion.tasks.every((x: {date?: string}) => !x.date), 'unverified schedules cannot show a countdown')
 }
 
+const worldwideResponse = await getMiniappWorldCompetitions(request('/api/miniapp/world-competitions'))
+assert.equal(worldwideResponse.status, 200)
+const worldwidePayload = await worldwideResponse.json()
+assert.deepEqual(worldwidePayload.entries.map((x:{event:{id:string}})=>x.event.id),
+  WORLD_COMPETITIONS.map(x=>x.id), 'worldwide catalogue parity failed')
+for (const entry of worldwidePayload.entries) {
+  assert.ok(entry.companion, 'every world event must have a companion')
+  assert.ok(entry.progress, 'authenticated student progress must be returned')
+  if (entry.companion.registrationVerified===false) {
+    assert.ok(entry.companion.tasks.every((x:{date?:string})=>!x.date),
+      'advisory-only events must not invent dates')
+  }
+}
 
 const surfaces = {
   home: fs.readFileSync(path.join(root, 'apps/miniapp/src/pages/home/index.tsx'), 'utf8'),
@@ -83,10 +98,10 @@ for (const needle of [
   'analytics?.arithmetic?.plan?.summaryZh',
   "examAttempts?accuracy+'%':'—'",
 ]) assert.ok(surfaces.home.includes(needle), `home is not rendering shared analytics field: ${needle}`)
-for (const needle of ['/api/miniapp/exams','ex.name','ex.year','ex.grades','ex.questionCount','ex.miniappReady']) {
+for (const needle of ['/api/miniapp/world-competitions','x.event.nameZh','/api/miniapp/exams','ex.name','ex.year','ex.grades','ex.questionCount','ex.miniappReady']) {
   assert.ok(surfaces.competitions.includes(needle), `competition UI mapping missing: ${needle}`)
 }
-for (const needle of ['/api/miniapp/companions','/api/miniapp/china-competitions','c.titleZh','t.titleZh','t.detailZh','t.checklistZh','x.event.nameZh']) {
+for (const needle of ['/api/miniapp/world-competitions','chosen.event.nameZh','t.titleZh','t.detailZh','t.checklistZh']) {
   assert.ok(surfaces.events.includes(needle), `event UI mapping missing: ${needle}`)
 }
 for (const needle of ['/api/miniapp/review','q.stem','assetUrlZh','correctAnswer','solution']) {
@@ -105,6 +120,7 @@ console.log(JSON.stringify({
   byCompetition,
   activeCompanions: expectedCompanionIds.length,
   domesticDirectory: CHINA_MATH_EVENTS.length,
+  worldDirectory: WORLD_COMPETITIONS.length,
   uiSurfaces: Object.keys(surfaces),
 }))
 
