@@ -1,9 +1,11 @@
+import { CHINA_MATH_COMPANIONS } from "./china-math-companion";
+
 export type CompanionLang = "zh" | "en";
-export type ExamMode = "online-home" | "offline";
-export type CompanionCompetitionId = "kangaroo" | "australian-amc" | "maa-amc" | "cemc";
+export type ExamMode = "online-home" | "offline" | "varies";
+export type CompanionCompetitionId = "kangaroo" | "australian-amc" | "maa-amc" | "cemc" | "china-math";
 
 export type CompanionTask = {
-  id: string; date: string; endDate?: string; time?: string;
+  id: string; date?: string; endDate?: string; time?: string;
   kind: "official" | "site";
   titleZh: string; titleEn: string; detailZh: string; detailEn: string;
   checklistZh?: string[]; checklistEn?: string[];
@@ -15,6 +17,7 @@ export type CompetitionCompanion = {
   stageIds?: string[]; gradeBands?: string[]; region?: string;
   titleZh: string; titleEn: string; sourceLabelZh: string; sourceLabelEn: string;
   sourceUrl: string; officialSiteUrl: string; verifiedOn: string; expiresAfter: string;
+  registrationVerified?: boolean;
   tasks: CompanionTask[];
 };
 
@@ -55,12 +58,13 @@ export const COMPETITION_COMPANIONS: CompetitionCompanion[] = [{
       checklistZh:["提前完成早餐和洗手间安排","09:00 起进入监考会议","09:30 登录考试系统","09:45 完成身份核验","10:00 开始考试"],
       checklistEn:["Finish breakfast and restroom break early","Join proctoring from 09:00","Log in at 09:30","Complete identity check at 09:45","Start at 10:00"] }
   ]
-}];
+}, ...CHINA_MATH_COMPANIONS];
 
 export function getCompetitionCompanion(competitionId: CompetitionCompanion["competitionId"], today: string) {
   return COMPETITION_COMPANIONS.filter(x=>x.competitionId===competitionId).filter(x=>x.expiresAfter>=today).sort((a,b)=>b.season-a.season)[0] || null;
 }
 export function companionTaskState(task: CompanionTask, today: string) {
+  if (!task.date) return "upcoming" as const;
   const end=task.endDate||task.date;
   if(today<task.date)return "upcoming" as const;
   if(today>end)return "past" as const;
