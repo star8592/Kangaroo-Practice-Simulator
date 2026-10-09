@@ -55,6 +55,11 @@ async function main(){
     assert.equal(w.loadWatchStore().observations.length,2);
     const broken=await w.runSourceWatch({sources:[source],fetcher:fake("",302)});
     assert.equal(broken.errors,1);
+    assert.equal(broken.checked,1);
+    assert.equal(broken.unchanged,0);
+    assert.equal(broken.details[0].sourceId,source.id);
+    assert.match(broken.details[0].result,/^error:HTTP 302/);
+
     assert.equal(w.loadWatchStore().observations.length,2);
     const latest=w.loadWatchStore().observations[1];
     assert.equal(w.loadWatchStore().health[0].digest,latest.digest,"failed fetch cannot erase evidence");
