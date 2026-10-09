@@ -75,6 +75,12 @@ h=s.get("health",[]);o=s.get("observations",[])
 print("SOURCE_MONITOR_HEALTH="+str(len(h)))
 print("SOURCE_MONITOR_LAST_SUCCESSES="+str(sum(bool(x.get("lastSuccessAt")) for x in h)))
 print("SOURCE_MONITOR_ERRORS="+str(sum(bool(x.get("error")) for x in h)))
+errors=sum(bool(x.get("error")) for x in h)
+stale=sum(not x.get("lastSuccessAt") for x in h)
+if errors or stale:
+ print("SOURCE_MONITOR_STATUS=DEGRADED errors="+str(errors)+" never_succeeded="+str(stale))
+else: print("SOURCE_MONITOR_STATUS=PASS")
+
 print("SOURCE_REVIEW_PENDING="+str(sum(x.get("status")=="pending" for x in o)))
 PY
 else
