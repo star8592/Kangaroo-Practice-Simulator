@@ -22,6 +22,12 @@ FILES = {
     "pr": ".github/PULL_REQUEST_TEMPLATE.md",
     "runbook": "docs/engineering/ENGINEERING_OPERATING_SYSTEM.md",
     "baseline": "docs/engineering/BASELINE_AUDIT_20261010.md",
+    "backup": "ops/backup/backup_verified.sh",
+    "backup_restore": "ops/backup/verify_backup_restore.sh",
+    "backup_unit": "ops/backup/socthink-verified-backup.service",
+    "backup_timer": "ops/backup/socthink-verified-backup.timer",
+    "backup_install": "ops/backup/install_verified_backup.sh",
+    "backup_health": "ops/backup/check_backup_health.py",
     "self": "scripts/verify_engineering_controls.py",
 }
 
@@ -84,6 +90,17 @@ def evaluate(root=ROOT, replacements=None):
     needs("pr", "变更风险", "回滚方案", "真实验收证据", "微信小程序")
     needs("runbook", "RTO", "RPO", "DORA", "Web 上线≠微信上线")
     needs("baseline", "OPEN", "required_approving_review_count", "备份")
+    needs("backup", "private public/local-assets public/generated-solutions",
+          "--passphrase-file", "verify_backup_restore.sh", "BACKUP=PASS",
+          "flock -n", "BACKUP=BLOCKED")
+    needs("backup_restore", "sha256sum -c", "--decrypt", "verify_tree.py",
+          "BACKUP_ISOLATED_RESTORE=PASS", "missing_secret_or_checksum")
+    needs("backup_unit", "ProtectSystem=strict", "ReadWritePaths=/var/backups/socthink-math",
+          "SOCTHINK_BACKUP_PASSPHRASE_FILE", "NoNewPrivileges=yes")
+    needs("backup_timer", "OnCalendar=", "Persistent=true")
+    needs("backup_install", "deployed_sha_mismatch", "systemctl enable --now")
+    needs("backup_health", "LOCAL_ENCRYPTED_BACKUP=PASS", "ISOLATED_RESTORE_DRILL=PASS")
+    needs("quality", "scripts/test_verified_backup_restore.py")
     # Avoid accidental self-certification: checks are hardcoded and mutation-tested.
     automated = [c for c in entries if c.get("level") == "block"]
     if len(automated) < 8:

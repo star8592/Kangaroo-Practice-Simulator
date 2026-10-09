@@ -47,7 +47,7 @@ else
 fi
 
 if command -v systemctl >/dev/null 2>&1 && [[ -d /run/systemd/system ]]; then
-  for UNIT in socthink-math.service socthink-auto-deploy.timer socthink-competition-source-watch.timer; do
+  for UNIT in socthink-math.service socthink-auto-deploy.timer socthink-competition-source-watch.timer socthink-verified-backup.timer; do
     KEY="${UNIT//[.-]/_}"
     if systemctl is-active --quiet "$UNIT"; then print "UNIT_$KEY" PASS
     else fail "UNIT_$KEY"; fi
@@ -81,10 +81,17 @@ else
   print SOURCE_MONITOR_HEALTH UNAVAILABLE
 fi
 
-# A backup directory or tarball alone is not a verified backup/restore.
-# Do not auto-claim success based on merely finding files.
-print OFFSITE_ENCRYPTED_BACKUP UNKNOWN
-print ISOLATED_RESTORE_DRILL UNKNOWN
+# An encrypted file is never sufficient evidence; receipt+sha+restore+age must pass.
+if [[ -f "$APP/ops/backup/check_backup_health.py" ]]; then
+  if python3 "$APP/ops/backup/check_backup_health.py" "${SOCTHINK_BACKUP_DIR:-/var/backups/socthink-math}"; then
+    print BACKUP_HEALTH_CHECK PASS
+  else
+    fail BACKUP_HEALTH_CHECK
+  fi
+else
+  print BACKUP_HEALTH_CHECK UNAVAILABLE
+  [[ "$STRICT" == 0 ]] || STATUS=1
+fi
 print WECHAT_NATIVE_PUBLISHED UNKNOWN
 print PROD_READINESS "$(if [[ "$STATUS" == 0 ]]; then echo PARTIAL; else echo FAIL; fi)"
 exit "$STATUS"

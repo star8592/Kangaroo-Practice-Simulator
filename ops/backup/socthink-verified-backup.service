@@ -1,0 +1,26 @@
+[Unit]
+Description=SocThink encrypted production data snapshot and isolated restore test
+Wants=local-fs.target
+After=local-fs.target
+ConditionPathExists=/opt/socthink-math/private/users/users.json
+
+[Service]
+Type=oneshot
+User=root
+Group=root
+WorkingDirectory=/opt/socthink-math
+Environment=SOCTHINK_BACKUP_APP_ROOT=/opt/socthink-math
+Environment=SOCTHINK_BACKUP_DIR=/var/backups/socthink-math
+Environment=SOCTHINK_BACKUP_PASSPHRASE_FILE=/etc/socthink/backup-passphrase
+Environment=GNUPGHOME=/var/backups/socthink-math/.gnupg
+ExecStart=/usr/bin/bash /opt/socthink-math/ops/backup/backup_verified.sh
+TimeoutStartSec=1800
+Nice=15
+IOSchedulingClass=best-effort
+IOSchedulingPriority=7
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectHome=yes
+ProtectSystem=strict
+ReadWritePaths=/var/backups/socthink-math
+UMask=0077

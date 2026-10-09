@@ -23,6 +23,14 @@ scenarios = [
  ("watchunit","DynamicUser=yes","non-root source watch"),
  ("watchapi","isAdmin","admin source review"),
  ("pr","回滚方案","PR rollback contract"),
+ ("backup","--passphrase-file","backup encryption key source"),
+ ("backup","verify_backup_restore.sh","backup independent restore"),
+ ("backup_restore","sha256sum -c","encrypted archive integrity"),
+ ("backup_unit","ProtectSystem=strict","root backup unit writable scope"),
+ ("backup_timer","Persistent=true","periodic backup timer"),
+ ("backup_install","deployed_sha_mismatch","verified production-only backup install"),
+ ("backup_health","LOCAL_ENCRYPTED_BACKUP=PASS","backup health receipt"),
+
 ]
 for file,needle,reason in scenarios:
     original=(ROOT/FILES[file]).read_text(encoding="utf-8")
