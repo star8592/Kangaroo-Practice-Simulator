@@ -1,7 +1,8 @@
 import fs from "node:fs";
+import path from "node:path";
 import crypto from "node:crypto";
 import sourcesJson from "../../data/competition-intelligence/watch-sources.json";
-import {userDataPath,ensureUserDataDir} from "./user-data-store";
+import {userDataPath} from "./user-data-store";
 import {WORLD_COMPETITIONS} from "./world-competitions";
 
 export type OfficialWatchSource={
@@ -20,8 +21,14 @@ export type SourceHealth={
 export type WatchStore={version:1;health:SourceHealth[];observations:SourceObservation[]};
 
 const HOSTS=new Set(["maa.org","www.cms.org.cn","amt.edu.au","cemc.uwaterloo.ca","ukmt.org.uk"]);
-const STORE=userDataPath("competition-source-watch.json");
-const LOCK=userDataPath("competition-source-watch.lock");
+const SOURCE_DIR=path.resolve(process.env.SOCTHINK_SOURCE_WATCH_DIR?.trim()||
+  (process.env.NODE_ENV==="production"
+    ? "/var/lib/socthink-competition-source-watch"
+    : userDataPath("source-watch")));
+const STORE=path.join(SOURCE_DIR,"competition-source-watch.json");
+const LOCK=path.join(SOURCE_DIR,"competition-source-watch.lock");
+function ensureSourceDataDir(){fs.mkdirSync(SOURCE_DIR,{recursive:true,mode:0o700});}
+
 const MAX_BYTES=800_000;
 export const WATCH_SOURCES:OfficialWatchSource[]=sourcesJson;
 export const blankWatchStore=():WatchStore=>({version:1,health:[],observations:[]});
@@ -47,7 +54,7 @@ export function loadWatchStore():WatchStore{
   return obj;
 }
 function saveWatchStore(store:WatchStore){
-  ensureUserDataDir();
+  ensureSourceDataDir();
   const tmp=STORE+".tmp."+process.pid+"."+crypto.randomBytes(4).toString("hex");
   try{
     fs.writeFileSync(tmp,JSON.stringify(store,null,2),{mode:0o600,flag:"wx"});
@@ -55,7 +62,7 @@ function saveWatchStore(store:WatchStore){
   }finally{if(fs.existsSync(tmp))fs.unlinkSync(tmp);}
 }
 function exclusive<T>(fn:()=>T):T{
-  ensureUserDataDir();
+  ensureSourceDataDir();
   let fd:number;
   try{fd=fs.openSync(LOCK,"wx",0o600);}
   catch{throw new Error("Source-watch already running or stale lock; refuse concurrent mutations");}
@@ -120,7 +127,7 @@ export async function runSourceWatch(args?:{fetcher?:Fetcher;now?:Date;persist?:
   const now=args?.now||new Date();
   const sources=args?.sources||WATCH_SOURCES;
   if(sources.some(x=>!validateWatchSource(x)))throw new Error("Unsafe watch source");
-  ensureUserDataDir();
+  ensureSourceDataDir();
   let fd:number;
   try{fd=fs.openSync(LOCK,"wx",0o600);}
   catch{throw new Error("Source-watch already running or stale lock");}

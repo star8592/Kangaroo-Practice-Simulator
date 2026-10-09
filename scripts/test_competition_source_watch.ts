@@ -6,6 +6,7 @@ import {NextRequest} from "next/server";
 async function main(){
   const temp=fs.mkdtempSync(path.join(os.tmpdir(),"world-source-watch-test-"));
   process.env.SOCTHINK_USER_DATA_DIR=temp;
+  process.env.SOCTHINK_SOURCE_WATCH_DIR=path.join(temp,"source-watch");
   try{
     const w=await import("../src/lib/competition-source-watch");
     const auth=await import("../src/lib/auth");
@@ -27,6 +28,8 @@ async function main(){
     });
     const fake=(body:string,status=200)=>(async()=>response(body,status));
     const first=await w.runSourceWatch({sources:[source],fetcher:fake(makeHtml("05")),now:new Date("2026-10-09T12:00:00Z")});
+    assert.equal(fs.existsSync(path.join(temp,"source-watch","competition-source-watch.json")),true,
+      "source monitor state must not live in the broad student-data root");
     assert.equal(first.newObservations,1);
     assert.equal(first.pending,1);
     assert.equal(first.errors,0);
