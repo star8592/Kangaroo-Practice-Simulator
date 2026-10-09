@@ -20,6 +20,9 @@ install -d -m 0700 "$UNITDIR"
 install -m 0700 "$ROOT/ops/backup/pull_offsite_encrypted.sh" "$BIN/pull_offsite_encrypted.sh"
 install -m 0600 "$ROOT/ops/backup/verify_offsite_replica.py" "$BIN/verify_offsite_replica.py"
 install -m 0600 "$ROOT/ops/backup/check_offsite_health.py" "$BIN/check_offsite_health.py"
+install -m 0700 "$ROOT/ops/backup/seal_offsite_recovery_tpm.sh" "$BIN/seal_offsite_recovery_tpm.sh"
+install -m 0700 "$ROOT/ops/backup/offsite_restore_drill_tpm.sh" "$BIN/offsite_restore_drill_tpm.sh"
+install -m 0600 "$ROOT/ops/backup/verify_tree.py" "$BIN/verify_tree.py"
 for unit in socthink-offsite-backup-pull.service socthink-offsite-backup-pull.timer; do
   install -m 0644 "$ROOT/ops/backup/$unit" "$UNITDIR/$unit"
 done

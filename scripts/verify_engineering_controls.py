@@ -34,6 +34,9 @@ FILES = {
     "offsite_timer": "ops/backup/socthink-offsite-backup-pull.timer",
     "offsite_install": "ops/backup/install_offsite_pull.sh",
     "offsite_health": "ops/backup/check_offsite_health.py",
+    "tpm_seal": "ops/backup/seal_offsite_recovery_tpm.sh",
+    "tpm_restore": "ops/backup/offsite_restore_drill_tpm.sh",
+
 
     "self": "scripts/verify_engineering_controls.py",
 }
@@ -117,6 +120,15 @@ def evaluate(root=ROOT, replacements=None):
     needs("offsite_timer", "OnCalendar=", "Persistent=true")
     needs("offsite_install", "not_clean_exact_main", "systemctl --user enable --now")
     needs("offsite_health", "OFFSITE_ENCRYPTED_BACKUP=PASS", "OFFSITE_RECOVERY_KEY_ESCROW=NOT_VERIFIED")
+    needs("quality", "scripts/test_tpm_offsite_recovery.py")
+    needs("tpm_seal", "StrictHostKeyChecking=yes", "--with-key=tpm2",
+          "systemd-creds decrypt", "production_secret_rotated_existing_credential_preserved",
+          "plaintext_persisted=NO", "independent_offline_key=NO")
+    needs("tpm_restore", "tmpfs_required", "systemd-creds decrypt",
+          "verify_offsite_replica.py", "verify_tree.py",
+          "TPM_RECOVERY_DRILL=PASS", "--passphrase-file <(")
+    needs("offsite_install", "seal_offsite_recovery_tpm.sh", "offsite_restore_drill_tpm.sh")
+
 
     # Avoid accidental self-certification: checks are hardcoded and mutation-tested.
     automated = [c for c in entries if c.get("level") == "block"]
