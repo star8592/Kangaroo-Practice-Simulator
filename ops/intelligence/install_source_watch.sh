@@ -12,6 +12,7 @@ for f in socthink-competition-source-watch.service socthink-competition-source-w
   install -o root -g root -m 0644 "$ROOT/ops/intelligence/$f" "/etc/systemd/system/$f"
 done
 systemctl daemon-reload
+systemctl reset-failed socthink-competition-source-watch.service || true
 systemctl enable --now socthink-competition-source-watch.timer
 systemctl start --no-block socthink-competition-source-watch.service
 systemctl status socthink-competition-source-watch.timer --no-pager -l

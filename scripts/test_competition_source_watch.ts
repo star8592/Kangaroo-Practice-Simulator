@@ -6,12 +6,18 @@ import {NextRequest} from "next/server";
 async function main(){
   const temp=fs.mkdtempSync(path.join(os.tmpdir(),"world-source-watch-test-"));
   process.env.SOCTHINK_USER_DATA_DIR=temp;
+  process.env.SOCTHINK_SOURCE_WATCH_DIR=path.join(temp,"source-watch");
   try{
     const w=await import("../src/lib/competition-source-watch");
     const auth=await import("../src/lib/auth");
     const adminApi=await import("../src/app/api/admin/competition-source-watch/route");
     const {VERIFIED_EDITIONS}=await import("../src/lib/competition-intelligence");
     const source=w.WATCH_SOURCES[0];
+    const unit=fs.readFileSync(path.join(process.cwd(),"ops/intelligence/socthink-competition-source-watch.service"),"utf8");
+    assert.match(unit,/DynamicUser=yes/);
+    assert.match(unit,/StateDirectory=socthink-competition-source-watch/);
+    assert.doesNotMatch(unit,/^(?:User|Group)=1000/m,"numeric UID without user database entry causes 217/USER");
+    assert.doesNotMatch(unit,/ReadWritePaths=\/opt\/socthink-math\/private\/users(?:\s|$)/m,"avoid broad student data access");
     assert.equal(w.WATCH_SOURCES.length,5);
     assert.equal(new Set(w.WATCH_SOURCES.map(s=>s.id)).size,5);
     assert.equal(w.WATCH_SOURCES.filter(s=>s.region==="CN").length,1);
@@ -27,6 +33,8 @@ async function main(){
     });
     const fake=(body:string,status=200)=>(async()=>response(body,status));
     const first=await w.runSourceWatch({sources:[source],fetcher:fake(makeHtml("05")),now:new Date("2026-10-09T12:00:00Z")});
+    assert.equal(fs.existsSync(path.join(temp,"source-watch","competition-source-watch.json")),true,
+      "source monitor state must not live in the broad student-data root");
     assert.equal(first.newObservations,1);
     assert.equal(first.pending,1);
     assert.equal(first.errors,0);
