@@ -77,6 +77,7 @@ assert.deepEqual(worldwidePayload.entries.map((x:{event:{id:string}})=>x.event.i
   WORLD_COMPETITIONS.map(x=>x.id), 'worldwide catalogue parity failed')
 for (const entry of worldwidePayload.entries) {
   assert.ok(entry.companion, 'every world event must have a companion')
+  assert.equal(entry.following, null, 'disposable guest must not have persisted follows')
   assert.ok(entry.progress, 'authenticated student progress must be returned')
   if (entry.companion.registrationVerified===false) {
     assert.ok(entry.companion.tasks.every((x:{date?:string})=>!x.date),
@@ -101,7 +102,7 @@ for (const needle of [
 for (const needle of ['/api/miniapp/world-competitions','x.event.nameZh','/api/miniapp/exams','ex.name','ex.year','ex.grades','ex.questionCount','ex.miniappReady']) {
   assert.ok(surfaces.competitions.includes(needle), `competition UI mapping missing: ${needle}`)
 }
-for (const needle of ['/api/miniapp/world-competitions','chosen.event.nameZh','t.titleZh','t.detailZh','t.checklistZh']) {
+for (const needle of ['/api/miniapp/world-competitions','/api/competition-follow','following','chosen.event.nameZh','t.titleZh','t.detailZh','t.checklistZh']) {
   assert.ok(surfaces.events.includes(needle), `event UI mapping missing: ${needle}`)
 }
 for (const needle of ['/api/miniapp/review','q.stem','assetUrlZh','correctAnswer','solution']) {

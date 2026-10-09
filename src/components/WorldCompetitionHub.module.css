@@ -13,3 +13,7 @@
 @media (max-width: 640px) { .actions { width: 100%; } .actions > * { flex: 1; text-align: center; } }
 
 .detail { scroll-margin-top: 96px; }
+
+.followSummary { display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; margin:14px 0; font-weight:600; }
+.followSummary a { text-decoration:underline; }
+.followMark { display:inline-block; border:1px solid #0891b2; padding:3px 8px; border-radius:9px; font-size:12px; font-weight:700; }

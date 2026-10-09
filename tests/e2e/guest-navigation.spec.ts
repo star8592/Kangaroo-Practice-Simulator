@@ -10,6 +10,7 @@ const fixtureFile=path.join(fixtureRoot,"exams",fixtureExamId+".json");
 const usersFile=path.join(fixtureRoot,"users","users.json");
 const sessionsFile=path.join(fixtureRoot,"users","exam-sessions.json");
 const attemptsFile=path.join(fixtureRoot,"users","exam-attempts.jsonl");
+const followsFile=path.join(fixtureRoot,"users","world-competition-follows.json");
 let account:{id:string;username:string;pin:string}|undefined;
 
 function readArray(file:string):Record<string,unknown>[] {
@@ -55,6 +56,7 @@ test.afterAll(()=>{
   if(!account)return;
   if(fs.existsSync(usersFile))fs.writeFileSync(usersFile,JSON.stringify(readArray(usersFile).filter(x=>x.id!==account?.id)));
   if(fs.existsSync(sessionsFile))fs.writeFileSync(sessionsFile,JSON.stringify(readArray(sessionsFile).filter(x=>x.userId!==account?.id)));
+  if(fs.existsSync(followsFile))fs.writeFileSync(followsFile,JSON.stringify(readArray(followsFile).filter(x=>x.userId!==account?.id)));
   if(fs.existsSync(attemptsFile)){
     const remaining=fs.readFileSync(attemptsFile,"utf8").split("\n").filter(line=>line.trim()&&JSON.parse(line).userId!==account?.id);
     fs.writeFileSync(attemptsFile,remaining.length?remaining.join("\n")+"\n":"");
@@ -124,4 +126,29 @@ test("real exam card click, registered login, start, answer and submit",async({p
   }});
   expect(duplicate.status()).toBe(200);
   expect((await duplicate.json()).attemptId).toBe(recovered.result.attemptId);
+});
+
+
+test("logged-in student follows UKMT and sees it in their personal calendar", async ({page})=>{
+  if(!account)throw new Error("student login fixture missing");
+  await page.goto("/login");
+  await page.getByLabel("学生账号 / 准考证号").fill(account.username);
+  await page.getByLabel("学生 PIN").fill(account.pin);
+  await page.getByRole("button",{name:"登录学生系统"}).click();
+  await expect(page).toHaveURL(/\/(?:\?|$)/,{timeout:15000});
+  await expect.poll(async()=> (await page.context().cookies()).some(c=>c.name==="kangaroo_session"),{timeout:10000}).toBe(true);
+  await page.goto("/competitions?event=ukmt");
+  const hub=page.getByRole("region",{name:"全球数学赛事管家"});
+  await hub.getByRole("button",{name:"＋ 关注赛事"}).click();
+  await expect(hub.getByRole("button",{name:/已关注 · 取消关注/})).toBeVisible();
+  await hub.getByRole("link",{name:"打开我的赛历 →"}).click();
+  await expect(page).toHaveURL(/\/student\/calendar(?:\?|$)/);
+  await expect(page.getByRole("heading",{name:"我的数学赛历"})).toBeVisible();
+  await expect(page.getByRole("heading",{name:"英国 UKMT"})).toBeVisible();
+  await expect(page.getByText("核实当地赛区与参赛资格",{exact:true})).toBeVisible();
+  await expect(page.getByText("具体赛区报名及考试日期：按当届官方公告核实；关注不代表报名成功。")).toBeVisible();
+  await page.getByRole("link",{name:"打开赛事管家 →"}).click();
+  await expect(page).toHaveURL(/\/competitions\?event=ukmt$/);
+  await hub.getByRole("button",{name:/已关注 · 取消关注/}).click();
+  await expect(hub.getByRole("button",{name:"＋ 关注赛事"})).toBeVisible();
 });
