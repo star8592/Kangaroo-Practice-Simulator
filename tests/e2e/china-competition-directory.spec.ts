@@ -82,3 +82,16 @@ test("public home lists China and world events at one level with direct links", 
   await expect(hub.getByText("华罗庚金杯少年数学邀请赛（华杯赛） · 备赛管家")).toBeVisible();
   await expect(hub.getByRole("link",{name:"登录后关注赛事"})).toBeVisible();
 });
+
+
+test("admin source-watch review surface cannot be accessed by guests",async({request,page})=>{
+  const api=await request.get("/api/admin/competition-source-watch");
+  expect(api.status()).toBe(403);
+  const patch=await request.patch("/api/admin/competition-source-watch",{
+    headers:{origin:"http://localhost:3000"},
+    data:{id:"not-existing",decision:"reviewed",note:"test action"},
+  });
+  expect(patch.status()).toBe(403);
+  await page.goto("/admin/competition-source-watch");
+  await expect(page).toHaveURL(/\/login\?next=/);
+});

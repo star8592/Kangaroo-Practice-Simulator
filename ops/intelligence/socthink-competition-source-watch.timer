@@ -1,0 +1,12 @@
+[Unit]
+Description=Check official math competition sources every six hours
+
+[Timer]
+OnBootSec=10min
+OnUnitActiveSec=6h
+RandomizedDelaySec=15min
+Persistent=true
+Unit=socthink-competition-source-watch.service
+
+[Install]
+WantedBy=timers.target

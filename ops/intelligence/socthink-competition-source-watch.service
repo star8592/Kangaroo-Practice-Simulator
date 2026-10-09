@@ -1,0 +1,20 @@
+[Unit]
+Description=SocThink World Math Official Source Monitor (review-only)
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+User=1000
+Group=1000
+WorkingDirectory=/opt/socthink-math
+Environment=NODE_ENV=production
+Environment=SOCTHINK_USER_DATA_DIR=/opt/socthink-math/private/users
+ExecStart=/opt/socthink-math/node_modules/.bin/tsx /opt/socthink-math/scripts/watch_competition_sources.ts
+TimeoutStartSec=180
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectHome=yes
+ProtectSystem=strict
+ReadWritePaths=/opt/socthink-math/private/users
+UMask=0077

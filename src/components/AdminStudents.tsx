@@ -133,6 +133,7 @@ export default function AdminStudents() {
         <div>
           <span className={styles.kicker}>学生管理</span>
           <h1>学生账号与学习画像</h1>
+          <Link className="secondary-button" href="/admin/competition-source-watch">审核全球赛事官方公告 →</Link>
           <p>统一管理学生身份、正式模拟、计算训练和行为画像。</p>
         </div>
         <button className="primary-button" onClick={() => setShowCreate((value) => !value)}>

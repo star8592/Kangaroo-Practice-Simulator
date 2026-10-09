@@ -1,0 +1,61 @@
+[
+  {
+    "id": "maa-amc-us",
+    "eventId": "maa-amc",
+    "region": "US",
+    "label": "MAA 美国 AMC 官方报名",
+    "url": "https://maa.org/amcreg/",
+    "matchPhrases": [
+      "2026-27 MAA AMC Dates",
+      "AMC 12 A Competition Date",
+      "Regular Registration Deadline"
+    ]
+  },
+  {
+    "id": "cms-china-olympiad",
+    "eventId": "cmo",
+    "region": "CN",
+    "label": "中国数学会竞赛公告",
+    "url": "https://www.cms.org.cn/Home/comp/comp.html",
+    "matchPhrases": [
+      "全国中学生数学奥林匹克竞赛",
+      "全国高中数学联赛"
+    ]
+  },
+  {
+    "id": "amt-australian-amc",
+    "eventId": "australian-amc",
+    "region": "AU",
+    "label": "澳大利亚数学信托 AMC 公告",
+    "url": "https://amt.edu.au/amc",
+    "matchPhrases": [
+      "Australian Mathematics Competition",
+      "Key Dates",
+      "entries close"
+    ]
+  },
+  {
+    "id": "cemc-canada",
+    "eventId": "cemc",
+    "region": "CA",
+    "label": "滑铁卢大学 CEMC 赛事公告",
+    "url": "https://cemc.uwaterloo.ca/contests?subject_area=3",
+    "matchPhrases": [
+      "mathematics",
+      "contest",
+      "deadline"
+    ]
+  },
+  {
+    "id": "ukmt-competition-calendar",
+    "eventId": "ukmt",
+    "region": "GB",
+    "label": "英国 UKMT 官方竞赛日历",
+    "url": "https://ukmt.org.uk/competition-calendar",
+    "matchPhrases": [
+      "Competition Calendar",
+      "Mathematical Challenge",
+      "Olympiad"
+    ]
+  }
+]
