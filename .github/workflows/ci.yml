@@ -115,6 +115,8 @@ jobs:
         run: npm run test:miniapp-contract
       - name: Miniapp WeChat identity contract (mocked provider)
         run: npx tsx scripts/test_miniapp_wechat_auth.ts
+      - name: Miniapp WeChat upstream failure classification
+        run: npx tsx scripts/test_miniapp_wechat_failure_diagnostics.ts
       - name: Miniapp and Web data parity
         run: npm run test:miniapp-parity
       - name: Typecheck and compile actual WeChat miniapp artifacts
