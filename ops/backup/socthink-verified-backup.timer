@@ -1,0 +1,11 @@
+[Unit]
+Description=Daily SocThink encrypted data backup and isolation restore check
+
+[Timer]
+OnCalendar=*-*-* 03:40:00
+RandomizedDelaySec=12min
+Persistent=true
+Unit=socthink-verified-backup.service
+
+[Install]
+WantedBy=timers.target

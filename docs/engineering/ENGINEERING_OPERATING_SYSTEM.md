@@ -55,3 +55,8 @@ P0：考试无法提交/权限泄漏/资金错付/全站停机，立即停止发
 ## 7. 自动控制 vs 人工工作
 
 ops/engineering/controls.json 是机器可检查的控制目录；scripts/verify_engineering_controls.py 与其单元变异测试在公开质量门禁中执行。控制脚本检查的是仓库 wiring 和安全不变量，**不是生产运行证明**。生产使用 ops/engineering/production_readiness.sh 只读核验并输出真实证据。任何 control 中的 OPEN 风险都应在基线审计中列明、分配责任和安排实测。仅 PR 文本模板不能替代 CI 和 Github branch protection 的真实设置。
+
+
+## GOV-03 实施入口（2026-10-10）
+
+每日加密备份及实测隔离恢复详细操作和已知边界：docs/engineering/VERIFIED_BACKUP_RESTORE_20261010.md。首次生产验收前不能将备份从 OPEN 改为 PASS；异机保护、密钥异地保存及跨主机恢复仍需独立验收。
