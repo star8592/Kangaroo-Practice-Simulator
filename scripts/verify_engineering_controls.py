@@ -1,0 +1,107 @@
+#!/usr/bin/env python3
+"""Fail-closed repository engineering invariants. Never interprets CI as production."""
+import json
+import re
+import sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+
+FILES = {
+    "ci": ".github/workflows/ci.yml",
+    "quality": "ops/automation/quality_gate.sh",
+    "package": "package.json",
+    "deploy": "ops/release/auto_deploy_server.sh",
+    "receipt": ".github/workflows/production-receipt.yml",
+    "mini": "ops/release/miniapp_ci.sh",
+    "miniqa": "scripts/verify_miniapp_qa_receipt.mjs",
+    "ignore": ".gitignore",
+    "watch": "src/lib/competition-source-watch.ts",
+    "watchunit": "ops/intelligence/socthink-competition-source-watch.service",
+    "watchapi": "src/app/api/admin/competition-source-watch/route.ts",
+    "pr": ".github/PULL_REQUEST_TEMPLATE.md",
+    "runbook": "docs/engineering/ENGINEERING_OPERATING_SYSTEM.md",
+    "baseline": "docs/engineering/BASELINE_AUDIT_20261010.md",
+    "self": "scripts/verify_engineering_controls.py",
+}
+
+def evaluate(root=ROOT, replacements=None):
+    replacements = replacements or {}
+    errors = []
+    content = {}
+    for key, name in FILES.items():
+        if key in replacements:
+            content[key] = replacements[key]
+        else:
+            try:
+                content[key] = (root / name).read_text(encoding="utf-8")
+            except OSError:
+                errors.append(f"{key}: required file absent: {name}")
+                content[key] = ""
+    registry = root / "ops/engineering/controls.json"
+    try:
+        controls = json.loads(registry.read_text(encoding="utf-8"))
+        entries = controls["controls"]
+        ids = [c["id"] for c in entries]
+        if controls["schemaVersion"] != 1 or len(set(ids)) != len(ids) or len(entries) < 14:
+            errors.append("control register incomplete or has duplicate IDs")
+        if not all(c.get("level") in ("block","manual") for c in entries):
+            errors.append("control has invalid enforcement level")
+    except (OSError, ValueError, KeyError, TypeError) as exc:
+        errors.append(f"control register unreadable: {exc}")
+        entries = []
+
+    def needs(file, *tokens):
+        for token in tokens:
+            if token not in content.get(file, ""):
+                errors.append(f"{file}: missing required invariant {token}")
+    def no_pattern(file, pattern, label):
+        if re.search(pattern, content.get(file, ""), re.MULTILINE):
+            errors.append(f"{file}: forbidden {label}")
+
+    needs("ci", "pull_request:", "branches:", "- main", "quality:", "billing-ledger:",
+          "miniapp-build-and-contract:", "web-browser-click-e2e:", "npm ci",
+          "npm run verify:public", "npm run test:e2e:smoke", "npm run verify:miniapp")
+    needs("ci", "permissions:", "contents: read")
+    no_pattern("ci", r"^\s*pull_request_target\s*:", "privileged pull_request_target workflow")
+    needs("quality", "npm run lint -- --max-warnings=0", "npx tsc --noEmit",
+          "step \"enforce end-to-end release wiring\"", "npm run test:exam-access",
+          "npm run test:exam-submit-recovery", "npm run audit:security",
+          "step \"engineering operating controls\" npm run test:engineering-controls")
+    needs("package", '"test:engineering-controls"', "scripts/test_engineering_controls.py")
+    needs("deploy", "flock -n", "CI_NOT_GREEN", "AUTO_DEPLOY_CANDIDATE=PASS",
+          "restore_runtime", "AUTO_DEPLOY_PUBLIC=PASS", "TARGET_SHA", "EXPECTED_SHA")
+    needs("receipt", "github.event.workflow_run.head_sha", "deployedSha", "gitSha", "PRODUCTION_RECEIPT=PASS")
+    needs("mini", "not_exact_remote_main", "dirty_checkout", "verify_miniapp_qa_receipt.mjs",
+          "bash \"$ROOT/ops/automation/miniapp_quality_gate.sh\"")
+    needs("miniqa", "physical-android", "WeChat DevTools", "receipt.commitSha",
+          "network-failure-retry", "exam-answer-submit-review", "homepage-to-arithmetic-click")
+    needs("ignore", ".env*", "*.pem", "private/*", "/.release-tmp/")
+    needs("watch", "status:\"pending\"", "reviewObservation", "no redirected or blocked content accepted")
+    needs("watchunit", "DynamicUser=yes", "StateDirectory=socthink-competition-source-watch",
+          "ProtectSystem=strict")
+    needs("watchapi", "isAdmin", "Same-origin review required", "promotion:false")
+    needs("pr", "变更风险", "回滚方案", "真实验收证据", "微信小程序")
+    needs("runbook", "RTO", "RPO", "DORA", "Web 上线≠微信上线")
+    needs("baseline", "OPEN", "required_approving_review_count", "备份")
+    # Avoid accidental self-certification: checks are hardcoded and mutation-tested.
+    automated = [c for c in entries if c.get("level") == "block"]
+    if len(automated) < 8:
+        errors.append("automated gate coverage below minimum 8 controls")
+    return errors, len(entries), len(automated)
+
+def main():
+    errors, total, automated = evaluate()
+    summary = {"status": "FAIL" if errors else "PASS", "controls": total,
+               "automated": automated, "manual": total - automated,
+               "errors": errors}
+    if "--json" in sys.argv:
+        print(json.dumps(summary, ensure_ascii=False))
+    else:
+        print(f"ENGINEERING_CONTROLS={summary['status']} total={total} automated={automated} manual={total-automated}")
+        for error in errors:
+            print(" - "+error)
+    return 1 if errors else 0
+
+if __name__ == "__main__":
+    sys.exit(main())

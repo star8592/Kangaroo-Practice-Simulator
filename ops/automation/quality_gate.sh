@@ -48,6 +48,8 @@ step "miniapp arithmetic grading idempotency and UI recovery" npm run test:minia
 step "exam submit lost-response recovery and exactly-once grading" npm run test:exam-submit-recovery
 step "live access smoke gate positive and mutation negative tests" npm run test:exam-access-live-contract
 step "enforce end-to-end release wiring" npm run test:engineering-contract
+step "engineering operating controls" npm run test:engineering-controls
+step "public release acceptance negative tests" python3 scripts/test_production_public_smoke.py
 step "wechat auth regression" npm run test:wechat-auth
 step "miniapp auth install contract" bash ops/release/test_wechat_miniapp_auth_contract.sh
 step "repository hygiene" python3 scripts/audit_repository_hygiene.py
