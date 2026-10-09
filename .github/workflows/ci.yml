@@ -111,6 +111,10 @@ jobs:
           cache: npm
       - name: Install locked Web dependencies
         run: npm ci
+      - name: WeChat request failure UX regression
+        run: node --experimental-strip-types --test scripts/test_miniapp_network_errors.mjs
+      - name: Miniapp WeChat domain read-only preflight guards
+        run: node --test scripts/test_miniapp_openapi_domain_gate.mjs
       - name: Miniapp arithmetic session contract
         run: npm run test:miniapp-contract
       - name: Miniapp WeChat identity contract (mocked provider)

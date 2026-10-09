@@ -14,8 +14,8 @@ npm ci
 npm run typecheck
 npm run build:weapp
 test -f dist/app.json
-for page in home arithmetic competitions profile login events exam review; do
+for page in home arithmetic competitions profile login events exam review diagnostics; do
   test -f "dist/pages/$page/index.js"
   test -f "dist/pages/$page/index.wxml"
 done
-echo "MINIAPP_QUALITY_GATE=PASS taro=4.3.0 pages=8"
+echo "MINIAPP_QUALITY_GATE=PASS taro=4.3.0 pages=9"

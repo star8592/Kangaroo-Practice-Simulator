@@ -1,8 +1,18 @@
 import Taro from '@tarojs/taro'
+import { normalizeMiniappNetworkError } from './network-errors'
 
 const BASE = process.env.TARO_APP_API_BASE || 'https://socthink.cn'
 const TOKEN_KEY = 'socthink_access_token'
 const USER_KEY = 'socthink_user'
+
+async function checkedRequest<T>(path:string,options:Parameters<typeof Taro.request<T>>[0]){
+  try{return await Taro.request<T>({...options,timeout:12000})}
+  catch(e){
+    const issue=normalizeMiniappNetworkError(e)
+    console.error('[miniapp network]',path,issue.message)
+    throw issue
+  }
+}
 
 export const authStore = {
   token: () => String(Taro.getStorageSync(TOKEN_KEY) || ''),
@@ -22,7 +32,7 @@ export async function ensureWechatSession(force = false, allowGuestFallback = tr
       try {
         const login = await Taro.login()
         if (!login.code) throw new Error('微信登录失败，请重试')
-        const res = await Taro.request<any>({
+        const res = await checkedRequest<any>('/api/auth/miniapp/wechat', {
           url: BASE + '/api/auth/miniapp/wechat',
           method: 'POST',
           data: { code: login.code },
@@ -41,7 +51,7 @@ export async function ensureWechatSession(force = false, allowGuestFallback = tr
 
       // Availability safety net: students must still be able to train when the
       // WeChat identity endpoint, credentials, or backend release is unavailable.
-      const guest = await Taro.request<any>({
+      const guest = await checkedRequest<any>('/api/auth/miniapp/guest', {
         url: BASE + '/api/auth/miniapp/guest',
         method: 'POST',
         header: { 'content-type': 'application/json' }
@@ -57,7 +67,7 @@ export async function ensureWechatSession(force = false, allowGuestFallback = tr
 }
 
 export async function api<T = any>(path: string, options: { method?: 'GET'|'POST'|'PATCH'; data?: unknown; auth?: boolean } = {}): Promise<T> {
-  const request = async (token: string) => Taro.request<T>({
+  const request = async (token: string) => checkedRequest<T>(path, {
     url: BASE + path, method: options.method || 'GET', data: options.data,
     header: {'content-type':'application/json', ...(options.auth === false || !token ? {} : {Authorization: `Bearer ${token}`})}
   })

@@ -9,6 +9,11 @@ const appConfig = JSON.parse(fs.readFileSync(path.join(root, 'apps/miniapp/proje
 const appid = process.env.WECHAT_MINIAPP_APPID || appConfig.appid
 const secret = process.env.WECHAT_MINIAPP_SECRET
 
+if (process.env.WECHAT_MINIAPP_APPID && process.env.WECHAT_MINIAPP_APPID !== appConfig.appid) {
+  console.error('MINIAPP_OPENAPI=FAIL reason=appid_mismatch_with_project')
+  process.exit(2)
+}
+
 if (!/^wx[A-Za-z0-9]{16}$/.test(String(appid || ''))) {
   console.error('MINIAPP_OPENAPI=FAIL reason=invalid_appid')
   process.exit(2)
@@ -106,6 +111,28 @@ async function status(token) {
   return {version, audit}
 }
 
+async function domainStatus(token) {
+  // This operation is read-only; add/delete/set are deliberately unsupported.
+  const result = await api(token, '/wxa/modify_domain', {action:'get'})
+  if (Number(result?.errcode || 0) !== 0) {
+    console.error('MINIAPP_DOMAIN=BLOCKED reason=wechat_api_unavailable errcode='+
+      String(result?.errcode ?? 'unknown'))
+    process.exitCode = 6
+    return
+  }
+  const request = Array.isArray(result.requestdomain) ? result.requestdomain : []
+  const expected = 'https://socthink.cn'
+  const configured = request.includes(expected)
+  console.log('MINIAPP_DOMAIN_REQUEST='+JSON.stringify(request))
+  console.log('MINIAPP_DOMAIN_REQUIRED='+expected+' present='+configured)
+  if (!configured) {
+    console.error('MINIAPP_DOMAIN=BLOCKED reason=request_domain_missing')
+    process.exitCode = 7
+  } else {
+    console.log('MINIAPP_DOMAIN=PASS')
+  }
+}
+
 async function submit(token) {
   const latest = await api(token, '/wxa/get_latest_auditstatus')
   if (latest?.errcode === 0 && Number(latest.status) === 2) {
@@ -157,9 +184,10 @@ async function release(token) {
 
 const token = await getToken()
 if (command === 'status') await status(token)
+else if (command === 'domain-status') await domainStatus(token)
 else if (command === 'submit') await submit(token)
 else if (command === 'release') await release(token)
 else {
-  console.error('usage: node ops/release/miniapp_openapi.mjs status|submit|release')
+  console.error('usage: node ops/release/miniapp_openapi.mjs status|domain-status|submit|release')
   process.exit(2)
 }

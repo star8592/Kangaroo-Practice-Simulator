@@ -7,7 +7,8 @@ export default defineAppConfig({
     'pages/login/index',
     'pages/events/index',
     'pages/exam/index',
-    'pages/review/index'
+    'pages/review/index',
+    'pages/diagnostics/index'
   ],
   window: {
     navigationBarBackgroundColor: '#ffffff',
