@@ -1,11 +1,11 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Button, Text, View } from '@tarojs/components'
 import Taro from '@tarojs/taro'
-import { api } from '../../services/api'
+import { api, authStore, ensureWechatSession } from '../../services/api'
 
 type WorldEntry = {
   event:{
-    id:string;region:string;nameZh:string;summaryZh:string;sourceUrl:string;
+    id:string;region:string;nameZh:string;summaryZh:string;sourceUrl:string;referenceStages?:string[];
     sourceLabelZh:string;trainingId?:string;
   };
   companion:null|{
@@ -13,6 +13,7 @@ type WorldEntry = {
     tasks:Array<{id:string;titleZh:string;detailZh:string;date?:string;time?:string;checklistZh?:string[]}>;
   };
   progress:null|{completedTaskIds:string[]};
+  following:null|boolean;
 }
 const regions=[
   {id:'all',name:'全部'}, {id:'CN',name:'中国'}, {id:'US',name:'美国'},
@@ -24,9 +25,11 @@ export default function EventsPage(){
   const [rows,setRows]=useState<WorldEntry[]>([])
   const [selected,setSelected]=useState(initial)
   const [region,setRegion]=useState('all')
+  const [stage,setStage]=useState('all')
   const [loading,setLoading]=useState(true)
   const [error,setError]=useState('')
   const [saving,setSaving]=useState('')
+  const [followError,setFollowError]=useState('')
   const load=async()=>{
     setLoading(true);setError('')
     try{
@@ -43,8 +46,14 @@ export default function EventsPage(){
       void Taro.pageScrollTo({selector:'#world-detail',duration:150}).catch(()=>{})
     }
   },[rows.length])
-  const visible=useMemo(()=>rows.filter(x=>region==='all'||x.event.region===region),[rows,region])
+  const visible=useMemo(()=>rows.filter(x=>(region==='all'||x.event.region===region)&&(stage==='all'||!x.event.referenceStages||x.event.referenceStages.includes(stage))),[rows,region,stage])
   const chosen=rows.find(x=>x.event.id===selected)||visible[0]
+  const followed=rows.filter(x=>x.following===true)
+  const nextFocus=followed.map(x=>{
+    const done=new Set(x.progress?.completedTaskIds||[])
+    return {row:x,task:x.companion?.tasks.find(t=>!done.has(t.id))}
+  }).filter(x=>x.task).slice(0,3)
+
   const toggle=async(c:WorldEntry,t:{id:string})=>{
     if(!c.progress||!c.companion){Taro.showToast({title:'请登录学生账号后保存',icon:'none'});return}
     const done=c.progress.completedTaskIds.includes(t.id)
@@ -58,10 +67,42 @@ export default function EventsPage(){
       Taro.showToast({title:e instanceof Error?e.message:'保存失败',icon:'none'})
     }finally{setSaving('')}
   }
+  const toggleFollow=async(item:WorldEntry)=>{
+    setSaving('follow-'+item.event.id);setFollowError('')
+    try{
+      if(item.following===null) {
+        const u=authStore.user()
+        if(!authStore.token()||u?.username==='guest'||u?.candidateNo==='GUEST'){
+          await ensureWechatSession(true,false)
+        }
+      }
+      await api('/api/competition-follow',{method:'PATCH',data:{
+        eventId:item.event.id,following:!item.following,
+      }})
+      await load()
+    }catch(e){
+      const msg=e instanceof Error?e.message:'关注保存失败'
+      setFollowError(msg)
+      Taro.showToast({title:msg,icon:'none'})
+    }finally{setSaving('')}
+  }
   return <View className='page'>
     <View className='hero'><Text className='big'>全球数学赛事管家</Text>
       <View>同一套流程管理全球赛事：核实资格、报名准备、模拟、设备调试、比赛、成绩与证书。</View>
     </View>
+    <View className='section-title'>我的关注 · {followed.length} 项</View>
+    {nextFocus.length>0?<View className='card'>
+      <View className='card-title'>下一步行动 · 最多三项</View>
+      {nextFocus.map(x=><View key={x.row.event.id}>
+        <View className='card-title'>{x.row.event.nameZh}</View>
+        <View>{x.task?.titleZh}</View>
+        <Button className='secondary' onClick={()=>{
+          setRegion('all');setStage('all');setSelected(x.row.event.id)
+          void Taro.pageScrollTo({selector:'#world-detail',duration:150}).catch(()=>{})
+        }}>打开备赛清单</Button>
+      </View>)}
+      <View className='muted'>关注不代表报名；无官方核验日期的待办不显示倒计时。</View>
+    </View>:<View className='muted'>关注任意赛事后，会在这里集中显示下一步任务。</View>}
     <View className='competition-tabs'>
       {regions.map(r=><Button key={r.id} className={region===r.id?'competition-tab active':'competition-tab'} onClick={()=>{
         setRegion(r.id)
@@ -69,12 +110,27 @@ export default function EventsPage(){
         if(first)setSelected(first.event.id)
       }}>{r.name}</Button>)}
     </View>
+    <View className='competition-tabs'>
+      {[{id:'all',name:'全部学段'},{id:'primary',name:'小学'},{id:'junior',name:'初中'},{id:'senior',name:'高中'}].map(g=><Button key={g.id}
+        className={stage===g.id?'competition-tab active':'competition-tab'} onClick={()=>{
+        setStage(g.id)
+        const first=rows.find(x=>(region==='all'||x.event.region===region)&&(g.id==='all'||!x.event.referenceStages||x.event.referenceStages.includes(g.id)))
+        if(first)setSelected(first.event.id)
+      }}>{g.name}</Button>)}
+    </View>
+
+    <View className='muted'>学段与赛区资格须按当届官方通知核实；关注不等于报名。</View>
+    {!!followError&&<View className='muted'>{followError}</View>}
     {loading&&<View className='card'>正在载入全球赛事…</View>}
     {!!error&&<View className='card'><View>{error}</View><Button className='primary' onClick={()=>void load()}>重试</Button></View>}
     {visible.map(x=><View className='card' key={x.event.id}>
       <View className='muted'>{regions.find(r=>r.id===x.event.region)?.name||x.event.region}</View>
       <View className='card-title'>{x.event.nameZh}</View>
       <View>{x.event.summaryZh}</View>
+      {x.following===true&&<View className='muted'>✓ 已关注 · 已加入个人赛事清单</View>}
+      <Button className='secondary' disabled={saving==='follow-'+x.event.id} onClick={()=>void toggleFollow(x)}>
+        {saving==='follow-'+x.event.id?'保存中…':x.following===null?'微信登录后关注':x.following?'取消关注':'＋ 关注赛事'}
+      </Button>
       <Button className={x.event.id===chosen?.event.id?'primary':'secondary'} onClick={()=>{setSelected(x.event.id);void Taro.pageScrollTo({selector:'#world-detail',duration:150}).catch(()=>{})}}>
         {x.event.id===chosen?.event.id?'当前赛事 ✓':'查看赛事管家'}
       </Button>
