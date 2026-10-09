@@ -38,6 +38,10 @@ test("world companion has one equal-ranking directory and real navigation", asyn
 });
 
 test("worldwide public directory is read-only to anonymous visitors", async ({ request }) => {
+  const iGet=await request.get("/api/competition-intelligence");
+  expect(iGet.status()).toBe(401);
+  const iPatch=await request.patch("/api/competition-intelligence",{data:{region:"CN"}});
+  expect(iPatch.status()).toBe(401);
   const followGet=await request.get("/api/competition-follow");
   expect(followGet.status()).toBe(401);
   const followPatch=await request.patch("/api/competition-follow",{data:{eventId:"ukmt",following:true}});
