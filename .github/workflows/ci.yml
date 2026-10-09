@@ -45,8 +45,24 @@ jobs:
           cache: npm
       - name: Install locked dependencies
         run: npm ci
-      - name: Install Chromium for actual button clicks
-        run: npx playwright install --with-deps chromium
+      - name: Prepare Chromium for actual button clicks
+        shell: bash
+        run: |
+          set -euo pipefail
+          # GitHub Ubuntu and our self-hosted runners normally ship Google Chrome.
+          # Use the existing executable to avoid a potentially stalled browser download.
+          if command -v google-chrome >/dev/null 2>&1; then
+            browser="$(command -v google-chrome)"
+            echo "PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=$browser" >> "$GITHUB_ENV"
+            "$browser" --version
+          elif command -v chromium >/dev/null 2>&1; then
+            browser="$(command -v chromium)"
+            echo "PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=$browser" >> "$GITHUB_ENV"
+            "$browser" --version
+          else
+            # Installation failures remain hard failures, never a silent skip.
+            timeout 240s npx playwright install --with-deps chromium
+          fi
       - name: Build candidate Web app
         run: npm run build
       - name: Browser click and login-gate E2E
