@@ -13,6 +13,11 @@ async function main(){
     const adminApi=await import("../src/app/api/admin/competition-source-watch/route");
     const {VERIFIED_EDITIONS}=await import("../src/lib/competition-intelligence");
     const source=w.WATCH_SOURCES[0];
+    const unit=fs.readFileSync(path.join(process.cwd(),"ops/intelligence/socthink-competition-source-watch.service"),"utf8");
+    assert.match(unit,/DynamicUser=yes/);
+    assert.match(unit,/StateDirectory=socthink-competition-source-watch/);
+    assert.doesNotMatch(unit,/^(?:User|Group)=1000/m,"numeric UID without user database entry causes 217/USER");
+    assert.doesNotMatch(unit,/ReadWritePaths=\/opt\/socthink-math\/private\/users(?:\s|$)/m,"avoid broad student data access");
     assert.equal(w.WATCH_SOURCES.length,5);
     assert.equal(new Set(w.WATCH_SOURCES.map(s=>s.id)).size,5);
     assert.equal(w.WATCH_SOURCES.filter(s=>s.region==="CN").length,1);
