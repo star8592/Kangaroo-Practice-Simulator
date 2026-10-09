@@ -33,6 +33,7 @@ step "grade-one verified solution bundle" python3 scripts/test_grade1_solution_b
 step "grade-one solution store" npx tsx scripts/test_grade1_solution_store.ts
 step "math cardbook progression" npx tsx scripts/test_math_cardbook.ts
 step "auto-deploy contract" bash ops/release/test_auto_deploy_contract.sh
+step "manual recovery delegates to canonical CI-gated deploy" python3 scripts/test_manual_deploy_contract.py
 step "miniapp backend contract" npm run test:miniapp-contract
 step "miniapp web parity" npm run test:miniapp-parity
 step "verified competition intelligence" npm run test:competition-intelligence
