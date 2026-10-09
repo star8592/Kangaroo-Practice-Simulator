@@ -43,3 +43,7 @@ P2：README 一致性、扩容持久化计划、每两周 DORA 数据评审。
 
 GOV-03 加入加密全量数据归档、SHA-256、每次独立解包及结构化数据校验、生产日度 systemd timer，详见 docs/engineering/VERIFIED_BACKUP_RESTORE_20261010.md。
 本地逻辑与生产实际分开：未看到线上 timer 与首次真数据恢复回执前状态为 IMPLEMENTING；异机副本和跨机器恢复测试仍 OPEN，RPO/RTO 未认证。
+
+
+### 2026-10-10 异机副本实施进度
+GOV-03：本机 AES256 加密+独立隔离解包生产实测已成功（PR #79，13,227 个文件、源数据约 726MB、密文约 612MiB，systemd Exit 0）。异机副本的拉取与 SHA256 独立回读列入下一 PR。复制密文不等于密钥离线托管，也不等于跨机恢复验收，因此 GOV-03 仍 PARTIAL，RTO/RPO 仍 UNKNOWN。

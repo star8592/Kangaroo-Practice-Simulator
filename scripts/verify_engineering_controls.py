@@ -28,6 +28,13 @@ FILES = {
     "backup_timer": "ops/backup/socthink-verified-backup.timer",
     "backup_install": "ops/backup/install_verified_backup.sh",
     "backup_health": "ops/backup/check_backup_health.py",
+    "offsite_pull": "ops/backup/pull_offsite_encrypted.sh",
+    "offsite_verify": "ops/backup/verify_offsite_replica.py",
+    "offsite_unit": "ops/backup/socthink-offsite-backup-pull.service",
+    "offsite_timer": "ops/backup/socthink-offsite-backup-pull.timer",
+    "offsite_install": "ops/backup/install_offsite_pull.sh",
+    "offsite_health": "ops/backup/check_offsite_health.py",
+
     "self": "scripts/verify_engineering_controls.py",
 }
 
@@ -101,6 +108,16 @@ def evaluate(root=ROOT, replacements=None):
     needs("backup_install", "deployed_sha_mismatch", "systemctl enable --now")
     needs("backup_health", "LOCAL_ENCRYPTED_BACKUP=PASS", "ISOLATED_RESTORE_DRILL=PASS")
     needs("quality", "scripts/test_verified_backup_restore.py")
+    needs("quality", "scripts/test_offsite_replica.py")
+    needs("offsite_pull", "StrictHostKeyChecking=yes", "SOCTHINK_OFFSITE_DIR",
+          "verify_offsite_replica.py", "OFFSITE_PULL=PASS", "flock -n",
+          "OFFSITE_PULL=BLOCKED", "mv -- \"$STAGING/$RECEIPT\"")
+    needs("offsite_verify", "archiveSha256", "isolatedRestore", "OFFSITE_REPLICA_VERIFY=PASS")
+    needs("offsite_unit", "NoNewPrivileges=yes", "ExecStartPost=")
+    needs("offsite_timer", "OnCalendar=", "Persistent=true")
+    needs("offsite_install", "not_clean_exact_main", "systemctl --user enable --now")
+    needs("offsite_health", "OFFSITE_ENCRYPTED_BACKUP=PASS", "OFFSITE_RECOVERY_KEY_ESCROW=NOT_VERIFIED")
+
     # Avoid accidental self-certification: checks are hardcoded and mutation-tested.
     automated = [c for c in entries if c.get("level") == "block"]
     if len(automated) < 8:

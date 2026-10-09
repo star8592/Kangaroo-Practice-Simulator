@@ -30,6 +30,14 @@ scenarios = [
  ("backup_timer","Persistent=true","periodic backup timer"),
  ("backup_install","deployed_sha_mismatch","verified production-only backup install"),
  ("backup_health","LOCAL_ENCRYPTED_BACKUP=PASS","backup health receipt"),
+ ("offsite_pull","StrictHostKeyChecking=yes","pinned SSH host identity"),
+ ("offsite_pull","verify_offsite_replica.py","ciphertext hash validation"),
+ ("offsite_verify","isolatedRestore","source restore evidence"),
+ ("offsite_unit","NoNewPrivileges=yes","non-root offsite service"),
+ ("offsite_timer","Persistent=true","offsite schedule"),
+ ("offsite_install","not_clean_exact_main","clean main installation"),
+ ("offsite_health","OFFSITE_RECOVERY_KEY_ESCROW=NOT_VERIFIED","accurate recovery boundary"),
+
 
 ]
 for file,needle,reason in scenarios:

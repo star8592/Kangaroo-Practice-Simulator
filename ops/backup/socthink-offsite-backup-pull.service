@@ -1,0 +1,19 @@
+[Unit]
+Description=SocThink encrypted backup replica pull from production cloud host
+After=network-online.target
+Wants=network-online.target
+ConditionPathIsDirectory=/mnt/disk1/master_data/secure/socthink-backups
+
+[Service]
+Type=oneshot
+WorkingDirectory=%h
+Environment=SOCTHINK_OFFSITE_DIR=/mnt/disk1/master_data/secure/socthink-backups
+ExecStart=/usr/bin/bash %h/.local/share/socthink-backup/bin/pull_offsite_encrypted.sh
+ExecStartPost=/usr/bin/python3 %h/.local/share/socthink-backup/bin/check_offsite_health.py /mnt/disk1/master_data/secure/socthink-backups
+TimeoutStartSec=3600
+Nice=10
+IOSchedulingClass=best-effort
+IOSchedulingPriority=7
+NoNewPrivileges=yes
+PrivateTmp=yes
+UMask=0077

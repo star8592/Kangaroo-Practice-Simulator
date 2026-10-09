@@ -51,6 +51,7 @@ step "live access smoke gate positive and mutation negative tests" npm run test:
 step "enforce end-to-end release wiring" npm run test:engineering-contract
 step "engineering operating controls" npm run test:engineering-controls
 step "encrypted production backup and isolated restore negative tests" python3 scripts/test_verified_backup_restore.py
+step "offhost encrypted backup replica mutation and transport contract" python3 scripts/test_offsite_replica.py
 step "public release acceptance negative tests" python3 scripts/test_production_public_smoke.py
 step "wechat auth regression" npm run test:wechat-auth
 step "miniapp auth install contract" bash ops/release/test_wechat_miniapp_auth_contract.sh

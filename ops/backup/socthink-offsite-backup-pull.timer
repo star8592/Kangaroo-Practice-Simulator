@@ -1,0 +1,11 @@
+[Unit]
+Description=Daily off-host pull of encrypted SocThink backups
+
+[Timer]
+OnCalendar=*-*-* 05:10:00
+RandomizedDelaySec=15min
+Persistent=true
+Unit=socthink-offsite-backup-pull.service
+
+[Install]
+WantedBy=timers.target
