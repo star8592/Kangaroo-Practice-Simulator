@@ -1,0 +1,52 @@
+name: 工程需求与缺陷（统一入口）
+description: 为全球数学赛事管家记录可验收的功能、缺陷或技术债
+title: "[工程] "
+labels:
+  - engineering
+body:
+  - type: textarea
+    id: value
+    attributes:
+      label: 用户问题与成功标准
+      description: 描述用户的实际行为及可观察结果，不只是一个技术解决方案
+      placeholder: 学生在微信中点击……应当出现……
+    validations:
+      required: true
+  - type: dropdown
+    id: risk
+    attributes:
+      label: 变更风险
+      description: L2/L3 必须包含失败恢复和独立审查证据
+      options:
+        - L0 - 说明与非行为样式
+        - L1 - 一般业务变更
+        - L2 - 账号、考试、任务、重要持久化
+        - L3 - 支付、密钥、数据迁移、发布与回滚
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: 影响范围和验收
+      description: 包括 Web / 微信小程序 / 服务器 API / 数据 / 外部官方来源等
+      placeholder: |
+        正向用例：
+        负向用例：
+        回归用例：
+        真实发布验收：
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: 约束与官方来源
+      description: 赛事、微信、支付和第三方规则需要来源/版本/查询时间
+    validations:
+      required: false
+  - type: textarea
+    id: recovery
+    attributes:
+      label: 失效场景与回滚方式
+      description: 数据迁移须包括备份与恢复演练方案
+    validations:
+      required: false

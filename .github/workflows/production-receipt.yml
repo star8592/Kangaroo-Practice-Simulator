@@ -60,3 +60,8 @@ jobs:
           BASE_URL: https://socthink.cn
           EXPECTED_SHA: ${{ github.event.workflow_run.head_sha }}
         run: node scripts/smoke_exam_access_live.mjs
+
+      - name: Public competition and anonymous privacy smoke
+        env:
+          EXPECTED_SHA: ${{ github.event.workflow_run.head_sha }}
+        run: python3 scripts/smoke_production_public.py --base https://socthink.cn --sha "$EXPECTED_SHA"

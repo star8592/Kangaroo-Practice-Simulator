@@ -1,0 +1,105 @@
+{
+  "schemaVersion": 1,
+  "project": "Kangaroo-Practice-Simulator",
+  "baselineDate": "2026-10-10",
+  "controls": [
+    {
+      "id": "ENG-001",
+      "phase": "SCM",
+      "level": "block",
+      "check": "ci_workflows",
+      "description": "PR and main both pass four independent CI jobs"
+    },
+    {
+      "id": "ENG-002",
+      "phase": "Build",
+      "level": "block",
+      "check": "quality",
+      "description": "public gate enforces lint/types/contracts/build and policy check"
+    },
+    {
+      "id": "ENG-003",
+      "phase": "Identity",
+      "level": "block",
+      "check": "auth",
+      "description": "guest auth, exam access and replay tests"
+    },
+    {
+      "id": "ENG-004",
+      "phase": "Release",
+      "level": "block",
+      "check": "immutable",
+      "description": "CI verified SHA, candidate, atomic rollback, public receipt"
+    },
+    {
+      "id": "ENG-005",
+      "phase": "Miniapp",
+      "level": "block",
+      "check": "miniapp",
+      "description": "main SHA and DevTools/physical Android receipt before upload"
+    },
+    {
+      "id": "ENG-006",
+      "phase": "Security",
+      "level": "block",
+      "check": "security",
+      "description": "secrets ignored and dependency audit"
+    },
+    {
+      "id": "ENG-007",
+      "phase": "Sources",
+      "level": "block",
+      "check": "watcher",
+      "description": "admin-only official source review"
+    },
+    {
+      "id": "ENG-008",
+      "phase": "Engineering",
+      "level": "block",
+      "check": "governance",
+      "description": "PR template, risk contract and regressions"
+    },
+    {
+      "id": "ENG-009",
+      "phase": "Operations",
+      "level": "manual",
+      "check": "production_readiness",
+      "description": "live systemd/HTTPS/SHA/backup evidence"
+    },
+    {
+      "id": "ENG-010",
+      "phase": "DR",
+      "level": "manual",
+      "check": "restore_drill",
+      "description": "encrypted off-host backup and tested restore"
+    },
+    {
+      "id": "ENG-011",
+      "phase": "Reviews",
+      "level": "manual",
+      "check": "review_approval",
+      "description": "L2/L3 reviewer; GitHub approval count currently 0"
+    },
+    {
+      "id": "ENG-012",
+      "phase": "Emergency",
+      "level": "manual",
+      "check": "manual_deploy",
+      "description": "old emergency workflow with git hard reset needs retirement"
+    },
+    {
+      "id": "ENG-013",
+      "phase": "Observability",
+      "level": "manual",
+      "check": "incident_slo",
+      "description": "SLO/DORA/incident evidence"
+    },
+    {
+      "id": "ENG-014",
+      "phase": "Native",
+      "level": "manual",
+      "check": "wechat_acceptance",
+      "description": "same-SHA QA and official WeChat release"
+    }
+  ]
+}
