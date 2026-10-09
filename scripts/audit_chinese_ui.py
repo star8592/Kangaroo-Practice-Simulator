@@ -31,6 +31,10 @@ checks={
     'must':['全球数学赛事管家','世界赛事目录','按地区筛选赛事','WORLD_REGION_OPTIONS','WORLD_COMPETITIONS','CompetitionCompanion','查看赛事管家'],
     'must_not':['中国数学赛事管家'],
   },
+  'src/components/SourceReviewDashboard.tsx':{
+    'must':['赛事官方情报审核','待处理变更','首次采集基线','审核说明','已阅读，待独立核验','忽略本次页面变化'],
+    'must_not':['自动批准日期'],
+  },
   'src/components/ArithmeticDashboard.tsx':{
     'must':['智能计算训练','学生画像','这个年级要练到什么程度','gradeAria:"选择年级"','aria-label={ui.gradeAria}','个性化模型','ADAPTIVE CALCULATION','Four-dimensional skill profile','useSiteLanguage'],
     'must_not':['ADAPTIVE MENTAL MATH','STUDENT PROFILE','GRADE PROFILES','PERSONAL MODEL'],

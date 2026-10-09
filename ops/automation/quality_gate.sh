@@ -36,6 +36,7 @@ step "auto-deploy contract" bash ops/release/test_auto_deploy_contract.sh
 step "miniapp backend contract" npm run test:miniapp-contract
 step "miniapp web parity" npm run test:miniapp-parity
 step "verified competition intelligence" npm run test:competition-intelligence
+step "official source watch and review queue" npm run test:competition-source-watch
 step "public membership benefits catalog" npx tsx scripts/test_access_catalog.ts
 step "payment configuration safeguards (no real credentials)" node scripts/test_wechat_pay_readiness.mjs
 step "local CI deploy contract" bash ops/release/test_local_ci_deploy_contract.sh
