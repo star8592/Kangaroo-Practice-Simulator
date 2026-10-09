@@ -64,3 +64,7 @@ ops/engineering/controls.json 是机器可检查的控制目录；scripts/verify
 
 ## 异机加密备份（2026-10-10）
 在每日云端独立解密恢复验证基础上，本地 15TB 数据盘的 SSH 只读密文拉取与哈希回读流程详见 docs/engineering/OFFSITE_ENCRYPTED_BACKUP_20261010.md。**密码封存与跨机器解密恢复仍为 OPEN**，不能以密文复制成功冒充完整灾难恢复。
+
+
+## TPM 异机恢复凭证与隔离解密（2026-10-10）
+云端 GPG 备份口令在本地 TPM 的加密封装与无云端依赖恢复演练见 docs/engineering/TPM_OFFHOST_RECOVERY_20261010.md。TPM 恢复与离线纸质/实体介质备份是两个层次；未完成离线密钥封存和完整业务恢复前不得认证 RTO/RPO。

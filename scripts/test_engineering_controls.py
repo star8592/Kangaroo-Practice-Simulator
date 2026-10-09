@@ -37,6 +37,12 @@ scenarios = [
  ("offsite_timer","Persistent=true","offsite schedule"),
  ("offsite_install","not_clean_exact_main","clean main installation"),
  ("offsite_health","OFFSITE_RECOVERY_KEY_ESCROW=NOT_VERIFIED","accurate recovery boundary"),
+ ("tpm_seal","--with-key=tpm2","hardware-bound encryption for escrow"),
+ ("tpm_seal","StrictHostKeyChecking=yes","host identity for secret transport"),
+ ("tpm_restore","tmpfs_required","plaintext never extracted to disk"),
+ ("tpm_restore","verify_offsite_replica.py","hash before decrypt"),
+ ("quality","scripts/test_tpm_offsite_recovery.py","hardware DR fixture"),
+
 
 
 ]
