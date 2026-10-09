@@ -35,3 +35,11 @@
 - 中国数学会：https://www.cms.org.cn/Home/comp/comp.html
 - 华杯赛历史暂停报道：https://www.xinhuanet.com/politics/2018-03/03/c_1122480371.htm
 - 希望杯国际活动：https://www.hopemath.world/ （不代表中国内地报名开放）
+
+## 显眼入口与工程防线（2026-10-09）
+
+- Web 竞赛大厅首屏设“中国数学赛事管家”直接入口，跳转到同一页面的真实目录区域（#china-math-companion）。
+- 小程序“竞赛实战”增加“国内数学赛事（华杯·希望杯·走美杯）”入口，直达“我的比赛”中的国内赛事区域。
+- 桌面、移动两种浏览器自动化测试覆盖入口可见性、具体赛事切换、来源与备赛步骤展示。
+- API 回归测试确认游客只能读取公共资料、无法取得其他学生的完成进度，且游客修改完成状态收到 HTTP 401。
+- Web TypeScript + ESLint + Next Build、小程序 TypeScript + Taro Build 是发布门禁；本地构建不代表生产已上线。

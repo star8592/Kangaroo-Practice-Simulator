@@ -15,7 +15,7 @@ export default function ChinaCompetitionDirectory({ lang, today }: { lang: Compa
   const companion = CHINA_MATH_COMPANIONS.find(c => c.id === event.companionId);
   const zh = lang === "zh";
 
-  return <section aria-label={zh ? "中国数学竞赛管家" : "China mathematics competitions"} style={{ marginTop: 40, marginBottom: 42 }}>
+  return <section id="china-math-companion" aria-label={zh ? "中国数学竞赛管家" : "China mathematics competitions"} style={{ marginTop: 40, marginBottom: 42 }}>
     <div className="section-heading">
       <div>
         <span className="eyebrow">CHINA MATHEMATICS · COMPETITION COMPANION</span>

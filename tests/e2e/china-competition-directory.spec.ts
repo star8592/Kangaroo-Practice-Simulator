@@ -2,6 +2,9 @@ import { test, expect } from "@playwright/test";
 
 test("China competition catalogue opens real advisory timelines", async ({ page }) => {
   await page.goto("/competitions");
+  await expect(page.getByRole("link", { name: "中国数学赛事管家 ↓" })).toBeVisible();
+  await page.getByRole("link", { name: "中国数学赛事管家 ↓" }).click();
+  await expect(page).toHaveURL(/#china-math-companion$/);
   const directory = page.getByRole("region", { name: "中国数学竞赛管家" });
   await expect(directory).toBeVisible();
   await expect(directory.getByText("华罗庚金杯少年数学邀请赛（华杯赛）").first()).toBeVisible();
