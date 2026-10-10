@@ -83,10 +83,12 @@ export default function ExamPage(){
   if(!bundle)return <View className='page'><View className='card'>正在载入试卷与恢复作答记录…</View></View>
   const q=bundle.questions[idx]
   const choose=(value:string)=>{
+    if(busy||submitting.current)return
     const next={...answers,[q.id]:value},ev={type:'answer_selected',questionId:q.id,value,at:Date.now()}
     const nextEvents=[...events,ev];setAnswers(next);setEvents(nextEvents);persist({answers:next,events:nextEvents})
   }
   const move=(n:number)=>{
+    if(busy||submitting.current)return
     const next=Math.max(0,Math.min(bundle.questions.length-1,n));if(next===idx)return
     const nextEvents=[...events,{type:'question_leave',questionId:q.id,at:Date.now()},{type:'question_enter',questionId:bundle.questions[next].id,at:Date.now()}]
     setEvents(nextEvents);setIdx(next);persist({idx:next,events:nextEvents})
