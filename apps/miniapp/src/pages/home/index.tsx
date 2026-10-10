@@ -44,7 +44,8 @@ export default function HomePage(){
       <Text className='big'>{hasHistory?'继续今天的数学训练':'从今天的计算训练开始'}</Text>
       <View><Text>{hasHistory?'保持计算手感，也可以直接进入竞赛实战。':'无需注册或填写资料，直接开始计算，做完就能看到成绩和讲解。'}</Text></View>
       <Button className='primary hero-primary' onClick={openArithmetic}>{hasHistory?'继续计算训练':'开始计算训练'}</Button>
-      <Button className='hero-secondary' onClick={()=>Taro.switchTab({url:'/pages/competitions/index'})}>进入竞赛实战</Button>
+      <Button className='hero-secondary' onClick={()=>Taro.switchTab({url:'/pages/competitions/index'})}>参加竞赛模拟</Button>
+      <Button className='hero-secondary' onClick={()=>Taro.navigateTo({url:'/pages/events/index'})}>探索全球数学赛事</Button>
     </View>
 
     {hasHistory&&<View className='grid2'>
