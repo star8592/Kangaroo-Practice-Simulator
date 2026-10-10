@@ -5,6 +5,7 @@ import json
 import os
 import shutil
 import subprocess
+import sys
 import tempfile
 from datetime import datetime,timezone
 from pathlib import Path
@@ -13,7 +14,8 @@ ROOT=Path(__file__).resolve().parents[1]
 SEAL=ROOT/"ops/backup/seal_offsite_recovery_tpm.sh"
 RESTORE=ROOT/"ops/backup/offsite_restore_drill_tpm.sh"
 INSTALL=ROOT/"ops/backup/install_offsite_pull.sh"
-assert all(p.is_file() for p in (SEAL,RESTORE,INSTALL))
+PREFLIGHT=ROOT/"ops/backup/tpm_hardware_preflight.py"
+assert all(p.is_file() for p in (SEAL,RESTORE,INSTALL,PREFLIGHT))
 seal=SEAL.read_text()
 restore=RESTORE.read_text()
 installer=INSTALL.read_text()
@@ -30,6 +32,7 @@ for token in ("seal_offsite_recovery_tpm.sh","offsite_restore_drill_tpm.sh","ver
 assert "ssh " not in restore and "curl " not in restore, "offline drill must not depend on cloud"
 for p in (SEAL,RESTORE,INSTALL):
     subprocess.run(["bash","-n",str(p)],check=True)
+subprocess.run([sys.executable,str(ROOT/"scripts/test_tpm_hardware_preflight.py")],check=True)
 
 if not shutil.which("systemd-analyze") or not shutil.which("systemd-creds"):
     print("TPM_OFFSITE_CONTRACT=PASS TPM_REAL_FIXTURE=SKIPPED_NO_TPM_TOOLING")
@@ -41,6 +44,14 @@ probe=subprocess.run(["systemd-analyze","has-tpm2"],capture_output=True,text=Tru
 if probe.returncode or probe.stdout.strip().splitlines()[0]!="yes":
     print("TPM_OFFSITE_CONTRACT=PASS TPM_REAL_FIXTURE=SKIPPED_NO_TPM")
     raise SystemExit(0)
+
+preflight=subprocess.run([sys.executable,str(PREFLIGHT),"--probe"],
+                         capture_output=True,text=True,timeout=120)
+if preflight.returncode != 0:
+    # Intentionally return nonzero when explicitly authorized hardware proof is blocked.
+    # A sandbox that sees the TPM node but cannot open it is NOT a TPM acceptance PASS.
+    print("TPM_OFFSITE_CONTRACT=PASS TPM_REAL_FIXTURE=BLOCKED reason=hardware_preflight_failed")
+    raise SystemExit(2)
 
 name="socthink-production-backup-recovery-20261010"
 archive_name="socthink-20261010T042200Z-"+("f"*12)+"-552.tar.zst.gpg"
