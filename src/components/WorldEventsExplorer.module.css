@@ -25,3 +25,8 @@
 .empty button{border:0;background:#1c442e;color:white;cursor:pointer}
 .disclaimer{margin-top:24px;color:#647468;font-size:12px;line-height:1.8}
 @media(max-width:760px){.shell{width:calc(100% - 28px);padding:22px 0 64px}.hero{padding:24px;border-radius:20px}.filters{grid-template-columns:1fr;gap:12px}.grid{grid-template-columns:1fr}.card{padding:20px}}
+
+/* iOS Safari focuses/zooms 14px fields. Keep a readable 16px control size on touch devices. */
+@media (pointer:coarse){
+ .filters input,.filters select{font-size:16px}
+}
