@@ -40,6 +40,8 @@ for(const token of [
   "id='exam-answer-sheet'",
   'bundle.questions.map((item:any,n:number)',
   'onClick={()=>move(n)}',
+  "selector:'#exam-question-card'",
+  "id='exam-question-card'",
   'onClick={submit}',
   'progress.answered',
   'progress.blank',
