@@ -58,7 +58,7 @@ export default function WorldEventsExplorer({events}: {events: WorldCompetition[
       {lang === "zh" ? `找到 ${filtered.length} 项赛事 · 参考学段不代表当届报名资格` : `${filtered.length} competitions · Stage ranges are informational, not eligibility confirmation`}
     </div>
     <section className={styles.grid} aria-label={lang === "zh" ? "赛事列表" : "Competition list"}>
-      {filtered.map(event => <article key={event.id} className={styles.card}>
+      {filtered.map(event => <article key={event.id} id={`event-${event.id}`} className={styles.card}>
         <div className={styles.meta}>
           <span>{worldRegionName(event.region, lang)}</span>
           <span>{lang === "zh" ? "当届报名及日期须核验" : "Verify current entry and dates"}</span>
