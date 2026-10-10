@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { Button, Text, View } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import { api, authStore, ensureWechatSession } from '../../services/api'
-import { TRAINING_INTENT_KEY, makeTrainingIntent } from '../../services/competition-training-intent'
+import { TRAINING_INTENT_KEY, availableTrainingEventIds, makeTrainingIntent, type TrainingEventId } from '../../services/competition-training-intent'
 
 type Notice={id:string;eventId:string;titleZh:string;date:string;daysUntil:number;detailZh:string;sourceUrl:string}
 type Intelligence={region:string|null;notices:Notice[];next:Notice[];followedCount:number;reviewedEditionCount:number}
@@ -37,6 +37,19 @@ export default function EventsPage(){
   const [intel,setIntel]=useState<Intelligence|null>(null)
   const [intelError,setIntelError]=useState('')
   const [intelBusy,setIntelBusy]=useState(false)
+  const [readyTraining,setReadyTraining]=useState<TrainingEventId[]>([])
+  const [trainingLoad,setTrainingLoad]=useState<'loading'|'ready'|'error'>('loading')
+  const loadTraining=async()=>{
+    setTrainingLoad('loading')
+    try{
+      const data=await api<{exams:unknown}>('/api/miniapp/exams')
+      setReadyTraining(availableTrainingEventIds(data.exams))
+      setTrainingLoad('ready')
+    }catch{
+      setReadyTraining([])
+      setTrainingLoad('error')
+    }
+  }
   const loadIntelligence=async()=>{
     try {
       const result=await api<Intelligence>('/api/competition-intelligence')
@@ -54,7 +67,7 @@ export default function EventsPage(){
       setError(e instanceof Error?e.message:'赛事暂时无法载入')
     }finally{setLoading(false)}
   }
-  useEffect(()=>{void load();void loadIntelligence()},[])
+  useEffect(()=>{void load();void loadIntelligence();void loadTraining()},[])
   useEffect(()=>{
     if(rows.length&&Taro.getCurrentInstance().router?.params?.competition){
       void Taro.pageScrollTo({selector:'#world-detail',duration:150}).catch(()=>{})
@@ -204,11 +217,17 @@ export default function EventsPage(){
         <View>{chosen.companion.registrationVerified===false?'当前赛区报名信息待核验，以下为本站备赛清单。':'按当届已核验通知执行；跨赛区安排不可直接套用。'}</View>
         <View className='muted'>{chosen.event.sourceLabelZh}</View>
         <Button className='secondary' onClick={()=>void Taro.setClipboardData({data:chosen.event.sourceUrl})}>复制赛事来源网址</Button>
-        {chosen.event.trainingId&&<Button className='primary'
+        {chosen.event.trainingId&&readyTraining.includes(chosen.event.trainingId as TrainingEventId)&&<Button className='primary'
           onClick={()=>void openTraining(chosen.event.trainingId)}>
           进入 {chosen.event.nameZh} 模拟训练
         </Button>}
-        {!chosen.event.trainingId&&<View className='muted'>本站暂未收录该赛事的可训练试卷，仍可按清单备赛并查看官方来源。</View>}
+        {trainingLoad==='loading'&&chosen.event.trainingId&&<View className='muted'>正在核对当前可用的模拟试卷…</View>}
+        {trainingLoad==='error'&&chosen.event.trainingId&&<View>
+          <View className='muted'>暂时无法核对试卷目录，备赛清单仍可使用。</View>
+          <Button className='secondary' onClick={()=>void loadTraining()}>重试读取试卷</Button>
+        </View>}
+        {(!chosen.event.trainingId||(trainingLoad==='ready'&&!readyTraining.includes(chosen.event.trainingId as TrainingEventId)))&&
+          <View className='muted'>本站目前没有可在小程序直接作答的该赛事试卷，仍可按清单备赛并查看官方来源。</View>}
       </View>
       {chosen.companion.tasks.map((t,index)=>{
         const done=(chosen.progress?.completedTaskIds||[]).includes(t.id)
