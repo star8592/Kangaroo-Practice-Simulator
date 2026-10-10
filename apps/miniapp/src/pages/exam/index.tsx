@@ -92,6 +92,7 @@ export default function ExamPage(){
     const next=Math.max(0,Math.min(bundle.questions.length-1,n));if(next===idx)return
     const nextEvents=[...events,{type:'question_leave',questionId:q.id,at:Date.now()},{type:'question_enter',questionId:bundle.questions[next].id,at:Date.now()}]
     setEvents(nextEvents);setIdx(next);persist({idx:next,events:nextEvents})
+    Taro.nextTick(()=>{void Taro.pageScrollTo({selector:'#exam-question-card',duration:150}).catch(()=>{})})
   }
   const submit=async()=>{
     if(submitting.current)return
@@ -131,7 +132,7 @@ export default function ExamPage(){
       <Button className={language==='zh'?'competition-tab active':'competition-tab'} onClick={()=>setLanguage('zh')}>中文</Button>
       <Button className={language==='en'?'competition-tab active':'competition-tab'} onClick={()=>setLanguage('en')}>English</Button>
     </View>
-    <View className='card'>
+    <View id='exam-question-card' className='card'>
       <View className='muted'>第 {q.questionNo} 题 · {q.points} 分</View>
       <View className='card-title exam-stem'>{display.stem}</View>
       {display.assetUrl&&<Image mode='widthFix' style='width:100%' src={display.assetUrl.startsWith('/')?'https://socthink.cn'+display.assetUrl:display.assetUrl}/>}
