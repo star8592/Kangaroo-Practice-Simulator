@@ -12,7 +12,7 @@ export default defineAppConfig({
   window: {
     navigationBarBackgroundColor: '#ffffff',
     navigationBarTextStyle: 'black',
-    navigationBarTitleText: '数学训练与竞赛',
+    navigationBarTitleText: 'SOC THINK 数学成长',
     backgroundColor: '#f5f7fb'
   },
   tabBar: {
