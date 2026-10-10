@@ -65,7 +65,7 @@ export default function PublicHome(){
 
   <section className="home-competition-showcase">
    <div className="section-heading"><div><span className="eyebrow">COMPETITION HUB</span><h1>{lang==="zh"?"全球数学赛事，一站式管理":"Chinese and international competitions, on equal footing"}</h1><p>{lang==="zh"?"中国与世界其他地区的数学赛事平等呈现；从寻找赛事、核对官方来源到备赛安排，统一管理；当届报名信息必须核验。":"Each competition is organized from discovery and past papers through mocks and exam-day preparation."}</p></div></div>
-   <div className="home-competition-grid">{competitions.map(c=> <Link key={c.id} className="home-competition-card" href={"/events#event-"+encodeURIComponent(c.id)}><div className="competition-brand"><div className="competition-brand-wordmark"><b>{worldRegionName(c.region,lang)}</b><span>WORLD MATH</span></div></div><strong>{lang==="zh"?c.nameZh:c.nameEn}</strong><span>{lang==="zh"?c.summaryZh:c.summaryEn}</span><em>{lang==="zh"?"查看赛事管家 →":"Open companion →"}</em></Link>)}</div>
+   <div className="home-competition-grid">{competitions.map(c=> <Link key={c.id} className="home-competition-card" href={"/competitions?event="+encodeURIComponent(c.id)}><div className="competition-brand"><div className="competition-brand-wordmark"><b>{worldRegionName(c.region,lang)}</b><span>WORLD MATH</span></div></div><strong>{lang==="zh"?c.nameZh:c.nameEn}</strong><span>{lang==="zh"?c.summaryZh:c.summaryEn}</span><em>{lang==="zh"?"查看赛事管家 →":"Open companion →"}</em></Link>)}</div>
   </section>
 
   <section className="home-modes">
