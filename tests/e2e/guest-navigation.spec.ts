@@ -67,7 +67,7 @@ test.afterAll(()=>{
 
 test("homepage competition CTA opens competition centre",async({page})=>{
   await page.goto("/");
-  await page.getByRole("link",{name:/探索全球数学赛事|Explore competitions/}).first().click();
+  await page.getByRole("link",{name:/参加竞赛模拟|Try mock exams/}).first().click();
   await expect(page).toHaveURL(/\/competitions(?:\?|$)/);
   await expect(page.getByRole("region",{name:/全球数学赛事管家|World math competition companion/})).toBeVisible();
 });
@@ -83,7 +83,7 @@ test("anonymous and arithmetic guest cannot enter full exam",async({page,context
   await expect(page.locator('input[type="password"]')).toBeVisible();
   expect((await context.cookies()).some(c=>c.name==="kangaroo_session")).toBe(false);
   await page.goto("/");
-  await page.getByRole("link",{name:/开始能力诊断|Start a diagnostic/}).first().click();
+  await page.getByRole("link",{name:/开始计算训练|Start math practice/}).first().click();
   await expect(page).toHaveURL(/\/arithmetic(?:\?|$)/,{timeout:15000});
   // The URL can settle before the redirected response cookie has been committed.\n  // Wait for the browser session itself, not only navigation completion.\n  await expect.poll(async()=> (await context.cookies()).some(c=>c.name==="kangaroo_session"),{timeout:10000}).toBe(true);
   await page.goto(protectedExam);

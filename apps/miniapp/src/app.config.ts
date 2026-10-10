@@ -3,16 +3,16 @@ export default defineAppConfig({
     'pages/home/index',
     'pages/arithmetic/index',
     'pages/competitions/index',
+    'pages/events/index',
     'pages/profile/index',
     'pages/login/index',
-    'pages/events/index',
     'pages/exam/index',
     'pages/review/index'
   ],
   window: {
     navigationBarBackgroundColor: '#ffffff',
     navigationBarTextStyle: 'black',
-    navigationBarTitleText: '数学训练与竞赛',
+    navigationBarTitleText: 'SOC THINK 数学成长',
     backgroundColor: '#f5f7fb'
   },
   tabBar: {
@@ -22,7 +22,8 @@ export default defineAppConfig({
     list: [
       { pagePath: 'pages/home/index', text: '首页' },
       { pagePath: 'pages/arithmetic/index', text: '计算' },
-      { pagePath: 'pages/competitions/index', text: '竞赛' },
+      { pagePath: 'pages/competitions/index', text: '模考' },
+      { pagePath: 'pages/events/index', text: '赛事' },
       { pagePath: 'pages/profile/index', text: '我的' }
     ]
   }

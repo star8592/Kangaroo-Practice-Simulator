@@ -232,6 +232,13 @@ assert p.get("ok") is True,p
 assert p.get("deployedSha")==e,(p,e)
 assert p.get("gitSha")==e,(p,e)
 PY
+# Compare the live, immutable production exam inventory with the candidate
+# before switching the public service. Reject any lost papers, questions,
+# training-ready profiles, or named competition inventory.
+python3 "$BUILD_SRC/scripts/guard_release_inventory.py" \
+  --baseline-url "$LOCAL_BASE/api/release" \
+  --candidate-url "http://127.0.0.1:${CANDIDATE_PORT}/api/release" \
+  --expected-sha "$TARGET_SHA"
 cleanup_candidate
 log "AUTO_DEPLOY_CANDIDATE=PASS sha=$TARGET_SHA"
 

@@ -53,7 +53,10 @@ const expectedExams = listTrainingExamProfiles()
     timingSections: x.timingSections || [],
     miniappReady: !(x.timingSections || []).length,
   }))
-assert.deepEqual(examPayload.exams, expectedExams, 'competition catalogue parity failed')
+// HTTP JSON omits undefined values, e.g. historical papers without a year.
+// Compare the actual wire representation instead of an in-memory JS object.
+const expectedWireExams = JSON.parse(JSON.stringify(expectedExams))
+assert.deepEqual(examPayload.exams, expectedWireExams, 'competition catalogue parity failed')
 
 const companionResponse = await getMiniappCompanions(request('/api/miniapp/companions'))
 assert.equal(companionResponse.status, 200)
@@ -99,10 +102,10 @@ for (const needle of [
   'analytics?.arithmetic?.plan?.summaryZh',
   "examAttempts?accuracy+'%':'—'",
 ]) assert.ok(surfaces.home.includes(needle), `home is not rendering shared analytics field: ${needle}`)
-for (const needle of ['/api/miniapp/world-competitions','x.event.nameZh','/api/miniapp/exams','ex.name','ex.year','ex.grades','ex.questionCount','ex.miniappReady']) {
+for (const needle of ['/api/miniapp/exams','ex.name','ex.year','ex.grades','ex.questionCount','ex.miniappReady']) {
   assert.ok(surfaces.competitions.includes(needle), `competition UI mapping missing: ${needle}`)
 }
-for (const needle of ['/api/miniapp/world-competitions','/api/competition-follow','/api/competition-intelligence','我的关注','下一步行动','赛事情报与截止提醒','following','nextFocus','chosen.event.nameZh','t.titleZh','t.detailZh','t.checklistZh']) {
+for (const needle of ['/api/miniapp/world-competitions','x.event.nameZh','/api/competition-follow','/api/competition-intelligence','我的关注','下一步行动','赛事情报与截止提醒','following','nextFocus','chosen.event.nameZh','t.titleZh','t.detailZh','t.checklistZh']) {
   assert.ok(surfaces.events.includes(needle), `event UI mapping missing: ${needle}`)
 }
 for (const needle of ['/api/miniapp/review','q.stem','assetUrlZh','correctAnswer','solution']) {

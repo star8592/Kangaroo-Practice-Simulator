@@ -3,6 +3,7 @@ import { Button, Text, View } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import { api, authStore, ensureWechatSession } from '../../services/api'
 import { canStartFullExam, makeExamLoginPath, makeExamPath } from '../../services/exam-access'
+import { openWorldEvent } from '../../services/world-event-navigation'
 
 export default function HomePage(){
   const [analytics,setAnalytics]=useState<any>(null)
@@ -44,7 +45,8 @@ export default function HomePage(){
       <Text className='big'>{hasHistory?'继续今天的数学训练':'从今天的计算训练开始'}</Text>
       <View><Text>{hasHistory?'保持计算手感，也可以直接进入竞赛实战。':'无需注册或填写资料，直接开始计算，做完就能看到成绩和讲解。'}</Text></View>
       <Button className='primary hero-primary' onClick={openArithmetic}>{hasHistory?'继续计算训练':'开始计算训练'}</Button>
-      <Button className='hero-secondary' onClick={()=>Taro.switchTab({url:'/pages/competitions/index'})}>进入竞赛实战</Button>
+      <Button className='hero-secondary' onClick={()=>Taro.switchTab({url:'/pages/competitions/index'})}>参加竞赛模拟</Button>
+      <Button className='hero-secondary' onClick={()=>void openWorldEvent().catch(()=>Taro.showToast({title:'赛事暂时无法打开',icon:'none'}))}>探索全球数学赛事</Button>
     </View>
 
     {hasHistory&&<View className='grid2'>
@@ -81,6 +83,6 @@ export default function HomePage(){
       {recommendedExams.map((ex:any)=><View key={ex.id} style='margin-top:16rpx'><View>{ex.name}</View><View className='muted'>{ex.country||''} · {ex.year||''} · {ex.questionCount} 题</View><Button className='secondary' onClick={()=>void openRecommendedExam(String(ex.id))}>开始这套</Button></View>)}
     </View>}
 
-    <View className='card'><View className='card-title'>我的比赛</View><View className='muted'>倒计时 · 模考 · 考前清单 · 成绩</View><Button className='secondary' onClick={()=>Taro.navigateTo({url:'/pages/events/index'})}>进入赛事服务</Button></View>
+    <View className='card'><View className='card-title'>我的比赛</View><View className='muted'>倒计时 · 模考 · 考前清单 · 成绩</View><Button className='secondary' onClick={()=>void openWorldEvent().catch(()=>Taro.showToast({title:'赛事暂时无法打开',icon:'none'}))}>进入赛事服务</Button></View>
   </View>
 }

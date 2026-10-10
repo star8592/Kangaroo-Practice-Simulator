@@ -11,9 +11,9 @@ import styles from "./SiteHeader.module.css";
 
 const NAV_ITEMS = [
   { href: "/arithmetic", zh: "计算训练", en: "Practice" },
-  { href: "/competitions", zh: "竞赛中心", en: "Competitions" },
-  { href: "/review", zh: "错题复盘", en: "Review" },
-  { href: "/verification", zh: "验证中心", en: "Verification" },
+  { href: "/competitions", zh: "竞赛模拟", en: "Mock exams" },
+  { href: "/events", zh: "全球赛事", en: "Competitions" },
+  { href: "/student", zh: "成长档案", en: "My progress" },
 ] as const;
 
 function MenuIcon({ open }: { open: boolean }) {
@@ -43,7 +43,7 @@ export default function SiteHeader() {
           <span className={styles.brandMark}>{SITE_BRAND.mark}</span>
           <span className={styles.brandCopy}>
             <strong>{lang === "zh" ? SITE_BRAND.nameZh : SITE_BRAND.nameEn}</strong>
-            <small>{lang === "zh" ? "Math Competition Lab" : "K12 Math Growth Platform"}</small>
+            <small>{lang === "zh" ? "全球数学竞赛与成长" : "Global Math Growth"}</small>
           </span>
         </Link>
 

@@ -38,6 +38,7 @@ step "miniapp backend contract" npm run test:miniapp-contract
 step "miniapp web parity" npm run test:miniapp-parity
 step "miniapp global event to exam deep-link contract" npx tsx scripts/test_miniapp_event_training.ts
 step "miniapp bilingual exam answer sheet and submission UX" npx tsx scripts/test_miniapp_exam_ux.ts
+step "worldwide mathematics competition source and identity contract" npx tsx scripts/test_world_catalog_integrity.ts
 step "verified competition intelligence" npm run test:competition-intelligence
 step "official source watch and review queue" npm run test:competition-source-watch
 step "public membership benefits catalog" npx tsx scripts/test_access_catalog.ts
@@ -56,6 +57,7 @@ step "encrypted production backup and isolated restore negative tests" python3 s
 step "offhost encrypted backup replica mutation and transport contract" python3 scripts/test_offsite_replica.py
 step "TPM offline disaster recovery negative tests" python3 scripts/test_tpm_offsite_recovery.py
 step "public release acceptance negative tests" python3 scripts/test_production_public_smoke.py
+step "real-exam inventory preservation mutation tests" python3 scripts/test_release_inventory_guard.py
 step "wechat auth regression" npm run test:wechat-auth
 step "miniapp auth install contract" bash ops/release/test_wechat_miniapp_auth_contract.sh
 step "repository hygiene" python3 scripts/audit_repository_hygiene.py
