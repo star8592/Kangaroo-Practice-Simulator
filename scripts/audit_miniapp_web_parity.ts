@@ -53,7 +53,10 @@ const expectedExams = listTrainingExamProfiles()
     timingSections: x.timingSections || [],
     miniappReady: !(x.timingSections || []).length,
   }))
-assert.deepEqual(examPayload.exams, expectedExams, 'competition catalogue parity failed')
+// HTTP JSON omits undefined values, e.g. historical papers without a year.
+// Compare the actual wire representation instead of an in-memory JS object.
+const expectedWireExams = JSON.parse(JSON.stringify(expectedExams))
+assert.deepEqual(examPayload.exams, expectedWireExams, 'competition catalogue parity failed')
 
 const companionResponse = await getMiniappCompanions(request('/api/miniapp/companions'))
 assert.equal(companionResponse.status, 200)
