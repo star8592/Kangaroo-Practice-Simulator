@@ -19,6 +19,9 @@ async function expectViewportFits(page:Page,route:string){
     const root=document.documentElement;
     return {client:root.clientWidth,scroll:Math.max(root.scrollWidth,document.body.scrollWidth)};
   });
+  const viewport=page.viewportSize();
+  expect(viewport,route+" viewport unavailable").not.toBeNull();
+  expect(m.client,route+" ignored device-width viewport").toBeLessThanOrEqual((viewport?.width??0)+2);
   expect(m.scroll,route+" overflows viewport "+JSON.stringify(m)).toBeLessThanOrEqual(m.client+2);
 }
 
@@ -32,6 +35,9 @@ test("home navigation works with touch and portrait, landscape, split view",asyn
   await expectViewportFits(page,"/");
   const toggle=page.getByRole("button",{name:"打开导航菜单"});
   if(await toggle.isVisible()){
+    const box=await toggle.boundingBox();
+    expect(box?.width??0,"Safari tablet menu hit target width").toBeGreaterThanOrEqual(44);
+    expect(box?.height??0,"Safari tablet menu hit target height").toBeGreaterThanOrEqual(44);
     await toggle.tap();
     await expect(toggle).toHaveAttribute("aria-expanded","true");
     await expect(page.getByRole("navigation",{name:"移动端导航"}).getByRole("link",{name:"全球赛事"})).toBeVisible();
@@ -54,7 +60,10 @@ test("event filters remain usable without horizontal scrolling",async({page})=>{
   await page.getByRole("combobox",{name:"地区"}).selectOption("CN");
   await expect(cards.first()).toBeVisible();
   expect(await cards.count()).toBeLessThan(all);
-  await page.getByRole("searchbox",{name:"搜索赛事"}).fill("华罗庚");
+  const search=page.getByRole("searchbox",{name:"搜索赛事"});
+  const fontSize=await search.evaluate(el=>parseFloat(getComputedStyle(el).fontSize));
+  expect(fontSize,"iPadOS Safari form focus zooms for font sizes below 16px").toBeGreaterThanOrEqual(16);
+  await search.fill("华罗庚");
   await expect(cards).toHaveCount(1);
   await expectViewportFits(page,"/events filtered");
   await page.getByRole("searchbox",{name:"搜索赛事"}).fill("xxxxxxxx-unknown-competition");
