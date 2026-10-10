@@ -11,6 +11,7 @@ const mock=source('apps/miniapp/src/pages/competitions/index.tsx')
 const events=source('apps/miniapp/src/pages/events/index.tsx')
 const nav=source('apps/miniapp/src/services/world-event-navigation.ts')
 const training=source('apps/miniapp/src/pages/competitions/index.tsx')
+const devtools=source('scripts/miniapp_devtools_e2e.mjs')
 
 for(const id of ['huabei','zoumei','xiwang','cmo','cgmo','kangaroo','australian-amc','maa-amc','cemc','ukmt']){
   assert.equal(safeWorldEventId(id),id)
@@ -45,5 +46,6 @@ assert.ok(events.includes("setRegion('all');setStage('all')"),'event selection m
 assert.ok(events.includes("rows.some(x=>x.event.id===focusEventId)"),'event selection must use canonical API catalog')
 assert.ok(training.includes('readTrainingIntent(pending)'),'reverse route to mock tabs must still work')
 assert.ok(events.includes('makeTrainingIntent(trainingId)'),'event-to-mock must retain existing reliable bridge')
+assert.ok(devtools.includes("'homepage-to-world-events-tab-real-tap'"),'real WeChat DevTools test must cover world events entry')
 
 console.log('MINIAPP_FIVE_TAB_NAVIGATION_PASS tabs=5 event_intent=ttl+validated+one_shot backward_intent=PASS')
