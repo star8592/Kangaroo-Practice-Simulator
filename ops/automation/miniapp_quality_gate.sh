@@ -14,6 +14,7 @@ cd "$APP"
 npm ci
 npm run typecheck
 npm run build:weapp
+node "$ROOT/scripts/verify_miniapp_tab_artifact.mjs"
 test -f dist/app.json
 for page in home arithmetic competitions profile login events exam review; do
   test -f "dist/pages/$page/index.js"
