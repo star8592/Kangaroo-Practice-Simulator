@@ -38,6 +38,7 @@ step "miniapp backend contract" npm run test:miniapp-contract
 step "miniapp web parity" npm run test:miniapp-parity
 step "miniapp global event to exam deep-link contract" npx tsx scripts/test_miniapp_event_training.ts
 step "miniapp bilingual exam answer sheet and submission UX" npx tsx scripts/test_miniapp_exam_ux.ts
+step "worldwide mathematics competition source and identity contract" npx tsx scripts/test_world_catalog_integrity.ts
 step "verified competition intelligence" npm run test:competition-intelligence
 step "official source watch and review queue" npm run test:competition-source-watch
 step "public membership benefits catalog" npx tsx scripts/test_access_catalog.ts
