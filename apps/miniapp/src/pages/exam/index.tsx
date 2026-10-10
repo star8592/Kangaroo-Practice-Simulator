@@ -3,6 +3,7 @@ import { Button, Image, Input, Text, View } from '@tarojs/components'
 import Taro, { useLoad } from '@tarojs/taro'
 import { api, authStore, ensureWechatSession } from '../../services/api'
 import { canStartFullExam, makeExamLoginPath, parseRequestedExam } from '../../services/exam-access'
+import { examAnswerProgress, localizedExamQuestion, type ExamLanguage } from '../../services/exam-view'
 
 type Draft={examId:string;sessionId:string;userId:string;idx:number;answers:Record<string,string>;events:any[];savedAt:number}
 const key=(id:string)=>`socthink_exam_draft_v2:${id}`
@@ -23,6 +24,7 @@ export default function ExamPage(){
   const [busy,setBusy]=useState(false)
   const [error,setError]=useState('')
   const [requiresLogin,setRequiresLogin]=useState(false)
+  const [language,setLanguage]=useState<ExamLanguage>('zh')
   const current=useRef<Draft|null>(null)
   const submitting=useRef(false)
   const persist=(patch:Partial<Draft>)=>{
@@ -81,13 +83,16 @@ export default function ExamPage(){
   if(!bundle)return <View className='page'><View className='card'>正在载入试卷与恢复作答记录…</View></View>
   const q=bundle.questions[idx]
   const choose=(value:string)=>{
+    if(busy||submitting.current)return
     const next={...answers,[q.id]:value},ev={type:'answer_selected',questionId:q.id,value,at:Date.now()}
     const nextEvents=[...events,ev];setAnswers(next);setEvents(nextEvents);persist({answers:next,events:nextEvents})
   }
   const move=(n:number)=>{
+    if(busy||submitting.current)return
     const next=Math.max(0,Math.min(bundle.questions.length-1,n));if(next===idx)return
     const nextEvents=[...events,{type:'question_leave',questionId:q.id,at:Date.now()},{type:'question_enter',questionId:bundle.questions[next].id,at:Date.now()}]
     setEvents(nextEvents);setIdx(next);persist({idx:next,events:nextEvents})
+    Taro.nextTick(()=>{void Taro.pageScrollTo({selector:'#exam-question-card',duration:150}).catch(()=>{})})
   }
   const submit=async()=>{
     if(submitting.current)return
@@ -113,12 +118,49 @@ export default function ExamPage(){
       setBusy(false);submitting.current=false
     }
   }
-  const asset=q.assetUrlZh||q.assetUrl
+  const display=localizedExamQuestion(q,language)
+  const progress=examAnswerProgress(bundle.questions,answers)
+  const questionCount=bundle.questions.length
   return <View className='page'>
-    <View className='row'><Text>{bundle.profile.nameZh||bundle.profile.name}</Text><Text>{idx+1}/{bundle.questions.length}</Text></View>
-    <View className='progress'><View style={{width:`${((idx+1)/bundle.questions.length)*100}%`}}/></View>
-    <View className='card'><View className='muted'>第 {q.questionNo} 题 · {q.points} 分</View><View className='card-title' style='margin-top:20rpx'>{q.stem}</View>{asset&&<Image mode='widthFix' style='width:100%' src={asset.startsWith('/')?'https://socthink.cn'+asset:asset}/>}
-    {(q.choices||[]).length?q.choices.map((c:any)=><View key={c.key} className={`choice ${answers[q.id]===c.key?'selected':''}`} onClick={()=>choose(c.key)}><Text>{c.key}. {c.label}</Text></View>):<Input className='input' value={answers[q.id]||''} placeholder='输入答案' onInput={e=>choose(e.detail.value)}/>}</View>
-    <View className='grid2'><Button className='secondary' disabled={idx===0} onClick={()=>move(idx-1)}>上一题</Button>{idx<bundle.questions.length-1?<Button className='primary' onClick={()=>move(idx+1)}>下一题</Button>:<Button className='primary' loading={busy} disabled={busy} onClick={submit}>交卷</Button>}</View>
+    <View className='row'><Text>{bundle.profile.nameZh||bundle.profile.name}</Text><Text>{idx+1}/{questionCount}</Text></View>
+    <View className='progress'><View style={{width:`${((idx+1)/questionCount)*100}%`}}/></View>
+    <View className='row exam-summary'>
+      <Text>已答 {progress.answered} / {progress.total} 题</Text>
+      <Text>未答 {progress.blank} 题</Text>
+    </View>
+    <View className='competition-tabs' role='group'>
+      <Button className={language==='zh'?'competition-tab active':'competition-tab'} onClick={()=>setLanguage('zh')}>中文</Button>
+      <Button className={language==='en'?'competition-tab active':'competition-tab'} onClick={()=>setLanguage('en')}>English</Button>
+    </View>
+    <View id='exam-question-card' className='card'>
+      <View className='muted'>第 {q.questionNo} 题 · {q.points} 分</View>
+      <View className='card-title exam-stem'>{display.stem}</View>
+      {display.assetUrl&&<Image mode='widthFix' style='width:100%' src={display.assetUrl.startsWith('/')?'https://socthink.cn'+display.assetUrl:display.assetUrl}/>}
+      {display.choices.length
+        ?display.choices.map(c=><View key={c.key} className={`choice ${answers[q.id]===c.key?'selected':''}`} onClick={()=>choose(c.key)}><Text>{c.key}. {c.label}</Text></View>)
+        :<Input className='input' value={answers[q.id]||''} placeholder={language==='zh'?'输入答案':'Enter your answer'} onInput={e=>choose(e.detail.value)}/>}
+    </View>
+    <View id='exam-answer-sheet' className='card'>
+      <View className='card-title'>答题卡 · 点击题号跳转</View>
+      <View className='muted'>深色为当前题，橙色边框表示已作答。答案会自动保存在本机草稿。</View>
+      <View className='exam-question-grid'>
+        {bundle.questions.map((item:any,n:number)=>{
+          const answered=Boolean((answers[item.id]||'').trim())
+          return <Button key={item.id}
+            className={`exam-question-number ${idx===n?'current':''} ${answered?'answered':''}`}
+            disabled={busy}
+            onClick={()=>move(n)}>{n+1}</Button>
+        })}
+      </View>
+    </View>
+    <View className='grid2'>
+      <Button className='secondary' disabled={idx===0||busy} onClick={()=>move(idx-1)}>上一题</Button>
+      {idx<questionCount-1
+        ?<Button className='primary' disabled={busy} onClick={()=>move(idx+1)}>下一题</Button>
+        :<Button className='secondary' onClick={()=>void Taro.pageScrollTo({selector:'#exam-answer-sheet',duration:150}).catch(()=>{})}>查看答题卡</Button>}
+    </View>
+    <Button className='primary exam-submit' loading={busy} disabled={busy} onClick={submit}>
+      交卷 · 已答 {progress.answered}/{progress.total} 题
+    </Button>
   </View>
 }
