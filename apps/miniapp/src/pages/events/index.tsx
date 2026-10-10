@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Button, Text, View } from '@tarojs/components'
 import Taro, { useDidShow } from '@tarojs/taro'
 import { api, authStore, ensureWechatSession } from '../../services/api'
@@ -30,6 +30,7 @@ export default function EventsPage(){
   const [rows,setRows]=useState<WorldEntry[]>([])
   const [selected,setSelected]=useState(initial)
   const [focusEventId,setFocusEventId]=useState<string|null>(null)
+  const firstShow=useRef(true)
   const [region,setRegion]=useState('all')
   const [stage,setStage]=useState('all')
   const [loading,setLoading]=useState(true)
@@ -81,9 +82,9 @@ export default function EventsPage(){
     if(eventId){
       setRegion('all');setStage('all');setSelected(eventId);setFocusEventId(eventId)
     }
-    // Returning to the tab refreshes user-scoped follows and preparation progress.
-    void load()
-    void loadIntelligence()
+    // Initial load belongs to useEffect; only later TabBar returns need refresh.
+    if(firstShow.current)firstShow.current=false
+    else {void load();void loadIntelligence()}
   })
   useEffect(()=>{
     if(!focusEventId || !rows.length)return
