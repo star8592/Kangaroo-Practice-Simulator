@@ -4,7 +4,7 @@ import path from 'node:path'
 import { WORLD_COMPETITIONS } from '../src/lib/world-competitions'
 import {
   TRAINABLE_EVENT_IDS, TRAINING_INTENT_KEY, TRAINING_INTENT_TTL_MS,
-  asTrainingEventId, makeTrainingIntent, readTrainingIntent,
+  asTrainingEventId, availableTrainingEventIds, makeTrainingIntent, readTrainingIntent,
 } from '../apps/miniapp/src/services/competition-training-intent'
 
 const now=1_800_000_000_000
@@ -31,6 +31,18 @@ assert.equal(readTrainingIntent({eventId:'kangaroo',issuedAt:Infinity},now),null
 assert.equal(readTrainingIntent({eventId:'kangaroo',issuedAt:now+1},now),null)
 assert.equal(readTrainingIntent([{eventId:'kangaroo',issuedAt:now}],now),null)
 
+assert.deepEqual(availableTrainingEventIds(null),[])
+assert.deepEqual(availableTrainingEventIds([{competitionId:'kangaroo',miniappReady:false,questionCount:25}]),[],
+  'unsupported Web-only papers must not show a dead-end mobile CTA')
+assert.deepEqual(availableTrainingEventIds([{competitionId:'kangaroo',miniappReady:true,questionCount:0}]),[])
+assert.deepEqual(availableTrainingEventIds([
+  {competitionId:'kangaroo',miniappReady:true,questionCount:25},
+  {competitionId:'maa-amc',miniappReady:true,questionCount:25},
+  {competitionId:'kangaroo',miniappReady:true,questionCount:10},
+  {competitionId:'not-real',miniappReady:true,questionCount:25},
+  {competitionId:'cemc',miniappReady:true,questionCount:'twenty-five'},
+]),['kangaroo','maa-amc'])
+
 const root=path.join(import.meta.dirname,'..')
 const source=(file:string)=>fs.readFileSync(path.join(root,file),'utf8')
 const events=source('apps/miniapp/src/pages/events/index.tsx')
@@ -42,7 +54,10 @@ assert.ok(events.includes('Taro.setStorageSync(TRAINING_INTENT_KEY,intent)'), 's
 assert.ok(events.includes("await Taro.switchTab({url:'/pages/competitions/index'})"), 'event detail must open real competition tab')
 assert.ok(events.includes('Taro.removeStorageSync(TRAINING_INTENT_KEY)'), 'failed navigation must not leave stale intent')
 assert.ok(events.indexOf('Taro.setStorageSync(TRAINING_INTENT_KEY,intent)')<events.indexOf("await Taro.switchTab({url:'/pages/competitions/index'})"))
-assert.ok(events.includes('chosen.event.trainingId&&<Button'), 'training button must only appear for training-enabled events')
+assert.ok(events.includes("api<{exams:unknown}>('/api/miniapp/exams')"),'event UI must verify live paper availability')
+assert.ok(events.includes('readyTraining.includes(chosen.event.trainingId as TrainingEventId)'),
+  'CTA must only show after verified ready mobile papers exist')
+assert.ok(events.includes('重试读取试卷'), 'unavailable catalog must offer retry, not a dead button')
 assert.ok(events.includes('visible.find(x=>x.event.id===selected)||visible[0]'),'filtered detail must match visible event')
 assert.ok(events.includes('查看全部赛事'),'empty filter state must be actionable')
 assert.ok(competitions.includes('readTrainingIntent(pending)'),'destination must validate one-time intent')
@@ -51,4 +66,4 @@ assert.ok(competitions.includes('setCompetition(eventId)'),'destination must fil
 assert.ok(competitions.includes("selector:'#competition-exam-catalog'"),'deep link must scroll to exam section')
 assert.ok(competitions.includes("id='competition-exam-catalog'"),'scroll target must exist')
 
-console.log('MINIAPP_EVENT_TRAINING=PASS deep_link=4 ttl=120s guest_access_unchanged=YES fallback=UNAVAILABLE_TRAINING')
+console.log('MINIAPP_EVENT_TRAINING=PASS deep_link=4 ttl=120s ready_papers_only=YES offline_catalog_retry=YES')
