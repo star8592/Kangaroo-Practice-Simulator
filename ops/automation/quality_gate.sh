@@ -57,6 +57,7 @@ step "encrypted production backup and isolated restore negative tests" python3 s
 step "offhost encrypted backup replica mutation and transport contract" python3 scripts/test_offsite_replica.py
 step "TPM offline disaster recovery negative tests" python3 scripts/test_tpm_offsite_recovery.py
 step "public release acceptance negative tests" python3 scripts/test_production_public_smoke.py
+step "real-exam inventory preservation mutation tests" python3 scripts/test_release_inventory_guard.py
 step "wechat auth regression" npm run test:wechat-auth
 step "miniapp auth install contract" bash ops/release/test_wechat_miniapp_auth_contract.sh
 step "repository hygiene" python3 scripts/audit_repository_hygiene.py
