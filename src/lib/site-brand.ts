@@ -1,9 +1,9 @@
 export const SITE_BRAND = {
-  mark: "M",
-  nameZh: "国际数学竞赛训练中心",
-  nameEn: "Math Competition Lab",
-  title: "国际数学竞赛训练中心 | Math Competition Lab",
-  description: "袋鼠数学、澳洲 AMC（AMT）与美国 AMC（MAA）真题、官方样题、智能组卷、计算训练与学习分析平台",
-  loginTitleZh: "国际数学竞赛",
-  loginSubtitleZh: "训练与模拟系统",
+  mark: "S",
+  nameZh: "SOC THINK",
+  nameEn: "SOC THINK",
+  title: "SOC THINK | 全球数学竞赛与成长平台",
+  description: "全球数学赛事管家、竞赛模拟与 G1–G12 数学训练：查赛事、练数学、参加模拟、跟踪成长。中国及国际数学竞赛平等展示。",
+  loginTitleZh: "SOC THINK",
+  loginSubtitleZh: "全球数学竞赛与成长平台",
 } as const;
