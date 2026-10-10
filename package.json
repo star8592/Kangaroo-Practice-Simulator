@@ -88,6 +88,7 @@
     "test:exam-access-live": "node scripts/smoke_exam_access_live.mjs",
     "test:exam-access-live-contract": "node --test scripts/test_smoke_exam_access_live.mjs",
     "test:e2e:smoke": "playwright test",
+    "test:e2e:safari": "playwright test --config playwright.safari.config.ts",
     "test:engineering-contract": "node --test scripts/test_engineering_contracts.mjs",
     "test:engineering-controls": "python3 scripts/verify_engineering_controls.py && python3 scripts/test_engineering_controls.py",
     "test:miniapp-exam-entry": "tsx scripts/test_miniapp_exam_entry.ts",
