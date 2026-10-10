@@ -4,6 +4,7 @@ ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 APP="$ROOT/apps/miniapp"
 cd "$ROOT"
 npm run test:miniapp-exam-entry
+npm run test:miniapp-five-tabs
 npm run test:miniapp-arithmetic-idempotency
 npm run test:exam-submit-recovery
 node scripts/test_miniapp_device_gate.mjs
