@@ -9,6 +9,7 @@ import {
 
 const now=1_800_000_000_000
 assert.equal(TRAINING_INTENT_TTL_MS,120_000)
+assert.equal(TRAINING_INTENT_KEY,'socthink_training_event_intent_v1')
 assert.equal(new Set(TRAINABLE_EVENT_IDS).size,TRAINABLE_EVENT_IDS.length)
 for(const name of TRAINABLE_EVENT_IDS){
   const entry=WORLD_COMPETITIONS.find(x=>x.id===name)
