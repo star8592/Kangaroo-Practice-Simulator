@@ -323,3 +323,8 @@
 @media(max-width:600px){
   .verification-shell,.legal-page{padding-left:var(--page-gutter-mobile);padding-right:var(--page-gutter-mobile)}
 }
+
+/* SOC THINK iPadOS Safari touch form compatibility: avoid focus zoom without disabling pinch-zoom. */
+@media (pointer:coarse){
+  .solution-controls select,.parent-auth-form input:not([type=checkbox]),.forgot-inline input{font-size:16px}
+}
