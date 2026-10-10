@@ -34,3 +34,16 @@ export function readTrainingIntent(value: unknown, now = Date.now()): TrainingEv
   const age = now - input.issuedAt
   return age >= 0 && age <= TRAINING_INTENT_TTL_MS ? id : null
 }
+
+/** Only offer an in-app start action when the current API catalog has usable papers. */
+export function availableTrainingEventIds(exams: unknown): TrainingEventId[] {
+  if (!Array.isArray(exams)) return []
+  const ready = new Set<TrainingEventId>()
+  for (const exam of exams) {
+    if (!exam || typeof exam !== 'object' || Array.isArray(exam)) continue
+    const eventId = asTrainingEventId(exam.competitionId)
+    if (eventId && exam.miniappReady === true &&
+        typeof exam.questionCount === 'number' && exam.questionCount > 0) ready.add(eventId)
+  }
+  return TRAINABLE_EVENT_IDS.filter(id => ready.has(id))
+}
