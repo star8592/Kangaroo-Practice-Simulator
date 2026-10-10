@@ -5,9 +5,9 @@ ROOT = Path(__file__).resolve().parents[1]
 checks = {
     "src/app/layout.tsx": ["<SiteHeader/>", "<SiteFooter/>"],
     "src/app/page.tsx": ["PublicHome"],
-    "src/components/PublicHome.tsx": ["useSiteLanguage", "SOC THINK · K12 MATH GROWTH", "Start a diagnostic", "World Math Competition Companion", "More than a one-time score"],
+    "src/components/PublicHome.tsx": ["useSiteLanguage", "SOC THINK · GLOBAL MATH GROWTH", "Start math practice", "Try mock exams", "Explore events", "Mock competitions", "More than a one-time score"],
     "src/components/WorldCompetitionHub.tsx": ["World Math Competition Companion", "WORLD MATH COMPETITION COMPANION", "Filter events by region", "Open companion", "WORLD_REGION_OPTIONS"],
-    "src/components/SiteHeader.tsx": ["GlobalLanguageSwitch", "useSiteLanguage", "usePathname", "SITE_BRAND.nameEn", "Competitions", "Review", "Verification", "mobilePanel"],
+    "src/components/SiteHeader.tsx": ["GlobalLanguageSwitch", "useSiteLanguage", "usePathname", "SITE_BRAND.nameEn", "Mock exams", "Competitions", "My progress", "mobilePanel"],
     "src/components/SessionNav.tsx": ["useSiteLanguage", "Student login", "Parent center", "Learning report", "Sign out", "/api/auth/parent/me", "accountMenu"],
     "src/components/SiteFooter.tsx": ["useSiteLanguage", "All rights reserved"],
     "src/components/GlobalLanguageSwitch.tsx": ["useSiteLanguage", "setSiteLanguage", "router.refresh()", ">中文</button>", ">EN</button>"],
