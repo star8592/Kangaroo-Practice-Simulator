@@ -3,6 +3,7 @@
 # Never prints/displays/writes the plaintext production passphrase.
 set -Eeuo pipefail
 umask 077
+HERE="$(cd "$(dirname "$0")" && pwd)"
 
 OUT="${SOCTHINK_OFFSITE_DIR:-/mnt/disk1/master_data/secure/socthink-backups}"
 ESCROW_DIR="$OUT/recovery"
@@ -19,6 +20,11 @@ SSH_OPTS=(-F /dev/null -o BatchMode=yes -o StrictHostKeyChecking=yes -o ConnectT
 }
 systemd-analyze has-tpm2 2>/dev/null | grep -qx yes || {
   echo "TPM_ESCROW=BLOCKED reason=tpm2_not_available" >&2; exit 2;
+}
+# Check current-process TPM permissions AND synthetic hardware encrypt/decrypt before
+# contacting production or reading a single byte of the real passphrase.
+python3 "$HERE/tpm_hardware_preflight.py" --probe || {
+  echo "TPM_ESCROW=BLOCKED reason=synthetic_hardware_preflight_failed" >&2; exit 2;
 }
 mkdir -p -m 700 "$ESCROW_DIR"
 chmod 700 "$ESCROW_DIR"
