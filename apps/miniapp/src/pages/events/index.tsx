@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Button, Text, View } from '@tarojs/components'
-import Taro from '@tarojs/taro'
+import Taro, { useDidShow } from '@tarojs/taro'
 import { api, authStore, ensureWechatSession } from '../../services/api'
 import { TRAINING_INTENT_KEY, availableTrainingEventIds, makeTrainingIntent, type TrainingEventId } from '../../services/competition-training-intent'
+import { WORLD_EVENT_INTENT_KEY, readWorldEventIntent } from '../../services/world-event-intent'
 
 type Notice={id:string;eventId:string;titleZh:string;date:string;daysUntil:number;detailZh:string;sourceUrl:string}
 type Intelligence={region:string|null;notices:Notice[];next:Notice[];followedCount:number;reviewedEditionCount:number}
@@ -28,6 +29,7 @@ export default function EventsPage(){
   const initial=Taro.getCurrentInstance().router?.params?.competition||'kangaroo'
   const [rows,setRows]=useState<WorldEntry[]>([])
   const [selected,setSelected]=useState(initial)
+  const [focusEventId,setFocusEventId]=useState<string|null>(null)
   const [region,setRegion]=useState('all')
   const [stage,setStage]=useState('all')
   const [loading,setLoading]=useState(true)
@@ -68,11 +70,27 @@ export default function EventsPage(){
     }finally{setLoading(false)}
   }
   useEffect(()=>{void load();void loadIntelligence();void loadTraining()},[])
-  useEffect(()=>{
-    if(rows.length&&Taro.getCurrentInstance().router?.params?.competition){
-      void Taro.pageScrollTo({selector:'#world-detail',duration:150}).catch(()=>{})
+  useDidShow(()=>{
+    // A tab cannot receive ordinary route query params; consume at most once.
+    let pending: unknown
+    try{
+      pending=Taro.getStorageSync(WORLD_EVENT_INTENT_KEY)
+      Taro.removeStorageSync(WORLD_EVENT_INTENT_KEY)
+    }catch{pending=null}
+    const eventId=readWorldEventIntent(pending)
+    if(eventId){
+      setRegion('all');setStage('all');setSelected(eventId);setFocusEventId(eventId)
     }
-  },[rows.length])
+    // Returning to the tab refreshes user-scoped follows and preparation progress.
+    void load()
+    void loadIntelligence()
+  })
+  useEffect(()=>{
+    if(!focusEventId || !rows.length)return
+    if(!rows.some(x=>x.event.id===focusEventId)){setFocusEventId(null);return}
+    Taro.nextTick(()=>{void Taro.pageScrollTo({selector:'#world-detail',duration:150}).catch(()=>{})})
+    setFocusEventId(null)
+  },[rows,focusEventId])
   const visible=useMemo(()=>rows.filter(x=>(region==='all'||x.event.region===region)&&(stage==='all'||!x.event.referenceStages||x.event.referenceStages.includes(stage))),[rows,region,stage])
   const chosen=visible.find(x=>x.event.id===selected)||visible[0]
   const followed=rows.filter(x=>x.following===true)
