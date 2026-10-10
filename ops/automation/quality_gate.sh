@@ -36,6 +36,7 @@ step "auto-deploy contract" bash ops/release/test_auto_deploy_contract.sh
 step "manual recovery delegates to canonical CI-gated deploy" python3 scripts/test_manual_deploy_contract.py
 step "miniapp backend contract" npm run test:miniapp-contract
 step "miniapp web parity" npm run test:miniapp-parity
+step "miniapp global event to exam deep-link contract" npx tsx scripts/test_miniapp_event_training.ts
 step "verified competition intelligence" npm run test:competition-intelligence
 step "official source watch and review queue" npm run test:competition-source-watch
 step "public membership benefits catalog" npx tsx scripts/test_access_catalog.ts

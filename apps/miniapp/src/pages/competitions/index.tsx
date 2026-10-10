@@ -3,6 +3,7 @@ import { Button, Text, View } from '@tarojs/components'
 import Taro, { useDidShow } from '@tarojs/taro'
 import { api, authStore, ensureWechatSession } from '../../services/api'
 import { canStartFullExam, makeExamLoginPath, makeExamPath } from '../../services/exam-access'
+import { TRAINING_INTENT_KEY, readTrainingIntent } from '../../services/competition-training-intent'
 
 const groups=[
   {id:'all',label:'全部'},
@@ -23,6 +24,7 @@ export default function CompetitionsPage(){
   const [loading,setLoading]=useState(true)
   const [loadError,setLoadError]=useState('')
   const [registered,setRegistered]=useState(canStartFullExam(authStore.user()))
+  const [trainingTarget,setTrainingTarget]=useState<string|null>(null)
 
   const loadExams=async()=>{
     setLoading(true);setLoadError('')
@@ -47,7 +49,29 @@ export default function CompetitionsPage(){
     }catch(e){setWorldError(e instanceof Error?e.message:'全球赛事读取失败')}
   }
   useEffect(()=>{void loadExams();void loadWorld()},[])
-  useDidShow(()=>setRegistered(canStartFullExam(authStore.user())))
+  useDidShow(()=>{
+    setRegistered(canStartFullExam(authStore.user()))
+    // Tab pages cannot receive navigation query params. Consume a validated,
+    // short-lived intent exactly once to avoid surprising later navigations.
+    let pending: unknown
+    try{
+      pending=Taro.getStorageSync(TRAINING_INTENT_KEY)
+      Taro.removeStorageSync(TRAINING_INTENT_KEY)
+    }catch{pending=null}
+    const eventId=readTrainingIntent(pending)
+    if(eventId){
+      setCompetition(eventId)
+      setLimit(24)
+      setTrainingTarget(eventId)
+    }
+  })
+  useEffect(()=>{
+    if(!trainingTarget||loading)return
+    Taro.nextTick(()=>{
+      void Taro.pageScrollTo({selector:'#competition-exam-catalog',duration:200}).catch(()=>{})
+    })
+    setTrainingTarget(null)
+  },[trainingTarget,loading,loadError])
 
   const openExam=async(ex:any)=>{
     const examId=ex.paperType==='smart'?String(ex.id)+'--'+Date.now().toString(36):String(ex.id)
@@ -90,7 +114,7 @@ export default function CompetitionsPage(){
       <Button className='primary' onClick={()=>Taro.navigateTo({url:'/pages/events/index?competition='+encodeURIComponent(x.event.id)})}>查看赛事管家</Button>
     </View>)}
     {worldError&&<View className='card'><View>{worldError}</View><Button onClick={()=>void loadWorld()}>重新加载赛事目录</Button></View>}
-    <View className='section-title'>模拟考试与真题训练</View>
+    <View id='competition-exam-catalog' className='section-title'>模拟考试与真题训练</View>
     <View className='competition-tabs'>{groups.filter(g=>g.id==='all'||exams.some(x=>x.competitionId===g.id)).map(g=><Button key={g.id} className={competition===g.id?'competition-tab active':'competition-tab'} onClick={()=>{setCompetition(g.id);setLimit(24)}}>{g.label}</Button>)}</View>
     <View className='card'><View className='card-title'>我的赛事流程</View><View className='muted'>所有地区赛事共用一套准备、检查、复盘和完成进度。</View><Button className='secondary' onClick={()=>Taro.navigateTo({url:'/pages/events/index'})}>打开全球赛事管家</Button></View>
     <View className='section-title'>{competition==='all'?'可训练试卷':groups.find(g=>g.id===competition)?.label}</View>
