@@ -112,8 +112,9 @@
 .languageDesktop{display:block}
 
 .menuButton{
-  width:40px;
-  height:40px;
+  /* Apple's recommended 44pt touch target for iPad/iPhone. */
+  width:44px;
+  height:44px;
   display:none;
   place-items:center;
   padding:0;
@@ -453,7 +454,7 @@
     border-radius:11px;
     background:#fff;
     color:#526058;
-    font-size:11px;
+    font-size:13px;
     font-weight:850;
   }
 
@@ -495,13 +496,13 @@
   .languageDesktop{display:none}
 
   .guestActions{gap:3px}
-  .guestStudent{min-height:36px;padding:0 8px;font-size:10px}
-  .guestParent{min-height:38px;padding:0 9px}
+  .guestStudent{min-height:44px;padding:0 8px;font-size:12px}
+  .guestParent{min-height:44px;padding:0 9px}
   .guestParent span{font-size:10px}
   .guestParent small{display:none}
 
   .accountTrigger{
-    min-height:39px;
+    min-height:44px;
     max-width:128px;
     padding:3px 6px 3px 4px;
   }
@@ -511,7 +512,7 @@
   .accountIdentity small{display:none}
   .chevron{width:14px;height:14px}
 
-  .menuButton{width:38px;height:38px}
+  .menuButton{width:44px;height:44px}
 
   .accountMenu{
     position:fixed;
