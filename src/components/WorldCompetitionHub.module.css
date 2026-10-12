@@ -17,3 +17,9 @@
 .followSummary { display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; margin:14px 0; font-weight:600; }
 .followSummary a { text-decoration:underline; }
 .followMark { display:inline-block; border:1px solid #0891b2; padding:3px 8px; border-radius:9px; font-size:12px; font-weight:700; }
+
+.searchRow { display:flex; flex-wrap:wrap; align-items:center; gap:12px; margin:16px 0; }
+.searchRow label { font-weight:600; }
+.searchRow input { min-width:180px; max-width:420px; flex:1; padding:10px 12px; border:1px solid var(--border,#cbd5e1); border-radius:10px; color:inherit; background:transparent; font:inherit; }
+.searchRow input:focus-visible { outline:3px solid #67e8f9; outline-offset:2px; }
+.resultCount { font-size:14px; margin:12px 0; }

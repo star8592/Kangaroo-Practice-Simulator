@@ -144,8 +144,8 @@ export default function EventsPage(){
     }finally{setSaving('')}
   }
   return <View className='page'>
-    <View className='hero'><Text className='big'>全球数学赛事管家</Text>
-      <View>同一套流程管理全球赛事：核实资格、报名准备、模拟、设备调试、比赛、成绩与证书。</View>
+    <View className='hero'><Text className='big'>赛事管家</Text>
+      <View>统一管理中国与国际数学赛事：关注赛事、核实报名、准备参赛、查看赛历、记录成绩和证书。站内模拟考试请进入独立的模考模块。</View>
     </View>
     <View className='section-title'>赛事情报与截止提醒</View>
     <View className='card'>

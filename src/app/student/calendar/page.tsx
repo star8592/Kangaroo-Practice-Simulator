@@ -20,14 +20,14 @@ export default async function Page(){
     <header>
       <div><span>MY WORLD MATH CALENDAR</span><h1>我的数学赛历</h1>
         <p>关注全球赛事，不等于已报名某届比赛。这里分别记录备赛待办与已经核验的具体考试日期。</p></div>
-      <Link className="secondary-button" href="/competitions">发现更多赛事</Link>
+      <Link className="secondary-button" href="/events">发现更多赛事</Link>
     </header>
     <CompetitionIntelligencePanel/>
     <section className={styles.session} aria-label="接下来最值得做的三件事">
       <div className={styles.sessionHead}><h2>下一步行动</h2><strong>最多显示三项</strong></div>
       {nextActions.length?nextActions.map(x=><article className={styles.focusTask} key={x.eventId}>
         <div><b>{x.nameZh}</b><p>{x.nextTaskZh}</p></div>
-        <Link href={"/competitions?event="+encodeURIComponent(x.eventId)}>去完成 →</Link>
+        <Link href={"/events?event="+encodeURIComponent(x.eventId)}>去完成 →</Link>
       </article>):<p>还没有待推进的关注赛事。可以先从全球赛事目录关注感兴趣的比赛。</p>}
       <p className={styles.note}>未核验官方日期的事项属于本站备赛建议，不会显示虚假的报名倒计时。</p>
     </section>
@@ -37,8 +37,8 @@ export default async function Page(){
         <div className={styles.sessionHead}><div><small>{x.region} · 全球赛事档案</small><h2>{x.nameZh}</h2></div><strong>清单 {x.completed}/{x.total}</strong></div>
         <p>{x.nextTaskZh?("下一步："+x.nextTaskZh):"当前备赛清单已完成"}</p>
         <p className={styles.note}>具体赛区报名及考试日期：按当届官方公告核实；关注不代表报名成功。</p>
-        <Link className="secondary-button" href={"/competitions?event="+encodeURIComponent(x.eventId)}>打开赛事管家 →</Link>
-      </article>):<section className={styles.empty}><h2>暂未关注赛事</h2><p>你可以自由关注世界各地的数学赛事。关注后在这里集中管理备赛，不必重复搜索信息。</p><Link className="primary-button" href="/competitions">选择想关注的赛事</Link></section>}
+        <Link className="secondary-button" href={"/events?event="+encodeURIComponent(x.eventId)}>打开赛事管家 →</Link>
+      </article>):<section className={styles.empty}><h2>暂未关注赛事</h2><p>你可以自由关注世界各地的数学赛事。关注后在这里集中管理备赛，不必重复搜索信息。</p><Link className="primary-button" href="/events">选择想关注的赛事</Link></section>}
     </section>
     <section aria-label="已核验的具体比赛场次">
       <h2 className={styles.groupTitle}>已登记场次与已核验日期</h2>
