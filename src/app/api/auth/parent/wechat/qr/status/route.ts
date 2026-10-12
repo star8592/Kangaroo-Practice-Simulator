@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { consumeWechatQrLogin, pollWechatQrLogin } from "@/lib/wechat-qr-login";
-import { createParentSessionToken, PARENT_SESSION_COOKIE } from "@/lib/parent-auth";
+import { createParentSessionToken, PARENT_SESSION_COOKIE, PARENT_SESSION_TTL_SECONDS } from "@/lib/parent-auth";
 
 export const dynamic = "force-dynamic";
 
@@ -35,7 +35,7 @@ export async function GET(req: NextRequest) {
     secure: true,
     path: "/",
     domain: ".socthink.cn",
-    maxAge: 604800,
+    maxAge: PARENT_SESSION_TTL_SECONDS,
   });
   return response;
 }

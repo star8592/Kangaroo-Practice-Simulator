@@ -11,11 +11,24 @@ export const authStore = {
   clear() { Taro.removeStorageSync(TOKEN_KEY); Taro.removeStorageSync(USER_KEY) }
 }
 
+export const LEGACY_GUEST_BACKUP_KEY = 'socthink_legacy_guest_backup'
+export function isTemporaryGuest(user: any): boolean {
+  return user?.username === 'guest' || user?.candidateNo === 'GUEST'
+}
 let loginPending: Promise<void> | null = null
 // Explicit account switching must not fall back to a NEW guest identity:
 // that would hide the existing student's or guest's prior records.
-export async function ensureWechatSession(force = false, allowGuestFallback = true): Promise<void> {
-  if (!force && authStore.token()) return
+export async function ensureWechatSession(force = false, allowGuestFallback = false): Promise<void> {
+  const current = authStore.user()
+  if (!force && authStore.token() && !isTemporaryGuest(current)) return
+  // Earlier versions cached ephemeral guest credentials. Back them up before
+  // switching to the stable WeChat identity; never present a new guest as WeChat.
+  if (!force && authStore.token() && isTemporaryGuest(current)) {
+    Taro.setStorageSync(LEGACY_GUEST_BACKUP_KEY, {
+      token: authStore.token(), user: current, backedUpAt: Date.now(),
+    })
+    authStore.clear()
+  }
   if (!loginPending) {
     loginPending = (async () => {
       let primaryError = '微信登录暂不可用，请稍后重试'
