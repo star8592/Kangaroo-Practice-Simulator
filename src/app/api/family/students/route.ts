@@ -1,11 +1,13 @@
 import crypto from "node:crypto";
 import { NextRequest, NextResponse } from "next/server";
-import { createStudent, updateStudent } from "@/lib/auth";
+import { authenticate, createStudent, updateStudent } from "@/lib/auth";
 import { buildStudentAnalytics } from "@/lib/student-analytics";
+import {checkLoginLimit,clearLoginFailures,loginKey,recordLoginFailure} from "@/lib/login-rate-limit";
 import { loadExamAttempts } from "@/lib/attempt-store";
 import {
   addStudentToFamily,
   familyOwnsStudent,
+  linkVerifiedStudentToFamily,
   publicFamilyStudents,
 } from "@/lib/family-store";
 import { buildStudentAttention } from "@/lib/academic-events/student-attention";
@@ -161,4 +163,35 @@ export async function PATCH(req: NextRequest) {
       { status: 400 },
     );
   }
+}
+
+/** Explicit opt-in binding of a previously existing student account.
+ * Both parent authentication and the exact student's PIN are required.
+ */
+export async function PUT(req:NextRequest){
+ const p=parent(req);
+ if(!p)return NextResponse.json({error:"请先登录家庭微信账号"},{status:401});
+ const input=await req.json().catch(()=>null);
+ const username=typeof input?.username==="string"?input.username.trim():"";
+ const pin=typeof input?.pin==="string"?input.pin:"";
+ if(username.length<2||username.length>120||!/^[0-9]{4,12}$/.test(pin)){
+  return NextResponse.json({error:"请填写已有学生账号与正确的 PIN"},{status:400});
+ }
+ const ip=(req.headers.get("x-forwarded-for")||req.headers.get("x-real-ip")||"local").split(",")[0].trim();
+ const key=loginKey(username,ip);
+ const limit=checkLoginLimit(key);
+ if(!limit.allowed)return NextResponse.json({error:"验证次数过多，请稍后重试"},{status:429,headers:{"Retry-After":String(limit.retryAfterSeconds)}});
+ const learner=authenticate(username,pin);
+ if(!learner||learner.role!=="student"){
+  const failed=recordLoginFailure(key);
+  if(failed.blockedUntil>Date.now())return NextResponse.json({error:"验证次数过多，请稍后重试"},{status:429,headers:{"Retry-After":String(Math.ceil((failed.blockedUntil-Date.now())/1000))}});
+  return NextResponse.json({error:"学生账号或 PIN 不正确"},{status:401});
+ }
+ clearLoginFailures(key);
+ try{
+  const link=linkVerifiedStudentToFamily(p.id,learner.id);
+  return NextResponse.json({ok:true,student:{id:learner.id,name:learner.name,grade:learner.grade},alreadyLinked:link.alreadyLinked});
+ }catch(e){
+  return NextResponse.json({error:e instanceof Error?e.message:"无法绑定学生账号"},{status:409});
+ }
 }

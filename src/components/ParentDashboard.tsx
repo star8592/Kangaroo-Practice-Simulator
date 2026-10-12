@@ -53,6 +53,7 @@ export default function ParentDashboard() {
   const [notice, setNotice] = useState("");
   const [busy, setBusy] = useState(false);
   const [show, setShow] = useState(false);
+  const [linkExisting,setLinkExisting]=useState(false);
   const [editing, setEditing] = useState<Student | null>(null);
   const [pinStudent, setPinStudent] = useState<Student | null>(null);
 
@@ -111,6 +112,25 @@ export default function ParentDashboard() {
     } finally {
       setBusy(false);
     }
+  }
+
+  async function linkExistingStudent(event:FormEvent<HTMLFormElement>){
+    event.preventDefault();
+    setBusy(true);
+    setNotice("");
+    setError("");
+    const form=new FormData(event.currentTarget);
+    try{
+      const response=await fetch("/api/family/students",{method:"PUT",
+        headers:{"content-type":"application/json"},
+        body:JSON.stringify({username:form.get("username"),pin:form.get("pin")})});
+      const result=await response.json();
+      if(!response.ok)throw new Error(result.error||"关联失败");
+      setLinkExisting(false);
+      setNotice(result.alreadyLinked?"这个孩子已经在家庭档案里。":`已关联 ${result.student.name}，原有数学成绩和学习记录保持不变。`);
+      await load();
+    }catch(e){setError(e instanceof Error?e.message:"关联失败")}
+    finally{setBusy(false)}
   }
 
   async function saveEdit(event: FormEvent<HTMLFormElement>) {
@@ -213,6 +233,21 @@ export default function ParentDashboard() {
         </button>
       </section>
 
+      <div className={styles.existingAccountPanel}>
+        <div>
+          <strong>孩子以前就在 SOC THINK 学过？</strong>
+          <p>直接关联原来的学生账号，成绩和训练记录不需要重新开始。</p>
+        </div>
+        <button type="button" className="secondary-button" onClick={()=>setLinkExisting(v=>!v)}>
+          {linkExisting?"收起":"关联已有学生账号"}
+        </button>
+      </div>
+      {linkExisting && <form className={styles.linkForm} onSubmit={linkExistingStudent}>
+        <label>已有学生登录名 / 准考证号<input name="username" required maxLength={120} autoComplete="off" placeholder="输入孩子原来的学生账号"/></label>
+        <label>原学生 PIN<input name="pin" type="password" inputMode="numeric" autoComplete="off" pattern="[0-9]{4,12}" required placeholder="输入孩子原来的 PIN"/></label>
+        <button type="submit" className="primary-button" disabled={busy}>{busy?"正在验证…":"验证并关联"}</button>
+        <small>为了保护孩子的成绩，只会在学生账号和 PIN 验证正确后关联，不会自动合并同名账号。</small>
+      </form>}
       {error && <div className="warning-box">{error}</div>}
       {notice && <div className="success-box">{notice}</div>}
 
