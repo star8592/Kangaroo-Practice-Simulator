@@ -21,6 +21,7 @@ export type ParentUser={
 };
 export type PublicParent=Omit<ParentUser,"passwordHash">;
 export const PARENT_SESSION_COOKIE="socthink_parent_session";
+export const PARENT_SESSION_TTL_SECONDS=30*24*60*60;
 
 const FILE=userDataPath("parents.json");
 const SECRET=userDataPath("parent-session-secret.txt");
@@ -77,7 +78,7 @@ export function resetParentPassword(email0:string,newPassword:string){
   u.passwordHash=hashPassword(newPassword);u.sessionVersion=(u.sessionVersion||1)+1;saveParents(rows);return pub(u);
 }
 
-export function createParentSessionToken(uid:string,ttl=604800){
+export function createParentSessionToken(uid:string,ttl=PARENT_SESSION_TTL_SECONDS){
   const u=loadParents().find(x=>x.id===uid&&x.active);if(!u)throw new Error("家长账号不存在或已停用");
   return signJsonToken({uid,ver:u.sessionVersion||1,exp:Math.floor(Date.now()/1000)+ttl},sessionSecret());
 }

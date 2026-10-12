@@ -27,7 +27,7 @@ export function wechatAuthorizeUrl(state: string, forcedMode?: WechatLoginMode) 
   const mode = forcedMode || wechatLoginMode();
 
   if (mode === "official_account") {
-    return `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${encodeURIComponent(appid)}&redirect_uri=${redirect}&response_type=code&scope=snsapi_userinfo&state=${encodeURIComponent(state)}#wechat_redirect`;
+    return `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${encodeURIComponent(appid)}&redirect_uri=${redirect}&response_type=code&scope=snsapi_base&state=${encodeURIComponent(state)}#wechat_redirect`;
   }
 
   return `https://open.weixin.qq.com/connect/qrconnect?appid=${encodeURIComponent(appid)}&redirect_uri=${redirect}&response_type=code&scope=snsapi_login&state=${encodeURIComponent(state)}#wechat_redirect`;
@@ -51,6 +51,14 @@ export async function wechatUserInfo(code: string) {
     throw new Error("微信授权失败");
   }
 
+  const tokenScope=String(token.scope||"");
+  if(!tokenScope.includes("snsapi_userinfo")) {
+    return {
+      wechatId: String(token.unionid || token.openid),
+      openId: String(token.openid),
+      name: "微信用户",
+    };
+  }
   const infoUrl = new URL("https://api.weixin.qq.com/sns/userinfo");
   infoUrl.search = new URLSearchParams({
     access_token: String(token.access_token),

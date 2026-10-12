@@ -1,9 +1,14 @@
-import {NextResponse} from "next/server";
+import {NextRequest,NextResponse} from "next/server";
 import {newWechatState,wechatAuthorizeUrl,wechatConfigured,WECHAT_CALLBACK_ORIGIN,WECHAT_STATE_COOKIE} from "@/lib/wechat-parent-auth";
-
-export async function GET(){
- if(!wechatConfigured())return NextResponse.redirect(`${WECHAT_CALLBACK_ORIGIN}/parent/login?wechat=unavailable`);
- const state=newWechatState(),r=NextResponse.redirect(wechatAuthorizeUrl(state));
- r.cookies.set(WECHAT_STATE_COOKIE,state,{httpOnly:true,secure:true,sameSite:"lax",path:"/",domain:".socthink.cn",maxAge:600});
+export const WECHAT_NEXT_COOKIE="socthink_parent_wechat_next";
+export async function GET(req:NextRequest){
+ if(!wechatConfigured())return NextResponse.redirect(`${WECHAT_CALLBACK_ORIGIN}/login?wechat=unavailable`);
+ const candidate=req.nextUrl.searchParams.get("next")||"/parent";
+ const next=candidate.startsWith("/")&&!candidate.startsWith("//")&&!candidate.includes("\\")?candidate.slice(0,1024):"/parent";
+ const state=newWechatState();
+ const r=NextResponse.redirect(wechatAuthorizeUrl(state));
+ const opts={httpOnly:true,secure:true,sameSite:"lax" as const,path:"/",domain:".socthink.cn",maxAge:600};
+ r.cookies.set(WECHAT_STATE_COOKIE,state,opts);
+ r.cookies.set(WECHAT_NEXT_COOKIE,next,opts);
  return r;
 }
