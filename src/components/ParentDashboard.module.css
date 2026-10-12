@@ -334,3 +334,14 @@
 .studentMeta strong {font-size:13px;}
 .reportRow b,.reportListHead strong {font-size:13px;}
 .enrollmentActions button {min-height:36px;padding:8px 12px;font-size:12px;}
+
+.existingAccountPanel{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:19px 22px;background:#f4f7ef;border:1px solid #dce8d7;border-radius:17px;margin-bottom:15px;}
+.existingAccountPanel strong{display:block;color:#254734;font-size:15px;}
+.existingAccountPanel p{margin:5px 0 0;color:#627866;line-height:1.65;font-size:13px;}
+.existingAccountPanel button{min-height:44px;flex-shrink:0;}
+.linkForm{display:grid;grid-template-columns:1fr 1fr auto;align-items:end;gap:13px;background:#fff;border:1px solid #dfe8df;border-radius:17px;padding:20px;margin-bottom:17px;}
+.linkForm label{display:grid;gap:8px;font-size:13px;color:#405d46;font-weight:700;}
+.linkForm input{width:100%;height:44px;min-width:0;background:#fff;border:1px solid #cfdcd2;border-radius:10px;padding:0 13px;font-size:14px;}
+.linkForm button{min-height:44px;}
+.linkForm small{grid-column:1/-1;font-size:12px;color:#6d806f;line-height:1.65;}
+@media(max-width:730px){.existingAccountPanel{flex-direction:column;align-items:stretch;}.linkForm{grid-template-columns:1fr;}.existingAccountPanel button,.linkForm button{width:100%;}}
