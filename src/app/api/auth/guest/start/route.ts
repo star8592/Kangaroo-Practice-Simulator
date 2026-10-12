@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createGuestSessionToken, SESSION_COOKIE, userFromSessionToken } from "@/lib/auth";
+import { createGuestSessionToken, createFamilyPracticeSessionToken, SESSION_COOKIE, userFromSessionToken } from "@/lib/auth";
+import { parentFromSessionToken, PARENT_SESSION_COOKIE } from "@/lib/parent-auth";
 
 /** Same-origin navigation bootstrap; no credentials or personal information required. */
 export async function GET(req: NextRequest) {
@@ -17,9 +18,16 @@ export async function GET(req: NextRequest) {
   // req.nextUrl.origin can be the internal localhost origin and must never leak
   // into a browser redirect. Relative redirects stay on the public origin.
   const response = new NextResponse(null, { status: 307, headers: { location: target } });
+  const parent = parentFromSessionToken(req.cookies.get(PARENT_SESSION_COOKIE)?.value);
+  // Never change an active learner during a session. Only bootstrap identity
+  // when no student session exists. The parent-linked provisional ID is stable.
   if (!existing) {
-    response.cookies.set(SESSION_COOKIE, createGuestSessionToken(), {
-      httpOnly: true, sameSite: "lax", secure: process.env.NODE_ENV === "production", path: "/", maxAge: 7200,
+    const token = parent
+      ? createFamilyPracticeSessionToken(parent.id)
+      : createGuestSessionToken();
+    response.cookies.set(SESSION_COOKIE, token, {
+      httpOnly: true, sameSite: "lax", secure: process.env.NODE_ENV === "production", path: "/",
+      maxAge: parent ? 604800 : 7200,
     });
   }
   return response;

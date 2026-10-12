@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { consumeWechatQrLogin, pollWechatQrLogin } from "@/lib/wechat-qr-login";
 import { createParentSessionToken, PARENT_SESSION_COOKIE, PARENT_SESSION_TTL_SECONDS } from "@/lib/parent-auth";
+import { createFamilyPracticeSessionToken, SESSION_COOKIE, userFromSessionToken } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
 
@@ -37,5 +38,12 @@ export async function GET(req: NextRequest) {
     domain: ".socthink.cn",
     maxAge: PARENT_SESSION_TTL_SECONDS,
   });
+  // A newly authenticated family can begin a basic calculation straight away.
+  // Never displace an existing child/guest session with unsubmitted work.
+  if (!userFromSessionToken(req.cookies.get(SESSION_COOKIE)?.value)) {
+    response.cookies.set(SESSION_COOKIE, createFamilyPracticeSessionToken(consumed.parentId), {
+      httpOnly: true, sameSite: "lax", secure: true, path: "/", domain: ".socthink.cn", maxAge: 604800,
+    });
+  }
   return response;
 }

@@ -444,3 +444,14 @@
 .unifiedOther form{margin:14px 0}
 .unifiedOther p{line-height:1.8}
 @media(max-width:790px){.unifiedShell{grid-template-columns:1fr;gap:22px;padding:30px 0}.unifiedIntro{padding:0}.unifiedIntro h1{font-size:34px}.unifiedLoginBox{padding:22px}.unifiedSteps{display:none}}
+
+.unifiedMobileHint {display:grid;gap:8px;padding:14px 16px;background:#f0f6ef;border:1px solid #dce9d9;border-radius:14px;color:#2b5837;}
+.unifiedMobileHint strong {font-size:14px;}
+.unifiedMobileHint p {margin:0;font-size:12px;line-height:1.75;color:#536957;}
+.unifiedMobileHint button {width:100%;min-height:44px;}
+.unifiedMobileHint small {font-size:12px;color:#365f44;line-height:1.6;}
+@media (max-width:790px) {
+  .unifiedMobileHint {order:0;}
+  .unifiedLoginBox {gap:13px;}
+  .unifiedQr img {width:min(260px, 75vw);height:auto;}
+}

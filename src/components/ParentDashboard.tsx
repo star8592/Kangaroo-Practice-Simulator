@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useEffect, useState } from "react";
+import Link from "next/link";
 import { studentAvatarEmoji } from "@/lib/student-avatar";
 import styles from "./ParentDashboard.module.css";
 
@@ -47,6 +48,7 @@ function relativeTime(value?: number | null) {
 
 export default function ParentDashboard() {
   const [rows, setRows] = useState<Student[]>([]);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
   const [busy, setBusy] = useState(false);
@@ -74,10 +76,10 @@ export default function ParentDashboard() {
         return data.students || [];
       })
       .then((students) => {
-        if (!cancelled) setRows(students);
+        if (!cancelled) {setRows(students);setLoading(false);}
       })
       .catch((e) => {
-        if (!cancelled) setError(e instanceof Error ? e.message : String(e));
+        if (!cancelled) {setError(e instanceof Error ? e.message : String(e));setLoading(false);}
       });
     return () => {
       cancelled = true;
@@ -178,14 +180,36 @@ export default function ParentDashboard() {
 
   return (
     <div className={`admin-shell ${styles.shell}`}>
+      <section className={styles.welcome} aria-label="家庭学习快捷入口">
+        <div className={styles.welcomeCopy}>
+          <span className={styles.welcomeEyebrow}>SOC THINK · 我的家庭</span>
+          <h1>今天，我们练一点数学。</h1>
+          <p>微信已经登录。孩子可以先练计算，不用注册学生账号，也不用记住密码。</p>
+          <div className={styles.welcomeActions}>
+            <a href="/arithmetic" className={styles.welcomePrimary}>开始计算训练 <span aria-hidden="true">→</span></a>
+            <Link href="/events" className={styles.welcomeSecondary}>看看数学赛事</Link>
+          </div>
+          <small>基础练习暂存在这个家庭的独立体验档案中。多个孩子请分别建立正式学习档案，避免混淆成绩。</small>
+        </div>
+        <div className={styles.welcomeVisual} aria-hidden="true">
+          <div className={styles.mathTile}>12 <span>+</span> 8 <b>= 20</b></div>
+          <div className={styles.mathDot}>π</div>
+          <div className={styles.mathTip}>每天进步一点点</div>
+        </div>
+      </section>
+      <nav className={styles.quickPaths} aria-label="家庭学习服务">
+        <a href="/arithmetic"><span className={styles.quickIcon}>✦</span><strong>数学训练</strong><small>选年级 · 立即练</small></a>
+        <Link href="/competitions"><span className={styles.quickIcon}>◎</span><strong>竞赛模拟</strong><small>赛制和试卷</small></Link>
+        <Link href="/events"><span className={styles.quickIcon}>▤</span><strong>赛事管家</strong><small>全球赛事 · 重要提醒</small></Link>
+      </nav>
       <section className={styles.heading}>
         <div>
-          <span className={styles.kicker}>家庭中心</span>
-          <h1>家庭与孩子账号</h1>
-          <p>创建和管理孩子账号，同时查看最近是否登录、做过几套模拟和计算训练。</p>
+          <span className={styles.kicker}>学习档案管理</span>
+          <h2>孩子的成长记录</h2>
+          <p>添加孩子以后，可以分别查看训练和模拟成绩。原有的学生账号也继续保留。</p>
         </div>
-        <button className="primary-button" onClick={() => setShow((value) => !value)}>
-          {show ? "收起" : "+ 添加孩子"}
+        <button className="secondary-button" onClick={() => setShow((value) => !value)}>
+          {show ? "收起" : "+ 建立孩子档案（可稍后）"}
         </button>
       </section>
 
@@ -336,9 +360,12 @@ export default function ParentDashboard() {
           );
         })}
 
-        {rows.length === 0 && (
+        {loading && <div className={styles.empty} role="status">正在读取学习记录…</div>}
+        {!loading && rows.length === 0 && (
           <div className={styles.empty}>
-            还没有孩子账号。点击“添加孩子”创建第一个学生档案。
+            <strong>还没有绑定孩子档案，也没关系。</strong>
+            <p>先从上方的「开始计算训练」体验数学练习；需要分开保存多个孩子的成长报告时，再建立各自档案。</p>
+            <button className="secondary-button" type="button" onClick={() => setShow(true)}>建立孩子档案</button>
           </div>
         )}
       </div>

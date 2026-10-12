@@ -108,7 +108,10 @@ export default function SessionNav() {
     );
   }
 
-  const useParent = Boolean(sessions.parent && (pathname.startsWith("/parent") || !sessions.student));
+  const useParent = Boolean(sessions.parent && (
+    pathname.startsWith("/parent") || !sessions.student ||
+    sessions.student.id?.startsWith("guest_family_")
+  ));
   const active = useParent ? sessions.parent! : sessions.student!;
   const role = useParent ? "parent" : active.role === "admin" ? "admin" : "student";
   const roleLabel =
