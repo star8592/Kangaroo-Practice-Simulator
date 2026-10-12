@@ -334,3 +334,34 @@
 .studentMeta strong {font-size:13px;}
 .reportRow b,.reportListHead strong {font-size:13px;}
 .enrollmentActions button {min-height:36px;padding:8px 12px;font-size:12px;}
+
+/* Family learner selection is intentionally before account maintenance. */
+.learnerChooser{margin:22px 0 27px;padding:24px;border:1px solid #dae7db;border-radius:23px;background:#f7faf4;}
+.learnerChooserHead{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:16px;}
+.learnerChooserHead h2{margin:0;color:#25482f;font-size:clamp(21px,2.6vw,29px);letter-spacing:-.025em;}
+.familyFallback{min-height:42px;border:1px solid #adcab0;border-radius:12px;padding:10px 15px;background:#fff;color:#3a6543;font-size:13px;font-weight:700;cursor:pointer;}
+.learnerOptions{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;}
+.learnerOption{position:relative;min-width:0;min-height:104px;display:flex;align-items:center;gap:13px;text-align:left;padding:19px 18px;background:white;border:1px solid #e0e8dd;border-radius:17px;cursor:pointer;box-shadow:0 5px 18px rgba(16,44,25,.04);transition:transform .15s,border-color .15s;}
+.learnerOption:hover{transform:translateY(-2px);border-color:#87ad8c;}
+.learnerOption:focus-visible,.familyFallback:focus-visible{outline:3px solid #649e74;outline-offset:3px;}
+.learnerOption:disabled,.familyFallback:disabled{opacity:.6;cursor:wait;}
+.learnerAvatar{flex:0 0 56px;width:56px;height:56px;border-radius:19px;background:#eaf4e4;display:grid;place-items:center;font-size:28px;}
+.learnerInfo{min-width:0;display:grid;gap:7px;}
+.learnerInfo strong{font-size:18px;color:#21402d;overflow-wrap:anywhere;}
+.learnerInfo small{font-size:13px;color:#6d806f;}
+.learnerArrow{margin-left:auto;font-weight:850;font-size:22px;color:#719776;}
+.learnerActive{position:absolute;top:7px;right:12px;color:#336f45;font-size:11px;font-weight:750;}
+.learnerChooser>p{margin:14px 0 0;font-size:12px;line-height:1.75;color:#738378;}
+.createForm{grid-template-columns:minmax(0,1.2fr) minmax(140px,.65fr) minmax(0,1.3fr) auto;align-items:end;}
+.createForm label,.bindForm label{display:grid;gap:7px;min-width:0;color:#3b543f;font-size:13px;font-weight:700;}
+.createForm label span,.bindForm label span{line-height:1.4;}
+.learnerAdvanced{padding:7px 0;min-width:0;}
+.learnerAdvanced summary{cursor:pointer;color:#4a7354;font-size:13px;padding:8px 0;}
+.learnerAdvanced input{margin-top:8px;}
+.bindExisting{margin:16px 0 20px;}
+.bindForm{display:grid;grid-template-columns:1fr 1fr auto;align-items:end;gap:13px;margin-top:13px;padding:18px;border:1px solid #dde8df;border-radius:16px;background:#fff;}
+.bindForm p{grid-column:1/-1;margin:0;font-size:13px;color:#617867;line-height:1.7;}
+.bindForm input{width:100%;min-width:0;height:46px;padding:0 12px;border:1px solid #c9d8cb;border-radius:11px;font-size:15px;}
+.bindForm button,.createForm button{min-height:46px;}
+@media(max-width:900px){.createForm{grid-template-columns:1fr 1fr;}.learnerAdvanced{grid-column:1/-1;}.bindForm{grid-template-columns:1fr 1fr;}.bindForm button{grid-column:1/-1;}}
+@media(max-width:640px){.learnerChooser{padding:18px;border-radius:18px;margin:14px 0 22px}.learnerChooserHead{align-items:start;flex-direction:column;}.learnerOptions,.createForm,.bindForm{grid-template-columns:1fr;}.learnerAdvanced,.bindForm button{grid-column:1;}.learnerOption{min-height:95px}.familyFallback{width:100%;}.createForm button{width:100%;}}

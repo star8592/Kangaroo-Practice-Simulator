@@ -66,7 +66,10 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const grade = Number(body?.grade);
     const name = String(body?.name || "").trim();
-    const pin = String(body?.pin || "");
+    const suppliedPin = String(body?.pin || "");
+    // First-time families need only a name and grade. The random inaccessible
+    // PIN is a compatibility credential; a parent can later explicitly set one.
+    const pin = suppliedPin || String(crypto.randomInt(1000000000,10000000000));
 
     if (!name || name.length > 50) {
       return NextResponse.json({ error: "请填写 1–50 个字符的孩子姓名或昵称" }, { status: 400 });
