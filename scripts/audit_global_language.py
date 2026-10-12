@@ -7,7 +7,7 @@ checks = {
     "src/app/page.tsx": ["PublicHome"],
     "src/components/PublicHome.tsx": ["useSiteLanguage", "SOC THINK · GLOBAL MATH GROWTH", "Start math practice", "Try mock exams", "Explore events", "Mock competitions", "More than a one-time score"],
     "src/components/WorldCompetitionHub.tsx": ["World Math Competition Companion", "WORLD MATH COMPETITION COMPANION", "Filter events by region", "Open companion", "WORLD_REGION_OPTIONS"],
-    "src/components/SiteHeader.tsx": ["GlobalLanguageSwitch", "useSiteLanguage", "usePathname", "SITE_BRAND.nameEn", "Mock exams", "Competitions", "My progress", "mobilePanel"],
+    "src/components/SiteHeader.tsx": ["GlobalLanguageSwitch", "useSiteLanguage", "usePathname", "SITE_BRAND.nameEn", "Mock exams", "Event companion", "Math growth", "mobilePanel"],
     "src/components/SessionNav.tsx": ["useSiteLanguage", "Student login", "Parent center", "Learning report", "Sign out", "/api/auth/parent/me", "accountMenu"],
     "src/components/SiteFooter.tsx": ["useSiteLanguage", "All rights reserved"],
     "src/components/GlobalLanguageSwitch.tsx": ["useSiteLanguage", "setSiteLanguage", "router.refresh()", ">中文</button>", ">EN</button>"],

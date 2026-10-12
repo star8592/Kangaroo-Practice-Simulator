@@ -1,10 +1,7 @@
 import { test, expect } from "@playwright/test";
 
 test("world companion has one equal-ranking directory and real navigation", async ({ page }) => {
-  await page.goto("/competitions");
-  await expect(page.getByRole("link",{name:"探索全球赛事 ↓"})).toBeVisible();
-  await page.getByRole("link",{name:"探索全球赛事 ↓"}).click();
-  await expect(page).toHaveURL(/#world-competition-hub$/);
+  await page.goto("/events");
   const hub = page.getByRole("region",{name:"全球数学赛事管家"});
   await expect(hub).toBeVisible();
   const cards = hub.locator('[aria-label="世界赛事目录"] article');
@@ -77,7 +74,7 @@ test("public home lists China and world events at one level with direct links", 
   await expect(cards.filter({hasText:"华罗庚金杯"})).toHaveCount(1);
   await expect(cards.filter({hasText:"英国 UKMT"})).toHaveCount(1);
   await cards.filter({hasText:"华罗庚金杯"}).click();
-  await expect(page).toHaveURL(/\/competitions\?event=huabei$/);
+  await expect(page).toHaveURL(/\/events\?event=huabei$/);
   const hub=page.getByRole("region",{name:"全球数学赛事管家"});
   await expect(hub.getByText("华罗庚金杯少年数学邀请赛（华杯赛） · 备赛管家")).toBeVisible();
   await expect(hub.getByRole("link",{name:"登录后关注赛事"})).toBeVisible();
