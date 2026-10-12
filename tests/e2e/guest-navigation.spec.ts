@@ -65,11 +65,13 @@ test.afterAll(()=>{
   }
 });
 
-test("homepage competition CTA opens competition centre",async({page})=>{
+test("homepage competition CTA opens independent mock exams",async({page})=>{
   await page.goto("/");
   await page.getByRole("link",{name:/参加竞赛模拟|Try mock exams/}).first().click();
   await expect(page).toHaveURL(/\/competitions(?:\?|$)/);
-  await expect(page.getByRole("region",{name:/全球数学赛事管家|World math competition companion/})).toBeVisible();
+  await expect(page.getByRole("heading",{name:/竞赛模拟|Math competition mocks/}).first()).toBeVisible();
+  await expect(page.getByRole("region",{name:/全球数学赛事管家|World math competition companion/})).toHaveCount(0);
+  await expect(page.getByRole("link",{name:/进入赛事管家|Event companion/}).first()).toBeVisible();
 });
 test("homepage student login CTA opens usable login form",async({page})=>{
   await page.goto("/");
