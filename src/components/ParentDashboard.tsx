@@ -55,6 +55,8 @@ export default function ParentDashboard() {
   const [show, setShow] = useState(false);
   const [editing, setEditing] = useState<Student | null>(null);
   const [pinStudent, setPinStudent] = useState<Student | null>(null);
+  const [activeStudentId, setActiveStudentId] = useState<string | null>(null);
+  const [showBind, setShowBind] = useState(false);
 
   async function load() {
     try {
@@ -69,6 +71,10 @@ export default function ParentDashboard() {
 
   useEffect(() => {
     let cancelled = false;
+    fetch("/api/family/learner",{cache:"no-store"})
+      .then(async r => r.ok ? r.json() : null)
+      .then(x => {if(!cancelled && x)setActiveStudentId(x.activeStudentId||null)})
+      .catch(()=>{});
     fetch("/api/family/students", { cache: "no-store" })
       .then(async (response) => {
         const data = await response.json();
@@ -85,6 +91,43 @@ export default function ParentDashboard() {
       cancelled = true;
     };
   }, []);
+
+  async function selectLearner(studentId: string | null) {
+    setBusy(true);
+    setError("");
+    try {
+      const response=await fetch("/api/family/learner",{
+        method:"POST",headers:{"content-type":"application/json"},
+        body:JSON.stringify({studentId}),
+      });
+      const data=await response.json();
+      if(!response.ok)throw new Error(data.error||"切换失败");
+      // Full navigation is needed to commit the new HttpOnly student cookie.
+      window.location.assign("/arithmetic");
+    }catch(e){
+      setError(e instanceof Error?e.message:"切换失败，请重试");
+      setBusy(false);
+    }
+  }
+
+  async function bindStudent(event: FormEvent<HTMLFormElement>){
+    event.preventDefault();
+    setBusy(true);setError("");
+    const formData=new FormData(event.currentTarget);
+    try{
+      const response=await fetch("/api/family/students/bind",{
+        method:"POST",headers:{"content-type":"application/json"},
+        body:JSON.stringify({username:formData.get("username"),pin:formData.get("pin")}),
+      });
+      const data=await response.json();
+      if(!response.ok)throw new Error(data.error||"关联失败");
+      setShowBind(false);
+      await load();
+      await selectLearner(data.student.id);
+    }catch(e){
+      setError(e instanceof Error?e.message:"关联失败，请重试");
+    }finally{setBusy(false)}
+  }
 
   async function create(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -104,8 +147,9 @@ export default function ParentDashboard() {
       if (!response.ok) throw new Error(data.error || "创建失败");
       form.reset();
       setShow(false);
-      setNotice("孩子账号已创建，可以把登录名和 PIN 告诉孩子。");
+      setNotice("孩子档案已经建立，正在进入孩子的计算训练。");
       await load();
+      await selectLearner(data.student.id);
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e));
     } finally {
@@ -184,12 +228,12 @@ export default function ParentDashboard() {
         <div className={styles.welcomeCopy}>
           <span className={styles.welcomeEyebrow}>SOC THINK · 我的家庭</span>
           <h1>今天，我们练一点数学。</h1>
-          <p>微信已经登录。孩子可以先练计算，不用注册学生账号，也不用记住密码。</p>
+          <p>微信已经登录。选择孩子就能开始练习；第一次体验也不用建立账号或记住密码。</p>
           <div className={styles.welcomeActions}>
             <a href="/arithmetic" className={styles.welcomePrimary}>开始计算训练 <span aria-hidden="true">→</span></a>
             <Link href="/events" className={styles.welcomeSecondary}>看看数学赛事</Link>
           </div>
-          <small>基础练习暂存在这个家庭的独立体验档案中。多个孩子请分别建立正式学习档案，避免混淆成绩。</small>
+          <small>未选择孩子时使用独立家庭体验档案；为每个孩子建立档案后，训练与成绩就能分别记录。</small>
         </div>
         <div className={styles.welcomeVisual} aria-hidden="true">
           <div className={styles.mathTile}>12 <span>+</span> 8 <b>= 20</b></div>
@@ -197,6 +241,23 @@ export default function ParentDashboard() {
           <div className={styles.mathTip}>每天进步一点点</div>
         </div>
       </section>
+      {rows.length > 0 && <section className={styles.learnerChooser} aria-label="选择今天练习的孩子">
+        <div className={styles.learnerChooserHead}>
+          <div><span className={styles.kicker}>今天谁来学习？</span><h2>点一下孩子的头像，直接开始</h2></div>
+          <button type="button" className={styles.familyFallback} disabled={busy} onClick={()=>void selectLearner(null)}>先用家庭体验档案</button>
+        </div>
+        <div className={styles.learnerOptions}>
+          {rows.filter(student=>student.active).map(student=><button type="button" key={student.id}
+            className={styles.learnerOption} disabled={busy} onClick={()=>void selectLearner(student.id)}
+            aria-label={"以"+student.name+"的身份开始计算训练"}>
+            <span className={styles.learnerAvatar} aria-hidden="true">{studentAvatarEmoji(student.avatarKey)}</span>
+            <span className={styles.learnerInfo}><strong>{student.name}</strong><small>{student.grade} 年级 · {student.summary.arithmeticSessions} 轮计算</small></span>
+            <span className={styles.learnerArrow} aria-hidden="true">→</span>
+            {activeStudentId===student.id && <span className={styles.learnerActive}>正在使用</span>}
+          </button>)}
+        </div>
+        <p>每个孩子保留自己的正式训练记录；切换只影响当前浏览器，不会覆盖其他孩子的成绩。</p>
+      </section>}
       <nav className={styles.quickPaths} aria-label="家庭学习服务">
         <a href="/arithmetic"><span className={styles.quickIcon}>✦</span><strong>数学训练</strong><small>选年级 · 立即练</small></a>
         <Link href="/competitions"><span className={styles.quickIcon}>◎</span><strong>竞赛模拟</strong><small>赛制和试卷</small></Link>
@@ -206,7 +267,7 @@ export default function ParentDashboard() {
         <div>
           <span className={styles.kicker}>学习档案管理</span>
           <h2>孩子的成长记录</h2>
-          <p>添加孩子以后，可以分别查看训练和模拟成绩。原有的学生账号也继续保留。</p>
+          <p>新增孩子只需要昵称和年级；已有学生账号可以直接关联，保留原来成绩。</p>
         </div>
         <button className="secondary-button" onClick={() => setShow((value) => !value)}>
           {show ? "收起" : "+ 建立孩子档案（可稍后）"}
@@ -217,24 +278,30 @@ export default function ParentDashboard() {
       {notice && <div className="success-box">{notice}</div>}
 
       {show && (
-        <form className={styles.createForm} onSubmit={create}>
-          <input name="name" required maxLength={50} placeholder="孩子姓名 / 昵称" />
-          <input name="username" placeholder="学生登录名（留空自动生成）" />
-          <input name="grade" type="number" min="1" max="13" required placeholder="年级" />
-          <input name="school" maxLength={80} placeholder="学校（可选）" />
-          <input
-            name="pin"
-            type="password"
-            inputMode="numeric"
-            pattern="[0-9]{4,12}"
-            required
-            placeholder="学生 PIN（4–12 位数字）"
-          />
+        <form className={styles.createForm} onSubmit={create} aria-label="添加孩子">
+          <label><span>孩子怎么称呼？</span><input name="name" required maxLength={50} placeholder="例如：小可乐" /></label>
+          <label><span>孩子上几年级？</span><input name="grade" type="number" min="1" max="13" required placeholder="例如：2" /></label>
+          <details className={styles.learnerAdvanced}>
+            <summary>更多资料（可稍后填写）</summary>
+            <input name="school" maxLength={80} placeholder="学校（可选）" />
+            <input name="username" placeholder="独立登录名（可选）" />
+            <input name="pin" type="password" inputMode="numeric" pattern="[0-9]{4,12}" placeholder="独立登录 PIN（可选，4–12 位）" />
+          </details>
           <button className="primary-button" disabled={busy}>
-            {busy ? "创建中…" : "创建孩子账号"}
+            {busy ? "正在建立…" : "建立档案并开始练习"}
           </button>
         </form>
       )}
+
+      <section className={styles.bindExisting}>
+        <button type="button" className="secondary-button" onClick={()=>setShowBind(x=>!x)}>{showBind?"取消关联":"已有学生账号？关联原来的成绩"}</button>
+        {showBind && <form onSubmit={bindStudent} className={styles.bindForm} aria-label="关联已有学生账号">
+          <p>只在第一次关联时输入原账号和 PIN。关联后家长微信登录，就能选择这个孩子继续原有的数学训练和模拟记录。</p>
+          <label><span>原学生账号 / 准考证号</span><input name="username" required autoComplete="username" maxLength={128} /></label>
+          <label><span>原学生 PIN</span><input name="pin" type="password" required pattern="[0-9]{4,12}" inputMode="numeric" autoComplete="current-password"/></label>
+          <button className="primary-button" disabled={busy}>{busy?"正在核验…":"验证并关联"}</button>
+        </form>}
+      </section>
 
       {editing && (
         <form className={`report-card ${styles.formCard}`} onSubmit={saveEdit}>
