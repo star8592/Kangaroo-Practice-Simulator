@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PARENT_SESSION_COOKIE } from "@/lib/parent-auth";
-import { SESSION_COOKIE, userFromSessionToken } from "@/lib/auth";
+import { SESSION_COOKIE, isFamilyManagedSessionToken } from "@/lib/auth";
 
 export async function POST(req: NextRequest) {
   const response = NextResponse.json({ ok: true });
   const secure = req.nextUrl.protocol === "https:";
-  const linkedFamilyPractice = userFromSessionToken(req.cookies.get(SESSION_COOKIE)?.value)?.id.startsWith("guest_family_") === true;
+  const linkedFamilyPractice = isFamilyManagedSessionToken(req.cookies.get(SESSION_COOKIE)?.value);
   if (linkedFamilyPractice) {
     response.cookies.set(SESSION_COOKIE, "", {
       httpOnly:true,sameSite:"lax",secure,path:"/",maxAge:0,
