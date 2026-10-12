@@ -345,3 +345,23 @@
 .linkForm button{min-height:44px;}
 .linkForm small{grid-column:1/-1;font-size:12px;color:#6d806f;line-height:1.65;}
 @media(max-width:730px){.existingAccountPanel{flex-direction:column;align-items:stretch;}.linkForm{grid-template-columns:1fr;}.existingAccountPanel button,.linkForm button{width:100%;}}
+
+/* Learner selection belongs before account management, not hidden in settings. */
+.welcomeStatus{display:inline-flex;align-items:center;min-height:50px;color:#e2eee5;font-size:14px;}
+.chooser{scroll-margin-top:90px;margin:24px 0 22px;padding:24px;border-radius:21px;background:#f4f8f1;border:1px solid #dfe9da;}
+.chooserHead{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:17px;}
+.chooserHead h2{font-size:clamp(21px,2.4vw,27px);margin:0 0 7px;color:#244632;letter-spacing:-.03em;}
+.chooserHead p{margin:0;color:#697f6f;font-size:13px;line-height:1.6;}
+.chooserCount{background:#e6f0e0;color:#426449;border-radius:99px;padding:8px 11px;font-size:12px;white-space:nowrap;font-weight:700;}
+.chooserGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(245px,1fr));gap:12px;}
+.chooserCard{display:flex;align-items:center;text-align:left;gap:13px;min-width:0;min-height:91px;border:1px solid #d7e3d7;background:#fff;border-radius:17px;padding:15px;cursor:pointer;transition:border-color .15s,transform .15s,box-shadow .15s;}
+.chooserCard:hover:not(:disabled){border-color:#83b08b;transform:translateY(-2px);box-shadow:0 8px 26px rgba(30,75,46,.09);}
+.chooserCard:focus-visible{outline:3px solid #78ac82;outline-offset:3px;}
+.chooserCard:disabled{cursor:wait;opacity:.72;}
+.chooserAvatar{width:50px;height:50px;display:grid;place-items:center;border-radius:15px;background:#e8f3e0;font-size:28px;flex:0 0 auto;}
+.chooserIdentity{display:grid;gap:6px;min-width:0;flex:1;}
+.chooserIdentity strong{font-size:18px;color:#234331;overflow:hidden;text-overflow:ellipsis;}
+.chooserIdentity small{font-size:12px;color:#77877b;white-space:normal;line-height:1.4;}
+.chooserAction{font-size:12px;font-weight:800;color:#3c774c;white-space:nowrap;}
+.chooserFootnote{margin:15px 0 0;font-size:12px;line-height:1.7;color:#72816f;}
+@media(max-width:600px){.chooser{padding:19px 16px;border-radius:18px;}.chooserHead{align-items:start;}.chooserGrid{grid-template-columns:1fr;}.chooserCard{min-height:86px;}.chooserAction{font-size:12px;}}

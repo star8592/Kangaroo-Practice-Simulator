@@ -54,6 +54,8 @@ export default function ParentDashboard() {
   const [busy, setBusy] = useState(false);
   const [show, setShow] = useState(false);
   const [linkExisting,setLinkExisting]=useState(false);
+  const [selectedStudentId,setSelectedStudentId]=useState("");
+  const [switchingStudentId,setSwitchingStudentId]=useState("");
   const [editing, setEditing] = useState<Student | null>(null);
   const [pinStudent, setPinStudent] = useState<Student | null>(null);
 
@@ -67,6 +69,15 @@ export default function ParentDashboard() {
       setError(e instanceof Error ? e.message : String(e));
     }
   }
+
+  useEffect(()=>{
+    let live=true;
+    fetch("/api/auth/me",{cache:"no-store"})
+      .then(r=>r.ok?r.json():null)
+      .then(data=>{if(live)setSelectedStudentId(data?.user?.id||"")})
+      .catch(()=>{});
+    return ()=>{live=false};
+  },[]);
 
   useEffect(() => {
     let cancelled = false;
@@ -131,6 +142,26 @@ export default function ParentDashboard() {
       await load();
     }catch(e){setError(e instanceof Error?e.message:"关联失败")}
     finally{setBusy(false)}
+  }
+
+  async function startForStudent(studentId:string) {
+    if(switchingStudentId)return;
+    setSwitchingStudentId(studentId);
+    setError("");
+    try {
+      const res=await fetch("/api/family/active-student",{
+        method:"POST",credentials:"same-origin",
+        headers:{"content-type":"application/json"},
+        body:JSON.stringify({studentId}),
+      });
+      const data=await res.json();
+      if(!res.ok)throw new Error(data.error||"切换学习档案失败");
+      // A full navigation ensures the server sees the new HttpOnly session.
+      window.location.assign("/arithmetic");
+    }catch(e){
+      setError(e instanceof Error?e.message:"无法进入该孩子的学习档案");
+      setSwitchingStudentId("");
+    }
   }
 
   async function saveEdit(event: FormEvent<HTMLFormElement>) {
@@ -198,18 +229,21 @@ export default function ParentDashboard() {
     }
   }
 
+  const activeChildren=rows.filter(x=>x.active);
   return (
     <div className={`admin-shell ${styles.shell}`}>
       <section className={styles.welcome} aria-label="家庭学习快捷入口">
         <div className={styles.welcomeCopy}>
           <span className={styles.welcomeEyebrow}>SOC THINK · 我的家庭</span>
-          <h1>今天，我们练一点数学。</h1>
-          <p>微信已经登录。孩子可以先练计算，不用注册学生账号，也不用记住密码。</p>
+          <h1>{activeChildren.length>0?"今天，谁来学数学？":"今天，我们练一点数学。"}</h1>
+          <p>{activeChildren.length>0?"点一下孩子的名字，就能接着练；每个孩子的记录各归各的，不需要反复输入 PIN。":"家庭已经登录。孩子可以先练计算，不用注册学生账号，也不用记住密码。"}</p>
           <div className={styles.welcomeActions}>
-            <a href="/arithmetic" className={styles.welcomePrimary}>开始计算训练 <span aria-hidden="true">→</span></a>
+            {loading?<span className={styles.welcomeStatus}>正在读取家庭学习档案…</span>:
+              activeChildren.length>0?<a href="#choose-child" className={styles.welcomePrimary}>选择孩子开始学习 <span aria-hidden="true">→</span></a>:
+              <a href="/arithmetic" className={styles.welcomePrimary}>开始计算训练 <span aria-hidden="true">→</span></a>}
             <Link href="/events" className={styles.welcomeSecondary}>看看数学赛事</Link>
           </div>
-          <small>基础练习暂存在这个家庭的独立体验档案中。多个孩子请分别建立正式学习档案，避免混淆成绩。</small>
+          <small>{activeChildren.length>0?"正式成绩按孩子分别保存；如需体验基础计算，也可在下方继续使用家庭体验档案。":"基础练习暂存在这个家庭的独立体验档案中。多个孩子请分别建立正式学习档案，避免混淆成绩。"}</small>
         </div>
         <div className={styles.welcomeVisual} aria-hidden="true">
           <div className={styles.mathTile}>12 <span>+</span> 8 <b>= 20</b></div>
@@ -217,8 +251,30 @@ export default function ParentDashboard() {
           <div className={styles.mathTip}>每天进步一点点</div>
         </div>
       </section>
+      {!loading && activeChildren.length>0 && <section className={styles.chooser} id="choose-child" aria-labelledby="choose-child-title">
+        <div className={styles.chooserHead}>
+          <div>
+            <span className={styles.kicker}>一键继续 · 不用再登录</span>
+            <h2 id="choose-child-title">选择正在学习的孩子</h2>
+            <p>一家多个孩子也能分别记录进步。点击后会进入对应孩子的计算训练。</p>
+          </div>
+          <span className={styles.chooserCount}>{activeChildren.length} 位孩子</span>
+        </div>
+        <div className={styles.chooserGrid}>
+          {activeChildren.map(student=><button key={student.id} type="button"
+            className={styles.chooserCard} disabled={Boolean(switchingStudentId)}
+            onClick={()=>void startForStudent(student.id)}
+            aria-label={`为${student.name}开始学习`}>
+            <span className={styles.chooserAvatar} aria-hidden="true">{studentAvatarEmoji(student.avatarKey)}</span>
+            <span className={styles.chooserIdentity}><strong>{student.name}</strong>
+              <small>{student.grade} 年级 · 计算 {student.summary.arithmeticSessions} 轮</small></span>
+            <span className={styles.chooserAction}>{switchingStudentId===student.id?"正在进入…":selectedStudentId===student.id?"继续学习 →":"开始学习 →"}</span>
+          </button>)}
+        </div>
+        <p className={styles.chooserFootnote}>没有孩子档案？可在下方「建立孩子档案」或「关联已有学生账号」。家庭体验档案中的临时记录不会自动混入孩子成绩。</p>
+      </section>}
       <nav className={styles.quickPaths} aria-label="家庭学习服务">
-        <a href="/arithmetic"><span className={styles.quickIcon}>✦</span><strong>数学训练</strong><small>选年级 · 立即练</small></a>
+        <a href={activeChildren.length>0?"#choose-child":"/arithmetic"}><span className={styles.quickIcon}>✦</span><strong>数学训练</strong><small>{activeChildren.length>0?"先选孩子 · 记录不混淆":"选年级 · 立即练"}</small></a>
         <Link href="/competitions"><span className={styles.quickIcon}>◎</span><strong>竞赛模拟</strong><small>赛制和试卷</small></Link>
         <Link href="/events"><span className={styles.quickIcon}>▤</span><strong>赛事管家</strong><small>全球赛事 · 重要提醒</small></Link>
       </nav>

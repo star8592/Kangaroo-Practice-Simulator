@@ -46,6 +46,38 @@ export function familyPracticeUserFromSessionToken(token:string|undefined|null):
  return {id:x.uid,username:"guest",candidateNo:"GUEST",name:"家庭体验档案",grade:1,
   avatarKey:DEFAULT_STUDENT_AVATAR,onboardingCompleted:true,createdAt:0,active:true,role:"student",sessionVersion:1};
 }
+/**
+ * A parent-authorized child session is distinct from an independently
+ * authenticated PIN session. Re-check household membership, parent revocation
+ * and learner revocation every time it is used.
+ */
+function parentOwnsLearner(parentId:string,studentId:string){
+ const families=readJsonArray<{parentId:string;studentIds:string[]}>(userDataPath("families.json"));
+ return families.some(x=>x.parentId===parentId&&Array.isArray(x.studentIds)&&x.studentIds.includes(studentId));
+}
+export function createFamilyChildSessionToken(parentId:string,studentId:string,ttl=604800){
+ const parentVersion=activeParentSessionVersion(parentId);
+ const learner=loadUsers().find(x=>x.id===studentId&&x.active&&x.role==="student");
+ if(parentVersion===null||!learner||!parentOwnsLearner(parentId,studentId))throw new Error("无权使用该孩子的学习档案");
+ return signJsonToken({
+  uid:studentId,familyChild:true,familyParent:parentId,
+  familyVersion:parentVersion,learnerVersion:learner.sessionVersion||1,
+  exp:Math.floor(Date.now()/1000)+ttl,
+ },secret());
+}
+export function isFamilyManagedSessionToken(token:string|undefined|null){
+ const payload=readSignedJsonToken<{familyChild?:boolean;familyPractice?:boolean}>(token,secret());
+ return payload?.familyChild===true || payload?.familyPractice===true;
+}
+export function familyChildUserFromSessionToken(token:string|undefined|null):PublicStudent|null{
+ const x=readSignedJsonToken<{uid?:string;familyChild?:boolean;familyParent?:string;familyVersion?:number;learnerVersion?:number;exp?:number}>(token,secret());
+ if(!x?.familyChild||!x.uid||!x.familyParent||!x.exp||x.exp<Math.floor(Date.now()/1000))return null;
+ const learner=loadUsers().find(u=>u.id===x.uid&&u.active&&u.role==="student");
+ if(!learner||!parentOwnsLearner(x.familyParent,x.uid)
+   ||activeParentSessionVersion(x.familyParent)!==x.familyVersion
+   ||(learner.sessionVersion||1)!==x.learnerVersion)return null;
+ return pub(learner);
+}
 export function createGuestSessionToken(ttl=7200){const id=`guest_${crypto.randomBytes(10).toString("hex")}`;return signJsonToken({uid:id,guest:true,exp:Math.floor(Date.now()/1000)+ttl},secret())}
 // A stable, pseudonymous mini-program identity. The raw OpenID is never stored
 // in the client token or exposed in API responses.
@@ -61,10 +93,11 @@ export function miniappWechatUserFromSessionToken(t:string|undefined|null):Publi
 }
 export function guestUserFromSessionToken(t:string|undefined|null):PublicStudent|null{const x=readSignedJsonToken<{uid?:string;guest?:boolean;exp?:number}>(t,secret());if(!x?.guest||!x.uid?.startsWith("guest_")||!x.exp||x.exp<Math.floor(Date.now()/1000))return null;return{id:x.uid,username:"guest",candidateNo:"GUEST",name:"游客体验",grade:6,school:"Socthink",avatarKey:DEFAULT_STUDENT_AVATAR,onboardingCompleted:true,createdAt:Date.now(),active:true,role:"student",sessionVersion:1}}
 export function userFromSessionToken(t:string|undefined|null):PublicStudent|null{
+ const familyChild=familyChildUserFromSessionToken(t);if(familyChild)return familyChild;
  const family=familyPracticeUserFromSessionToken(t);if(family)return family;
  const wx=miniappWechatUserFromSessionToken(t);if(wx)return wx;
  const guest=guestUserFromSessionToken(t);if(guest)return guest;
- const x=readSignedJsonToken<{uid?:string;ver?:number;exp?:number}>(t,secret());if(!x?.uid||!x.exp||x.exp<Math.floor(Date.now()/1000))return null;
+ const x=readSignedJsonToken<{uid?:string;ver?:number;exp?:number;familyChild?:boolean}>(t,secret());if(!x?.uid||x.familyChild||!x.exp||x.exp<Math.floor(Date.now()/1000))return null;
  const u=loadUsers().find(v=>v.id===x.uid&&v.active);if(!u)return null;const tokenVersion=x.ver??1;if((u.sessionVersion||1)!==tokenVersion)return null;return pub(u)
 }
 export type SessionRequestLike={headers:{get:(name:string)=>string|null};cookies?:{get:(name:string)=>{value:string}|undefined}};
