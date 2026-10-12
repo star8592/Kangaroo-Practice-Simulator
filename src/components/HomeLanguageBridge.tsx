@@ -5,7 +5,7 @@ import HomeClient from "@/components/HomeClient";
 import type { ExamProfile } from "@/lib/types";
 import { useSiteLanguage } from "@/lib/site-language";
 
-export default function HomeLanguageBridge({exams,today}:{exams:ExamProfile[];today:string}){
+export default function HomeLanguageBridge({exams}:{exams:ExamProfile[]}){
  const lang=useSiteLanguage();
  useEffect(()=>{
   const sync=()=>{
@@ -19,5 +19,5 @@ export default function HomeLanguageBridge({exams,today}:{exams:ExamProfile[];to
   const id=requestAnimationFrame(sync);
   return()=>cancelAnimationFrame(id);
  },[lang]);
- return <HomeClient exams={exams} today={today}/>;
+ return <HomeClient exams={exams}/>;
 }

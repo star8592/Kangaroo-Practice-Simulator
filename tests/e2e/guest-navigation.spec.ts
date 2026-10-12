@@ -65,11 +65,13 @@ test.afterAll(()=>{
   }
 });
 
-test("homepage competition CTA opens competition centre",async({page})=>{
+test("homepage competition CTA opens independent mock exams",async({page})=>{
   await page.goto("/");
   await page.getByRole("link",{name:/参加竞赛模拟|Try mock exams/}).first().click();
   await expect(page).toHaveURL(/\/competitions(?:\?|$)/);
-  await expect(page.getByRole("region",{name:/全球数学赛事管家|World math competition companion/})).toBeVisible();
+  await expect(page.getByRole("heading",{name:/竞赛模拟|Math competition mocks/}).first()).toBeVisible();
+  await expect(page.getByRole("region",{name:/全球数学赛事管家|World math competition companion/})).toHaveCount(0);
+  await expect(page.getByRole("link",{name:/进入赛事管家|Event companion/}).first()).toBeVisible();
 });
 test("homepage student login CTA opens usable login form",async({page})=>{
   await page.goto("/");
@@ -139,7 +141,7 @@ test("logged-in student follows UKMT and sees it in their personal calendar", as
   await page.getByRole("button",{name:"登录学生系统"}).click();
   await expect(page).toHaveURL(/\/(?:\?|$)/,{timeout:15000});
   await expect.poll(async()=> (await page.context().cookies()).some(c=>c.name==="kangaroo_session"),{timeout:10000}).toBe(true);
-  await page.goto("/competitions?event=ukmt");
+  await page.goto("/events?event=ukmt");
   const hub=page.getByRole("region",{name:"全球数学赛事管家"});
   await hub.getByRole("button",{name:"＋ 关注赛事"}).click();
   await expect(hub.getByRole("button",{name:/已关注 · 取消关注/})).toBeVisible();
@@ -150,7 +152,7 @@ test("logged-in student follows UKMT and sees it in their personal calendar", as
   await expect(page.getByText("核实当地赛区与参赛资格",{exact:true})).toBeVisible();
   await expect(page.getByText("具体赛区报名及考试日期：按当届官方公告核实；关注不代表报名成功。")).toBeVisible();
   await page.getByRole("link",{name:"打开赛事管家 →"}).click();
-  await expect(page).toHaveURL(/\/competitions\?event=ukmt$/);
+  await expect(page).toHaveURL(/\/events\?event=ukmt$/);
   await hub.getByRole("button",{name:/已关注 · 取消关注/}).click();
   await expect(hub.getByRole("button",{name:"＋ 关注赛事"})).toBeVisible();
 });

@@ -20,12 +20,20 @@ checks={
     'must_not':['Professional Diagnostic Report','Professional Learning Diagnostic','Ability & Strategy Profile','Evidence-based Findings','Personalized Prescription','Question-level Evidence','Growth Record & Methodology'],
   },
   'src/components/PublicHome.tsx':{
-    'must':['WORLD_COMPETITIONS','worldRegionName','全球数学赛事，一站式管理','探索全球赛事','参加竞赛模拟','开始计算训练','/competitions?event='],
+    'must':['WORLD_COMPETITIONS','worldRegionName','全球数学赛事，一站式管理','进入赛事管家','参加竞赛模拟','开始计算训练','/events?event='],
     'must_not':['查看国际数学竞赛','不止袋鼠：每项赛事都是独立业务入口'],
   },
   'src/components/HomeClient.tsx':{
-    'must':['全球数学赛事服务','全球数学赛事管家','WorldCompetitionHub','已入库赛制','MAA AMC 晋级路径','年级分组','按赛制智能组卷','官方样题','官方专项训练','历年试卷'],
-    'must_not':['<div className="eyebrow">COMPETITION FORMAT LAB</div>','<span className="eyebrow">COMPETITIONS</span>','<span className="eyebrow">MAA AMC PATHWAY</span>','<span className="eyebrow">SMART BY FORMAT</span>','<span className="eyebrow">OFFICIAL SAMPLES</span>','<span className="eyebrow">OFFICIAL PRACTICE</span>','<span className="eyebrow">PAST PAPERS</span>'],
+    'must':['竞赛模拟','国际竞赛模拟考试','进入赛事管家','已入库赛制','MAA AMC 晋级路径','年级分组','按赛制智能组卷','官方样题','官方专项训练','历年试卷'],
+    'must_not':['WorldCompetitionHub','全球数学赛事管家','<div className="eyebrow">COMPETITION FORMAT LAB</div>','<span className="eyebrow">COMPETITIONS</span>','<span className="eyebrow">MAA AMC PATHWAY</span>','<span className="eyebrow">SMART BY FORMAT</span>','<span className="eyebrow">OFFICIAL SAMPLES</span>','<span className="eyebrow">OFFICIAL PRACTICE</span>','<span className="eyebrow">PAST PAPERS</span>'],
+  },
+  'src/components/SiteHeader.tsx':{
+    'must':['数学训练','竞赛模拟','赛事管家','数学成长'],
+    'must_not':[],
+  },
+  'src/components/EventsCompanionClient.tsx':{
+    'must':['WorldCompetitionHub','useSiteLanguage','/competitions?c='],
+    'must_not':[],
   },
   'src/components/WorldCompetitionHub.tsx':{
     'must':['全球数学赛事管家','世界赛事目录','按地区筛选赛事','WORLD_REGION_OPTIONS','WORLD_COMPETITIONS','CompetitionCompanion','查看赛事管家'],
