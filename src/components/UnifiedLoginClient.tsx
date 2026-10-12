@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import { SITE_BRAND } from "@/lib/site-brand";
 import styles from "./AuthExperience.module.css";
 
-type LoginMode = "checking" | "loading" | "qr" | "unavailable" | "error";
+type LoginMode = "checking" | "loading" | "qr" | "unavailable" | "error" | "studentRequired";
 const inWechat = () => typeof navigator !== "undefined" && /MicroMessenger/i.test(navigator.userAgent);
 
 export default function UnifiedLoginClient({ nextPath }: { nextPath: string }) {
@@ -18,6 +18,8 @@ export default function UnifiedLoginClient({ nextPath }: { nextPath: string }) {
   const [username, setUsername] = useState("");
   const [pin, setPin] = useState("");
   const [busy, setBusy] = useState(false);
+  const [mobileExternal, setMobileExternal] = useState(false);
+  const [shareHint, setShareHint] = useState("");
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const disposed = useRef(false);
   const ticketRef = useRef("");
@@ -28,7 +30,9 @@ export default function UnifiedLoginClient({ nextPath }: { nextPath: string }) {
     timer.current = null;
   }, []);
 
-  const destination = nextPath && nextPath !== "/login" ? nextPath : "/";
+  const destination = nextPath && nextPath !== "/login" ? nextPath : "/parent";
+  const studentDestination = nextPath && nextPath !== "/login" ? nextPath : "/";
+  const needsStudent = /^\/(?:exam\/|student(?:\/|$))/.test(destination);
 
   const poll = useCallback((ticket: string) => {
     stopPolling();
@@ -94,6 +98,13 @@ export default function UnifiedLoginClient({ nextPath }: { nextPath: string }) {
   }, [destination, poll, stopPolling]);
 
   useEffect(() => {
+    const handle = window.setTimeout(() => {
+      setMobileExternal(/Android|iPhone|iPad|Mobile/i.test(window.navigator.userAgent) && !inWechat());
+    }, 0);
+    return () => window.clearTimeout(handle);
+  }, []);
+
+  useEffect(() => {
     const currentRun = bootstrapRun;
     const run = ++currentRun.current;
     disposed.current = false;
@@ -104,8 +115,21 @@ export default function UnifiedLoginClient({ nextPath }: { nextPath: string }) {
           fetch("/api/auth/me", { cache: "no-store" }),
         ]);
         if (disposed.current || currentRun.current !== run) return;
-        if (results[0].ok || (results[1].ok && (await results[1].json()).user?.candidateNo !== "GUEST")) {
-          router.replace(destination);
+        const student = results[1].ok ? (await results[1].json()).user : null;
+        const genuineStudent = student && student.candidateNo !== "GUEST";
+        if (needsStudent) {
+          if (genuineStudent) {
+            router.replace(studentDestination);
+            router.refresh();
+            return;
+          }
+          if (results[0].ok) {
+            setMode("studentRequired");
+            setMessage("微信家庭已登录。完整模拟和个人成长档案需要已有学生账号；可在下方继续登录，基础计算无需这一步。");
+            return;
+          }
+        } else if (results[0].ok || genuineStudent) {
+          router.replace(results[0].ok ? destination : studentDestination);
           router.refresh();
           return;
         }
@@ -118,7 +142,21 @@ export default function UnifiedLoginClient({ nextPath }: { nextPath: string }) {
       ticketRef.current = "";
       stopPolling();
     };
-  }, [destination, router, startWechat, stopPolling]);
+  }, [destination, studentDestination, needsStudent, router, startWechat, stopPolling]);
+
+  async function sendToWechat() {
+    const address = window.location.href;
+    if (typeof navigator.share === "function") {
+      try { await navigator.share({ title: "SOC THINK · 微信快速登录", url: address }); return; }
+      catch (error) { if (error instanceof Error && error.name === "AbortError") return; }
+    }
+    try {
+      await navigator.clipboard.writeText(address);
+      setShareHint("链接已复制。发到微信聊天后点开，即可直接微信登录。");
+    } catch {
+      setShareHint("请复制浏览器地址栏中的网址，再到微信里打开。");
+    }
+  }
 
   async function studentLogin(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -133,7 +171,7 @@ export default function UnifiedLoginClient({ nextPath }: { nextPath: string }) {
       const body = await res.json();
       if (!res.ok) throw new Error(body.error || "登录失败");
       router.replace(body.user?.role === "student" && body.user?.onboardingCompleted !== true
-        ? "/student/settings?welcome=1" : destination);
+        ? "/student/settings?welcome=1" : studentDestination);
       router.refresh();
     } catch (e) {
       setMessage(e instanceof Error ? e.message : "登录失败");
@@ -166,6 +204,12 @@ export default function UnifiedLoginClient({ nextPath }: { nextPath: string }) {
             <p>打开手机微信扫一扫，完成后电脑自动进入。</p>
           </div>
         : null}
+      {mobileExternal && <div className={styles.unifiedMobileHint}>
+        <strong>正在用手机浏览器打开？</strong>
+        <p>无需用同一部手机扫描屏幕上的二维码，把本页分享到微信里打开，就能直接用微信身份进入。</p>
+        <button type="button" className="secondary-button" onClick={() => void sendToWechat()}>分享到微信 / 复制链接</button>
+        {shareHint && <small role="status">{shareHint}</small>}
+      </div>}
       {message && <p className={styles.error} role="alert">{message}</p>}
       {(mode === "qr" || mode === "unavailable" || mode === "error") &&
         <button type="button" className="primary-button" onClick={() => void startWechat()}>
@@ -173,7 +217,8 @@ export default function UnifiedLoginClient({ nextPath }: { nextPath: string }) {
         </button>}
       <p className={styles.unifiedHelp}>这台电脑会记住登录状态；账号安全变化、退出登录或长时间未使用后才需要重新验证。</p>
 
-      <details className={styles.unifiedOther}>
+      {mode === "studentRequired" && <Link className="secondary-button" href="/arithmetic">先去做数学训练</Link>}
+      <details className={styles.unifiedOther} open={mode === "studentRequired" ? true : undefined}>
         <summary>其他登录方式（已有账号）</summary>
         <form onSubmit={studentLogin} className={styles.form}>
           <label className={styles.field}><span>已有学生账号 / 准考证号</span>

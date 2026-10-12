@@ -16,6 +16,11 @@ test("visitors see an automatic WeChat QR rather than a parent/student decision"
   await page.goto("/login");
   await expect(page.getByRole("heading",{name:"微信扫一扫，马上开始学习"})).toBeVisible();
   await expect(page.getByRole("img",{name:"使用手机微信扫描此二维码登录或注册"})).toBeVisible();
+  if(test.info().project.name==="mobile-chromium") {
+    await expect(page.getByRole("button",{name:"分享到微信 / 复制链接"})).toBeVisible();
+  } else {
+    await expect(page.getByRole("button",{name:"分享到微信 / 复制链接"})).toHaveCount(0);
+  }
   expect(issued).toBe(1);
   await expect(page.getByLabel("学生 PIN")).toBeHidden();
   await page.getByText("其他登录方式（已有账号）").click();
