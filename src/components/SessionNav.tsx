@@ -183,6 +183,13 @@ export default function SessionNav() {
               </Link>
             )}
 
+            {sessions.parent && role !== "parent" && (
+              <Link href="/parent#choose-child" onClick={close} role="menuitem">
+                <span><b>{lang === "zh" ? "切换孩子" : "Switch learner"}</b>
+                  <small>{lang === "zh" ? "返回家庭中心，选择另一位孩子" : "Select another child from this family"}</small></span>
+                <MenuArrow />
+              </Link>
+            )}
             {role === "student" && (
               <>
                 <Link href="/student" onClick={close} role="menuitem">
