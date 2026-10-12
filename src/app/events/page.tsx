@@ -1,12 +1,19 @@
 import type { Metadata } from "next";
-import WorldEventsExplorer from "@/components/WorldEventsExplorer";
-import { WORLD_COMPETITIONS } from "@/lib/world-competitions";
+import EventsCompanionClient from "@/components/EventsCompanionClient";
+import { listTrainingExamProfiles } from "@/lib/training-question-bank";
 
+export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
-  title: "全球数学赛事 | SOC THINK",
-  description: "一站式探索中国与世界数学竞赛，核对赛事来源、学段范围与备赛资源。报名资格与日期请以当届当地官方公告为准。",
+  title: "赛事管家 | SOC THINK",
+  description: "管理中国与世界数学赛事资讯、赛事关注、报名核验、备赛清单及赛历。站内模拟考试为独立业务。",
 };
 
-export default function EventsPage() {
-  return <WorldEventsExplorer events={WORLD_COMPETITIONS} />;
+export default async function EventsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ event?: string }>;
+}) {
+  const { event } = await searchParams;
+  const today = new Intl.DateTimeFormat("en-CA", { timeZone:"Asia/Shanghai", year:"numeric", month:"2-digit", day:"2-digit" }).format(new Date());
+  return <EventsCompanionClient exams={listTrainingExamProfiles()} today={today} selectedEvent={event}/>;
 }

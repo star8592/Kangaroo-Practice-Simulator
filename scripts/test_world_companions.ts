@@ -12,6 +12,7 @@ for (const event of WORLD_COMPETITIONS) {
   assert.ok(event.nameZh.length>2);
   assert.ok(event.nameEn.length>2);
   assert.ok(event.sourceUrl.startsWith("https://"));
+  if (event.region === "CN") assert.equal(event.trainingId, undefined, "China events must remain information-only: "+event.id);
   const companion = getWorldCompanion(event.id,"2026-10-09");
   assert.ok(companion,"missing companion: "+event.id);
   assert.ok(COMPETITION_COMPANIONS.includes(companion),"progress endpoint would reject companion "+event.id);

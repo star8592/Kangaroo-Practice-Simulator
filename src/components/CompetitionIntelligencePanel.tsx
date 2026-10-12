@@ -65,7 +65,7 @@ export default function CompetitionIntelligencePanel(){
         <p className={styles.source}>资料核验日期：{n.verifiedAt}</p>
         <div className={styles.links}>
           <a href={n.sourceUrl} target="_blank" rel="noreferrer">查看本赛区资料来源 ↗</a>
-          <Link href={"/competitions?event="+encodeURIComponent(n.eventId)}>赛事管家 →</Link>
+          <Link href={"/events?event="+encodeURIComponent(n.eventId)}>赛事管家 →</Link>
         </div>
       </article>)}
       {info.hiddenCount>0&&<p>另有 {info.hiddenCount} 项已核验事项，可在赛历中查看。</p>}

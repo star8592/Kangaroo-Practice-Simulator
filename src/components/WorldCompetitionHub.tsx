@@ -15,6 +15,7 @@ export default function WorldCompetitionHub({lang, today, exams, initialSelected
 }) {
   const [region, setRegion] = useState<RegionFilter>("all");
   const [stage, setStage] = useState<StageFilter>("all");
+  const [search, setSearch] = useState("");
   const [follows, setFollows] = useState<string[]>([]);
   const [followMode, setFollowMode] = useState<"loading"|"guest"|"ready"|"error">("loading");
   const [savingFollow, setSavingFollow] = useState(false);
@@ -47,9 +48,11 @@ export default function WorldCompetitionHub({lang, today, exams, initialSelected
   }
   const [selected, setSelected] = useState(WORLD_COMPETITIONS.some(x=>x.id===initialSelected) ? initialSelected! : WORLD_COMPETITIONS[0].id);
   const zh = lang === "zh";
-  const visible = WORLD_COMPETITIONS.filter(item => (region === "all" || item.region === region) && matchesWorldReferenceStage(item,stage));
-  const event = WORLD_COMPETITIONS.find(item => item.id === selected) || WORLD_COMPETITIONS[0];
-  const companion = getWorldCompanion(event.id, today);
+  const term = search.trim().toLocaleLowerCase();
+  const visible = WORLD_COMPETITIONS.filter(item => (region === "all" || item.region === region) && matchesWorldReferenceStage(item,stage) && (!term || [item.nameZh,item.nameEn,item.summaryZh,item.summaryEn].some(value => value.toLocaleLowerCase().includes(term))));
+  const selectedId = visible.some(item => item.id === selected) ? selected : visible[0]?.id;
+  const event = visible.find(item => item.id === selectedId);
+  const companion = event ? getWorldCompanion(event.id, today) : null;
   const trainingCount = (id?: string) => id
     ? exams.filter(item => item.competitionId === id && item.paperType !== "smart").length
     : 0;
@@ -61,6 +64,7 @@ export default function WorldCompetitionHub({lang, today, exams, initialSelected
         <p>{zh?"中国、美国、澳洲、加拿大、英国及全球性数学赛事，同一套管理流程。按地区筛选，不按国别分高低。":"One unified journey for math competitions in China and worldwide. Region is a filter, never a hierarchy."}</p>
       </div>
     </div>
+    <div className={styles.searchRow}><label htmlFor="event-search">{zh?"搜索赛事":"Search competitions"}</label><input id="event-search" type="search" value={search} onChange={e=>setSearch(e.target.value)} placeholder={zh?"华杯赛、袋鼠、AMC":"Competition name"}/></div>
     <div className={styles.filters} role="group" aria-label={zh?"按地区筛选赛事":"Filter events by region"}>
       {WORLD_REGION_OPTIONS.map(option => <button
         key={option.value} type="button" aria-pressed={region === option.value}
@@ -88,10 +92,11 @@ export default function WorldCompetitionHub({lang, today, exams, initialSelected
       <span>{zh?("我关注的赛事："+follows.length+"项"):("Following "+follows.length+" competitions")}</span>
       <Link href="/student/calendar">{zh?"打开我的赛历 →":"My calendar →"}</Link>
     </div>
+    <p className={styles.resultCount} role="status">{zh?`找到 ${visible.length} 项赛事`:`${visible.length} competitions`}</p>
     <div className="feature-grid" aria-label={zh?"世界赛事目录":"World competition directory"}>
       {visible.map(item => {
         const available = trainingCount(item.trainingId);
-        return <article className={selected===item.id?styles.selected:styles.card} key={item.id}>
+        return <article className={selectedId===item.id?styles.selected:styles.card} key={item.id}>
           <div className="paper-brand"><b>{worldRegionName(item.region, lang)}</b><span>{zh?"赛事档案":"Competition profile"}</span></div>
           <h3>{zh?item.nameZh:item.nameEn}</h3>
           <p>{zh?item.summaryZh:item.summaryEn}</p>
@@ -100,18 +105,19 @@ export default function WorldCompetitionHub({lang, today, exams, initialSelected
             ? (zh ? available + " 套已入库训练资料" : available + " indexed practice papers")
             : (zh ? "赛事资讯与备赛清单" : "Event information and preparation")}
           </p>
-          <button className={selected===item.id?"primary-button":"secondary-button"}
-            type="button" aria-pressed={selected===item.id}
+          <button className={selectedId===item.id?"primary-button":"secondary-button"}
+            type="button" aria-pressed={selectedId===item.id}
             onClick={() => {
               setSelected(item.id);
               document.getElementById("world-competition-detail")?.scrollIntoView({behavior:"smooth",block:"start"});
             }}>
-            {selected===item.id?(zh?"当前赛事 ✓":"Selected ✓"):(zh?"查看赛事管家":"Open companion")}
+            {selectedId===item.id?(zh?"当前赛事 ✓":"Selected ✓"):(zh?"查看赛事管家":"Open companion")}
           </button>
         </article>;
       })}
     </div>
-    <div id="world-competition-detail" className={styles.detail} aria-live="polite">
+    {visible.length===0 && <p className={styles.disclaimer}>{zh?"没有找到符合条件的赛事，请调整关键词或筛选。":"No matching competitions. Adjust your search or filters."}</p>}
+    {event && <div id="world-competition-detail" className={styles.detail} aria-live="polite">
       <div className={styles.detailHead}>
         <div>
           <span className="eyebrow">{worldRegionName(event.region, lang)}</span>
@@ -132,7 +138,7 @@ export default function WorldCompetitionHub({lang, today, exams, initialSelected
                 {savingFollow?(zh?"保存中…":"Saving…"):follows.includes(event.id)?(zh?"✓ 已关注 · 取消关注":"✓ Following · Unfollow"):(zh?"＋ 关注赛事":"＋ Follow competition")}
               </button>
             :followMode==="guest"
-              ? <Link className="secondary-button" href={"/login?next="+encodeURIComponent("/competitions?event="+event.id)}>
+              ? <Link className="secondary-button" href={"/login?next="+encodeURIComponent("/events?event="+event.id)}>
                   {zh?"登录后关注赛事":"Sign in to follow"}
                 </Link>
               :followMode==="error"
@@ -147,6 +153,6 @@ export default function WorldCompetitionHub({lang, today, exams, initialSelected
       </div>
       {followError&&<p role="alert">{followError}</p>}
       {companion && <CompetitionCompanion key={companion.id} companion={companion} lang={lang} today={today}/>}
-    </div>
+    </div>}
   </section>;
 }
