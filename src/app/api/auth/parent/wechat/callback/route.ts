@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { createFamilyPracticeSessionToken, SESSION_COOKIE, userFromSessionToken } from "@/lib/auth";
 import {
   authenticateOrCreateWechatParent,
   createParentSessionToken,
@@ -79,6 +80,11 @@ export async function GET(req: NextRequest) {
       domain: ".socthink.cn",
       maxAge: PARENT_SESSION_TTL_SECONDS,
     });
+    if (!userFromSessionToken(req.cookies.get(SESSION_COOKIE)?.value)) {
+      response.cookies.set(SESSION_COOKIE, createFamilyPracticeSessionToken(user.id), {
+        httpOnly: true, sameSite: "lax", secure: true, path: "/", domain: ".socthink.cn", maxAge: 604800,
+      });
+    }
     response.cookies.delete({ name: WECHAT_STATE_COOKIE, path: "/", domain: ".socthink.cn" });
     response.cookies.delete({ name: "socthink_parent_wechat_next", path: "/", domain: ".socthink.cn" });
     return response;

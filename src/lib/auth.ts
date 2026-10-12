@@ -1,4 +1,5 @@
 import crypto from "node:crypto";
+import {activeParentSessionVersion} from "./parent-auth";
 import { DEFAULT_STUDENT_AVATAR, isStudentAvatarKey } from "./student-avatar";
 import { hashScryptSecret, readSignedJsonToken, signJsonToken, verifyScryptSecret } from "./auth-crypto";
 import { atomicWriteJson, readJsonArray, readOrCreateSecret, userDataPath } from "./user-data-store";
@@ -25,6 +26,26 @@ export function authenticate(k0:string,pin:string){
 }
 export function publicUserById(id:string){const u=loadUsers().find(x=>x.id===id&&x.active);return u?pub(u):null}
 export function createSessionToken(uid:string,ttl=604800){const u=loadUsers().find(x=>x.id===uid&&x.active);if(!u)throw new Error("用户不存在或已停用");return signJsonToken({uid,ver:u.sessionVersion||1,exp:Math.floor(Date.now()/1000)+ttl},secret())}
+/** Stable but deliberately guest-scoped record for a signed-in family.
+ * No child owns it until the family explicitly associates a learner.
+ * In particular its guest_ prefix preserves the full-exam access gate.
+ */
+function familyPracticeId(parentId:string){
+ return "guest_family_"+crypto.createHmac("sha256",secret()).update("family-practice:"+parentId).digest("hex").slice(0,32);
+}
+export function createFamilyPracticeSessionToken(parentId:string,ttl=604800){
+ const version=activeParentSessionVersion(parentId);
+ if(version===null)throw new Error("家长账号无效");
+ return signJsonToken({uid:familyPracticeId(parentId),familyParent:parentId,familyVersion:version,familyPractice:true,exp:Math.floor(Date.now()/1000)+ttl},secret());
+}
+export function familyPracticeUserFromSessionToken(token:string|undefined|null):PublicStudent|null{
+ const x=readSignedJsonToken<{uid?:string;familyParent?:string;familyVersion?:number;familyPractice?:boolean;exp?:number}>(token,secret());
+ if(!x?.familyPractice || !x.uid || !x.familyParent || !x.exp || x.exp < Math.floor(Date.now()/1000))return null;
+ const version=activeParentSessionVersion(x.familyParent);
+ if(version===null || version!==x.familyVersion || x.uid!==familyPracticeId(x.familyParent))return null;
+ return {id:x.uid,username:"guest",candidateNo:"GUEST",name:"家庭体验档案",grade:1,
+  avatarKey:DEFAULT_STUDENT_AVATAR,onboardingCompleted:true,createdAt:0,active:true,role:"student",sessionVersion:1};
+}
 export function createGuestSessionToken(ttl=7200){const id=`guest_${crypto.randomBytes(10).toString("hex")}`;return signJsonToken({uid:id,guest:true,exp:Math.floor(Date.now()/1000)+ttl},secret())}
 // A stable, pseudonymous mini-program identity. The raw OpenID is never stored
 // in the client token or exposed in API responses.
@@ -40,6 +61,7 @@ export function miniappWechatUserFromSessionToken(t:string|undefined|null):Publi
 }
 export function guestUserFromSessionToken(t:string|undefined|null):PublicStudent|null{const x=readSignedJsonToken<{uid?:string;guest?:boolean;exp?:number}>(t,secret());if(!x?.guest||!x.uid?.startsWith("guest_")||!x.exp||x.exp<Math.floor(Date.now()/1000))return null;return{id:x.uid,username:"guest",candidateNo:"GUEST",name:"游客体验",grade:6,school:"Socthink",avatarKey:DEFAULT_STUDENT_AVATAR,onboardingCompleted:true,createdAt:Date.now(),active:true,role:"student",sessionVersion:1}}
 export function userFromSessionToken(t:string|undefined|null):PublicStudent|null{
+ const family=familyPracticeUserFromSessionToken(t);if(family)return family;
  const wx=miniappWechatUserFromSessionToken(t);if(wx)return wx;
  const guest=guestUserFromSessionToken(t);if(guest)return guest;
  const x=readSignedJsonToken<{uid?:string;ver?:number;exp?:number}>(t,secret());if(!x?.uid||!x.exp||x.exp<Math.floor(Date.now()/1000))return null;

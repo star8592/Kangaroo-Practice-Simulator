@@ -37,6 +37,13 @@ function pub(u:ParentUser):PublicParent{const {passwordHash,...x}=u;void passwor
 function loadParents():ParentUser[]{return readJsonArray<ParentUser>(FILE).map(u=>({...u,email:normalizeEmail(u.email)||undefined,role:"parent",active:u.active!==false,sessionVersion:Math.max(1,Number(u.sessionVersion)||1)}))}
 function saveParents(rows:ParentUser[]){atomicWriteJson(FILE,rows)}
 export function parentByEmail(email:string){const k=normalizeEmail(email);return k?loadParents().find(x=>x.email===k):undefined}
+/** Internal check for independently scoped family practice sessions.
+ * Never return a parent's details in the public student token.
+ */
+export function activeParentSessionVersion(parentId:string):number|null{
+ const parent=loadParents().find(x=>x.id===parentId && x.active);
+ return parent ? parent.sessionVersion||1 : null;
+}
 export function parentByWechatId(wechatId:string){const k=wechatId.trim();return k?loadParents().find(x=>x.wechatId===k||x.wechatOpenId===k):undefined}
 
 export function createParent(input:{email:string;name:string;passwordHash:string;termsAcceptedAt:number;guardianConfirmedAt:number}){
