@@ -100,12 +100,9 @@ export default function SessionNav() {
   if (!sessions.student && !sessions.parent) {
     return (
       <div className={styles.guestActions}>
-        <Link className={styles.guestStudent} href="/login">
-          {lang === "zh" ? "学生登录" : "Student"}
-        </Link>
-        <Link className={styles.guestParent} href="/parent/login">
-          <span>{lang === "zh" ? "家长中心" : "Parent"}</span>
-          <small>{lang === "zh" ? "微信扫码" : "WeChat"}</small>
+        <Link className={styles.guestParent} href="/login">
+          <span>{lang === "zh" ? "登录 / 注册" : "Sign in / Join"}</span>
+          <small>{lang === "zh" ? "微信扫码" : "WeChat first"}</small>
         </Link>
       </div>
     );

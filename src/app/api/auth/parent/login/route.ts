@@ -1,5 +1,5 @@
 import {NextRequest,NextResponse} from "next/server";
-import {authenticateParent,createParentSessionToken,PARENT_SESSION_COOKIE} from "@/lib/parent-auth";
+import {authenticateParent,createParentSessionToken,PARENT_SESSION_COOKIE,PARENT_SESSION_TTL_SECONDS} from "@/lib/parent-auth";
 import {checkLoginLimit,clearLoginFailures,loginKey,recordLoginFailure} from "@/lib/login-rate-limit";
 
 export async function POST(req:NextRequest){
@@ -10,6 +10,6 @@ export async function POST(req:NextRequest){
   const u=authenticateParent(email,password);
   if(!u){const failed=recordLoginFailure(key);return NextResponse.json({error:"邮箱或密码不正确"},{status:failed.blockedUntil>Date.now()?429:401})}
   clearLoginFailures(key);
-  const r=NextResponse.json({ok:true,user:u});r.cookies.set(PARENT_SESSION_COOKIE,createParentSessionToken(u.id),{httpOnly:true,sameSite:"strict",secure:req.nextUrl.protocol==="https:",path:"/",maxAge:604800});return r;
+  const r=NextResponse.json({ok:true,user:u});r.cookies.set(PARENT_SESSION_COOKIE,createParentSessionToken(u.id),{httpOnly:true,sameSite:"strict",secure:req.nextUrl.protocol==="https:",path:"/",maxAge:PARENT_SESSION_TTL_SECONDS});return r;
  }catch{return NextResponse.json({error:"登录失败"},{status:400})}
 }

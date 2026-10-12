@@ -7,7 +7,26 @@ import { openWorldEvent } from '../../services/world-event-navigation'
 
 export default function HomePage(){
   const [analytics,setAnalytics]=useState<any>(null)
-  const user=authStore.user()
+  const [user,setUser]=useState<any>(authStore.user())
+  const [wechatConnection,setWechatConnection]=useState<'connecting'|'ready'|'failed'>('connecting')
+  useEffect(()=>{
+    let current=true
+    const connect=async()=>{
+      try{
+        await ensureWechatSession(false,false)
+        if(current){setUser(authStore.user());setWechatConnection('ready')}
+      }catch{
+        if(current){setUser(authStore.user());setWechatConnection('failed')}
+      }
+    }
+    void connect()
+    return ()=>{current=false}
+  },[])
+  const retryWechat=async()=>{
+    setWechatConnection('connecting')
+    try{await ensureWechatSession(true,false);setUser(authStore.user());setWechatConnection('ready')}
+    catch(e){setWechatConnection('failed');Taro.showToast({title:e instanceof Error?e.message:'微信身份连接失败',icon:'none'})}
+  }
   const greeting=user?.username==='guest'?'同学':user?.username==='wechat'?'同学':user?.name||'同学'
   useEffect(()=>{api('/api/student/analytics').then(setAnalytics).catch(()=>{})},[])
 
@@ -22,7 +41,11 @@ export default function HomePage(){
   }
 
   const openArithmetic=async()=>{
-    try{await Taro.switchTab({url:'/pages/arithmetic/index'})}
+    try{
+      // Auth must be established before an activity; never create a surprise guest.
+      if(!authStore.token() || authStore.user()?.username==='guest')await ensureWechatSession(false,false)
+      await Taro.switchTab({url:'/pages/arithmetic/index'})
+    }
     catch{
       try{await Taro.reLaunch({url:'/pages/arithmetic/index'})}
       catch{Taro.showToast({title:'计算训练暂时无法打开，请重试',icon:'none'})}
@@ -40,6 +63,11 @@ export default function HomePage(){
   const hasHistory=arithmeticSessions>0||examAttempts>0
 
   return <View className='page'>
+    {wechatConnection==='failed'&&<View className='card' role='alert'>
+      <View className='card-title'>微信身份暂时未连接</View>
+      <View className='muted'>网络恢复后可以一键重试。为避免学习记录丢失，系统不会自动给你创建新的游客账号。</View>
+      <Button className='primary' onClick={()=>void retryWechat()}>重新连接微信</Button>
+    </View>}
     <View className='hero'>
       <View className='muted' style='color:#cbd5e1'>你好，{greeting}</View>
       <Text className='big'>{hasHistory?'继续今天的数学训练':'从今天的计算训练开始'}</Text>

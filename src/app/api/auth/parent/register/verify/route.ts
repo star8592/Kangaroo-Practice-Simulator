@@ -1,6 +1,6 @@
 import {NextRequest,NextResponse} from "next/server";
 import {verifyChallenge} from "@/lib/auth-challenges";
-import {createParent,createParentSessionToken,PARENT_SESSION_COOKIE} from "@/lib/parent-auth";
+import {createParent,createParentSessionToken,PARENT_SESSION_COOKIE,PARENT_SESSION_TTL_SECONDS} from "@/lib/parent-auth";
 
 export async function POST(req:NextRequest){
  try{
@@ -10,7 +10,7 @@ export async function POST(req:NextRequest){
   if(!p?.name||!p.passwordHash||!p.termsAcceptedAt||!p.guardianConfirmedAt)throw new Error("注册信息已失效，请重新注册");
   const user=createParent({email,name:p.name,passwordHash:p.passwordHash,termsAcceptedAt:p.termsAcceptedAt,guardianConfirmedAt:p.guardianConfirmedAt});
   const r=NextResponse.json({ok:true,user},{status:201});
-  r.cookies.set(PARENT_SESSION_COOKIE,createParentSessionToken(user.id),{httpOnly:true,sameSite:"strict",secure:req.nextUrl.protocol==="https:",path:"/",maxAge:604800});
+  r.cookies.set(PARENT_SESSION_COOKIE,createParentSessionToken(user.id),{httpOnly:true,sameSite:"strict",secure:req.nextUrl.protocol==="https:",path:"/",maxAge:PARENT_SESSION_TTL_SECONDS});
   return r;
  }catch(e){return NextResponse.json({error:e instanceof Error?e.message:"邮箱验证失败"},{status:400})}
 }
