@@ -6,6 +6,7 @@ import Image from "next/image";
 import type { ExamProfile,PublicQuestion } from "@/lib/types";
 import MathVerificationBadge from "@/components/MathVerificationBadge";
 import ExamReadAloud from "@/components/ExamReadAloud";
+import { lowerPrimaryGrade } from "@/lib/read-aloud-script";
 import type { PublicStudent } from "@/lib/auth";
 import { COMPETITION_BRAND,competitionStageBrand,type CompetitionBrandId } from "@/lib/competition-brand";
 
@@ -313,7 +314,7 @@ export default function ExamClient({examId,user,initialProfile,initialQuestions}
   <section className="question-card"><div className="question-meta"><div><span className="q-number">Question {index+1}</span><span className={`point-badge ${pointBand}`}>{q.points} {ui.points}</span>{sectionLabel&&<span className="section-chip">{sectionLabel}</span>}</div>
    <div className="question-tools">{hasBilingual&&<button onClick={switchLang}>{lang==="zh"?"EN":"中"}</button>}<button onClick={toggleFlag}>{flagged[q.id]?`★ ${ui.marked}`:`☆ ${ui.marked}`}</button></div></div>
    <div className="concept-label-row"><div className="concept-label">{concept}</div><MathVerificationBadge verification={q.mathVerification} lang={lang}/></div><h1 className="question-stem">{stem}</h1>
-   <ExamReadAloud key={q.id} questionId={q.id} audioZh={q.readingAudioZh} audioEn={q.readingAudioEn} chinese={q.stem} english={q.stemEn} chineseChoices={q.choices} englishChoices={q.choicesEn||[]} />
+   {lowerPrimaryGrade(String(profile.gradesEn||profile.grades||profile.gradesZh||""),profile.gradeBand)&&<ExamReadAloud key={q.id} questionId={q.id} audioZh={q.readingAudioZh} audioEn={q.readingAudioEn} chinese={q.stem} english={q.stemEn} chineseChoices={q.choices} englishChoices={q.choicesEn||[]} />}
    {visualAsset&&<Image className="question-asset" src={visualAsset} alt={lang==="zh"?"题目图示":"Question diagram"} width={900} height={500} unoptimized/>}
    {isInteger?<div className="integer-answer-box"><label>{lang==="zh"?"整数答案（0–999）":"Integer answer (0–999)"}</label><input inputMode="numeric" pattern="[0-9]*" maxLength={3} value={answers[q.id]||""} onChange={e=>enterInteger(e.target.value)} placeholder="0–999" /></div>
     :<div className="choice-list">{choices.map(c=><button key={c.key} onClick={()=>choose(c.key)} className={answers[q.id]===c.key?"choice selected":"choice"}><span className="choice-key">{c.key}</span><span>{c.label}</span></button>)}</div>}

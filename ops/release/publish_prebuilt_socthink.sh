@@ -189,9 +189,11 @@ if [ "$DATA_CURRENT" != "1" ]; then
 fi
 
 ln -s "$APP/private" "$REL/private"
-mkdir -p "$REL/public"
+mkdir -p "$REL/public" "$APP/public/exam-read-aloud/v1"
 ln -s "$APP/public/local-assets" "$REL/public/local-assets"
 ln -s "$APP/public/generated-solutions" "$REL/public/generated-solutions"
+# Generated exam audio is promoted independently and shared across immutable releases.
+ln -s "$APP/public/exam-read-aloud" "$REL/public/exam-read-aloud"
 
 cd "$REL"
 python3 scripts/test_pre_a_grade1_ready.py
