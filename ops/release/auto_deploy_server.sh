@@ -203,11 +203,13 @@ ROOT="$BUILD_SRC" OUT="$BUILD_OUT" TARGET_SHA="$TARGET_SHA" VERSION="$VERSION" \
 mv "$BUILD_OUT/runtime" "$REL"
 test -f "$REL/server.js"
 test "$(cat "$REL/.release/deployed_sha")" = "$TARGET_SHA"
-rm -rf "$REL/private" "$REL/public/local-assets" "$REL/public/generated-solutions"
+rm -rf "$REL/private" "$REL/public/local-assets" "$REL/public/generated-solutions" "$REL/public/exam-read-aloud"
 ln -s "$APP/private" "$REL/private"
-mkdir -p "$REL/public"
+mkdir -p "$REL/public" "$APP/public/exam-read-aloud/v1"
 ln -s "$APP/public/local-assets" "$REL/public/local-assets"
 ln -s "$APP/public/generated-solutions" "$REL/public/generated-solutions"
+# Content-addressed G1/G2 narration is persistent release data, not Git code.
+ln -s "$APP/public/exam-read-aloud" "$REL/public/exam-read-aloud"
 
 cd "$REL"
 write_debug "candidate" 0 "node server.js" 0

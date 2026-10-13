@@ -1,5 +1,6 @@
 import type { ExamBundle, PublicQuestion, Question } from "./types";
 import { mathVerificationForQuestion } from "./math-verification";
+import { availableExamSpeech } from "./exam-audio";
 import { listStoredExamProfiles, loadStoredExamBundle } from "./exam-bundle-store";
 
 const text = (value: unknown) => typeof value === "string" ? value.trim() : "";
@@ -55,6 +56,12 @@ export function trainingQuestions(questions: Question[]): PublicQuestion[] {
     const zh = q.localized?.zh;
     const en = q.localized?.en;
     const commonVisual = q.studentAssetUrl || q.assetUrl;
+    const chineseStem = text(zh?.stem) || text(q.stem) || "请查看下方原题图。";
+    const englishStem = text(en?.stem) || text(q.stemEn) || undefined;
+    const chineseChoices = zh?.choices?.length ? zh.choices : q.choices;
+    const englishChoices = en?.choices?.length ? en.choices : q.choicesEn?.length ? q.choicesEn : undefined;
+    const genuineEnglish = Boolean(englishStem && englishChoices?.length === chineseChoices.length &&
+      englishChoices?.every((c, i) => c.key === chineseChoices[i]?.key && Boolean(c.label.trim())));
     return {
       id: q.id,
       year: q.year,
@@ -65,10 +72,12 @@ export function trainingQuestions(questions: Question[]): PublicQuestion[] {
       points: q.points,
       answerMode: q.answerMode,
       concept: q.concept,
-      stem: text(zh?.stem) || text(q.stem) || "请查看下方原题图。",
-      stemEn: text(en?.stem) || text(q.stemEn) || text(q.stem) || "See the problem image below.",
-      choices: zh?.choices?.length ? zh.choices : q.choices,
-      choicesEn: en?.choices?.length ? en.choices : q.choicesEn?.length ? q.choicesEn : q.choices,
+      stem: chineseStem,
+      stemEn: englishStem,
+      choices: chineseChoices,
+      choicesEn: englishChoices,
+      readingAudioZh: q.readingAudioZh || availableExamSpeech(chineseStem, chineseChoices, "zh"),
+      readingAudioEn: genuineEnglish ? q.readingAudioEn || availableExamSpeech(englishStem!, englishChoices!, "en") : undefined,
       assetUrl: commonVisual,
       assetUrlZh: q.studentAssetUrlZh || q.assetUrlZh || commonVisual,
       assetUrlEn: q.studentAssetUrlEn || q.assetUrlEn || commonVisual,

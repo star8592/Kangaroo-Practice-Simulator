@@ -82,3 +82,6 @@ __pycache__/
 playwright-report/
 
 test-results/
+
+# G1/G2 question narration MP3 assets are promoted separately after checksum audit.
+/public/exam-read-aloud/*
