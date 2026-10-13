@@ -44,3 +44,11 @@ test("main CI independently checks browser clicks and native miniapp build",()=>
   assert.match(workflow,/name: Miniapp build and API contracts/);
   assert.match(workflow,/verify:miniapp/);
 });
+
+test("public exam audio directory is traversable before atomic promotion",()=>{
+  const release=read("ops/release/publish_exam_readaloud_assets.sh");
+  const chmod='chmod 755 "$STAGE" "$STAGE/v1"';
+  const mv='mv -T "$STAGE" "$CURRENT"';
+  assert.ok(release.includes(chmod));
+  assert.ok(release.indexOf(chmod)<release.indexOf(mv));
+});
