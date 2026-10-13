@@ -35,7 +35,11 @@ with tempfile.TemporaryDirectory(prefix="socthink-offsite-fixture-") as td:
     reject(lambda:module.verify(out,"../something.tar.zst.gpg"))
     reject(lambda:module.verify(out,"socthink-other-name.tar.zst.gpg"))
     orig=archive.read_bytes()
-    archive.write_bytes(orig[:-1]+b"X")
+    # Always change the ciphertext: a random fixture can already end in "X".
+    # Flip one bit so the tamper case never accidentally becomes a no-op.
+    mutated=orig[:-1]+bytes([orig[-1]^0x01])
+    assert mutated!=orig
+    archive.write_bytes(mutated)
     reject(lambda:module.verify(out,name))
     archive.write_bytes(orig)
     (out/(name+".sha256")).write_text("0"*64+"  "+name+"\n")
