@@ -45,6 +45,10 @@ const globalFamilies: WorldCompetition[] = ([
   sourceLabelEn: item.id === "ukmt" ? "UKMT official papers" : "Organizer website (does not prove local registration)",
 }));
 
+// Public discovery shows international series only. China event information stays
+// in the full WORLD_COMPETITIONS catalogue used by the Events Companion.
+export const INTERNATIONAL_SHOWCASE_COMPETITIONS: readonly WorldCompetition[] = globalFamilies;
+
 const chinaFamilies: WorldCompetition[] = CHINA_MATH_EVENTS.map(event => ({
   id: event.id,
   region: "CN",

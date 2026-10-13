@@ -86,10 +86,7 @@ export default function CompetitionsPage(){
   const filtered=useMemo(()=>competition==='all'?exams:exams.filter(x=>x.competitionId===competition),[exams,competition])
   return <View className='page'>
     <View className='hero'><View className='eyebrow'>SOC THINK · MOCK EXAMS</View><Text className='big'>竞赛模拟考试</Text><View className='hero-copy'>按真实赛制选择试卷、计时作答与查看成绩。赛事介绍、报名核验与备赛清单请前往赛事管家。</View></View>
-    <View className='card'><View className='card-title'>需要查比赛或管理赛程？</View>
-      <View className='muted'>中国和国际数学赛事同等展示，关注赛事不代表已报名。</View>
-      <Button className='secondary' onClick={()=>void openWorldEvent().catch(()=>Taro.showToast({title:'赛事暂时无法打开',icon:'none'}))}>进入赛事管家</Button>
-    </View>
+    <Button className='secondary' onClick={()=>void openWorldEvent().catch(()=>Taro.showToast({title:'赛事暂时无法打开',icon:'none'}))}>赛事信息与报名 · 进入赛事管家</Button>
     <View id='competition-exam-catalog' className='section-title'>模拟考试与真题训练</View>
     <View className='competition-tabs'>{groups.filter(g=>g.id==='all'||exams.some(x=>x.competitionId===g.id)).map(g=><Button key={g.id} className={competition===g.id?'competition-tab active':'competition-tab'} onClick={()=>{setCompetition(g.id);setLimit(24)}}>{g.label}</Button>)}</View>
     <View className='section-title'>{competition==='all'?'可训练试卷':groups.find(g=>g.id===competition)?.label}</View>
