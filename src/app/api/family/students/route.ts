@@ -1,11 +1,13 @@
 import crypto from "node:crypto";
 import { NextRequest, NextResponse } from "next/server";
-import { createStudent, updateStudent } from "@/lib/auth";
+import { authenticate, createStudent, updateStudent } from "@/lib/auth";
 import { buildStudentAnalytics } from "@/lib/student-analytics";
+import {checkLoginLimit,clearLoginFailures,loginKey,recordLoginFailure} from "@/lib/login-rate-limit";
 import { loadExamAttempts } from "@/lib/attempt-store";
 import {
   addStudentToFamily,
   familyOwnsStudent,
+  linkVerifiedStudentToFamily,
   publicFamilyStudents,
 } from "@/lib/family-store";
 import { buildStudentAttention } from "@/lib/academic-events/student-attention";
@@ -66,7 +68,11 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const grade = Number(body?.grade);
     const name = String(body?.name || "").trim();
-    const pin = String(body?.pin || "");
+    // A family-managed learner needs no manually configured student PIN.
+    // Generate a strong fallback secret; independent sign-in can be enabled
+    // later in advanced settings without making onboarding a registration form.
+    const providedPin = String(body?.pin || "");
+    const pin = providedPin || crypto.randomInt(100_000_000, 1_000_000_000).toString();
 
     if (!name || name.length > 50) {
       return NextResponse.json({ error: "请填写 1–50 个字符的孩子姓名或昵称" }, { status: 400 });
@@ -74,8 +80,8 @@ export async function POST(req: NextRequest) {
     if (!Number.isInteger(grade) || grade < 1 || grade > 13) {
       return NextResponse.json({ error: "年级必须为 1–13" }, { status: 400 });
     }
-    if (!/^\d{4,12}$/.test(pin)) {
-      return NextResponse.json({ error: "学生 PIN 必须为 4–12 位数字" }, { status: 400 });
+    if (providedPin && !/^\d{4,12}$/.test(providedPin)) {
+      return NextResponse.json({ error: "独立登录 PIN 必须为 4–12 位数字" }, { status: 400 });
     }
 
     const username = String(body?.username || "").trim()
@@ -161,4 +167,35 @@ export async function PATCH(req: NextRequest) {
       { status: 400 },
     );
   }
+}
+
+/** Explicit opt-in binding of a previously existing student account.
+ * Both parent authentication and the exact student's PIN are required.
+ */
+export async function PUT(req:NextRequest){
+ const p=parent(req);
+ if(!p)return NextResponse.json({error:"请先登录家庭微信账号"},{status:401});
+ const input=await req.json().catch(()=>null);
+ const username=typeof input?.username==="string"?input.username.trim():"";
+ const pin=typeof input?.pin==="string"?input.pin:"";
+ if(username.length<2||username.length>120||!/^[0-9]{4,12}$/.test(pin)){
+  return NextResponse.json({error:"请填写已有学生账号与正确的 PIN"},{status:400});
+ }
+ const ip=(req.headers.get("x-forwarded-for")||req.headers.get("x-real-ip")||"local").split(",")[0].trim();
+ const key=loginKey(username,ip);
+ const limit=checkLoginLimit(key);
+ if(!limit.allowed)return NextResponse.json({error:"验证次数过多，请稍后重试"},{status:429,headers:{"Retry-After":String(limit.retryAfterSeconds)}});
+ const learner=authenticate(username,pin);
+ if(!learner||learner.role!=="student"){
+  const failed=recordLoginFailure(key);
+  if(failed.blockedUntil>Date.now())return NextResponse.json({error:"验证次数过多，请稍后重试"},{status:429,headers:{"Retry-After":String(Math.ceil((failed.blockedUntil-Date.now())/1000))}});
+  return NextResponse.json({error:"学生账号或 PIN 不正确"},{status:401});
+ }
+ clearLoginFailures(key);
+ try{
+  const link=linkVerifiedStudentToFamily(p.id,learner.id);
+  return NextResponse.json({ok:true,student:{id:learner.id,name:learner.name,grade:learner.grade},alreadyLinked:link.alreadyLinked});
+ }catch(e){
+  return NextResponse.json({error:e instanceof Error?e.message:"无法绑定学生账号"},{status:409});
+ }
 }

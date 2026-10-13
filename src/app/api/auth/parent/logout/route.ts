@@ -1,9 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PARENT_SESSION_COOKIE } from "@/lib/parent-auth";
+import { SESSION_COOKIE, isFamilyManagedSessionToken } from "@/lib/auth";
 
 export async function POST(req: NextRequest) {
   const response = NextResponse.json({ ok: true });
   const secure = req.nextUrl.protocol === "https:";
+  const linkedFamilyPractice = isFamilyManagedSessionToken(req.cookies.get(SESSION_COOKIE)?.value);
+  if (linkedFamilyPractice) {
+    response.cookies.set(SESSION_COOKIE, "", {
+      httpOnly:true,sameSite:"lax",secure,path:"/",maxAge:0,
+    });
+  }
 
   response.cookies.set(PARENT_SESSION_COOKIE, "", {
     httpOnly: true,
@@ -30,6 +37,12 @@ export async function POST(req: NextRequest) {
       secure ? "Secure" : "",
     ].filter(Boolean);
     response.headers.append("Set-Cookie", attributes.join("; "));
+    if (linkedFamilyPractice) {
+      response.headers.append("Set-Cookie", [
+        SESSION_COOKIE + "=","Path=/","Domain=.socthink.cn","Max-Age=0",
+        "HttpOnly","SameSite=Lax",secure ? "Secure" : "",
+      ].filter(Boolean).join("; "));
+    }
   }
 
   return response;

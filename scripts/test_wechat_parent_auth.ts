@@ -14,7 +14,7 @@ async function main() {
   assert.equal(official.origin, "https://open.weixin.qq.com");
   assert.equal(official.pathname, "/connect/oauth2/authorize");
   assert.equal(official.searchParams.get("appid"), "wx_test_app");
-  assert.equal(official.searchParams.get("scope"), "snsapi_userinfo");
+  assert.equal(official.searchParams.get("scope"), "snsapi_base");
   assert.equal(official.searchParams.get("state"), "state123");
   assert.equal(
     decodeURIComponent(official.searchParams.get("redirect_uri") || ""),

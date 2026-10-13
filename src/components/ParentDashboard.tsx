@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useEffect, useState } from "react";
+import Link from "next/link";
 import { studentAvatarEmoji } from "@/lib/student-avatar";
 import styles from "./ParentDashboard.module.css";
 
@@ -47,10 +48,14 @@ function relativeTime(value?: number | null) {
 
 export default function ParentDashboard() {
   const [rows, setRows] = useState<Student[]>([]);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
   const [busy, setBusy] = useState(false);
   const [show, setShow] = useState(false);
+  const [linkExisting,setLinkExisting]=useState(false);
+  const [selectedStudentId,setSelectedStudentId]=useState("");
+  const [switchingStudentId,setSwitchingStudentId]=useState("");
   const [editing, setEditing] = useState<Student | null>(null);
   const [pinStudent, setPinStudent] = useState<Student | null>(null);
 
@@ -65,6 +70,15 @@ export default function ParentDashboard() {
     }
   }
 
+  useEffect(()=>{
+    let live=true;
+    fetch("/api/auth/me",{cache:"no-store"})
+      .then(r=>r.ok?r.json():null)
+      .then(data=>{if(live)setSelectedStudentId(data?.user?.id||"")})
+      .catch(()=>{});
+    return ()=>{live=false};
+  },[]);
+
   useEffect(() => {
     let cancelled = false;
     fetch("/api/family/students", { cache: "no-store" })
@@ -74,10 +88,10 @@ export default function ParentDashboard() {
         return data.students || [];
       })
       .then((students) => {
-        if (!cancelled) setRows(students);
+        if (!cancelled) {setRows(students);setLoading(false);}
       })
       .catch((e) => {
-        if (!cancelled) setError(e instanceof Error ? e.message : String(e));
+        if (!cancelled) {setError(e instanceof Error ? e.message : String(e));setLoading(false);}
       });
     return () => {
       cancelled = true;
@@ -102,12 +116,51 @@ export default function ParentDashboard() {
       if (!response.ok) throw new Error(data.error || "创建失败");
       form.reset();
       setShow(false);
-      setNotice("孩子账号已创建，可以把登录名和 PIN 告诉孩子。");
+      setNotice("孩子学习档案已建立。以后点孩子的名字即可直接开始，不必单独登录。");
       await load();
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e));
     } finally {
       setBusy(false);
+    }
+  }
+
+  async function linkExistingStudent(event:FormEvent<HTMLFormElement>){
+    event.preventDefault();
+    setBusy(true);
+    setNotice("");
+    setError("");
+    const form=new FormData(event.currentTarget);
+    try{
+      const response=await fetch("/api/family/students",{method:"PUT",
+        headers:{"content-type":"application/json"},
+        body:JSON.stringify({username:form.get("username"),pin:form.get("pin")})});
+      const result=await response.json();
+      if(!response.ok)throw new Error(result.error||"关联失败");
+      setLinkExisting(false);
+      setNotice(result.alreadyLinked?"这个孩子已经在家庭档案里。":`已关联 ${result.student.name}，原有数学成绩和学习记录保持不变。`);
+      await load();
+    }catch(e){setError(e instanceof Error?e.message:"关联失败")}
+    finally{setBusy(false)}
+  }
+
+  async function startForStudent(studentId:string) {
+    if(switchingStudentId)return;
+    setSwitchingStudentId(studentId);
+    setError("");
+    try {
+      const res=await fetch("/api/family/active-student",{
+        method:"POST",credentials:"same-origin",
+        headers:{"content-type":"application/json"},
+        body:JSON.stringify({studentId}),
+      });
+      const data=await res.json();
+      if(!res.ok)throw new Error(data.error||"切换学习档案失败");
+      // A full navigation ensures the server sees the new HttpOnly session.
+      window.location.assign("/arithmetic");
+    }catch(e){
+      setError(e instanceof Error?e.message:"无法进入该孩子的学习档案");
+      setSwitchingStudentId("");
     }
   }
 
@@ -176,36 +229,94 @@ export default function ParentDashboard() {
     }
   }
 
+  const activeChildren=rows.filter(x=>x.active);
   return (
     <div className={`admin-shell ${styles.shell}`}>
+      <section className={styles.welcome} aria-label="家庭学习快捷入口">
+        <div className={styles.welcomeCopy}>
+          <span className={styles.welcomeEyebrow}>SOC THINK · 我的家庭</span>
+          <h1>{activeChildren.length>0?"今天，谁来学数学？":"今天，我们练一点数学。"}</h1>
+          <p>{activeChildren.length>0?"点一下孩子的名字，就能接着练；每个孩子的记录各归各的，不需要反复输入 PIN。":"家庭已经登录。孩子可以先练计算，不用注册学生账号，也不用记住密码。"}</p>
+          <div className={styles.welcomeActions}>
+            {loading?<span className={styles.welcomeStatus}>正在读取家庭学习档案…</span>:
+              activeChildren.length>0?<a href="#choose-child" className={styles.welcomePrimary}>选择孩子开始学习 <span aria-hidden="true">→</span></a>:
+              <a href="/arithmetic" className={styles.welcomePrimary}>开始计算训练 <span aria-hidden="true">→</span></a>}
+            <Link href="/events" className={styles.welcomeSecondary}>看看数学赛事</Link>
+          </div>
+          <small>{activeChildren.length>0?"正式成绩按孩子分别保存；如需体验基础计算，也可在下方继续使用家庭体验档案。":"基础练习暂存在这个家庭的独立体验档案中。多个孩子请分别建立正式学习档案，避免混淆成绩。"}</small>
+        </div>
+        <div className={styles.welcomeVisual} aria-hidden="true">
+          <div className={styles.mathTile}>12 <span>+</span> 8 <b>= 20</b></div>
+          <div className={styles.mathDot}>π</div>
+          <div className={styles.mathTip}>每天进步一点点</div>
+        </div>
+      </section>
+      {!loading && activeChildren.length>0 && <section className={styles.chooser} id="choose-child" aria-labelledby="choose-child-title">
+        <div className={styles.chooserHead}>
+          <div>
+            <span className={styles.kicker}>一键继续 · 不用再登录</span>
+            <h2 id="choose-child-title">选择正在学习的孩子</h2>
+            <p>一家多个孩子也能分别记录进步。点击后会进入对应孩子的计算训练。</p>
+          </div>
+          <span className={styles.chooserCount}>{activeChildren.length} 位孩子</span>
+        </div>
+        <div className={styles.chooserGrid}>
+          {activeChildren.map(student=><button key={student.id} type="button"
+            className={styles.chooserCard} disabled={Boolean(switchingStudentId)}
+            onClick={()=>void startForStudent(student.id)}
+            aria-label={`为${student.name}开始学习`}>
+            <span className={styles.chooserAvatar} aria-hidden="true">{studentAvatarEmoji(student.avatarKey)}</span>
+            <span className={styles.chooserIdentity}><strong>{student.name}</strong>
+              <small>{student.grade} 年级 · 计算 {student.summary.arithmeticSessions} 轮</small></span>
+            <span className={styles.chooserAction}>{switchingStudentId===student.id?"正在进入…":selectedStudentId===student.id?"继续学习 →":"开始学习 →"}</span>
+          </button>)}
+        </div>
+        <p className={styles.chooserFootnote}>没有孩子档案？可在下方「建立孩子档案」或「关联已有学生账号」。家庭体验档案中的临时记录不会自动混入孩子成绩。</p>
+      </section>}
+      <nav className={styles.quickPaths} aria-label="家庭学习服务">
+        <a href={activeChildren.length>0?"#choose-child":"/arithmetic"}><span className={styles.quickIcon}>✦</span><strong>数学训练</strong><small>{activeChildren.length>0?"先选孩子 · 记录不混淆":"选年级 · 立即练"}</small></a>
+        <Link href="/competitions"><span className={styles.quickIcon}>◎</span><strong>竞赛模拟</strong><small>赛制和试卷</small></Link>
+        <Link href="/events"><span className={styles.quickIcon}>▤</span><strong>赛事管家</strong><small>全球赛事 · 重要提醒</small></Link>
+      </nav>
       <section className={styles.heading}>
         <div>
-          <span className={styles.kicker}>家庭中心</span>
-          <h1>家庭与孩子账号</h1>
-          <p>创建和管理孩子账号，同时查看最近是否登录、做过几套模拟和计算训练。</p>
+          <span className={styles.kicker}>学习档案管理</span>
+          <h2>孩子的成长记录</h2>
+          <p>添加孩子以后，可以分别查看训练和模拟成绩。原有的学生账号也继续保留。</p>
         </div>
-        <button className="primary-button" onClick={() => setShow((value) => !value)}>
-          {show ? "收起" : "+ 添加孩子"}
+        <button className="secondary-button" onClick={() => setShow((value) => !value)}>
+          {show ? "收起" : "+ 建立孩子档案（可稍后）"}
         </button>
       </section>
 
+      <div className={styles.existingAccountPanel}>
+        <div>
+          <strong>孩子以前就在 SOC THINK 学过？</strong>
+          <p>直接关联原来的学生账号，成绩和训练记录不需要重新开始。</p>
+        </div>
+        <button type="button" className="secondary-button" onClick={()=>setLinkExisting(v=>!v)}>
+          {linkExisting?"收起":"关联已有学生账号"}
+        </button>
+      </div>
+      {linkExisting && <form className={styles.linkForm} onSubmit={linkExistingStudent}>
+        <label>已有学生登录名 / 准考证号<input name="username" required maxLength={120} autoComplete="off" placeholder="输入孩子原来的学生账号"/></label>
+        <label>原学生 PIN<input name="pin" type="password" inputMode="numeric" autoComplete="off" pattern="[0-9]{4,12}" required placeholder="输入孩子原来的 PIN"/></label>
+        <button type="submit" className="primary-button" disabled={busy}>{busy?"正在验证…":"验证并关联"}</button>
+        <small>为了保护孩子的成绩，只会在学生账号和 PIN 验证正确后关联，不会自动合并同名账号。</small>
+      </form>}
       {error && <div className="warning-box">{error}</div>}
       {notice && <div className="success-box">{notice}</div>}
 
       {show && (
         <form className={styles.createForm} onSubmit={create}>
-          <input name="name" required maxLength={50} placeholder="孩子姓名 / 昵称" />
-          <input name="username" placeholder="学生登录名（留空自动生成）" />
-          <input name="grade" type="number" min="1" max="13" required placeholder="年级" />
-          <input name="school" maxLength={80} placeholder="学校（可选）" />
-          <input
-            name="pin"
-            type="password"
-            inputMode="numeric"
-            pattern="[0-9]{4,12}"
-            required
-            placeholder="学生 PIN（4–12 位数字）"
-          />
+          <input name="name" required maxLength={50} placeholder="孩子昵称，例如：可乐" aria-label="孩子昵称" />
+          <input name="grade" type="number" min="1" max="13" required placeholder="年级，例如：2" aria-label="孩子年级" />
+          <details className={styles.advancedOptions}>
+            <summary>其他资料（可选）</summary>
+            <input name="school" maxLength={80} placeholder="学校（可选）" />
+            <input name="username" maxLength={120} placeholder="独立登录名（不填自动生成）" />
+            <input name="pin" type="password" inputMode="numeric" pattern="[0-9]{4,12}" placeholder="独立登录 PIN（可不填）" />
+          </details>
           <button className="primary-button" disabled={busy}>
             {busy ? "创建中…" : "创建孩子账号"}
           </button>
@@ -336,9 +447,12 @@ export default function ParentDashboard() {
           );
         })}
 
-        {rows.length === 0 && (
+        {loading && <div className={styles.empty} role="status">正在读取学习记录…</div>}
+        {!loading && rows.length === 0 && (
           <div className={styles.empty}>
-            还没有孩子账号。点击“添加孩子”创建第一个学生档案。
+            <strong>还没有绑定孩子档案，也没关系。</strong>
+            <p>先从上方的「开始计算训练」体验数学练习；需要分开保存多个孩子的成长报告时，再建立各自档案。</p>
+            <button className="secondary-button" type="button" onClick={() => setShow(true)}>建立孩子档案</button>
           </div>
         )}
       </div>

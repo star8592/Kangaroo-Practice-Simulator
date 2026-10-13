@@ -100,18 +100,18 @@ export default function SessionNav() {
   if (!sessions.student && !sessions.parent) {
     return (
       <div className={styles.guestActions}>
-        <Link className={styles.guestStudent} href="/login">
-          {lang === "zh" ? "学生登录" : "Student"}
-        </Link>
-        <Link className={styles.guestParent} href="/parent/login">
-          <span>{lang === "zh" ? "家长中心" : "Parent"}</span>
-          <small>{lang === "zh" ? "微信扫码" : "WeChat"}</small>
+        <Link className={styles.guestParent} href="/login">
+          <span>{lang === "zh" ? "登录 / 注册" : "Sign in / Join"}</span>
+          <small>{lang === "zh" ? "微信扫码" : "WeChat first"}</small>
         </Link>
       </div>
     );
   }
 
-  const useParent = Boolean(sessions.parent && (pathname.startsWith("/parent") || !sessions.student));
+  const useParent = Boolean(sessions.parent && (
+    pathname.startsWith("/parent") || !sessions.student ||
+    sessions.student.id?.startsWith("guest_family_")
+  ));
   const active = useParent ? sessions.parent! : sessions.student!;
   const role = useParent ? "parent" : active.role === "admin" ? "admin" : "student";
   const roleLabel =
@@ -138,11 +138,13 @@ export default function SessionNav() {
   const chevronClass = styles.chevron + (open ? " " + styles.chevronOpen : "");
 
   async function logout() {
-    const endpoint = role === "parent" ? "/api/auth/parent/logout" : "/api/auth/logout";
+    // Signing out of a family-managed learner must also clear the family session;
+    // otherwise navigation would silently sign the household back in.
+    const endpoint = sessions.parent ? "/api/auth/parent/logout" : "/api/auth/logout";
     await fetch(endpoint, { method: "POST" }).catch(() => {});
     setOpen(false);
     await reloadSessions();
-    router.push(role === "parent" ? "/parent/login" : "/login");
+    router.push("/login");
     router.refresh();
   }
 
@@ -183,6 +185,13 @@ export default function SessionNav() {
               </Link>
             )}
 
+            {sessions.parent && role !== "parent" && (
+              <Link href="/parent#choose-child" onClick={close} role="menuitem">
+                <span><b>{lang === "zh" ? "切换孩子" : "Switch learner"}</b>
+                  <small>{lang === "zh" ? "返回家庭中心，选择另一位孩子" : "Select another child from this family"}</small></span>
+                <MenuArrow />
+              </Link>
+            )}
             {role === "student" && (
               <>
                 <Link href="/student" onClick={close} role="menuitem">
@@ -221,18 +230,14 @@ export default function SessionNav() {
           </div>
 
           <div className={styles.accountSwitch}>
-            {role !== "parent" && (
-              <Link href="/parent" onClick={close}>
-                {sessions.parent
-                  ? (lang === "zh" ? "切换到家长中心" : "Switch to parent center")
-                  : (lang === "zh" ? "家长登录" : "Parent login")}
+            {sessions.parent && (
+              <Link href="/parent#choose-child" onClick={close}>
+                {lang === "zh" ? "选择学习的孩子" : "Choose learner"}
               </Link>
             )}
-            {role === "parent" && (
-              <Link href={sessions.student ? "/student" : "/login"} onClick={close}>
-                {sessions.student
-                  ? (lang === "zh" ? "切换到学生端" : "Switch to student")
-                  : (lang === "zh" ? "学生登录" : "Student login")}
+            {!sessions.parent && role !== "parent" && (
+              <Link href="/login" onClick={close}>
+                {lang === "zh" ? "连接微信家庭账户" : "Connect family with WeChat"}
               </Link>
             )}
             <button type="button" onClick={logout}>

@@ -73,16 +73,18 @@ test("homepage competition CTA opens independent mock exams",async({page})=>{
   await expect(page.getByRole("region",{name:/全球数学赛事管家|World math competition companion/})).toHaveCount(0);
   await expect(page.getByRole("link",{name:/进入赛事管家|Event companion/}).first()).toBeVisible();
 });
-test("homepage student login CTA opens usable login form",async({page})=>{
+test("homepage has one WeChat-first entry and optional legacy login",async({page})=>{
   await page.goto("/");
-  await page.getByRole("link",{name:/学生登录|Student login/}).first().click();
+  await page.getByRole("link",{name:/微信登录 \/ 注册|Sign in \/ Join with WeChat/}).first().click();
   await expect(page).toHaveURL(/\/login(?:\?|$)/);
+  await expect(page.getByRole("heading",{name:"微信扫一扫，马上开始学习"})).toBeVisible();
+  await page.getByText("其他登录方式（已有账号）").click();
   await expect(page.locator('input[type="password"]')).toBeVisible();
 });
 test("anonymous and arithmetic guest cannot enter full exam",async({page,context})=>{
   await page.goto(protectedExam);
   await expect(page).toHaveURL(/\/login\?next=/);
-  await expect(page.locator('input[type="password"]')).toBeVisible();
+  await expect(page.getByRole("heading",{name:"微信扫一扫，马上开始学习"})).toBeVisible();
   expect((await context.cookies()).some(c=>c.name==="kangaroo_session")).toBe(false);
   await page.goto("/");
   await page.getByRole("link",{name:/开始计算训练|Start math practice/}).first().click();
@@ -90,6 +92,7 @@ test("anonymous and arithmetic guest cannot enter full exam",async({page,context
   // The URL can settle before the redirected response cookie has been committed.\n  // Wait for the browser session itself, not only navigation completion.\n  await expect.poll(async()=> (await context.cookies()).some(c=>c.name==="kangaroo_session"),{timeout:10000}).toBe(true);
   await page.goto(protectedExam);
   await expect(page).toHaveURL(/\/login\?next=/);
+  await page.getByText("其他登录方式（已有账号）").click();
   await expect(page.locator('input[type="password"]')).toBeVisible();
 });
 
@@ -102,9 +105,10 @@ test("real exam card click, registered login, start, answer and submit",async({p
   await expect(card).toBeVisible();
   await card.getByRole("button",{name:"开始考试"}).click();
   await expect(page).toHaveURL(/\/login\?next=/);
-  await page.getByLabel("学生账号 / 准考证号").fill(account.username);
+  await page.getByText("其他登录方式（已有账号）").click();
+  await page.getByLabel("已有学生账号 / 准考证号").fill(account.username);
   await page.getByLabel("学生 PIN").fill(account.pin);
-  await page.getByRole("button",{name:"登录学生系统"}).click();
+  await page.getByRole("button",{name:"使用已有学生账号"}).click();
   await expect(page).toHaveURL(new RegExp("/exam/"+fixtureExamId+"$"),{timeout:15000});
   await page.getByRole("button",{name:"确认信息并开始考试"}).click();
   await expect(page.locator(".question-stem")).toContainText("2 + 2");
@@ -136,9 +140,10 @@ test("real exam card click, registered login, start, answer and submit",async({p
 test("logged-in student follows UKMT and sees it in their personal calendar", async ({page})=>{
   if(!account)throw new Error("student login fixture missing");
   await page.goto("/login");
-  await page.getByLabel("学生账号 / 准考证号").fill(account.username);
+  await page.getByText("其他登录方式（已有账号）").click();
+  await page.getByLabel("已有学生账号 / 准考证号").fill(account.username);
   await page.getByLabel("学生 PIN").fill(account.pin);
-  await page.getByRole("button",{name:"登录学生系统"}).click();
+  await page.getByRole("button",{name:"使用已有学生账号"}).click();
   await expect(page).toHaveURL(/\/(?:\?|$)/,{timeout:15000});
   await expect.poll(async()=> (await page.context().cookies()).some(c=>c.name==="kangaroo_session"),{timeout:10000}).toBe(true);
   await page.goto("/events?event=ukmt");
@@ -165,9 +170,10 @@ test("student can select competition alert region without fabricating dates",asy
   expect(denied.status()).toBe(401);
   if(!account)throw new Error("synthetic student fixture missing");
   await page.goto("/login?next=/student/calendar");
-  await page.getByLabel("学生账号 / 准考证号").fill(account.username);
+  await page.getByText("其他登录方式（已有账号）").click();
+  await page.getByLabel("已有学生账号 / 准考证号").fill(account.username);
   await page.getByLabel("学生 PIN").fill(account.pin);
-  await page.getByRole("button",{name:"登录学生系统"}).click();
+  await page.getByRole("button",{name:"使用已有学生账号"}).click();
   await expect(page).toHaveURL(/\/student\/calendar(?:\?|$)/,{timeout:15000});
   const alerts=page.getByRole("region",{name:"赛事情报与提醒"});
   await expect(alerts.getByRole("heading",{name:"我的赛事情报"})).toBeVisible();

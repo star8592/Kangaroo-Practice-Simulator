@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
+import { createFamilyPracticeSessionToken, SESSION_COOKIE, userFromSessionToken } from "@/lib/auth";
 import {
   authenticateOrCreateWechatParent,
   createParentSessionToken,
   PARENT_SESSION_COOKIE,
+  PARENT_SESSION_TTL_SECONDS,
 } from "@/lib/parent-auth";
 import {
   WECHAT_CALLBACK_ORIGIN,
@@ -67,16 +69,24 @@ export async function GET(req: NextRequest) {
       return mobileResultPage(true, "电脑端正在自动完成登录。你可以关闭此页面并返回电脑继续使用。");
     }
 
-    const response = NextResponse.redirect(`${WECHAT_CALLBACK_ORIGIN}/parent`);
+    const nextCookie=req.cookies.get("socthink_parent_wechat_next")?.value||"/parent";
+    const returnPath=nextCookie.startsWith("/")&&!nextCookie.startsWith("//")&&!nextCookie.includes("\\")?nextCookie:"/parent";
+    const response = NextResponse.redirect(`${WECHAT_CALLBACK_ORIGIN}${returnPath}`);
     response.cookies.set(PARENT_SESSION_COOKIE, createParentSessionToken(user.id), {
       httpOnly: true,
       sameSite: "strict",
       secure: true,
       path: "/",
       domain: ".socthink.cn",
-      maxAge: 604800,
+      maxAge: PARENT_SESSION_TTL_SECONDS,
     });
+    if (!userFromSessionToken(req.cookies.get(SESSION_COOKIE)?.value)) {
+      response.cookies.set(SESSION_COOKIE, createFamilyPracticeSessionToken(user.id), {
+        httpOnly: true, sameSite: "lax", secure: true, path: "/", domain: ".socthink.cn", maxAge: 604800,
+      });
+    }
     response.cookies.delete({ name: WECHAT_STATE_COOKIE, path: "/", domain: ".socthink.cn" });
+    response.cookies.delete({ name: "socthink_parent_wechat_next", path: "/", domain: ".socthink.cn" });
     return response;
   } catch {
     if (qrFlow) return mobileResultPage(false, "微信授权失败，请回到电脑重新扫码。");
