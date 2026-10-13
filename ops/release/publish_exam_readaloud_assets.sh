@@ -6,7 +6,9 @@ ROOT="${ROOT:-$(cd "$(dirname "$0")/../.." && pwd)}"
 REMOTE_HOST="${REMOTE_HOST:-root@socthink.cn}"
 PERSIST_ROOT="${PERSIST_ROOT:-/opt/socthink-math}"
 PUBLIC_URL="${PUBLIC_URL:-https://socthink.cn}"
+SSH_CONFIG="${SSH_CONFIG:-/dev/null}"
 DRY_RUN="${DRY_RUN:-1}"
+DEFER_PUBLIC_PROBE="${DEFER_PUBLIC_PROBE:-0}"
 
 cd "$ROOT"
 python3 scripts/audit_exam_readaloud_assets.py --strict
@@ -22,12 +24,12 @@ if [[ "$DRY_RUN" == "1" ]]; then
   exit 0
 fi
 
-ssh -o BatchMode=yes -o ConnectTimeout=10 "$REMOTE_HOST" 'echo SSH_OK' | grep -q SSH_OK
+ssh -F "$SSH_CONFIG" -o BatchMode=yes -o ConnectTimeout=10 "$REMOTE_HOST" 'echo SSH_OK' | grep -q SSH_OK
 REMOTE_TMP="/tmp/socthink-exam-voice-${SHA:0:16}"
-ssh "$REMOTE_HOST" "mkdir -p '$REMOTE_TMP'"
-scp "$TMP/readaloud.tar.gz" "$REMOTE_HOST:$REMOTE_TMP/readaloud.tar.gz"
+ssh -F "$SSH_CONFIG" "$REMOTE_HOST" "mkdir -p '$REMOTE_TMP'"
+scp -F "$SSH_CONFIG" "$TMP/readaloud.tar.gz" "$REMOTE_HOST:$REMOTE_TMP/readaloud.tar.gz"
 
-ssh "$REMOTE_HOST" bash -s -- "$PERSIST_ROOT" "$REMOTE_TMP" "$SHA" <<'REMOTE'
+ssh -F "$SSH_CONFIG" "$REMOTE_HOST" bash -s -- "$PERSIST_ROOT" "$REMOTE_TMP" "$SHA" <<'REMOTE'
 set -Eeuo pipefail
 APP="$1"
 STAGE_ROOT="$2"
@@ -73,6 +75,13 @@ fi
 printf '%s\n' "$SHA" > "$CURRENT/release-sha256.txt"
 echo "REMOTE_EXAM_AUDIO_PROMOTED sha=$SHA"
 REMOTE
+
+# This flag is for pre-staging verified assets before the code release adds the
+# runtime symlink. It must never be mistaken for completed public acceptance.
+if [[ "$DEFER_PUBLIC_PROBE" == "1" ]]; then
+  printf 'EXAM_AUDIO_STAGED=PASS sha=%s public_probe=DEFERRED\n' "$SHA"
+  exit 0
+fi
 
 SAMPLE="$(python3 - "$ROOT/reports/exam-read-aloud-worklist.json" <<'PY'
 import json,sys

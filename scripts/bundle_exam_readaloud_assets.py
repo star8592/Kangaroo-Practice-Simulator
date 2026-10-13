@@ -11,7 +11,7 @@ import json
 import tarfile
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path(__file__).resolve().parents[1]
 MANIFEST = ROOT / "reports/exam-read-aloud-worklist.json"
 PUBLIC = ROOT / "public/exam-read-aloud/v1"
 

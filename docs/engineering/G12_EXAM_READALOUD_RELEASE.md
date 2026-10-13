@@ -22,7 +22,7 @@ python3 scripts/audit_exam_readaloud_assets.py --strict
 
 1. 审查并合并本功能 PR、在原有 CI 与自动部署流程中通过 Web/小程序构建、验收站点不回退旧功能。
 2. 对与生产题库对应的本地工作区完成 **全部 584 条** MP3，并执行严格音频审计。
-3. 执行 `DRY_RUN=1 bash ops/release/publish_exam_readaloud_assets.sh` 预检；通过后执行 `DRY_RUN=0 bash ops/release/publish_exam_readaloud_assets.sh`，经免密 SSH 上传独立音频包，服务器端逐条比对 SHA-256，再替换持久化资源目录。
+3. 先执行 `DRY_RUN=1 bash ops/release/publish_exam_readaloud_assets.sh` 预检；生产代码尚未带资源链接时，执行 `DRY_RUN=0 DEFER_PUBLIC_PROBE=1 REMOTE_HOST=root@<production-ip> bash ops/release/publish_exam_readaloud_assets.sh`，经免密 SSH 上传音频包，服务器端逐条比对 SHA-256 并切换持久化资源；此结果仅为资源预发布，不能视为公网验收。代码切换后必须单独完成公网文件校验。
 4. 检查 `https://socthink.cn/exam-read-aloud/v1/<sha>.mp3` 与本地 SHA-256 一致，以及微信小程序的正式下载域名配置。
 5. 登录一、二年级真实考试，分别验证中文、英文（如果存在）、全选项、播放、暂停、进度拖动、重播、切题自动停止，iPad Safari、安卓浏览器与微信真机都通过才算封版。
 
