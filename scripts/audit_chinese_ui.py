@@ -20,8 +20,8 @@ checks={
     'must_not':['Professional Diagnostic Report','Professional Learning Diagnostic','Ability & Strategy Profile','Evidence-based Findings','Personalized Prescription','Question-level Evidence','Growth Record & Methodology'],
   },
   'src/components/PublicHome.tsx':{
-    'must':['WORLD_COMPETITIONS','worldRegionName','全球数学赛事，一站式管理','进入赛事管家','参加竞赛模拟','开始计算训练','/events?event='],
-    'must_not':['查看国际数学竞赛','不止袋鼠：每项赛事都是独立业务入口'],
+    'must':['INTERNATIONAL_SHOWCASE_COMPETITIONS','worldRegionName','国际数学竞赛，一目了然','进入赛事管家','参加竞赛模拟','开始计算训练','/events?event='],
+    'must_not':['全球数学赛事，一站式管理','中国与世界其他地区的数学赛事平等呈现','查看国际数学竞赛','不止袋鼠：每项赛事都是独立业务入口'],
   },
   'src/components/HomeClient.tsx':{
     'must':['竞赛模拟','国际竞赛模拟考试','进入赛事管家','已入库赛制','MAA AMC 晋级路径','年级分组','按赛制智能组卷','官方样题','官方专项训练','历年试卷'],
