@@ -9,6 +9,7 @@ PUBLIC_URL="${PUBLIC_URL:-https://socthink.cn}"
 SSH_CONFIG="${SSH_CONFIG:-/dev/null}"
 DRY_RUN="${DRY_RUN:-1}"
 DEFER_PUBLIC_PROBE="${DEFER_PUBLIC_PROBE:-0}"
+AUDIO_TRANSFER_MODE="${AUDIO_TRANSFER_MODE:-parallel}"
 
 cd "$ROOT"
 python3 scripts/audit_exam_readaloud_assets.py --strict
@@ -27,13 +28,38 @@ fi
 ssh -F "$SSH_CONFIG" -o BatchMode=yes -o ConnectTimeout=10 "$REMOTE_HOST" 'echo SSH_OK' | grep -q SSH_OK
 REMOTE_TMP="/tmp/socthink-exam-voice-${SHA:0:16}"
 ssh -F "$SSH_CONFIG" "$REMOTE_HOST" "mkdir -p '$REMOTE_TMP'"
-scp -F "$SSH_CONFIG" "$TMP/readaloud.tar.gz" "$REMOTE_HOST:$REMOTE_TMP/readaloud.tar.gz"
+if [[ "$AUDIO_TRANSFER_MODE" == "parallel" ]]; then
+  python3 scripts/parallel_upload_exam_audio.py --archive "$TMP/readaloud.tar.gz"     --remote-host "$REMOTE_HOST" --remote-directory "$REMOTE_TMP"     --ssh-config "$SSH_CONFIG" --workers 20 --chunk-mb 2
+elif [[ "$AUDIO_TRANSFER_MODE" == "scp" ]]; then
+  scp -F "$SSH_CONFIG" "$TMP/readaloud.tar.gz" "$REMOTE_HOST:$REMOTE_TMP/readaloud.tar.gz"
+else
+  echo "unsupported transfer mode" >&2
+  exit 9
+fi
 
 ssh -F "$SSH_CONFIG" "$REMOTE_HOST" bash -s -- "$PERSIST_ROOT" "$REMOTE_TMP" "$SHA" <<'REMOTE'
 set -Eeuo pipefail
 APP="$1"
 STAGE_ROOT="$2"
 SHA="$3"
+if [[ ! -f "$STAGE_ROOT/readaloud.tar.gz" ]]; then
+  python3 - "$STAGE_ROOT" <<'PY_CHUNKS'
+from pathlib import Path
+import sys
+root=Path(sys.argv[1])
+parts=sorted((root/"parts").glob("*.part"))
+assert parts and parts[0].name=="0000.part"
+assert [x.name for x in parts]==[f"{i:04d}.part" for i in range(len(parts))]
+out=root/"readaloud.tar.gz"
+tmp=root/"readaloud.rebuilding"
+with tmp.open("wb") as writer:
+    for part in parts:
+        with part.open("rb") as src:
+            for data in iter(lambda: src.read(1024*1024),b""):
+                writer.write(data)
+tmp.rename(out)
+PY_CHUNKS
+fi
 test -f "$STAGE_ROOT/readaloud.tar.gz"
 test "$(sha256sum "$STAGE_ROOT/readaloud.tar.gz" | awk '{print $1}')" = "$SHA"
 mkdir -p "$APP/public"
