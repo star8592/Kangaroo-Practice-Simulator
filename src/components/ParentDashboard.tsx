@@ -116,7 +116,7 @@ export default function ParentDashboard() {
       if (!response.ok) throw new Error(data.error || "创建失败");
       form.reset();
       setShow(false);
-      setNotice("孩子账号已创建，可以把登录名和 PIN 告诉孩子。");
+      setNotice("孩子学习档案已建立。以后点孩子的名字即可直接开始，不必单独登录。");
       await load();
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e));
@@ -309,18 +309,14 @@ export default function ParentDashboard() {
 
       {show && (
         <form className={styles.createForm} onSubmit={create}>
-          <input name="name" required maxLength={50} placeholder="孩子姓名 / 昵称" />
-          <input name="username" placeholder="学生登录名（留空自动生成）" />
-          <input name="grade" type="number" min="1" max="13" required placeholder="年级" />
-          <input name="school" maxLength={80} placeholder="学校（可选）" />
-          <input
-            name="pin"
-            type="password"
-            inputMode="numeric"
-            pattern="[0-9]{4,12}"
-            required
-            placeholder="学生 PIN（4–12 位数字）"
-          />
+          <input name="name" required maxLength={50} placeholder="孩子昵称，例如：可乐" aria-label="孩子昵称" />
+          <input name="grade" type="number" min="1" max="13" required placeholder="年级，例如：2" aria-label="孩子年级" />
+          <details className={styles.advancedOptions}>
+            <summary>其他资料（可选）</summary>
+            <input name="school" maxLength={80} placeholder="学校（可选）" />
+            <input name="username" maxLength={120} placeholder="独立登录名（不填自动生成）" />
+            <input name="pin" type="password" inputMode="numeric" pattern="[0-9]{4,12}" placeholder="独立登录 PIN（可不填）" />
+          </details>
           <button className="primary-button" disabled={busy}>
             {busy ? "创建中…" : "创建孩子账号"}
           </button>

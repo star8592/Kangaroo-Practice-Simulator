@@ -68,7 +68,11 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const grade = Number(body?.grade);
     const name = String(body?.name || "").trim();
-    const pin = String(body?.pin || "");
+    // A family-managed learner needs no manually configured student PIN.
+    // Generate a strong fallback secret; independent sign-in can be enabled
+    // later in advanced settings without making onboarding a registration form.
+    const providedPin = String(body?.pin || "");
+    const pin = providedPin || crypto.randomInt(100_000_000, 1_000_000_000).toString();
 
     if (!name || name.length > 50) {
       return NextResponse.json({ error: "请填写 1–50 个字符的孩子姓名或昵称" }, { status: 400 });
@@ -76,8 +80,8 @@ export async function POST(req: NextRequest) {
     if (!Number.isInteger(grade) || grade < 1 || grade > 13) {
       return NextResponse.json({ error: "年级必须为 1–13" }, { status: 400 });
     }
-    if (!/^\d{4,12}$/.test(pin)) {
-      return NextResponse.json({ error: "学生 PIN 必须为 4–12 位数字" }, { status: 400 });
+    if (providedPin && !/^\d{4,12}$/.test(providedPin)) {
+      return NextResponse.json({ error: "独立登录 PIN 必须为 4–12 位数字" }, { status: 400 });
     }
 
     const username = String(body?.username || "").trim()

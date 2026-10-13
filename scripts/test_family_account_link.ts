@@ -12,7 +12,7 @@ async function main(){
   const auth=await import("../src/lib/auth");
   const parentAuth=await import("../src/lib/parent-auth");
   const family=await import("../src/lib/family-store");
-  const {PUT,GET}=await import("../src/app/api/family/students/route");
+  const {PUT,GET,POST}=await import("../src/app/api/family/students/route");
   const a=parentAuth.authenticateOrCreateWechatParent({wechatId:"wx_a",openId:"op_a",name:"Family A"});
   const b=parentAuth.authenticateOrCreateWechatParent({wechatId:"wx_b",openId:"op_b",name:"Family B"});
   const s=auth.createStudent({username:"existing_child",candidateNo:"EXIST100",name:"原学生",grade:3,pin:"334455"});
@@ -36,6 +36,14 @@ async function main(){
   assert.equal(data.students[0].id,s.id);
   assert.equal(data.students[0].pinHash,undefined);
   assert.equal(auth.loadUsers().filter(x=>x.role==="student").length,1,"must not duplicate the learner");
+  const created=await POST(new NextRequest(url,{method:"POST",headers:{
+    "content-type":"application/json",cookie:parentAuth.PARENT_SESSION_COOKIE+"="+parentAuth.createParentSessionToken(a.id),
+  },body:JSON.stringify({name:"新孩子",grade:2})}));
+  const createdBody=await created.json();
+  assert.equal(created.status,201,JSON.stringify(createdBody));
+  assert.equal(family.familyOwnsStudent(a.id,createdBody.student.id),true,"one-click child belongs to family");
+  assert.equal(createdBody.student.pinHash,undefined,"auto-generated PIN hash is never sent to the client");
+  assert.equal(auth.authenticate(createdBody.student.username,"1234"),null,"new family child cannot use trivial PIN");
   console.log("FAMILY_LINK_SECURITY=PASS requires_both_credentials=true preserves_student_id=true exclusive_family=true idempotent=true");
  }finally{
   if(old===undefined)delete process.env.SOCTHINK_USER_DATA_DIR;

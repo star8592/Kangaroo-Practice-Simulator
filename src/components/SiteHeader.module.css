@@ -169,20 +169,20 @@
 }
 
 .guestParent{
-  min-height:42px;
+  min-height:46px;
   display:flex;
   align-items:center;
   gap:8px;
-  padding:0 12px;
-  border:1px solid rgba(255,122,69,.38);
-  border-radius:11px;
-  background:#fff5ef;
-  color:#8d3f21;
-  box-shadow:0 6px 18px rgba(232,92,37,.08);
+  padding:0 16px;
+  border:1px solid #cce2d8;
+  border-radius:12px;
+  background:#e0f2e9;
+  color:#124c32;
+  box-shadow:0 4px 16px rgba(20,84,56,.09);
 }
 
 .guestParent span{
-  font-size:11px;
+  font-size:14px;
   font-weight:950;
   white-space:nowrap;
 }
@@ -191,14 +191,14 @@
   padding-left:8px;
   border-left:1px solid rgba(141,63,33,.16);
   color:#b06647;
-  font-size:8px;
+  font-size:11px;
   font-weight:850;
   white-space:nowrap;
 }
 
 .guestParent:hover{
-  border-color:#ff9a70;
-  background:#ffede4;
+  border-color:#9dcdb3;
+  background:#ccebdd;
 }
 
 .accountRoot{position:relative}
@@ -496,8 +496,8 @@
 
   .guestActions{gap:3px}
   .guestStudent{min-height:36px;padding:0 8px;font-size:10px}
-  .guestParent{min-height:38px;padding:0 9px}
-  .guestParent span{font-size:10px}
+  .guestParent{min-height:40px;padding:0 12px}
+  .guestParent span{font-size:12px}
   .guestParent small{display:none}
 
   .accountTrigger{

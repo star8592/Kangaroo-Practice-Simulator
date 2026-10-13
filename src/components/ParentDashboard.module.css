@@ -365,3 +365,7 @@
 .chooserAction{font-size:12px;font-weight:800;color:#3c774c;white-space:nowrap;}
 .chooserFootnote{margin:15px 0 0;font-size:12px;line-height:1.7;color:#72816f;}
 @media(max-width:600px){.chooser{padding:19px 16px;border-radius:18px;}.chooserHead{align-items:start;}.chooserGrid{grid-template-columns:1fr;}.chooserCard{min-height:86px;}.chooserAction{font-size:12px;}}
+
+.advancedOptions{grid-column:1/-1;padding:10px 12px;border:1px solid var(--line);border-radius:10px}
+.advancedOptions summary{cursor:pointer;font-weight:650}
+.advancedOptions[open] input{margin-top:10px;width:100%}

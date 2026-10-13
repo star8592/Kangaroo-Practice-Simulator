@@ -138,11 +138,13 @@ export default function SessionNav() {
   const chevronClass = styles.chevron + (open ? " " + styles.chevronOpen : "");
 
   async function logout() {
-    const endpoint = role === "parent" ? "/api/auth/parent/logout" : "/api/auth/logout";
+    // Signing out of a family-managed learner must also clear the family session;
+    // otherwise navigation would silently sign the household back in.
+    const endpoint = sessions.parent ? "/api/auth/parent/logout" : "/api/auth/logout";
     await fetch(endpoint, { method: "POST" }).catch(() => {});
     setOpen(false);
     await reloadSessions();
-    router.push(role === "parent" ? "/parent/login" : "/login");
+    router.push("/login");
     router.refresh();
   }
 
@@ -228,18 +230,14 @@ export default function SessionNav() {
           </div>
 
           <div className={styles.accountSwitch}>
-            {role !== "parent" && (
-              <Link href="/parent" onClick={close}>
-                {sessions.parent
-                  ? (lang === "zh" ? "切换到家长中心" : "Switch to parent center")
-                  : (lang === "zh" ? "家长登录" : "Parent login")}
+            {sessions.parent && (
+              <Link href="/parent#choose-child" onClick={close}>
+                {lang === "zh" ? "选择学习的孩子" : "Choose learner"}
               </Link>
             )}
-            {role === "parent" && (
-              <Link href={sessions.student ? "/student" : "/login"} onClick={close}>
-                {sessions.student
-                  ? (lang === "zh" ? "切换到学生端" : "Switch to student")
-                  : (lang === "zh" ? "学生登录" : "Student login")}
+            {!sessions.parent && role !== "parent" && (
+              <Link href="/login" onClick={close}>
+                {lang === "zh" ? "连接微信家庭账户" : "Connect family with WeChat"}
               </Link>
             )}
             <button type="button" onClick={logout}>
