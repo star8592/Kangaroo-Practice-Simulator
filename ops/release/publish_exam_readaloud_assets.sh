@@ -87,6 +87,8 @@ for track in tracks:
 assert len(list((root/"v1").glob("*.mp3")))==expected
 print("REMOTE_EXAM_AUDIO_VALIDATED="+str(expected),flush=True)
 PY
+# mktemp -d creates 0700; web workers need directory traversal.
+chmod 755 "$STAGE" "$STAGE/v1"
 if [[ -e "$CURRENT" ]]; then
   if [[ -e "$PREVIOUS" ]]; then
     echo "previous rollback directory already exists; refuse overwrite" >&2
