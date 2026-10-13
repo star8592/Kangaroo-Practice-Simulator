@@ -1,0 +1,60 @@
+/* G1/G2 exam read-aloud controls. Separate file to avoid impacting existing exam styles. */
+.exam-read-aloud {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  gap: 12px;
+  margin: 12px 0 22px;
+}
+.exam-read-aloud .exam-audio-track,
+.exam-read-aloud .exam-speech-track {
+  display: flex;
+  flex: 1 1 270px;
+  min-width: min(100%, 250px);
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px;
+  background: #f6f9f6;
+  border: 1px solid #dbe7df;
+  border-radius: 14px;
+}
+.exam-read-aloud .exam-audio-track > span,
+.exam-read-aloud .exam-speech-label {
+  font-size: 13px;
+  font-weight: 750;
+  color: #254637;
+}
+.exam-read-aloud audio { width: 100%; height: 48px; }
+.exam-read-aloud .exam-speech-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+}
+.exam-read-aloud .exam-speech-controls button {
+  flex-shrink: 0;
+  min-height: 44px;
+  padding: 7px 12px;
+  font-size: 13px;
+}
+.exam-read-aloud .exam-speech-controls input[type="range"] {
+  flex: 1 1 100px;
+  min-width: 48px;
+  accent-color: #326c4e;
+  cursor: pointer;
+}
+.exam-read-aloud .exam-speech-percent {
+  min-width: 37px;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+.exam-read-aloud .exam-speech-track small {
+  color: #60776b;
+  line-height: 1.4;
+}
+@media (max-width: 520px) {
+  .exam-read-aloud { flex-direction: column; }
+  .exam-read-aloud .exam-audio-track,
+  .exam-read-aloud .exam-speech-track { flex: none; width: 100%; }
+}

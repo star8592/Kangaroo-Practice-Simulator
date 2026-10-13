@@ -11,3 +11,11 @@ page{background:#f4f6f1;color:#17231d;font-family:-apple-system,BlinkMacSystemFo
 .exam-question-number.answered{border-color:#ff7a45!important;background:#fff0e8!important;color:#66351f!important}
 .exam-question-number.current{border-color:#17231d!important;background:#17231d!important;color:#fff!important}
 .exam-submit{margin:22rpx 0 44rpx}
+
+/* Exam voice: native WeChat audio, full question and choices. */
+.exam-voice-card{margin:20rpx 0 26rpx;padding:20rpx;background:#f3f8f4;border:2rpx solid #d8e7db;border-radius:20rpx;color:#244f39}
+.exam-voice-card>.row{font-size:24rpx;font-weight:750;gap:10rpx}
+.exam-voice-card .muted{font-size:21rpx}
+.exam-voice-controls{margin-top:12rpx;gap:8rpx;flex-wrap:nowrap}
+.exam-voice-controls button{flex:0 0 auto!important;width:auto!important;min-width:100rpx!important;min-height:74rpx!important;margin:0!important;padding:10rpx!important;border-radius:14rpx!important;font-size:23rpx!important;line-height:48rpx!important}
+.exam-voice-controls slider{flex:1;min-width:100rpx;margin:0!important;padding:0!important}

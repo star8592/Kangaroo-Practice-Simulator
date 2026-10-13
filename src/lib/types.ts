@@ -78,6 +78,8 @@ export type Question = {
   concept: string;
   stem: string;
   stemEn?: string;
+  readingAudioZh?: string;
+  readingAudioEn?: string;
   choices: Choice[];
   choicesEn?: Choice[];
   answer: string;
