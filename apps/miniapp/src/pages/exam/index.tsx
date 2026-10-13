@@ -4,6 +4,7 @@ import Taro, { useLoad } from '@tarojs/taro'
 import { api, authStore, ensureWechatSession } from '../../services/api'
 import { canStartFullExam, makeExamLoginPath, parseRequestedExam } from '../../services/exam-access'
 import { examAnswerProgress, localizedExamQuestion, type ExamLanguage } from '../../services/exam-view'
+import ExamVoicePlayer from './ExamVoicePlayer'
 
 type Draft={examId:string;sessionId:string;userId:string;idx:number;answers:Record<string,string>;events:any[];savedAt:number}
 const key=(id:string)=>`socthink_exam_draft_v2:${id}`
@@ -121,6 +122,8 @@ export default function ExamPage(){
   const display=localizedExamQuestion(q,language)
   const progress=examAnswerProgress(bundle.questions,answers)
   const questionCount=bundle.questions.length
+  const gradeLabel=String(bundle.profile?.gradesEn||bundle.profile?.grades||bundle.profile?.gradesZh||'').toLowerCase().replace(/[–—~～]/g,'-').replace(/\s+/g,' ').trim()
+  const lowerPrimary=bundle.profile?.gradeBand==='1-2'||gradeLabel==='pre-a'||/^grades?\s*[12]$/.test(gradeLabel)||/^grades?\s*1\s*-\s*2$/.test(gradeLabel)||/^[12]\s*年级$/.test(gradeLabel)
   return <View className='page'>
     <View className='row'><Text>{bundle.profile.nameZh||bundle.profile.name}</Text><Text>{idx+1}/{questionCount}</Text></View>
     <View className='progress'><View style={{width:`${((idx+1)/questionCount)*100}%`}}/></View>
@@ -135,6 +138,7 @@ export default function ExamPage(){
     <View id='exam-question-card' className='card'>
       <View className='muted'>第 {q.questionNo} 题 · {q.points} 分</View>
       <View className='card-title exam-stem'>{display.stem}</View>
+      {lowerPrimary&&<ExamVoicePlayer key={q.id+language} questionId={q.id} language={language} audioZh={q.readingAudioZh} audioEn={q.readingAudioEn}/>}
       {display.assetUrl&&<Image mode='widthFix' style='width:100%' src={display.assetUrl.startsWith('/')?'https://socthink.cn'+display.assetUrl:display.assetUrl}/>}
       {display.choices.length
         ?display.choices.map(c=><View key={c.key} className={`choice ${answers[q.id]===c.key?'selected':''}`} onClick={()=>choose(c.key)}><Text>{c.key}. {c.label}</Text></View>)
