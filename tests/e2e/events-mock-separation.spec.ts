@@ -6,6 +6,9 @@ test("top navigation separates events companion from mock exams", async ({ page 
   const header = page.getByRole("navigation", { name: "主要导航" });
   await expect(header.getByRole("link", { name: "竞赛模拟" })).toHaveAttribute("href", "/competitions");
   await expect(header.getByRole("link", { name: "赛事管家" })).toHaveAttribute("href", "/events");
+  await expect(page.locator(".home-competition-card")).toHaveCount(5);
+  await expect(page.locator(".home-competition-showcase")).not.toContainText("华杯赛");
+  await expect(page.locator(".home-competition-showcase")).not.toContainText("希望杯");
   await page.locator(".home-competition-card").first().click();
   await expect(page).toHaveURL(/\/events\?event=/);
   await expect(page.getByRole("region", { name: "全球数学赛事管家" })).toBeVisible();
@@ -27,6 +30,8 @@ test("mock exam page contains training but no duplicated events manager", async 
   await page.goto("/competitions?c=maa-amc");
   await expect(page.getByRole("heading", { name: /竞赛模拟/ }).first()).toBeVisible();
   await expect(page.getByRole("region", { name: "全球数学赛事管家" })).toHaveCount(0);
+  await expect(page.locator("main")).not.toContainText("华杯赛");
+  await expect(page.locator("main")).not.toContainText("希望杯");
   await expect(page.getByRole("link", { name: "进入赛事管家 →" })).toBeVisible();
   await expect(page.getByRole("button", { name: "AMC 12", exact: true })).toBeVisible();
 });

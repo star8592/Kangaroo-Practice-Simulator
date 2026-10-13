@@ -1,14 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { WORLD_COMPETITIONS, worldRegionName } from "@/lib/world-competitions";
+import { INTERNATIONAL_SHOWCASE_COMPETITIONS, worldRegionName } from "@/lib/world-competitions";
 import { useSiteLanguage } from "@/lib/site-language";
 
 const UI={
  zh:{
   eye:"SOC THINK · 全球数学竞赛与成长",
   title1:"练好数学，",title2:"探索世界数学竞赛",
-  copy:"面向 G1–G12 的数学训练、竞赛模拟与全球赛事管家。今天可以练计算，也可以参加模拟，或发现适合自己的中国与国际数学赛事。",
+  copy:"面向 G1–G12 的数学训练、竞赛模拟与全球赛事管家。今天可以练计算，也可以参加模拟。赛事查询、报名信息和备赛安排统一在赛事管家查看。",
   primary:"开始计算训练",competition:"参加竞赛模拟",events:"进入赛事管家",login:"学生登录",register:"家长登录 / 注册 · 微信扫码",
   loop:"一次训练，应该回答四个问题",
   s1:"现在在哪里",s1d:"从年级、正确率、速度和题型表现建立当前能力基线。",
@@ -23,7 +23,7 @@ const UI={
  en:{
   eye:"SOC THINK · GLOBAL MATH GROWTH",
   title1:"Practice math with confidence.",title2:"Explore competitions worldwide.",
-  copy:"Practice math, take realistic mock exams, and explore Chinese and international mathematics competitions. Follow your progress and choose your next challenge.",
+  copy:"Practice math, take realistic mock exams, and explore competition information in the separate Events Companion. Follow your progress and choose your next challenge.",
   primary:"Start math practice",competition:"Try mock exams",events:"Explore events",login:"Student login",register:"Parent login / register · WeChat",
   loop:"Every practice session should answer four questions",
   s1:"Where am I now?",s1d:"Build a baseline from grade, accuracy, speed and performance by skill.",
@@ -40,7 +40,7 @@ const UI={
 export default function PublicHome(){
  const lang=useSiteLanguage(),ui=UI[lang];
  const steps=[[ui.s1,ui.s1d],[ui.s2,ui.s2d],[ui.s3,ui.s3d],[ui.s4,ui.s4d]];
- const competitions=WORLD_COMPETITIONS;
+ const competitions=INTERNATIONAL_SHOWCASE_COMPETITIONS;
 
  return <div className="home-shell public-home">
   <section className="hero-card home-hero">
@@ -64,7 +64,7 @@ export default function PublicHome(){
   </section>
 
   <section className="home-competition-showcase">
-   <div className="section-heading"><div><span className="eyebrow">COMPETITION HUB</span><h1>{lang==="zh"?"全球数学赛事，一站式管理":"Chinese and international competitions, on equal footing"}</h1><p>{lang==="zh"?"中国与世界其他地区的数学赛事平等呈现；从寻找赛事、核对官方来源到备赛安排，统一管理；当届报名信息必须核验。":"Organize every competition from discovery and official-source checks to registration preparation; mocks are a separate learning service."}</p></div></div>
+   <div className="section-heading"><div><span className="eyebrow">COMPETITION HUB</span><h1>{lang==="zh"?"国际数学竞赛，一目了然":"International competitions at a glance"}</h1><p>{lang==="zh"?"精选国际赛事系列，简洁浏览；具体参赛资格、报名信息和备赛安排请进入赛事管家核验。":"Explore international competition series here. Visit Events Companion for eligibility, registration details and preparation."}</p></div></div>
    <div className="home-competition-grid">{competitions.map(c=> <Link key={c.id} className="home-competition-card" href={"/events?event="+encodeURIComponent(c.id)}><div className="competition-brand"><div className="competition-brand-wordmark"><b>{worldRegionName(c.region,lang)}</b><span>WORLD MATH</span></div></div><strong>{lang==="zh"?c.nameZh:c.nameEn}</strong><span>{lang==="zh"?c.summaryZh:c.summaryEn}</span><em>{lang==="zh"?"查看赛事管家 →":"Open companion →"}</em></Link>)}</div>
   </section>
 

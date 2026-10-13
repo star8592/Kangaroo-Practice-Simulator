@@ -67,15 +67,18 @@ test("worldwide public directory is read-only to anonymous visitors", async ({ r
 });
 
 
-test("public home lists China and world events at one level with direct links", async ({page}) => {
+test("public home showcases only international series; China events stay discoverable in companion", async ({page}) => {
   await page.goto("/");
   const cards=page.locator(".home-competition-card");
-  await expect(cards).toHaveCount(10);
-  await expect(cards.filter({hasText:"华罗庚金杯"})).toHaveCount(1);
+  await expect(cards).toHaveCount(5);
+  await expect(cards.filter({hasText:"华罗庚金杯"})).toHaveCount(0);
+  await expect(cards.filter({hasText:"希望杯"})).toHaveCount(0);
   await expect(cards.filter({hasText:"英国 UKMT"})).toHaveCount(1);
-  await cards.filter({hasText:"华罗庚金杯"}).click();
-  await expect(page).toHaveURL(/\/events\?event=huabei$/);
+  await cards.filter({hasText:"英国 UKMT"}).click();
+  await expect(page).toHaveURL(/\/events\?event=ukmt$/);
   const hub=page.getByRole("region",{name:"全球数学赛事管家"});
+  await hub.getByLabel("搜索赛事").fill("华杯赛");
+  await expect(hub.getByRole("status")).toContainText("找到 1 项赛事");
   await expect(hub.getByText("华罗庚金杯少年数学邀请赛（华杯赛） · 备赛管家")).toBeVisible();
   await expect(hub.getByRole("link",{name:"登录后关注赛事"})).toBeVisible();
 });
