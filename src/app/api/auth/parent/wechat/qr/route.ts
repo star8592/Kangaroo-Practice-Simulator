@@ -6,12 +6,12 @@ import { wechatAuthorizeUrl, wechatConfigured } from "@/lib/wechat-parent-auth";
 export const dynamic = "force-dynamic";
 
 export async function POST() {
-  if (!wechatConfigured()) {
-    return NextResponse.json({ error: "微信登录尚未配置" }, { status: 503 });
+  if (!wechatConfigured("website")) {
+    return NextResponse.json({ error: "微信网站应用扫码登录尚未配置" }, { status: 503 });
   }
 
   const issued = issueWechatQrLogin();
-  const authorizeUrl = wechatAuthorizeUrl(issued.state, "official_account");
+  const authorizeUrl = wechatAuthorizeUrl(issued.state, "website");
   const qrDataUrl = await QRCode.toDataURL(authorizeUrl, {
     errorCorrectionLevel: "M",
     margin: 1,
