@@ -10,6 +10,19 @@ import styles from "./AuthExperience.module.css";
 type LoginMode = "checking" | "loading" | "qr" | "unavailable" | "error" | "studentRequired";
 const inWechat = () => typeof navigator !== "undefined" && /MicroMessenger/i.test(navigator.userAgent);
 
+// A failed or stalled network request must never leave the login spinner indefinitely.
+async function fetchWithTimeout(url: string, init: RequestInit, milliseconds: number) {
+  const controller = new AbortController();
+  const timer = window.setTimeout(() => controller.abort(), milliseconds);
+  try {
+    return await fetch(url, { ...init, signal: controller.signal });
+  } finally {
+    window.clearTimeout(timer);
+  }
+}
+
+type PreparedWechatQr = Promise<{ response?: Response; error?: unknown }>;
+
 export default function UnifiedLoginClient({ nextPath }: { nextPath: string }) {
   const router = useRouter();
   const [mode, setMode] = useState<LoginMode>("checking");
@@ -66,7 +79,7 @@ export default function UnifiedLoginClient({ nextPath }: { nextPath: string }) {
     schedule();
   }, [destination, router, stopPolling]);
 
-  const startWechat = useCallback(async () => {
+  const startWechat = useCallback(async (prefetchedQr?: PreparedWechatQr) => {
     stopPolling();
     ticketRef.current = "";
     setMode("loading");
@@ -78,9 +91,14 @@ export default function UnifiedLoginClient({ nextPath }: { nextPath: string }) {
         window.location.replace("/api/auth/parent/wechat/start?next=" + encodeURIComponent(destination));
         return;
       }
-      const response = await fetch("/api/auth/parent/wechat/qr", {
-        method: "POST", cache: "no-store", credentials: "same-origin",
-      });
+      const qr = prefetchedQr
+        ? await prefetchedQr
+        : { response: await fetchWithTimeout("/api/auth/parent/wechat/qr", {
+            method: "POST", cache: "no-store", credentials: "same-origin",
+          }, 10_000) };
+      if (qr.error) throw qr.error;
+      if (!qr.response) throw new Error("二维码请求没有响应，请重试。");
+      const response = qr.response;
       const result = await response.json();
       if (!response.ok || !result.ticket || !result.qrDataUrl) {
         throw new Error(result.error || "微信扫码暂时不可用");
@@ -93,7 +111,9 @@ export default function UnifiedLoginClient({ nextPath }: { nextPath: string }) {
     } catch (e) {
       if (disposed.current) return;
       setMode("unavailable");
-      setMessage(e instanceof Error ? e.message : "暂时无法连接微信，请重试");
+      setMessage(e instanceof Error && e.name === "AbortError"
+        ? "连接超时。请检查网络或代理连接后重新生成二维码。"
+        : e instanceof Error ? e.message : "暂时无法连接微信，请重试");
     }
   }, [destination, poll, stopPolling]);
 
@@ -108,14 +128,35 @@ export default function UnifiedLoginClient({ nextPath }: { nextPath: string }) {
     const currentRun = bootstrapRun;
     const run = ++currentRun.current;
     disposed.current = false;
+
+    // Prepare the QR concurrently with auth checks instead of paying three
+    // consecutive network round trips. An unused ticket expires automatically.
+    const qrController = new AbortController();
+    const qrTimeout = window.setTimeout(() => qrController.abort(), 10_000);
+    const prefetchedQr: PreparedWechatQr | undefined = inWechat() ? undefined
+      : fetch("/api/auth/parent/wechat/qr", {
+          method: "POST", cache: "no-store", credentials: "same-origin",
+          signal: qrController.signal,
+        }).then(
+          response => ({ response }),
+          error => ({ error }),
+        ).finally(() => window.clearTimeout(qrTimeout));
+
     void (async () => {
       try {
-        const results = await Promise.all([
-          fetch("/api/auth/parent/me", { cache: "no-store" }),
-          fetch("/api/auth/me", { cache: "no-store" }),
+        // Individual failures must not block the other session check.
+        const results = await Promise.allSettled([
+          fetchWithTimeout("/api/auth/parent/me", {
+            cache: "no-store", credentials: "same-origin",
+          }, 6_000),
+          fetchWithTimeout("/api/auth/me", {
+            cache: "no-store", credentials: "same-origin",
+          }, 6_000),
         ]);
         if (disposed.current || currentRun.current !== run) return;
-        const student = results[1].ok ? (await results[1].json()).user : null;
+        const parentOk = results[0].status === "fulfilled" && results[0].value.ok;
+        const studentResponse = results[1].status === "fulfilled" ? results[1].value : null;
+        const student = studentResponse?.ok ? (await studentResponse.json()).user : null;
         const genuineStudent = student && student.candidateNo !== "GUEST";
         if (needsStudent) {
           if (genuineStudent) {
@@ -123,21 +164,23 @@ export default function UnifiedLoginClient({ nextPath }: { nextPath: string }) {
             router.refresh();
             return;
           }
-          if (results[0].ok) {
+          if (parentOk) {
             setMode("studentRequired");
             setMessage("微信家庭已登录。完整模拟和个人成长档案需要已有学生账号；可在下方继续登录，基础计算无需这一步。");
             return;
           }
-        } else if (results[0].ok || genuineStudent) {
-          router.replace(results[0].ok ? destination : studentDestination);
+        } else if (parentOk || genuineStudent) {
+          router.replace(parentOk ? destination : studentDestination);
           router.refresh();
           return;
         }
       } catch { /* Login remains available when session checks fail. */ }
-      if (!disposed.current && currentRun.current === run) void startWechat();
+      if (!disposed.current && currentRun.current === run) void startWechat(prefetchedQr);
     })();
     return () => {
       disposed.current = true;
+      qrController.abort();
+      window.clearTimeout(qrTimeout);
       currentRun.current++;
       ticketRef.current = "";
       stopPolling();
