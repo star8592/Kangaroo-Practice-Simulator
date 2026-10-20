@@ -40,7 +40,7 @@ export type ExamProfile = {
     commercialUse?: boolean;
     attributionRequired?: boolean;
   };
-  competitionId?: "kangaroo" | "australian-amc" | "maa-amc" | "cemc";
+  competitionId?: "kangaroo" | "australian-amc" | "maa-amc" | "cemc" | "seamo";
   formatId?: string;
   paperType?: "past" | "sample" | "smart" | "practice";
   gradeBand?: "1-2" | "3-4" | "5-6" | "7-8" | "9-10" | "11+";

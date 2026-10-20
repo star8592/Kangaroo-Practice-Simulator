@@ -6,7 +6,7 @@ export async function GET(req: NextRequest) {
   const user = userFromRequest(req);
   if (!user || user.role !== "student") return NextResponse.json({ error: "请先登录学生账号" }, { status: 401 });
   const exams = listTrainingExamProfiles()
-    .filter(x => x.paperType !== "practice")
+    .filter(x => x.paperType !== "practice" || x.competitionId === "seamo")
     .sort((a, b) => (b.year || 0) - (a.year || 0))
     .map(x => ({
       id: x.id,
@@ -21,7 +21,7 @@ export async function GET(req: NextRequest) {
       competitionId: x.competitionId,
       paperType: x.paperType,
       timingSections: x.timingSections || [],
-      miniappReady: !(x.timingSections || []).length,
+      miniappReady: !(x.timingSections || []).length && x.competitionId !== "seamo",
     }));
   return NextResponse.json({ exams });
 }

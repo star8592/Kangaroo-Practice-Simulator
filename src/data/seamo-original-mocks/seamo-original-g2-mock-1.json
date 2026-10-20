@@ -1,0 +1,1372 @@
+{
+  "profile": {
+    "id": "seamo-original-g2-mock-1",
+    "name": "SEAMO Grade 2 Foundational Practice 1",
+    "nameZh": "SEAMO 2年级 · 原创基础训练 1",
+    "nameEn": "SEAMO Grade 2 · Foundational Practice 1",
+    "grades": "Grade 2",
+    "gradeBand": "1-2",
+    "durationSeconds": 5400,
+    "questionCount": 25,
+    "initialScore": 0,
+    "maxScore": 25,
+    "wrongPenaltyMode": "fixed",
+    "wrongPenaltyValue": 0,
+    "country": "Singapore SEAMO",
+    "year": 2026,
+    "language": "zh/en",
+    "competitionId": "seamo",
+    "formatId": "seamo-g2-original-mock",
+    "paperType": "practice",
+    "timingMode": "recommended",
+    "studentReady": true,
+    "sourceLabelZh": "本站原创基础专项训练 · 非官方历年真题",
+    "sourceLabelEn": "Independent foundational practice · not an official past paper",
+    "rulesSummaryZh": "25题 / 训练计时90分钟，到时自动交卷；每题1分、不倒扣，非官方计分标准。",
+    "rulesSummaryEn": "25 questions / 90-minute practice timer with automatic submission; 1 point each, no penalty; not official scoring.",
+    "formatLabelZh": "SEAMO A · 本站基础训练",
+    "formatLabelEn": "SEAMO A · Foundational practice"
+  },
+  "questions": [
+    {
+      "id": "seamo-original-g2-q01",
+      "year": 2026,
+      "level": "Grade 2",
+      "grades": "Grade 2",
+      "language": "zh/en",
+      "questionNo": 1,
+      "points": 1,
+      "answerMode": "choice",
+      "concept": "arithmetic",
+      "stem": "小乐有 11 张卡片，送给朋友 4 张，又得到 3 张。现在有多少张？",
+      "stemEn": "Lele has 11 cards, gives away 4, then receives 3. How many cards now?",
+      "choices": [
+        {
+          "key": "A",
+          "label": "8"
+        },
+        {
+          "key": "B",
+          "label": "10"
+        },
+        {
+          "key": "C",
+          "label": "12"
+        },
+        {
+          "key": "D",
+          "label": "14"
+        },
+        {
+          "key": "E",
+          "label": "6"
+        }
+      ],
+      "choicesEn": [
+        {
+          "key": "A",
+          "label": "8"
+        },
+        {
+          "key": "B",
+          "label": "10"
+        },
+        {
+          "key": "C",
+          "label": "12"
+        },
+        {
+          "key": "D",
+          "label": "14"
+        },
+        {
+          "key": "E",
+          "label": "6"
+        }
+      ],
+      "answer": "B",
+      "solution": "11 − 4 + 3 = 10",
+      "sourceFile": "original-generated-seamo-practice",
+      "verified": false,
+      "examReady": true
+    },
+    {
+      "id": "seamo-original-g2-q02",
+      "year": 2026,
+      "level": "Grade 2",
+      "grades": "Grade 2",
+      "language": "zh/en",
+      "questionNo": 2,
+      "points": 1,
+      "answerMode": "choice",
+      "concept": "patterns",
+      "stem": "数列 3，7，11，____。空格里应填几？",
+      "stemEn": "Complete the pattern: 3, 7, 11, ____. What comes next?",
+      "choices": [
+        {
+          "key": "A",
+          "label": "15"
+        },
+        {
+          "key": "B",
+          "label": "17"
+        },
+        {
+          "key": "C",
+          "label": "19"
+        },
+        {
+          "key": "D",
+          "label": "11"
+        },
+        {
+          "key": "E",
+          "label": "13"
+        }
+      ],
+      "choicesEn": [
+        {
+          "key": "A",
+          "label": "15"
+        },
+        {
+          "key": "B",
+          "label": "17"
+        },
+        {
+          "key": "C",
+          "label": "19"
+        },
+        {
+          "key": "D",
+          "label": "11"
+        },
+        {
+          "key": "E",
+          "label": "13"
+        }
+      ],
+      "answer": "A",
+      "solution": "每次增加 4；下一项是 15。",
+      "sourceFile": "original-generated-seamo-practice",
+      "verified": false,
+      "examReady": true
+    },
+    {
+      "id": "seamo-original-g2-q03",
+      "year": 2026,
+      "level": "Grade 2",
+      "grades": "Grade 2",
+      "language": "zh/en",
+      "questionNo": 3,
+      "points": 1,
+      "answerMode": "choice",
+      "concept": "multiplication",
+      "stem": "每个盒子里放 5 颗珠子，4 个盒子一共有多少颗？",
+      "stemEn": "Each box contains 5 beads. How many beads are in 4 boxes?",
+      "choices": [
+        {
+          "key": "A",
+          "label": "22"
+        },
+        {
+          "key": "B",
+          "label": "24"
+        },
+        {
+          "key": "C",
+          "label": "16"
+        },
+        {
+          "key": "D",
+          "label": "18"
+        },
+        {
+          "key": "E",
+          "label": "20"
+        }
+      ],
+      "choicesEn": [
+        {
+          "key": "A",
+          "label": "22"
+        },
+        {
+          "key": "B",
+          "label": "24"
+        },
+        {
+          "key": "C",
+          "label": "16"
+        },
+        {
+          "key": "D",
+          "label": "18"
+        },
+        {
+          "key": "E",
+          "label": "20"
+        }
+      ],
+      "answer": "E",
+      "solution": "4 × 5 = 20",
+      "sourceFile": "original-generated-seamo-practice",
+      "verified": false,
+      "examReady": true
+    },
+    {
+      "id": "seamo-original-g2-q04",
+      "year": 2026,
+      "level": "Grade 2",
+      "grades": "Grade 2",
+      "language": "zh/en",
+      "questionNo": 4,
+      "points": 1,
+      "answerMode": "choice",
+      "concept": "logic",
+      "stem": "队伍中，小乐前面有 11 人，后面有 5 人。队伍一共有多少人？",
+      "stemEn": "There are 11 children ahead of Lele and 5 behind. How many children are in the line?",
+      "choices": [
+        {
+          "key": "A",
+          "label": "21"
+        },
+        {
+          "key": "B",
+          "label": "13"
+        },
+        {
+          "key": "C",
+          "label": "15"
+        },
+        {
+          "key": "D",
+          "label": "17"
+        },
+        {
+          "key": "E",
+          "label": "19"
+        }
+      ],
+      "choicesEn": [
+        {
+          "key": "A",
+          "label": "21"
+        },
+        {
+          "key": "B",
+          "label": "13"
+        },
+        {
+          "key": "C",
+          "label": "15"
+        },
+        {
+          "key": "D",
+          "label": "17"
+        },
+        {
+          "key": "E",
+          "label": "19"
+        }
+      ],
+      "answer": "D",
+      "solution": "11 + 1 + 5 = 17",
+      "sourceFile": "original-generated-seamo-practice",
+      "verified": false,
+      "examReady": true
+    },
+    {
+      "id": "seamo-original-g2-q05",
+      "year": 2026,
+      "level": "Grade 2",
+      "grades": "Grade 2",
+      "language": "zh/en",
+      "questionNo": 5,
+      "points": 1,
+      "answerMode": "choice",
+      "concept": "geometry",
+      "stem": "一个长方形长 4 厘米，宽 2 厘米。周长是多少厘米？",
+      "stemEn": "A rectangle is 4 cm long and 2 cm wide. What is its perimeter in cm?",
+      "choices": [
+        {
+          "key": "A",
+          "label": "8"
+        },
+        {
+          "key": "B",
+          "label": "10"
+        },
+        {
+          "key": "C",
+          "label": "12"
+        },
+        {
+          "key": "D",
+          "label": "14"
+        },
+        {
+          "key": "E",
+          "label": "16"
+        }
+      ],
+      "choicesEn": [
+        {
+          "key": "A",
+          "label": "8"
+        },
+        {
+          "key": "B",
+          "label": "10"
+        },
+        {
+          "key": "C",
+          "label": "12"
+        },
+        {
+          "key": "D",
+          "label": "14"
+        },
+        {
+          "key": "E",
+          "label": "16"
+        }
+      ],
+      "answer": "C",
+      "solution": "2 × (4 + 2) = 12",
+      "sourceFile": "original-generated-seamo-practice",
+      "verified": false,
+      "examReady": true
+    },
+    {
+      "id": "seamo-original-g2-q06",
+      "year": 2026,
+      "level": "Grade 2",
+      "grades": "Grade 2",
+      "language": "zh/en",
+      "questionNo": 6,
+      "points": 1,
+      "answerMode": "choice",
+      "concept": "arithmetic",
+      "stem": "小乐有 16 张卡片，送给朋友 4 张，又得到 4 张。现在有多少张？",
+      "stemEn": "Lele has 16 cards, gives away 4, then receives 4. How many cards now?",
+      "choices": [
+        {
+          "key": "A",
+          "label": "14"
+        },
+        {
+          "key": "B",
+          "label": "16"
+        },
+        {
+          "key": "C",
+          "label": "18"
+        },
+        {
+          "key": "D",
+          "label": "20"
+        },
+        {
+          "key": "E",
+          "label": "12"
+        }
+      ],
+      "choicesEn": [
+        {
+          "key": "A",
+          "label": "14"
+        },
+        {
+          "key": "B",
+          "label": "16"
+        },
+        {
+          "key": "C",
+          "label": "18"
+        },
+        {
+          "key": "D",
+          "label": "20"
+        },
+        {
+          "key": "E",
+          "label": "12"
+        }
+      ],
+      "answer": "B",
+      "solution": "16 − 4 + 4 = 16",
+      "sourceFile": "original-generated-seamo-practice",
+      "verified": false,
+      "examReady": true
+    },
+    {
+      "id": "seamo-original-g2-q07",
+      "year": 2026,
+      "level": "Grade 2",
+      "grades": "Grade 2",
+      "language": "zh/en",
+      "questionNo": 7,
+      "points": 1,
+      "answerMode": "choice",
+      "concept": "patterns",
+      "stem": "数列 8，12，16，____。空格里应填几？",
+      "stemEn": "Complete the pattern: 8, 12, 16, ____. What comes next?",
+      "choices": [
+        {
+          "key": "A",
+          "label": "20"
+        },
+        {
+          "key": "B",
+          "label": "22"
+        },
+        {
+          "key": "C",
+          "label": "24"
+        },
+        {
+          "key": "D",
+          "label": "16"
+        },
+        {
+          "key": "E",
+          "label": "18"
+        }
+      ],
+      "choicesEn": [
+        {
+          "key": "A",
+          "label": "20"
+        },
+        {
+          "key": "B",
+          "label": "22"
+        },
+        {
+          "key": "C",
+          "label": "24"
+        },
+        {
+          "key": "D",
+          "label": "16"
+        },
+        {
+          "key": "E",
+          "label": "18"
+        }
+      ],
+      "answer": "A",
+      "solution": "每次增加 4；下一项是 20。",
+      "sourceFile": "original-generated-seamo-practice",
+      "verified": false,
+      "examReady": true
+    },
+    {
+      "id": "seamo-original-g2-q08",
+      "year": 2026,
+      "level": "Grade 2",
+      "grades": "Grade 2",
+      "language": "zh/en",
+      "questionNo": 8,
+      "points": 1,
+      "answerMode": "choice",
+      "concept": "multiplication",
+      "stem": "每个盒子里放 2 颗珠子，4 个盒子一共有多少颗？",
+      "stemEn": "Each box contains 2 beads. How many beads are in 4 boxes?",
+      "choices": [
+        {
+          "key": "A",
+          "label": "10"
+        },
+        {
+          "key": "B",
+          "label": "12"
+        },
+        {
+          "key": "C",
+          "label": "4"
+        },
+        {
+          "key": "D",
+          "label": "6"
+        },
+        {
+          "key": "E",
+          "label": "8"
+        }
+      ],
+      "choicesEn": [
+        {
+          "key": "A",
+          "label": "10"
+        },
+        {
+          "key": "B",
+          "label": "12"
+        },
+        {
+          "key": "C",
+          "label": "4"
+        },
+        {
+          "key": "D",
+          "label": "6"
+        },
+        {
+          "key": "E",
+          "label": "8"
+        }
+      ],
+      "answer": "E",
+      "solution": "4 × 2 = 8",
+      "sourceFile": "original-generated-seamo-practice",
+      "verified": false,
+      "examReady": true
+    },
+    {
+      "id": "seamo-original-g2-q09",
+      "year": 2026,
+      "level": "Grade 2",
+      "grades": "Grade 2",
+      "language": "zh/en",
+      "questionNo": 9,
+      "points": 1,
+      "answerMode": "choice",
+      "concept": "logic",
+      "stem": "队伍中，小乐前面有 16 人，后面有 5 人。队伍一共有多少人？",
+      "stemEn": "There are 16 children ahead of Lele and 5 behind. How many children are in the line?",
+      "choices": [
+        {
+          "key": "A",
+          "label": "26"
+        },
+        {
+          "key": "B",
+          "label": "18"
+        },
+        {
+          "key": "C",
+          "label": "20"
+        },
+        {
+          "key": "D",
+          "label": "22"
+        },
+        {
+          "key": "E",
+          "label": "24"
+        }
+      ],
+      "choicesEn": [
+        {
+          "key": "A",
+          "label": "26"
+        },
+        {
+          "key": "B",
+          "label": "18"
+        },
+        {
+          "key": "C",
+          "label": "20"
+        },
+        {
+          "key": "D",
+          "label": "22"
+        },
+        {
+          "key": "E",
+          "label": "24"
+        }
+      ],
+      "answer": "D",
+      "solution": "16 + 1 + 5 = 22",
+      "sourceFile": "original-generated-seamo-practice",
+      "verified": false,
+      "examReady": true
+    },
+    {
+      "id": "seamo-original-g2-q10",
+      "year": 2026,
+      "level": "Grade 2",
+      "grades": "Grade 2",
+      "language": "zh/en",
+      "questionNo": 10,
+      "points": 1,
+      "answerMode": "choice",
+      "concept": "geometry",
+      "stem": "一个长方形长 4 厘米，宽 2 厘米。周长是多少厘米？",
+      "stemEn": "A rectangle is 4 cm long and 2 cm wide. What is its perimeter in cm?",
+      "choices": [
+        {
+          "key": "A",
+          "label": "8"
+        },
+        {
+          "key": "B",
+          "label": "10"
+        },
+        {
+          "key": "C",
+          "label": "12"
+        },
+        {
+          "key": "D",
+          "label": "14"
+        },
+        {
+          "key": "E",
+          "label": "16"
+        }
+      ],
+      "choicesEn": [
+        {
+          "key": "A",
+          "label": "8"
+        },
+        {
+          "key": "B",
+          "label": "10"
+        },
+        {
+          "key": "C",
+          "label": "12"
+        },
+        {
+          "key": "D",
+          "label": "14"
+        },
+        {
+          "key": "E",
+          "label": "16"
+        }
+      ],
+      "answer": "C",
+      "solution": "2 × (4 + 2) = 12",
+      "sourceFile": "original-generated-seamo-practice",
+      "verified": false,
+      "examReady": true
+    },
+    {
+      "id": "seamo-original-g2-q11",
+      "year": 2026,
+      "level": "Grade 2",
+      "grades": "Grade 2",
+      "language": "zh/en",
+      "questionNo": 11,
+      "points": 1,
+      "answerMode": "choice",
+      "concept": "arithmetic",
+      "stem": "小乐有 21 张卡片，送给朋友 4 张，又得到 5 张。现在有多少张？",
+      "stemEn": "Lele has 21 cards, gives away 4, then receives 5. How many cards now?",
+      "choices": [
+        {
+          "key": "A",
+          "label": "20"
+        },
+        {
+          "key": "B",
+          "label": "22"
+        },
+        {
+          "key": "C",
+          "label": "24"
+        },
+        {
+          "key": "D",
+          "label": "26"
+        },
+        {
+          "key": "E",
+          "label": "18"
+        }
+      ],
+      "choicesEn": [
+        {
+          "key": "A",
+          "label": "20"
+        },
+        {
+          "key": "B",
+          "label": "22"
+        },
+        {
+          "key": "C",
+          "label": "24"
+        },
+        {
+          "key": "D",
+          "label": "26"
+        },
+        {
+          "key": "E",
+          "label": "18"
+        }
+      ],
+      "answer": "B",
+      "solution": "21 − 4 + 5 = 22",
+      "sourceFile": "original-generated-seamo-practice",
+      "verified": false,
+      "examReady": true
+    },
+    {
+      "id": "seamo-original-g2-q12",
+      "year": 2026,
+      "level": "Grade 2",
+      "grades": "Grade 2",
+      "language": "zh/en",
+      "questionNo": 12,
+      "points": 1,
+      "answerMode": "choice",
+      "concept": "patterns",
+      "stem": "数列 13，17，21，____。空格里应填几？",
+      "stemEn": "Complete the pattern: 13, 17, 21, ____. What comes next?",
+      "choices": [
+        {
+          "key": "A",
+          "label": "25"
+        },
+        {
+          "key": "B",
+          "label": "27"
+        },
+        {
+          "key": "C",
+          "label": "29"
+        },
+        {
+          "key": "D",
+          "label": "21"
+        },
+        {
+          "key": "E",
+          "label": "23"
+        }
+      ],
+      "choicesEn": [
+        {
+          "key": "A",
+          "label": "25"
+        },
+        {
+          "key": "B",
+          "label": "27"
+        },
+        {
+          "key": "C",
+          "label": "29"
+        },
+        {
+          "key": "D",
+          "label": "21"
+        },
+        {
+          "key": "E",
+          "label": "23"
+        }
+      ],
+      "answer": "A",
+      "solution": "每次增加 4；下一项是 25。",
+      "sourceFile": "original-generated-seamo-practice",
+      "verified": false,
+      "examReady": true
+    },
+    {
+      "id": "seamo-original-g2-q13",
+      "year": 2026,
+      "level": "Grade 2",
+      "grades": "Grade 2",
+      "language": "zh/en",
+      "questionNo": 13,
+      "points": 1,
+      "answerMode": "choice",
+      "concept": "multiplication",
+      "stem": "每个盒子里放 3 颗珠子，4 个盒子一共有多少颗？",
+      "stemEn": "Each box contains 3 beads. How many beads are in 4 boxes?",
+      "choices": [
+        {
+          "key": "A",
+          "label": "14"
+        },
+        {
+          "key": "B",
+          "label": "16"
+        },
+        {
+          "key": "C",
+          "label": "8"
+        },
+        {
+          "key": "D",
+          "label": "10"
+        },
+        {
+          "key": "E",
+          "label": "12"
+        }
+      ],
+      "choicesEn": [
+        {
+          "key": "A",
+          "label": "14"
+        },
+        {
+          "key": "B",
+          "label": "16"
+        },
+        {
+          "key": "C",
+          "label": "8"
+        },
+        {
+          "key": "D",
+          "label": "10"
+        },
+        {
+          "key": "E",
+          "label": "12"
+        }
+      ],
+      "answer": "E",
+      "solution": "4 × 3 = 12",
+      "sourceFile": "original-generated-seamo-practice",
+      "verified": false,
+      "examReady": true
+    },
+    {
+      "id": "seamo-original-g2-q14",
+      "year": 2026,
+      "level": "Grade 2",
+      "grades": "Grade 2",
+      "language": "zh/en",
+      "questionNo": 14,
+      "points": 1,
+      "answerMode": "choice",
+      "concept": "logic",
+      "stem": "队伍中，小乐前面有 21 人，后面有 5 人。队伍一共有多少人？",
+      "stemEn": "There are 21 children ahead of Lele and 5 behind. How many children are in the line?",
+      "choices": [
+        {
+          "key": "A",
+          "label": "31"
+        },
+        {
+          "key": "B",
+          "label": "23"
+        },
+        {
+          "key": "C",
+          "label": "25"
+        },
+        {
+          "key": "D",
+          "label": "27"
+        },
+        {
+          "key": "E",
+          "label": "29"
+        }
+      ],
+      "choicesEn": [
+        {
+          "key": "A",
+          "label": "31"
+        },
+        {
+          "key": "B",
+          "label": "23"
+        },
+        {
+          "key": "C",
+          "label": "25"
+        },
+        {
+          "key": "D",
+          "label": "27"
+        },
+        {
+          "key": "E",
+          "label": "29"
+        }
+      ],
+      "answer": "D",
+      "solution": "21 + 1 + 5 = 27",
+      "sourceFile": "original-generated-seamo-practice",
+      "verified": false,
+      "examReady": true
+    },
+    {
+      "id": "seamo-original-g2-q15",
+      "year": 2026,
+      "level": "Grade 2",
+      "grades": "Grade 2",
+      "language": "zh/en",
+      "questionNo": 15,
+      "points": 1,
+      "answerMode": "choice",
+      "concept": "geometry",
+      "stem": "一个长方形长 4 厘米，宽 2 厘米。周长是多少厘米？",
+      "stemEn": "A rectangle is 4 cm long and 2 cm wide. What is its perimeter in cm?",
+      "choices": [
+        {
+          "key": "A",
+          "label": "8"
+        },
+        {
+          "key": "B",
+          "label": "10"
+        },
+        {
+          "key": "C",
+          "label": "12"
+        },
+        {
+          "key": "D",
+          "label": "14"
+        },
+        {
+          "key": "E",
+          "label": "16"
+        }
+      ],
+      "choicesEn": [
+        {
+          "key": "A",
+          "label": "8"
+        },
+        {
+          "key": "B",
+          "label": "10"
+        },
+        {
+          "key": "C",
+          "label": "12"
+        },
+        {
+          "key": "D",
+          "label": "14"
+        },
+        {
+          "key": "E",
+          "label": "16"
+        }
+      ],
+      "answer": "C",
+      "solution": "2 × (4 + 2) = 12",
+      "sourceFile": "original-generated-seamo-practice",
+      "verified": false,
+      "examReady": true
+    },
+    {
+      "id": "seamo-original-g2-q16",
+      "year": 2026,
+      "level": "Grade 2",
+      "grades": "Grade 2",
+      "language": "zh/en",
+      "questionNo": 16,
+      "points": 1,
+      "answerMode": "choice",
+      "concept": "arithmetic",
+      "stem": "小乐有 26 张卡片，送给朋友 4 张，又得到 2 张。现在有多少张？",
+      "stemEn": "Lele has 26 cards, gives away 4, then receives 2. How many cards now?",
+      "choices": [
+        {
+          "key": "A",
+          "label": "22"
+        },
+        {
+          "key": "B",
+          "label": "24"
+        },
+        {
+          "key": "C",
+          "label": "26"
+        },
+        {
+          "key": "D",
+          "label": "28"
+        },
+        {
+          "key": "E",
+          "label": "20"
+        }
+      ],
+      "choicesEn": [
+        {
+          "key": "A",
+          "label": "22"
+        },
+        {
+          "key": "B",
+          "label": "24"
+        },
+        {
+          "key": "C",
+          "label": "26"
+        },
+        {
+          "key": "D",
+          "label": "28"
+        },
+        {
+          "key": "E",
+          "label": "20"
+        }
+      ],
+      "answer": "B",
+      "solution": "26 − 4 + 2 = 24",
+      "sourceFile": "original-generated-seamo-practice",
+      "verified": false,
+      "examReady": true
+    },
+    {
+      "id": "seamo-original-g2-q17",
+      "year": 2026,
+      "level": "Grade 2",
+      "grades": "Grade 2",
+      "language": "zh/en",
+      "questionNo": 17,
+      "points": 1,
+      "answerMode": "choice",
+      "concept": "patterns",
+      "stem": "数列 18，22，26，____。空格里应填几？",
+      "stemEn": "Complete the pattern: 18, 22, 26, ____. What comes next?",
+      "choices": [
+        {
+          "key": "A",
+          "label": "30"
+        },
+        {
+          "key": "B",
+          "label": "32"
+        },
+        {
+          "key": "C",
+          "label": "34"
+        },
+        {
+          "key": "D",
+          "label": "26"
+        },
+        {
+          "key": "E",
+          "label": "28"
+        }
+      ],
+      "choicesEn": [
+        {
+          "key": "A",
+          "label": "30"
+        },
+        {
+          "key": "B",
+          "label": "32"
+        },
+        {
+          "key": "C",
+          "label": "34"
+        },
+        {
+          "key": "D",
+          "label": "26"
+        },
+        {
+          "key": "E",
+          "label": "28"
+        }
+      ],
+      "answer": "A",
+      "solution": "每次增加 4；下一项是 30。",
+      "sourceFile": "original-generated-seamo-practice",
+      "verified": false,
+      "examReady": true
+    },
+    {
+      "id": "seamo-original-g2-q18",
+      "year": 2026,
+      "level": "Grade 2",
+      "grades": "Grade 2",
+      "language": "zh/en",
+      "questionNo": 18,
+      "points": 1,
+      "answerMode": "choice",
+      "concept": "multiplication",
+      "stem": "每个盒子里放 4 颗珠子，4 个盒子一共有多少颗？",
+      "stemEn": "Each box contains 4 beads. How many beads are in 4 boxes?",
+      "choices": [
+        {
+          "key": "A",
+          "label": "18"
+        },
+        {
+          "key": "B",
+          "label": "20"
+        },
+        {
+          "key": "C",
+          "label": "12"
+        },
+        {
+          "key": "D",
+          "label": "14"
+        },
+        {
+          "key": "E",
+          "label": "16"
+        }
+      ],
+      "choicesEn": [
+        {
+          "key": "A",
+          "label": "18"
+        },
+        {
+          "key": "B",
+          "label": "20"
+        },
+        {
+          "key": "C",
+          "label": "12"
+        },
+        {
+          "key": "D",
+          "label": "14"
+        },
+        {
+          "key": "E",
+          "label": "16"
+        }
+      ],
+      "answer": "E",
+      "solution": "4 × 4 = 16",
+      "sourceFile": "original-generated-seamo-practice",
+      "verified": false,
+      "examReady": true
+    },
+    {
+      "id": "seamo-original-g2-q19",
+      "year": 2026,
+      "level": "Grade 2",
+      "grades": "Grade 2",
+      "language": "zh/en",
+      "questionNo": 19,
+      "points": 1,
+      "answerMode": "choice",
+      "concept": "logic",
+      "stem": "队伍中，小乐前面有 26 人，后面有 5 人。队伍一共有多少人？",
+      "stemEn": "There are 26 children ahead of Lele and 5 behind. How many children are in the line?",
+      "choices": [
+        {
+          "key": "A",
+          "label": "36"
+        },
+        {
+          "key": "B",
+          "label": "28"
+        },
+        {
+          "key": "C",
+          "label": "30"
+        },
+        {
+          "key": "D",
+          "label": "32"
+        },
+        {
+          "key": "E",
+          "label": "34"
+        }
+      ],
+      "choicesEn": [
+        {
+          "key": "A",
+          "label": "36"
+        },
+        {
+          "key": "B",
+          "label": "28"
+        },
+        {
+          "key": "C",
+          "label": "30"
+        },
+        {
+          "key": "D",
+          "label": "32"
+        },
+        {
+          "key": "E",
+          "label": "34"
+        }
+      ],
+      "answer": "D",
+      "solution": "26 + 1 + 5 = 32",
+      "sourceFile": "original-generated-seamo-practice",
+      "verified": false,
+      "examReady": true
+    },
+    {
+      "id": "seamo-original-g2-q20",
+      "year": 2026,
+      "level": "Grade 2",
+      "grades": "Grade 2",
+      "language": "zh/en",
+      "questionNo": 20,
+      "points": 1,
+      "answerMode": "choice",
+      "concept": "geometry",
+      "stem": "一个长方形长 4 厘米，宽 2 厘米。周长是多少厘米？",
+      "stemEn": "A rectangle is 4 cm long and 2 cm wide. What is its perimeter in cm?",
+      "choices": [
+        {
+          "key": "A",
+          "label": "8"
+        },
+        {
+          "key": "B",
+          "label": "10"
+        },
+        {
+          "key": "C",
+          "label": "12"
+        },
+        {
+          "key": "D",
+          "label": "14"
+        },
+        {
+          "key": "E",
+          "label": "16"
+        }
+      ],
+      "choicesEn": [
+        {
+          "key": "A",
+          "label": "8"
+        },
+        {
+          "key": "B",
+          "label": "10"
+        },
+        {
+          "key": "C",
+          "label": "12"
+        },
+        {
+          "key": "D",
+          "label": "14"
+        },
+        {
+          "key": "E",
+          "label": "16"
+        }
+      ],
+      "answer": "C",
+      "solution": "2 × (4 + 2) = 12",
+      "sourceFile": "original-generated-seamo-practice",
+      "verified": false,
+      "examReady": true
+    },
+    {
+      "id": "seamo-original-g2-q21",
+      "year": 2026,
+      "level": "Grade 2",
+      "grades": "Grade 2",
+      "language": "zh/en",
+      "questionNo": 21,
+      "points": 1,
+      "answerMode": "integer",
+      "concept": "arithmetic",
+      "stem": "小乐有 31 张卡片，送给朋友 4 张，又得到 3 张。现在有多少张？",
+      "stemEn": "Lele has 31 cards, gives away 4, then receives 3. How many cards now?",
+      "choices": [],
+      "choicesEn": [],
+      "answer": "30",
+      "solution": "31 − 4 + 3 = 30",
+      "sourceFile": "original-generated-seamo-practice",
+      "verified": false,
+      "examReady": true
+    },
+    {
+      "id": "seamo-original-g2-q22",
+      "year": 2026,
+      "level": "Grade 2",
+      "grades": "Grade 2",
+      "language": "zh/en",
+      "questionNo": 22,
+      "points": 1,
+      "answerMode": "integer",
+      "concept": "patterns",
+      "stem": "数列 23，27，31，____。空格里应填几？",
+      "stemEn": "Complete the pattern: 23, 27, 31, ____. What comes next?",
+      "choices": [],
+      "choicesEn": [],
+      "answer": "35",
+      "solution": "每次增加 4；下一项是 35。",
+      "sourceFile": "original-generated-seamo-practice",
+      "verified": false,
+      "examReady": true
+    },
+    {
+      "id": "seamo-original-g2-q23",
+      "year": 2026,
+      "level": "Grade 2",
+      "grades": "Grade 2",
+      "language": "zh/en",
+      "questionNo": 23,
+      "points": 1,
+      "answerMode": "integer",
+      "concept": "multiplication",
+      "stem": "每个盒子里放 5 颗珠子，4 个盒子一共有多少颗？",
+      "stemEn": "Each box contains 5 beads. How many beads are in 4 boxes?",
+      "choices": [],
+      "choicesEn": [],
+      "answer": "20",
+      "solution": "4 × 5 = 20",
+      "sourceFile": "original-generated-seamo-practice",
+      "verified": false,
+      "examReady": true
+    },
+    {
+      "id": "seamo-original-g2-q24",
+      "year": 2026,
+      "level": "Grade 2",
+      "grades": "Grade 2",
+      "language": "zh/en",
+      "questionNo": 24,
+      "points": 1,
+      "answerMode": "integer",
+      "concept": "logic",
+      "stem": "队伍中，小乐前面有 31 人，后面有 5 人。队伍一共有多少人？",
+      "stemEn": "There are 31 children ahead of Lele and 5 behind. How many children are in the line?",
+      "choices": [],
+      "choicesEn": [],
+      "answer": "37",
+      "solution": "31 + 1 + 5 = 37",
+      "sourceFile": "original-generated-seamo-practice",
+      "verified": false,
+      "examReady": true
+    },
+    {
+      "id": "seamo-original-g2-q25",
+      "year": 2026,
+      "level": "Grade 2",
+      "grades": "Grade 2",
+      "language": "zh/en",
+      "questionNo": 25,
+      "points": 1,
+      "answerMode": "integer",
+      "concept": "geometry",
+      "stem": "一个长方形长 4 厘米，宽 2 厘米。周长是多少厘米？",
+      "stemEn": "A rectangle is 4 cm long and 2 cm wide. What is its perimeter in cm?",
+      "choices": [],
+      "choicesEn": [],
+      "answer": "12",
+      "solution": "2 × (4 + 2) = 12",
+      "sourceFile": "original-generated-seamo-practice",
+      "verified": false,
+      "examReady": true
+    }
+  ]
+}

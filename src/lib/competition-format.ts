@@ -37,6 +37,7 @@ export function normalizeExamProfile(input:ExamProfile):ExamProfile{
     const b=band==="11+"?"11plus":(band||"general");
     return {...p,competitionId:"australian-amc",formatId:p.formatId||`australian-amc-standard-${b}`,paperType:p.paperType||"past",timingMode:p.timingMode||"official",formatLabelZh:p.formatLabelZh||"澳洲 AMC 正式赛制",formatLabelEn:p.formatLabelEn||"Australian AMC official format",rulesSummaryZh:p.rulesSummaryZh||australianAmcRules(p),rulesSummaryEn:p.rulesSummaryEn||`30 questions, ${Math.round(p.durationSeconds/60)} minutes, 135 points; Q1–25 multiple choice and Q26–30 integer answers 0–999; no penalty for wrong answers.`};
   }
+  if(p.competitionId==="seamo") return {...p,competitionId:"seamo",paperType:p.paperType||"practice",timingMode:p.timingMode||"recommended",gradeBand:"1-2"};
   if(p.country==="MAA AMC"||p.competitionId==="maa-amc") {
     if(p.paperType==="practice") return {...p,competitionId:"maa-amc",timingMode:"untimed"};
     const id=(p.formatId||"") as MaaFormatId;

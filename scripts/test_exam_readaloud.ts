@@ -19,6 +19,7 @@ const spoken = buildReadAloudText("3 × 4 = ?", choices, "zh");
 assert.ok(spoken.includes("选项A，8"));
 assert.ok(spoken.includes("选项B，12"));
 assert.ok(!spoken.includes("正确答案"));
+assert.equal(buildReadAloudText("What is 12 plus 5?", [], "en"), "What is 12 plus 5?");
 const picture = buildReadAloudText("选出图形", [{ key: "A", label: "" }], "zh");
 assert.ok(picture.includes("选项A，请查看题目中的选项图片"));
 const one = examSpeechAsset("3 × 4 = ?", choices, "zh")!;

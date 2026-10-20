@@ -9,12 +9,13 @@ export type CompetitionIntroCopy = {
   note: string;
 };
 
-export type CompetitionIntroId = "kangaroo" | "australian-amc" | "maa-amc" | "cemc";
+export type CompetitionIntroId = "kangaroo" | "australian-amc" | "maa-amc" | "cemc" | "seamo";
 
 export const COMPETITION_INTRO: Record<
   CompetitionIntroId,
   Record<CompetitionIntroLang, CompetitionIntroCopy>
 > = {
+  seamo: {zh:{badge:"SINGAPORE · SEAMO",title:"SEAMO 新加坡亚太数学奥林匹克",summary:"低年级专项：观察、数感、逻辑与应用题。独立于澳洲 AMC 和美国 AMC。",facts:[{label:"一年级 Pre-A",value:"15道选择题 / 40分钟"},{label:"二年级 A",value:"20道选择题 + 5道填空 / 90分钟"},{label:"2026 考试",value:"10月24日；以报名确认通知为准"}],strengths:["数感","规律","图形","逻辑","应用题"],note:"本站原创基础练习不是官方真题，也不等同正式竞赛难度。"},en:{badge:"SINGAPORE · SEAMO",title:"SEAMO Mathematics Olympiad",summary:"Independent Singapore competition training for young learners, separate from Australian and American AMC.",facts:[{label:"Grade 1 Pre-A",value:"15 multiple-choice / 40 minutes"},{label:"Grade 2 A",value:"20 multiple-choice + 5 short answers / 90 minutes"},{label:"2026 event",value:"October 24; confirm registration"}],strengths:["Number sense","Patterns","Geometry","Logic","Word problems"],note:"Independent foundational practice is not an official past paper or a full-difficulty simulation."}},
   kangaroo: {
     zh: {
       badge: "INTERNATIONAL · KSF",

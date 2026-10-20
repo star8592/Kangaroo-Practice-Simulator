@@ -1,5 +1,5 @@
 export type CalendarLang = "zh" | "en";
-export type CalendarCompetitionId = "kangaroo" | "australian-amc" | "maa-amc" | "cemc";
+export type CalendarCompetitionId = "kangaroo" | "australian-amc" | "maa-amc" | "cemc" | "seamo";
 export type CalendarGradeBand = "1-2" | "3-4" | "5-6" | "7-8" | "9-10" | "11+";
 
 export type CompetitionCalendarEvent = {
@@ -21,6 +21,7 @@ export type CompetitionCalendarEvent = {
 // site's main China-facing audience are listed. International windows are used
 // only when there is no separate China date.
 export const COMPETITION_CALENDAR: CompetitionCalendarEvent[] = [
+  {id:"seamo-2026",competitionId:"seamo",titleZh:"SEAMO 2026",titleEn:"SEAMO 2026",startDate:"2026-10-24",scopeZh:"中国赛区（以准考证为准）",scopeEn:"China region (confirm admission notice)",sourceUrl:"https://www.seedasdan.asia/seamo/",verifiedOn:"2026-10-20"},
   {
     id: "australian-amc-china-2026",
     competitionId: "australian-amc",

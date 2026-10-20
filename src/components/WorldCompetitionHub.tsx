@@ -5,13 +5,14 @@ import CompetitionCompanion from "./CompetitionCompanion";
 import { getWorldCompanion, type CompanionLang } from "@/lib/competition-companion";
 import { WORLD_COMPETITIONS, WORLD_REGION_OPTIONS, WORLD_STAGE_OPTIONS, matchesWorldReferenceStage, worldRegionName, type ReferenceStage, type WorldRegion } from "@/lib/world-competitions";
 import type { ExamProfile } from "@/lib/types";
+import type { CompetitionBrandId } from "@/lib/competition-brand";
 import styles from "./WorldCompetitionHub.module.css";
 
 type RegionFilter = "all" | WorldRegion;
 type StageFilter = "all" | ReferenceStage;
 export default function WorldCompetitionHub({lang, today, exams, initialSelected, onSelectTraining}: {
   lang: CompanionLang; today: string; exams: ExamProfile[]; initialSelected?: string;
-  onSelectTraining: (competitionId: "kangaroo" | "australian-amc" | "maa-amc" | "cemc") => void;
+  onSelectTraining: (competitionId: CompetitionBrandId) => void;
 }) {
   const [region, setRegion] = useState<RegionFilter>("all");
   const [stage, setStage] = useState<StageFilter>("all");
