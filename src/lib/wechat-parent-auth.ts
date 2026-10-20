@@ -58,7 +58,7 @@ export async function wechatUserInfo(code: string, forcedMode?: WechatLoginMode)
   }
 
   const tokenScope=String(token.scope||"");
-  if(!tokenScope.includes("snsapi_userinfo")) {
+  if (!tokenScope.includes("snsapi_userinfo") && !tokenScope.includes("snsapi_login")) {
     return {
       wechatId: String(token.unionid || token.openid),
       openId: String(token.openid),
