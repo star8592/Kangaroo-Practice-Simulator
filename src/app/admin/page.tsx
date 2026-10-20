@@ -16,7 +16,7 @@ function formatted(at: number | null) {
 export default async function AdminPage() {
   const jar = await cookies();
   const user = userFromSessionToken(jar.get(SESSION_COOKIE)?.value);
-  if (!user) redirect("/login?next=/admin");
+  if (!user) redirect("/admin/login");
   if (!isAdmin(user)) redirect("/");
   const data = adminOperationsSnapshot();
   const tiles = [
