@@ -70,7 +70,7 @@ export function buildTrainingPlan(grade:ArithmeticGrade,sessions:ArithmeticSessi
  const focusNodes=[...new Set([...probeFocus,...metricFocus])].slice(0,3);
  const zh:string[]=[];const en:string[]=[];
  const labelZh=(id:string)=>profile.skills.find(s=>s.id===id)?.labelZh||id;const labelEn=(id:string)=>profile.skills.find(s=>s.id===id)?.labelEn||id;
- if(!attempts.length){zh.push("先完成一次20题诊断，系统会建立你的个人速度与准确率基线。");en.push("Complete a 20-question diagnostic to establish your personal speed and accuracy baseline.")}
+ if(!attempts.length){zh.push("先完成一次按核心技能覆盖的短诊断，系统会建立你的个人速度与准确率基线。");en.push("Complete a short skill diagnostic to establish your personal speed and accuracy baseline.")}
  else {
   const overall=attempts.filter(a=>a.correct).length/attempts.length;zh.push(`最近 ${attempts.length} 题正确 ${attempts.filter(a=>a.correct).length}/${attempts.length}（${(overall*100).toFixed(0)}%）。`);en.push(`Recent result: ${attempts.filter(a=>a.correct).length}/${attempts.length} correct (${(overall*100).toFixed(0)}%).`);
   if(accuracyFocusSkills.length){const detail=accuracyFocusSkills.map(id=>{const m=metrics.find(x=>x.skillId===id)!;return `${labelZh(id)} ${m.correct}/${m.attempts}`}).join("、");zh.push(`准确性需要补强：${detail}。这些项目才进入重点补错训练。`);const detailEn=accuracyFocusSkills.map(id=>{const m=metrics.find(x=>x.skillId===id)!;return `${labelEn(id)} ${m.correct}/${m.attempts}`}).join(", ");en.push(`Accuracy remediation: ${detailEn}. Only these skills enter focused error practice.`)}else{zh.push("目前没有足够证据把任何技能判定为“准确性弱项”。");en.push("There is not enough evidence to label any skill an accuracy weakness.")}
