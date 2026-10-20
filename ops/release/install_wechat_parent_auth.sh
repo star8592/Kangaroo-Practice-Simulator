@@ -64,10 +64,33 @@ systemctl daemon-reload
 systemctl restart socthink-math.service
 
 for _ in $(seq 1 30); do
-  status="$(curl -fsS http://127.0.0.1:3000/api/auth/parent/status 2>/dev/null || true)"
+  status="$(curl -fsS --max-time 5 http://127.0.0.1:3000/api/auth/parent/status 2>/dev/null || true)"
   if [[ "$status" == *'"wechatLoginConfigured":true'* ]]; then
-    echo "WECHAT_PARENT_AUTH=READY"
-    exit 0
+    if [[ -z "$WECHAT_WEBSITE_APPID" ]]; then
+      echo "WECHAT_PARENT_AUTH=READY mode=official_account"
+      exit 0
+    fi
+    # The status endpoint checks the configured default (often official_account);
+    # only the actual website QR endpoint proves the website-app mode is ready.
+    qr_response="$(curl -fsS --max-time 5 -X POST http://127.0.0.1:3000/api/auth/parent/wechat/qr 2>/dev/null || true)"
+    if printf '%s' "$qr_response" | python3 -c '
+import json,sys,urllib.parse
+try:
+    response=json.load(sys.stdin)
+    url=urllib.parse.urlparse(response["qrAuthorizeUrl"])
+    query=urllib.parse.parse_qs(url.query)
+    assert url.scheme=="https" and url.netloc=="open.weixin.qq.com"
+    assert url.path=="/connect/qrconnect"
+    assert query.get("appid")==[sys.argv[1]]
+    assert query.get("scope")==["snsapi_login"]
+    assert query.get("redirect_uri")==[sys.argv[2]+"/api/auth/parent/wechat/callback"]
+    assert response.get("ticket","").startswith("wqt_")
+except Exception:
+    sys.exit(1)
+' "$WECHAT_WEBSITE_APPID" "$WECHAT_CALLBACK_ORIGIN"; then
+      echo "WECHAT_WEBSITE_OAUTH=READY"
+      exit 0
+    fi
   fi
   sleep 1
 done
