@@ -11,7 +11,6 @@ type Info={region:string|null;followedCount:number;notices:Notice[];
   next:Notice[];hiddenCount:number;reviewedEditionCount:number;};
 const REGIONS=[
   {value:"",label:"请先选择拟参赛地区"},
-  {value:"CN",label:"中国赛区"},
   {value:"US",label:"美国赛区"},
   {value:"AU",label:"澳大利亚赛区"},
   {value:"CA",label:"加拿大赛区"},
@@ -51,7 +50,7 @@ export default function CompetitionIntelligencePanel(){
     <div className={styles.settings}>
       <label htmlFor="intelligence-region">计划参赛地区</label>
       <select id="intelligence-region" disabled={busy||!info}
-        value={info?.region||""} onChange={e=>void saveRegion(e.target.value)}>
+        value={REGIONS.some(r=>r.value===(info?.region||""))?(info?.region||""):""} onChange={e=>void saveRegion(e.target.value)}>
         {REGIONS.map(x=><option value={x.value} key={x.value}>{x.label}</option>)}
       </select>
       <span>这只是提醒匹配条件，不会更改您的个人身份或报名信息。</span>
