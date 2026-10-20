@@ -18,7 +18,7 @@ export default async function AdminFamiliesPage({
 }: { searchParams: Promise<{ q?: string; page?: string }> }) {
   const jar = await cookies();
   const admin = userFromSessionToken(jar.get(SESSION_COOKIE)?.value);
-  if (!admin) redirect("/login?next=/admin/families");
+  if (!admin) redirect("/admin/login");
   if (!isAdmin(admin)) redirect("/");
 
   const qs = await searchParams;
