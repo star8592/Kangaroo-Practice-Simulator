@@ -33,7 +33,7 @@ for(const item of WORLD_COMPETITIONS){
 }
 for(const china of CHINA_MATH_EVENTS){
   assert.ok(!WORLD_COMPETITIONS.some(x=>x.id===china.id),`Domestic event leaked into public directory: ${china.id}`)
-  assert.match(china.verifiedOn,/^\\d{4}-\\d{2}-\\d{2}$/,`Archived verification date missing: ${china.id}`)
+  assert.match(china.verifiedOn,/^\d{4}-\d{2}-\d{2}$/,`Archived verification date missing: ${china.id}`)
   if(china.status==='national-list')assert.ok(china.sourceUrl && NATIONAL_LIST_URL,'Archived source audit must be preserved')
 }
 assert.ok(!WORLD_REGION_OPTIONS.some(x=>x.value==='CN'),'Domestic region filter must be absent')
