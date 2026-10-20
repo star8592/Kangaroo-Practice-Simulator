@@ -436,6 +436,8 @@
 .unifiedLoginBox>p{line-height:1.65;color:#617266;font-size:14px;margin:0}
 .unifiedQr{display:grid;justify-items:center;gap:12px;padding:12px 0}
 .unifiedQr img{border:8px solid #f2f7f3;border-radius:16px;width:260px;max-width:100%;height:auto}
+.unifiedOfficialQr{min-height:400px;width:min(300px,100%);max-width:100%;display:flex;justify-content:center;overflow:hidden;border-radius:16px}
+.unifiedOfficialQr iframe{display:block;border:0;max-width:100%;}
 .unifiedQr p{font-size:13px;color:#60766a;text-align:center}
 .unifiedLoading{padding:90px 20px;background:#f6f9f5;text-align:center;border-radius:16px;color:#3a5b48}
 .unifiedHelp{color:#708074!important;font-size:12px!important}
