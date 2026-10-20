@@ -1,0 +1,24 @@
+name: WeChat AI R0 isolated contracts
+on:
+  pull_request:
+    paths:
+      - 'apps/miniapp/ai-mode/**'
+      - 'docs/engineering/WECHAT_AI_ECOSYSTEM_R0.md'
+      - '.github/workflows/wechat-ai-canary.yml'
+  push:
+    branches:
+      - 'feat/wechat-ai-discovery-r0-20261020'
+    paths:
+      - 'apps/miniapp/ai-mode/**'
+      - '.github/workflows/wechat-ai-canary.yml'
+jobs:
+  contracts:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node --test apps/miniapp/ai-mode/tests/contracts.test.cjs

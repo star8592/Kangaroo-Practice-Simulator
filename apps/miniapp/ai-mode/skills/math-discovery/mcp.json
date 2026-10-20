@@ -1,0 +1,116 @@
+{
+  "apis": [
+    {
+      "name": "prepareArithmeticTraining",
+      "description": "为明确想练计算的家长找到年级1至12的计算训练入口。只推荐入口，不自动开始训练；有年级就保留，没有就让家长在页面选，不得猜测。",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "grade": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 12,
+            "description": "家长明确提到的年级；未提供时省略，不要推断年龄与年级。"
+          }
+        }
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "service": {
+            "type": "string"
+          },
+          "suggestedGrade": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "requiresInAppConfirmation": {
+            "type": "boolean"
+          },
+          "started": {
+            "type": "boolean"
+          }
+        }
+      },
+      "_meta": {
+        "ui": {
+          "pagePath": "/pages/arithmetic/index"
+        }
+      }
+    },
+    {
+      "name": "findInternationalCompetitions",
+      "description": "只读取公开国际数学赛事目录并匹配名称/地区；不能显示中国国内赛事、个人成绩、未经核验报名截止日。无匹配时如实告知。",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "keyword": {
+            "type": "string",
+            "maxLength": 80,
+            "description": "用户说出的赛事名称或关键字，未说时省略。"
+          },
+          "region": {
+            "type": "string",
+            "enum": [
+              "all",
+              "US",
+              "AU",
+              "CA",
+              "GB",
+              "SG",
+              "global"
+            ],
+            "description": "用户明确指定的参赛地区，否则使用 all。"
+          }
+        }
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "nameZh": {
+                  "type": "string"
+                },
+                "region": {
+                  "type": "string"
+                },
+                "summaryZh": {
+                  "type": "string"
+                },
+                "sourceUrl": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                }
+              }
+            }
+          },
+          "total": {
+            "type": "integer"
+          },
+          "hasMore": {
+            "type": "boolean"
+          },
+          "source": {
+            "type": "string"
+          }
+        }
+      },
+      "_meta": {
+        "ui": {
+          "pagePath": "/pages/events/index"
+        }
+      }
+    }
+  ]
+}
