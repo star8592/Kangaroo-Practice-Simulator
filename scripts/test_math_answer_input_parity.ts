@@ -14,6 +14,7 @@ for(const kind of kinds){
  assert.ok(web.includes("."),kind+" missing decimal point");
  assert.ok(web.includes("/"),kind+" missing division/fraction key");
 }
+assert.ok(mathAnswerKeys("expression").some(x=>x.label==="分数 a/b"),"algebra expression keypad must expose a labelled fraction key");
 for(const key of ["x","^","^2","+","-","(",")","*","/"]){
  assert.ok(mathAnswerKeys("expression").some(x=>x.insert===key),"algebra key missing: "+key);
 }

@@ -19,7 +19,7 @@ export function mathAnswerKeys(kind:MathAnswerKind='number'):AnswerKey[]{
  case 'pi':return [...digits,{label:'π',insert:'π'},fraction]
  case 'expression':return [...digits,{label:'x',insert:'x'},{label:'²',insert:'^2'},
   {label:'^',insert:'^'},{label:'(',insert:'('},{label:')',insert:')'},
-  {label:'+',insert:'+'},{label:'×',insert:'*'},{label:'÷',insert:'/'}]
+  {label:'+',insert:'+'},{label:'×',insert:'*'},{label:'÷',insert:'/'},fraction]
  default:return [...digits,fraction]
  }
 }

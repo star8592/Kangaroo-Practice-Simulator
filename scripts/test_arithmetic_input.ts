@@ -22,4 +22,5 @@ assert(mathInputKeys("fraction").some(x=>x.insert==="/"));
 assert(mathInputKeys("radical").some(x=>x.insert==="√"));
 assert(mathInputKeys("pi").some(x=>x.insert==="π"));
 assert(mathInputKeys("expression").some(x=>x.insert==="^2"));
+assert(mathInputKeys("expression").some(x=>x.label==="分数 a/b"&&x.insert==="/"));
 console.log("arithmetic structured input: PASS");
