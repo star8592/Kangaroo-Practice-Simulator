@@ -22,6 +22,7 @@ fi
 
 step "dependency security audit" npm run audit:security
 step "arithmetic regression" npm run test:arithmetic
+step "shared Web/miniapp symbol-input parity" npm run test:math-answer-input
 step "arithmetic milestones" npx tsx scripts/test_arithmetic_milestones.ts
 step "persistent arithmetic honors" npx tsx scripts/test_arithmetic_honors.ts
 step "A4 personalization regression" npm run test:arithmetic-print
