@@ -7,7 +7,7 @@ import { WORLD_EVENT_INTENT_KEY, readWorldEventIntent } from '../../services/wor
 
 type Notice={id:string;eventId:string;titleZh:string;date:string;daysUntil:number;detailZh:string;sourceUrl:string}
 type Intelligence={region:string|null;notices:Notice[];next:Notice[];followedCount:number;reviewedEditionCount:number}
-const participationRegions=[{id:'',name:'选择参赛地区'},{id:'CN',name:'中国'},{id:'US',name:'美国'},{id:'AU',name:'澳大利亚'},{id:'CA',name:'加拿大'},{id:'GB',name:'英国'}]
+const participationRegions=[{id:'',name:'选择参赛地区'},{id:'US',name:'美国'},{id:'AU',name:'澳大利亚'},{id:'CA',name:'加拿大'},{id:'GB',name:'英国'}]
 type WorldEntry = {
   event:{
     id:string;region:string;nameZh:string;summaryZh:string;sourceUrl:string;referenceStages?:string[];
@@ -21,7 +21,7 @@ type WorldEntry = {
   following:null|boolean;
 }
 const regions=[
-  {id:'all',name:'全部'}, {id:'CN',name:'中国'}, {id:'US',name:'美国'},
+  {id:'all',name:'全部'}, {id:'US',name:'美国'},
   {id:'AU',name:'澳大利亚'}, {id:'CA',name:'加拿大'},
   {id:'GB',name:'英国'}, {id:'global',name:'全球性'},
 ]
@@ -65,7 +65,7 @@ export default function EventsPage(){
     try{
       const x=await api<{entries:WorldEntry[]}>('/api/miniapp/world-competitions')
       if(!Array.isArray(x.entries))throw new Error('赛事列表格式异常')
-      setRows(x.entries)
+      setRows(x.entries.filter(row => row.event?.region !== 'CN'))
     }catch(e){
       setError(e instanceof Error?e.message:'赛事暂时无法载入')
     }finally{setLoading(false)}
@@ -145,7 +145,7 @@ export default function EventsPage(){
   }
   return <View className='page'>
     <View className='hero'><Text className='big'>赛事管家</Text>
-      <View>统一管理中国与国际数学赛事：关注赛事、核实报名、准备参赛、查看赛历、记录成绩和证书。站内模拟考试请进入独立的模考模块。</View>
+      <View>统一管理国际数学赛事：关注赛事、核实报名、准备参赛、查看赛历、记录成绩和证书。站内模拟考试请进入独立的模考模块。</View>
     </View>
     <View className='section-title'>赛事情报与截止提醒</View>
     <View className='card'>
