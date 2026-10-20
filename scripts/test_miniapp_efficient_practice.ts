@@ -1,0 +1,10 @@
+import assert from 'node:assert/strict';
+import { canEndAdaptiveRound, type CheckedCalculation } from '../apps/miniapp/src/services/adaptive-stop';
+const good: CheckedCalculation[] = Array.from({length:8},(_,i)=>({skillId:i%2?'times':'add100',correct:true,reason:'correct'}));
+assert.equal(canEndAdaptiveRound(good.slice(0,7),[]),false);
+assert.equal(canEndAdaptiveRound(good,[]),true);
+assert.equal(canEndAdaptiveRound(good,['divide']),false);
+assert.equal(canEndAdaptiveRound(good.map(x=>({...x,skillId:'times'})),[]),false);
+assert.equal(canEndAdaptiveRound([...good.slice(0,7),{...good[7],reason:'slow_recall'}],[]),false);
+assert.equal(canEndAdaptiveRound([good[0],{...good[1],correct:false,reason:'fact_gap'},...good.slice(2)],[]),true);
+console.log('miniapp efficient-stop rule: PASS');

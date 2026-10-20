@@ -93,6 +93,7 @@
     "test:miniapp-exam-entry": "tsx scripts/test_miniapp_exam_entry.ts",
     "test:miniapp-ui-devtools": "node scripts/miniapp_devtools_e2e.mjs",
     "test:miniapp-arithmetic-idempotency": "tsx scripts/test_miniapp_arithmetic_idempotency.ts",
+    "test:miniapp-efficient-practice": "tsx scripts/test_miniapp_efficient_practice.ts",
     "test:exam-submit-recovery": "tsx scripts/test_exam_submit_recovery.ts",
     "test:exam-readaloud": "tsx scripts/test_exam_readaloud.ts"
   },

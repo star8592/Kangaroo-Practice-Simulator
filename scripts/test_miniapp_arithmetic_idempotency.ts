@@ -24,7 +24,7 @@ try {
   } finally { Date.now=realNow; }
   assert.notEqual(pair[0].token,pair[1].token,"same-ms sessions must be distinct");
   const started = startMiniappArithmetic(user,1,"diagnostic");
-  assert.equal(started.questions.length,20);
+  assert.equal(started.questions.length,12);
   assert.equal("answer" in started.questions[0],false);
   const answer = checkMiniappArithmetic(user, started.token,0,"0",{responseMs:1200,firstInputMs:500});
   const responses = [{

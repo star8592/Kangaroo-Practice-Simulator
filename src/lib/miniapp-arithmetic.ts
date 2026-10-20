@@ -1,7 +1,7 @@
 import { readSignedJsonToken, signJsonToken } from "./auth-crypto";
 import { buildTrainingPlan, finalizeAttempt, type ArithmeticSession } from "./arithmetic-analytics";
 import { generateArithmeticSet, generateDiagnosticSet, type ArithmeticItem } from "./arithmetic-generator";
-import type { ArithmeticGrade, CleverNode } from "./arithmetic";
+import { GRADE_PROFILES, type ArithmeticGrade, type CleverNode } from "./arithmetic";
 import type { PublicStudent } from "./auth";
 import { readOrCreateSecret, userDataPath } from "./user-data-store";
 import fs from "node:fs";
@@ -68,7 +68,7 @@ export function startMiniappArithmetic(user: PublicStudent, grade: ArithmeticGra
   const plan = buildTrainingPlan(grade, old);
   const focusSkills = mode === "adaptive" ? plan.focusSkills : [];
   const focusNodes = mode === "adaptive" ? plan.focusNodes : [];
-  const count = mode === "diagnostic" ? 20 : mode === "speed" ? 60 : focusSkills.length === 0 ? 12 : focusSkills.length === 1 ? 16 : 20;
+  const count = mode === "diagnostic" ? Math.max(12,GRADE_PROFILES[grade].skills.length*4) : mode === "speed" ? 60 : focusSkills.length === 0 ? 12 : focusSkills.length === 1 ? 16 : 20;
   const startedAt = Date.now();
   const ticket: Ticket = {
     uid: user.id,

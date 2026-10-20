@@ -7,6 +7,7 @@ import { openWorldEvent } from '../../services/world-event-navigation'
 
 export default function HomePage(){
   const [analytics,setAnalytics]=useState<any>(null)
+  const [showDetails,setShowDetails]=useState(false)
   const [user,setUser]=useState<any>(authStore.user())
   const [wechatConnection,setWechatConnection]=useState<'connecting'|'ready'|'failed'>('connecting')
   useEffect(()=>{
@@ -70,35 +71,36 @@ export default function HomePage(){
     </View>}
     <View className='hero'>
       <View className='muted' style='color:#cbd5e1'>你好，{greeting}</View>
-      <Text className='big'>{hasHistory?'继续今天的数学训练':'从今天的计算训练开始'}</Text>
-      <View><Text>{hasHistory?'保持计算手感，也可以直接进入竞赛实战。':'无需注册或填写资料，直接开始计算，做完就能看到成绩和讲解。'}</Text></View>
+      <Text className='big'>{hasHistory?'继续计算，少做无效题':'少做无效题，让每一道计算题都有用'}</Text>
+      <View><Text>{'小学到高中：每次答题都在帮助找到卡点，自动批改并推荐下一步。不凑题量。'}</Text></View>
       <Button className='primary hero-primary' onClick={openArithmetic}>{hasHistory?'继续计算训练':'开始计算训练'}</Button>
-      <Button className='hero-secondary' onClick={()=>Taro.switchTab({url:'/pages/competitions/index'})}>参加竞赛模拟</Button>
-      <Button className='hero-secondary' onClick={()=>void openWorldEvent().catch(()=>Taro.showToast({title:'赛事暂时无法打开',icon:'none'}))}>探索全球数学赛事</Button>
+      <View style='margin-top:20rpx;color:#d6e8ec;font-size:24rpx'>✓ 少刷无效题　✓ 找到真卡点　✓ 自动批改与跟进</View>
     </View>
 
-    {hasHistory&&<View className='grid2'>
+    {hasHistory&&<Button className='secondary' onClick={()=>setShowDetails(x=>!x)}>{showDetails?'收起学习详情':'查看学习详情'}</Button>}
+
+    {hasHistory&&showDetails&&<View className='grid2'>
       <View className='card'><View className='card-title'>计算训练</View><Text className='big'>{arithmeticSessions}</Text><View className='muted'>累计训练轮次</View></View>
       <View className='card'><View className='card-title'>竞赛实战</View><Text className='big'>{examAttempts}</Text><View className='muted'>已完成试卷</View></View>
     </View>}
 
-    {hasHistory&&<View className='grid2'>
+    {hasHistory&&showDetails&&<View className='grid2'>
       <View className='card'><View className='card-title'>综合训练指数</View><Text className='big'>{readiness===null||readiness===undefined?'—':readiness}</Text><View className='muted'>{readiness===null||readiness===undefined?'数据积累后显示':'满分 100'}</View></View>
       <View className='card'><View className='card-title'>数据置信度</View><Text className='big'>{dataConfidence}%</Text><View className='muted'>基于完整训练记录</View></View>
     </View>}
 
-    {hasHistory&&<View className='card'>
+    {hasHistory&&showDetails&&<View className='card'>
       <View className='card-title'>最近学习画像</View>
       <View className='row'><Text>竞赛题正确率</Text><Text>{examAttempts?accuracy+'%':'—'}</Text></View>
       <View className='muted'>训练、竞赛和复盘使用与 Web 相同的数据与评分规则。</View>
     </View>}
 
-    {hasHistory&&<View className='card'>
+    {hasHistory&&showDetails&&<View className='card'>
       <View className='card-title'>下一步怎么练</View>
       {nextPlan.length?nextPlan.map((x:any,i:number)=><View key={i} style='margin-top:16rpx'><View>{x.title}</View><View className='muted'>{x.action}</View></View>):<View className='muted'>继续完成训练后，系统会根据稳定证据给出优先级。</View>}
     </View>}
 
-    {hasHistory&&<View className='card'>
+    {hasHistory&&showDetails&&<View className='card'>
       <View className='card-title'>计算画像</View>
       {arithmeticSummary.length?arithmeticSummary.map((x:string,i:number)=><View className='muted' key={i}>{x}</View>):<View className='muted'>完成一次计算诊断后生成。</View>}
       <Button className='secondary' onClick={openArithmetic}>进入计算训练</Button>
