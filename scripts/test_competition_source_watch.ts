@@ -18,9 +18,9 @@ async function main(){
     assert.match(unit,/StateDirectory=socthink-competition-source-watch/);
     assert.doesNotMatch(unit,/^(?:User|Group)=1000/m,"numeric UID without user database entry causes 217/USER");
     assert.doesNotMatch(unit,/ReadWritePaths=\/opt\/socthink-math\/private\/users(?:\s|$)/m,"avoid broad student data access");
-    assert.equal(w.WATCH_SOURCES.length,5);
-    assert.equal(new Set(w.WATCH_SOURCES.map(s=>s.id)).size,5);
-    assert.equal(w.WATCH_SOURCES.filter(s=>s.region==="CN").length,1);
+    assert.equal(w.WATCH_SOURCES.length,4);
+    assert.equal(new Set(w.WATCH_SOURCES.map(s=>s.id)).size,4);
+    assert.equal(w.WATCH_SOURCES.filter(s=>s.region==="CN").length,0);
     assert.equal(w.validateWatchSource({...source,url:"http://127.0.0.1/admin"}),false);
     assert.equal(w.validateWatchSource({...source,url:"https://example.com/"}),false);
     assert.equal(w.validateWatchSource({...source,url:"https://maa.org@127.0.0.1/internal"}),false);
@@ -98,7 +98,7 @@ async function main(){
     assert.equal(VERIFIED_EDITIONS.length,1,"review queue does not change official registry");
     const app=await import("../src/lib/competition-intelligence");
     assert.equal(app.VERIFIED_EDITIONS[0].milestones[0].date,"2026-10-15");
-    console.log("COMPETITION_SOURCE_WATCH_PASS sources=5 baseline=PASS dedup=PASS change=PASS redirects=BLOCKED size=BLOCKED admin=PASS review=PASS no_auto_promotion=PASS");
+    console.log("COMPETITION_SOURCE_WATCH_PASS sources=4 baseline=PASS dedup=PASS change=PASS redirects=BLOCKED size=BLOCKED admin=PASS review=PASS no_auto_promotion=PASS");
   }finally{fs.rmSync(temp,{recursive:true,force:true});}
 }
 main().catch(e=>{console.error(e);process.exitCode=1;});
