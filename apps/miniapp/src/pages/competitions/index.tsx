@@ -12,6 +12,7 @@ const groups=[
   {id:'australian-amc',label:'澳洲 AMC'},
   {id:'maa-amc',label:'美国 AMC'},
   {id:'cemc',label:'加拿大 CEMC'},
+  {id:'seamo',label:'新加坡 SEAMO'},
 ]
 
 export default function CompetitionsPage(){
@@ -75,10 +76,10 @@ export default function CompetitionsPage(){
       Taro.showToast({title:e instanceof Error?e.message:'无法打开试卷，请重试',icon:'none'})
     }
   }
-  const openWebExam=async(id:string)=>{
+  const openWebExam=async(id:string,isSeamo=false)=>{
     try {
       await Taro.setClipboardData({data:'https://socthink.cn/exam/'+encodeURIComponent(id)})
-      await Taro.showModal({title:'已复制网页版地址',content:'这套考试有分段计时要求，需要在浏览器打开。链接已复制，请粘贴到浏览器继续。',showCancel:false,confirmText:'知道了'})
+      await Taro.showModal({title:'已复制网页版地址',content:isSeamo?'SEAMO 原创基础训练已开放网页版；小程序原生语音音频仍在准备，链接已复制，请在浏览器继续。':'这套考试有分段计时要求，需要在浏览器打开。链接已复制，请粘贴到浏览器继续。',showCancel:false,confirmText:'知道了'})
     }catch{
       Taro.showToast({title:'复制失败，请稍后重试',icon:'none'})
     }
@@ -91,7 +92,7 @@ export default function CompetitionsPage(){
     <View className='competition-tabs'>{groups.filter(g=>g.id==='all'||exams.some(x=>x.competitionId===g.id)).map(g=><Button key={g.id} className={competition===g.id?'competition-tab active':'competition-tab'} onClick={()=>{setCompetition(g.id);setLimit(24)}}>{g.label}</Button>)}</View>
     <View className='section-title'>{competition==='all'?'可训练试卷':groups.find(g=>g.id===competition)?.label}</View>
     <View className='muted list-summary'>{loading?'正在读取试卷…':loadError?'试卷加载失败，可重试':`共 ${filtered.length} 套，先展示最相关的 ${Math.min(limit,filtered.length)} 套`}</View>
-    {filtered.slice(0,limit).map(ex=><View className='card exam-card' key={ex.id}><View className='row'><View className='exam-card-title'><View className='card-title'>{ex.name}</View><View className='muted'>{ex.year||''} · {ex.grades} · {ex.questionCount} 题</View></View><Text className={ex.miniappReady?'status-ready':'status-web'}>{ex.miniappReady?(registered?'可实战':'登录后可实战'):'Web'}</Text></View><Button className={ex.miniappReady?'primary':'secondary'} onClick={()=>ex.miniappReady?void openExam(ex):void openWebExam(String(ex.id))}>{ex.miniappReady?(registered?'开始实战':'登录后实战'):'复制网页版考试链接'}</Button></View>)}
+    {filtered.slice(0,limit).map(ex=><View className='card exam-card' key={ex.id}><View className='row'><View className='exam-card-title'><View className='card-title'>{ex.name}</View><View className='muted'>{ex.year||''} · {ex.grades} · {ex.questionCount} 题</View></View><Text className={ex.miniappReady?'status-ready':'status-web'}>{ex.miniappReady?(registered?'可实战':'登录后可实战'):'Web'}</Text></View><Button className={ex.miniappReady?'primary':'secondary'} onClick={()=>ex.miniappReady?void openExam(ex):void openWebExam(String(ex.id),ex.competitionId==='seamo')}>{ex.miniappReady?(registered?'开始实战':'登录后实战'):'复制网页版考试链接'}</Button></View>)}
     {!loading&&loadError&&<View className='card'><View className='card-title'>试卷暂时无法载入</View><View className='muted'>{loadError}</View><Button className='primary' onClick={()=>void loadExams()}>重新加载试卷</Button></View>}
     {!loading&&!loadError&&filtered.length===0&&<View className='card'><View className='card-title'>暂无可训练试卷</View><View className='muted'>可以切换到其他赛事。</View></View>}
     {limit<filtered.length&&<Button className='secondary load-more' onClick={()=>setLimit(x=>x+24)}>再显示 24 套</Button>}

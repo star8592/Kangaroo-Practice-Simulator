@@ -1,9 +1,10 @@
-export type CompetitionBrandId="kangaroo"|"australian-amc"|"maa-amc"|"cemc";
+export type CompetitionBrandId="kangaroo"|"australian-amc"|"maa-amc"|"cemc"|"seamo";
 export type CompetitionBrand={short:string;mark:string;logo?:string;officialUrl:string;organizer:string;};
 export const COMPETITION_BRAND:Record<CompetitionBrandId,CompetitionBrand>={
  kangaroo:{short:"MK",mark:"Math Kangaroo",logo:"/competition-brands/math-kangaroo.png",officialUrl:"https://mathkangaroo.org/",organizer:"Math Kangaroo / KSF"},
  "australian-amc":{short:"AMC.",mark:"AUSTRALIAN MATHS TRUST",officialUrl:"https://amt.edu.au/amc",organizer:"Australian Maths Trust"},
  "maa-amc":{short:"MAA AMC",mark:"AMERICAN MATHEMATICS COMPETITIONS",officialUrl:"https://maa.org/student-programs/amc/",organizer:"Mathematical Association of America"},
+ seamo:{short:"SEAMO",mark:"SOUTHEAST ASIAN MATHEMATICAL OLYMPIAD",officialUrl:"https://seamo-official.org/",organizer:"SEAMO"},
  cemc:{short:"CEMC",mark:"UNIVERSITY OF WATERLOO",logo:"/competition-brands/cemc.png",officialUrl:"https://cemc.uwaterloo.ca/contests",organizer:"University of Waterloo CEMC"},
 };
 
@@ -16,6 +17,7 @@ export function competitionStageBrand(competitionId?:CompetitionBrandId|string,f
   if(f==="maa-amc12"||n.includes("amc 12")) return {label:"AMC 12",series:"MAA American Mathematics Competitions"};
   if(f.startsWith("maa-aime")||n.includes("aime")) return {label:"AIME",series:"MAA American Mathematics Competitions"};
  }
+ if(competitionId==="seamo") return {label:(f.includes("pre-a")||f.includes("g1"))?"PRE-A":"SEAMO A",series:"Southeast Asian Mathematical Olympiad"};
  if(competitionId==="cemc"){
   if(f.includes("gauss")||n.includes("gauss")) return {label:"GAUSS",series:"University of Waterloo · CEMC"};
   if(f.includes("pascal")||n.includes("pascal")) return {label:"PASCAL",series:"University of Waterloo · CEMC"};

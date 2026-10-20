@@ -36,7 +36,7 @@ const examsResponse = await getMiniappExams(request('/api/miniapp/exams'))
 assert.equal(examsResponse.status, 200)
 const examPayload = await examsResponse.json()
 const expectedExams = listTrainingExamProfiles()
-  .filter(x => x.paperType !== 'practice')
+  .filter(x => x.paperType !== 'practice' || x.competitionId === 'seamo')
   .sort((a, b) => (b.year || 0) - (a.year || 0))
   .map(x => ({
     id: x.id,
@@ -51,7 +51,7 @@ const expectedExams = listTrainingExamProfiles()
     competitionId: x.competitionId,
     paperType: x.paperType,
     timingSections: x.timingSections || [],
-    miniappReady: !(x.timingSections || []).length,
+    miniappReady: !(x.timingSections || []).length && x.competitionId !== "seamo",
   }))
 // HTTP JSON omits undefined values, e.g. historical papers without a year.
 // Compare the actual wire representation instead of an in-memory JS object.

@@ -1,0 +1,962 @@
+{
+  "profile": {
+    "id": "seamo-original-g1-mock-1",
+    "name": "SEAMO Grade 1 Foundational Practice 1",
+    "nameZh": "SEAMO 1年级 · 原创基础训练 1",
+    "nameEn": "SEAMO Grade 1 · Foundational Practice 1",
+    "grades": "Grade 1",
+    "gradeBand": "1-2",
+    "durationSeconds": 2400,
+    "questionCount": 15,
+    "initialScore": 0,
+    "maxScore": 15,
+    "wrongPenaltyMode": "fixed",
+    "wrongPenaltyValue": 0,
+    "country": "Singapore SEAMO",
+    "year": 2026,
+    "language": "zh/en",
+    "competitionId": "seamo",
+    "formatId": "seamo-g1-original-mock",
+    "paperType": "practice",
+    "timingMode": "recommended",
+    "studentReady": true,
+    "sourceLabelZh": "本站原创基础专项训练 · 非官方历年真题",
+    "sourceLabelEn": "Independent foundational practice · not an official past paper",
+    "rulesSummaryZh": "15题 / 训练计时40分钟，到时自动交卷；每题1分、不倒扣，非官方计分标准。",
+    "rulesSummaryEn": "15 questions / 40-minute practice timer with automatic submission; 1 point each, no penalty; not official scoring.",
+    "formatLabelZh": "SEAMO Pre-A · 本站基础训练",
+    "formatLabelEn": "SEAMO Pre-A · Foundational practice"
+  },
+  "questions": [
+    {
+      "id": "seamo-original-g1-q01",
+      "year": 2026,
+      "level": "Grade 1",
+      "grades": "Grade 1",
+      "language": "zh/en",
+      "questionNo": 1,
+      "points": 1,
+      "answerMode": "choice",
+      "concept": "arithmetic",
+      "stem": "小乐有 8 张卡片，送给朋友 3 张，又得到 3 张。现在有多少张？",
+      "stemEn": "Lele has 8 cards, gives away 3, then receives 3. How many cards now?",
+      "choices": [
+        {
+          "key": "A",
+          "label": "6"
+        },
+        {
+          "key": "B",
+          "label": "8"
+        },
+        {
+          "key": "C",
+          "label": "10"
+        },
+        {
+          "key": "D",
+          "label": "12"
+        },
+        {
+          "key": "E",
+          "label": "4"
+        }
+      ],
+      "choicesEn": [
+        {
+          "key": "A",
+          "label": "6"
+        },
+        {
+          "key": "B",
+          "label": "8"
+        },
+        {
+          "key": "C",
+          "label": "10"
+        },
+        {
+          "key": "D",
+          "label": "12"
+        },
+        {
+          "key": "E",
+          "label": "4"
+        }
+      ],
+      "answer": "B",
+      "solution": "8 − 3 + 3 = 8",
+      "sourceFile": "original-generated-seamo-practice",
+      "verified": false,
+      "examReady": true
+    },
+    {
+      "id": "seamo-original-g1-q02",
+      "year": 2026,
+      "level": "Grade 1",
+      "grades": "Grade 1",
+      "language": "zh/en",
+      "questionNo": 2,
+      "points": 1,
+      "answerMode": "choice",
+      "concept": "patterns",
+      "stem": "数列 3，6，9，____。空格里应填几？",
+      "stemEn": "Complete the pattern: 3, 6, 9, ____. What comes next?",
+      "choices": [
+        {
+          "key": "A",
+          "label": "12"
+        },
+        {
+          "key": "B",
+          "label": "14"
+        },
+        {
+          "key": "C",
+          "label": "16"
+        },
+        {
+          "key": "D",
+          "label": "8"
+        },
+        {
+          "key": "E",
+          "label": "10"
+        }
+      ],
+      "choicesEn": [
+        {
+          "key": "A",
+          "label": "12"
+        },
+        {
+          "key": "B",
+          "label": "14"
+        },
+        {
+          "key": "C",
+          "label": "16"
+        },
+        {
+          "key": "D",
+          "label": "8"
+        },
+        {
+          "key": "E",
+          "label": "10"
+        }
+      ],
+      "answer": "A",
+      "solution": "每次增加 3；下一项是 12。",
+      "sourceFile": "original-generated-seamo-practice",
+      "verified": false,
+      "examReady": true
+    },
+    {
+      "id": "seamo-original-g1-q03",
+      "year": 2026,
+      "level": "Grade 1",
+      "grades": "Grade 1",
+      "language": "zh/en",
+      "questionNo": 3,
+      "points": 1,
+      "answerMode": "choice",
+      "concept": "multiplication",
+      "stem": "每个盒子里放 5 颗珠子，3 个盒子一共有多少颗？",
+      "stemEn": "Each box contains 5 beads. How many beads are in 3 boxes?",
+      "choices": [
+        {
+          "key": "A",
+          "label": "17"
+        },
+        {
+          "key": "B",
+          "label": "19"
+        },
+        {
+          "key": "C",
+          "label": "11"
+        },
+        {
+          "key": "D",
+          "label": "13"
+        },
+        {
+          "key": "E",
+          "label": "15"
+        }
+      ],
+      "choicesEn": [
+        {
+          "key": "A",
+          "label": "17"
+        },
+        {
+          "key": "B",
+          "label": "19"
+        },
+        {
+          "key": "C",
+          "label": "11"
+        },
+        {
+          "key": "D",
+          "label": "13"
+        },
+        {
+          "key": "E",
+          "label": "15"
+        }
+      ],
+      "answer": "E",
+      "solution": "3 × 5 = 15",
+      "sourceFile": "original-generated-seamo-practice",
+      "verified": false,
+      "examReady": true
+    },
+    {
+      "id": "seamo-original-g1-q04",
+      "year": 2026,
+      "level": "Grade 1",
+      "grades": "Grade 1",
+      "language": "zh/en",
+      "questionNo": 4,
+      "points": 1,
+      "answerMode": "choice",
+      "concept": "logic",
+      "stem": "队伍中，小乐前面有 10 人，后面有 4 人。队伍一共有多少人？",
+      "stemEn": "There are 10 children ahead of Lele and 4 behind. How many children are in the line?",
+      "choices": [
+        {
+          "key": "A",
+          "label": "19"
+        },
+        {
+          "key": "B",
+          "label": "11"
+        },
+        {
+          "key": "C",
+          "label": "13"
+        },
+        {
+          "key": "D",
+          "label": "15"
+        },
+        {
+          "key": "E",
+          "label": "17"
+        }
+      ],
+      "choicesEn": [
+        {
+          "key": "A",
+          "label": "19"
+        },
+        {
+          "key": "B",
+          "label": "11"
+        },
+        {
+          "key": "C",
+          "label": "13"
+        },
+        {
+          "key": "D",
+          "label": "15"
+        },
+        {
+          "key": "E",
+          "label": "17"
+        }
+      ],
+      "answer": "D",
+      "solution": "10 + 1 + 4 = 15",
+      "sourceFile": "original-generated-seamo-practice",
+      "verified": false,
+      "examReady": true
+    },
+    {
+      "id": "seamo-original-g1-q05",
+      "year": 2026,
+      "level": "Grade 1",
+      "grades": "Grade 1",
+      "language": "zh/en",
+      "questionNo": 5,
+      "points": 1,
+      "answerMode": "choice",
+      "concept": "geometry",
+      "stem": "一个长方形长 3 厘米，宽 2 厘米。周长是多少厘米？",
+      "stemEn": "A rectangle is 3 cm long and 2 cm wide. What is its perimeter in cm?",
+      "choices": [
+        {
+          "key": "A",
+          "label": "6"
+        },
+        {
+          "key": "B",
+          "label": "8"
+        },
+        {
+          "key": "C",
+          "label": "10"
+        },
+        {
+          "key": "D",
+          "label": "12"
+        },
+        {
+          "key": "E",
+          "label": "14"
+        }
+      ],
+      "choicesEn": [
+        {
+          "key": "A",
+          "label": "6"
+        },
+        {
+          "key": "B",
+          "label": "8"
+        },
+        {
+          "key": "C",
+          "label": "10"
+        },
+        {
+          "key": "D",
+          "label": "12"
+        },
+        {
+          "key": "E",
+          "label": "14"
+        }
+      ],
+      "answer": "C",
+      "solution": "2 × (3 + 2) = 10",
+      "sourceFile": "original-generated-seamo-practice",
+      "verified": false,
+      "examReady": true
+    },
+    {
+      "id": "seamo-original-g1-q06",
+      "year": 2026,
+      "level": "Grade 1",
+      "grades": "Grade 1",
+      "language": "zh/en",
+      "questionNo": 6,
+      "points": 1,
+      "answerMode": "choice",
+      "concept": "arithmetic",
+      "stem": "小乐有 13 张卡片，送给朋友 3 张，又得到 4 张。现在有多少张？",
+      "stemEn": "Lele has 13 cards, gives away 3, then receives 4. How many cards now?",
+      "choices": [
+        {
+          "key": "A",
+          "label": "12"
+        },
+        {
+          "key": "B",
+          "label": "14"
+        },
+        {
+          "key": "C",
+          "label": "16"
+        },
+        {
+          "key": "D",
+          "label": "18"
+        },
+        {
+          "key": "E",
+          "label": "10"
+        }
+      ],
+      "choicesEn": [
+        {
+          "key": "A",
+          "label": "12"
+        },
+        {
+          "key": "B",
+          "label": "14"
+        },
+        {
+          "key": "C",
+          "label": "16"
+        },
+        {
+          "key": "D",
+          "label": "18"
+        },
+        {
+          "key": "E",
+          "label": "10"
+        }
+      ],
+      "answer": "B",
+      "solution": "13 − 3 + 4 = 14",
+      "sourceFile": "original-generated-seamo-practice",
+      "verified": false,
+      "examReady": true
+    },
+    {
+      "id": "seamo-original-g1-q07",
+      "year": 2026,
+      "level": "Grade 1",
+      "grades": "Grade 1",
+      "language": "zh/en",
+      "questionNo": 7,
+      "points": 1,
+      "answerMode": "choice",
+      "concept": "patterns",
+      "stem": "数列 8，11，14，____。空格里应填几？",
+      "stemEn": "Complete the pattern: 8, 11, 14, ____. What comes next?",
+      "choices": [
+        {
+          "key": "A",
+          "label": "17"
+        },
+        {
+          "key": "B",
+          "label": "19"
+        },
+        {
+          "key": "C",
+          "label": "21"
+        },
+        {
+          "key": "D",
+          "label": "13"
+        },
+        {
+          "key": "E",
+          "label": "15"
+        }
+      ],
+      "choicesEn": [
+        {
+          "key": "A",
+          "label": "17"
+        },
+        {
+          "key": "B",
+          "label": "19"
+        },
+        {
+          "key": "C",
+          "label": "21"
+        },
+        {
+          "key": "D",
+          "label": "13"
+        },
+        {
+          "key": "E",
+          "label": "15"
+        }
+      ],
+      "answer": "A",
+      "solution": "每次增加 3；下一项是 17。",
+      "sourceFile": "original-generated-seamo-practice",
+      "verified": false,
+      "examReady": true
+    },
+    {
+      "id": "seamo-original-g1-q08",
+      "year": 2026,
+      "level": "Grade 1",
+      "grades": "Grade 1",
+      "language": "zh/en",
+      "questionNo": 8,
+      "points": 1,
+      "answerMode": "choice",
+      "concept": "multiplication",
+      "stem": "每个盒子里放 2 颗珠子，3 个盒子一共有多少颗？",
+      "stemEn": "Each box contains 2 beads. How many beads are in 3 boxes?",
+      "choices": [
+        {
+          "key": "A",
+          "label": "8"
+        },
+        {
+          "key": "B",
+          "label": "10"
+        },
+        {
+          "key": "C",
+          "label": "2"
+        },
+        {
+          "key": "D",
+          "label": "4"
+        },
+        {
+          "key": "E",
+          "label": "6"
+        }
+      ],
+      "choicesEn": [
+        {
+          "key": "A",
+          "label": "8"
+        },
+        {
+          "key": "B",
+          "label": "10"
+        },
+        {
+          "key": "C",
+          "label": "2"
+        },
+        {
+          "key": "D",
+          "label": "4"
+        },
+        {
+          "key": "E",
+          "label": "6"
+        }
+      ],
+      "answer": "E",
+      "solution": "3 × 2 = 6",
+      "sourceFile": "original-generated-seamo-practice",
+      "verified": false,
+      "examReady": true
+    },
+    {
+      "id": "seamo-original-g1-q09",
+      "year": 2026,
+      "level": "Grade 1",
+      "grades": "Grade 1",
+      "language": "zh/en",
+      "questionNo": 9,
+      "points": 1,
+      "answerMode": "choice",
+      "concept": "logic",
+      "stem": "队伍中，小乐前面有 15 人，后面有 4 人。队伍一共有多少人？",
+      "stemEn": "There are 15 children ahead of Lele and 4 behind. How many children are in the line?",
+      "choices": [
+        {
+          "key": "A",
+          "label": "24"
+        },
+        {
+          "key": "B",
+          "label": "16"
+        },
+        {
+          "key": "C",
+          "label": "18"
+        },
+        {
+          "key": "D",
+          "label": "20"
+        },
+        {
+          "key": "E",
+          "label": "22"
+        }
+      ],
+      "choicesEn": [
+        {
+          "key": "A",
+          "label": "24"
+        },
+        {
+          "key": "B",
+          "label": "16"
+        },
+        {
+          "key": "C",
+          "label": "18"
+        },
+        {
+          "key": "D",
+          "label": "20"
+        },
+        {
+          "key": "E",
+          "label": "22"
+        }
+      ],
+      "answer": "D",
+      "solution": "15 + 1 + 4 = 20",
+      "sourceFile": "original-generated-seamo-practice",
+      "verified": false,
+      "examReady": true
+    },
+    {
+      "id": "seamo-original-g1-q10",
+      "year": 2026,
+      "level": "Grade 1",
+      "grades": "Grade 1",
+      "language": "zh/en",
+      "questionNo": 10,
+      "points": 1,
+      "answerMode": "choice",
+      "concept": "geometry",
+      "stem": "一个长方形长 3 厘米，宽 2 厘米。周长是多少厘米？",
+      "stemEn": "A rectangle is 3 cm long and 2 cm wide. What is its perimeter in cm?",
+      "choices": [
+        {
+          "key": "A",
+          "label": "6"
+        },
+        {
+          "key": "B",
+          "label": "8"
+        },
+        {
+          "key": "C",
+          "label": "10"
+        },
+        {
+          "key": "D",
+          "label": "12"
+        },
+        {
+          "key": "E",
+          "label": "14"
+        }
+      ],
+      "choicesEn": [
+        {
+          "key": "A",
+          "label": "6"
+        },
+        {
+          "key": "B",
+          "label": "8"
+        },
+        {
+          "key": "C",
+          "label": "10"
+        },
+        {
+          "key": "D",
+          "label": "12"
+        },
+        {
+          "key": "E",
+          "label": "14"
+        }
+      ],
+      "answer": "C",
+      "solution": "2 × (3 + 2) = 10",
+      "sourceFile": "original-generated-seamo-practice",
+      "verified": false,
+      "examReady": true
+    },
+    {
+      "id": "seamo-original-g1-q11",
+      "year": 2026,
+      "level": "Grade 1",
+      "grades": "Grade 1",
+      "language": "zh/en",
+      "questionNo": 11,
+      "points": 1,
+      "answerMode": "choice",
+      "concept": "arithmetic",
+      "stem": "小乐有 18 张卡片，送给朋友 3 张，又得到 5 张。现在有多少张？",
+      "stemEn": "Lele has 18 cards, gives away 3, then receives 5. How many cards now?",
+      "choices": [
+        {
+          "key": "A",
+          "label": "18"
+        },
+        {
+          "key": "B",
+          "label": "20"
+        },
+        {
+          "key": "C",
+          "label": "22"
+        },
+        {
+          "key": "D",
+          "label": "24"
+        },
+        {
+          "key": "E",
+          "label": "16"
+        }
+      ],
+      "choicesEn": [
+        {
+          "key": "A",
+          "label": "18"
+        },
+        {
+          "key": "B",
+          "label": "20"
+        },
+        {
+          "key": "C",
+          "label": "22"
+        },
+        {
+          "key": "D",
+          "label": "24"
+        },
+        {
+          "key": "E",
+          "label": "16"
+        }
+      ],
+      "answer": "B",
+      "solution": "18 − 3 + 5 = 20",
+      "sourceFile": "original-generated-seamo-practice",
+      "verified": false,
+      "examReady": true
+    },
+    {
+      "id": "seamo-original-g1-q12",
+      "year": 2026,
+      "level": "Grade 1",
+      "grades": "Grade 1",
+      "language": "zh/en",
+      "questionNo": 12,
+      "points": 1,
+      "answerMode": "choice",
+      "concept": "patterns",
+      "stem": "数列 13，16，19，____。空格里应填几？",
+      "stemEn": "Complete the pattern: 13, 16, 19, ____. What comes next?",
+      "choices": [
+        {
+          "key": "A",
+          "label": "22"
+        },
+        {
+          "key": "B",
+          "label": "24"
+        },
+        {
+          "key": "C",
+          "label": "26"
+        },
+        {
+          "key": "D",
+          "label": "18"
+        },
+        {
+          "key": "E",
+          "label": "20"
+        }
+      ],
+      "choicesEn": [
+        {
+          "key": "A",
+          "label": "22"
+        },
+        {
+          "key": "B",
+          "label": "24"
+        },
+        {
+          "key": "C",
+          "label": "26"
+        },
+        {
+          "key": "D",
+          "label": "18"
+        },
+        {
+          "key": "E",
+          "label": "20"
+        }
+      ],
+      "answer": "A",
+      "solution": "每次增加 3；下一项是 22。",
+      "sourceFile": "original-generated-seamo-practice",
+      "verified": false,
+      "examReady": true
+    },
+    {
+      "id": "seamo-original-g1-q13",
+      "year": 2026,
+      "level": "Grade 1",
+      "grades": "Grade 1",
+      "language": "zh/en",
+      "questionNo": 13,
+      "points": 1,
+      "answerMode": "choice",
+      "concept": "multiplication",
+      "stem": "每个盒子里放 3 颗珠子，3 个盒子一共有多少颗？",
+      "stemEn": "Each box contains 3 beads. How many beads are in 3 boxes?",
+      "choices": [
+        {
+          "key": "A",
+          "label": "11"
+        },
+        {
+          "key": "B",
+          "label": "13"
+        },
+        {
+          "key": "C",
+          "label": "5"
+        },
+        {
+          "key": "D",
+          "label": "7"
+        },
+        {
+          "key": "E",
+          "label": "9"
+        }
+      ],
+      "choicesEn": [
+        {
+          "key": "A",
+          "label": "11"
+        },
+        {
+          "key": "B",
+          "label": "13"
+        },
+        {
+          "key": "C",
+          "label": "5"
+        },
+        {
+          "key": "D",
+          "label": "7"
+        },
+        {
+          "key": "E",
+          "label": "9"
+        }
+      ],
+      "answer": "E",
+      "solution": "3 × 3 = 9",
+      "sourceFile": "original-generated-seamo-practice",
+      "verified": false,
+      "examReady": true
+    },
+    {
+      "id": "seamo-original-g1-q14",
+      "year": 2026,
+      "level": "Grade 1",
+      "grades": "Grade 1",
+      "language": "zh/en",
+      "questionNo": 14,
+      "points": 1,
+      "answerMode": "choice",
+      "concept": "logic",
+      "stem": "队伍中，小乐前面有 20 人，后面有 4 人。队伍一共有多少人？",
+      "stemEn": "There are 20 children ahead of Lele and 4 behind. How many children are in the line?",
+      "choices": [
+        {
+          "key": "A",
+          "label": "29"
+        },
+        {
+          "key": "B",
+          "label": "21"
+        },
+        {
+          "key": "C",
+          "label": "23"
+        },
+        {
+          "key": "D",
+          "label": "25"
+        },
+        {
+          "key": "E",
+          "label": "27"
+        }
+      ],
+      "choicesEn": [
+        {
+          "key": "A",
+          "label": "29"
+        },
+        {
+          "key": "B",
+          "label": "21"
+        },
+        {
+          "key": "C",
+          "label": "23"
+        },
+        {
+          "key": "D",
+          "label": "25"
+        },
+        {
+          "key": "E",
+          "label": "27"
+        }
+      ],
+      "answer": "D",
+      "solution": "20 + 1 + 4 = 25",
+      "sourceFile": "original-generated-seamo-practice",
+      "verified": false,
+      "examReady": true
+    },
+    {
+      "id": "seamo-original-g1-q15",
+      "year": 2026,
+      "level": "Grade 1",
+      "grades": "Grade 1",
+      "language": "zh/en",
+      "questionNo": 15,
+      "points": 1,
+      "answerMode": "choice",
+      "concept": "geometry",
+      "stem": "一个长方形长 3 厘米，宽 2 厘米。周长是多少厘米？",
+      "stemEn": "A rectangle is 3 cm long and 2 cm wide. What is its perimeter in cm?",
+      "choices": [
+        {
+          "key": "A",
+          "label": "6"
+        },
+        {
+          "key": "B",
+          "label": "8"
+        },
+        {
+          "key": "C",
+          "label": "10"
+        },
+        {
+          "key": "D",
+          "label": "12"
+        },
+        {
+          "key": "E",
+          "label": "14"
+        }
+      ],
+      "choicesEn": [
+        {
+          "key": "A",
+          "label": "6"
+        },
+        {
+          "key": "B",
+          "label": "8"
+        },
+        {
+          "key": "C",
+          "label": "10"
+        },
+        {
+          "key": "D",
+          "label": "12"
+        },
+        {
+          "key": "E",
+          "label": "14"
+        }
+      ],
+      "answer": "C",
+      "solution": "2 × (3 + 2) = 10",
+      "sourceFile": "original-generated-seamo-practice",
+      "verified": false,
+      "examReady": true
+    }
+  ]
+}

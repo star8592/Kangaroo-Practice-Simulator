@@ -65,6 +65,7 @@ step "miniapp auth install contract" bash ops/release/test_wechat_miniapp_auth_c
 step "repository hygiene" python3 scripts/audit_repository_hygiene.py
 step "CEMC scoring regression" npx tsx scripts/test_cemc_scoring.ts
 step "competition ingestion regression" python3 scripts/test_import_pipeline.py
+step "SEAMO original practice integrity" npm run test:seamo
 step "eslint" npm run lint -- --max-warnings=0
 # Next-generated route validators can retain deleted/renamed routes until the next build.
 # Remove only generated type outputs before standalone tsc; the production build below

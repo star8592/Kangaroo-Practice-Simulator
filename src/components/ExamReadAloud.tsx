@@ -33,7 +33,6 @@ export default function ExamReadAloud({
   const completeEnglish = Boolean(
     english?.trim() &&
     englishChoices.length === chineseChoices.length &&
-    englishChoices.length > 0 &&
     chineseChoices.every((item, i) =>
       item.key === englishChoices[i]?.key && Boolean(englishChoices[i]?.label?.trim())),
   );
