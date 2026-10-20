@@ -113,6 +113,8 @@ jobs:
         run: npm ci
       - name: Miniapp arithmetic session contract
         run: npm run test:miniapp-contract
+      - name: Symbol keyboard and answer-kind parity (Web + Miniapp)
+        run: npm run test:math-answer-input
       - name: Miniapp WeChat identity contract (mocked provider)
         run: npx tsx scripts/test_miniapp_wechat_auth.ts
       - name: Miniapp WeChat upstream failure classification
