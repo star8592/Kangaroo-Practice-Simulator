@@ -29,7 +29,7 @@ if [[ -n "$WECHAT_WEBSITE_APPID" || -n "$WECHAT_WEBSITE_SECRET" ]]; then
   : "${WECHAT_WEBSITE_APPID:?Provide matching website application AppID and secret together}"
   : "${WECHAT_WEBSITE_SECRET:?Provide matching website application AppID and secret together}"
 fi
-install -d -m 0700 "$(dirname "$ENV_FILE")"
+[[ -d "$(dirname "$ENV_FILE")" ]] || install -d -m 0700 "$(dirname "$ENV_FILE")"
 temp_file="$(mktemp "$(dirname "$ENV_FILE")/.wechat-env.XXXXXX")"
 trap 'rm -f "$temp_file"' EXIT
 if [[ -f "$ENV_FILE" ]]; then
