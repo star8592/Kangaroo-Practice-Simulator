@@ -3,7 +3,7 @@ import { WORLD_COMPETITIONS } from "./world-competitions";
 
 export type CompanionLang = "zh" | "en";
 export type ExamMode = "online-home" | "offline" | "varies";
-export type CompanionCompetitionId = "kangaroo" | "australian-amc" | "maa-amc" | "cemc" | "world-math";
+export type CompanionCompetitionId = "kangaroo" | "australian-amc" | "maa-amc" | "cemc" | "china-math" | "world-math";
 
 export type CompanionTask = {
   id: string; date?: string; endDate?: string; time?: string;
