@@ -23,17 +23,36 @@ DROPIN_FILE="${DROPIN_DIR}/30-wechat-auth.conf"
 
 install -d -m 0755 "$DROPIN_DIR"
 umask 077
+# This file also holds Mini Program credentials. Never truncate it during a
+# website-login upgrade: silently dropping WECHAT_MINIAPP_* breaks production.
+if [[ -n "$WECHAT_WEBSITE_APPID" || -n "$WECHAT_WEBSITE_SECRET" ]]; then
+  : "${WECHAT_WEBSITE_APPID:?Provide matching website application AppID and secret together}"
+  : "${WECHAT_WEBSITE_SECRET:?Provide matching website application AppID and secret together}"
+fi
+install -d -m 0700 "$(dirname "$ENV_FILE")"
+temp_file="$(mktemp "$(dirname "$ENV_FILE")/.wechat-env.XXXXXX")"
+trap 'rm -f "$temp_file"' EXIT
+if [[ -f "$ENV_FILE" ]]; then
+  grep -vE '^(WECHAT_OPEN_APPID|WECHAT_OPEN_SECRET|WECHAT_CALLBACK_ORIGIN|WECHAT_LOGIN_MODE|WECHAT_AUTH_TYPE|WECHAT_MP_TEMPLATE_ID)=' "$ENV_FILE" > "$temp_file" || true
+  if [[ -n "$WECHAT_WEBSITE_APPID" ]]; then
+    sed -i -E '/^(WECHAT_WEBSITE_APPID|WECHAT_WEBSITE_SECRET)=/d' "$temp_file"
+  fi
+fi
 {
   printf 'WECHAT_OPEN_APPID=%s\n' "$WECHAT_OPEN_APPID"
   printf 'WECHAT_OPEN_SECRET=%s\n' "$WECHAT_OPEN_SECRET"
-  printf 'WECHAT_WEBSITE_APPID=%s\n' "$WECHAT_WEBSITE_APPID"
-  printf 'WECHAT_WEBSITE_SECRET=%s\n' "$WECHAT_WEBSITE_SECRET"
+  if [[ -n "$WECHAT_WEBSITE_APPID" ]]; then
+    printf 'WECHAT_WEBSITE_APPID=%s\n' "$WECHAT_WEBSITE_APPID"
+    printf 'WECHAT_WEBSITE_SECRET=%s\n' "$WECHAT_WEBSITE_SECRET"
+  fi
   printf 'WECHAT_CALLBACK_ORIGIN=%s\n' "$WECHAT_CALLBACK_ORIGIN"
   printf 'WECHAT_LOGIN_MODE=%s\n' "$WECHAT_LOGIN_MODE"
   printf 'WECHAT_AUTH_TYPE=%s\n' "$WECHAT_AUTH_TYPE"
   printf 'WECHAT_MP_TEMPLATE_ID=%s\n' "$WECHAT_MP_TEMPLATE_ID"
-} > "$ENV_FILE"
-chmod 0600 "$ENV_FILE"
+} >> "$temp_file"
+chmod 0600 "$temp_file"
+mv -f "$temp_file" "$ENV_FILE"
+trap - EXIT
 
 cat > "$DROPIN_FILE" <<EOF
 [Service]
