@@ -20,7 +20,7 @@ export type SourceHealth={
 };
 export type WatchStore={version:1;health:SourceHealth[];observations:SourceObservation[]};
 
-const HOSTS=new Set(["maa.org","www.cms.org.cn","amt.edu.au","cemc.uwaterloo.ca","ukmt.org.uk"]);
+const HOSTS=new Set(["maa.org","amt.edu.au","cemc.uwaterloo.ca","ukmt.org.uk"]);
 const SOURCE_DIR=path.resolve(process.env.SOCTHINK_SOURCE_WATCH_DIR?.trim()||
   (process.env.NODE_ENV==="production"
     ? "/var/lib/socthink-competition-source-watch"
