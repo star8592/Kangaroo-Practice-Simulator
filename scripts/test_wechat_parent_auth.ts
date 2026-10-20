@@ -36,7 +36,15 @@ async function main() {
   const originalFetch = globalThis.fetch;
   let tokenRequest = "";
   globalThis.fetch = (async (input: RequestInfo | URL) => {
-    tokenRequest = String(input);
+    const requestedUrl = String(input);
+    if (requestedUrl.includes("/sns/userinfo")) {
+      return new Response(JSON.stringify({
+        openid: "dummy-openid",
+        unionid: "dummy-unionid",
+        nickname: "微信家长",
+      }), { status: 200, headers: { "content-type": "application/json" } });
+    }
+    tokenRequest = requestedUrl;
     return new Response(JSON.stringify({
       access_token: "dummy-token",
       openid: "dummy-openid",
@@ -50,6 +58,7 @@ async function main() {
     assert.equal(tokenUrl.searchParams.get("appid"), "wx_website_test_app");
     assert.equal(tokenUrl.searchParams.get("secret"), "website-dummy");
     assert.equal(user.wechatId, "dummy-unionid");
+    assert.equal(user.name, "微信家长");
   } finally {
     globalThis.fetch = originalFetch;
   }
