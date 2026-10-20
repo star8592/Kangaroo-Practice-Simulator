@@ -27,16 +27,18 @@ function verifyCanary(outputRoot) {
     skill.apis.map(x => x.name),
     ['prepareArithmeticTraining', 'findInternationalCompetitions']
   )
-  const targets = ['/pages/arithmetic/index', '/pages/events/index']
+  const targets = ['/pages/arithmetic/index', '/pages/events/index', '/pages/ai-entry/index']
   for (const target of targets) {
     const relative = target.slice(1)
     assert.ok(app.pages.includes(relative), 'missing Taro registered page: ' + target)
-    assert.ok(meta.pages.some(x => x.path === relative), 'missing public page metadata: ' + target)
+    if (target === '/pages/ai-entry/index') {
+      assert.ok(meta.pages.some(x => x.path === relative), 'missing AI landing page metadata')
+    }
     assert.ok(fs.existsSync(path.join(dist, relative + '.js')), 'missing JS page: ' + target)
     assert.ok(fs.existsSync(path.join(dist, relative + '.wxml')), 'missing WXML page: ' + target)
   }
   for (const api of skill.apis) {
-    assert.ok(targets.includes(api._meta?.ui?.pagePath), 'unknown handoff target')
+    assert.equal(api._meta?.ui?.pagePath, '/pages/ai-entry/index', 'handoff must use non-TabBar landing page')
   }
   for (const file of [
     'skills/math-discovery/index.js',

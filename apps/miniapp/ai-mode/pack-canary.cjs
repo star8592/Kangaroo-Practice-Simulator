@@ -17,7 +17,8 @@ function packCanary(outputRoot) {
   const app = JSON.parse(fs.readFileSync(appPath, 'utf8'))
   if (!Array.isArray(app.pages) ||
     !app.pages.includes('pages/arithmetic/index') ||
-    !app.pages.includes('pages/events/index')) {
+    !app.pages.includes('pages/events/index') ||
+    !app.pages.includes('pages/ai-entry/index')) {
     throw new Error('构建产物缺少目标页面，禁止装配不兼容版本')
   }
   if (app.agent || (app.subPackages || []).some(x => x.root === 'skills')) {
@@ -43,8 +44,7 @@ function packCanary(outputRoot) {
   fs.cpSync(skillRoot, dest, { recursive: true, force: false, errorOnExist: true })
   const metadata = {
     pages: [
-      { path: 'pages/arithmetic/index', name: 'SOC THINK 计算训练', description: '按年级开始数学计算训练' },
-      { path: 'pages/events/index', name: 'SOC THINK 国际赛事管家', description: '查询国际数学赛事和备赛信息' }
+      { path: 'pages/ai-entry/index', name: 'SOC THINK 数学学习 AI 接力入口', description: '打开计算训练或国际数学赛事管家；不自动开始训练或读取成绩' }
     ]
   }
   fs.writeFileSync(path.join(dist, 'page-meta.json'), JSON.stringify(metadata, null, 2) + '\n')

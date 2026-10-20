@@ -36,7 +36,7 @@
       },
       "_meta": {
         "ui": {
-          "pagePath": "/pages/arithmetic/index"
+          "pagePath": "/pages/ai-entry/index"
         }
       }
     },
@@ -108,7 +108,7 @@
       },
       "_meta": {
         "ui": {
-          "pagePath": "/pages/events/index"
+          "pagePath": "/pages/ai-entry/index"
         }
       }
     }

@@ -1,4 +1,4 @@
-# 微信 AI 生态接入 R0 — SOC THINK 数学（2026-10-20）
+# 微信 AI 生态接入 R0 — SOC THINK 数学（2026-10-21）
 
 ## 决策
 
@@ -12,8 +12,8 @@
 
 | 意图 | 输入 | 数据/行为 | 页面 | 身份边界 |
 | --- | --- | --- | --- | --- |
-| 计算训练入口 | 明确的 1-12 年级，可省略 | 仅校验并推荐，不建立会话 | `/pages/arithmetic/index` | 不读取学生记录，进小程序后确认年级 |
-| 国际赛事发现 | 用户提供的关键词、地区，可省略 | 过滤公开 `/api/miniapp/world-competitions`，排除 `CN` | `/pages/events/index` | 只输出公开 event 字段，绝不输出关注/进度 |
+| 计算训练入口 | 明确的 1-12 年级，可省略 | 仅校验并推荐，不建立会话 | `/pages/ai-entry/index` → 计算 Tab | 年级一次性预选，仍须学生点击开始 |
+| 国际赛事发现 | 用户提供的关键词、地区，可省略 | 公开目录过滤，排除 `CN`（含大小写变体） | `/pages/ai-entry/index` → 赛事 Tab | 唯一匹配时携带真实赛事 ID，不输出关注/进度 |
 
 `/api/miniapp/exams` 需要学生身份：R0 **禁止**借游客 Token、模拟身份或服务密钥代查，后续建立用户明确授权的身份衔接后再考虑。
 
@@ -21,7 +21,8 @@
 
 - R0 Skill 原型：`apps/miniapp/ai-mode/skills/math-discovery`。
 - 只读合同测试：`apps/miniapp/ai-mode/tests/contracts.test.cjs`。
-- 不修改 `apps/miniapp/src/app.config.ts`、`src/app.tsx`、生产后端、支付与用户表。
+- Draft PR 内新增不可见的 AI 接力路由和可选 `wx.onAgentHandoff` 监听；只读导航意图，绝不修改生产后端、支付与用户表。
+- `pack-canary.cjs` 仅在独立的真实 Taro `dist` 中注入 Skill；正常构建不包含 `app.json.agent`。
 - 未在正式构建中加入 `agent.skills`，也未申请/开启微信后台自动源码读取授权。
 - 本地 Z890 工作树有其他进行中的更改，只作只读检查；GitHub 是唯一源码写入位置。
 
@@ -29,14 +30,15 @@
 
 1. 微信开发模式是否已允许该 AppID 代码提审，不可凭 2026-06 的公告推定已全面开放。
 2. 官方原生示例的 `app.json.agent.skills`、独立 `skills` 分包如何保留到 Taro 4.3.0 的 `dist`。
-3. AI handoff 直达 TabBar 路径是否支持；若不支持，设计专用非 TabBar 承接页，用户点击后再 `switchTab`。
-4. 用户自然语言中的年级/赛事过滤是否能安全在小程序内复用，不能宣称已自动预选。
+3. 已提供非 TabBar 接力页 `/pages/ai-entry/index`，但其在微信真机的 `onLoad` / `onAgentHandoff` / `switchTab` 时序仍须验收。
+4. 年级和唯一赛事 ID 使用白名单、2 分钟 TTL、一次性消费；已写合同测试，但仍须核验真机行为。
 5. 免登录公开赛事 API 与真实目录在生产中的一致性、网络超时和返回字段稳定性。
 6. 微信 AI 是否返回真实推荐流量，以及点击小程序卡片后的可观测数据。
 
 ## 质量门禁
 
-- Node 合同测试全通过；赛事来源始终来自 canonical API，无国内赛事及个人进度泄露。
+- Node 合同测试与真实 Taro 构建后装配验证全通过；赛事来源始终来自 canonical API，无国内赛事及个人进度泄露。
+- `npx tsx scripts/test_miniapp_ai_handoff.ts` 测试接力参数、TTL 和单次消费。
 - AI 请求不能发起写入、购买、关注、考试开始、成绩读取。
 - 微信开发者工具 + 真机视频：计算入口、赛事入口、无匹配、网络断开、微信登录失败、重复点击。
 - Web 和普通小程序不回归：现有 `verify:miniapp`、Web CI、接口权限矩阵通过。
@@ -45,4 +47,4 @@
 
 ## 后续
 
-R1 在验证 handoff 后增加真实入口映射；R2 再研究账户授权和个性化报告。自动模式须另行进行源码授权和数据保护审核，不与开发模式混在一个开关中。
+R1 是当前 Draft PR 的接力页真机验收；R2 再研究账户授权和个性化报告。自动模式须另行进行源码授权和数据保护审核，不与开发模式混在一个开关中。

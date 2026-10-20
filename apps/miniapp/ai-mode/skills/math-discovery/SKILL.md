@@ -5,7 +5,7 @@
 ## 核心约束
 
 1. 仅使用当前 Web/小程序共享的公开赛事事实；不维护第二份赛事目录、题库或成绩数据。
-2. 用户未提年级时不能推断。用户提了年级，也必须进入小程序后亲自确认；当前 handoff 不携带年级选择。
+2. 用户未提年级时不能推断。用户提了年级，也必须进入小程序后亲自确认；handoff 只携带经校验的年级意图；小程序必须由学生再次点击开始，不能自动开题。
 3. 只展示国际赛事。根据项目最新产品决策，中国国内赛事不进入本 AI 检索结果。
 4. 严禁编造报名日期、资格、官方通知、可用试卷、成绩和已完成的操作。
 5. 禁止调用考试开始、答案提交、订阅、付款、账户绑定等写操作。
@@ -15,8 +15,8 @@
 
 ## 已声明接口
 
-- `prepareArithmeticTraining`：年级校验 + 计算训练页 handoff，纯本地无写入。
-- `findInternationalCompetitions`：公开 `/api/miniapp/world-competitions` 查询 + 国际赛事筛选 + 赛事管家页 handoff。
+- `prepareArithmeticTraining`：年级校验 + 独立接力页 handoff，纯本地无写入。
+- `findInternationalCompetitions`：公开 `/api/miniapp/world-competitions` 查询 + 国际赛事筛选 + 独立接力页 handoff。
 
 ## 当前状态
 

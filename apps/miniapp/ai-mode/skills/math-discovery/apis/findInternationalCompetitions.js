@@ -12,7 +12,7 @@ function failure(message) {
 
 function publicEvent(entry) {
   const e = entry && entry.event
-  if (!e || typeof e !== 'object' || e.region === 'CN') return null
+  if (!e || typeof e !== 'object' || String(e.region || '').toUpperCase() === 'CN') return null
   if (typeof e.id !== 'string' || !/^[a-z][a-z0-9-]{0,63}$/.test(e.id)) return null
   if (typeof e.nameZh !== 'string' || !e.nameZh.trim()) return null
   const sourceUrl = typeof e.sourceUrl === 'string' && /^https:\/\//i.test(e.sourceUrl)
@@ -64,7 +64,7 @@ async function findInternationalCompetitions({ keyword, region = 'all' } = {}) {
           : '当前公开赛事目录没有匹配项。请调整关键词或地区；不要编造赛事、报名时间或参赛资格。'
       }],
       structuredContent: { items, total: filtered.length, hasMore: filtered.length > LIMIT, source: 'canonical-public-catalogue' },
-      handoff: { query: '' }
+      handoff: { query: filtered.length === 1 ? 'mode=events&eventId=' + items[0].id : 'mode=events' }
     }
   } catch {
     return failure('赛事目录暂时不可用，请稍后重试；不要给出未经核验的比赛时间。')

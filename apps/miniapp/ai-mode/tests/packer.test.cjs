@@ -12,7 +12,7 @@ function fixture(fn) {
   fs.mkdirSync(dist)
   fs.writeFileSync(path.join(dist, 'app.js'), '/* mocked Taro output */')
   fs.writeFileSync(path.join(dist, 'app.json'), JSON.stringify({
-    pages:['pages/home/index','pages/arithmetic/index','pages/events/index']
+    pages:['pages/home/index','pages/arithmetic/index','pages/events/index','pages/ai-entry/index']
   }))
   try { return fn(dist) }
   finally { fs.rmSync(root, {recursive:true,force:true}) }

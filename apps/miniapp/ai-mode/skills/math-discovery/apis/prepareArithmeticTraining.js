@@ -23,7 +23,7 @@ async function prepareArithmeticTraining({ grade } = {}) {
       requiresInAppConfirmation: true,
       started: false
     },
-    handoff: { query: '' }
+    handoff: { query: known ? 'mode=arithmetic&grade=' + grade : 'mode=arithmetic' }
   }
 }
 

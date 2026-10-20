@@ -37,6 +37,8 @@ jobs:
           cache: npm
       - name: Install locked dependencies
         run: npm ci
+      - name: AI Handoff target and short-lived navigation-intent contracts
+        run: npx tsx scripts/test_miniapp_ai_handoff.ts
       - name: Compile real Taro WeChat artifacts and run existing gates
         run: npm run verify:miniapp
       - name: Opt-in AI Skill packaging (CI workspace only)
