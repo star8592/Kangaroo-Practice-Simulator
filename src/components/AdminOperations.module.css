@@ -1,4 +1,4 @@
-.shell{max-width:1190px;margin:0 auto;padding:42px 24px 78px;color:var(--ink)}
+.shell{max-width:var(--layout-standard);margin:0 auto;padding:42px 24px 78px;color:var(--ink)}
 .head{display:flex;justify-content:space-between;align-items:flex-end;gap:18px;margin:0 0 28px}
 .eyebrow{font-size:11px;letter-spacing:.1em;color:var(--accent-dark);font-weight:800}
 .head h1{font-size:clamp(27px,3vw,39px);margin:6px 0;font-weight:800;letter-spacing:-.035em}
