@@ -28,7 +28,7 @@ export default function WorldEventsExplorer({events}: {events: WorldCompetition[
     <header className={styles.hero}>
       <div className={styles.kicker}>SOC THINK · WORLD COMPETITIONS</div>
       <h1>{lang === "zh" ? "全球数学赛事管家" : "Worldwide mathematics competitions"}</h1>
-      <p>{lang === "zh" ? "中国与国际数学赛事平等展示。先发现适合自己的比赛，再核实当届资格、规划备赛。" : "Explore competitions across regions, verify each edition's eligibility, and plan your preparation."}</p>
+      <p>{lang === "zh" ? "探索国际数学赛事，核实本届资格，规划训练与报名。" : "Explore competitions across regions, verify each edition's eligibility, and plan your preparation."}</p>
       <div className={styles.actions}>
         <Link href="/competitions" className={styles.primary}>{lang === "zh" ? "进入竞赛模拟" : "Start a mock exam"}</Link>
         <Link href="/arithmetic" className={styles.secondary}>{lang === "zh" ? "开始计算训练" : "Practice math"}</Link>
@@ -38,7 +38,7 @@ export default function WorldEventsExplorer({events}: {events: WorldCompetition[
       <label>
         <span>{lang === "zh" ? "搜索赛事" : "Search"}</span>
         <input value={search} onChange={e => setSearch(e.target.value)}
-          placeholder={lang === "zh" ? "例如：华杯赛、袋鼠、AMC、Gauss" : "Competition name"}
+          placeholder={lang === "zh" ? "例如：袋鼠、AMC、Gauss、UKMT" : "Competition name"}
           type="search" />
       </label>
       <label>
