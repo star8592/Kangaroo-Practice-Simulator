@@ -59,7 +59,7 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    const info = await wechatUserInfo(code);
+    const info = await wechatUserInfo(code, qrFlow ? "website" : undefined);
     const user = authenticateOrCreateWechatParent(info);
 
     if (qrFlow) {

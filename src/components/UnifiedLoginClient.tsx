@@ -6,6 +6,7 @@ import { FormEvent, useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { SITE_BRAND } from "@/lib/site-brand";
 import styles from "./AuthExperience.module.css";
+import WechatWebsiteQr from "./WechatWebsiteQr";
 
 type LoginMode = "checking" | "loading" | "qr" | "unavailable" | "error" | "studentRequired";
 const inWechat = () => typeof navigator !== "undefined" && /MicroMessenger/i.test(navigator.userAgent);
@@ -27,6 +28,7 @@ export default function UnifiedLoginClient({ nextPath }: { nextPath: string }) {
   const router = useRouter();
   const [mode, setMode] = useState<LoginMode>("checking");
   const [qrDataUrl, setQrDataUrl] = useState("");
+  const [qrAuthorizeUrl, setQrAuthorizeUrl] = useState("");
   const [message, setMessage] = useState("");
   const [username, setUsername] = useState("");
   const [pin, setPin] = useState("");
@@ -84,6 +86,7 @@ export default function UnifiedLoginClient({ nextPath }: { nextPath: string }) {
     ticketRef.current = "";
     setMode("loading");
     setQrDataUrl("");
+    setQrAuthorizeUrl("");
     setMessage("");
     try {
       if (inWechat()) {
@@ -100,12 +103,13 @@ export default function UnifiedLoginClient({ nextPath }: { nextPath: string }) {
       if (!qr.response) throw new Error("二维码请求没有响应，请重试。");
       const response = qr.response;
       const result = await response.json();
-      if (!response.ok || !result.ticket || !result.qrDataUrl) {
+      if (!response.ok || !result.ticket || (!result.qrDataUrl && !result.qrAuthorizeUrl)) {
         throw new Error(result.error || "微信扫码暂时不可用");
       }
       if (disposed.current) return;
       ticketRef.current = result.ticket;
-      setQrDataUrl(result.qrDataUrl);
+      setQrDataUrl(result.qrDataUrl || "");
+      setQrAuthorizeUrl(result.qrAuthorizeUrl || "");
       setMode("qr");
       poll(result.ticket);
     } catch (e) {
@@ -241,9 +245,11 @@ export default function UnifiedLoginClient({ nextPath }: { nextPath: string }) {
       {mode === "checking" || mode === "loading"
         ? <div className={styles.unifiedLoading} role="status">正在准备微信登录…</div>
         : null}
-      {mode === "qr" && qrDataUrl
+      {mode === "qr" && (qrAuthorizeUrl || qrDataUrl)
         ? <div className={styles.unifiedQr}>
-            <Image src={qrDataUrl} width={260} height={260} unoptimized alt="使用手机微信扫描此二维码登录或注册"/>
+            {qrAuthorizeUrl
+              ? <WechatWebsiteQr authorizeUrl={qrAuthorizeUrl} />
+              : <Image src={qrDataUrl} width={260} height={260} unoptimized alt="使用手机微信扫描此二维码登录或注册"/>}
             <p>打开手机微信扫一扫，完成后电脑自动进入。</p>
           </div>
         : null}
