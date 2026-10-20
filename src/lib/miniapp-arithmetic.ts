@@ -1,5 +1,6 @@
 import { readSignedJsonToken, signJsonToken } from "./auth-crypto";
 import { buildTrainingPlan, finalizeAttempt, type ArithmeticSession } from "./arithmetic-analytics";
+import { assessArithmeticAnswer, normalizeArithmeticInput } from "./arithmetic-input";
 import { generateArithmeticSet, generateDiagnosticSet, type ArithmeticItem } from "./arithmetic-generator";
 import type { ArithmeticGrade, CleverNode } from "./arithmetic";
 import type { PublicStudent } from "./auth";
@@ -105,9 +106,13 @@ export function checkMiniappArithmetic(user: PublicStudent, token: string, index
   const ticket = validTicket(user, token);
   const item = generate(ticket)[index];
   if (!item) throw new Error("题号无效");
+  const normalized = normalizeArithmeticInput(raw);
+  if (assessArithmeticAnswer(item, normalized).status === "needs_simplification") {
+    return {correct: false, needsSimplification: true, correctAnswer: String(item.answer), reason: "needs_simplification"};
+  }
   const responseMs = Math.max(1, Number(telemetry?.responseMs) || item.expectedMs);
   const firstInputMs = Math.max(0, Math.min(responseMs, Number(telemetry?.firstInputMs) || responseMs));
-  const attempt = finalizeAttempt(item, raw, {
+  const attempt = finalizeAttempt(item, normalized, {
     presentedAt: 0,
     firstInputAt: firstInputMs,
     submittedAt: responseMs,
@@ -155,7 +160,7 @@ export function finishMiniappArithmetic(user: PublicStudent, token: string, resp
     if (!row) return [];
     const responseMs = Math.max(1, Number(row.responseMs) || item.expectedMs);
     const firstInputMs = Math.max(0, Math.min(responseMs, Number(row.firstInputMs) || responseMs));
-    return [finalizeAttempt(item, row.answer, {
+    return [finalizeAttempt(item, normalizeArithmeticInput(row.answer), {
       presentedAt: 0,
       firstInputAt: firstInputMs,
       submittedAt: responseMs,
