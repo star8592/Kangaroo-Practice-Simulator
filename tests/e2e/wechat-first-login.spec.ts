@@ -114,3 +114,13 @@ test("approved website application QR uses the official WeChat iframe and matchi
   expect(embedded.searchParams.get("state")).toBe(state);
   expect(embedded.searchParams.get("self_redirect")).toBe("true");
 });
+
+test("admin operations cannot be viewed by anonymous visitors", async ({ page }) => {
+  await page.goto("/admin");
+  await expect(page).toHaveURL(/\/admin\/login/);
+  await expect(page.getByText("运营总览", { exact: true })).toHaveCount(0);
+
+  await page.goto("/admin/families");
+  await expect(page).toHaveURL(/\/admin\/login/);
+  await expect(page.getByText("用户与家庭", { exact: true })).toHaveCount(0);
+});

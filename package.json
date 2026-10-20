@@ -45,6 +45,7 @@
     "test:pre-a-grade1": "python3 scripts/test_pre_a_grade1_ready.py",
     "solution:factory:publish": "python3 scripts/run_solution_factory.py --publish",
     "test:parent-auth": "tsx scripts/test_parent_auth.ts",
+    "test:admin-ops": "tsx scripts/test_admin_operations.ts",
     "test:billing-ledger": "tsx scripts/test_billing_ledger.ts",
     "test:rights": "python3 scripts/validate_competition_source_registry.py",
     "data:collection-plan": "python3 scripts/build_competition_collection_plan.py",

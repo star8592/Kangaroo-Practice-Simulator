@@ -66,7 +66,7 @@ export function authenticateOrCreateWechatParent(input:{wechatId:string;openId?:
   if(!wechatId)throw new Error("微信用户标识缺失");
   let u=rows.find(x=>x.wechatId===wechatId||(openId&&x.wechatOpenId===openId));
   if(!u){
-    u={id:"par_"+crypto.randomBytes(9).toString("hex"),name:(input.name||"微信家长").trim().slice(0,60)||"微信家长",wechatId,wechatOpenId:openId,wechatAvatarUrl:input.avatarUrl?.trim()||undefined,termsAcceptedAt:Date.now(),guardianConfirmedAt:Date.now(),createdAt:Date.now(),active:true,role:"parent",sessionVersion:1};
+    u={id:"par_"+crypto.randomBytes(9).toString("hex"),name:(input.name||"微信家长").trim().slice(0,60)||"微信家长",wechatId,wechatOpenId:openId,wechatAvatarUrl:input.avatarUrl?.trim()||undefined,termsAcceptedAt:Date.now(),guardianConfirmedAt:Date.now(),createdAt:Date.now(),lastLoginAt:Date.now(),active:true,role:"parent",sessionVersion:1};
     rows.push(u);
   }else{
     u.wechatId=wechatId;

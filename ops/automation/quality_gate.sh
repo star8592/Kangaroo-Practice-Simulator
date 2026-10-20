@@ -46,6 +46,7 @@ step "payment configuration safeguards (no real credentials)" node scripts/test_
 step "local CI deploy contract" bash ops/release/test_local_ci_deploy_contract.sh
 step "auth email SMTP contract" bash ops/release/test_auth_email_smtp_contract.sh
 step "parent auth regression" npm run test:parent-auth
+step "admin operations first-login, rollup and PII contract" npm run test:admin-ops
 step "guest bootstrap reverse-proxy regression" npx tsx scripts/test_guest_bootstrap.ts
 step "guest/full-exam authorization regression" npm run test:exam-access
 step "miniapp arithmetic grading idempotency and UI recovery" npm run test:miniapp-arithmetic-idempotency
