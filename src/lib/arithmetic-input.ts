@@ -66,7 +66,7 @@ export function mathInputKeys(kind:ArithmeticAnswerKind|undefined):MathInputKey[
  if(kind==="expression")return [
   ...digits,{label:"x",insert:"x"},{label:"²",insert:"^2"},
   {label:"^",insert:"^"},{label:"(",insert:"("},{label:")",insert:")"},
-  {label:"+",insert:"+"},{label:"×",insert:"*"},{label:"÷",insert:"/"},
+  {label:"+",insert:"+"},{label:"×",insert:"*"},{label:"÷",insert:"/"},fraction,
  ];
  return [...digits,fraction];
 }
