@@ -84,7 +84,8 @@ export default function WechatWebsiteQr({ authorizeUrl }: { authorizeUrl: string
         document.head.appendChild(script);
       }
     } catch (e) {
-      setLoadError(e instanceof Error ? e.message : "微信二维码暂时无法加载");
+      const message = e instanceof Error ? e.message : "微信二维码暂时无法加载";
+      queueMicrotask(() => { if (active) setLoadError(message); });
     }
 
     return () => {
