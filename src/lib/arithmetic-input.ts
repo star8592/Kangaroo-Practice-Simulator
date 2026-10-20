@@ -46,33 +46,27 @@ export function assessArithmeticAnswer(spec:ArithmeticAnswerSpec,raw:string):Ari
 }
 
 export type MathInputKey={label:string;insert:string};
+
+/**
+ * Answer-kind driven keypad. Every type has '-' including ordinary integer
+ * answers: a signed result must never become impossible on touch devices.
+ * Fractions typed into numeric fields are accepted by numericAnswerValue.
+ */
 export function mathInputKeys(kind:ArithmeticAnswerKind|undefined):MathInputKey[]{
-  if(kind==="fraction")return[
-    {label:"7",insert:"7"},{label:"8",insert:"8"},{label:"9",insert:"9"},
-    {label:"4",insert:"4"},{label:"5",insert:"5"},{label:"6",insert:"6"},
-    {label:"1",insert:"1"},{label:"2",insert:"2"},{label:"3",insert:"3"},
-    {label:"−",insert:"-"},{label:"0",insert:"0"},{label:"a/b",insert:"/"},
-  ];
-  if(kind==="radical")return[
-    {label:"7",insert:"7"},{label:"8",insert:"8"},{label:"9",insert:"9"},
-    {label:"4",insert:"4"},{label:"5",insert:"5"},{label:"6",insert:"6"},
-    {label:"1",insert:"1"},{label:"2",insert:"2"},{label:"3",insert:"3"},
-    {label:"−",insert:"-"},{label:"0",insert:"0"},{label:"√",insert:"√"},
-    {label:"a/b",insert:"/"},
-  ];
-  if(kind==="pi")return[
-    {label:"7",insert:"7"},{label:"8",insert:"8"},{label:"9",insert:"9"},
-    {label:"4",insert:"4"},{label:"5",insert:"5"},{label:"6",insert:"6"},
-    {label:"1",insert:"1"},{label:"2",insert:"2"},{label:"3",insert:"3"},
-    {label:"−",insert:"-"},{label:"0",insert:"0"},{label:"π",insert:"π"},
-    {label:"a/b",insert:"/"},
-  ];
-  if(kind==="expression")return[
-    {label:"7",insert:"7"},{label:"8",insert:"8"},{label:"9",insert:"9"},{label:"x",insert:"x"},
-    {label:"4",insert:"4"},{label:"5",insert:"5"},{label:"6",insert:"6"},{label:"²",insert:"^2"},
-    {label:"1",insert:"1"},{label:"2",insert:"2"},{label:"3",insert:"3"},{label:"(",insert:"("},
-    {label:"0",insert:"0"},{label:"+",insert:"+"},{label:"−",insert:"-"},{label:")",insert:")"},
-    {label:"×",insert:"*"},{label:"÷",insert:"/"},
-  ];
-  return[];
+ const digits:MathInputKey[]=[
+  {label:"7",insert:"7"},{label:"8",insert:"8"},{label:"9",insert:"9"},
+  {label:"4",insert:"4"},{label:"5",insert:"5"},{label:"6",insert:"6"},
+  {label:"1",insert:"1"},{label:"2",insert:"2"},{label:"3",insert:"3"},
+  {label:"−",insert:"-"},{label:"0",insert:"0"},{label:".",insert:"."},
+ ];
+ const fraction={label:"分数 a/b",insert:"/"};
+ if(kind==="fraction")return [...digits,fraction];
+ if(kind==="radical")return [...digits,{label:"√",insert:"√"},fraction];
+ if(kind==="pi")return [...digits,{label:"π",insert:"π"},fraction];
+ if(kind==="expression")return [
+  ...digits,{label:"x",insert:"x"},{label:"²",insert:"^2"},
+  {label:"^",insert:"^"},{label:"(",insert:"("},{label:")",insert:")"},
+  {label:"+",insert:"+"},{label:"×",insert:"*"},{label:"÷",insert:"/"},
+ ];
+ return [...digits,fraction];
 }

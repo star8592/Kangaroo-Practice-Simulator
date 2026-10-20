@@ -2,8 +2,10 @@ import { useRef, useState } from 'react'
 import { Button, Input, Picker, Text, View } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import { api, authStore } from '../../services/api'
+import ArithmeticAnswerPad from '../../components/ArithmeticAnswerPad'
+import { editMathAnswer, backspaceMathAnswer, type MathAnswerKind } from '../../services/math-answer-keypad'
 
-type Q={id:string;prompt:string;skillId:string;expectedMs:number}
+type Q={id:string;prompt:string;skillId:string;expectedMs:number;answerKind?:MathAnswerKind;requireSimplified?:boolean}
 type ResponseRow={questionId:string;answer:string;responseMs:number;firstInputMs:number;edits:number;backspaces:number}
 
 export default function ArithmeticPage(){
@@ -13,6 +15,7 @@ export default function ArithmeticPage(){
   const [session,setSession]=useState<any>(null)
   const [idx,setIdx]=useState(0)
   const [raw,setRaw]=useState('')
+  const cursor=useRef(0)
   const [feedback,setFeedback]=useState<any>(null)
   const responsesRef=useRef<ResponseRow[]>([])
   const [result,setResult]=useState<any>(null)
@@ -30,11 +33,28 @@ export default function ArithmeticPage(){
     try{
       const s=await api('/api/miniapp/arithmetic/session',{method:'POST',data:{action:'start',grade,mode}})
       if(!s||!Array.isArray(s.questions)||!s.questions.length||!s.token)throw new Error('训练题目未能载入，请重试')
-      setSession(s);setIdx(0);setRaw('');setFeedback(null);responsesRef.current=[];setResult(null)
+      setSession(s);setIdx(0);setRaw('');cursor.current=0;setFeedback(null);responsesRef.current=[];setResult(null)
       started.current=Date.now();firstInput.current=null
     }catch(e){Taro.showToast({title:e instanceof Error?e.message:'无法开始',icon:'none'})}
   })
   const q:Q|undefined=session?.questions?.[idx]
+  const insertMathKey=(insert:string)=>{
+    if(busy||feedback||!q)return
+    if(firstInput.current===null)firstInput.current=Date.now()
+    setRaw(previous=>{
+      const result=editMathAnswer(previous,insert,cursor.current)
+      cursor.current=result.cursor
+      return result.value
+    })
+  }
+  const backspaceMathKey=()=>{
+    if(busy||feedback)return
+    setRaw(previous=>{
+      const result=backspaceMathAnswer(previous,cursor.current)
+      cursor.current=result.cursor
+      return result.value
+    })
+  }
   const check=async()=>{
     if(!q||!raw.trim()||feedback)return
     return once(async()=>{
@@ -42,6 +62,7 @@ export default function ArithmeticPage(){
       const row={questionId:q.id,answer:raw,responseMs:Math.max(1,now-started.current),firstInputMs:Math.max(0,(firstInput.current||now)-started.current),edits:0,backspaces:0}
       try{
         const f=await api('/api/miniapp/arithmetic/session',{method:'POST',data:{action:'check',token:session.token,index:idx,...row}})
+        if(f?.needsSimplification){Taro.showToast({title:'数值正确，请化成题目要求的最简形式',icon:'none'});return}
         if(typeof f?.correct!=='boolean')throw new Error('判题响应异常，请重新提交')
         setFeedback(f);responsesRef.current=[...responsesRef.current,row]
       }catch(e){Taro.showToast({title:e instanceof Error?e.message:'提交失败',icon:'none'})}
@@ -59,7 +80,7 @@ export default function ArithmeticPage(){
         }catch(e){Taro.showToast({title:e instanceof Error?e.message:'保存失败，点击完成本轮可重试',icon:'none'})}
         return
       }
-      setIdx(x=>x+1);setRaw('');setFeedback(null);started.current=Date.now();firstInput.current=null
+      setIdx(x=>x+1);setRaw('');cursor.current=0;setFeedback(null);started.current=Date.now();firstInput.current=null
     })
   }
 
@@ -72,7 +93,8 @@ export default function ArithmeticPage(){
     <View className='progress'><View style={{width:`${((idx+1)/session.questions.length)*100}%`}}/></View>
     <View className='card'>
       <View className='question'>{q?.prompt}</View>
-      <Input className='input' value={raw} disabled={busy||Boolean(feedback)} placeholder='输入答案' onInput={e=>{if(firstInput.current===null&&e.detail.value)firstInput.current=Date.now();setRaw(e.detail.value)}}/>
+      <Input className='input' type='text' value={raw} maxlength={100} disabled={busy||Boolean(feedback)} placeholder='点击下方数学键盘输入，也可手动编辑' onInput={e=>{const value=e.detail.value;if(firstInput.current===null&&value)firstInput.current=Date.now();cursor.current=typeof e.detail.cursor==='number'?e.detail.cursor:value.length;setRaw(value)}}/>
+      {!feedback&&<ArithmeticAnswerPad kind={q?.answerKind||'number'} raw={raw} busy={busy} onInsert={insertMathKey} onBackspace={backspaceMathKey} onSubmit={()=>void check()}/>}
       {feedback?<><View className={feedback.correct?'good':'bad'}>{feedback.correct?'✓ 答对了':`✕ 正确答案：${feedback.correctAnswer}`}</View><Button className='primary' loading={busy} disabled={busy} onClick={()=>void next()}>{idx+1===session.questions.length?'完成本轮':'下一题'}</Button></>:<Button className='primary' loading={busy} disabled={busy||!raw.trim()} onClick={()=>void check()}>提交答案</Button>}
     </View>
   </View>
