@@ -41,7 +41,8 @@ export function wechatAuthorizeUrl(state: string, forcedMode?: WechatLoginMode) 
 }
 
 export async function wechatUserInfo(code: string, forcedMode?: WechatLoginMode) {
-  const { appid, secret } = wechatCredentials(forcedMode || wechatLoginMode());
+  const mode = forcedMode || wechatLoginMode();
+  const { appid, secret } = wechatCredentials(mode);
   if (!appid || !secret) throw new Error("微信登录尚未配置");
 
   const tokenUrl = new URL("https://api.weixin.qq.com/sns/oauth2/access_token");
@@ -52,8 +53,15 @@ export async function wechatUserInfo(code: string, forcedMode?: WechatLoginMode)
     grant_type: "authorization_code",
   }).toString();
 
-  const token = await fetch(tokenUrl, { cache: "no-store" }).then((response) => response.json()) as Record<string, unknown>;
-  if (token.errcode || !token.access_token || !token.openid) {
+  const tokenResponse = await fetch(tokenUrl, { cache: "no-store" });
+  const token = await tokenResponse.json() as Record<string, unknown>;
+  if (!tokenResponse.ok || token.errcode || !token.access_token || !token.openid) {
+    // Only error codes and transport status may be logged: the request URL
+    // contains AppSecret and the one-time OAuth code.
+    const errcode = Number.isSafeInteger(token.errcode) ? token.errcode : null;
+    console.warn("[wechat-auth] oauth_token_exchange_failed", {
+      mode, upstreamStatus: tokenResponse.status, upstreamErrcode: errcode,
+    });
     throw new Error("微信授权失败");
   }
 
@@ -72,8 +80,15 @@ export async function wechatUserInfo(code: string, forcedMode?: WechatLoginMode)
     lang: "zh_CN",
   }).toString();
 
-  const info = await fetch(infoUrl, { cache: "no-store" }).then((response) => response.json()) as Record<string, unknown>;
-  if (info.errcode || !info.openid) throw new Error("微信用户信息获取失败");
+  const infoResponse = await fetch(infoUrl, { cache: "no-store" });
+  const info = await infoResponse.json() as Record<string, unknown>;
+  if (!infoResponse.ok || info.errcode || !info.openid) {
+    const errcode = Number.isSafeInteger(info.errcode) ? info.errcode : null;
+    console.warn("[wechat-auth] oauth_userinfo_failed", {
+      mode, upstreamStatus: infoResponse.status, upstreamErrcode: errcode,
+    });
+    throw new Error("微信用户信息获取失败");
+  }
 
   return {
     wechatId: String(info.unionid || info.openid),
