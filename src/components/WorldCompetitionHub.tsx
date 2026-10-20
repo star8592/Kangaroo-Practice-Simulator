@@ -61,10 +61,10 @@ export default function WorldCompetitionHub({lang, today, exams, initialSelected
       <div>
         <span className="eyebrow">WORLD MATH COMPETITION COMPANION</span>
         <h2>{zh?"全球数学赛事管家":"World Math Competition Companion"}</h2>
-        <p>{zh?"中国、美国、澳洲、加拿大、英国及全球性数学赛事，同一套管理流程。按地区筛选，不按国别分高低。":"One unified journey for math competitions in China and worldwide. Region is a filter, never a hierarchy."}</p>
+        <p>{zh?"澳洲、美国、加拿大、英国及全球性数学赛事，统一管理，按学段和地区筛选。":"Manage international mathematics competitions in one place, filtered by stage and region."}</p>
       </div>
     </div>
-    <div className={styles.searchRow}><label htmlFor="event-search">{zh?"搜索赛事":"Search competitions"}</label><input id="event-search" type="search" value={search} onChange={e=>setSearch(e.target.value)} placeholder={zh?"华杯赛、袋鼠、AMC":"Competition name"}/></div>
+    <div className={styles.searchRow}><label htmlFor="event-search">{zh?"搜索赛事":"Search competitions"}</label><input id="event-search" type="search" value={search} onChange={e=>setSearch(e.target.value)} placeholder={zh?"袋鼠、AMC、CEMC":"Competition name"}/></div>
     <div className={styles.filters} role="group" aria-label={zh?"按地区筛选赛事":"Filter events by region"}>
       {WORLD_REGION_OPTIONS.map(option => <button
         key={option.value} type="button" aria-pressed={region === option.value}
