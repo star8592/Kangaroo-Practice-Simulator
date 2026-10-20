@@ -26,6 +26,12 @@ async function main() {
   fs.writeFileSync(path.join(dir, "families.json"), JSON.stringify([
     { id: "fam_1", parentId: parent.id, studentIds: ["stu_fake", "stu_fake", "nonexistent_id"], createdAt: Date.now() },
   ]));
+  const { createSessionToken, createGuestSessionToken, userFromSessionToken, isAdmin } = await import("../src/lib/auth");
+  const { createParentSessionToken } = await import("../src/lib/parent-auth");
+  assert.equal(isAdmin(userFromSessionToken(createSessionToken("admin_fake"))), true, "admin PIN-backed student session grants admin role");
+  assert.equal(isAdmin(userFromSessionToken(createSessionToken("stu_fake"))), false, "student has no admin access");
+  assert.equal(isAdmin(userFromSessionToken(createGuestSessionToken())), false, "guest has no admin access");
+  assert.equal(isAdmin(userFromSessionToken(createParentSessionToken(parent.id))), false, "WeChat family session must never become admin session");
   const now = Date.now();
   const snapshot = adminOperationsSnapshot(now);
   assert.equal(snapshot.totalFamilies, 1);
@@ -44,7 +50,7 @@ async function main() {
     assert.ok(!response.includes(confidential), "credential or raw identifier leaked: " + confidential);
   }
   assert.equal(maskAdminEmail("someone@example.com"), "s***@example.com");
-  console.log("ADMIN_OPS_R0=PASS first_wechat_login=true roles_isolated=true family_deduped=true pii_masked=true");
+  console.log("ADMIN_OPS_R0=PASS first_wechat_login=true roles_isolated=true family_deduped=true pii_masked=true admin_role_isolated=true");
 }
 
 main().catch((e) => { console.error(e); process.exitCode = 1; }).finally(() => {
