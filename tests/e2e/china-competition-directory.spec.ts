@@ -1,92 +1,57 @@
 import { test, expect } from "@playwright/test";
 
-test("world companion has one equal-ranking directory and real navigation", async ({ page }) => {
-  await page.goto("/events");
-  const hub = page.getByRole("region",{name:"全球数学赛事管家"});
+test("international events hub excludes all archived domestic competitions", async ({ page }) => {
+  await page.goto("/events?event=huabei");
+  const hub = page.getByRole("region", { name: "全球数学赛事管家" });
   await expect(hub).toBeVisible();
   const cards = hub.locator('[aria-label="世界赛事目录"] article');
-  await expect(cards).toHaveCount(10);
-  await expect(cards.filter({hasText:"华罗庚金杯"})).toHaveCount(1);
-  await expect(cards.filter({hasText:"美国 AMC / AIME"})).toHaveCount(1);
-  await expect(cards.filter({hasText:"英国 UKMT"})).toHaveCount(1);
-
-  await hub.getByRole("button",{name:"中国",exact:true}).click();
   await expect(cards).toHaveCount(5);
+  await expect(cards.filter({hasText:"英国 UKMT"})).toHaveCount(1);
+  await expect(cards.filter({hasText:"美国 AMC / AIME"})).toHaveCount(1);
+  await expect(cards.filter({hasText:"华罗庚金杯"})).toHaveCount(0);
+  await expect(cards.filter({hasText:"希望杯"})).toHaveCount(0);
+  await expect(hub.getByRole("button",{name:"中国",exact:true})).toHaveCount(0);
+
   await hub.getByRole("button",{name:"美国",exact:true}).click();
   await expect(cards).toHaveCount(1);
   await hub.getByRole("button",{name:"全部地区"}).click();
-  await expect(cards).toHaveCount(10);
-  await hub.getByRole("button",{name:"高中",exact:true}).click();
-  await expect(cards.filter({hasText:"全国中学生数学奥林匹克"})).toHaveCount(1);
-  await expect(cards.filter({hasText:"华罗庚金杯"})).toHaveCount(0);
-  await hub.getByRole("button",{name:"全部学段",exact:true}).click();
-  await expect(cards).toHaveCount(10);
-
-  await cards.filter({hasText:"华罗庚金杯"}).getByRole("button",{name:"查看赛事管家"}).click();
-  await expect(hub.getByText("华罗庚金杯少年数学邀请赛（华杯赛） · 备赛管家")).toBeVisible();
-  await expect(hub.getByRole("link",{name:"登录后关注赛事"})).toBeVisible();
-  await expect(hub.getByText("时间待当届公告").first()).toBeVisible();
-  await expect(hub.getByText("本届报名未确认")).toBeVisible();
-
+  await expect(cards).toHaveCount(5);
+  await hub.getByLabel("搜索赛事").fill("华杯赛");
+  await expect(hub.getByRole("status")).toContainText("找到 0 项赛事");
+  await hub.getByLabel("搜索赛事").fill("");
   await cards.filter({hasText:"英国 UKMT"}).getByRole("button",{name:"查看赛事管家"}).click();
   await expect(hub.getByText("英国 UKMT · 参赛准备")).toBeVisible();
-  await expect(hub.getByText("核实当地赛区与参赛资格").first()).toBeVisible();
-  await expect(hub.getByRole("link",{name:/登录并保存进度/})).toBeVisible();
 });
 
-test("worldwide public directory is read-only to anonymous visitors", async ({ request }) => {
-  const iGet=await request.get("/api/competition-intelligence");
-  expect(iGet.status()).toBe(401);
-  const iPatch=await request.patch("/api/competition-intelligence",{data:{region:"CN"}});
-  expect(iPatch.status()).toBe(401);
-  const followGet=await request.get("/api/competition-follow");
-  expect(followGet.status()).toBe(401);
-  const followPatch=await request.patch("/api/competition-follow",{data:{eventId:"ukmt",following:true}});
-  expect(followPatch.status()).toBe(401);
-  const r = await request.get("/api/miniapp/world-competitions");
-  expect(r.status()).toBe(200);
-  const body = await r.json();
-  expect(body.entries).toHaveLength(10);
-  expect(body.entries.filter((e: {event:{region:string}}) => e.event.region === "CN")).toHaveLength(5);
-  for (const e of body.entries) {
-    expect(e.progress).toBeNull();
-    expect(e.following).toBeNull();
-    expect(e.companion).toBeTruthy();
-    if (e.companion.registrationVerified === false) {
-      expect(e.companion.tasks.every((t: {date?:string})=>!t.date)).toBeTruthy();
-    }
-  }
-  for (const id of ["china-huabei-readiness","world-ukmt-readiness"]) {
-    const get = await request.get("/api/competition-companion/progress?companionId="+id);
-    expect(get.status()).toBe(401);
-    const patch = await request.patch("/api/competition-companion/progress",{
-      data:{companionId:id,taskId:"verify",completed:true},
-    });
-    expect(patch.status()).toBe(401);
+test("retired domestic catalogue API returns no records", async ({ request }) => {
+  const r = await request.get("/api/miniapp/china-competitions");
+  expect(r.status()).toBe(410);
+  const json = await r.json();
+  expect(json.entries).toBeUndefined();
+
+  const all = await request.get("/api/miniapp/world-competitions");
+  expect(all.status()).toBe(200);
+  const data = await all.json();
+  expect(data.entries).toHaveLength(5);
+  expect(data.entries.every((row:{event:{region:string}})=>row.event.region!=="CN")).toBe(true);
+  for (const row of data.entries) {
+    expect(row.progress).toBeNull();
+    expect(row.following).toBeNull();
   }
 });
 
-
-test("public home showcases only international series; China events stay discoverable in companion", async ({page}) => {
+test("public website showcase contains only international events", async ({ page }) => {
   await page.goto("/");
-  const cards=page.locator(".home-competition-card");
+  const cards = page.locator(".home-competition-card");
   await expect(cards).toHaveCount(5);
   await expect(cards.filter({hasText:"华罗庚金杯"})).toHaveCount(0);
   await expect(cards.filter({hasText:"希望杯"})).toHaveCount(0);
-  await expect(cards.filter({hasText:"英国 UKMT"})).toHaveCount(1);
   await cards.filter({hasText:"英国 UKMT"}).click();
   await expect(page).toHaveURL(/\/events\?event=ukmt$/);
-  const hub=page.getByRole("region",{name:"全球数学赛事管家"});
-  await hub.getByLabel("搜索赛事").fill("华杯赛");
-  await expect(hub.getByRole("status")).toContainText("找到 1 项赛事");
-  await expect(hub.getByText("华罗庚金杯少年数学邀请赛（华杯赛） · 备赛管家")).toBeVisible();
-  await expect(hub.getByRole("link",{name:"登录后关注赛事"})).toBeVisible();
 });
 
-
-test("admin source-watch review surface cannot be accessed by guests",async({request,page})=>{
-  const api=await request.get("/api/admin/competition-source-watch");
-  expect(api.status()).toBe(403);
+test("admin source-watch remains protected", async({request,page})=>{
+  expect((await request.get("/api/admin/competition-source-watch")).status()).toBe(403);
   const patch=await request.patch("/api/admin/competition-source-watch",{
     headers:{origin:"http://localhost:3000"},
     data:{id:"not-existing",decision:"reviewed",note:"test action"},
