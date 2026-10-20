@@ -22,3 +22,26 @@ jobs:
         with:
           node-version: '22'
       - run: node --test apps/miniapp/ai-mode/tests/*.test.cjs
+
+  built-canary:
+    name: Real Taro build + isolated AI Skill packaging
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install locked dependencies
+        run: npm ci
+      - name: Compile real Taro WeChat artifacts and run existing gates
+        run: npm run verify:miniapp
+      - name: Opt-in AI Skill packaging (CI workspace only)
+        run: node apps/miniapp/ai-mode/pack-canary.cjs apps/miniapp/dist
+      - name: Verify compiled artifact contract
+        run: node apps/miniapp/ai-mode/verify-canary.cjs apps/miniapp/dist
+      - name: Confirm untouched source app config
+        run: git diff --exit-code -- apps/miniapp/src/app.config.ts apps/miniapp/src/app.tsx
