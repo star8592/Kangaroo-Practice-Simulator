@@ -18,7 +18,7 @@ export function learnerNextAction(data:LearningSnapshot){
  if(sessions===0)return{
   title:'先做一轮 20 题计算诊断',
   detail:'不用先看报表；做完这 20 题，才有依据判断哪些计算需要加强。',
-  action:'开始 20 题诊断',mode:'diagnostic' as const,
+  action:'选年级，做20题诊断',mode:'diagnostic' as const,
   evidence:'目前尚无完整计算训练记录，不做能力推断。'
  }
  const recommendation=data?.arithmetic?.plan?.summaryZh?.find(x=>typeof x==='string'&&x.trim().length>0)
