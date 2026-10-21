@@ -7,6 +7,7 @@ This patch prepares native SEAMO Grade 1 and Grade 2 revised **independent found
 - Only the two published revised paper IDs are eligible: `seamo-original-g1-revised-1` (15 questions/40 minutes) and `seamo-original-g2-revised-1` (25 questions/90 minutes).
 - Native readiness requires the complete corresponding bilingual (Chinese AND English) question-and-options audio corpus, with a valid content-addressed URL and nontrivial MP3 file available in the current server runtime. The API does not switch `miniappReady` on when a single track is missing.
 - Historical v1 practice remains direct-loadable on Web for previous attempts but does not enter the native miniapp candidate catalogue.
+- Compatibility gate: the upgraded client sends `x-socthink-miniapp-capabilities: seamo-timer-v1`. Older miniapp versions receive `miniappReady=false` even if audio becomes available, and direct Bearer-authenticated SEAMO paper requests without that capability are rejected. Web cookie-based historical links continue to work.
 - Unsupported native deep links check the audio gate **before** creating an exam session and offer a copyable working Web URL.
 
 ## Practice timing and recovery

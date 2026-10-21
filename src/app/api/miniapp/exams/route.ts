@@ -6,6 +6,7 @@ import {canOpenSeamoNative} from "@/lib/miniapp-exam-readiness";
 export async function GET(req: NextRequest) {
   const user = userFromRequest(req);
   if (!user || user.role !== "student") return NextResponse.json({ error: "请先登录学生账号" }, { status: 401 });
+  const seamoClientReady = req.headers.get('x-socthink-miniapp-capabilities') === 'seamo-timer-v1';
   const exams = listTrainingExamProfiles()
     .filter(x => x.paperType !== "practice" || x.competitionId === "seamo")
     .sort((a, b) => (b.year || 0) - (a.year || 0))
@@ -23,7 +24,7 @@ export async function GET(req: NextRequest) {
       paperType: x.paperType,
       timingSections: x.timingSections || [],
       miniappReady: x.competitionId === "seamo"
-        ? canOpenSeamoNative(x, trainingQuestions(loadTrainingExamBundle(x.id).questions))
+        ? seamoClientReady && canOpenSeamoNative(x, trainingQuestions(loadTrainingExamBundle(x.id).questions))
         : !(x.timingSections || []).length,
     }));
   return NextResponse.json({ exams });
