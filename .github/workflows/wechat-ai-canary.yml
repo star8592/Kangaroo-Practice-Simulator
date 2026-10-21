@@ -1,0 +1,61 @@
+name: WeChat AI R0 isolated contracts
+on:
+  pull_request:
+    paths:
+      - 'apps/miniapp/ai-mode/**'
+      - 'docs/engineering/WECHAT_AI_ECOSYSTEM_R0.md'
+      - '.github/workflows/wechat-ai-canary.yml'
+  push:
+    branches:
+      - 'feat/wechat-ai-discovery-r0-20261020'
+    paths:
+      - 'apps/miniapp/ai-mode/**'
+      - '.github/workflows/wechat-ai-canary.yml'
+jobs:
+  contracts:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node --test apps/miniapp/ai-mode/tests/*.test.cjs
+
+  built-canary:
+    name: Real Taro build + isolated AI Skill packaging
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install locked dependencies
+        run: npm ci
+      - name: AI Handoff target and short-lived navigation-intent contracts
+        run: npx tsx scripts/test_miniapp_ai_handoff.ts
+      - name: Compile real Taro WeChat artifacts and run existing gates
+        run: npm run verify:miniapp
+      - name: Opt-in AI Skill packaging (CI workspace only)
+        run: node apps/miniapp/ai-mode/pack-canary.cjs apps/miniapp/dist
+      - name: Verify compiled artifact contract
+        run: node apps/miniapp/ai-mode/verify-canary.cjs apps/miniapp/dist
+      - name: Checkout official Tencent AI Skill validator (pinned)
+        uses: actions/checkout@v4
+        with:
+          repository: wechat-miniprogram/ai-mode-skills
+          ref: 9bd1f25a7051ff137206f15251f716536f8409e9
+          path: _external/wechat-ai-validator
+          persist-credentials: false
+      - name: Official AI Skill V001-V021 static checks (without developer CLI)
+        shell: bash
+        run: |
+          node _external/wechat-ai-validator/wxa-skills-validate/scripts/validate.mjs apps/miniapp/dist
+          node -e "const r=JSON.parse(require('fs').readFileSync('apps/miniapp/dist/cli-agent-run/validate-report.json','utf8')); if(r.summary.errors!==0||r.summary.failed!==0)process.exit(1); console.log('TENCENT_AI_STATIC=PASS '+r.summary.passed+'/'+r.summary.total+'; real-device execute remains required')"
+      - name: Confirm untouched source app config
+        run: git diff --exit-code -- apps/miniapp/src/app.config.ts apps/miniapp/src/app.tsx
