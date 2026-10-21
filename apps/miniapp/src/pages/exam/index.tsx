@@ -5,6 +5,8 @@ import { api, authStore, ensureWechatSession } from '../../services/api'
 import { canStartFullExam, makeExamLoginPath, parseRequestedExam } from '../../services/exam-access'
 import { examAnswerProgress, localizedExamQuestion, type ExamLanguage } from '../../services/exam-view'
 import ExamVoicePlayer from './ExamVoicePlayer'
+import SeamoPracticeTimer from './SeamoPracticeTimer'
+import {seamoRemainingSeconds} from '../../services/seamo-timer'
 
 type Draft={examId:string;sessionId:string;userId:string;idx:number;answers:Record<string,string>;events:any[];savedAt:number}
 const key=(id:string)=>`socthink_exam_draft_v2:${id}`
@@ -26,8 +28,13 @@ export default function ExamPage(){
   const [error,setError]=useState('')
   const [requiresLogin,setRequiresLogin]=useState(false)
   const [language,setLanguage]=useState<ExamLanguage>('zh')
+  const [sessionStartedAt,setSessionStartedAt]=useState(0)
+  const [serverClockOffset,setServerClockOffset]=useState(0)
+  const [timeExpired,setTimeExpired]=useState(false)
+  const [webFallback,setWebFallback]=useState(false)
   const current=useRef<Draft|null>(null)
   const submitting=useRef(false)
+  const timeoutWhileConfirming=useRef(false)
   const persist=(patch:Partial<Draft>)=>{
     if(!current.current)return
     const d={...current.current,...patch,savedAt:Date.now()};current.current=d;saveDraft(d)
@@ -65,10 +72,27 @@ export default function ExamPage(){
       // Reject unsupported split timing before creating a server-side session.
       const data:any=await api('/api/exams/'+encodeURIComponent(id))
       if((data.profile?.timingSections||[]).length){setError('这套试卷采用分段计时，请在 Web 端完成。');return}
+      if(data.profile?.competitionId==='seamo' && (
+        !/^(seamo-original-g[12]-revised-1)$/.test(id) ||
+        !Array.isArray(data.questions) || data.questions.length!==data.profile.questionCount ||
+        !data.questions.every((q:any)=>q.readingAudioZh?.startsWith('/exam-read-aloud/v1/') && q.readingAudioEn?.startsWith('/exam-read-aloud/v1/'))
+      )){
+        setWebFallback(true)
+        setError('这套 SEAMO 练习的原生双语读题音频尚未全部就绪，可先使用已上线的网页版。')
+        return
+      }
       // Server session is authoritative. Match the active exam to this identity.
       const active:any=await api('/api/exam-sessions?examId='+encodeURIComponent(id))
-      const server=active.session || (await api<any>('/api/exam-sessions',{method:'POST',data:{examId:id}})).session
+      const envelope:any=active.session?active:await api<any>('/api/exam-sessions',{method:'POST',data:{examId:id}})
+      const server=envelope.session
       if(!server?.id)throw new Error('无法建立考试会话')
+      if(data.profile?.competitionId==='seamo') {
+        if(!Number.isFinite(server.startedAt) || server.startedAt<=0)throw new Error('服务器尚未返回有效的练习计时起点')
+        setSessionStartedAt(server.startedAt)
+        setServerClockOffset(Number.isFinite(envelope.serverNow)?envelope.serverNow-Date.now():0)
+        setTimeExpired(false)
+        timeoutWhileConfirming.current=false
+      }
       const restored=saved && saved.sessionId===server.id && saved.userId===uid?saved:null
       if(saved&&!restored)clearDraft(id)
       const first=data.questions?.[0]
@@ -78,29 +102,32 @@ export default function ExamPage(){
       setAnswers(draft.answers);setEvents(draft.events)
     }catch(e){setError(e instanceof Error?e.message:'试卷载入失败')}
   })
-  if(error)return <View className='page'><View className='card'><View className='card-title'>{requiresLogin?'登录后继续考试':'暂时无法继续考试'}</View><View>{error}</View>{requiresLogin&&<Button className='primary' onClick={()=>Taro.redirectTo({url:makeExamLoginPath(examId)})}>微信登录后继续</Button>}<Button className='secondary' onClick={()=>Taro.switchTab({url:'/pages/competitions/index'})}>返回竞赛列表</Button></View></View>
+  if(error)return <View className='page'><View className='card'><View className='card-title'>{requiresLogin?'登录后继续考试':'暂时无法继续考试'}</View><View>{error}</View>{requiresLogin&&<Button className='primary' onClick={()=>Taro.redirectTo({url:makeExamLoginPath(examId)})}>微信登录后继续</Button>}{webFallback&&<Button className='primary' onClick={()=>void Taro.setClipboardData({data:'https://socthink.cn/exam/'+encodeURIComponent(examId)}).then(()=>Taro.showToast({title:'网页版链接已复制',icon:'success'}))}>复制网页版练习链接</Button>}<Button className='secondary' onClick={()=>Taro.switchTab({url:'/pages/competitions/index'})}>返回竞赛列表</Button></View></View>
   if(result)return <View className='page'><View className='hero'><Text className='big'>{result.score} / {result.maxScore}</Text><View>答对 {result.correct} · 答错 {result.wrong} · 空白 {result.blank}</View></View><Button className='primary' onClick={()=>Taro.redirectTo({url:`/pages/review/index?attemptId=${encodeURIComponent(result.attemptId)}`})}>逐题复盘</Button><Button className='secondary' onClick={()=>Taro.switchTab({url:'/pages/competitions/index'})}>返回竞赛</Button></View>
 
   if(!bundle)return <View className='page'><View className='card'>正在载入试卷与恢复作答记录…</View></View>
   const q=bundle.questions[idx]
   const choose=(value:string)=>{
-    if(busy||submitting.current)return
+    if(busy||submitting.current||timeExpired||(bundle.profile?.competitionId==='seamo'&&seamoRemainingSeconds(sessionStartedAt,bundle.profile.durationSeconds,Date.now()+serverClockOffset)===0))return
     const next={...answers,[q.id]:value},ev={type:'answer_selected',questionId:q.id,value,at:Date.now()}
     const nextEvents=[...events,ev];setAnswers(next);setEvents(nextEvents);persist({answers:next,events:nextEvents})
   }
   const move=(n:number)=>{
-    if(busy||submitting.current)return
+    if(busy||submitting.current||timeExpired)return
     const next=Math.max(0,Math.min(bundle.questions.length-1,n));if(next===idx)return
     const nextEvents=[...events,{type:'question_leave',questionId:q.id,at:Date.now()},{type:'question_enter',questionId:bundle.questions[next].id,at:Date.now()}]
     setEvents(nextEvents);setIdx(next);persist({idx:next,events:nextEvents})
     Taro.nextTick(()=>{void Taro.pageScrollTo({selector:'#exam-question-card',duration:150}).catch(()=>{})})
   }
-  const submit=async()=>{
+  const submit=async(auto=false)=>{
     if(submitting.current)return
     submitting.current=true
     try{
-      const confirmed=await Taro.showModal({title:'确认交卷',content:`已作答 ${Object.values(answers).filter(x=>x.trim()).length}/${bundle.questions.length} 题。交卷后不能修改，确定提交吗？`})
-      if(!confirmed.confirm)return
+      if(!auto && !timeExpired){
+        const confirmed=await Taro.showModal({title:'确认交卷',content:`已作答 ${Object.values(answers).filter(x=>x.trim()).length}/${bundle.questions.length} 题。交卷后不能修改，确定提交吗？`})
+        if(!confirmed.confirm && !timeoutWhileConfirming.current && !(bundle.profile?.competitionId==='seamo' && seamoRemainingSeconds(sessionStartedAt,bundle.profile.durationSeconds,Date.now()+serverClockOffset)===0))return
+      }
+      if(auto || timeoutWhileConfirming.current)setTimeExpired(true)
       setBusy(true)
       try{
         const snapshot=current.current
@@ -119,6 +146,11 @@ export default function ExamPage(){
       setBusy(false);submitting.current=false
     }
   }
+  const onSeamoTimeElapsed=()=>{
+    setTimeExpired(true)
+    if(submitting.current){timeoutWhileConfirming.current=true;return}
+    void submit(true)
+  }
   const display=localizedExamQuestion(q,language)
   const progress=examAnswerProgress(bundle.questions,answers)
   const questionCount=bundle.questions.length
@@ -126,6 +158,8 @@ export default function ExamPage(){
   const lowerPrimary=bundle.profile?.gradeBand==='1-2'||gradeLabel==='pre-a'||/^grades?\s*[12]$/.test(gradeLabel)||/^grades?\s*1\s*-\s*2$/.test(gradeLabel)||/^[12]\s*年级$/.test(gradeLabel)
   return <View className='page'>
     <View className='row'><Text>{bundle.profile.nameZh||bundle.profile.name}</Text><Text>{idx+1}/{questionCount}</Text></View>
+    {bundle.profile?.competitionId==='seamo' && sessionStartedAt>0 && <SeamoPracticeTimer sessionId={sessionId} startedAt={sessionStartedAt} durationSeconds={bundle.profile.durationSeconds} serverClockOffset={serverClockOffset} onElapsed={onSeamoTimeElapsed}/>}
+    {timeExpired && <View className='muted'>练习计时已结束，答案已经锁定。如网络中断，请点击下方交卷按钮恢复提交。</View>}
     <View className='progress'><View style={{width:`${((idx+1)/questionCount)*100}%`}}/></View>
     <View className='row exam-summary'>
       <Text>已答 {progress.answered} / {progress.total} 题</Text>
@@ -152,19 +186,19 @@ export default function ExamPage(){
           const answered=Boolean((answers[item.id]||'').trim())
           return <Button key={item.id}
             className={`exam-question-number ${idx===n?'current':''} ${answered?'answered':''}`}
-            disabled={busy}
+            disabled={busy||timeExpired}
             onClick={()=>move(n)}>{n+1}</Button>
         })}
       </View>
     </View>
     <View className='grid2'>
-      <Button className='secondary' disabled={idx===0||busy} onClick={()=>move(idx-1)}>上一题</Button>
+      <Button className='secondary' disabled={idx===0||busy||timeExpired} onClick={()=>move(idx-1)}>上一题</Button>
       {idx<questionCount-1
-        ?<Button className='primary' disabled={busy} onClick={()=>move(idx+1)}>下一题</Button>
+        ?<Button className='primary' disabled={busy||timeExpired} onClick={()=>move(idx+1)}>下一题</Button>
         :<Button className='secondary' onClick={()=>void Taro.pageScrollTo({selector:'#exam-answer-sheet',duration:150}).catch(()=>{})}>查看答题卡</Button>}
     </View>
-    <Button className='primary exam-submit' loading={busy} disabled={busy} onClick={submit}>
-      交卷 · 已答 {progress.answered}/{progress.total} 题
+    <Button className='primary exam-submit' loading={busy} disabled={busy} onClick={()=>void submit()}>
+      {timeExpired?'计时结束 · 交卷或重试':'交卷'} · 已答 {progress.answered}/{progress.total} 题
     </Button>
   </View>
 }

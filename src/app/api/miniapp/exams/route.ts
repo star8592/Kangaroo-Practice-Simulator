@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { userFromRequest } from "@/lib/auth";
-import { listTrainingExamProfiles } from "@/lib/training-question-bank";
+import { listTrainingExamProfiles, loadTrainingExamBundle, trainingQuestions } from "@/lib/training-question-bank";
+import {canOpenSeamoNative} from "@/lib/miniapp-exam-readiness";
 
 export async function GET(req: NextRequest) {
   const user = userFromRequest(req);
@@ -21,7 +22,9 @@ export async function GET(req: NextRequest) {
       competitionId: x.competitionId,
       paperType: x.paperType,
       timingSections: x.timingSections || [],
-      miniappReady: !(x.timingSections || []).length && x.competitionId !== "seamo",
+      miniappReady: x.competitionId === "seamo"
+        ? canOpenSeamoNative(x, trainingQuestions(loadTrainingExamBundle(x.id).questions))
+        : !(x.timingSections || []).length,
     }));
   return NextResponse.json({ exams });
 }

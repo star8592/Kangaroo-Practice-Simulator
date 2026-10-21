@@ -1,0 +1,48 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
+import {canOpenSeamoNative,seamoTrackAvailable} from '../src/lib/miniapp-exam-readiness';
+import {seamoRemainingSeconds,seamoClockLabel} from '../apps/miniapp/src/services/seamo-timer';
+import {loadTrainingExamBundle,trainingQuestions} from '../src/lib/training-question-bank';
+
+const zh='/exam-read-aloud/v1/zh-'+('a'.repeat(64))+'.mp3';
+const en='/exam-read-aloud/v1/en-'+('b'.repeat(64))+'.mp3';
+const checker=()=>true;
+for(const [grade,count,seconds] of [[1,15,2400],[2,25,5400]]){
+ const bundle=loadTrainingExamBundle(`seamo-original-g${grade}-revised-1`);
+ const questions=trainingQuestions(bundle.questions);
+ const pretendReady=questions.map(()=>({readingAudioZh:zh,readingAudioEn:en}));
+ assert.equal(canOpenSeamoNative(bundle.profile,questions),false,'missing MP3 must keep Web fallback');
+ assert.equal(canOpenSeamoNative(bundle.profile,pretendReady,checker),true,'complete validated bilingual corpus enables native');
+ assert.equal(canOpenSeamoNative(bundle.profile,pretendReady.slice(1),checker),false,'one missing question blocks native');
+ assert.equal(canOpenSeamoNative(bundle.profile,pretendReady.map((q,i)=>i===0?{...q,readingAudioEn:undefined}:q),checker),false,'missing English must block native');
+ assert.equal(canOpenSeamoNative(bundle.profile,pretendReady,()=>false),false,'on-disk MP3 is mandatory');
+ assert.equal(canOpenSeamoNative({...bundle.profile,id:`seamo-original-g${grade}-mock-1`},pretendReady,checker),false,'legacy paper remains Web-only');
+ assert.equal(canOpenSeamoNative({...bundle.profile,durationSeconds:seconds-60},pretendReady,checker),false,'duration mismatch blocks native');
+ assert.equal(canOpenSeamoNative({...bundle.profile,timingSections:[{labelZh:'测试',labelEn:'Test',questionStart:1,questionEnd:count,durationSeconds:seconds}]},pretendReady,checker),false,'split sections unsupported');
+ console.log(`SEAMO_NATIVE_G${grade}=PASS count=${count} duration=${seconds} audio_gated=true`);
+}
+assert.equal(seamoTrackAvailable(zh),false,'missing MP3 must be rejected');
+assert.equal(seamoTrackAvailable('/exam-read-aloud/v1/../../config.js'),false);
+assert.equal(seamoRemainingSeconds(1000000,2400,1000000),2400);
+assert.equal(seamoRemainingSeconds(1000000,2400,1000000+2399001),1);
+assert.equal(seamoRemainingSeconds(1000000,2400,1000000+2400000),0);
+assert.equal(seamoRemainingSeconds(1000000,2400,1000000+2500000),0);
+assert.equal(seamoRemainingSeconds(1000000,2400,1000000+60000),2340,'relaunch never extends timer');
+assert.equal(seamoRemainingSeconds(0,2400,1000),0);
+assert.equal(seamoClockLabel(90),'01:30');
+assert.equal(seamoClockLabel(5400),'90:00');
+assert.equal(seamoClockLabel(-10),'00:00');
+const root=path.join(import.meta.dirname,'..');
+const api=fs.readFileSync(path.join(root,'src/app/api/miniapp/exams/route.ts'),'utf8');
+const exam=fs.readFileSync(path.join(root,'apps/miniapp/src/pages/exam/index.tsx'),'utf8');
+const session=fs.readFileSync(path.join(root,'src/app/api/exam-sessions/route.ts'),'utf8');
+const timer=fs.readFileSync(path.join(root,'apps/miniapp/src/pages/exam/SeamoPracticeTimer.tsx'),'utf8');
+assert(api.includes('canOpenSeamoNative(x, trainingQuestions(loadTrainingExamBundle(x.id).questions))'));
+assert(exam.indexOf('data.questions.every') < exam.indexOf("'/api/exam-sessions?examId='"),'audio gate before session allocation');
+assert(exam.includes('SeamoPracticeTimer sessionId={sessionId}') && exam.includes('onElapsed={onSeamoTimeElapsed}'));
+assert(exam.includes('timeoutWhileConfirming.current=true') && exam.includes('if(!auto && !timeExpired)'),'timer must win over canceled submit confirmation');
+assert(exam.includes('findCommittedResult(examId,sessionId)') && exam.includes('persist({answers:next,events:nextEvents})'));
+assert(session.includes('serverNow:Date.now()'),'server clock offset contract');
+assert(timer.includes('Date.now()+serverClockOffset') && timer.includes('if(next===0&&!fired.current)'));
+console.log('SEAMO_NATIVE_MINIAPP=PASS absolute_server_timer=true duplicate_submit_guard=true guarded_audio=true no_session_for_unsupported=true');
