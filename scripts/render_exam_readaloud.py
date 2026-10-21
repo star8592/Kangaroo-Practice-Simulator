@@ -109,8 +109,10 @@ async def main():
     ap.add_argument("--backend", choices=("index", "edge"), default="index")
     ap.add_argument("--voice", default=str(INDEX / "examples/voice_09.wav"))
     ap.add_argument("--proxy", default=PROXY)
+    ap.add_argument("--worklist", type=Path, default=WORK, help="Manifest of audio tasks to render")
+    ap.add_argument("--report", type=Path, default=ROOT / "reports/exam-read-aloud-render-report.json")
     args = ap.parse_args()
-    data = json.loads(WORK.read_text())
+    data = json.loads(args.worklist.read_text())
     tasks = data["tasks"][:args.limit or None]
     results = []
     print("EXAM_TTS_START backend=" + args.backend +
@@ -137,7 +139,7 @@ async def main():
     report = {"backend": args.backend, "eligibleExams": len(data["covered"]),
               "requested": len(tasks), "totalTracks": len(data["tasks"]), "statuses": statuses,
               "failures": [x for x in results if x["status"] == "failed"]}
-    output = ROOT / "reports/exam-read-aloud-render-report.json"
+    output = args.report
     output.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n")
     print("EXAM_TTS_REPORT=" + json.dumps(report, ensure_ascii=False), flush=True)
     if statuses["failed"]:

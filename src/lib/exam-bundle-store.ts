@@ -5,9 +5,13 @@ import { normalizeExamProfile } from "./competition-format";
 import { buildSmartBundle, mixedProfiles, parseSmartExamId } from "./mixed-exam";
 import seamoG1 from "@/data/seamo-original-mocks/seamo-original-g1-mock-1.json";
 import seamoG2 from "@/data/seamo-original-mocks/seamo-original-g2-mock-1.json";
+import seamoG1Revised from "@/data/seamo-original-mocks/seamo-original-g1-revised-1.json";
+import seamoG2Revised from "@/data/seamo-original-mocks/seamo-original-g2-revised-1.json";
 
 const EXAMS_DIR = path.join(process.cwd(), "private", "exams");
-const ORIGINAL_SEAMO_BUNDLES: ExamBundle[] = [seamoG1, seamoG2] as unknown as ExamBundle[];
+const ORIGINAL_SEAMO_BUNDLES: ExamBundle[] = [seamoG1, seamoG2, seamoG1Revised, seamoG2Revised] as unknown as ExamBundle[];
+// Keep published v1 paper IDs readable for historical attempts, but list only revised editions.
+const SUPERSEDED_SEAMO_IDS = new Set(["seamo-original-g1-mock-1", "seamo-original-g2-mock-1"]);
 
 type BundleGate = (bundle: ExamBundle) => boolean;
 
@@ -43,7 +47,7 @@ function loadArchiveBundles(gate: BundleGate): ExamBundle[] {
   }
   for (const raw of ORIGINAL_SEAMO_BUNDLES) {
     const bundle = normalizeBundle(raw);
-    if (bundle.profile.competitionId === "seamo" && gate(bundle)) bundles.push(bundle);
+    if (bundle.profile.competitionId === "seamo" && !SUPERSEDED_SEAMO_IDS.has(bundle.profile.id) && gate(bundle)) bundles.push(bundle);
   }
   return bundles;
 }

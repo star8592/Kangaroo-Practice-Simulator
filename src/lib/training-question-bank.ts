@@ -60,8 +60,11 @@ export function trainingQuestions(questions: Question[]): PublicQuestion[] {
     const englishStem = text(en?.stem) || text(q.stemEn) || undefined;
     const chineseChoices = zh?.choices?.length ? zh.choices : q.choices;
     const englishChoices = en?.choices?.length ? en.choices : q.choicesEn?.length ? q.choicesEn : undefined;
-    const genuineEnglish = Boolean(englishStem && englishChoices?.length === chineseChoices.length &&
-      englishChoices?.every((c, i) => c.key === chineseChoices[i]?.key && Boolean(c.label.trim())));
+    // Numeric-entry questions have no choices; an authentic English stem is
+    // sufficient for bilingual narration. Do not suppress their English audio.
+    const numericEntry = q.answerMode === "integer" && chineseChoices.length === 0;
+    const genuineEnglish = Boolean(englishStem && (numericEntry || (englishChoices?.length === chineseChoices.length &&
+      englishChoices?.every((c, i) => c.key === chineseChoices[i]?.key && Boolean(c.label.trim())))));
     return {
       id: q.id,
       year: q.year,
@@ -77,7 +80,7 @@ export function trainingQuestions(questions: Question[]): PublicQuestion[] {
       choices: chineseChoices,
       choicesEn: englishChoices,
       readingAudioZh: q.readingAudioZh || availableExamSpeech(chineseStem, chineseChoices, "zh"),
-      readingAudioEn: genuineEnglish ? q.readingAudioEn || availableExamSpeech(englishStem!, englishChoices!, "en") : undefined,
+      readingAudioEn: genuineEnglish ? q.readingAudioEn || availableExamSpeech(englishStem!, englishChoices || [], "en") : undefined,
       assetUrl: commonVisual,
       assetUrlZh: q.studentAssetUrlZh || q.assetUrlZh || commonVisual,
       assetUrlEn: q.studentAssetUrlEn || q.assetUrlEn || commonVisual,

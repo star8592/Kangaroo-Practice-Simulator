@@ -23,8 +23,9 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--strict", action="store_true", help="Fail until every eligible audio asset exists and is playable")
     parser.add_argument("--all-exams", action="store_true", help="Also fail when a G1/G2 exam is still not training-ready")
+    parser.add_argument("--worklist", type=Path, default=WORK, help="Audio manifest to validate")
     args = parser.parse_args()
-    inventory = json.loads(WORK.read_text())
+    inventory = json.loads(args.worklist.read_text())
     tasks = inventory["tasks"]
     good = []
     missing = []
