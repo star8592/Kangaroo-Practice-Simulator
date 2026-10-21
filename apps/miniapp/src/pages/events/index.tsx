@@ -21,7 +21,7 @@ type WorldEntry = {
   following:null|boolean;
 }
 const regions=[
-  {id:'all',name:'全部'}, {id:'CN',name:'中国'}, {id:'US',name:'美国'},
+  {id:'all',name:'全部'}, {id:'US',name:'美国'},
   {id:'AU',name:'澳大利亚'}, {id:'CA',name:'加拿大'},
   {id:'GB',name:'英国'}, {id:'global',name:'全球性'},
 ]
@@ -45,7 +45,7 @@ export default function EventsPage(){
   const loadTraining=async()=>{
     setTrainingLoad('loading')
     try{
-      const data=await api<{exams:unknown}>('/api/miniapp/exams')
+      const data=await api<{exams:unknown}>('/api/miniapp/exams',{auth:Boolean(authStore.token())})
       setReadyTraining(availableTrainingEventIds(data.exams))
       setTrainingLoad('ready')
     }catch{
@@ -63,7 +63,7 @@ export default function EventsPage(){
   const load=async()=>{
     setLoading(true);setError('')
     try{
-      const x=await api<{entries:WorldEntry[]}>('/api/miniapp/world-competitions')
+      const x=await api<{entries:WorldEntry[]}>('/api/miniapp/world-competitions',{auth:Boolean(authStore.token())})
       if(!Array.isArray(x.entries))throw new Error('赛事列表格式异常')
       setRows(x.entries)
     }catch(e){
@@ -145,7 +145,7 @@ export default function EventsPage(){
   }
   return <View className='page'>
     <View className='hero'><Text className='big'>赛事管家</Text>
-      <View>统一管理中国与国际数学赛事：关注赛事、核实报名、准备参赛、查看赛历、记录成绩和证书。站内模拟考试请进入独立的模考模块。</View>
+      <View>统一管理国际数学赛事：关注赛事、核实报名、准备参赛、查看赛历、记录成绩和证书。站内模拟考试请进入独立的模考模块。</View>
     </View>
     <View className='section-title'>赛事情报与截止提醒</View>
     <View className='card'>

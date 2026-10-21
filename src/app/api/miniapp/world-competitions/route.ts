@@ -12,7 +12,7 @@ export async function GET(req: NextRequest) {
     timeZone: "Asia/Shanghai", year: "numeric", month: "2-digit", day: "2-digit",
   }).format(new Date());
   const followed = new Set(canFollowWorldCompetitions(user) ? getWorldCompetitionFollows(user!.id).map(x=>x.eventId) : []);
-  const entries = WORLD_COMPETITIONS.map(event => {
+  const entries = WORLD_COMPETITIONS.filter(event => event.region !== "CN").map(event => {
     const companion = getWorldCompanion(event.id, today);
     return {
       event,

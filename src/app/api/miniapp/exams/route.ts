@@ -1,11 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { userFromRequest } from "@/lib/auth";
 import { listTrainingExamProfiles, loadTrainingExamBundle, trainingQuestions } from "@/lib/training-question-bank";
 import {canOpenSeamoNative} from "@/lib/miniapp-exam-readiness";
 
 export async function GET(req: NextRequest) {
-  const user = userFromRequest(req);
-  if (!user || user.role !== "student") return NextResponse.json({ error: "请先登录学生账号" }, { status: 401 });
+  // Public catalogue METADATA only: never returns question bodies, answers, user progress,
+  // exam tickets or score data. Protected start/session routes retain their own auth checks.
   const seamoClientReady = req.headers.get('x-socthink-miniapp-capabilities') === 'seamo-timer-v1';
   const exams = listTrainingExamProfiles()
     .filter(x => x.paperType !== "practice" || x.competitionId === "seamo")
