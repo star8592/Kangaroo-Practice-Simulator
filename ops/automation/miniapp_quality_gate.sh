@@ -8,6 +8,7 @@ npm run test:miniapp-answer-navigation
 npm run test:miniapp-five-tabs
 npm run test:miniapp-arithmetic-idempotency
 npm run test:exam-submit-recovery
+npm run test:miniapp-blank-paper-flow
 node scripts/test_miniapp_device_gate.mjs
 node scripts/test_miniapp_release_gate.mjs
 cd "$APP"
