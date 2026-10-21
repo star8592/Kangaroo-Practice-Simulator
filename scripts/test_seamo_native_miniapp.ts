@@ -12,7 +12,8 @@ for(const [grade,count,seconds] of [[1,15,2400],[2,25,5400]]){
  const bundle=loadTrainingExamBundle(`seamo-original-g${grade}-revised-1`);
  const questions=trainingQuestions(bundle.questions);
  const pretendReady=questions.map(()=>({readingAudioZh:zh,readingAudioEn:en}));
- assert.equal(canOpenSeamoNative(bundle.profile,questions),false,'missing MP3 must keep Web fallback');
+ const completeAudio=questions.every(q=>Boolean(q.readingAudioZh && q.readingAudioEn && seamoTrackAvailable(q.readingAudioZh) && seamoTrackAvailable(q.readingAudioEn)));
+ assert.equal(canOpenSeamoNative(bundle.profile,questions),completeAudio,'native readiness must reflect actual on-disk bilingual audio; missing MP3 must keep Web fallback');
  assert.equal(canOpenSeamoNative(bundle.profile,pretendReady,checker),true,'complete validated bilingual corpus enables native');
  assert.equal(canOpenSeamoNative(bundle.profile,pretendReady.slice(1),checker),false,'one missing question blocks native');
  assert.equal(canOpenSeamoNative(bundle.profile,pretendReady.map((q,i)=>i===0?{...q,readingAudioEn:undefined}:q),checker),false,'missing English must block native');
