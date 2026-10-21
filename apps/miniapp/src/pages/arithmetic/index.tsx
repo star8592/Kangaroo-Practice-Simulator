@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { Button, Input, Picker, Text, View } from '@tarojs/components'
+import { Button, Input, Text, View } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import { api, authStore } from '../../services/api'
 import ArithmeticAnswerPad from '../../components/ArithmeticAnswerPad'
@@ -157,7 +157,7 @@ export default function ArithmeticPage(){
       <View className='muted'>{savedDraft.session.grade} 年级 · 第 {savedDraft.idx+1}/{savedDraft.session.questions.length} 题 · 仅本设备暂存</View>
       <Button className='primary' onClick={resumeDraft}>继续上次训练</Button>
       <Button className='text-action' onClick={()=>void discardDraft()}>放弃上次进度</Button>
-    </View>}<Picker mode='selector' range={stage.grades.map(g=>`${stage.label} ${g} 年级`)} value={(stage.grades as readonly number[]).indexOf(grade)} onChange={e=>setGrade(stage.grades[Number(e.detail.value)]||stage.grades[0])}><View className='input school-grade-select'>{stage.label} · {grade} 年级 <Text className='muted'>切换年级 ▼</Text></View></Picker>{isInstantIdentity?<><Button className='primary' loading={busy} disabled={busy} onClick={()=>void start('diagnostic')}>立即开始 · 20 题能力诊断</Button><Button className='secondary' loading={busy} disabled={busy} onClick={()=>void start('adaptive')}>快速练一组</Button></>:<><Button className='primary' loading={busy} disabled={busy} onClick={()=>void start('adaptive')}>开始个性化训练</Button><Button className='secondary' loading={busy} disabled={busy} onClick={()=>void start('diagnostic')}>做 20 题基线诊断</Button></>}</View></View>
+    </View>}<View className='school-grade-grid'>{stage.grades.map(g=><Button key={g} className={'school-grade-btn '+(grade===g?'active':'')} onClick={()=>setGrade(g)}>{g} 年级</Button>)}</View>{isInstantIdentity?<><Button className='primary' loading={busy} disabled={busy} onClick={()=>void start('diagnostic')}>立即开始 · 20 题能力诊断</Button><Button className='secondary' loading={busy} disabled={busy} onClick={()=>void start('adaptive')}>快速练一组</Button></>:<><Button className='primary' loading={busy} disabled={busy} onClick={()=>void start('adaptive')}>开始个性化训练</Button><Button className='secondary' loading={busy} disabled={busy} onClick={()=>void start('diagnostic')}>做 20 题基线诊断</Button></>}</View></View>
 
   return <View className='page'>
     <View className='row arithmetic-session-heading'><Text>第 {idx+1}/{session.questions.length} 题</Text>

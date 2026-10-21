@@ -65,3 +65,9 @@ page{background:#f4f6f1;color:#17231d;font-family:-apple-system,BlinkMacSystemFo
 /* Accessible on-demand evidence; no leaderboard framing in the learner home. */
 .profile-data-details{padding-top:14rpx;margin-top:18rpx;border-top:2rpx solid #e5ece5}
 .profile-data-details .profile-row{margin-top:14rpx}
+
+/* Visible one-tap grade choices; no hidden native picker needed. */
+.school-grade-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10rpx;margin:16rpx 0 24rpx}
+.school-grade-btn{box-sizing:border-box;width:100%!important;min-width:0!important;min-height:76rpx!important;padding:8rpx 0!important;margin:0!important;border:2rpx solid #dbe5da!important;border-radius:14rpx!important;background:#fff!important;color:#365040!important;font-size:27rpx!important;font-weight:800!important;line-height:56rpx!important}
+.school-grade-btn.active{background:#e5f2e8!important;border-color:#225a42!important;color:#225a42!important}
+.school-grade-btn::after{border:none!important}
