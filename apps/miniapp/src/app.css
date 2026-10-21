@@ -61,3 +61,7 @@ page{background:#f4f6f1;color:#17231d;font-family:-apple-system,BlinkMacSystemFo
 .learning-action-title{display:block;font-size:34rpx!important;line-height:1.45;font-weight:850;color:#17231d;margin-bottom:12rpx}
 .learning-action-card>.muted{line-height:1.65;margin-bottom:12rpx}
 .learning-action-card .text-action{margin-top:8rpx!important}
+
+/* Accessible on-demand evidence; no leaderboard framing in the learner home. */
+.profile-data-details{padding-top:14rpx;margin-top:18rpx;border-top:2rpx solid #e5ece5}
+.profile-data-details .profile-row{margin-top:14rpx}
