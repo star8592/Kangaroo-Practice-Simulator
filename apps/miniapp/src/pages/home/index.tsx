@@ -84,8 +84,8 @@ export default function HomePage(){
       {hasHistory&&<Button className='text-action' onClick={()=>void openProfile()}>为什么推荐？到学习档案查看依据 →</Button>}
     </View>
     {hasHistory&&<View className='card'>
-      <View className='card-title'>这段时间有什么变化？</View>
-      <View className='muted'>不凭累计题数或一个综合分数判断孩子的能力。练习表现和改进建议放在学习档案中，需要时再看。</View>
+      <View className='card-title'>最近练习有变化吗？</View>
+      <View className='muted'>{analytics?.arithmetic?.recentChange?.descriptionZh||'还没有足够的同年级、同模式练习可比较。暂时不推断孩子进步或退步。'}</View>
       <Button className='secondary' onClick={()=>void openProfile()}>看学习情况和下一步</Button>
     </View>}
     <View className='card'>

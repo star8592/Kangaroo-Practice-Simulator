@@ -30,6 +30,7 @@ export default async function StudentPage() {
   const attention = buildStudentAttention(user, today);
   const calcHasHistory=a.arithmetic.sessions>0;
   const topAction=calcHasHistory&&a.nextPlan.length?a.nextPlan[0]:null;
+  const arithmeticChange=a.arithmetic.recentChange;
 
   return (
     <div className={`student-shell ${styles.shell}`}>
@@ -59,6 +60,11 @@ export default async function StudentPage() {
         {attention.hiddenCount>0&&<p className={styles.attentionHidden}>{lang==="zh"?`另有 ${attention.hiddenCount} 项已收进完整赛历，避免干扰当前任务。`:`${attention.hiddenCount} more items are kept in the full calendar to reduce distraction.`}</p>}
       </section>}
 
+      {arithmeticChange&&<section className={styles.learningChange}>
+        <h2>{lang==="zh"?"最近计算练习有变化吗？":"Recent practice change"}</h2>
+        <p>{lang==="zh"?arithmeticChange.descriptionZh:
+          `Within Grade ${arithmeticChange.grade}, recent two comparable sets: ${Math.round(arithmeticChange.previousAccuracy*100)}% → ${Math.round(arithmeticChange.recentAccuracy*100)}%. Sample only; difficulty may vary.`}</p>
+      </section>}
       <details className={styles.evidencePanel}>
         <summary>{lang==="zh"?"查看详细训练数据与判断依据":"Show detailed practice data and evidence"} <small>{lang==="zh"?"数据按需查看，不用每天盯着分数":"Use when needed; no daily score chasing"}</small></summary>
         <p className={styles.modelNote}>{ui.modelNote}</p>

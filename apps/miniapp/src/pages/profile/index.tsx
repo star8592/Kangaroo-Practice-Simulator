@@ -21,7 +21,7 @@ export default function ProfilePage(){
   const sessions=Number(data?.arithmetic?.sessions||0)
   const exams=Number(data?.overview?.examAttempts||0)
   const attention=(data?.nextPlan||[]).find((x:any)=>x.title&&x.action)
-  const arithmeticInsight=(data?.arithmetic?.plan?.summaryZh||[]).find((x:string)=>typeof x==='string'&&x.trim())
+  const arithmeticInsight=sessions>0?(data?.arithmetic?.plan?.summaryZh||[]).find((x:string)=>typeof x==='string'&&x.trim()):null
   const goArithmetic=()=>Taro.switchTab({url:'/pages/arithmetic/index'})
   return <View className='page'>
     <View className='hero'>
@@ -38,6 +38,11 @@ export default function ProfilePage(){
         {loadError&&<View className='muted'>暂时无法读取历史记录；建议仅作通用入口使用，不代表已经完成诊断。</View>}
       </>}
     </View>
+    {data?.arithmetic?.recentChange&&<View className='card'>
+      <View className='card-title'>最近做题有变化吗？</View>
+      <View>{data.arithmetic.recentChange.descriptionZh}</View>
+      <View className='muted'>仅比较同年级、同训练模式的最近四轮；每轮至少 10 题。</View>
+    </View>}
     {(sessions>0||exams>0)&&<View className='card'>
       <View className='card-title'>目前知道什么、还不知道什么</View>
       {arithmeticInsight&&<View className='profile-row'><View className='muted'>来自计算训练</View><View>{arithmeticInsight}</View></View>}

@@ -425,3 +425,6 @@
 .evidencePanel summary small{font-size:11px;font-weight:400;color:var(--muted)}
 .evidencePanel .modelNote{margin:14px 4px 0}
 @media(max-width:650px){.evidencePanel summary{flex-wrap:wrap}.evidencePanel summary small{flex-basis:100%}.actionTitle{font-size:18px}}
+
+.learningChange{margin:18px 0;padding:19px 22px;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius-card)}
+.learningChange h2{margin:0 0 8px;font-size:16px}.learningChange p{margin:0;color:var(--muted);font-size:13px;line-height:1.65}
