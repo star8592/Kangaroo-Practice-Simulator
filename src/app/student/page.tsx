@@ -28,6 +28,8 @@ export default async function StudentPage() {
   const o = a.overview;
   const today = new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Shanghai" });
   const attention = buildStudentAttention(user, today);
+  const calcHasHistory=a.arithmetic.sessions>0;
+  const topAction=calcHasHistory&&a.nextPlan.length?a.nextPlan[0]:null;
 
   return (
     <div className={`student-shell ${styles.shell}`}>
@@ -39,14 +41,13 @@ export default async function StudentPage() {
           <div className={styles.heroActions}><Link className="secondary-button" href="/student/settings">{ui.edit}</Link><Link className="primary-button" href="/student/cards">{lang==="zh"?"我的卡册":"My Card Book"}</Link></div>
         </div>
         <div className={styles.readinessCard}>
-          <div className={styles.readinessHead}><strong>{a.readiness ?? "—"}</strong><span>{a.readiness === null ? ui.pending : "/ 100"}</span></div>
-          <span className={styles.readinessLabel}>{ui.index}</span>
-          <div className={styles.confidenceTrack} aria-hidden="true"><i style={{ width: `${Math.max(0, Math.min(100, a.dataConfidence))}%` }} /></div>
-          <small className={styles.confidenceText}>{ui.confidence} {a.dataConfidence}%</small>
+          <span className={styles.readinessLabel}>{lang==="zh"?"今天先做一件事":"ONE USEFUL NEXT STEP"}</span>
+          <h2 className={styles.actionTitle}>{topAction?.title||(lang==="zh"?"先完成一次计算诊断":"Start with a short calculation diagnostic")}</h2>
+          <p className={styles.actionCopy}>{topAction?.action||(lang==="zh"?"从小学到高中都能选年级练，先做20题建立依据。":"Choose your grade and complete 20 questions before making ability claims.")}</p>
+          <Link className="primary-button" href="/arithmetic">{lang==="zh"?"去计算训练 →":"Start calculation →"}</Link>
         </div>
       </section>
 
-      <p className={styles.modelNote}>{ui.modelNote}</p>
 
       {attention.doNow && <section className={styles.attentionSection}>
         <div className={styles.attentionHeading}><div><span>{lang==="zh"?"今天":"TODAY"}</span><h2>{lang==="zh"?"现在最重要的一件事":"The one thing to do now"}</h2></div><Link href="/student/calendar">{lang==="zh"?"完整赛历":"Full calendar"} →</Link></div>
@@ -58,6 +59,9 @@ export default async function StudentPage() {
         {attention.hiddenCount>0&&<p className={styles.attentionHidden}>{lang==="zh"?`另有 ${attention.hiddenCount} 项已收进完整赛历，避免干扰当前任务。`:`${attention.hiddenCount} more items are kept in the full calendar to reduce distraction.`}</p>}
       </section>}
 
+      <details className={styles.evidencePanel}>
+        <summary>{lang==="zh"?"查看详细训练数据与判断依据":"Show detailed practice data and evidence"} <small>{lang==="zh"?"数据按需查看，不用每天盯着分数":"Use when needed; no daily score chasing"}</small></summary>
+        <p className={styles.modelNote}>{ui.modelNote}</p>
       <section className={styles.kpiGrid}>
         <article className={styles.kpi}><span>{ui.formal}</span><strong>{o.examAttempts}</strong><small>{ui.records}</small></article>
         <article className={styles.kpi}><span>{ui.questions}</span><strong>{o.totalQuestions}</strong><small>{ui.tracked}</small></article>
@@ -85,6 +89,8 @@ export default async function StudentPage() {
           {a.phases.map((x) => <div className={styles.metricRow} key={x.name}><div><b>{x.name}</b><span>{x.count} {ui.items} · {ui.avg} {sec(x.avgSeconds)}</span></div><strong>{x.count ? pc(x.accuracy) : "—"}</strong></div>)}
         </article>
       </section>
+
+      </details>
 
       <section className={styles.dashboardGrid}>
         <article className={`report-card ${styles.card}`}>
