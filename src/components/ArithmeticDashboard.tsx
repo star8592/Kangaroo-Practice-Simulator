@@ -14,7 +14,7 @@ const compactGradeLabel=(grade:ArithmeticGrade)=>`G${grade}`;
 
 const UI={
  zh:{
-  heroEye:"小学 · 初中 · 高中 ｜ 1—12 年级",heroTitle1:"从小学到高中",heroTitle2:"都能练好计算",heroCopy:"从四则运算、分数到负数、方程、根式、函数。先选年级直接练，不必先弄懂复杂报表；练完只告诉你哪里需要加强、下一步练什么。",
+  heroEye:"小学 · 初中 · 高中 ｜ 1—12 年级 · 智能计算训练",heroTitle1:"从小学到高中",heroTitle2:"都能练好计算",heroCopy:"从四则运算、分数到负数、方程、根式、函数。先选年级直接练，不必先弄懂复杂报表；练完只告诉你哪里需要加强、下一步练什么。",
   modeEye:"训练模式中心",startNow:"现在开始练",current:"当前",stageAria:"选择 K-12 学段",gradeAria:"选择年级",gradeWord:"年级",content:"训练内容",how:"怎么练",watch:"重点观察",benchmark:"达标参考",benchmarkCopy:"方法稳定",
   ai:"AI 推荐",adaptive:"智能训练",adaptiveCopy:"根据你的最近表现，自动挑选最值得练的题和最小必要题量。",adaptiveStart:"开始智能训练",
   method:"学方法",guided:"跟我算",guidedPrimary:"分层提示、逐步撤掉支架，把“老师带着会”练成自己独立会。",guidedSecondary:"卡住时只给一步关键提示，定位符号、公式、变形或运算顺序问题。",guidedStart:"开始引导训练",

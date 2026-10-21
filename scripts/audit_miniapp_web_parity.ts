@@ -93,15 +93,15 @@ const surfaces = {
   competitions: fs.readFileSync(path.join(root, 'apps/miniapp/src/pages/competitions/index.tsx'), 'utf8'),
   events: fs.readFileSync(path.join(root, 'apps/miniapp/src/pages/events/index.tsx'), 'utf8'),
   review: fs.readFileSync(path.join(root, 'apps/miniapp/src/pages/review/index.tsx'), 'utf8'),
+  profile: fs.readFileSync(path.join(root, 'apps/miniapp/src/pages/profile/index.tsx'), 'utf8'),
 }
-for (const needle of [
-  'analytics?.readiness',
-  'analytics?.dataConfidence',
-  'analytics?.nextPlan',
-  'analytics?.recommendedExams',
-  'analytics?.arithmetic?.plan?.summaryZh',
-  "examAttempts?accuracy+'%':'—'",
-]) assert.ok(surfaces.home.includes(needle), `home is not rendering shared analytics field: ${needle}`)
+// Data parity is an API contract, not a requirement to fill the first screen with vanity metrics.
+for(const needle of ["api('/api/student/analytics')",'learnerNextAction(analytics)','analytics?.recommendedExams','小学 · 初中 · 高中'])
+  assert.ok(surfaces.home.includes(needle), `home action/coverage missing: ${needle}`)
+for(const needle of ["api('/api/student/analytics')",'data?.nextPlan','data?.arithmetic?.plan?.summaryZh','展开详细记录与依据','showNumbers'])
+  assert.ok(surfaces.profile.includes(needle), `opt-in learning evidence missing: ${needle}`)
+assert.ok(!surfaces.home.includes('综合训练指数')&&!surfaces.home.includes('数据置信度'),
+  'technical model metrics must not dominate the home screen')
 for (const needle of ['/api/miniapp/exams','ex.name','ex.year','ex.grades','ex.questionCount','ex.miniappReady']) {
   assert.ok(surfaces.competitions.includes(needle), `competition UI mapping missing: ${needle}`)
 }
