@@ -23,7 +23,7 @@ page{background:#f4f6f1;color:#17231d;font-family:-apple-system,BlinkMacSystemFo
 /* Mathematical answers: always present touch-accessible signed and symbolic keys. */
 .arithmetic-answer-pad{margin-top:20rpx;padding-top:14rpx;border-top:2rpx solid #e6ebe5}
 .arithmetic-key-hint{font-size:22rpx;margin:0 0 16rpx}
-.arithmetic-key-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12rpx}
+.arithmetic-key-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12rpx}
 .arithmetic-key{box-sizing:border-box;display:flex!important;align-items:center;justify-content:center;min-width:0!important;min-height:84rpx!important;padding:10rpx 4rpx!important;margin:0!important;border:2rpx solid #dbe1d9!important;border-radius:14rpx!important;background:#fff!important;color:#17231d!important;font-size:31rpx!important;line-height:1.4!important;font-weight:800!important}
 .arithmetic-key::after{border:none!important}
 .arithmetic-key-back{grid-column:span 2;font-size:25rpx!important;background:#f3f6f2!important}
