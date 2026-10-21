@@ -100,7 +100,8 @@
     "test:seamo": "python3 scripts/test_seamo_original_mocks.py && python3 scripts/test_seamo_revised.py && tsx scripts/test_seamo_integration.ts && python3 scripts/test_seamo_no_private.py && tsx scripts/prepare_seamo_readaloud.ts && tsx scripts/test_seamo_native_miniapp.ts",
     "test:miniapp-answer-navigation": "tsx scripts/test_miniapp_answer_navigation.ts",
     "test:miniapp-blank-paper-flow": "tsx scripts/test_miniapp_blank_paper_flow.ts",
-    "test:k12-actionable-home": "tsx scripts/test_k12_actionable_home.ts"
+    "test:k12-actionable-home": "tsx scripts/test_k12_actionable_home.ts",
+    "test:actionable-calc-trend": "tsx scripts/test_actionable_calculation_change.ts"
   },
   "dependencies": {
     "next": "16.3.8",
