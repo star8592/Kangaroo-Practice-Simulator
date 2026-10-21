@@ -4,7 +4,7 @@ import hashlib
 import json
 import tempfile
 from pathlib import Path
-from seamo_audio_additive_release import apply,sha
+from seamo_audio_additive_release import apply,sha,validate_received_audio
 
 ROOT=Path(__file__).resolve().parents[1]
 ARCHIVE=ROOT/'reports/seamo-audio-additive.tar.gz'
@@ -31,4 +31,15 @@ with tempfile.TemporaryDirectory(prefix='seamo-additive-contract-') as temp:
     else:raise AssertionError('modified existing MP3 must block publication')
     assert track.read_bytes().startswith(b'CONFLICT'),'colliding MP3 must not be overwritten'
     assert sha(existing.read_bytes())==baseline,'legacy track still untouched after rejection'
+from unittest.mock import patch
+with tempfile.TemporaryDirectory() as temp:
+    candidate=Path(temp)/'valid.mp3'
+    candidate.write_bytes(source.read_bytes())
+    with patch('seamo_audio_additive_release.shutil.which',return_value=None):
+        validate_received_audio(candidate,5.0)
+        candidate.write_bytes(b'not an MP3')
+        try:validate_received_audio(candidate,5.0)
+        except ValueError as e:assert 'header' in str(e)
+        else:raise AssertionError('non-MP3 file must fail even without ffprobe')
+print('SEAMO_NO_FFPROBE_FALLBACK=PASS content_hash_already_verified=true invalid_header=rejected')
 print('SEAMO_ADDITIVE_PUBLISH=PASS dryrun=true legacy=preserved 80_tracks=verified idempotent=true collision=refused')

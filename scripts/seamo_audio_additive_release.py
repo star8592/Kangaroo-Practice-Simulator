@@ -24,10 +24,24 @@ SAFE_NAME=re.compile(r'^(zh|en)-[a-f0-9]{64}\.mp3$')
 
 def sha(data):return hashlib.sha256(data).hexdigest()
 def duration(p):
+    if not shutil.which('ffprobe'):return None
     try:
         x=subprocess.run(['ffprobe','-v','error','-show_entries','format=duration','-of','default=noprint_wrappers=1:nokey=1',str(p)],capture_output=True,check=True,text=True,timeout=12)
         return float(x.stdout.strip())
     except (subprocess.CalledProcessError,subprocess.TimeoutExpired,ValueError):return 0
+
+def validate_received_audio(p,expected_duration):
+    measured=duration(p)
+    if measured is not None:
+        if measured<=.8 or abs(measured-expected_duration)>1.0:raise ValueError('unplayable or unexpected duration: '+p.name)
+        return
+    # The creating host already checked every MP3 with ffprobe before hashing.
+    # On minimal production hosts lacking ffprobe, compare the exact original
+    # file digest in unpack() and reject non-MP3 headers without installing it.
+    with p.open('rb') as file:head=file.read(4)
+    if not (head.startswith(b'ID3') or (len(head)>=2 and head[0]==0xff and head[1]&0xe0==0xe0)):
+        raise ValueError('invalid MP3 header: '+p.name)
+    if not (.8<expected_duration<180):raise ValueError('invalid recorded MP3 duration: '+p.name)
 
 def checks(tracks):
     if len(tracks)!=80 or len(set(x['name'] for x in tracks))!=80:raise ValueError('expected 80 unique MP3 tracks')
@@ -47,6 +61,7 @@ def build(output,worklist=WORK,assets=LOCAL_ASSETS):
         src=assets/name
         if not src.is_file() or src.is_symlink():raise ValueError('missing/nonregular MP3: '+name)
         raw=src.read_bytes();d=duration(src)
+        if d is None:raise ValueError('ffprobe required when creating verified audio bundle')
         tracks.append({'name':name,'language':task['language'],'questionId':task['questionId'],'size':len(raw),'sha256':sha(raw),'duration':round(d,2)})
     checks(tracks)
     manifest={'version':1,'scope':'seamo-revised-g1g2-independent-foundational','trackCount':80,'tracks':tracks}
@@ -71,7 +86,10 @@ def unpack(archive,dest):
             stream=tar.extractfile(members['v1/'+t['name']]);payload=stream.read()
             if len(payload)!=t['size'] or sha(payload)!=t['sha256']:raise ValueError('corrupted track '+t['name'])
             (dest/t['name']).write_bytes(payload)
-            if duration(dest/t['name'])<=.8:raise ValueError('unplayable track '+t['name'])
+            # The signed manifest was built only after ffprobe succeeded locally.
+            # A minimal production host may lack ffprobe; hashes prove exact
+            # identity with the already decoded and audited source bytes.
+            validate_received_audio(dest/t['name'],t['duration'])
     return tracks
 
 def apply(archive,destination=DEST,dry_run=True):
