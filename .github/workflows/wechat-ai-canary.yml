@@ -45,5 +45,19 @@ jobs:
         run: node apps/miniapp/ai-mode/pack-canary.cjs apps/miniapp/dist
       - name: Verify compiled artifact contract
         run: node apps/miniapp/ai-mode/verify-canary.cjs apps/miniapp/dist
+      - name: Checkout official Tencent AI Skill validator (pinned)
+        uses: actions/checkout@v4
+        with:
+          repository: wechat-miniprogram/ai-mode-skills
+          ref: 9bd1f25a7051ff137206f15251f716536f8409e9
+          path: _external/wechat-ai-validator
+          persist-credentials: false
+      - name: Official AI Skill V001-V021 static checks (without developer CLI)
+        shell: bash
+        run: |
+          cp apps/miniapp/project.config.json apps/miniapp/dist/project.config.json
+          node -e "const fs=require('fs'); const p='apps/miniapp/dist/project.config.json'; const c=JSON.parse(fs.readFileSync(p,'utf8')); c.miniprogramRoot='./'; fs.writeFileSync(p,JSON.stringify(c,null,2))"
+          node _external/wechat-ai-validator/wxa-skills-validate/scripts/validate.mjs apps/miniapp/dist
+          node -e "const r=JSON.parse(require('fs').readFileSync('apps/miniapp/dist/cli-agent-run/validate-report.json','utf8')); if(r.summary.errors!==0||r.summary.failed!==0)process.exit(1); console.log('TENCENT_AI_STATIC=PASS '+r.summary.passed+'/'+r.summary.total+'; real-device execute remains required')"
       - name: Confirm untouched source app config
         run: git diff --exit-code -- apps/miniapp/src/app.config.ts apps/miniapp/src/app.tsx

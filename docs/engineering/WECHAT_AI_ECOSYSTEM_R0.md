@@ -48,3 +48,12 @@
 ## 后续
 
 R1 是当前 Draft PR 的接力页真机验收；R2 再研究账户授权和个性化报告。自动模式须另行进行源码授权和数据保护审核，不与开发模式混在一个开关中。
+
+
+## 2026-10-21 本机追加验收
+
+- Z890 使用独立 Git worktree 校验本 PR 的 `8370d132`，原项目主目录的未提交改动完全保留。
+- Taro 微信小程序实际构建、测试版独立 Skill 装配和生成产物结构校验均 PASS。
+- 腾讯官方 `wechat-miniprogram/ai-mode-skills` 的 `wxa-skills-validate`，固定版本 `9bd1f25a7051ff137206f15251f716536f8409e9`：初次 V009 误将三元表达式 `grade : null` 识别为结构字段；改为先赋值 `confirmedGrade` 后，静态规则 **31/31 PASS**、0 error / 0 warning。
+- 本 PR 新增以上静态验收的 CI 固定版本步骤，但由于本机未找到支持 AI 模式的微信开发者工具 CLI，官方工具的 preview/execute 未运行；独立 Taro 构建 PASS 不代表微信 CLI 或真机 PASS。
+- 微信公众平台截图证实总开关、自动模式和开发模式已开启；仍需要核实小微 Handoff 实际调用权限、平台评测和正式审核是否允许。

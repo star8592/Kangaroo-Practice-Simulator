@@ -9,6 +9,7 @@ async function prepareArithmeticTraining({ grade } = {}) {
     }
   }
   const known = grade !== undefined
+  const confirmedGrade = known ? grade : null
   return {
     isError: false,
     content: [{
@@ -19,7 +20,7 @@ async function prepareArithmeticTraining({ grade } = {}) {
     }],
     structuredContent: {
       service: 'arithmetic-training',
-      suggestedGrade: known ? grade : null,
+      suggestedGrade: confirmedGrade,
       requiresInAppConfirmation: true,
       started: false
     },
