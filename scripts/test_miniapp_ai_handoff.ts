@@ -71,6 +71,16 @@ async function checkNavigationActions() {
   ])
   assert.equal(saved.has(WORLD_EVENT_INTENT_KEY),false,'failed navigation cannot leave stale intent')
 
+  // The UI's retry action must preserve the same selected destination,
+  // create a fresh short-lived intent and never trigger an exam or payment.
+  actions.length=0
+  assert.equal(await navigateFromAIEntry({mode:'events',eventId:'kangaroo'},adapter,now+500),'events')
+  assert.deepEqual(actions,[
+    'save:socthink_world_event_intent_v1',
+    'route:/pages/events/index'
+  ])
+  assert.equal((saved.get(WORLD_EVENT_INTENT_KEY) as {issuedAt:number}).issuedAt,now+500)
+
   actions.length=0
   const brokenStorage={
     ...adapter,
