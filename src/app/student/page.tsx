@@ -29,7 +29,9 @@ export default async function StudentPage() {
   const today = new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Shanghai" });
   const attention = buildStudentAttention(user, today);
   const calcHasHistory=a.arithmetic.sessions>0;
-  const topAction=calcHasHistory&&a.nextPlan.length?a.nextPlan[0]:null;
+  // The hero CTA opens calculation, so its recommendation must come from calculation evidence,
+  // never from an unrelated competition-exam coaching recommendation.
+  const topAction=calcHasHistory?a.arithmetic.plan?.summaryZh?.[0]:null;
   const arithmeticChange=a.arithmetic.recentChange;
 
   return (
@@ -43,8 +45,8 @@ export default async function StudentPage() {
         </div>
         <div className={styles.readinessCard}>
           <span className={styles.readinessLabel}>{lang==="zh"?"今天先做一件事":"ONE USEFUL NEXT STEP"}</span>
-          <h2 className={styles.actionTitle}>{topAction?.title||(lang==="zh"?"先完成一次计算诊断":"Start with a short calculation diagnostic")}</h2>
-          <p className={styles.actionCopy}>{topAction?.action||(lang==="zh"?"从小学到高中都能选年级练，先做20题建立依据。":"Choose your grade and complete 20 questions before making ability claims.")}</p>
+          <h2 className={styles.actionTitle}>{calcHasHistory?(lang==="zh"?"继续一组针对性计算":"Continue focused calculation"):(lang==="zh"?"先完成一次计算诊断":"Start with a short calculation diagnostic")}</h2>
+          <p className={styles.actionCopy}>{topAction||(lang==="zh"?"从小学到高中都能选年级练，先做20题建立依据。":"Choose your grade and complete 20 questions before making ability claims.")}</p>
           <Link className="primary-button" href="/arithmetic">{lang==="zh"?"去计算训练 →":"Start calculation →"}</Link>
         </div>
       </section>
