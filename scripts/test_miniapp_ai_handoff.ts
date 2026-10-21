@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import {
-  AI_ARITHMETIC_INTENT_TTL_MS, makeAIArithmeticIntent, readAIArithmeticIntent,
+  AI_ARITHMETIC_INTENT_KEY, AI_ARITHMETIC_INTENT_TTL_MS, makeAIArithmeticIntent, readAIArithmeticIntent,
   readAIEntryTarget, noteAgentHandoff, takeAgentHandoff
 } from '../apps/miniapp/src/services/ai-entry-intent'
 import { navigateFromAIEntry } from '../apps/miniapp/src/services/ai-entry-navigation'
