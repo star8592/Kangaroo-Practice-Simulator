@@ -94,8 +94,8 @@ export default function ArithmeticPage(){
     <View className='card'>
       <View className='question'>{q?.prompt}</View>
       <Input className='input' type='text' value={raw} maxlength={100} disabled={busy||Boolean(feedback)} placeholder='点击下方数学键盘输入，也可手动编辑' onInput={e=>{const value=e.detail.value;if(firstInput.current===null&&value)firstInput.current=Date.now();cursor.current=typeof e.detail.cursor==='number'?e.detail.cursor:value.length;setRaw(value)}}/>
-      {!feedback&&<ArithmeticAnswerPad kind={q?.answerKind||'number'} raw={raw} busy={busy} onInsert={insertMathKey} onBackspace={backspaceMathKey} onSubmit={()=>void check()}/>}
-      {feedback?<><View className={feedback.correct?'good':'bad'}>{feedback.correct?'✓ 答对了':`✕ 正确答案：${feedback.correctAnswer}`}</View><Button className='primary' loading={busy} disabled={busy} onClick={()=>void next()}>{idx+1===session.questions.length?'完成本轮':'下一题'}</Button></>:<Button className='primary' loading={busy} disabled={busy||!raw.trim()} onClick={()=>void check()}>提交答案</Button>}
+      {!feedback&&<ArithmeticAnswerPad kind={q?.answerKind||'number'} raw={raw} busy={busy} onInsert={insertMathKey} onBackspace={backspaceMathKey}/>}
+      {feedback?<><View className={feedback.correct?'good':'bad'}>{feedback.correct?'✓ 答对了':`✕ 正确答案：${feedback.correctAnswer}`}</View><Button className='primary' loading={busy} disabled={busy} onClick={()=>void next()}>{idx+1===session.questions.length?'完成本轮':'下一题'}</Button></>:<Button className='primary arithmetic-session-submit' loading={busy} disabled={busy||!raw.trim()} onClick={()=>void check()}>提交答案</Button>}
     </View>
   </View>
 }

@@ -27,10 +27,12 @@ page{background:#f4f6f1;color:#17231d;font-family:-apple-system,BlinkMacSystemFo
 .arithmetic-key{box-sizing:border-box;display:flex!important;align-items:center;justify-content:center;min-width:0!important;min-height:84rpx!important;padding:10rpx 4rpx!important;margin:0!important;border:2rpx solid #dbe1d9!important;border-radius:14rpx!important;background:#fff!important;color:#17231d!important;font-size:31rpx!important;line-height:1.4!important;font-weight:800!important}
 .arithmetic-key::after{border:none!important}
 .arithmetic-key-back{grid-column:span 2;font-size:25rpx!important;background:#f3f6f2!important}
-.arithmetic-key-submit{grid-column:span 2;font-size:26rpx!important;background:#ff7a45!important;border-color:#ff7a45!important;color:#18241d!important}
 .arithmetic-key[disabled]{opacity:.44}
 
 /* SEAMO native timed foundational practice: visible, mobile-first, anchored to the server clock. */
 .seamo-native-timer{display:flex;align-items:center;justify-content:space-between;gap:14rpx;background:#e8f1ea;color:#225a42;border:2rpx solid #cce0d0;border-radius:20rpx;padding:18rpx 22rpx;margin:8rpx 0 20rpx;font-size:24rpx;font-weight:750}
 .seamo-native-timer-urgent{background:#fff1e9;color:#a33a25;border-color:#f2bea8}
 .seamo-timer-clock{font-weight:900;font-variant-numeric:tabular-nums;font-size:38rpx;letter-spacing:.03em}
+
+/* Only one prominent submit CTA is rendered outside the answer keypad. */
+.arithmetic-session-submit{width:100%!important;min-height:94rpx!important;font-size:32rpx!important;margin-top:24rpx!important}
