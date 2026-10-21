@@ -3,6 +3,8 @@ import {
   AI_ARITHMETIC_INTENT_TTL_MS, makeAIArithmeticIntent, readAIArithmeticIntent,
   readAIEntryTarget, noteAgentHandoff, takeAgentHandoff
 } from '../apps/miniapp/src/services/ai-entry-intent'
+import { navigateFromAIEntry } from '../apps/miniapp/src/services/ai-entry-navigation'
+import { WORLD_EVENT_INTENT_KEY } from '../apps/miniapp/src/services/world-event-intent'
 
 assert.deepEqual(readAIEntryTarget({mode:'arithmetic',grade:'2'}),{mode:'arithmetic',grade:2})
 assert.deepEqual(readAIEntryTarget({mode:'arithmetic'}),{mode:'arithmetic',grade:null})
@@ -26,4 +28,60 @@ assert.equal(takeAgentHandoff(),null,'handoff must be one-shot')
 assert.equal(noteAgentHandoff({path:'/pages/profile/index',query:'mode=arithmetic'}),false)
 assert.equal(noteAgentHandoff({path:'/pages/ai-entry/index',query:'mode=arithmetic&grade=999'}),false)
 assert.equal(noteAgentHandoff({path:'/pages/ai-entry/index',query:'mode=%E0%A4%A'}),false)
-console.log('MINIAPP_AI_HANDOFF_INTENT_PASS sanitized=PASS ttl=PASS one_shot=PASS')
+
+async function checkNavigationActions() {
+  const actions: string[] = []
+  const saved = new Map<string, unknown>()
+  const adapter = {
+    save: (key: string, value: unknown) => { actions.push('save:' + key); saved.set(key, value) },
+    remove: (key: string) => { actions.push('remove:' + key); saved.delete(key) },
+    switchTab: async (url: string) => { actions.push('route:' + url) }
+  }
+  const now = 1712345678000
+  assert.equal(await navigateFromAIEntry({mode:'arithmetic',grade:2},adapter,now),'arithmetic')
+  assert.deepEqual(actions,[
+    'save:socthink_ai_arithmetic_grade_v1','route:/pages/arithmetic/index'
+  ])
+  assert.equal(readAIArithmeticIntent(saved.get(AI_ARITHMETIC_INTENT_KEY),now),2)
+
+  actions.length=0
+  assert.equal(await navigateFromAIEntry({mode:'events',eventId:'kangaroo'},adapter,now),'events')
+  assert.deepEqual(actions,[
+    'save:socthink_world_event_intent_v1','route:/pages/events/index'
+  ])
+  assert.equal((saved.get(WORLD_EVENT_INTENT_KEY) as {eventId:string}).eventId,'kangaroo')
+
+  actions.length=0
+  await navigateFromAIEntry({mode:'arithmetic',grade:null},adapter,now)
+  assert.deepEqual(actions,['route:/pages/arithmetic/index'],'no grade guess or auto start')
+
+  actions.length=0
+  const failed={
+    ...adapter,
+    switchTab: async (url:string) => { actions.push('route:' + url);throw new Error('switchTab failed') }
+  }
+  await assert.rejects(
+    navigateFromAIEntry({mode:'events',eventId:'kangaroo'},failed,now),
+    /switchTab failed/
+  )
+  assert.deepEqual(actions,[
+    'save:socthink_world_event_intent_v1',
+    'route:/pages/events/index',
+    'remove:socthink_world_event_intent_v1'
+  ])
+  assert.equal(saved.has(WORLD_EVENT_INTENT_KEY),false,'failed navigation cannot leave stale intent')
+
+  actions.length=0
+  const brokenStorage={
+    ...adapter,
+    save: () => { throw new Error('storage unavailable') }
+  }
+  await assert.rejects(
+    navigateFromAIEntry({mode:'arithmetic',grade:3},brokenStorage,now),
+    /storage unavailable/
+  )
+  assert.deepEqual(actions,[],'storage failure must block navigation')
+}
+void checkNavigationActions().then(() =>
+  console.log('MINIAPP_AI_HANDOFF_INTENT_PASS sanitized=PASS ttl=PASS one_shot=PASS rollback=PASS')
+).catch(error => { console.error(error); process.exitCode=1 })
