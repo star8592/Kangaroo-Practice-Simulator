@@ -49,7 +49,7 @@ function packCanary(outputRoot, { bundleEntry = bundleSkillEntry } = {}) {
     bundleEntry(path.join(skillRoot, 'index.js'), bundledEntry)
     const bundle = fs.readFileSync(bundledEntry, 'utf8')
     if (!bundle.includes('createSkill(') || !bundle.includes('registerAPI(') ||
-        /require\(\s*['"]\.\/apis\//.test(bundle)) {
+        bundle.includes("require('./apis/") || bundle.includes('require("./apis/')) {
       throw new Error('Skill 运行入口不是自包含 bundle，禁止装配')
     }
 

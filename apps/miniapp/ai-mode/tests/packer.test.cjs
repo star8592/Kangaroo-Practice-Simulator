@@ -40,7 +40,7 @@ test('isolated canary packer adds independent Skill to built dist only', () => f
   assert.ok(project.packOptions.include.some(x => x.value === 'skills' && x.type === 'folder'))
   const entry = fs.readFileSync(path.join(dist,'skills/math-discovery/index.js'),'utf8')
   assert.match(entry,/registerAPI/)
-  assert.doesNotMatch(entry,/require\\(\\s*['"]\\.\\/apis\\//)
+  assert.ok(!entry.includes("require('./apis/") && !entry.includes('require("./apis/'))
   assert.ok(fs.existsSync(path.join(dist,'skills/math-discovery/mcp.json')))
   assert.ok(fs.existsSync(path.join(dist,'page-meta.json')))
   assert.throws(() => packCanary(dist, { bundleEntry: bundleStub }), /已有 AI 能力声明/)

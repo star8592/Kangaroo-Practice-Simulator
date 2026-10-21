@@ -23,7 +23,7 @@ function bundleSkillEntry(entry, output) {
   const code = fs.readFileSync(output, 'utf8')
   if (!code.includes('createSkill(') ||
       !code.includes('registerAPI(') ||
-      /require\(\s*['"]\.\/apis\//.test(code)) {
+      code.includes("require('./apis/") || code.includes('require("./apis/')) {
     throw new Error('Skill 运行入口未成功打包为独立、无相对 require 的文件')
   }
 }

@@ -32,7 +32,7 @@ function verifyCanary(outputRoot) {
   const bundledEntry = fs.readFileSync(path.join(dist, 'skills/math-discovery/index.js'), 'utf8')
   assert.ok(bundledEntry.includes('createSkill(') && bundledEntry.includes('registerAPI('),
     'the runtime Skill entry must contain registered APIs')
-  assert.doesNotMatch(bundledEntry, /require\\(\\s*['"]\\.\\/apis\\//,
+  assert.ok(!bundledEntry.includes("require('./apis/") && !bundledEntry.includes('require("./apis/'),
     'raw relative CommonJS imports cause WeChat runtime module-not-defined errors')
   assert.deepEqual(
     skill.apis.map(x => x.name),
