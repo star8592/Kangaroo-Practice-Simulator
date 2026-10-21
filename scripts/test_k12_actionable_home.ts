@@ -41,7 +41,7 @@ assert.ok(arithmetic.includes('ArithmeticAnswerPad')&&!arithmetic.includes('onSu
 assert.ok(profile.includes('下一步最值得做什么')&&profile.includes('展开详细记录与依据'))
 assert.ok(web.includes('CHINESE_SCHOOL_STAGES')&&web.includes('K12_GRADE_BANDS'),'localized stage selection')
 assert.ok(landing.includes('小学 1—6 年级')&&landing.includes('初中 7—9 年级')&&landing.includes('高中 10—12 年级'),'public homepage must show all stages')
-assert.ok(landing.includes('className="primary-button home-login-primary" href="/arithmetic"'),'calculation must be the primary public CTA')
+assert.ok(landing.includes('className="primary-button home-practice-primary" href="/arithmetic"'),'calculation must be the primary public CTA')
 assert.ok(student.includes('<details className={styles.evidencePanel}>'),'advanced report statistics should be opt-in')
 assert.ok(student.includes('topAction'),'student should see one next action first')
 console.log('K12_ACTIONABLE_HOME=PASS grades=12 stages=primary_junior_senior next_action=evidence_based miniapp_and_web=aligned metrics=on_demand')

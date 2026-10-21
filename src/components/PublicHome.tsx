@@ -48,7 +48,7 @@ export default function PublicHome(){
    <h1>{ui.title1}<br/><span>{ui.title2}</span></h1>
    <p className="hero-copy">{ui.copy}</p>
    <div className="hero-actions">
-    <Link className="primary-button home-login-primary" href="/arithmetic">{ui.primary}</Link>
+    <Link className="primary-button home-practice-primary" href="/arithmetic">{ui.primary}</Link>
     <Link className="secondary-button" href="/login">{ui.register}</Link>
     <Link className="secondary-button" href="/competitions">{ui.competition}</Link>
     <Link className="secondary-button" href="/events">{ui.events}</Link>
