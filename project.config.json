@@ -1,0 +1,15 @@
+{
+  "miniprogramRoot": "./",
+  "projectname": "QA K12 UX R1 - NEVER UPLOAD",
+  "description": "计算训练、竞赛实战与赛事管理",
+  "appid": "wxbedb9b3142d93f95",
+  "compileType": "miniprogram",
+  "setting": {
+    "urlCheck": false,
+    "es6": true,
+    "enhance": true,
+    "compileHotReLoad": true,
+    "postcss": true,
+    "minified": true
+  }
+}
