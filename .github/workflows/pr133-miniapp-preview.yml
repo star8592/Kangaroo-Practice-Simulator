@@ -1,0 +1,69 @@
+name: PR133 isolated WeChat QA preview
+
+on:
+  push:
+    branches:
+      - feat/k12-actionable-practice-20261022
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-preview:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Locked dependencies
+        run: npm ci
+      - name: Miniapp tests, typing and Taro build
+        run: npm run verify:miniapp
+      - name: Validate isolated preview payload
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import json,shutil
+          src=Path("apps/miniapp/project.config.json")
+          root=Path("apps/miniapp/dist")
+          assert (root/"app.json").is_file() and (root/"app.js").is_file()
+          for page in ("home","arithmetic","profile"):
+            assert (root/"pages"/page/"index.wxml").is_file(),page
+          config=json.loads(src.read_text())
+          config["miniprogramRoot"]="./"
+          config["projectname"]="QA K12 UX R1 - NEVER UPLOAD"
+          config.setdefault("setting",{})["urlCheck"]=False
+          (root/"project.config.json").write_text(json.dumps(config,ensure_ascii=False,indent=2))
+          (root/"QA_PREVIEW_NOT_FOR_RELEASE.txt").write_text(
+            "Isolated PR133 Web and WeChat UI test build. Not reviewed or published.\n")
+          assert not any(root.rglob("*.pem"))
+          size=sum(p.stat().st_size for p in root.rglob("*") if p.is_file())
+          print(f"QA_PREVIEW_FILES={sum(1 for p in root.rglob('*') if p.is_file())} BYTES={size}")
+          PY
+      - name: Upload short-lived private workflow evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: pr133-weapp-candidate
+          path: apps/miniapp/dist/
+          retention-days: 2
+      - name: Publish source-public preview on unique disposable branch
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd apps/miniapp/dist
+          git init -q
+          git config user.name "SOC THINK QA Bot"
+          git config user.email "qa-bot@users.noreply.github.com"
+          git add -A
+          git commit -qm "Isolated compiled WeApp QA preview (never release)"
+          ref="qa/pr133-weapp-${GITHUB_SHA:0:12}"
+          git push "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "HEAD:refs/heads/${ref}"
+          echo "QA_REF=${ref}" >> "${GITHUB_STEP_SUMMARY}"
