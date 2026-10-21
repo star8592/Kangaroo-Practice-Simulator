@@ -29,3 +29,8 @@ page{background:#f4f6f1;color:#17231d;font-family:-apple-system,BlinkMacSystemFo
 .arithmetic-key-back{grid-column:span 2;font-size:25rpx!important;background:#f3f6f2!important}
 .arithmetic-key-submit{grid-column:span 2;font-size:26rpx!important;background:#ff7a45!important;border-color:#ff7a45!important;color:#18241d!important}
 .arithmetic-key[disabled]{opacity:.44}
+
+/* SEAMO native timed foundational practice: visible, mobile-first, anchored to the server clock. */
+.seamo-native-timer{display:flex;align-items:center;justify-content:space-between;gap:14rpx;background:#e8f1ea;color:#225a42;border:2rpx solid #cce0d0;border-radius:20rpx;padding:18rpx 22rpx;margin:8rpx 0 20rpx;font-size:24rpx;font-weight:750}
+.seamo-native-timer-urgent{background:#fff1e9;color:#a33a25;border-color:#f2bea8}
+.seamo-timer-clock{font-weight:900;font-variant-numeric:tabular-nums;font-size:38rpx;letter-spacing:.03em}

@@ -97,7 +97,7 @@
     "test:miniapp-arithmetic-idempotency": "tsx scripts/test_miniapp_arithmetic_idempotency.ts",
     "test:exam-submit-recovery": "tsx scripts/test_exam_submit_recovery.ts",
     "test:exam-readaloud": "tsx scripts/test_exam_readaloud.ts",
-    "test:seamo": "python3 scripts/test_seamo_original_mocks.py && python3 scripts/test_seamo_revised.py && tsx scripts/test_seamo_integration.ts && python3 scripts/test_seamo_no_private.py && tsx scripts/prepare_seamo_readaloud.ts"
+    "test:seamo": "python3 scripts/test_seamo_original_mocks.py && python3 scripts/test_seamo_revised.py && tsx scripts/test_seamo_integration.ts && python3 scripts/test_seamo_no_private.py && tsx scripts/prepare_seamo_readaloud.ts && tsx scripts/test_seamo_native_miniapp.ts"
   },
   "dependencies": {
     "next": "16.3.8",

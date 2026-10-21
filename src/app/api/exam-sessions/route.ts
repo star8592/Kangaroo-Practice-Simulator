@@ -10,7 +10,7 @@ export async function GET(r:NextRequest){
   const u=user(r);
   if(!hasFullExamAccess(u))return NextResponse.json({error:"请先登录正式考生账号"},{status:401});
   const id=r.nextUrl.searchParams.get("examId")||"";
-  return id?NextResponse.json({session:activeExamSession(u.id,id)}):NextResponse.json({error:"missing examId"},{status:400});
+  return id?NextResponse.json({session:activeExamSession(u.id,id),serverNow:Date.now()}):NextResponse.json({error:"missing examId"},{status:400});
 }
 
 export async function POST(r:NextRequest){
@@ -21,7 +21,8 @@ export async function POST(r:NextRequest){
     if(!isExamBundleTrainingReady(bundle))return NextResponse.json({error:"Exam is not training-ready"},{status:404});
     return NextResponse.json({
       ...startExamSession(u.id,id,bundle.profile.durationSeconds,bundle.profile.timingSections),
-      durationSeconds:bundle.profile.durationSeconds
+      durationSeconds:bundle.profile.durationSeconds,
+      serverNow:Date.now()
     });
   }catch(e){
     return NextResponse.json({error:e instanceof Error?e.message:"无法创建考试会话"},{status:500});

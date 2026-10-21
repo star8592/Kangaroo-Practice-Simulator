@@ -72,7 +72,7 @@ export async function ensureWechatSession(force = false, allowGuestFallback = fa
 export async function api<T = any>(path: string, options: { method?: 'GET'|'POST'|'PATCH'; data?: unknown; auth?: boolean } = {}): Promise<T> {
   const request = async (token: string) => Taro.request<T>({
     url: BASE + path, method: options.method || 'GET', data: options.data,
-    header: {'content-type':'application/json', ...(options.auth === false || !token ? {} : {Authorization: `Bearer ${token}`})}
+    header: {'content-type':'application/json', 'x-socthink-miniapp-capabilities':'seamo-timer-v1', ...(options.auth === false || !token ? {} : {Authorization: `Bearer ${token}`})}
   })
   let token = authStore.token()
   if (!token && options.auth !== false) {
