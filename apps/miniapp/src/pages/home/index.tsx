@@ -1,13 +1,15 @@
 import { useEffect, useState } from 'react'
-import { Button, Text, View } from '@tarojs/components'
+import { Button, Picker, Text, View } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import { api, authStore, ensureWechatSession } from '../../services/api'
 import { canStartFullExam, makeExamLoginPath, makeExamPath } from '../../services/exam-access'
 import { openWorldEvent } from '../../services/world-event-navigation'
+import {CALC_START_INTENT_KEY,CALC_GRADE_KEY,GRADE_LABELS,preferredGrade} from '../../services/calculation-entry'
 
 export default function HomePage(){
   const [analytics,setAnalytics]=useState<any>(null)
   const [showDetails,setShowDetails]=useState(false)
+  const [chosenGrade,setChosenGrade]=useState<number|null>(()=>preferredGrade(authStore.user(),Taro.getStorageSync(CALC_GRADE_KEY)))
   const [user,setUser]=useState<any>(authStore.user())
   const [wechatConnection,setWechatConnection]=useState<'connecting'|'ready'|'failed'>('connecting')
   useEffect(()=>{
@@ -45,12 +47,13 @@ export default function HomePage(){
     try{
       // Auth must be established before an activity; never create a surprise guest.
       if(!authStore.token() || authStore.user()?.username==='guest')await ensureWechatSession(false,false)
+      const selected=preferredGrade(authStore.user(),chosenGrade)
+      if(selected===null){Taro.showToast({title:'先选择孩子的年级',icon:'none'});return}
+      Taro.setStorageSync(CALC_GRADE_KEY,selected)
+      Taro.setStorageSync(CALC_START_INTENT_KEY,{grade:selected,at:Date.now()})
       await Taro.switchTab({url:'/pages/arithmetic/index'})
     }
-    catch{
-      try{await Taro.reLaunch({url:'/pages/arithmetic/index'})}
-      catch{Taro.showToast({title:'计算训练暂时无法打开，请重试',icon:'none'})}
-    }
+    catch{Taro.showToast({title:'暂时无法开始计算，请重试',icon:'none'})}
   }
 
   const arithmeticSessions=Number(analytics?.arithmetic?.sessions||0)
@@ -71,10 +74,11 @@ export default function HomePage(){
     </View>}
     <View className='hero'>
       <View className='muted' style='color:#cbd5e1'>你好，{greeting}</View>
-      <Text className='big'>{hasHistory?'继续计算，少做无效题':'少做无效题，让每一道计算题都有用'}</Text>
-      <View><Text>{'小学到高中：每次答题都在帮助找到卡点，自动批改并推荐下一步。不凑题量。'}</Text></View>
-      <Button className='primary hero-primary' onClick={openArithmetic}>{hasHistory?'继续计算训练':'开始计算训练'}</Button>
-      <View style='margin-top:20rpx;color:#d6e8ec;font-size:24rpx'>✓ 少刷无效题　✓ 找到真卡点　✓ 自动批改与跟进</View>
+      <Text className='big'>打开就算，每一道题都有价值</Text>
+      <View className='hero-copy'>做得稳就少做，遇到卡点再针对性练。</View>
+      <Picker mode='selector' range={GRADE_LABELS} value={chosenGrade===null?0:chosenGrade-1} onChange={e=>{const n=Number(e.detail.value)+1;setChosenGrade(n);Taro.setStorageSync(CALC_GRADE_KEY,n)}}><View className='calc-grade-choice'>{chosenGrade===null?'首次使用 · 请选择年级':GRADE_LABELS[chosenGrade-1]+' · 点击可切换'}　⌄</View></Picker>
+      <Button className='primary hero-primary' onClick={openArithmetic}>{hasHistory?'继续做题 →':'立即开始计算 →'}</Button>
+      <View className='calc-hero-foot'>少做无效题 · 自动批改 · 智能安排下一题</View>
     </View>
 
     {hasHistory&&<Button className='secondary' onClick={()=>setShowDetails(x=>!x)}>{showDetails?'收起学习详情':'查看学习详情'}</Button>}

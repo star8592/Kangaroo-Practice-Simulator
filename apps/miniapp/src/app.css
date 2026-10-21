@@ -19,3 +19,11 @@ page{background:#f4f6f1;color:#17231d;font-family:-apple-system,BlinkMacSystemFo
 .exam-voice-controls{margin-top:12rpx;gap:8rpx;flex-wrap:nowrap}
 .exam-voice-controls button{flex:0 0 auto!important;width:auto!important;min-width:100rpx!important;min-height:74rpx!important;margin:0!important;padding:10rpx!important;border-radius:14rpx!important;font-size:23rpx!important;line-height:48rpx!important}
 .exam-voice-controls slider{flex:1;min-width:100rpx;margin:0!important;padding:0!important}
+
+/* Calculation-first miniapp: calm, short, thumb-friendly entry and answer zone. */
+.calc-grade-choice{margin:24rpx 0 0;padding:20rpx 24rpx;min-height:52rpx;border:2rpx solid rgba(255,255,255,.32);border-radius:16rpx;color:#fff;font-size:29rpx;font-weight:700;background:rgba(255,255,255,.09)}
+.calc-hero-foot{margin:22rpx 0 0;font-size:22rpx;color:#dcebdc;line-height:1.6}
+.calc-question-label{text-align:center;color:#637367;font-size:24rpx;margin-top:10rpx}
+.calc-question{font-size:clamp(44rpx,7vw,66rpx);line-height:1.4;padding:42rpx 10rpx;word-break:break-word}
+.calc-answer{width:100%;box-sizing:border-box;min-height:104rpx;text-align:center;font-size:42rpx;border-color:#638a6a}
+@media (max-width:360px){.page{padding:18rpx}.hero{padding:28rpx}.calc-question{font-size:44rpx;padding:30rpx 6rpx}}

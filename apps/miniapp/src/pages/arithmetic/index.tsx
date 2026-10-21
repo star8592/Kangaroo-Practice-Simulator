@@ -2,6 +2,7 @@ import { useRef, useState } from 'react'
 import { Button, Input, Picker, Text, View } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import { api, authStore } from '../../services/api'
+import {CALC_START_INTENT_KEY,CALC_GRADE_KEY,GRADE_LABELS,preferredGrade,readStartIntent} from '../../services/calculation-entry'
 import { canEndAdaptiveRound, type CheckedCalculation } from '../../services/adaptive-stop'
 
 type Q={id:string;prompt:string;skillId:string;expectedMs:number}
@@ -9,7 +10,7 @@ type ResponseRow={questionId:string;answer:string;responseMs:number;firstInputMs
 
 export default function ArithmeticPage(){
   const user=authStore.user()
-  const [grade,setGrade]=useState(Math.min(12,Math.max(1,Number(user?.grade)||1)))
+  const [grade,setGrade]=useState(preferredGrade(user,Taro.getStorageSync(CALC_GRADE_KEY))??1)
   const [session,setSession]=useState<any>(null)
   const [idx,setIdx]=useState(0)
   const [raw,setRaw]=useState('')
@@ -28,13 +29,20 @@ export default function ArithmeticPage(){
     try{await task()}finally{inFlight.current=false;setBusy(false)}
   }
 
-  const start=async(mode='adaptive')=>once(async()=>{
+  const start=async(mode='adaptive',selectedGrade=grade)=>once(async()=>{
     try{
-      const s=await api('/api/miniapp/arithmetic/session',{method:'POST',data:{action:'start',grade,mode}})
+      const s=await api('/api/miniapp/arithmetic/session',{method:'POST',data:{action:'start',grade:selectedGrade,mode}})
       if(!s||!Array.isArray(s.questions)||!s.questions.length||!s.token)throw new Error('训练题目未能载入，请重试')
+      setGrade(selectedGrade);Taro.setStorageSync(CALC_GRADE_KEY,selectedGrade)
       setSession(s);setIdx(0);setRaw('');setFeedback(null);responsesRef.current=[];checkedRef.current=[];setEndedShortly(false);setResult(null)
       started.current=Date.now();firstInput.current=null
     }catch(e){Taro.showToast({title:e instanceof Error?e.message:'无法开始',icon:'none'})}
+  })
+  Taro.useDidShow(()=>{
+    const stored=Taro.getStorageSync(CALC_START_INTENT_KEY)
+    Taro.removeStorageSync(CALC_START_INTENT_KEY)
+    const requested=readStartIntent(stored)
+    if(requested!==null && !inFlight.current)void start('adaptive',requested)
   })
   const q:Q|undefined=session?.questions?.[idx]
   const check=async()=>{
@@ -68,15 +76,15 @@ export default function ArithmeticPage(){
 
   if(result)return <View className='page'><View className='hero'><Text className='big'>本轮完成</Text>{endedShortly&&<View>本轮已有足够的稳定证据，提前结束；下次还会安排复测。</View>}<View>{result.correct}/{result.total} · {Math.round(result.accuracy*100)}%</View></View><View className='card'><View className='card-title'>下一轮怎么练</View>{(result.plan?.summary||[]).map((x:string)=><View className='muted' key={x}>{x}</View>)}<Button className='primary' loading={busy} disabled={busy} onClick={()=>void start('adaptive')}>开始个性化下一轮</Button></View></View>
 
-  if(!session)return <View className='page'><View className='hero'><Text className='big'>每一道计算题，都该有价值</Text><View>小学到高中，系统边练边诊断、自动记录。尽可能少做无效题，先练最值得补的地方。</View></View><View className='card'><View className='card-title'>训练年级</View><Picker mode='selector' range={Array.from({length:12},(_,i)=>i<6?`小学${i+1}年级`:i<9?`初中${i-5}年级`:`高中${i-8}年级`)} value={grade-1} onChange={e=>setGrade(Number(e.detail.value)+1)}><View className='input'>{grade<=6?`小学${grade}年级`:grade<=9?`初中${grade-6}年级`:`高中${grade-9}年级`}</View></Picker><Button className='primary' loading={busy} disabled={busy} onClick={()=>void start('adaptive')}>开始今日智能计算</Button><Button className='secondary' loading={busy} disabled={busy} onClick={()=>void start('diagnostic')}>先做分技能短诊断</Button></View></View>
+  if(!session)return <View className='page'><View className='hero'><Text className='big'>今天，先算几题</Text><View>小学到高中，系统边练边诊断、自动记录。尽可能少做无效题，先练最值得补的地方。</View></View><View className='card'><View className='card-title'>训练年级</View><Picker mode='selector' range={GRADE_LABELS} value={grade-1} onChange={e=>setGrade(Number(e.detail.value)+1)}><View className='input'>{grade<=6?`小学${grade}年级`:grade<=9?`初中${grade-6}年级`:`高中${grade-9}年级`}</View></Picker><Button className='primary' loading={busy} disabled={busy} onClick={()=>void start('adaptive')}>开始今日智能计算</Button><Button className='secondary' loading={busy} disabled={busy} onClick={()=>void start('diagnostic')}>先做分技能短诊断</Button></View></View>
 
   return <View className='page'>
     <View className='row'><Text>第 {idx+1}/{session.questions.length} 题</Text><Text className='muted'>{q?.skillId}</Text></View>
     <View className='progress'><View style={{width:`${((idx+1)/session.questions.length)*100}%`}}/></View>
     <View className='card'>
-      <View className='question'>{q?.prompt}</View>
-      <Input className='input' value={raw} disabled={busy||Boolean(feedback)} placeholder='输入答案' onInput={e=>{if(firstInput.current===null&&e.detail.value)firstInput.current=Date.now();setRaw(e.detail.value)}}/>
-      {feedback?<><View className={feedback.correct?'good':'bad'}>{feedback.correct?'✓ 答对了':`✕ 正确答案：${feedback.correctAnswer}`}</View><Button className='primary' loading={busy} disabled={busy} onClick={()=>void next()}>{idx+1===session.questions.length?'完成本轮':'下一题'}</Button></>:<Button className='primary' loading={busy} disabled={busy||!raw.trim()} onClick={()=>void check()}>提交答案</Button>}
+      <View className='calc-question-label'>认真看题，想好再答</View><View className='question calc-question'>{q?.prompt}</View>
+      <Input className='input calc-answer' value={raw} disabled={busy||Boolean(feedback)} placeholder='答案填在这里' onInput={e=>{if(firstInput.current===null&&e.detail.value)firstInput.current=Date.now();setRaw(e.detail.value)}}/>
+      {feedback?<><View className={feedback.correct?'good':'bad'}>{feedback.correct?'✓ 答对了':`✕ 正确答案：${feedback.correctAnswer}`}</View><Button className='primary' loading={busy} disabled={busy} onClick={()=>void next()}>{idx+1===session.questions.length?'完成本轮':'下一题'}</Button></>:<Button className='primary' loading={busy} disabled={busy||!raw.trim()} onClick={()=>void check()}>确认答案 →</Button>}
     </View>
   </View>
 }
