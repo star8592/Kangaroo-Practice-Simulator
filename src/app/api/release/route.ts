@@ -5,7 +5,7 @@ import { listTrainingExamProfiles } from "@/lib/training-question-bank";
 import type { ExamBundle } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
-const COMPETITIONS = ["kangaroo", "australian-amc", "maa-amc", "cemc"] as const;
+const COMPETITIONS = ["kangaroo", "australian-amc", "maa-amc", "cemc", "seamo"] as const;
 
 function readText(file: string) {
   try { return fs.readFileSync(file, "utf8").trim(); } catch { return ""; }

@@ -1,0 +1,1772 @@
+{
+  "profile": {
+    "id": "seamo-original-g1-revised-1",
+    "name": "SEAMO Grade 1 Revised Foundational Practice",
+    "nameZh": "SEAMO 1年级 · 原创基础训练（修订版）",
+    "nameEn": "SEAMO Grade 1 · Revised Foundational Practice",
+    "grades": "Grade 1",
+    "gradeBand": "1-2",
+    "durationSeconds": 2400,
+    "questionCount": 15,
+    "initialScore": 0,
+    "maxScore": 15,
+    "wrongPenaltyMode": "fixed",
+    "wrongPenaltyValue": 0,
+    "country": "Singapore SEAMO",
+    "year": 2026,
+    "language": "zh/en",
+    "competitionId": "seamo",
+    "formatId": "seamo-g1-original-mock",
+    "paperType": "practice",
+    "timingMode": "recommended",
+    "studentReady": true,
+    "sourceLabelZh": "本站独立编写的修订版基础训练 · 非官方真题",
+    "sourceLabelEn": "Independent revised foundational practice · not official past papers",
+    "rulesSummaryZh": "15题 / 训练计时40分钟，到时自动交卷；每题1分、不倒扣，非官方计分标准。",
+    "rulesSummaryEn": "15 questions / 40-minute practice timer with automatic submission; 1 point each, no penalty; not official scoring.",
+    "formatLabelZh": "SEAMO Pre-A · 本站原创修订版",
+    "formatLabelEn": "SEAMO Pre-A · Independent revised practice"
+  },
+  "questions": [
+    {
+      "id": "seamo-original-g1-revised-q01",
+      "year": 2026,
+      "level": "Grade 1",
+      "grades": "Grade 1",
+      "language": "zh/en",
+      "questionNo": 1,
+      "points": 1,
+      "answerMode": "choice",
+      "concept": "arithmetic",
+      "stem": "小乐有7颗红珠子和5颗蓝珠子，送出3颗。还剩多少颗？",
+      "stemEn": "Lele has 7 red beads and 5 blue beads. She gives away 3. How many remain?",
+      "choices": [
+        {
+          "key": "A",
+          "label": "8"
+        },
+        {
+          "key": "B",
+          "label": "9"
+        },
+        {
+          "key": "C",
+          "label": "10"
+        },
+        {
+          "key": "D",
+          "label": "11"
+        },
+        {
+          "key": "E",
+          "label": "7"
+        }
+      ],
+      "choicesEn": [
+        {
+          "key": "A",
+          "label": "8"
+        },
+        {
+          "key": "B",
+          "label": "9"
+        },
+        {
+          "key": "C",
+          "label": "10"
+        },
+        {
+          "key": "D",
+          "label": "11"
+        },
+        {
+          "key": "E",
+          "label": "7"
+        }
+      ],
+      "answer": "B",
+      "solution": "7+5−3=9。",
+      "localized": {
+        "zh": {
+          "stem": "小乐有7颗红珠子和5颗蓝珠子，送出3颗。还剩多少颗？",
+          "choices": [
+            {
+              "key": "A",
+              "label": "8"
+            },
+            {
+              "key": "B",
+              "label": "9"
+            },
+            {
+              "key": "C",
+              "label": "10"
+            },
+            {
+              "key": "D",
+              "label": "11"
+            },
+            {
+              "key": "E",
+              "label": "7"
+            }
+          ],
+          "solution": "7+5−3=9。"
+        },
+        "en": {
+          "stem": "Lele has 7 red beads and 5 blue beads. She gives away 3. How many remain?",
+          "choices": [
+            {
+              "key": "A",
+              "label": "8"
+            },
+            {
+              "key": "B",
+              "label": "9"
+            },
+            {
+              "key": "C",
+              "label": "10"
+            },
+            {
+              "key": "D",
+              "label": "11"
+            },
+            {
+              "key": "E",
+              "label": "7"
+            }
+          ],
+          "solution": "7+5−3=9."
+        }
+      },
+      "sourceFile": "independent-seamo-foundational-revised",
+      "verified": false,
+      "examReady": true
+    },
+    {
+      "id": "seamo-original-g1-revised-q02",
+      "year": 2026,
+      "level": "Grade 1",
+      "grades": "Grade 1",
+      "language": "zh/en",
+      "questionNo": 2,
+      "points": 1,
+      "answerMode": "choice",
+      "concept": "patterns",
+      "stem": "数列2，5，8，11，下一项是多少？",
+      "stemEn": "What is the next number in 2, 5, 8, 11, ...?",
+      "choices": [
+        {
+          "key": "A",
+          "label": "14"
+        },
+        {
+          "key": "B",
+          "label": "15"
+        },
+        {
+          "key": "C",
+          "label": "16"
+        },
+        {
+          "key": "D",
+          "label": "12"
+        },
+        {
+          "key": "E",
+          "label": "13"
+        }
+      ],
+      "choicesEn": [
+        {
+          "key": "A",
+          "label": "14"
+        },
+        {
+          "key": "B",
+          "label": "15"
+        },
+        {
+          "key": "C",
+          "label": "16"
+        },
+        {
+          "key": "D",
+          "label": "12"
+        },
+        {
+          "key": "E",
+          "label": "13"
+        }
+      ],
+      "answer": "A",
+      "solution": "每次加3，11+3=14。",
+      "localized": {
+        "zh": {
+          "stem": "数列2，5，8，11，下一项是多少？",
+          "choices": [
+            {
+              "key": "A",
+              "label": "14"
+            },
+            {
+              "key": "B",
+              "label": "15"
+            },
+            {
+              "key": "C",
+              "label": "16"
+            },
+            {
+              "key": "D",
+              "label": "12"
+            },
+            {
+              "key": "E",
+              "label": "13"
+            }
+          ],
+          "solution": "每次加3，11+3=14。"
+        },
+        "en": {
+          "stem": "What is the next number in 2, 5, 8, 11, ...?",
+          "choices": [
+            {
+              "key": "A",
+              "label": "14"
+            },
+            {
+              "key": "B",
+              "label": "15"
+            },
+            {
+              "key": "C",
+              "label": "16"
+            },
+            {
+              "key": "D",
+              "label": "12"
+            },
+            {
+              "key": "E",
+              "label": "13"
+            }
+          ],
+          "solution": "Add 3 each time: 11+3=14."
+        }
+      },
+      "sourceFile": "independent-seamo-foundational-revised",
+      "verified": false,
+      "examReady": true
+    },
+    {
+      "id": "seamo-original-g1-revised-q03",
+      "year": 2026,
+      "level": "Grade 1",
+      "grades": "Grade 1",
+      "language": "zh/en",
+      "questionNo": 3,
+      "points": 1,
+      "answerMode": "choice",
+      "concept": "multiplication",
+      "stem": "4个盘子，每个盘子放3块饼干，一共有多少块？",
+      "stemEn": "There are 4 plates with 3 cookies on each. How many cookies altogether?",
+      "choices": [
+        {
+          "key": "A",
+          "label": "13"
+        },
+        {
+          "key": "B",
+          "label": "14"
+        },
+        {
+          "key": "C",
+          "label": "10"
+        },
+        {
+          "key": "D",
+          "label": "11"
+        },
+        {
+          "key": "E",
+          "label": "12"
+        }
+      ],
+      "choicesEn": [
+        {
+          "key": "A",
+          "label": "13"
+        },
+        {
+          "key": "B",
+          "label": "14"
+        },
+        {
+          "key": "C",
+          "label": "10"
+        },
+        {
+          "key": "D",
+          "label": "11"
+        },
+        {
+          "key": "E",
+          "label": "12"
+        }
+      ],
+      "answer": "E",
+      "solution": "4×3=12。",
+      "localized": {
+        "zh": {
+          "stem": "4个盘子，每个盘子放3块饼干，一共有多少块？",
+          "choices": [
+            {
+              "key": "A",
+              "label": "13"
+            },
+            {
+              "key": "B",
+              "label": "14"
+            },
+            {
+              "key": "C",
+              "label": "10"
+            },
+            {
+              "key": "D",
+              "label": "11"
+            },
+            {
+              "key": "E",
+              "label": "12"
+            }
+          ],
+          "solution": "4×3=12。"
+        },
+        "en": {
+          "stem": "There are 4 plates with 3 cookies on each. How many cookies altogether?",
+          "choices": [
+            {
+              "key": "A",
+              "label": "13"
+            },
+            {
+              "key": "B",
+              "label": "14"
+            },
+            {
+              "key": "C",
+              "label": "10"
+            },
+            {
+              "key": "D",
+              "label": "11"
+            },
+            {
+              "key": "E",
+              "label": "12"
+            }
+          ],
+          "solution": "4×3=12."
+        }
+      },
+      "sourceFile": "independent-seamo-foundational-revised",
+      "verified": false,
+      "examReady": true
+    },
+    {
+      "id": "seamo-original-g1-revised-q04",
+      "year": 2026,
+      "level": "Grade 1",
+      "grades": "Grade 1",
+      "language": "zh/en",
+      "questionNo": 4,
+      "points": 1,
+      "answerMode": "choice",
+      "concept": "logic",
+      "stem": "排队时小乐前面有6人，后面有4人，队伍共有多少人？",
+      "stemEn": "There are 6 children in front of Lele and 4 behind. How many children are in the line?",
+      "choices": [
+        {
+          "key": "A",
+          "label": "13"
+        },
+        {
+          "key": "B",
+          "label": "9"
+        },
+        {
+          "key": "C",
+          "label": "10"
+        },
+        {
+          "key": "D",
+          "label": "11"
+        },
+        {
+          "key": "E",
+          "label": "12"
+        }
+      ],
+      "choicesEn": [
+        {
+          "key": "A",
+          "label": "13"
+        },
+        {
+          "key": "B",
+          "label": "9"
+        },
+        {
+          "key": "C",
+          "label": "10"
+        },
+        {
+          "key": "D",
+          "label": "11"
+        },
+        {
+          "key": "E",
+          "label": "12"
+        }
+      ],
+      "answer": "D",
+      "solution": "6+1+4=11。",
+      "localized": {
+        "zh": {
+          "stem": "排队时小乐前面有6人，后面有4人，队伍共有多少人？",
+          "choices": [
+            {
+              "key": "A",
+              "label": "13"
+            },
+            {
+              "key": "B",
+              "label": "9"
+            },
+            {
+              "key": "C",
+              "label": "10"
+            },
+            {
+              "key": "D",
+              "label": "11"
+            },
+            {
+              "key": "E",
+              "label": "12"
+            }
+          ],
+          "solution": "6+1+4=11。"
+        },
+        "en": {
+          "stem": "There are 6 children in front of Lele and 4 behind. How many children are in the line?",
+          "choices": [
+            {
+              "key": "A",
+              "label": "13"
+            },
+            {
+              "key": "B",
+              "label": "9"
+            },
+            {
+              "key": "C",
+              "label": "10"
+            },
+            {
+              "key": "D",
+              "label": "11"
+            },
+            {
+              "key": "E",
+              "label": "12"
+            }
+          ],
+          "solution": "6+1+4=11."
+        }
+      },
+      "sourceFile": "independent-seamo-foundational-revised",
+      "verified": false,
+      "examReady": true
+    },
+    {
+      "id": "seamo-original-g1-revised-q05",
+      "year": 2026,
+      "level": "Grade 1",
+      "grades": "Grade 1",
+      "language": "zh/en",
+      "questionNo": 5,
+      "points": 1,
+      "answerMode": "choice",
+      "concept": "counting",
+      "stem": "两行星星，每行4颗，划掉1颗后还剩几颗？",
+      "stemEn": "There are 2 rows of 4 stars. One is crossed out. How many stars remain?",
+      "choices": [
+        {
+          "key": "A",
+          "label": "5"
+        },
+        {
+          "key": "B",
+          "label": "6"
+        },
+        {
+          "key": "C",
+          "label": "7"
+        },
+        {
+          "key": "D",
+          "label": "8"
+        },
+        {
+          "key": "E",
+          "label": "9"
+        }
+      ],
+      "choicesEn": [
+        {
+          "key": "A",
+          "label": "5"
+        },
+        {
+          "key": "B",
+          "label": "6"
+        },
+        {
+          "key": "C",
+          "label": "7"
+        },
+        {
+          "key": "D",
+          "label": "8"
+        },
+        {
+          "key": "E",
+          "label": "9"
+        }
+      ],
+      "answer": "C",
+      "solution": "2×4−1=7。",
+      "localized": {
+        "zh": {
+          "stem": "两行星星，每行4颗，划掉1颗后还剩几颗？",
+          "choices": [
+            {
+              "key": "A",
+              "label": "5"
+            },
+            {
+              "key": "B",
+              "label": "6"
+            },
+            {
+              "key": "C",
+              "label": "7"
+            },
+            {
+              "key": "D",
+              "label": "8"
+            },
+            {
+              "key": "E",
+              "label": "9"
+            }
+          ],
+          "solution": "2×4−1=7。"
+        },
+        "en": {
+          "stem": "There are 2 rows of 4 stars. One is crossed out. How many stars remain?",
+          "choices": [
+            {
+              "key": "A",
+              "label": "5"
+            },
+            {
+              "key": "B",
+              "label": "6"
+            },
+            {
+              "key": "C",
+              "label": "7"
+            },
+            {
+              "key": "D",
+              "label": "8"
+            },
+            {
+              "key": "E",
+              "label": "9"
+            }
+          ],
+          "solution": "2×4−1=7."
+        }
+      },
+      "sourceFile": "independent-seamo-foundational-revised",
+      "verified": false,
+      "examReady": true
+    },
+    {
+      "id": "seamo-original-g1-revised-q06",
+      "year": 2026,
+      "level": "Grade 1",
+      "grades": "Grade 1",
+      "language": "zh/en",
+      "questionNo": 6,
+      "points": 1,
+      "answerMode": "choice",
+      "concept": "money",
+      "stem": "一张10元纸币、一张5元纸币和一枚2元硬币，一共多少元？",
+      "stemEn": "You have a 10-yuan note, a 5-yuan note and a 2-yuan coin. How many yuan altogether?",
+      "choices": [
+        {
+          "key": "A",
+          "label": "15"
+        },
+        {
+          "key": "B",
+          "label": "17"
+        },
+        {
+          "key": "C",
+          "label": "19"
+        },
+        {
+          "key": "D",
+          "label": "21"
+        },
+        {
+          "key": "E",
+          "label": "13"
+        }
+      ],
+      "choicesEn": [
+        {
+          "key": "A",
+          "label": "15"
+        },
+        {
+          "key": "B",
+          "label": "17"
+        },
+        {
+          "key": "C",
+          "label": "19"
+        },
+        {
+          "key": "D",
+          "label": "21"
+        },
+        {
+          "key": "E",
+          "label": "13"
+        }
+      ],
+      "answer": "B",
+      "solution": "10+5+2=17。",
+      "localized": {
+        "zh": {
+          "stem": "一张10元纸币、一张5元纸币和一枚2元硬币，一共多少元？",
+          "choices": [
+            {
+              "key": "A",
+              "label": "15"
+            },
+            {
+              "key": "B",
+              "label": "17"
+            },
+            {
+              "key": "C",
+              "label": "19"
+            },
+            {
+              "key": "D",
+              "label": "21"
+            },
+            {
+              "key": "E",
+              "label": "13"
+            }
+          ],
+          "solution": "10+5+2=17。"
+        },
+        "en": {
+          "stem": "You have a 10-yuan note, a 5-yuan note and a 2-yuan coin. How many yuan altogether?",
+          "choices": [
+            {
+              "key": "A",
+              "label": "15"
+            },
+            {
+              "key": "B",
+              "label": "17"
+            },
+            {
+              "key": "C",
+              "label": "19"
+            },
+            {
+              "key": "D",
+              "label": "21"
+            },
+            {
+              "key": "E",
+              "label": "13"
+            }
+          ],
+          "solution": "10+5+2=17."
+        }
+      },
+      "sourceFile": "independent-seamo-foundational-revised",
+      "verified": false,
+      "examReady": true
+    },
+    {
+      "id": "seamo-original-g1-revised-q07",
+      "year": 2026,
+      "level": "Grade 1",
+      "grades": "Grade 1",
+      "language": "zh/en",
+      "questionNo": 7,
+      "points": 1,
+      "answerMode": "choice",
+      "concept": "number-sense",
+      "stem": "从1数到20（包括1和20），有多少个偶数？",
+      "stemEn": "How many even numbers are there from 1 to 20 inclusive?",
+      "choices": [
+        {
+          "key": "A",
+          "label": "10"
+        },
+        {
+          "key": "B",
+          "label": "11"
+        },
+        {
+          "key": "C",
+          "label": "12"
+        },
+        {
+          "key": "D",
+          "label": "8"
+        },
+        {
+          "key": "E",
+          "label": "9"
+        }
+      ],
+      "choicesEn": [
+        {
+          "key": "A",
+          "label": "10"
+        },
+        {
+          "key": "B",
+          "label": "11"
+        },
+        {
+          "key": "C",
+          "label": "12"
+        },
+        {
+          "key": "D",
+          "label": "8"
+        },
+        {
+          "key": "E",
+          "label": "9"
+        }
+      ],
+      "answer": "A",
+      "solution": "偶数是2、4、…、20，共10个。",
+      "localized": {
+        "zh": {
+          "stem": "从1数到20（包括1和20），有多少个偶数？",
+          "choices": [
+            {
+              "key": "A",
+              "label": "10"
+            },
+            {
+              "key": "B",
+              "label": "11"
+            },
+            {
+              "key": "C",
+              "label": "12"
+            },
+            {
+              "key": "D",
+              "label": "8"
+            },
+            {
+              "key": "E",
+              "label": "9"
+            }
+          ],
+          "solution": "偶数是2、4、…、20，共10个。"
+        },
+        "en": {
+          "stem": "How many even numbers are there from 1 to 20 inclusive?",
+          "choices": [
+            {
+              "key": "A",
+              "label": "10"
+            },
+            {
+              "key": "B",
+              "label": "11"
+            },
+            {
+              "key": "C",
+              "label": "12"
+            },
+            {
+              "key": "D",
+              "label": "8"
+            },
+            {
+              "key": "E",
+              "label": "9"
+            }
+          ],
+          "solution": "They are 2, 4, ..., 20: 10 even numbers."
+        }
+      },
+      "sourceFile": "independent-seamo-foundational-revised",
+      "verified": false,
+      "examReady": true
+    },
+    {
+      "id": "seamo-original-g1-revised-q08",
+      "year": 2026,
+      "level": "Grade 1",
+      "grades": "Grade 1",
+      "language": "zh/en",
+      "questionNo": 8,
+      "points": 1,
+      "answerMode": "choice",
+      "concept": "place-value",
+      "stem": "两位数37的十位数字与个位数字相加，结果是多少？",
+      "stemEn": "What is the sum of the two digits in 37?",
+      "choices": [
+        {
+          "key": "A",
+          "label": "11"
+        },
+        {
+          "key": "B",
+          "label": "12"
+        },
+        {
+          "key": "C",
+          "label": "8"
+        },
+        {
+          "key": "D",
+          "label": "9"
+        },
+        {
+          "key": "E",
+          "label": "10"
+        }
+      ],
+      "choicesEn": [
+        {
+          "key": "A",
+          "label": "11"
+        },
+        {
+          "key": "B",
+          "label": "12"
+        },
+        {
+          "key": "C",
+          "label": "8"
+        },
+        {
+          "key": "D",
+          "label": "9"
+        },
+        {
+          "key": "E",
+          "label": "10"
+        }
+      ],
+      "answer": "E",
+      "solution": "3+7=10。",
+      "localized": {
+        "zh": {
+          "stem": "两位数37的十位数字与个位数字相加，结果是多少？",
+          "choices": [
+            {
+              "key": "A",
+              "label": "11"
+            },
+            {
+              "key": "B",
+              "label": "12"
+            },
+            {
+              "key": "C",
+              "label": "8"
+            },
+            {
+              "key": "D",
+              "label": "9"
+            },
+            {
+              "key": "E",
+              "label": "10"
+            }
+          ],
+          "solution": "3+7=10。"
+        },
+        "en": {
+          "stem": "What is the sum of the two digits in 37?",
+          "choices": [
+            {
+              "key": "A",
+              "label": "11"
+            },
+            {
+              "key": "B",
+              "label": "12"
+            },
+            {
+              "key": "C",
+              "label": "8"
+            },
+            {
+              "key": "D",
+              "label": "9"
+            },
+            {
+              "key": "E",
+              "label": "10"
+            }
+          ],
+          "solution": "3+7=10."
+        }
+      },
+      "sourceFile": "independent-seamo-foundational-revised",
+      "verified": false,
+      "examReady": true
+    },
+    {
+      "id": "seamo-original-g1-revised-q09",
+      "year": 2026,
+      "level": "Grade 1",
+      "grades": "Grade 1",
+      "language": "zh/en",
+      "questionNo": 9,
+      "points": 1,
+      "answerMode": "choice",
+      "concept": "division",
+      "stem": "12块饼干平均分给4个孩子，每人几块？",
+      "stemEn": "12 cookies are shared equally among 4 children. How many does each get?",
+      "choices": [
+        {
+          "key": "A",
+          "label": "5"
+        },
+        {
+          "key": "B",
+          "label": "1"
+        },
+        {
+          "key": "C",
+          "label": "2"
+        },
+        {
+          "key": "D",
+          "label": "3"
+        },
+        {
+          "key": "E",
+          "label": "4"
+        }
+      ],
+      "choicesEn": [
+        {
+          "key": "A",
+          "label": "5"
+        },
+        {
+          "key": "B",
+          "label": "1"
+        },
+        {
+          "key": "C",
+          "label": "2"
+        },
+        {
+          "key": "D",
+          "label": "3"
+        },
+        {
+          "key": "E",
+          "label": "4"
+        }
+      ],
+      "answer": "D",
+      "solution": "12÷4=3。",
+      "localized": {
+        "zh": {
+          "stem": "12块饼干平均分给4个孩子，每人几块？",
+          "choices": [
+            {
+              "key": "A",
+              "label": "5"
+            },
+            {
+              "key": "B",
+              "label": "1"
+            },
+            {
+              "key": "C",
+              "label": "2"
+            },
+            {
+              "key": "D",
+              "label": "3"
+            },
+            {
+              "key": "E",
+              "label": "4"
+            }
+          ],
+          "solution": "12÷4=3。"
+        },
+        "en": {
+          "stem": "12 cookies are shared equally among 4 children. How many does each get?",
+          "choices": [
+            {
+              "key": "A",
+              "label": "5"
+            },
+            {
+              "key": "B",
+              "label": "1"
+            },
+            {
+              "key": "C",
+              "label": "2"
+            },
+            {
+              "key": "D",
+              "label": "3"
+            },
+            {
+              "key": "E",
+              "label": "4"
+            }
+          ],
+          "solution": "12÷4=3."
+        }
+      },
+      "sourceFile": "independent-seamo-foundational-revised",
+      "verified": false,
+      "examReady": true
+    },
+    {
+      "id": "seamo-original-g1-revised-q10",
+      "year": 2026,
+      "level": "Grade 1",
+      "grades": "Grade 1",
+      "language": "zh/en",
+      "questionNo": 10,
+      "points": 1,
+      "answerMode": "choice",
+      "concept": "geometry",
+      "stem": "长4厘米、宽3厘米的长方形，周长是多少厘米？",
+      "stemEn": "A rectangle is 4 cm long and 3 cm wide. What is its perimeter in cm?",
+      "choices": [
+        {
+          "key": "A",
+          "label": "12"
+        },
+        {
+          "key": "B",
+          "label": "13"
+        },
+        {
+          "key": "C",
+          "label": "14"
+        },
+        {
+          "key": "D",
+          "label": "15"
+        },
+        {
+          "key": "E",
+          "label": "16"
+        }
+      ],
+      "choicesEn": [
+        {
+          "key": "A",
+          "label": "12"
+        },
+        {
+          "key": "B",
+          "label": "13"
+        },
+        {
+          "key": "C",
+          "label": "14"
+        },
+        {
+          "key": "D",
+          "label": "15"
+        },
+        {
+          "key": "E",
+          "label": "16"
+        }
+      ],
+      "answer": "C",
+      "solution": "(4+3)×2=14。",
+      "localized": {
+        "zh": {
+          "stem": "长4厘米、宽3厘米的长方形，周长是多少厘米？",
+          "choices": [
+            {
+              "key": "A",
+              "label": "12"
+            },
+            {
+              "key": "B",
+              "label": "13"
+            },
+            {
+              "key": "C",
+              "label": "14"
+            },
+            {
+              "key": "D",
+              "label": "15"
+            },
+            {
+              "key": "E",
+              "label": "16"
+            }
+          ],
+          "solution": "(4+3)×2=14。"
+        },
+        "en": {
+          "stem": "A rectangle is 4 cm long and 3 cm wide. What is its perimeter in cm?",
+          "choices": [
+            {
+              "key": "A",
+              "label": "12"
+            },
+            {
+              "key": "B",
+              "label": "13"
+            },
+            {
+              "key": "C",
+              "label": "14"
+            },
+            {
+              "key": "D",
+              "label": "15"
+            },
+            {
+              "key": "E",
+              "label": "16"
+            }
+          ],
+          "solution": "(4+3)×2=14."
+        }
+      },
+      "sourceFile": "independent-seamo-foundational-revised",
+      "verified": false,
+      "examReady": true
+    },
+    {
+      "id": "seamo-original-g1-revised-q11",
+      "year": 2026,
+      "level": "Grade 1",
+      "grades": "Grade 1",
+      "language": "zh/en",
+      "questionNo": 11,
+      "points": 1,
+      "answerMode": "choice",
+      "concept": "counting",
+      "stem": "从15到20（包括15和20），共有几个整数？",
+      "stemEn": "How many whole numbers are there from 15 to 20 inclusive?",
+      "choices": [
+        {
+          "key": "A",
+          "label": "5"
+        },
+        {
+          "key": "B",
+          "label": "6"
+        },
+        {
+          "key": "C",
+          "label": "7"
+        },
+        {
+          "key": "D",
+          "label": "8"
+        },
+        {
+          "key": "E",
+          "label": "4"
+        }
+      ],
+      "choicesEn": [
+        {
+          "key": "A",
+          "label": "5"
+        },
+        {
+          "key": "B",
+          "label": "6"
+        },
+        {
+          "key": "C",
+          "label": "7"
+        },
+        {
+          "key": "D",
+          "label": "8"
+        },
+        {
+          "key": "E",
+          "label": "4"
+        }
+      ],
+      "answer": "B",
+      "solution": "20−15+1=6。",
+      "localized": {
+        "zh": {
+          "stem": "从15到20（包括15和20），共有几个整数？",
+          "choices": [
+            {
+              "key": "A",
+              "label": "5"
+            },
+            {
+              "key": "B",
+              "label": "6"
+            },
+            {
+              "key": "C",
+              "label": "7"
+            },
+            {
+              "key": "D",
+              "label": "8"
+            },
+            {
+              "key": "E",
+              "label": "4"
+            }
+          ],
+          "solution": "20−15+1=6。"
+        },
+        "en": {
+          "stem": "How many whole numbers are there from 15 to 20 inclusive?",
+          "choices": [
+            {
+              "key": "A",
+              "label": "5"
+            },
+            {
+              "key": "B",
+              "label": "6"
+            },
+            {
+              "key": "C",
+              "label": "7"
+            },
+            {
+              "key": "D",
+              "label": "8"
+            },
+            {
+              "key": "E",
+              "label": "4"
+            }
+          ],
+          "solution": "20−15+1=6."
+        }
+      },
+      "sourceFile": "independent-seamo-foundational-revised",
+      "verified": false,
+      "examReady": true
+    },
+    {
+      "id": "seamo-original-g1-revised-q12",
+      "year": 2026,
+      "level": "Grade 1",
+      "grades": "Grade 1",
+      "language": "zh/en",
+      "questionNo": 12,
+      "points": 1,
+      "answerMode": "choice",
+      "concept": "time",
+      "stem": "现在是上午9点，2小时后是几点？",
+      "stemEn": "It is 9 a.m. now. What hour will it be in 2 hours?",
+      "choices": [
+        {
+          "key": "A",
+          "label": "11"
+        },
+        {
+          "key": "B",
+          "label": "12"
+        },
+        {
+          "key": "C",
+          "label": "13"
+        },
+        {
+          "key": "D",
+          "label": "9"
+        },
+        {
+          "key": "E",
+          "label": "10"
+        }
+      ],
+      "choicesEn": [
+        {
+          "key": "A",
+          "label": "11"
+        },
+        {
+          "key": "B",
+          "label": "12"
+        },
+        {
+          "key": "C",
+          "label": "13"
+        },
+        {
+          "key": "D",
+          "label": "9"
+        },
+        {
+          "key": "E",
+          "label": "10"
+        }
+      ],
+      "answer": "A",
+      "solution": "9+2=11，上午11点。",
+      "localized": {
+        "zh": {
+          "stem": "现在是上午9点，2小时后是几点？",
+          "choices": [
+            {
+              "key": "A",
+              "label": "11"
+            },
+            {
+              "key": "B",
+              "label": "12"
+            },
+            {
+              "key": "C",
+              "label": "13"
+            },
+            {
+              "key": "D",
+              "label": "9"
+            },
+            {
+              "key": "E",
+              "label": "10"
+            }
+          ],
+          "solution": "9+2=11，上午11点。"
+        },
+        "en": {
+          "stem": "It is 9 a.m. now. What hour will it be in 2 hours?",
+          "choices": [
+            {
+              "key": "A",
+              "label": "11"
+            },
+            {
+              "key": "B",
+              "label": "12"
+            },
+            {
+              "key": "C",
+              "label": "13"
+            },
+            {
+              "key": "D",
+              "label": "9"
+            },
+            {
+              "key": "E",
+              "label": "10"
+            }
+          ],
+          "solution": "9+2=11, so 11 a.m."
+        }
+      },
+      "sourceFile": "independent-seamo-foundational-revised",
+      "verified": false,
+      "examReady": true
+    },
+    {
+      "id": "seamo-original-g1-revised-q13",
+      "year": 2026,
+      "level": "Grade 1",
+      "grades": "Grade 1",
+      "language": "zh/en",
+      "questionNo": 13,
+      "points": 1,
+      "answerMode": "choice",
+      "concept": "logic",
+      "stem": "袋子里有2个红球和3个蓝球。闭眼摸球，至少摸几个才能保证摸到红球？",
+      "stemEn": "A bag has 2 red balls and 3 blue balls. What is the fewest draws needed to guarantee a red ball?",
+      "choices": [
+        {
+          "key": "A",
+          "label": "5"
+        },
+        {
+          "key": "B",
+          "label": "6"
+        },
+        {
+          "key": "C",
+          "label": "2"
+        },
+        {
+          "key": "D",
+          "label": "3"
+        },
+        {
+          "key": "E",
+          "label": "4"
+        }
+      ],
+      "choicesEn": [
+        {
+          "key": "A",
+          "label": "5"
+        },
+        {
+          "key": "B",
+          "label": "6"
+        },
+        {
+          "key": "C",
+          "label": "2"
+        },
+        {
+          "key": "D",
+          "label": "3"
+        },
+        {
+          "key": "E",
+          "label": "4"
+        }
+      ],
+      "answer": "E",
+      "solution": "最坏先摸到3个蓝球，第4个必为红球。",
+      "localized": {
+        "zh": {
+          "stem": "袋子里有2个红球和3个蓝球。闭眼摸球，至少摸几个才能保证摸到红球？",
+          "choices": [
+            {
+              "key": "A",
+              "label": "5"
+            },
+            {
+              "key": "B",
+              "label": "6"
+            },
+            {
+              "key": "C",
+              "label": "2"
+            },
+            {
+              "key": "D",
+              "label": "3"
+            },
+            {
+              "key": "E",
+              "label": "4"
+            }
+          ],
+          "solution": "最坏先摸到3个蓝球，第4个必为红球。"
+        },
+        "en": {
+          "stem": "A bag has 2 red balls and 3 blue balls. What is the fewest draws needed to guarantee a red ball?",
+          "choices": [
+            {
+              "key": "A",
+              "label": "5"
+            },
+            {
+              "key": "B",
+              "label": "6"
+            },
+            {
+              "key": "C",
+              "label": "2"
+            },
+            {
+              "key": "D",
+              "label": "3"
+            },
+            {
+              "key": "E",
+              "label": "4"
+            }
+          ],
+          "solution": "In the worst case, the first 3 are blue; the 4th must be red."
+        }
+      },
+      "sourceFile": "independent-seamo-foundational-revised",
+      "verified": false,
+      "examReady": true
+    },
+    {
+      "id": "seamo-original-g1-revised-q14",
+      "year": 2026,
+      "level": "Grade 1",
+      "grades": "Grade 1",
+      "language": "zh/en",
+      "questionNo": 14,
+      "points": 1,
+      "answerMode": "choice",
+      "concept": "arithmetic",
+      "stem": "教室里有3排椅子，每排4把，其中2把没人坐。有多少把椅子有人坐？",
+      "stemEn": "There are 3 rows of 4 chairs, and 2 chairs are empty. How many chairs are occupied?",
+      "choices": [
+        {
+          "key": "A",
+          "label": "12"
+        },
+        {
+          "key": "B",
+          "label": "8"
+        },
+        {
+          "key": "C",
+          "label": "9"
+        },
+        {
+          "key": "D",
+          "label": "10"
+        },
+        {
+          "key": "E",
+          "label": "11"
+        }
+      ],
+      "choicesEn": [
+        {
+          "key": "A",
+          "label": "12"
+        },
+        {
+          "key": "B",
+          "label": "8"
+        },
+        {
+          "key": "C",
+          "label": "9"
+        },
+        {
+          "key": "D",
+          "label": "10"
+        },
+        {
+          "key": "E",
+          "label": "11"
+        }
+      ],
+      "answer": "D",
+      "solution": "3×4−2=10。",
+      "localized": {
+        "zh": {
+          "stem": "教室里有3排椅子，每排4把，其中2把没人坐。有多少把椅子有人坐？",
+          "choices": [
+            {
+              "key": "A",
+              "label": "12"
+            },
+            {
+              "key": "B",
+              "label": "8"
+            },
+            {
+              "key": "C",
+              "label": "9"
+            },
+            {
+              "key": "D",
+              "label": "10"
+            },
+            {
+              "key": "E",
+              "label": "11"
+            }
+          ],
+          "solution": "3×4−2=10。"
+        },
+        "en": {
+          "stem": "There are 3 rows of 4 chairs, and 2 chairs are empty. How many chairs are occupied?",
+          "choices": [
+            {
+              "key": "A",
+              "label": "12"
+            },
+            {
+              "key": "B",
+              "label": "8"
+            },
+            {
+              "key": "C",
+              "label": "9"
+            },
+            {
+              "key": "D",
+              "label": "10"
+            },
+            {
+              "key": "E",
+              "label": "11"
+            }
+          ],
+          "solution": "3×4−2=10."
+        }
+      },
+      "sourceFile": "independent-seamo-foundational-revised",
+      "verified": false,
+      "examReady": true
+    },
+    {
+      "id": "seamo-original-g1-revised-q15",
+      "year": 2026,
+      "level": "Grade 1",
+      "grades": "Grade 1",
+      "language": "zh/en",
+      "questionNo": 15,
+      "points": 1,
+      "answerMode": "choice",
+      "concept": "patterns",
+      "stem": "观察规律：1，2，4，7，11，下一项是多少？",
+      "stemEn": "Complete the pattern: 1, 2, 4, 7, 11, ...",
+      "choices": [
+        {
+          "key": "A",
+          "label": "12"
+        },
+        {
+          "key": "B",
+          "label": "14"
+        },
+        {
+          "key": "C",
+          "label": "16"
+        },
+        {
+          "key": "D",
+          "label": "18"
+        },
+        {
+          "key": "E",
+          "label": "20"
+        }
+      ],
+      "choicesEn": [
+        {
+          "key": "A",
+          "label": "12"
+        },
+        {
+          "key": "B",
+          "label": "14"
+        },
+        {
+          "key": "C",
+          "label": "16"
+        },
+        {
+          "key": "D",
+          "label": "18"
+        },
+        {
+          "key": "E",
+          "label": "20"
+        }
+      ],
+      "answer": "C",
+      "solution": "相邻差依次是1、2、3、4，下一次加5，得到16。",
+      "localized": {
+        "zh": {
+          "stem": "观察规律：1，2，4，7，11，下一项是多少？",
+          "choices": [
+            {
+              "key": "A",
+              "label": "12"
+            },
+            {
+              "key": "B",
+              "label": "14"
+            },
+            {
+              "key": "C",
+              "label": "16"
+            },
+            {
+              "key": "D",
+              "label": "18"
+            },
+            {
+              "key": "E",
+              "label": "20"
+            }
+          ],
+          "solution": "相邻差依次是1、2、3、4，下一次加5，得到16。"
+        },
+        "en": {
+          "stem": "Complete the pattern: 1, 2, 4, 7, 11, ...",
+          "choices": [
+            {
+              "key": "A",
+              "label": "12"
+            },
+            {
+              "key": "B",
+              "label": "14"
+            },
+            {
+              "key": "C",
+              "label": "16"
+            },
+            {
+              "key": "D",
+              "label": "18"
+            },
+            {
+              "key": "E",
+              "label": "20"
+            }
+          ],
+          "solution": "The differences are 1, 2, 3, 4; next add 5 to get 16."
+        }
+      },
+      "sourceFile": "independent-seamo-foundational-revised",
+      "verified": false,
+      "examReady": true
+    }
+  ]
+}

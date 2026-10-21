@@ -28,7 +28,7 @@ export function gradeExam(questions: Question[], answers: Record<string, string>
     byPoints[p] ??= { correct: 0, total: 0 };
     byPoints[p].total += 1;
     if (isCorrect) byPoints[p].correct += 1;
-    const concept = q.localized?.zh && q.localized?.en ? "official_original" : q.concept;
+    const concept = profile.competitionId === "seamo" ? q.concept : q.localized?.zh && q.localized?.en ? "official_original" : q.concept;
     byConcept[concept] ??= { correct: 0, total: 0 };
     byConcept[concept].total += 1;
     if (isCorrect) byConcept[concept].correct += 1;

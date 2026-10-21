@@ -53,13 +53,13 @@ async function startGrade(page:import('@playwright/test').Page,grade:1|2) {
   await page.goto('/competitions?c=seamo');
   await expect(page.locator('button.competition-card').filter({hasText:'新加坡 SEAMO'})).toBeVisible();
   await page.getByRole('button',{name:'1-2年级'}).click();
-  const name = `SEAMO ${grade}年级 · 原创基础训练 1`;
+  const name = `SEAMO ${grade}年级 · 原创基础训练（修订版）`;
   const card = page.locator('article').filter({has:page.getByRole('heading',{name})});
   await expect(card).toBeVisible();
   await card.getByRole('button',{name:'开始训练'}).click();
   await expect(page).toHaveURL(/\/login\?next=/);
   await login(page);
-  await expect(page).toHaveURL(new RegExp(`/exam/seamo-original-g${grade}-mock-1$`),{timeout:15000});
+  await expect(page).toHaveURL(new RegExp(`/exam/seamo-original-g${grade}-revised-1$`),{timeout:15000});
   await expect(page.getByText(/本站独立编写的 SEAMO 基础专项练习/)).toBeVisible();
   await page.getByRole('button',{name:'确认信息并开始考试'}).click();
   await expect(page.locator('.question-stem')).toBeVisible();
