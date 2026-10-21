@@ -28,7 +28,7 @@ async function run() {
     }
   }
   assert.equal(canStartFullExam(null), false, 'catalogue is public, full exam is not')
-  assert.equal(canStartFullExam({id:'qa-guest',role:'student',username:'guest',candidateNo:'GUEST'}), false)
+  assert.equal(canStartFullExam({id:'guest_qa_local',role:'student',username:'guest',candidateNo:'GUEST'}), false)
   console.log('MINIAPP_PUBLIC_CATALOGUE=PASS anonymous_world='+worldPayload.entries.length+' anonymous_exams='+body.exams.length+' domestic=0 full_exam_guest=denied')
 }
 void run().catch(error => { console.error(error); process.exitCode=1 })
