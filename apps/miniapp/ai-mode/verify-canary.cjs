@@ -23,6 +23,17 @@ function verifyCanary(outputRoot) {
     'Skills package must be independent'
   )
   assert.equal(app.agent.pageMetadata, 'page-meta.json')
+  assert.equal(app.lazyCodeLoading, 'requiredComponents', 'AI runtime requires lazy code loading')
+  const project = readJson('project.config.json')
+  assert.equal(project.miniprogramRoot, './')
+  assert.ok(project.packOptions?.include?.some(x => x.type === 'folder' && x.value === 'skills'),
+    'Skill must be included in standalone IDE project packaging')
+  assert.ok(app.subPackages.some(x => x.root === 'skills' && x.name === 'skills' && x.independent === true))
+  const bundledEntry = fs.readFileSync(path.join(dist, 'skills/math-discovery/index.js'), 'utf8')
+  assert.ok(bundledEntry.includes('createSkill(') && bundledEntry.includes('registerAPI('),
+    'the runtime Skill entry must contain registered APIs')
+  assert.doesNotMatch(bundledEntry, /require\\(\\s*['"]\\.\\/apis\\//,
+    'raw relative CommonJS imports cause WeChat runtime module-not-defined errors')
   assert.deepEqual(
     skill.apis.map(x => x.name),
     ['prepareArithmeticTraining', 'findInternationalCompetitions']

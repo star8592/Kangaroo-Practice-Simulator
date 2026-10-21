@@ -55,8 +55,6 @@ jobs:
       - name: Official AI Skill V001-V021 static checks (without developer CLI)
         shell: bash
         run: |
-          cp apps/miniapp/project.config.json apps/miniapp/dist/project.config.json
-          node -e "const fs=require('fs'); const p='apps/miniapp/dist/project.config.json'; const c=JSON.parse(fs.readFileSync(p,'utf8')); c.miniprogramRoot='./'; fs.writeFileSync(p,JSON.stringify(c,null,2))"
           node _external/wechat-ai-validator/wxa-skills-validate/scripts/validate.mjs apps/miniapp/dist
           node -e "const r=JSON.parse(require('fs').readFileSync('apps/miniapp/dist/cli-agent-run/validate-report.json','utf8')); if(r.summary.errors!==0||r.summary.failed!==0)process.exit(1); console.log('TENCENT_AI_STATIC=PASS '+r.summary.passed+'/'+r.summary.total+'; real-device execute remains required')"
       - name: Confirm untouched source app config

@@ -4,8 +4,10 @@
 // It never alters src/app.config.ts, any backend, or production release settings.
 const fs = require('node:fs')
 const path = require('node:path')
+const os = require('node:os')
+const { bundleSkillEntry } = require('./bundle-skill-entry.cjs')
 
-function packCanary(outputRoot) {
+function packCanary(outputRoot, { bundleEntry = bundleSkillEntry } = {}) {
   const dist = path.resolve(outputRoot)
   if (path.basename(dist) !== 'dist') throw new Error('只允许装配到明确指定的 dist 目录')
   const appPath = path.join(dist, 'app.json')
@@ -39,22 +41,53 @@ function packCanary(outputRoot) {
     }
   }
 
-  // Only reached after all validation: add an independent package to this build output.
-  fs.mkdirSync(path.dirname(dest), { recursive: true })
-  fs.cpSync(skillRoot, dest, { recursive: true, force: false, errorOnExist: true })
-  const metadata = {
-    pages: [
-      { path: 'pages/ai-entry/index', name: 'SOC THINK 数学学习 AI 接力入口', description: '打开计算训练或国际数学赛事管家；不自动开始训练或读取成绩' }
-    ]
+  // Fail closed: compile into OS temp before mutating the Taro output.
+  // The original APIs stay modular; only dist/skills/*/index.js is bundled.
+  const buildDir = fs.mkdtempSync(path.join(os.tmpdir(), 'kps-wechat-ai-r0-'))
+  const bundledEntry = path.join(buildDir, 'index.js')
+  try {
+    bundleEntry(path.join(skillRoot, 'index.js'), bundledEntry)
+    const bundle = fs.readFileSync(bundledEntry, 'utf8')
+    if (!bundle.includes('createSkill(') || !bundle.includes('registerAPI(') ||
+        /require\(\s*['"]\.\/apis\//.test(bundle)) {
+      throw new Error('Skill 运行入口不是自包含 bundle，禁止装配')
+    }
+
+    const projectSource = path.join(__dirname, '..', 'project.config.json')
+    const project = JSON.parse(fs.readFileSync(projectSource, 'utf8'))
+    project.miniprogramRoot = './'
+    project.libVersion = '3.16.1'
+    const packOptions = project.packOptions || {}
+    project.packOptions = {
+      ...packOptions,
+      include: [...(packOptions.include || []).filter(x => x.value !== 'skills'),
+        { type: 'folder', value: 'skills' }],
+      ignore: [...(packOptions.ignore || []).filter(x => x.value !== 'cli-agent-run'),
+        { type: 'folder', value: 'cli-agent-run' }]
+    }
+
+    fs.mkdirSync(path.dirname(dest), { recursive: true })
+    fs.cpSync(skillRoot, dest, { recursive: true, force: false, errorOnExist: true })
+    fs.copyFileSync(bundledEntry, path.join(dest, 'index.js'))
+    const metadata = {
+      pages: [
+        { path: 'pages/ai-entry/index', name: 'SOC THINK 数学学习 AI 接力入口', description: '打开计算训练或国际数学赛事管家；不自动开始训练或读取成绩' }
+      ]
+    }
+    fs.writeFileSync(path.join(dist, 'page-meta.json'), JSON.stringify(metadata, null, 2) + '\n')
+    app.subPackages = [...(app.subPackages || []),
+      { root: 'skills', name: 'skills', pages: [], independent: true }]
+    app.lazyCodeLoading = 'requiredComponents'
+    app.agent = {
+      skills: [{ name: 'math-discovery', description: '计算训练入口与国际数学赛事公开查询', path: 'skills/math-discovery' }],
+      pageMetadata: 'page-meta.json'
+    }
+    fs.writeFileSync(appPath, JSON.stringify(app, null, 2) + '\n')
+    fs.writeFileSync(path.join(dist, 'project.config.json'), JSON.stringify(project, null, 2) + '\n')
+    return { dist, skill: dest, count: declared.apis.length, bundled: true }
+  } finally {
+    fs.rmSync(buildDir, { recursive: true, force: true })
   }
-  fs.writeFileSync(path.join(dist, 'page-meta.json'), JSON.stringify(metadata, null, 2) + '\n')
-  app.subPackages = [...(app.subPackages || []), { root: 'skills', pages: [], independent: true }]
-  app.agent = {
-    skills: [{ name: 'math-discovery', description: '计算训练入口与国际数学赛事公开查询', path: 'skills/math-discovery' }],
-    pageMetadata: 'page-meta.json'
-  }
-  fs.writeFileSync(appPath, JSON.stringify(app, null, 2) + '\n')
-  return { dist, skill: dest, count: declared.apis.length }
 }
 
 if (require.main === module) {

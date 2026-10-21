@@ -57,3 +57,12 @@ R1 是当前 Draft PR 的接力页真机验收；R2 再研究账户授权和个�
 - 腾讯官方 `wechat-miniprogram/ai-mode-skills` 的 `wxa-skills-validate`，固定版本 `9bd1f25a7051ff137206f15251f716536f8409e9`：初次 V009 误将三元表达式 `grade : null` 识别为结构字段；改为先赋值 `confirmedGrade` 后，静态规则 **31/31 PASS**、0 error / 0 warning。
 - 本 PR 新增以上静态验收的 CI 固定版本步骤，但由于本机未找到支持 AI 模式的微信开发者工具 CLI，官方工具的 preview/execute 未运行；独立 Taro 构建 PASS 不代表微信 CLI 或真机 PASS。
 - 微信公众平台截图证实总开关、自动模式和开发模式已开启；仍需要核实小微 Handoff 实际调用权限、平台评测和正式审核是否允许。
+
+
+## 2026-10-21 Windows Nightly 真实原子接口验收（已推进）
+
+- 微信开发者工具 `2.02.2610202` 已装在 `DESKTOP-EUF4F41`，CLI 服务端口 `20118`、`login:true`。
+- 真实 Taro 微信编译产物从 Z890 通过局域网传到 Windows，在 Windows 校验 SHA-256 后载入；仅隔离测试，无代码提审。
+- 调试自动化服务端口 `9421`。显式 `cli agent start` 后，未打包的 Skill 原始入口返回模块加载错误 `module skills/math-discovery/apis/prepareArithmeticTraining.js is not defined`。
+- 用 esbuild 将原子接口编译为一个无相对 require 的自包含 `index.js` 后，微信 IDE 实际调用 `prepareArithmeticTraining` 返回 `status:ok`, `isError:false`；随后 `findInternationalCompetitions` 返回 `status:ok`, `isError:false`, `total:5`。
+- 本次 PR 固化单独的装配步骤、构建产物检查、独立项目配置和防回归测试。仍未验收卡片 Handoff、真机、正式审核。
