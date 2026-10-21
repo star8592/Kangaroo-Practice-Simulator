@@ -36,3 +36,11 @@ page{background:#f4f6f1;color:#17231d;font-family:-apple-system,BlinkMacSystemFo
 
 /* Only one prominent submit CTA is rendered outside the answer keypad. */
 .arithmetic-session-submit{width:100%!important;min-height:94rpx!important;font-size:32rpx!important;margin-top:24rpx!important}
+
+/* Clear, mobile-friendly exam navigation and a single high-salience submit action. */
+.arithmetic-resume-card{padding:22rpx;margin:14rpx 0 24rpx;border:2rpx solid #c8dfd2;border-radius:18rpx;background:#f1f8f3}
+.arithmetic-resume-card .primary{margin-top:16rpx}
+.arithmetic-session-heading{min-height:76rpx}
+.arithmetic-session-heading .text-action,.exam-header-row .text-action{margin:0!important;min-height:72rpx!important}
+.exam-header-row{min-height:82rpx;font-size:26rpx;font-weight:800}
+.exam-action-hint{margin-bottom:45rpx;text-align:center}
