@@ -8,7 +8,7 @@ const UI={
  zh:{
   eye:"SOC THINK · 全球数学竞赛与成长",
   title1:"练好数学，",title2:"探索世界数学竞赛",
-  copy:"面向 G1–G12 的数学训练、竞赛模拟与全球赛事管家。今天可以练计算，也可以参加模拟。赛事查询、报名信息和备赛安排统一在赛事管家查看。",
+  copy:"小学、初中、高中（1—12 年级）都可以练计算：从四则、分数到代数、函数。进入后选年级就开始；竞赛模拟和全球赛事管理是独立入口。",
   primary:"开始计算训练",competition:"参加竞赛模拟",events:"进入赛事管家",login:"已有账号登录",register:"微信登录 / 注册 · 扫码即用",
   loop:"一次训练，应该回答四个问题",
   s1:"现在在哪里",s1d:"从年级、正确率、速度和题型表现建立当前能力基线。",
@@ -16,7 +16,7 @@ const UI={
   s3:"下一步练什么",s3d:"根据薄弱点进入针对性计算训练、错题复盘或竞赛题型训练。",
   s4:"有没有进步",s4d:"持续记录正确率、速度、错因和考试表现，让家长和学生看到变化。",
   modes:"数学训练与竞赛模拟，连接长期成长档案",
-  calc:"计算与基础能力",calcDesc:"覆盖 G1–G12，从基础运算延伸到代数、函数、概率与统计。支持诊断、自适应训练、限时训练和巧算策略。",calcCta:"进入计算训练",
+  calc:"小学到高中 · 计算训练",calcDesc:"小学练四则、分数和小数；初中练正负数、方程和根式；高中练函数、指数、三角和数列。先做题，再看有依据的下一步建议。",calcCta:"进入计算训练",
   comp:"竞赛模拟考试",compDesc:"不同赛事的真实赛制、真题及模拟练习，配套成绩与错题复盘；赛历、报名核验和备赛计划请进入全球赛事。",compCta:"参加竞赛模拟",
   profile:"学习结果不是一次分数",profileDesc:"训练记录、速度、正确率、错因与考试表现汇入长期档案。登录后可继续上次进度并查看个人学习报告。",profileCta:"查看我的学习报告",
  },
@@ -48,12 +48,18 @@ export default function PublicHome(){
    <h1>{ui.title1}<br/><span>{ui.title2}</span></h1>
    <p className="hero-copy">{ui.copy}</p>
    <div className="hero-actions">
-    <Link className="primary-button home-login-primary" href="/login">{ui.register}</Link>
-    <Link className="secondary-button" href="/arithmetic">{ui.primary}</Link>
+    <Link className="primary-button home-login-primary" href="/arithmetic">{ui.primary}</Link>
+    <Link className="secondary-button" href="/login">{ui.register}</Link>
     <Link className="secondary-button" href="/competitions">{ui.competition}</Link>
     <Link className="secondary-button" href="/events">{ui.events}</Link>
    </div>
 
+  </section>
+
+  <section className="home-school-stages" aria-label={lang==="zh"?"小学、初中、高中计算训练":"Calculation practice for Grades 1–12"}>
+    <div><b>{lang==="zh"?"小学 1—6 年级":"Primary · G1–G6"}</b><span>{lang==="zh"?"四则运算 · 分数 · 小数":"Operations · fractions · decimals"}</span></div>
+    <div><b>{lang==="zh"?"初中 7—9 年级":"Junior · G7–G9"}</b><span>{lang==="zh"?"正负数 · 整式 · 根式":"Signed numbers · algebra · roots"}</span></div>
+    <div><b>{lang==="zh"?"高中 10—12 年级":"Senior · G10–G12"}</b><span>{lang==="zh"?"函数 · 指数 · 三角 · 数列":"Functions · exponents · trigonometry"}</span></div>
   </section>
 
   <section className="home-loop" aria-label={ui.loop}>
