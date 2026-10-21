@@ -1,0 +1,17 @@
+{
+  "retiredAt": "2026-10-20",
+  "reason": "Domestic mathematics competitions removed from public product",
+  "sources": [
+    {
+      "id": "cms-china-olympiad",
+      "eventId": "cmo",
+      "region": "CN",
+      "label": "中国数学会竞赛公告",
+      "url": "https://www.cms.org.cn/Home/comp/comp.html",
+      "matchPhrases": [
+        "全国中学生数学奥林匹克竞赛",
+        "全国高中数学联赛"
+      ]
+    }
+  ]
+}

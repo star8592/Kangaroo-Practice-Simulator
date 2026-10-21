@@ -23,7 +23,7 @@ for (const row of CHINA_MATH_EVENTS) {
     assert.equal(step.date, undefined, "never invent an event date");
     assert.equal(companionTaskState(step, "2026-10-09"), "upcoming");
   }
-  assert.ok(COMPETITION_COMPANIONS.some(x => x.id === plan.id), "progress endpoint must resolve companion");
+  assert.ok(!COMPETITION_COMPANIONS.some(x => x.id === plan.id), "archived companion must not be publicly mutable");
 }
 const amc = COMPETITION_COMPANIONS.find(x => x.competitionId === "australian-amc");
 assert.ok(amc, "existing Australian AMC companion must be preserved");

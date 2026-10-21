@@ -9,8 +9,8 @@ import { getWorldCompanion } from '../src/lib/competition-companion'
 const ids = WORLD_COMPETITIONS.map(e=>e.id)
 assert.equal(new Set(ids).size, ids.length,'Duplicate global competition identities')
 assert.equal(new Set(CHINA_MATH_EVENTS.map(x=>x.id)).size,CHINA_MATH_EVENTS.length,'Duplicate China event IDs')
-assert.equal(ids.length,CHINA_MATH_EVENTS.length+5,'Global index lost a domestic or international family')
-assert.equal(WORLD_COMPETITIONS.filter(x=>x.region==='CN').length,CHINA_MATH_EVENTS.length,'China directory coverage regressed')
+assert.equal(ids.length,5,'International competition families must remain')
+assert.equal(WORLD_COMPETITIONS.filter(x=>x.region==='CN').length,0,'Domestic events must not be publicly listed')
 assert.ok(WORLD_COMPETITIONS.some(x=>x.region!=='CN'),'International events must be present')
 assert.equal(WORLD_REGION_OPTIONS[0].value,'all')
 assert.equal(WORLD_STAGE_OPTIONS[0].value,'all')
@@ -32,13 +32,11 @@ for(const item of WORLD_COMPETITIONS){
   }
 }
 for(const china of CHINA_MATH_EVENTS){
-  const global=WORLD_COMPETITIONS.find(x=>x.id===china.id)
-  assert.ok(global && global.region==='CN',`China item missing from global directory ${china.id}`)
-  assert.equal(global.registrationState,'unverified',`Historical/regulatory context is not proof of open entry ${china.id}`)
-  assert.equal(global.sourceUrl,china.sourceUrl,`China source drift ${china.id}`)
-  assert.match(china.verifiedOn,/^\d{4}-\d{2}-\d{2}$/,`Missing verification date ${china.id}`)
-  if(china.status==='national-list')assert.ok(china.sourceUrl && NATIONAL_LIST_URL,'National list scope must be disclosed')
+  assert.ok(!WORLD_COMPETITIONS.some(x=>x.id===china.id),`Domestic event leaked into public directory: ${china.id}`)
+  assert.match(china.verifiedOn,/^\d{4}-\d{2}-\d{2}$/,`Archived verification date missing: ${china.id}`)
+  if(china.status==='national-list')assert.ok(china.sourceUrl && NATIONAL_LIST_URL,'Archived source audit must be preserved')
 }
+assert.ok(!WORLD_REGION_OPTIONS.some(x=>x.value==='CN'),'Domestic region filter must be absent')
 
 console.log('WORLD_CATALOG_INTEGRITY_PASS events='+ids.length+' china='+CHINA_MATH_EVENTS.length+
-  ' equal_treatment=PASS source_urls=PASS edition_dates_not_invented=PASS')
+  ' domestic_hidden=PASS archive_preserved=PASS source_urls=PASS edition_dates_not_invented=PASS')

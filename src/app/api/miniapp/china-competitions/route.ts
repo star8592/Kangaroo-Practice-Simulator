@@ -1,19 +1,11 @@
-import { NextRequest, NextResponse } from "next/server";
-import { userFromRequest } from "@/lib/auth";
-import { CHINA_MATH_EVENTS } from "@/lib/china-math-competitions";
-import { CHINA_MATH_COMPANIONS } from "@/lib/china-math-companion";
-import { getCompetitionCompanionProgress } from "@/lib/competition-companion-progress";
+import { NextResponse } from "next/server";
 
-export async function GET(req: NextRequest) {
-  const user = userFromRequest(req);
-  const entries = CHINA_MATH_EVENTS.map(event => {
-    const companion = CHINA_MATH_COMPANIONS.find(item => item.id === event.companionId);
-    return {
-      event, companion,
-      progress: user?.role === "student" && companion
-        ? getCompetitionCompanionProgress(user.id, companion.id)
-        : null,
-    };
-  });
-  return NextResponse.json({ entries }, { headers: { "Cache-Control": "private, no-store" } });
+/** Domestic competition programme is retired from public distribution.
+ * Archived source records remain untouched for audit/reversal.
+ */
+export async function GET() {
+  return NextResponse.json(
+    { error: "该赛事目录已停止公开展示" },
+    { status: 410, headers: { "Cache-Control": "no-store" } },
+  );
 }

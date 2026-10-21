@@ -1,5 +1,4 @@
 import { COMPETITION_BRAND, type CompetitionBrandId } from "./competition-brand";
-import { CHINA_MATH_EVENTS } from "./china-math-competitions";
 
 /**
  * One worldwide competition identity catalogue. Geography is a *filter*,
@@ -45,39 +44,13 @@ const globalFamilies: WorldCompetition[] = ([
   sourceLabelEn: item.id === "ukmt" ? "UKMT official papers" : "Organizer website (does not prove local registration)",
 }));
 
-// Public discovery shows international series only. China event information stays
-// in the full WORLD_COMPETITIONS catalogue used by the Events Companion.
+// Domestic contest archival records remain in china-math-competitions.ts but
+// are deliberately absent from all public Web/miniapp catalogues and follow APIs.
 export const INTERNATIONAL_SHOWCASE_COMPETITIONS: readonly WorldCompetition[] = globalFamilies;
-
-const chinaFamilies: WorldCompetition[] = CHINA_MATH_EVENTS.map(event => ({
-  id: event.id,
-  region: "CN",
-  nameZh: event.nameZh,
-  nameEn: event.nameEn,
-  summaryZh: event.audienceZh,
-  summaryEn: event.audienceEn,
-  sourceUrl: event.sourceUrl,
-  sourceLabelZh: event.sourceLabelZh,
-  sourceLabelEn: event.sourceLabelEn,
-  registrationState: "unverified",
-  companionId: event.companionId,
-  referenceStages: event.id === "cmo" || event.id === "cgmo" ? ["senior"] :
-    event.id === "huabei" || event.id === "zoumei" ? ["primary"] :
-    undefined, // Unknown or cross-grade historical coverage: leave visible for every stage.
-}));
-
-// Alternation in default order is deliberate: no China/overseas tier.
-export const WORLD_COMPETITIONS: WorldCompetition[] = [
-  globalFamilies[0], chinaFamilies[0],
-  globalFamilies[1], chinaFamilies[1],
-  globalFamilies[2], chinaFamilies[2],
-  globalFamilies[3], chinaFamilies[3],
-  globalFamilies[4], chinaFamilies[4],
-];
+export const WORLD_COMPETITIONS: WorldCompetition[] = [...globalFamilies];
 
 export const WORLD_REGION_OPTIONS: {value: "all" | WorldRegion; zh: string; en: string}[] = [
   {value: "all", zh: "全部地区", en: "All regions"},
-  {value: "CN", zh: "中国", en: "China"},
   {value: "US", zh: "美国", en: "United States"},
   {value: "AU", zh: "澳大利亚", en: "Australia"},
   {value: "CA", zh: "加拿大", en: "Canada"},

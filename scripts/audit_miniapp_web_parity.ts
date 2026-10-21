@@ -64,14 +64,11 @@ const companionPayload = await companionResponse.json()
 const today = new Date().toISOString().slice(0, 10)
 const expectedCompanionIds = COMPETITION_COMPANIONS.filter(x => x.expiresAfter >= today && x.registrationVerified !== false).map(x => x.id)
 assert.deepEqual(companionPayload.companions.map((x: {id:string}) => x.id), expectedCompanionIds, 'active competition companion parity failed')
-const domesticResponse = await getMiniappChinaCompetitions(request('/api/miniapp/china-competitions'))
-assert.equal(domesticResponse.status, 200)
+const domesticResponse = await getMiniappChinaCompetitions()
+assert.equal(domesticResponse.status, 410, 'retired domestic catalogue must not be available')
 const domesticPayload = await domesticResponse.json()
-assert.deepEqual(domesticPayload.entries.map((x: {event:{id:string}}) => x.event.id), CHINA_MATH_EVENTS.map(x => x.id), 'China math competition catalogue parity failed')
-for(const entry of domesticPayload.entries){
-  assert.equal(entry.companion.registrationVerified, false, 'historical entries cannot claim open registration')
-  assert.ok(entry.companion.tasks.every((x: {date?: string}) => !x.date), 'unverified schedules cannot show a countdown')
-}
+assert.equal(domesticPayload.entries, undefined, 'retired domestic API must not expose archived entries')
+assert.ok(CHINA_MATH_EVENTS.length > 0, 'source archive preserved for internal audit')
 
 const worldwideResponse = await getMiniappWorldCompetitions(request('/api/miniapp/world-competitions'))
 assert.equal(worldwideResponse.status, 200)
@@ -123,7 +120,8 @@ console.log(JSON.stringify({
   exams: expectedExams.length,
   byCompetition,
   activeCompanions: expectedCompanionIds.length,
-  domesticDirectory: CHINA_MATH_EVENTS.length,
+  archivedDomesticDirectory: CHINA_MATH_EVENTS.length,
+  publicDomesticDirectory: 0,
   worldDirectory: WORLD_COMPETITIONS.length,
   uiSurfaces: Object.keys(surfaces),
 }))

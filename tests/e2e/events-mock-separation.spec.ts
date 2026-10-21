@@ -14,13 +14,12 @@ test("top navigation separates events companion from mock exams", async ({ page 
   await expect(page.getByRole("region", { name: "全球数学赛事管家" })).toBeVisible();
 });
 
-test("China information-only event never offers an in-site mock", async ({ page }) => {
+test("retired domestic event deep links do not restore public China competitions", async ({ page }) => {
   await page.goto("/events?event=huabei");
   const hub = page.getByRole("region", { name: "全球数学赛事管家" });
-  await expect(hub.locator("#world-competition-detail")).toContainText("华杯赛");
-  await expect(hub.getByRole("button", { name: "进入本站模拟训练 ↓" })).toHaveCount(0);
+  await expect(hub.locator("#world-competition-detail")).not.toContainText("华杯赛");
   await hub.getByLabel("搜索赛事").fill("华杯赛");
-  await expect(hub.getByRole("status")).toContainText("找到 1 项赛事");
+  await expect(hub.getByRole("status")).toContainText("找到 0 项赛事");
   await hub.getByLabel("搜索赛事").fill("不存在的赛事");
   await expect(hub.getByRole("status")).toContainText("找到 0 项赛事");
   await expect(hub.locator("#world-competition-detail")).toHaveCount(0);
