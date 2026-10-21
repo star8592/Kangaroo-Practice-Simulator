@@ -16,6 +16,13 @@ export const K12_GRADE_BANDS = [
   { id: "upper-secondary", label: "Upper Secondary", zh: "高阶阶段", range: "G9–G12", grades: [9,10,11,12] as ArithmeticGrade[] },
 ] as const;
 
+/** Chinese customer-facing school labels; international crosswalk remains separate. */
+export const CHINESE_SCHOOL_STAGES = [
+ {id:'primary',label:'Primary',zh:'小学',range:'1–6 年级',grades:[1,2,3,4,5,6] as ArithmeticGrade[]},
+ {id:'junior',label:'Junior Secondary',zh:'初中',range:'7–9 年级',grades:[7,8,9] as ArithmeticGrade[]},
+ {id:'senior',label:'Senior Secondary',zh:'高中',range:'10–12 年级',grades:[10,11,12] as ArithmeticGrade[]},
+] as const;
+
 const ibProgramme=(grade:ArithmeticGrade)=>{
   if(grade<=5)return "PYP";
   if(grade===6)return "PYP / MYP";

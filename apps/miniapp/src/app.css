@@ -44,3 +44,20 @@ page{background:#f4f6f1;color:#17231d;font-family:-apple-system,BlinkMacSystemFo
 .arithmetic-session-heading .text-action,.exam-header-row .text-action{margin:0!important;min-height:72rpx!important}
 .exam-header-row{min-height:82rpx;font-size:26rpx;font-weight:800}
 .exam-action-hint{margin-bottom:45rpx;text-align:center}
+
+/* School stages: compact and thumb-friendly on small phones. */
+.school-coverage{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10rpx;margin:4rpx 0 18rpx}
+.school-coverage-item{min-width:0;display:flex;flex-direction:column;gap:7rpx;padding:20rpx 10rpx;background:#fff;border:2rpx solid #dbe5da;border-radius:18rpx;text-align:center}
+.school-coverage-title{font-size:29rpx!important;font-weight:850;color:#17231d}
+.school-coverage-item .muted{font-size:20rpx!important}
+.school-coverage-description{font-size:20rpx!important;line-height:1.45;color:#56665b;overflow-wrap:anywhere}
+.school-stage-tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12rpx;margin:18rpx 0}
+.school-stage-btn{width:100%!important;min-width:0!important;margin:0!important;padding:10rpx 0!important;min-height:86rpx!important;border:2rpx solid #dbe5da!important;border-radius:18rpx!important;background:#f7f9f6!important;color:#365040!important;font-size:27rpx!important;font-weight:850!important;line-height:64rpx!important}
+.school-stage-btn.active{border-color:#225a42!important;background:#225a42!important;color:#fff!important}
+.school-stage-btn::after{border:none!important}
+.school-stage-range{font-size:24rpx;color:#65766a;line-height:1.65}
+.school-grade-select{display:flex;justify-content:space-between;align-items:center;font-weight:800}
+.learning-action-card{border:2rpx solid #cbded1}
+.learning-action-title{display:block;font-size:34rpx!important;line-height:1.45;font-weight:850;color:#17231d;margin-bottom:12rpx}
+.learning-action-card>.muted{line-height:1.65;margin-bottom:12rpx}
+.learning-action-card .text-action{margin-top:8rpx!important}

@@ -70,7 +70,7 @@ export default function HomePage(){
       <Button className='primary hero-primary' onClick={()=>void openArithmetic()}>开始计算训练</Button>
     </View>
     <View className='school-coverage'>
-      {SCHOOL_STAGES.map(stage=><View key={stage.id} className='school-coverage-item' onClick={()=>void openArithmetic()}>
+      {SCHOOL_STAGES.map(stage=><View key={stage.id} className='school-coverage-item'>
         <Text className='school-coverage-title'>{stage.label}</Text>
         <Text className='muted'>{stage.range}</Text>
         <Text className='school-coverage-description'>{stage.description}</Text>
