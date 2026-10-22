@@ -4,7 +4,7 @@ import Taro from '@tarojs/taro'
 import { api, authStore, ensureWechatSession } from '../../services/api'
 import { canStartFullExam, makeExamLoginPath, makeExamPath } from '../../services/exam-access'
 import { openWorldEvent } from '../../services/world-event-navigation'
-import { SCHOOL_STAGES, learnerNextAction } from '../../services/learning-home-copy'
+import { learnerNextAction } from '../../services/learning-home-copy'
 
 export default function HomePage(){
   const [analytics,setAnalytics]=useState<any>(null)
@@ -65,24 +65,17 @@ export default function HomePage(){
     </View>}
     <View className='hero'>
       <View className='muted' style='color:#cbd5e1'>你好，{greeting}</View>
-      <Text className='big'>小学 · 初中 · 高中，都能练计算</Text>
-      <View>从基础四则到代数、函数，覆盖 1—12 年级。选年级就开始，不需要先读数据报告。</View>
+      <Text className='big'>计算训练，直接开始</Text>
+      <View className='hero-copy'>小学 · 初中 · 高中均可练</View>
       <Button className='primary hero-primary' onClick={()=>void openArithmetic()}>开始计算训练</Button>
     </View>
-    <View className='school-coverage'>
-      {SCHOOL_STAGES.map(stage=><View key={stage.id} className='school-coverage-item'>
-        <Text className='school-coverage-title'>{stage.label}</Text>
-        <Text className='muted'>{stage.range}</Text>
-        <Text className='school-coverage-description'>{stage.description}</Text>
-      </View>)}
-    </View>
-    <View className='card learning-action-card'>
+    {hasHistory&&<View className='card learning-action-card'>
       <View className='card-title'>今天最值得做什么</View>
       <Text className='learning-action-title'>{next.title}</Text>
       <View className='muted'>{next.detail}</View>
       <Button className='primary' onClick={()=>void openArithmetic()}>{next.action}</Button>
-      {hasHistory&&<Button className='text-action' onClick={()=>void openProfile()}>为什么推荐？到学习档案查看依据 →</Button>}
-    </View>
+      <Button className='text-action' onClick={()=>void openProfile()}>查看推荐依据 →</Button>
+    </View>}
     {hasHistory&&<View className='card'>
       <View className='card-title'>最近练习有变化吗？</View>
       <View className='muted'>{analytics?.arithmetic?.recentChange?.descriptionZh||'还没有足够的同年级、同模式练习可比较。暂时不推断孩子进步或退步。'}</View>

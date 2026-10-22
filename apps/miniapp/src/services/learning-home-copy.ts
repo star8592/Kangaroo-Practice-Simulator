@@ -8,6 +8,21 @@ export type SchoolStage=typeof SCHOOL_STAGES[number]
 export function stageForGrade(grade:number):SchoolStage{
  return SCHOOL_STAGES.find(s=>(s.grades as readonly number[]).includes(grade))||SCHOOL_STAGES[0]
 }
+/** Display a selected grade without repeating the entire school-stage catalogue. */
+export function displayGradeName(grade:number):string{
+ const stages=['一','二','三','四','五','六']
+ if(grade>=1&&grade<=6&&Number.isInteger(grade))return '小学'+stages[grade-1]+'年级'
+ if(grade>=7&&grade<=9&&Number.isInteger(grade))return '初'+stages[grade-7]
+ if(grade>=10&&grade<=12&&Number.isInteger(grade))return '高'+stages[grade-10]
+ return '选择年级'
+}
+
+/** In a visible stage grid, do not repeat the stage prefix on every button. */
+export function gradeChoiceName(grade:number):string{
+ const long=displayGradeName(grade)
+ return grade>=1&&grade<=6?long.replace('小学',''):long
+}
+
 export type LearningSnapshot={
  arithmetic?:{sessions?:number;plan?:{summaryZh?:string[];focusSkills?:string[]}}|null
  overview?:{examAttempts?:number}|null
