@@ -16,7 +16,9 @@ export function isCardEligibleGrade(grade: GradeResult): boolean {
 }
 
 export function isCardEligibleAttempt(attempt: ExamAttemptRecord): boolean {
-  return attempt.profile.paperType !== "practice" && isCardEligibleGrade(attempt.grade);
+  return attempt.profile.paperType !== "practice"
+    && !attempt.examId.includes("-practice-")
+    && isCardEligibleGrade(attempt.grade);
 }
 
 export type MathCardRarity = "普通" | "稀有" | "超稀有" | "传说" | "神话";

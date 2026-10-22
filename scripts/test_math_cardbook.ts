@@ -143,4 +143,8 @@ assert.equal(buildMathCards([almostTop]).find(c=>c.kind==="竞赛卡")?.rarity,"
 const fakePerfect=attempt("partial-full","paper-perfect",100,100,22000);
 fakePerfect.grade.correct=1;fakePerfect.grade.wrong=9;
 assert.equal(buildMathCards([fakePerfect]).some(c=>c.id==="achievement:first-perfect"),false,"perfect honor requires all answers correct");
+const legacyPractice=attempt("leg","maa-amc12-practice-geometry",80,100,23000);
+legacyPractice.profile.paperType=undefined;
+assert.deepEqual(buildMathCards([legacyPractice]),[],"legacy practice ids must never mint competition cards");
+assert.equal(buildExamCardResultState([legacyPractice],"leg"),null);
 console.log("math cardbook progression: PASS");

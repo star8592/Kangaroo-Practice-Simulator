@@ -35,7 +35,7 @@ export default function ResultClient(){
   return <div className="report-shell">
     <section className="score-hero"><div><span className="eyebrow">{title} · {lang==="zh"?"成绩":"RESULT"}</span><h1>{ui.result}</h1><p>{ui.time} {mins}:{String(secs).padStart(2,"0")}</p></div><div className="score-ring"><strong>{scoreText(g.score)}</strong><span>/ {scoreText(g.maxScore)}</span><small>{pct}%</small></div></section>
     <section className="result-stats"><article><strong>{g.correct}</strong><span>{ui.correct}</span></article><article><strong>{g.wrong}</strong><span>{ui.wrong}</span></article><article><strong>{g.blank}</strong><span>{ui.blank}</span></article></section>
-    {a.profile?.paperType!=="practice" && (isCardEligibleGrade(g)
+    {a.profile?.paperType!=="practice" && !examId.includes("-practice-") && (isCardEligibleGrade(g)
       ? <MathCardReveal title={title} competition={a.profile?.competitionId} score={g.score} maxScore={g.maxScore} completedAt={a.submittedAt} examId={examId} attemptId={attemptId} />
       : <p className="result-card-feedback" role="status">{lang==="zh"?"本次没有解锁卡牌，考试记录已保留。先复盘，再挑战一次。":"No card unlocked this time. Your result is saved; review and try again."}</p>
     )}
