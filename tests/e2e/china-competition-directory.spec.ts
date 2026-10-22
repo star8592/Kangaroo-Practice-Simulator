@@ -46,8 +46,10 @@ test("worldwide public directory is read-only to anonymous visitors", async ({ r
   const r = await request.get("/api/miniapp/world-competitions");
   expect(r.status()).toBe(200);
   const body = await r.json();
-  expect(body.entries).toHaveLength(10);
-  expect(body.entries.filter((e: {event:{region:string}}) => e.event.region === "CN")).toHaveLength(5);
+  // Native miniapp public directory shows international events only;
+  // domestic legacy records remain internal and cannot leak into public listings.
+  expect(body.entries).toHaveLength(5);
+  expect(body.entries.filter((e: {event:{region:string}}) => e.event.region === "CN")).toHaveLength(0);
   for (const e of body.entries) {
     expect(e.progress).toBeNull();
     expect(e.following).toBeNull();
