@@ -1,4 +1,5 @@
 import {test,expect} from "@playwright/test";
+import { submitSignedPractice } from "./utils/signed-arithmetic";
 import fs from "node:fs";
 import path from "node:path";
 import {authenticateOrCreateWechatParent,createParentSessionToken,PARENT_SESSION_COOKIE} from "../../src/lib/parent-auth";
@@ -43,8 +44,7 @@ test("parent chooses two children, and basic practice histories remain separate"
   await expect(page.getByText("可乐 ·")).toBeVisible({timeout:12000});
   const firstToken=(await context.cookies()).find(x=>x.name===SESSION_COOKIE)?.value;
   expect(userFromSessionToken(firstToken)?.id).toBe(children[0].id);
-  const firstAttempt="child-A-"+process.pid;
-  expect((await page.request.post("/api/arithmetic/sessions",{data:{id:firstAttempt,studentId:"guest_fake",grade:2,mode:"diagnostic",startedAt:Date.now(),finishedAt:Date.now(),attempts:[]}})).status()).toBe(200);
+  const firstAttempt=await submitSignedPractice(page.request,children[0].id,2);
   const firstSessions=await (await page.request.get("/api/arithmetic/sessions")).json();
   expect(firstSessions.sessions.some((s:{id:string;studentId:string})=>s.id===firstAttempt&&s.studentId===children[0].id)).toBe(true);
   await page.locator('header button[aria-haspopup="menu"]').click();
@@ -56,8 +56,7 @@ test("parent chooses two children, and basic practice histories remain separate"
   expect(userFromSessionToken(secondToken)?.id).toBe(children[1].id);
   const secondSessions=await (await page.request.get("/api/arithmetic/sessions")).json();
   expect(secondSessions.sessions.some((s:{id:string})=>s.id===firstAttempt)).toBe(false);
-  const secondAttempt="child-B-"+process.pid;
-  expect((await page.request.post("/api/arithmetic/sessions",{data:{id:secondAttempt,studentId:"guest_fake",grade:5,mode:"diagnostic",startedAt:Date.now(),finishedAt:Date.now(),attempts:[]}})).status()).toBe(200);
+  const secondAttempt=await submitSignedPractice(page.request,children[1].id,5);
   await page.goto("/parent");
   await page.getByRole("button",{name:"为可乐开始学习"}).click();
   await expect(page).toHaveURL(/\/arithmetic(?:\?|$)/,{timeout:15000});

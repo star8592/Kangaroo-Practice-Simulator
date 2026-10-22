@@ -1,4 +1,5 @@
 import {test, expect} from "@playwright/test";
+import { submitSignedPractice } from "./utils/signed-arithmetic";
 import fs from "node:fs";
 import path from "node:path";
 import {authenticateOrCreateWechatParent,createParentSessionToken,PARENT_SESSION_COOKIE} from "../../src/lib/parent-auth";
@@ -44,9 +45,7 @@ test("family scans once and can start child-friendly basic practice without PIN"
   const token=(await context.cookies()).find(x=>x.name===SESSION_COOKIE)?.value||"";
   const identity=userFromSessionToken(token);
   expect(identity?.id).toMatch(/^guest_family_[0-9a-f]{32}$/);
-  const id="e2e-family-practice-"+process.pid;
-  const saved=await page.request.post("/api/arithmetic/sessions",{data:{id,studentId:"untrusted-id",grade:1,mode:"diagnostic",startedAt:Date.now(),finishedAt:Date.now(),attempts:[]}});
-  expect(saved.status()).toBe(200);
+  const id=await submitSignedPractice(page.request,identity!.id,1);
   const beforeReload=await (await page.request.get("/api/arithmetic/sessions")).json();
   expect(beforeReload.sessions.some((s:{id:string;studentId:string})=>s.id===id&&s.studentId===identity?.id)).toBe(true);
   await page.reload();
