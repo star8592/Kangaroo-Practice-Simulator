@@ -177,6 +177,8 @@ export function finishMiniappArithmetic(user: PublicStudent, token: string, resp
     startedAt: ticket.startedAt,
     finishedAt,
     attempts,
+    rewardVerified: attempts.length === items.length,
+    expectedQuestionCount: items.length,
   };
   // A timeout or double tap can replay finish. Serialize by a per-session
   // atomic directory lock shared by workers using the same data directory.

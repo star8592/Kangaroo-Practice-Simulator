@@ -10,9 +10,9 @@ export async function GET(req: NextRequest) {
   const attemptId = req.nextUrl.searchParams.get("attemptId")?.trim();
   if (!attemptId) return NextResponse.json({ error: "missing attemptId" }, { status: 400 });
 
-  const attempts = loadExamAttempts(user.id, 500);
+  const attempts = loadExamAttempts(user.id, Number.MAX_SAFE_INTEGER);
   const state = buildExamCardResultState(attempts, attemptId);
   if (!state) return NextResponse.json({ error: "card state unavailable" }, { status: 404 });
 
-  return NextResponse.json(state);
+  return NextResponse.json({ ...state, examId: attempts.find(a => a.id === attemptId)?.examId });
 }
