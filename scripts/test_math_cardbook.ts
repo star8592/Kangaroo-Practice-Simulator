@@ -147,4 +147,6 @@ const legacyPractice=attempt("leg","maa-amc12-practice-geometry",80,100,23000);
 legacyPractice.profile.paperType=undefined;
 assert.deepEqual(buildMathCards([legacyPractice]),[],"legacy practice ids must never mint competition cards");
 assert.equal(buildExamCardResultState([legacyPractice],"leg"),null);
+const malformed = {...attempt("bad","bad-record",30,100,24000),grade:null} as unknown as ExamAttemptRecord;
+assert.equal(buildMathCards([malformed]).length,0,"malformed persisted grade must not crash cardbook");
 console.log("math cardbook progression: PASS");

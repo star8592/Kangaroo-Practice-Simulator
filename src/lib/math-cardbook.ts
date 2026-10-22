@@ -3,6 +3,7 @@ import type { GradeResult } from "./types";
 
 /** A submitted paper is evidence, but an award requires a positive earned result. */
 export function isCardEligibleGrade(grade: GradeResult): boolean {
+  if(!grade || typeof grade!=="object")return false;
   // A student should attempt a meaningful portion of the paper before
   // earning a collectible. Baseline credit for blanks is not evidence.
   const counts=[grade.correct,grade.wrong,grade.blank];
@@ -16,9 +17,12 @@ export function isCardEligibleGrade(grade: GradeResult): boolean {
 }
 
 export function isCardEligibleAttempt(attempt: ExamAttemptRecord): boolean {
-  return attempt.profile.paperType !== "practice"
+  return Boolean(attempt && attempt.profile && attempt.grade
+    && typeof attempt.examId==="string" && typeof attempt.id==="string"
+    && Number.isFinite(attempt.submittedAt) && attempt.submittedAt>0
+    && attempt.profile.paperType !== "practice"
     && !attempt.examId.includes("-practice-")
-    && isCardEligibleGrade(attempt.grade);
+    && isCardEligibleGrade(attempt.grade));
 }
 
 export type MathCardRarity = "普通" | "稀有" | "超稀有" | "传说" | "神话";
