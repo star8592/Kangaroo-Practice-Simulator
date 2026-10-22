@@ -6,6 +6,7 @@ import type { ExamProfile, GradeResult } from "@/lib/types";
 import { conceptLabel, type DisplayLang } from "@/lib/display";
 import { useSiteLanguage } from "@/lib/site-language";
 import MathCardReveal from "@/components/MathCardReveal";
+import { isCardEligibleGrade } from "@/lib/math-cardbook";
 
 type GradeWithAttempt=GradeResult & {attemptId?:string};
 type Attempt={examId?:string;profile?:ExamProfile;lang?:DisplayLang;grade:GradeWithAttempt;elapsedSeconds:number;submittedAt:number};
@@ -26,7 +27,7 @@ export default function ResultClient(){
   });
   const ui=UI[lang];
   if(!a)return <div className="center-card"><h2>{ui.noResult}</h2><Link className="primary-button" href="/">{ui.backList}</Link></div>;
-  const g=a.grade; const attemptId=g.attemptId; const pct=Math.round((g.score/g.maxScore)*100); const mins=Math.floor(a.elapsedSeconds/60); const secs=a.elapsedSeconds%60;
+  const g=a.grade; const attemptId=g.attemptId; const pct=g.maxScore>0?Math.round((g.score/g.maxScore)*100):0; const mins=Math.floor(a.elapsedSeconds/60); const secs=a.elapsedSeconds%60;
   const examId=a.examId??"level-a";
   const mixedMatch=/^(mix-(?:g12|g34|g56|g78|g910|g1113)|mixed24|mixed15)-/.exec(examId);
   const mixedBase=mixedMatch?.[1]??null;
@@ -34,7 +35,10 @@ export default function ResultClient(){
   return <div className="report-shell">
     <section className="score-hero"><div><span className="eyebrow">{title} · {lang==="zh"?"成绩":"RESULT"}</span><h1>{ui.result}</h1><p>{ui.time} {mins}:{String(secs).padStart(2,"0")}</p></div><div className="score-ring"><strong>{scoreText(g.score)}</strong><span>/ {scoreText(g.maxScore)}</span><small>{pct}%</small></div></section>
     <section className="result-stats"><article><strong>{g.correct}</strong><span>{ui.correct}</span></article><article><strong>{g.wrong}</strong><span>{ui.wrong}</span></article><article><strong>{g.blank}</strong><span>{ui.blank}</span></article></section>
-    {a.profile?.paperType!=="practice"&&<MathCardReveal title={title} competition={a.profile?.competitionId} score={g.score} maxScore={g.maxScore} completedAt={a.submittedAt} examId={examId} attemptId={attemptId} />}
+    {a.profile?.paperType!=="practice" && (isCardEligibleGrade(g)
+      ? <MathCardReveal title={title} competition={a.profile?.competitionId} score={g.score} maxScore={g.maxScore} completedAt={a.submittedAt} examId={examId} attemptId={attemptId} />
+      : <p className="result-card-feedback" role="status">{lang==="zh"?"本次没有解锁卡牌，考试记录已保留。先复盘，再挑战一次。":"No card unlocked this time. Your result is saved; review and try again."}</p>
+    )}
     <section className="report-grid">
       <article className="report-card"><h2>{ui.difficulty}</h2>{a.profile?.competitionId==="maa-amc"&&g.byPosition?Object.entries(g.byPosition).map(([name,v])=><div className="metric-row" key={name}><span>{name}</span><div className="metric-bar"><i style={{width:((v.correct/v.total)*100)+"%"}}/></div><strong>{v.correct}/{v.total}</strong></div>):Object.entries(g.byPoints).sort().map(([p,v])=><div className="metric-row" key={p}><span>{lang==="zh"?p+" "+ui.points:p+ui.points}</span><div className="metric-bar"><i style={{width:((v.correct/v.total)*100)+"%"}}/></div><strong>{v.correct}/{v.total}</strong></div>)}</article>
       <article className="report-card"><h2>{ui.concepts}</h2>{Object.entries(g.byConcept).sort((x,y)=>y[1].total-x[1].total).slice(0,8).map(([name,v])=><div className="metric-row" key={name}><span>{conceptLabel(name,lang)}</span><div className="metric-bar"><i style={{width:((v.correct/v.total)*100)+"%"}}/></div><strong>{v.correct}/{v.total}</strong></div>)}</article>

@@ -7,7 +7,7 @@ function attempt(id:string,examId:string,score:number,maxScore:number,submittedA
     id,userId:"u1",candidateNo:"c1",examId,
     profile:{name:examId,grades:"1",questionCount:10,maxScore,competitionId:"kangaroo",paperType},
     startedAt:submittedAt-1000,submittedAt,elapsedSeconds:60,
-    grade:{score,maxScore} as ExamAttemptRecord["grade"],
+    grade:{score,maxScore,correct:score>0?1:0,wrong:score>0?0:10,blank:score>0?0:10} as ExamAttemptRecord["grade"],
     questions:[],events:[],
   };
 }
@@ -90,5 +90,38 @@ assert.equal(collect.targetPercent,undefined);
 
 const first=buildCardbookGoal([]);
 assert.deepEqual(first,{mode:"first",currentPercent:0});
+
+// A blank or zero-result submission is not an award, including a first-completion
+// achievement. Some competitions award baseline points for blanks, so score alone
+// must never be treated as proof that the student solved a question.
+const blank = attempt("z1","paper-zero",0,100,1000);
+assert.deepEqual(buildMathCards([blank]), [], "blank paper must earn no cards");
+assert.equal(buildExamCardResultState([blank],"z1"), null, "blank paper must not unlock a result card");
+assert.deepEqual(buildCardbookGoal(buildMathCards([blank])), {mode:"first",currentPercent:0});
+
+const baselineBlank = attempt("z2","paper-baseline",15,100,2000);
+baselineBlank.grade.correct = 0;
+baselineBlank.grade.blank = 10;
+assert.deepEqual(buildMathCards([baselineBlank]), [], "unanswered papers with baseline points must not earn cards");
+assert.equal(buildExamCardResultState([baselineBlank],"z2"), null);
+
+const allWrong = attempt("z3","paper-wrong",0,100,3000);
+allWrong.grade.wrong = 10;
+allWrong.grade.blank = 0;
+assert.deepEqual(buildMathCards([allWrong]), [], "all-wrong zero score must earn no cards");
+
+const zeroDespiteCorrect = attempt("z4","paper-penalty",0,100,3500);
+zeroDespiteCorrect.grade.correct = 1;
+assert.deepEqual(buildMathCards([zeroDespiteCorrect]), [], "zero score must not earn a card, even with a correct answer");
+
+const firstEarned = attempt("z5","paper-zero",40,100,4000);
+const afterBlankCards = buildMathCards([blank,firstEarned]);
+assert.equal(buildExamCardResultState([blank,firstEarned],"z5")?.state,"new", "first eligible completion unlocks the card");
+assert.equal(afterBlankCards.length,2, "only the earned contest and first-completion cards should exist");
+assert.equal(afterBlankCards.find(c=>c.id==="achievement:first-formal")?.completedAt,4000);
+
+const blankAfterGood = attempt("z6","paper-zero",0,100,5000);
+assert.equal(buildExamCardResultState([blank,firstEarned,blankAfterGood],"z6"), null);
+assert.equal(buildMathCards([blank,firstEarned,blankAfterGood]).find(c=>c.kind==="竞赛卡")?.score,40,"blank retake must not overwrite an earned card");
 
 console.log("math cardbook progression: PASS");

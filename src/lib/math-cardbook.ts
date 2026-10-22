@@ -1,4 +1,16 @@
 import type { ExamAttemptRecord } from "./attempt-store";
+import type { GradeResult } from "./types";
+
+/** A submitted paper is evidence, but an award requires a positive earned result. */
+export function isCardEligibleGrade(grade: Pick<GradeResult, "score" | "maxScore" | "correct">): boolean {
+  return Number.isFinite(grade.score) && grade.score > 0
+    && Number.isFinite(grade.maxScore) && grade.maxScore > 0
+    && Number.isFinite(grade.correct) && grade.correct > 0;
+}
+
+export function isCardEligibleAttempt(attempt: ExamAttemptRecord): boolean {
+  return attempt.profile.paperType !== "practice" && isCardEligibleGrade(attempt.grade);
+}
 
 export type MathCardRarity = "普通" | "稀有" | "超稀有" | "传说" | "神话";
 export type MathCard = {
@@ -62,14 +74,14 @@ function nextRarityTarget(pct: number): { percent: number; rarity: MathCardRarit
 
 export function buildExamCardResultState(attempts: ExamAttemptRecord[], attemptId: string): ExamCardResultState | null {
   const current = attempts.find(a => a.id === attemptId);
-  if (!current || current.profile.paperType === "practice") return null;
+  if (!current || !isCardEligibleAttempt(current)) return null;
 
   const currentPercent = percent(current.grade.score, current.grade.maxScore);
   const prior = attempts
     .filter(a =>
       a.id !== current.id
       && a.examId === current.examId
-      && a.profile.paperType !== "practice"
+      && isCardEligibleAttempt(a)
       && a.submittedAt <= current.submittedAt
     )
     .sort((a, b) => b.submittedAt - a.submittedAt);
@@ -143,7 +155,7 @@ function percent(score?: number, maxScore?: number) {
 
 export function buildMathCards(attempts: ExamAttemptRecord[]): MathCard[] {
   const formalAttempts = attempts
-    .filter(a => a.profile.paperType !== "practice")
+    .filter(isCardEligibleAttempt)
     .sort((a, b) => a.submittedAt - b.submittedAt);
   const bestByExam = new Map<string, MathCard>();
 
