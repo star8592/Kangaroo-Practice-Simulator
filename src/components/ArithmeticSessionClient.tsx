@@ -20,13 +20,18 @@ const UI={
  en:{loading:"Loading your calculation model…",loadingDesc:"Reading past accuracy, speed and error patterns.",nextFail:"Could not generate the next round",diagnosticDone:"Diagnostic complete",trainingDone:"Training complete",diagnostic:"Personal diagnostic",saving:"Saving learning data…",saved:"This round has been added to your learner model",median:"Median start",impulsive:"Impulsive errors",efficiency:"Efficiency issues",errors:"Error patterns",noPattern:"No clear error pattern in this round.",next:"What to train next",accuracy:"Accuracy review",monitor:"Monitor / retest",speed:"Fluency / efficient methods",generating:"Generating next round…",nextRound:"Start personalized next round",back:"Back to calculation",baseline:"20-question baseline",speedMode:"Timed calculation",guided:"Guided calculation",adaptive:"Personalized training",exit:"Exit",baselineNoHint:"Baseline diagnostic · no strategy hints",target:"Target",correct:"✓ Correct",correctAnswer:"✕ Correct answer: ",continue:"Next question",symbolicPlaceholder:"Equivalent answer, e.g. 3/4, 2√3, π/6, 2x+1",touchPlaceholder:"Use keypad below",keyboardPlaceholder:"Type answer and press Enter",submit:"Submit",digit:"Digit",backspace:"Backspace",decimal:"Decimal point",submitAnswer:"Submit answer",symbolicHint:"You may use x, /, √, π and parentheses. Equivalent mathematical forms are accepted.",touchHint:"Use the keypad below, then tap Submit answer.",keyboardHint:"Type the answer and press Enter; no mouse is required.",tracking:"The system records thinking start, input execution and total response time separately.",questions:"questions",preview:"Math display",needsSimplification:"The value is equivalent, but the answer still needs to be simplified as requested."},
 } as const;
 const humanize=(id:string)=>id.replaceAll("_"," ").replace(/\b\w/g,c=>c.toUpperCase());
+const uniquePracticeSeed=()=>{
+ const values=new Uint32Array(1);
+ if(typeof crypto!=="undefined"&&crypto.getRandomValues){crypto.getRandomValues(values);return values[0]||1;}
+ return Math.floor(Math.random()*2147483646)+1;
+};
 
 export default function ArithmeticSessionClient({grade,mode,seed,studentId}:{grade:ArithmeticGrade;mode:Mode;seed:number;studentId:string}){
  const lang=useSiteLanguage(),ui=UI[lang],reasonLabel=REASON[lang];
  const profile=GRADE_PROFILES[grade];const [items,setItems]=useState<ArithmeticItem[]|null>(null);const [history,setHistory]=useState<ArithmeticSession[]>([]);const [milestone,setMilestone]=useState<ArithmeticMilestone|null>(null);const [idx,setIdx]=useState(0);const [raw,setRaw]=useState("");const [attempts,setAttempts]=useState<ArithmeticAttempt[]>([]);const [edits,setEdits]=useState(0);const [backspaces,setBackspaces]=useState(0);const [done,setDone]=useState<TrainingPlan|null>(null);const [saving,setSaving]=useState(false);const [feedback,setFeedback]=useState<ArithmeticAttempt|null>(null);const [repairs,setRepairs]=useState(0);const [touch,setTouch]=useState(false);const [startingNext,setStartingNext]=useState(false);const [nextError,setNextError]=useState("");const [inputHint,setInputHint]=useState("");const [loadError,setLoadError]=useState("");const [saveError,setSaveError]=useState("");
  const presentedAt=useRef(0);const firstInputAt=useRef<number|null>(null);const inputRef=useRef<HTMLInputElement>(null);const sessionSeed=useRef(seed);const sessionToken=useRef("");const interactionLock=useRef(false);
  useEffect(()=>{
-   const activeSeed=seed||Math.floor(performance.now()*100000);
+   const activeSeed=seed||uniquePracticeSeed();
    sessionSeed.current=activeSeed;
    const query=new URLSearchParams({action:"start",grade:String(grade),mode,seed:String(activeSeed)});
    fetch("/api/arithmetic/sessions?"+query.toString(),{cache:"no-store"})
@@ -80,7 +85,7 @@ export default function ArithmeticSessionClient({grade,mode,seed,studentId}:{gra
      const r=await fetch("/api/arithmetic/next-session",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({grade,studentId})});
      const result=await r.json().catch(()=>({}));
      if(!r.ok||!result.ok)throw new Error(result.error||ui.nextFail);
-     const nextSeed=Math.floor(performance.now()*100000);
+     const nextSeed=uniquePracticeSeed();
      const q=new URLSearchParams({action:"start",grade:String(grade),mode,seed:String(nextSeed)});
      const issued=await fetch("/api/arithmetic/sessions?"+q.toString(),{cache:"no-store"});
      const data=await issued.json();
