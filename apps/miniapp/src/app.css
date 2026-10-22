@@ -44,3 +44,10 @@ page{background:#f4f6f1;color:#17231d;font-family:-apple-system,BlinkMacSystemFo
 .arithmetic-session-heading .text-action,.exam-header-row .text-action{margin:0!important;min-height:72rpx!important}
 .exam-header-row{min-height:82rpx;font-size:26rpx;font-weight:800}
 .exam-action-hint{margin-bottom:45rpx;text-align:center}
+
+/* Learning-first landing: explicit K–12 coverage, actionable evidence before vanity metrics. */
+.stage-strip{display:flex;flex-wrap:wrap;gap:8rpx;margin:0 0 18rpx}
+.stage-chip{display:inline-flex;align-items:center;padding:7rpx 12rpx;border-radius:999rpx;border:2rpx solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);font-size:24rpx;font-weight:700;white-space:nowrap}
+.learning-next-item{padding:14rpx 0;border-bottom:2rpx solid #edf0ec;line-height:1.6}
+.learning-next-item:last-of-type{border-bottom:0}
+.learning-evidence{margin-top:18rpx;padding-top:16rpx;border-top:2rpx solid #edf0ec;line-height:1.6}

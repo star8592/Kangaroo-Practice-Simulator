@@ -55,8 +55,6 @@ export default function HomePage(){
   const arithmeticSessions=Number(analytics?.arithmetic?.sessions||0)
   const examAttempts=Number(analytics?.overview?.examAttempts||0)
   const accuracy=Math.round(Number(analytics?.overview?.accuracy||0)*100)
-  const readiness=analytics?.readiness
-  const dataConfidence=Number(analytics?.dataConfidence||0)
   const nextPlan=(analytics?.nextPlan||[]).slice(0,2)
   const recommendedExams=(analytics?.recommendedExams||[]).slice(0,2)
   const arithmeticSummary=(analytics?.arithmetic?.plan?.summaryZh||[]).slice(0,2)
@@ -70,41 +68,43 @@ export default function HomePage(){
     </View>}
     <View className='hero'>
       <View className='muted' style='color:#cbd5e1'>你好，{greeting}</View>
-      <Text className='big'>{hasHistory?'继续今天的数学训练':'从今天的计算训练开始'}</Text>
-      <View><Text>{hasHistory?'保持计算手感，也可以直接进入竞赛实战。':'无需注册或填写资料，直接开始计算，做完就能看到成绩和讲解。'}</Text></View>
+      <View className='stage-strip' aria-label='覆盖小学初中高中'>
+        <Text className='stage-chip'>小学 · 1–6 年级</Text>
+        <Text className='stage-chip'>初中 · 7–9 年级</Text>
+        <Text className='stage-chip'>高中 · 10–12 年级</Text>
+      </View>
+      <Text className='big'>{hasHistory?'继续今天的计算训练':'选年级，立即开始计算'}</Text>
+      <View><Text>{hasHistory?'按当前年级继续训练；做完再看真实表现和下一步建议。':'覆盖小学、初中、高中，不用先填资料；直接做题、即时判题。'}</Text></View>
       <Button className='primary hero-primary' onClick={openArithmetic}>{hasHistory?'继续计算训练':'开始计算训练'}</Button>
       <Button className='hero-secondary' onClick={()=>Taro.switchTab({url:'/pages/competitions/index'})}>参加竞赛模拟</Button>
       <Button className='hero-secondary' onClick={()=>void openWorldEvent().catch(()=>Taro.showToast({title:'赛事暂时无法打开',icon:'none'}))}>探索全球数学赛事</Button>
     </View>
 
-    {hasHistory&&<View className='grid2'>
-      <View className='card'><View className='card-title'>计算训练</View><Text className='big'>{arithmeticSessions}</Text><View className='muted'>累计训练轮次</View></View>
-      <View className='card'><View className='card-title'>竞赛实战</View><Text className='big'>{examAttempts}</Text><View className='muted'>已完成试卷</View></View>
-    </View>}
-
-    {hasHistory&&<View className='grid2'>
-      <View className='card'><View className='card-title'>综合训练指数</View><Text className='big'>{readiness===null||readiness===undefined?'—':readiness}</Text><View className='muted'>{readiness===null||readiness===undefined?'数据积累后显示':'满分 100'}</View></View>
-      <View className='card'><View className='card-title'>数据置信度</View><Text className='big'>{dataConfidence}%</Text><View className='muted'>基于完整训练记录</View></View>
-    </View>}
-
-    {hasHistory&&<View className='card'>
-      <View className='card-title'>最近学习画像</View>
-      <View className='row'><Text>竞赛题正确率</Text><Text>{examAttempts?accuracy+'%':'—'}</Text></View>
-      <View className='muted'>训练、竞赛和复盘使用与 Web 相同的数据与评分规则。</View>
-    </View>}
-
-    {hasHistory&&<View className='card'>
-      <View className='card-title'>下一步怎么练</View>
-      {nextPlan.length?nextPlan.map((x:any,i:number)=><View key={i} style='margin-top:16rpx'><View>{x.title}</View><View className='muted'>{x.action}</View></View>):<View className='muted'>继续完成训练后，系统会根据稳定证据给出优先级。</View>}
+    {hasHistory?<View className='card'>
+      <View className='card-title'>下一步练什么</View>
+      {nextPlan.length?nextPlan.map((x:any,i:number)=><View className='learning-next-item' key={i}>
+        <View>{x.title}</View>
+        {x.action&&<View className='muted'>{x.action}</View>}
+      </View>):<View className='muted'>先完成一组计算训练，积累真实作答后，再给出有依据的练习建议。</View>}
+      {arithmeticSummary.length>0&&<View className='learning-evidence'>
+        <View className='muted'>计算练习发现</View>
+        {arithmeticSummary.map((item:string,i:number)=><View className='muted' key={i}>{item}</View>)}
+      </View>}
+      <Button className='primary' onClick={openArithmetic}>练下一组</Button>
+    </View>:<View className='card'>
+      <View className='card-title'>第一次练习，从这里开始</View>
+      <View className='muted'>选择小学、初中或高中对应年级，先做一组题。未完成练习前，不给孩子贴能力标签。</View>
+      <Button className='secondary' onClick={openArithmetic}>去选年级</Button>
     </View>}
 
     {hasHistory&&<View className='card'>
-      <View className='card-title'>计算画像</View>
-      {arithmeticSummary.length?arithmeticSummary.map((x:string,i:number)=><View className='muted' key={i}>{x}</View>):<View className='muted'>完成一次计算诊断后生成。</View>}
-      <Button className='secondary' onClick={openArithmetic}>进入计算训练</Button>
+      <View className='card-title'>我的练习记录</View>
+      <View className='muted'>已完成计算训练 {arithmeticSessions} 轮、竞赛试卷 {examAttempts} 套。</View>
+      {examAttempts>0&&<View className='learning-evidence'>
+        <View className='row'><Text>竞赛题累计正确率</Text><Text>{accuracy}%</Text></View>
+        <View className='muted'>只反映已完成试卷，不等于全部数学能力。</View>
+      </View>}
     </View>}
-
-    {!hasHistory&&<View className='card'><View className='card-title'>第一次来？</View><View className='muted'>从计算训练开始，不用先填注册表。训练后查看成绩和标准讲解；如需找回网站上的既有成绩，可从“我的”切换到原学生账号；跨端绑定功能正在完善。</View></View>}
 
     {recommendedExams.length>0&&<View className='card'>
       <View className='card-title'>推荐下一套试卷</View>

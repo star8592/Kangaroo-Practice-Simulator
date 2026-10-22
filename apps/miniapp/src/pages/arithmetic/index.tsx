@@ -3,6 +3,7 @@ import { Button, Input, Picker, Text, View } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import { api, authStore } from '../../services/api'
 import ArithmeticAnswerPad from '../../components/ArithmeticAnswerPad'
+import { gradeChoices } from '../../services/grade-stage'
 import { editMathAnswer, backspaceMathAnswer, type MathAnswerKind } from '../../services/math-answer-keypad'
 import { arithmeticDraftKey, validateArithmeticDraft, type ArithmeticDraft } from '../../services/arithmetic-training-draft'
 
@@ -150,12 +151,12 @@ export default function ArithmeticPage(){
 
   if(result)return <View className='page'><View className='hero'><Text className='big'>本轮完成</Text><View>{result.correct}/{result.total} · {Math.round(result.accuracy*100)}%</View></View><View className='card'><View className='card-title'>下一轮怎么练</View>{(result.plan?.summary||[]).map((x:string)=><View className='muted' key={x}>{x}</View>)}<Button className='primary' loading={busy} disabled={busy} onClick={()=>void start('adaptive')}>开始个性化下一轮</Button><Button className='secondary' onClick={()=>{setSession(null);setResult(null)}}>返回训练选择</Button></View></View>
 
-  if(!session)return <View className='page'><View className='hero'><Text className='big'>计算训练</Text><View>{isInstantIdentity?'不用填资料，选年级就能开始；做完立即看成绩。':'系统根据历史正确率、速度和错误习惯安排下一轮。'}</View></View><View className='card'><View className='card-title'>训练年级</View>{savedDraft&&<View className='arithmetic-resume-card'>
+  if(!session)return <View className='page'><View className='hero'><View className='stage-strip'><Text className='stage-chip'>小学</Text><Text className='stage-chip'>初中</Text><Text className='stage-chip'>高中</Text></View><Text className='big'>计算训练 · 1–12 年级</Text><View>{isInstantIdentity?'不用填资料，选年级就能开始；做完立即看成绩。':'系统根据历史正确率、速度和错误习惯安排下一轮。'}</View></View><View className='card'><View className='card-title'>训练年级</View>{savedDraft&&<View className='arithmetic-resume-card'>
       <View className='card-title'>上次训练尚未完成</View>
       <View className='muted'>{savedDraft.session.grade} 年级 · 第 {savedDraft.idx+1}/{savedDraft.session.questions.length} 题 · 仅本设备暂存</View>
       <Button className='primary' onClick={resumeDraft}>继续上次训练</Button>
       <Button className='text-action' onClick={()=>void discardDraft()}>放弃上次进度</Button>
-    </View>}<Picker mode='selector' range={Array.from({length:12},(_,i)=>`${i+1} 年级`)} value={grade-1} onChange={e=>setGrade(Number(e.detail.value)+1)}><View className='input'>{grade} 年级</View></Picker>{isInstantIdentity?<><Button className='primary' loading={busy} disabled={busy} onClick={()=>void start('diagnostic')}>立即开始 · 20 题能力诊断</Button><Button className='secondary' loading={busy} disabled={busy} onClick={()=>void start('adaptive')}>快速练一组</Button></>:<><Button className='primary' loading={busy} disabled={busy} onClick={()=>void start('adaptive')}>开始个性化训练</Button><Button className='secondary' loading={busy} disabled={busy} onClick={()=>void start('diagnostic')}>做 20 题基线诊断</Button></>}</View></View>
+    </View>}<Picker mode='selector' range={gradeChoices.map(option=>option.label)} value={grade-1} onChange={e=>setGrade(Number(e.detail.value)+1)}><View className='input'>{gradeChoices[grade-1]?.label||'请选择年级'}　▾</View></Picker>{isInstantIdentity?<><Button className='primary' loading={busy} disabled={busy} onClick={()=>void start('diagnostic')}>立即开始 · 20 题能力诊断</Button><Button className='secondary' loading={busy} disabled={busy} onClick={()=>void start('adaptive')}>快速练一组</Button></>:<><Button className='primary' loading={busy} disabled={busy} onClick={()=>void start('adaptive')}>开始个性化训练</Button><Button className='secondary' loading={busy} disabled={busy} onClick={()=>void start('diagnostic')}>做 20 题基线诊断</Button></>}</View></View>
 
   return <View className='page'>
     <View className='row arithmetic-session-heading'><Text>第 {idx+1}/{session.questions.length} 题</Text>
