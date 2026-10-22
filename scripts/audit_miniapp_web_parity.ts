@@ -77,7 +77,7 @@ const worldwideResponse = await getMiniappWorldCompetitions(request('/api/miniap
 assert.equal(worldwideResponse.status, 200)
 const worldwidePayload = await worldwideResponse.json()
 assert.deepEqual(worldwidePayload.entries.map((x:{event:{id:string}})=>x.event.id),
-  WORLD_COMPETITIONS.map(x=>x.id), 'worldwide catalogue parity failed')
+  WORLD_COMPETITIONS.filter(x=>x.region!=='CN').map(x=>x.id), 'miniapp international catalogue parity failed')
 for (const entry of worldwidePayload.entries) {
   assert.ok(entry.companion, 'every world event must have a companion')
   assert.equal(entry.following, null, 'disposable guest must not have persisted follows')

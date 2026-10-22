@@ -43,7 +43,7 @@ try{
   const publicWorld=await (await world(req("/api/miniapp/world-competitions"))).json();
   assert.equal(publicWorld.entries.every((x:{following:unknown})=>x.following===null),true);
   const studentWorld=await (await world(req("/api/miniapp/world-competitions",tokenA))).json();
-  assert.deepEqual(studentWorld.entries.filter((x:{following:boolean})=>x.following).map((x:{event:{id:string}})=>x.event.id),["huabei","ukmt"]);
+  assert.deepEqual(studentWorld.entries.filter((x:{following:boolean})=>x.following).map((x:{event:{id:string}})=>x.event.id),["ukmt"],"miniapp public international list must not reintroduce historical CN follows");
   const userId=fs.readFileSync(path.join(temp,"session-secret.txt"),"utf8").length>0;assert.ok(userId);
   const stored=JSON.parse(fs.readFileSync(path.join(temp,"world-competition-follows.json"),"utf8"));
   assert.equal(stored.length,2,"duplicate follows do not create duplicate records");
