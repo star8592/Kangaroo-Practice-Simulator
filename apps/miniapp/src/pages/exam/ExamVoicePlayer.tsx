@@ -10,6 +10,8 @@ type Props = {
   audioEn?: string
 }
 const origin = process.env.TARO_APP_API_BASE || 'https://socthink.cn'
+const SPEED_KEY = 'socthink_exam_read_aloud_rate'
+const SPEEDS = [0.8, 0.7, 1] as const
 const audioUrl = (path?: string) => path && (path.startsWith('https://') ? path : path.startsWith('/') ? origin + path : '')
 const fmt = (seconds: number) => {
   if (!Number.isFinite(seconds) || seconds < 0) return '--:--'
@@ -24,12 +26,31 @@ export default function ExamVoicePlayer({ questionId, language, audioZh, audioEn
   const [time, setTime] = useState(0)
   const [duration, setDuration] = useState(0)
   const [error, setError] = useState('')
+  const [rate, setRate] = useState(() => {
+    try {
+      const saved = Number(Taro.getStorageSync(SPEED_KEY))
+      if (SPEEDS.some(value => value === saved)) return saved
+    } catch { /* storage is optional */ }
+    return 0.8
+  })
+
+  useEffect(() => {
+    if (context.current) context.current.playbackRate = rate
+  }, [rate])
+
+  const changeRate = () => {
+    const next = rate === 0.8 ? 0.7 : rate === 0.7 ? 1 : 0.8
+    if (context.current) context.current.playbackRate = next
+    setRate(next)
+    try { Taro.setStorageSync(SPEED_KEY, next) } catch { /* session rate still works */ }
+  }
 
   useEffect(() => {
     setPlaying(false); setTime(0); setDuration(0); setError('')
     if (!source) return
     const audio = Taro.createInnerAudioContext()
     audio.autoplay = false
+    audio.playbackRate = rate
     audio.src = source
     audio.onPlay(() => setPlaying(true))
     audio.onPause(() => setPlaying(false))
@@ -84,6 +105,10 @@ export default function ExamVoicePlayer({ questionId, language, audioZh, audioEn
         if (!audio) return
         audio.seek(0); setTime(0); audio.play()
       }}>重播</Button>
+    </View>
+    <View className='row'>
+      <Text className='muted'>默认慢速，点击可切换</Text>
+      <Button className='secondary' onClick={changeRate}>语速 {rate.toFixed(1)}×</Button>
     </View>
     {error && <Text className='muted'>{error}</Text>}
   </View>

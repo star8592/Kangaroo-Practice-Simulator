@@ -1,11 +1,29 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import "./exam-read-aloud.css";
 import type { Choice } from "@/lib/types";
 import { buildReadAloudText } from "@/lib/read-aloud-script";
 
 type Language = "zh" | "en";
+const SPEEDS = [0.8, 0.7, 1] as const;
+const SPEED_KEY = "socthink_exam_read_aloud_rate";
+const SPEED_EVENT = "socthink_exam_read_aloud_rate_changed";
+function readRate() {
+  try {
+    const saved = Number(window.localStorage.getItem(SPEED_KEY));
+    if (SPEEDS.some((value) => value === saved)) return saved;
+  } catch { /* in-memory fallback */ }
+  return null;
+}
+function subscribeRate(onChange: () => void) {
+  window.addEventListener("storage", onChange);
+  window.addEventListener(SPEED_EVENT, onChange);
+  return () => {
+    window.removeEventListener("storage", onChange);
+    window.removeEventListener(SPEED_EVENT, onChange);
+  };
+}
 type Props = {
   questionId: string;
   audioZh?: string;
@@ -24,6 +42,9 @@ export default function ExamReadAloud({
   const [paused, setPaused] = useState(false);
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState("");
+  const storedRate = useSyncExternalStore(subscribeRate, readRate, () => null);
+  const [fallbackRate, setFallbackRate] = useState(0.8);
+  const rate = storedRate ?? fallbackRate;
   const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
   const cursorRef = useRef(0);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -40,6 +61,11 @@ export default function ExamReadAloud({
     zh: buildReadAloudText(chinese, chineseChoices, "zh"),
     en: completeEnglish ? buildReadAloudText(english || "", englishChoices, "en") : "",
   };
+
+  useEffect(() => {
+    if (zhAudio.current) zhAudio.current.playbackRate = rate;
+    if (enAudio.current) enAudio.current.playbackRate = rate;
+  }, [rate, questionId, audioZh, audioEn]);
 
   function clearSpeech() {
     if (timerRef.current) clearInterval(timerRef.current);
@@ -63,7 +89,7 @@ export default function ExamReadAloud({
     };
   }, [questionId]);
 
-  function startSpeech(language: Language, startAt = 0) {
+  function startSpeech(language: Language, startAt = 0, speed = rate) {
     if (!available || !scripts[language]) return;
     clearSpeech();
     zhAudio.current?.pause();
@@ -73,7 +99,7 @@ export default function ExamReadAloud({
     const utterance = new SpeechSynthesisUtterance(script.slice(start));
     const charsPerSecond = language === "zh" ? 3.7 : 12;
     utterance.lang = language === "zh" ? "zh-CN" : "en-US";
-    utterance.rate = 0.85;
+    utterance.rate = speed;
     utterance.onstart = () => {
       let ticks = 0;
       timerRef.current = setInterval(() => {
@@ -116,6 +142,16 @@ export default function ExamReadAloud({
     setPaused(false);
     setError("");
     window.speechSynthesis.speak(utterance);
+  }
+
+  function changeRate() {
+    const next = rate === 0.8 ? 0.7 : rate === 0.7 ? 1 : 0.8;
+    setFallbackRate(next);
+    try { window.localStorage.setItem(SPEED_KEY, String(next)); } catch {}
+    window.dispatchEvent(new Event(SPEED_EVENT));
+    // Web Speech voices cannot reliably change speed mid-utterance;
+    // restart from the estimated current position without jumping to Q1.
+    if (playing && !paused) startSpeech(playing, cursorRef.current, next);
   }
 
   function toggle(language: Language) {
@@ -188,14 +224,21 @@ export default function ExamReadAloud({
 
   return (
     <div className="exam-read-aloud" aria-label="题目及选项语音朗读">
+      <div className="exam-speech-speed">
+        <button type="button" onClick={changeRate} aria-label="切换朗读语速">
+          语速 {rate.toFixed(1)}×
+        </button>
+      </div>
       {audioZh ? <div className="exam-audio-track">
         <span>中文完整朗读</span>
         <audio key={questionId + "-zh"} ref={zhAudio} controls preload="metadata"
+          onLoadedMetadata={(e) => { e.currentTarget.playbackRate = rate; }}
           onPlay={() => audioStarted("zh")} src={audioZh} aria-label="中文题干及全部选项音频" />
       </div> : speechControls("zh")}
       {completeEnglish && (audioEn ? <div className="exam-audio-track">
         <span>English · Full question and options</span>
         <audio key={questionId + "-en"} ref={enAudio} controls preload="metadata"
+          onLoadedMetadata={(e) => { e.currentTarget.playbackRate = rate; }}
           onPlay={() => audioStarted("en")} src={audioEn} aria-label="English full reading audio" />
       </div> : speechControls("en"))}
       {!available && !audioZh && <span role="status">此设备不支持浏览器语音，请使用音频文件版。</span>}
