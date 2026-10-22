@@ -2,7 +2,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import type { ExamProfile } from "@/lib/types";
 import { COMPETITION_INTRO } from "@/lib/competition-intro";
 import { COMPETITION_BRAND,competitionStageBrand } from "@/lib/competition-brand";
@@ -47,7 +47,7 @@ export default function HomeClient({exams}:{exams:ExamProfile[]}){
  const requestedCompetition=searchParams.get("c");
  const initialCompetition:CompetitionFilter=COMPETITION_OPTIONS.includes(requestedCompetition as CompetitionFilter)?requestedCompetition as CompetitionFilter:"australian-amc";
  const [lang,setLang]=useState<Lang>("zh"),[competition,setCompetition]=useState<CompetitionFilter>(initialCompetition),[grade,setGrade]=useState<GradeFilter>("all"),[region,setRegion]=useState("all"),[maaStage,setMaaStage]=useState<MaaStage>("all");
- const router=useRouter(),ui=UI[lang];
+ const ui=UI[lang];
  const meta={kangaroo:{zh:"袋鼠数学",en:"Math Kangaroo",zhDesc:"按国家/年级保留真实赛制差异",enDesc:"Country- and grade-specific formats preserved"},"australian-amc":{zh:"澳洲 AMC（AMT）",en:"Australian AMC (AMT)",zhDesc:"正式 AMC + 官方 Pre-A 样题",enDesc:"Official Australian AMC + Pre-A samples"},"maa-amc":{zh:"美国 AMC（MAA）",en:"MAA American Mathematics Competitions",zhDesc:"AMC 8 / AMC 10 / AMC 12 / AIME 独立赛制",enDesc:"AMC 8 / AMC 10 / AMC 12 / AIME formats"},seamo:{zh:"新加坡 SEAMO",en:"Singapore SEAMO",zhDesc:"一二年级 · 原创基础专项练习",enDesc:"Grades 1–2 · independent foundational practice"},cemc:{zh:"加拿大 CEMC",en:"Waterloo CEMC",zhDesc:"Gauss / Pascal / Cayley / Fermat / Euclid",enDesc:"Gauss / Pascal / Cayley / Fermat / Euclid"}} as const;
  const label=(k:CompetitionFilter)=>lang==="zh"?meta[k].zh:meta[k].en,desc=(k:CompetitionFilter)=>lang==="zh"?meta[k].zhDesc:meta[k].enDesc;
  const brand=(k:CompetitionFilter)=>COMPETITION_BRAND[k];
@@ -62,7 +62,13 @@ export default function HomeClient({exams}:{exams:ExamProfile[]}){
  const selectionAll=competition==="maa-amc"?maaStage==="all":grade==="all";
  const gradeLabel=(g:GradeFilter)=>g==="all"?ui.all:g==="11+"?(lang==="zh"?"11–13年级":"Grades 11–13"):(lang==="zh"?`${g}年级`:`Grades ${g}`);
  const timing=(e:ExamProfile)=>e.competitionId==="seamo"?(lang==="zh"?`训练计时 ${Math.round(e.durationSeconds/60)} 分钟`:`Practice timer ${Math.round(e.durationSeconds/60)} min`):e.timingMode==="untimed"?(lang==="zh"?"不限时":"Untimed"):e.timingMode==="recommended"?(lang==="zh"?`建议 ${Math.round(e.durationSeconds/60)} 分钟`:`Suggested ${Math.round(e.durationSeconds/60)} min`):`${Math.round(e.durationSeconds/60)} ${ui.minutes}`;
- const startExam=(e:ExamProfile,event:React.MouseEvent)=>router.push(e.paperType==="smart"?`/exam/${e.id}--${Math.floor(event.timeStamp*1000).toString(36)}`:`/exam/${e.id}`);
+ const startExam=(e:ExamProfile,event:React.MouseEvent)=>{
+  const destination=e.paperType==="smart"?`/exam/${e.id}--${Math.floor(event.timeStamp*1000).toString(36)}`:`/exam/${e.id}`;
+  // Family practice may set its session cookie during an HTTP redirect.
+  // Full navigation ensures Next receives the freshly created cookie instead
+  // of reusing an RSC payload cached for the pre-login identity (Safari too).
+  window.location.assign(destination);
+};
  const card=(e:ExamProfile,isSmart=false)=>{const name=lang==="zh"?(e.nameZh||e.name):(e.nameEn||e.name),source=lang==="zh"?(e.sourceLabelZh||e.sourceLabel):(e.sourceLabelEn||e.sourceLabel),format=lang==="zh"?(e.formatLabelZh||""):(e.formatLabelEn||""),rules=lang==="zh"?(e.rulesSummaryZh||""):(e.rulesSummaryEn||""),stage=competitionStageBrand(e.competitionId,e.formatId,name);return <article key={e.id} className={isSmart?"smart-mock-card":""}><div className="paper-brand"><b>{stage.label}</b><span>{stage.series}</span></div><div className="feature-index">{format||label(competition)}</div><h2>{name}</h2><p><strong>{e.questionCount}</strong> {ui.questions} · {timing(e)} · {ui.max} {e.maxScore}</p>{rules&&<p><b>{ui.rules}：</b>{rules}</p>}{source&&<p>{source}</p>}<button className="primary-button" onClick={ev=>startExam(e,ev)}>{e.paperType==="practice"?(lang==="zh"?"开始训练":"Start practice"):ui.start}</button></article>};
  return <div className="home-shell">
   <section className="hero-card"><div className="eyebrow">{lang==="zh"?"国际竞赛模拟考试":"COMPETITION FORMAT LAB"}</div><div className="hero-actions" style={{float:"right"}}><button className="secondary-button" onClick={()=>setLang(x=>x==="zh"?"en":"zh")}>{lang==="zh"?"EN":"中"}</button></div><h1>{ui.title1}<br/><span>{ui.title2}</span></h1><p className="hero-copy">{ui.copy}</p><div className="hero-actions"><Link className="primary-button" href="#competition-training">{lang==="zh"?"选择模拟考试 ↓":"Choose a mock exam ↓"}</Link><Link className="secondary-button" href="/events">{lang==="zh"?"进入赛事管家 →":"Event companion →"}</Link><Link className="secondary-button" href="/student">{ui.admin}</Link></div></section>

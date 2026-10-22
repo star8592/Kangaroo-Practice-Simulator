@@ -161,7 +161,7 @@ export default function UnifiedLoginClient({ nextPath }: { nextPath: string }) {
         const parentOk = results[0].status === "fulfilled" && results[0].value.ok;
         const studentResponse = results[1].status === "fulfilled" ? results[1].value : null;
         const student = studentResponse?.ok ? (await studentResponse.json()).user : null;
-        const genuineStudent = student && student.candidateNo !== "GUEST";
+        const genuineStudent = student && (student.candidateNo !== "GUEST" || student.id?.startsWith("guest_family_"));
         if (needsStudent) {
           if (genuineStudent) {
             router.replace(studentDestination);
@@ -169,8 +169,7 @@ export default function UnifiedLoginClient({ nextPath }: { nextPath: string }) {
             return;
           }
           if (parentOk) {
-            setMode("studentRequired");
-            setMessage("微信家庭已登录。完整模拟和个人成长档案需要已有学生账号；可在下方继续登录，基础计算无需这一步。");
+            window.location.replace("/api/auth/guest/start?next="+encodeURIComponent(destination));
             return;
           }
         } else if (parentOk || genuineStudent) {

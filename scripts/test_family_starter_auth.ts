@@ -21,17 +21,20 @@ async function main(){
   assert.equal(first.headers.get("location"),"/arithmetic");
   const cookie=first.cookies.get(auth.SESSION_COOKIE);
   assert.ok(cookie?.value);
-  assert.equal(cookie?.maxAge,604800);
+  assert.equal(cookie?.maxAge,30*24*60*60);
   assert.equal(cookie?.httpOnly,true);
   const practice=auth.userFromSessionToken(cookie!.value);
   assert.ok(practice?.id.startsWith("guest_family_"));
   assert.equal(practice?.candidateNo,"GUEST");
-  assert.equal(access.hasFullExamAccess(practice),false);
+  assert.equal(access.hasFullExamAccess(practice),true,"verified WeChat family has same free-exam rights as registered student");
   assert.equal(practice?.name,"家庭体验档案");
   const second=await GET(new NextRequest(target,{headers:{cookie:parents.PARENT_SESSION_COOKIE+"="+parentToken}}));
   assert.equal(auth.userFromSessionToken(second.cookies.get(auth.SESSION_COOKIE)?.value)?.id,practice?.id);
   const existing=await GET(new NextRequest(target,{headers:{cookie:parents.PARENT_SESSION_COOKIE+"="+parentToken+"; "+auth.SESSION_COOKIE+"="+cookie?.value}}));
   assert.equal(existing.cookies.get(auth.SESSION_COOKIE),undefined,"must not displace an in-progress learner");
+  const permitted=await GET(new NextRequest("https://socthink.cn/api/auth/guest/start?next=/exam/maa-amc12-practice-geometry",{headers:{cookie:parents.PARENT_SESSION_COOKIE+"="+parentToken}}));
+  assert.equal(permitted.headers.get("location"),"/exam/maa-amc12-practice-geometry");
+  assert.ok(auth.userFromSessionToken(permitted.cookies.get(auth.SESSION_COOKIE)?.value)?.id.startsWith("guest_family_"));
   const denied=await GET(new NextRequest("https://socthink.cn/api/auth/guest/start?next=/exam/test"));
   assert.equal(denied.headers.get("location"),"/login?next=%2Fexam%2Ftest");
   assert.equal(denied.cookies.get(auth.SESSION_COOKIE),undefined);
@@ -47,7 +50,7 @@ async function main(){
   assert.equal(adultOnlyLogout.cookies.get(auth.SESSION_COOKIE),undefined,"independent child account must be preserved");
   parents.resetParentPassword("test-family@example.test","ChangedFamilyPass9");
   assert.equal(auth.userFromSessionToken(cookie?.value),null,"revoked parent must revoke family practice session");
-  console.log("FAMILY_STARTER_AUTH=PASS stable_id=true exam_denied=true old_session_preserved=true parent_revocation=true");
+  console.log("FAMILY_STARTER_AUTH=PASS stable_id=true anonymous_exam_denied=true family_full_exam_allowed=true old_session_preserved=true parent_revocation=true");
  }finally{
   if(before===undefined)delete process.env.SOCTHINK_USER_DATA_DIR;else process.env.SOCTHINK_USER_DATA_DIR=before;
   fs.rmSync(root,{recursive:true,force:true});

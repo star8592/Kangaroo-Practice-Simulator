@@ -57,17 +57,13 @@ test("family scans once and can start child-friendly basic practice without PIN"
   await expect(page).toHaveURL(/\/arithmetic\/session\/\d+\?mode=diagnostic/,{timeout:15000});
 });
 
-test("a signed-in family sees a child-account prompt instead of exam redirect loops",async({page})=>{
+test("a signed-in WeChat household can open a full contest without child PIN",async({page})=>{
   await page.goto("/exam/maa-amc12-practice-geometry");
-  await expect(page).toHaveURL(/\/login\?next=/,{timeout:15000});
-  await expect(page.getByText("微信家庭已登录。完整模拟和个人成长档案需要已有学生账号")).toBeVisible();
-  await expect(page.getByLabel("学生 PIN")).toBeVisible();
-  await expect(page.getByRole("link",{name:"先去做数学训练"})).toBeVisible();
-  // Protect against repeated cross-route navigation when only a parent exists.
-  await page.waitForTimeout(500);
-  await expect(page).toHaveURL(/\/login\?next=/);
+  await expect(page).toHaveURL(/\/exam\/maa-amc12-practice-geometry/,{timeout:15000});
+  await expect(page.getByRole("heading",{name:"准备开始练习"})).toBeVisible();
+  await expect(page.getByText("登录或注册")).toHaveCount(0);
+  await expect(page.getByRole("button",{name:"开始练习"})).toBeVisible();
 });
-
 
 test("logout clears family practice but not independent learner accounts",async({page,context})=>{
   await page.goto("/parent");

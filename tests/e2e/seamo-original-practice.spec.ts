@@ -64,14 +64,14 @@ async function startGrade(page:import('@playwright/test').Page,grade:1|2) {
   await page.getByRole('button',{name:'确认信息并开始考试'}).click();
   await expect(page.locator('.question-stem')).toBeVisible();
   await expect(page.locator('.exam-read-aloud')).toBeVisible();
-  await expect(page.locator('.exam-speech-track')).toHaveCount(2);
+  await expect(page.locator('.exam-speech-track,.exam-audio-track')).toHaveCount(2);
 }
 
 test('SEAMO Grade 1: competition card, login, bilingual voice controls, answers and submit',async({page})=>{
   await startGrade(page,1);
   await expect(page.locator('.choice-list button')).toHaveCount(5);
-  await expect(page.locator('.exam-speech-track').first()).toContainText('中文读题');
-  await expect(page.locator('.exam-speech-track').nth(1)).toContainText('English');
+  await expect(page.locator('.exam-speech-track,.exam-audio-track').first()).toContainText(/中文读题|中文完整朗读/);
+  await expect(page.locator('.exam-speech-track,.exam-audio-track').nth(1)).toContainText('English');
   await page.locator('.choice-list button').first().click();
   await page.getByRole('button',{name:'下一题 →'}).click();
   await expect(page.locator('.q-number')).toContainText('Question 2');
@@ -88,8 +88,13 @@ test('SEAMO Grade 2: question 21 integer input retains both narration languages'
   await expect(page.locator('.integer-answer-box input')).toBeVisible();
   await page.locator('.integer-answer-box input').fill('12');
   await expect(page.locator('.integer-answer-box input')).toHaveValue('12');
-  await expect(page.locator('.exam-speech-track')).toHaveCount(2);
-  await expect(page.locator('.exam-speech-track').nth(1).getByRole('button',{name:/播放/})).toBeEnabled();
+  await expect(page.locator('.exam-speech-track,.exam-audio-track')).toHaveCount(2);
+  const englishTrack=page.locator('.exam-speech-track,.exam-audio-track').nth(1);
+  if(await englishTrack.locator('audio').count()) {
+    await expect(englishTrack.locator('audio')).toHaveAttribute('src',/\.mp3$/);
+  } else {
+    await expect(englishTrack.getByRole('button',{name:/播放/})).toBeEnabled();
+  }
   await page.getByRole('button',{name:'交卷',exact:true}).click();
   await page.getByRole('button',{name:'确认提交'}).click();
   await expect(page).toHaveURL(/\/result(?:\?|$)/,{timeout:15000});

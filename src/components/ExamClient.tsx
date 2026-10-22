@@ -257,6 +257,7 @@ export default function ExamClient({examId,user,initialProfile,initialQuestions}
  const grades=lang==="zh"?(profile.gradesZh||profile.grades):(profile.gradesEn||profile.grades);
  const formatLabel=lang==="zh"?(profile.formatLabelZh||""):(profile.formatLabelEn||"");
  const rulesSummary=lang==="zh"?(profile.rulesSummaryZh||""):(profile.rulesSummaryEn||"");
+ const familyPracticeAccount=user.id.startsWith("guest_family_");
  const competitionBrand=profile.competitionId?COMPETITION_BRAND[profile.competitionId as CompetitionBrandId]:null;
  const stageBrand=competitionStageBrand(profile.competitionId,profile.formatId,title);
  const examBrand=<div className="exam-brand"><b>{stageBrand.label}</b><span>{stageBrand.series}</span></div>;
@@ -268,15 +269,15 @@ export default function ExamClient({examId,user,initialProfile,initialQuestions}
 
  if(!started)return <div className="report-shell"><section className="candidate-card">
   <div className="candidate-brand-row">{examBrand}{competitionBrand&&<a href={competitionBrand.officialUrl} target="_blank" rel="noreferrer">{lang==="zh"?"主办方官网":"Official site"} ↗</a>}</div>
-  <span className="eyebrow">{lang==="zh"?"考生确认":"CANDIDATE CHECK-IN"}</span><h1>{ui.candidate}</h1>
-  <div className="candidate-grid"><div><span>姓名</span><strong>{user.name}</strong></div><div><span>准考证号</span><strong>{user.candidateNo}</strong></div><div><span>年级</span><strong>{user.grade} 年级</strong></div><div><span>试卷</span><strong>{title}</strong></div><div><span>题量</span><strong>{profile.questionCount} 题</strong></div><div><span>考试时间</span><strong>{timeLabel}</strong></div>{formatLabel&&<div><span>赛制模板</span><strong>{formatLabel}</strong></div>}</div>
+  <span className="eyebrow">{familyPracticeAccount&&profile.paperType==="practice"?(lang==="zh"?"家庭基础训练":"FAMILY PRACTICE"):(lang==="zh"?"考生确认":"CANDIDATE CHECK-IN")}</span><h1>{familyPracticeAccount&&profile.paperType==="practice"?(lang==="zh"?"准备开始练习":"Ready to practice"):ui.candidate}</h1>
+  <div className="candidate-grid"><div><span>姓名</span><strong>{user.name}</strong></div>{familyPracticeAccount?<div><span>账号</span><strong>微信家庭练习档案</strong></div>:<div><span>准考证号</span><strong>{user.candidateNo}</strong></div>}<div><span>{familyPracticeAccount?"训练组别":"年级"}</span><strong>{familyPracticeAccount?grades:`${user.grade} 年级`}</strong></div><div><span>试卷</span><strong>{title}</strong></div><div><span>题量</span><strong>{profile.questionCount} 题</strong></div><div><span>考试时间</span><strong>{timeLabel}</strong></div>{formatLabel&&<div><span>赛制模板</span><strong>{formatLabel}</strong></div>}</div>
   {rulesSummary&&<div className="candidate-rules"><strong>{lang==="zh"?"赛制说明":"Format rules"}</strong><p>{rulesSummary}</p></div>}
   <div className="candidate-notice">{profile.paperType==="practice"
    ?(profile.competitionId==="seamo"?(lang==="zh"?"这是本站独立编写的 SEAMO 基础专项练习，不是官方真题或官方模拟卷。训练计时到点自动交卷，按本站练习规则计分。":"This is independent SEAMO foundational practice, not an official past paper or official mock. The practice timer auto-submits at the limit; scoring is independent of official rules."):(lang==="zh"?"这是 MAA 官方专项训练，不限时；结果作为专项练习数据保存，不计入正式模拟次数或正式模拟综合指标。":"This is an official MAA practice set and is untimed. Practice data is saved separately from formal mock-exam metrics."))
    :split?(lang==="zh"?"这是分段计时赛制。第一部分锁定后不可返回；中间休息不计入作答时间，点击开始下一部分后才重新计时。":"This exam uses section timing. Once Part 1 is locked it cannot be revisited. The break is not counted; Part 2 starts only when you explicitly begin it.")
    :profile.timingMode==="recommended"?(lang==="zh"?"这是一套官方样题，原文件未注明正式限时；本站计时仅作为训练建议。":"This is an official sample; the source does not state an official time limit. The site timer is for practice only.")
    :(lang==="zh"?"点击开始后由服务器记录正式开考时间。刷新或重新进入页面不会重置计时；未完成考试可以继续。":"The server records the official start time. Refreshing does not reset the timer; unfinished exams can be resumed.")}</div>
-  <button className="primary-button candidate-start" disabled={starting} onClick={()=>void beginExam()}>{starting?"正在进入…":resumeSession?ui.resume:ui.start}</button>
+  <button className="primary-button candidate-start" disabled={starting} onClick={()=>void beginExam()}>{starting?"正在进入…":resumeSession?ui.resume:familyPracticeAccount&&profile.paperType==="practice"?(lang==="zh"?"开始练习":"Start practice"):ui.start}</button>
  </section></div>;
 
  if(split&&!sectionStartedAt){
@@ -302,7 +303,7 @@ export default function ExamClient({examId,user,initialProfile,initialQuestions}
  const submitLabel=split&&section?`${ui.lockSection} · ${sectionLabel}`:ui.submit;
 
  return <div className="exam-shell">
-  <header className="exam-topbar"><div><div className="exam-title-brand">{examBrand}<span className="exam-kicker">{title}</span></div><strong>{user.name} · {user.candidateNo} · {grades}</strong></div>
+  <header className="exam-topbar"><div><div className="exam-title-brand">{examBrand}<span className="exam-kicker">{title}</span></div><strong>{familyPracticeAccount?`${user.name} · ${grades}`:`${user.name} · ${user.candidateNo} · ${grades}`}</strong></div>
    <div className={profile.timingMode==="untimed"?"timer":seconds<600?"timer danger":"timer"}><span>{profile.timingMode==="untimed"?(profile.paperType==="practice"?(lang==="zh"?"训练模式":"Practice mode"):(lang==="zh"?"样题模式":"Sample mode")):timerLabel}</span><strong>{profile.timingMode==="untimed"?(lang==="zh"?"不限时":"UNTIMED"):`${minutes}:${secs}`}</strong></div>
    <button className="ghost-button" onClick={()=>setShowSubmit(true)}>{submitLabel}</button>
   </header>

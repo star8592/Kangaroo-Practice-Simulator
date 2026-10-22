@@ -1,14 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { userFromRequest } from "@/lib/auth";
-import { hasFullExamAccess } from "@/lib/exam-access";
+import { canAccessExamId } from "@/lib/exam-access";
 import { ownedExamSession } from "@/lib/exam-session";
 import { recoveredExamResult } from "@/lib/exam-submit-recovery";
 
 /** Recover a committed result after a lost HTTP response, with no new sitting. */
 export async function GET(req:NextRequest){
   const user=userFromRequest(req);
-  if(!hasFullExamAccess(user))return NextResponse.json({error:"请先登录正式考生账号"},{status:401});
   const examId=req.nextUrl.searchParams.get("examId")||"";
+  if(!canAccessExamId(user,examId))return NextResponse.json({error:"请先登录正式考生账号"},{status:401});
   const sessionId=req.nextUrl.searchParams.get("sessionId")||"";
   if(!examId||!sessionId)return NextResponse.json({error:"缺少考试会话信息"},{status:400});
   const session=ownedExamSession(sessionId,user.id,examId);

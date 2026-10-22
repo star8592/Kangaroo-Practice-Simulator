@@ -9,6 +9,8 @@ assert.equal(hasFullExamAccess(null),false);
 assert.equal(hasFullExamAccess(guest),false);
 assert.equal(hasFullExamAccess(registered),true);
 assert.equal(hasFullExamAccess(wechat),true);
+assert.equal(hasFullExamAccess({id:"guest_family_0123456789abcdef",role:"student"}),true);
+assert.equal(hasFullExamAccess({id:"guest_random",role:"student"}),false);
 assert.equal(hasFullExamAccess(admin),true);
 assert.equal(canAccess("public_sample_exam",{kind:"guest"}).allowed,true);
 assert.equal(canAccess("arithmetic_basic",{kind:"guest"}).allowed,true);
