@@ -7,6 +7,7 @@ type Rarity = "普通" | "稀有" | "超稀有" | "传说" | "神话";
 type CardData = { id:string; title:string; subtitle:string; rarity:Rarity; score:string; date?:string; note:string };
 type RewardState = {
   state:"new"|"upgrade"|"complete";
+  examId:string;
   previousBestPercent?:number;
   previousBestScore?:number;
   previousBestMaxScore?:number;
@@ -35,6 +36,7 @@ export default function MathCardReveal({title,competition,score,maxScore,complet
   const pct=maxScore>0?Math.round(score/maxScore*100):0;
   const competitionName=competition==="kangaroo"?"袋鼠数学":competition==="australian-amc"?"澳洲 AMC":competition==="maa-amc"?"美国 MAA 数学竞赛":competition==="cemc"?"加拿大 CEMC 数学竞赛":competition||undefined;
   const [rewardState,setRewardState]=useState<RewardState|null>(null);
+  const [verification,setVerification]=useState<"loading"|"verified"|"unavailable">("loading");
   const [flipped,setFlipped]=useState(false),[revealed,setRevealed]=useState(false);
 
   useEffect(()=>{const t=window.setTimeout(()=>setRevealed(true),220);return()=>window.clearTimeout(t)},[]);
@@ -43,10 +45,18 @@ export default function MathCardReveal({title,competition,score,maxScore,complet
     const controller=new AbortController();
     fetch("/api/student/cards/result-state?attemptId="+encodeURIComponent(attemptId),{cache:"no-store",signal:controller.signal})
       .then(async response=>response.ok?response.json():null)
-      .then(data=>{if(data)setRewardState(data as RewardState)})
-      .catch(()=>{});
+      .then(data=>{
+        const verified=data as RewardState|null;
+        if(verified && verified.examId===examId && verified.currentScore===score
+          && verified.currentMaxScore===maxScore
+          && ["new","upgrade","complete"].includes(verified.state)){
+          setRewardState(verified);
+          setVerification("verified");
+        } else setVerification("unavailable");
+      })
+      .catch(()=>{if(!controller.signal.aborted)setVerification("unavailable")});
     return()=>controller.abort();
-  },[attemptId]);
+  },[attemptId,examId,maxScore,score]);
 
   const storedRarity=rewardState?.rarityAfter??rarity(pct);
   const storedScore=rewardState?rewardState.bestScore+" / "+rewardState.bestMaxScore:score+" / "+maxScore;
@@ -95,6 +105,9 @@ export default function MathCardReveal({title,competition,score,maxScore,complet
   };
   const m=meta[card.rarity];
 
+  if(!attemptId || verification!=="verified" || !rewardState) return <section className="result-card-feedback" role="status">
+    {attemptId && verification==="loading"?"正在向服务器核实本次奖励…":"暂时无法核实卡牌奖励。本次考试成绩仍可查看，请稍后到卡册确认。"}
+  </section>;
   return <section className={styles.reward} aria-label="数学卡牌奖励">
     <div className={styles.head}><div><span className="eyebrow">{copy.eyebrow}</span><h2>{copy.title}</h2><p>{copy.desc}</p></div><span className={styles.sparkle} aria-hidden="true">✦</span></div>
     <div className={styles.stage}>

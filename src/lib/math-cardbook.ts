@@ -2,10 +2,17 @@ import type { ExamAttemptRecord } from "./attempt-store";
 import type { GradeResult } from "./types";
 
 /** A submitted paper is evidence, but an award requires a positive earned result. */
-export function isCardEligibleGrade(grade: Pick<GradeResult, "score" | "maxScore" | "correct">): boolean {
-  return Number.isFinite(grade.score) && grade.score > 0
-    && Number.isFinite(grade.maxScore) && grade.maxScore > 0
-    && Number.isFinite(grade.correct) && grade.correct > 0;
+export function isCardEligibleGrade(grade: GradeResult): boolean {
+  // A student should attempt a meaningful portion of the paper before
+  // earning a collectible. Baseline credit for blanks is not evidence.
+  const counts=[grade.correct,grade.wrong,grade.blank];
+  if(counts.some(n=>!Number.isInteger(n)||n<0))return false;
+  const attempted=grade.correct+grade.wrong;
+  const total=attempted+grade.blank;
+  return total>0 && attempted/total>=0.6
+    && Number.isFinite(grade.score) && grade.score>0
+    && Number.isFinite(grade.maxScore) && grade.maxScore>0
+    && grade.correct>0 && grade.score<=grade.maxScore;
 }
 
 export function isCardEligibleAttempt(attempt: ExamAttemptRecord): boolean {
@@ -64,6 +71,11 @@ export type ExamCardResultState = {
   nextTargetRarity?: MathCardRarity;
 };
 
+/** Generated remix identifiers vary per submission; the collectible belongs to the paper family. */
+export function cardExamKey(examId: string): string {
+  return examId.replace(/^(mix-(?:g12|g34|g56|g78|g910|g1113)|mixed24|mixed15)-.+$/, "$1");
+}
+
 function nextRarityTarget(pct: number): { percent: number; rarity: MathCardRarity } | null {
   if (pct < 70) return { percent: 70, rarity: "稀有" };
   if (pct < 80) return { percent: 80, rarity: "超稀有" };
@@ -80,7 +92,7 @@ export function buildExamCardResultState(attempts: ExamAttemptRecord[], attemptI
   const prior = attempts
     .filter(a =>
       a.id !== current.id
-      && a.examId === current.examId
+      && cardExamKey(a.examId) === cardExamKey(current.examId)
       && isCardEligibleAttempt(a)
       && a.submittedAt <= current.submittedAt
     )
@@ -150,7 +162,7 @@ function competitionName(id?: string) {
 }
 
 function percent(score?: number, maxScore?: number) {
-  return maxScore && maxScore > 0 ? Math.round(((score || 0) / maxScore) * 100) : 0;
+  return maxScore && maxScore > 0 ? Math.round(((score || 0) / maxScore) * 10000) / 100 : 0;
 }
 
 export function buildMathCards(attempts: ExamAttemptRecord[]): MathCard[] {
@@ -161,7 +173,7 @@ export function buildMathCards(attempts: ExamAttemptRecord[]): MathCard[] {
 
   for (const a of formalAttempts) {
     const pct = percent(a.grade.score, a.grade.maxScore);
-    const key = a.examId || a.id;
+    const key = a.examId ? cardExamKey(a.examId) : a.id;
     const competition = competitionName(a.profile.competitionId);
     const year = a.profile.year ? " · " + a.profile.year : "";
     const card: MathCard = {
@@ -206,7 +218,10 @@ export function buildMathCards(attempts: ExamAttemptRecord[]): MathCard[] {
     });
   }
 
-  const firstPerfect = formalAttempts.find(a => a.grade.maxScore > 0 && a.grade.score === a.grade.maxScore);
+  const firstPerfect = formalAttempts.find(a => a.grade.maxScore > 0
+    && a.grade.score === a.grade.maxScore
+    && a.grade.correct === a.profile.questionCount
+    && a.grade.wrong === 0 && a.grade.blank === 0);
   if (firstPerfect) {
     cards.push({
       id: "achievement:first-perfect",

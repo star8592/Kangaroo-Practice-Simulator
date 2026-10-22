@@ -4,7 +4,10 @@ import type { MathCard } from "./math-cardbook";
 
 
 export function buildArithmeticHonorCards(sessions:ArithmeticSession[]):MathCard[]{
-  const sorted=[...sessions].sort((a,b)=>a.finishedAt-b.finishedAt);
+  // Unfinished signed sessions may feed diagnostics, but cannot unlock honors.
+  const sorted=sessions.filter(session=>session.rewardVerified!==false
+    && (!session.expectedQuestionCount||session.attempts.length>=session.expectedQuestionCount))
+    .sort((a,b)=>a.finishedAt-b.finishedAt);
   const cards=new Map<string,MathCard>();
 
   for(let i=0;i<sorted.length;i++){

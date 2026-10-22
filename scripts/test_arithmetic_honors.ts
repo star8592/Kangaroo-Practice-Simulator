@@ -91,5 +91,9 @@ const stable=cards.find(card=>card.id==="achievement:arithmetic-stable:g2:add100
 assert(stable);
 assert.equal(stable.rarity,"超稀有");
 
+const partialPerfect={...perfect,id:"honor-partial",rewardVerified:false};
+assert.equal(buildArithmeticHonorCards([partialPerfect]).length,0,"incomplete signed practice sessions must not earn honors");
+const truncated={...perfect,id:"honor-truncated",expectedQuestionCount:60,rewardVerified:true};
+assert.equal(buildArithmeticHonorCards([truncated]).length,0,"a 20/60 speed run cannot earn a perfect-set card");
 assert(cards.every(card=>card.kind==="成就卡"));
 console.log("persistent arithmetic honors: PASS");
