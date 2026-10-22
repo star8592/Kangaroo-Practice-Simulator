@@ -42,7 +42,7 @@ export async function GET(req: NextRequest) {
   // Never displace an existing child/guest session with unsubmitted work.
   if (!userFromSessionToken(req.cookies.get(SESSION_COOKIE)?.value)) {
     response.cookies.set(SESSION_COOKIE, createFamilyPracticeSessionToken(consumed.parentId), {
-      httpOnly: true, sameSite: "lax", secure: true, path: "/", domain: ".socthink.cn", maxAge: 604800,
+      httpOnly: true, sameSite: "lax", secure: true, path: "/", domain: ".socthink.cn", maxAge: PARENT_SESSION_TTL_SECONDS,
     });
   }
   return response;

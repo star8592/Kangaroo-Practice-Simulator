@@ -112,6 +112,9 @@ export function classifyStudentIdentity(user: {
 } | null | undefined): IdentityKind {
   if (!user) return "anonymous";
   if (user.role === "admin") return "admin";
+  // A signed and still-valid WeChat household token is a genuine account,
+  // even when no separate child profile/PIN has been created yet.
+  if (user.id.startsWith("guest_family_")) return "student";
   if (user.id.startsWith("guest_")) return "guest";
   return "student";
 }

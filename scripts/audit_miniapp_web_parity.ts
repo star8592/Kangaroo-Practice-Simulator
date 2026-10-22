@@ -36,7 +36,6 @@ const examsResponse = await getMiniappExams(request('/api/miniapp/exams'))
 assert.equal(examsResponse.status, 200)
 const examPayload = await examsResponse.json()
 const expectedExams = listTrainingExamProfiles()
-  .filter(x => x.paperType !== 'practice' || x.competitionId === 'seamo')
   .sort((a, b) => (b.year || 0) - (a.year || 0))
   .map(x => ({
     id: x.id,

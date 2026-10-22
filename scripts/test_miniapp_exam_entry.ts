@@ -46,7 +46,7 @@ assert.ok(exam.indexOf('if(result)return') < exam.indexOf('if(!bundle)return'),
   'a recovered result must render without re-downloading the exam bundle')
 
 assert.ok(list.includes('void openWebExam(String(ex.id),ex.competitionId===')&&list.includes('Taro.setClipboardData'),'unsupported split-exam must offer a working copyable Web link')
-assert.ok(list.includes("{id:'seamo',label:'新加坡 SEAMO'}")&&list.includes('小程序原生语音音频仍在准备'),'SEAMO Web fallback must be explicit');
+assert.ok(list.includes("{id:'seamo',label:'新加坡 SEAMO'}")&&list.includes('当前小程序版本尚不支持这套原生训练'),'SEAMO Web fallback must be explicit');
 assert.ok(login.includes('pendingExam.current')&&login.includes('await Taro.redirectTo({url:makeExamPath(pendingExam.current)})'),'login must resume intended paper')
 
 console.log('MINIAPP_EXAM_ENTRY=PASS registered=3 guest=denied session_creation_after_bundle=pass login_resume=pass catalog_retry=pass')

@@ -33,7 +33,7 @@ export function createSessionToken(uid:string,ttl=604800){const u=loadUsers().fi
 function familyPracticeId(parentId:string){
  return "guest_family_"+crypto.createHmac("sha256",secret()).update("family-practice:"+parentId).digest("hex").slice(0,32);
 }
-export function createFamilyPracticeSessionToken(parentId:string,ttl=604800){
+export function createFamilyPracticeSessionToken(parentId:string,ttl=30*24*60*60){
  const version=activeParentSessionVersion(parentId);
  if(version===null)throw new Error("家长账号无效");
  return signJsonToken({uid:familyPracticeId(parentId),familyParent:parentId,familyVersion:version,familyPractice:true,exp:Math.floor(Date.now()/1000)+ttl},secret());

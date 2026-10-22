@@ -86,7 +86,7 @@
     "test:miniapp-parity": "tsx scripts/audit_miniapp_web_parity.ts",
     "test:miniapp-five-tabs": "tsx scripts/test_miniapp_five_tab_navigation.ts",
     "test:miniapp-live": "tsx scripts/smoke_miniapp_live.ts",
-    "test:exam-access": "tsx scripts/test_guest_exam_access.ts && tsx scripts/test_guest_exam_routes.ts && tsx scripts/test_access_policy.ts && tsx scripts/test_access_catalog.ts",
+    "test:exam-access": "tsx scripts/test_guest_exam_access.ts && tsx scripts/test_guest_exam_routes.ts && tsx scripts/test_access_policy.ts && tsx scripts/test_access_catalog.ts && tsx scripts/test_seamo_family_login_fix.ts",
     "test:exam-access-live": "node scripts/smoke_exam_access_live.mjs",
     "test:exam-access-live-contract": "node --test scripts/test_smoke_exam_access_live.mjs",
     "test:e2e:smoke": "playwright test",

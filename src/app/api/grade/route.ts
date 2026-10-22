@@ -2,7 +2,7 @@ import { NextRequest,NextResponse } from "next/server";
 import { gradeExam } from "@/lib/grading";
 import { isExamBundleTrainingReady,loadTrainingExamBundle } from "@/lib/training-question-bank";
 import { userFromRequest } from "@/lib/auth";
-import { hasFullExamAccess } from "@/lib/exam-access";
+import { canAccessExamId } from "@/lib/exam-access";
 import { appendExamAttempt,type ExamEvent } from "@/lib/attempt-store";
 import { withExamSubmitLock } from "@/lib/exam-submit-recovery";
 import {
@@ -29,8 +29,8 @@ function events(v:unknown,s:number,e:number):ExamEvent[]{
 export async function POST(r:NextRequest){
   try{
     const u=userFromRequest(r);
-    if(!hasFullExamAccess(u))return NextResponse.json({error:"请先登录正式考生账号"},{status:401});
     const b=await r.json(),id=String(b?.examId||"level-a"),sid=String(b?.sessionId||"");
+    if(!canAccessExamId(u,id))return NextResponse.json({error:"请先登录正式考生账号"},{status:401});
     // A lost network response must not create a second attempt or strand the
     // student without a result. Lock before validating or writing the ticket.
     const result=withExamSubmitLock(u.id,id,sid,()=>{

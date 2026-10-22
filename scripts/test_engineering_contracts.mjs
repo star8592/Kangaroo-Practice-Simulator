@@ -2,20 +2,36 @@ import assert from "node:assert/strict";
 import {readFileSync} from "node:fs";
 import {test} from "node:test";
 const read=(p)=>readFileSync(new URL("../"+p,import.meta.url),"utf8");
-test("critical exam routes use the shared server-side authorization guard",()=>{
+test("critical exam routes use the shared resource-scoped server-side authorization guard",()=>{
   const routes=[
-    ["src/app/exam/[examId]/page.tsx",1],
-    ["src/app/api/exams/[examId]/route.ts",1],
-    ["src/app/api/exam-sessions/route.ts",3],
-    ["src/app/api/grade/route.ts",1],
+    ["src/app/exam/[examId]/page.tsx", "canAccessExamProfile",1],
+    ["src/app/api/exams/[examId]/route.ts","canAccessExamId",1],
+    ["src/app/api/exam-sessions/route.ts","canAccessExamId",3],
+    ["src/app/api/exam-sessions/recovery/route.ts","canAccessExamId",1],
+    ["src/app/api/grade/route.ts","canAccessExamId",1],
   ];
-  for(const [path,minCalls] of routes){
+  for(const [path,guard,minCalls] of routes){
     const source=read(path);
-    const count=(source.match(/if\s*\(\s*!hasFullExamAccess\s*\(/g)||[]).length;
-    assert.ok(count>=minCalls,path+": full exam guard missing on one or more paths");
+    const matcher=new RegExp(`if\\s*\\(\\s*!${guard}\\s*\\(`,'g');
+    const count=(source.match(matcher)||[]).length;
+    assert.ok(count>=minCalls,path+": scoped server authorization missing on one or more paths");
   }
+  const access=read("src/lib/exam-access.ts");
+  assert.match(access,/hasFullExamAccess\(user\)/,"all verified student identities share the entitlement gate");
+  assert.doesNotMatch(access,/SEAMO_FAMILY_PRACTICE_IDS/,"never make full-exam access SEAMO-only");
+  const policy=read("src/lib/access-policy.ts");
+  assert.match(policy,/user\.id\.startsWith\("guest_family_"\)\) return "student"/);
+  assert.match(policy,/user\.id\.startsWith\("guest_"\)\) return "guest"/);
   const guest=read("src/app/api/auth/guest/start/route.ts");
   assert.match(guest,/target\.startsWith\("\/exam\/"\)/);
+  assert.match(guest,/protectedExam && !parent && !hasFullExamAccess\(existing\)/);
+  const entry=read("src/app/exam/[examId]/page.tsx");
+  assert.match(entry,/parentFromSessionToken/);
+  const login=read("src/components/UnifiedLoginClient.tsx");
+  assert.match(login,/window\.location\.replace\("\/api\/auth\/guest\/start\?next="/);
+  const click=read("src/components/HomeClient.tsx");
+  assert.match(click,/window\.location\.assign\(destination\)/);
+
 });
 test("release wiring includes candidate, active, public receipt and daily watchdog",()=>{
   const build=read("ops/release/build_prebuilt_runtime.sh");

@@ -7,8 +7,9 @@ export async function GET(req: NextRequest) {
   const user = userFromRequest(req);
   if (!user || user.role !== "student") return NextResponse.json({ error: "请先登录学生账号" }, { status: 401 });
   const seamoClientReady = req.headers.get('x-socthink-miniapp-capabilities') === 'seamo-timer-v1';
+  // A verified WeChat user sees every available competition and practice,
+  // even when a particular format needs the Web fallback on older clients.
   const exams = listTrainingExamProfiles()
-    .filter(x => x.paperType !== "practice" || x.competitionId === "seamo")
     .sort((a, b) => (b.year || 0) - (a.year || 0))
     .map(x => ({
       id: x.id,

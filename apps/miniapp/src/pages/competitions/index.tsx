@@ -79,7 +79,7 @@ export default function CompetitionsPage(){
   const openWebExam=async(id:string,isSeamo=false)=>{
     try {
       await Taro.setClipboardData({data:'https://socthink.cn/exam/'+encodeURIComponent(id)})
-      await Taro.showModal({title:'已复制网页版地址',content:isSeamo?'SEAMO 原创基础训练已开放网页版；小程序原生语音音频仍在准备，链接已复制，请在浏览器继续。':'这套考试有分段计时要求，需要在浏览器打开。链接已复制，请粘贴到浏览器继续。',showCancel:false,confirmText:'知道了'})
+      await Taro.showModal({title:'已复制网页版地址',content:isSeamo?'SEAMO 网页版已可练习。当前小程序版本尚不支持这套原生训练，链接已复制，请在浏览器继续。':'当前小程序暂不支持这套试卷的全部答题要求，请在浏览器打开已复制链接继续练习。',showCancel:false,confirmText:'知道了'})
     }catch{
       Taro.showToast({title:'复制失败，请稍后重试',icon:'none'})
     }
