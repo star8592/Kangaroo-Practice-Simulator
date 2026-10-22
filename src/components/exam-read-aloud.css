@@ -7,6 +7,26 @@
   gap: 12px;
   margin: 12px 0 22px;
 }
+.exam-read-aloud .exam-speech-speed {
+  display: flex;
+  width: 100%;
+  justify-content: flex-end;
+  margin-bottom: -6px;
+}
+.exam-read-aloud .exam-speech-speed button {
+  min-height: 36px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  border: 1px solid #d0dfd5;
+  color: #254637;
+  background: #fff;
+  font-size: 13px;
+  cursor: pointer;
+}
+.exam-read-aloud .exam-speech-speed button:focus-visible {
+  outline: 2px solid #326c4e;
+  outline-offset: 2px;
+}
 .exam-read-aloud .exam-audio-track,
 .exam-read-aloud .exam-speech-track {
   display: flex;
