@@ -94,14 +94,21 @@ const surfaces = {
   events: fs.readFileSync(path.join(root, 'apps/miniapp/src/pages/events/index.tsx'), 'utf8'),
   review: fs.readFileSync(path.join(root, 'apps/miniapp/src/pages/review/index.tsx'), 'utf8'),
 }
+// Wire parity above is independent of which values deserve space on the home screen.
+// Keep the full analytics API for authenticated Web/mobile consumers, but the student
+// landing should prioritize what to practise next instead of internal confidence scores.
 for (const needle of [
-  'analytics?.readiness',
-  'analytics?.dataConfidence',
+  "/api/student/analytics",
   'analytics?.nextPlan',
   'analytics?.recommendedExams',
   'analytics?.arithmetic?.plan?.summaryZh',
-  "examAttempts?accuracy+'%':'—'",
-]) assert.ok(surfaces.home.includes(needle), `home is not rendering shared analytics field: ${needle}`)
+  'analytics?.overview?.accuracy',
+  'analytics?.overview?.examAttempts',
+  'analytics?.arithmetic?.sessions',
+]) assert.ok(surfaces.home.includes(needle), `home is missing actionable analytics mapping: ${needle}`)
+assert.ok(!surfaces.home.includes('analytics?.readiness') &&
+          !surfaces.home.includes('analytics?.dataConfidence'),
+          'internal technical scores must not dominate the student home')
 for (const needle of ['/api/miniapp/exams','ex.name','ex.year','ex.grades','ex.questionCount','ex.miniappReady']) {
   assert.ok(surfaces.competitions.includes(needle), `competition UI mapping missing: ${needle}`)
 }
