@@ -54,7 +54,7 @@ assert.ok(events.includes('Taro.setStorageSync(TRAINING_INTENT_KEY,intent)'), 's
 assert.ok(events.includes("await Taro.switchTab({url:'/pages/competitions/index'})"), 'event detail must open real competition tab')
 assert.ok(events.includes('Taro.removeStorageSync(TRAINING_INTENT_KEY)'), 'failed navigation must not leave stale intent')
 assert.ok(events.indexOf('Taro.setStorageSync(TRAINING_INTENT_KEY,intent)')<events.indexOf("await Taro.switchTab({url:'/pages/competitions/index'})"))
-assert.ok(events.includes("api<{exams:unknown}>('/api/miniapp/exams')"),'event UI must verify live paper availability')
+assert.ok(events.includes("api<{exams:unknown}>('/api/miniapp/exams',{auth:Boolean(authStore.token())})"),'event UI must verify live paper availability')
 assert.ok(events.includes('readyTraining.includes(chosen.event.trainingId as TrainingEventId)'),
   'CTA must only show after verified ready mobile papers exist')
 assert.ok(events.includes('重试读取试卷'), 'unavailable catalog must offer retry, not a dead button')

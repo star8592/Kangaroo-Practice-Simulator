@@ -4,18 +4,17 @@ import Link from "next/link";
 import { useEffect,useState } from "react";
 import { CLEVER_NODE_GUIDE,GRADE_PROFILES,STRATEGY_GUIDE,type ArithmeticGrade } from "@/lib/arithmetic";
 import { ARITHMETIC_GRADE_GUIDE } from "@/lib/arithmetic-grade-guide";
-import { K12_GRADE_BANDS,K12_GRADE_CROSSWALK,K12_GRADE_NOTE,K12_GRADE_NOTE_EN } from "@/lib/k12-grade-system";
+import { K12_GRADE_BANDS,CHINESE_SCHOOL_STAGES,K12_GRADE_CROSSWALK,K12_GRADE_NOTE,K12_GRADE_NOTE_EN } from "@/lib/k12-grade-system";
 import { buildTrainingPlan,type ArithmeticSession } from "@/lib/arithmetic-analytics";
 import { buildLearnerProfile,type LearnerSignal } from "@/lib/math-engine";
 import { useSiteLanguage } from "@/lib/site-language";
 import styles from "./ArithmeticDashboard.module.css";
 
-const stageIdForGrade=(grade:ArithmeticGrade)=>grade<=5?"primary":grade<=8?"lower-secondary":"upper-secondary";
 const compactGradeLabel=(grade:ArithmeticGrade)=>`G${grade}`;
 
 const UI={
  zh:{
-  heroEye:"智能计算训练",heroTitle1:"计算诊断",heroTitle2:"与智能训练",heroCopy:"不是单纯刷题。系统同时分析正确率、启动速度、总耗时、修改/退格行为、错误类型和计算结构识别，用下一轮最小必要题量修复最值得修复的问题。",
+  heroEye:"智能计算训练",heroTitle1:"现在开始练",heroTitle2:"练完知道下一步",heroCopy:"按当前年级练习。系统根据实际作答，告诉你下一组最值得练什么。",
   modeEye:"训练模式中心",startNow:"现在开始练",current:"当前",stageAria:"选择 K-12 学段",gradeAria:"选择年级",gradeWord:"年级",content:"训练内容",how:"怎么练",watch:"重点观察",benchmark:"达标参考",benchmarkCopy:"方法稳定",
   ai:"AI 推荐",adaptive:"智能训练",adaptiveCopy:"根据你的最近表现，自动挑选最值得练的题和最小必要题量。",adaptiveStart:"开始智能训练",
   method:"学方法",guided:"跟我算",guidedPrimary:"分层提示、逐步撤掉支架，把“老师带着会”练成自己独立会。",guidedSecondary:"卡住时只给一步关键提示，定位符号、公式、变形或运算顺序问题。",guidedStart:"开始引导训练",
@@ -62,7 +61,9 @@ export default function ArithmeticDashboard({user}:{user:{id:string;name:string;
 
  const p=GRADE_PROFILES[selected],guide=ARITHMETIC_GRADE_GUIDE[selected],crosswalk=K12_GRADE_CROSSWALK[selected],plan=buildTrainingPlan(selected,sessions),mathProfile=buildLearnerProfile(signals);
  const gradeSessions=sessions.filter(s=>s.grade===selected),attempts=gradeSessions.flatMap(s=>s.attempts),accuracy=attempts.length?attempts.filter(a=>a.correct).length/attempts.length:0;
- const currentStage=stageIdForGrade(selected),stage=K12_GRADE_BANDS.find(s=>s.id===currentStage)!;
+ const stageBands=lang==="zh"?CHINESE_SCHOOL_STAGES:K12_GRADE_BANDS;
+ const currentStage=stageBands.find(s=>(s.grades as readonly number[]).includes(selected))?.id||stageBands[0].id;
+ const stage=stageBands.find(s=>s.id===currentStage)!;
  const gradeTitle=lang==="zh"?p.titleZh:p.titleEn;
  const strategyCount=new Set(p.skills.flatMap(s=>s.strategies)).size;
  const skillLabel=(id:string)=>{const skill=p.skills.find(s=>s.id===id);return lang==="zh"?(skill?.labelZh||id):(skill?.labelEn||id)};
@@ -100,7 +101,7 @@ export default function ArithmeticDashboard({user}:{user:{id:string;name:string;
   <section className="hero-card arithmetic-hero"><div className="eyebrow">{ui.heroEye}</div><h1>{ui.heroTitle1}<br/><span>{ui.heroTitle2}</span></h1><p className="hero-copy">{ui.heroCopy}</p><div className="hero-actions arithmetic-hero-actions"><Link className="primary-button" href={`/arithmetic/session/${selected}?mode=diagnostic`}>{lang==="zh"?(isFamilyStarter?"开始 20 题计算诊断":"无需登录 · 立即做 20 题诊断"):(isFamilyStarter?"Start 20-question diagnostic":"No sign-in · Start 20-question diagnostic")}</Link><Link className="secondary-button" href="#training-launchpad">{lang==="zh"?"先选年级":"Choose grade first"}</Link></div>{isGuest&&<p className="guest-access-note">{isFamilyStarter?(lang==="zh"?"微信家庭已连接 · 基础练习记录保存在独立体验档案中，暂不归入任何孩子。":"Family connected · Basic practice history is kept separately until you choose a learner."):(lang==="zh"?"游客可直接练习并查看基础成绩；登录只用于长期记录和跨设备同步。":"Guests can practice and view basic results immediately. Sign in only for long-term history and sync.")}</p>}</section>
 
   <section className="training-launchpad" id="training-launchpad">
-   <div className="training-launchpad-head"><div><span className="eyebrow">{ui.modeEye}</span><h2>{ui.startNow}</h2><p>{ui.current} {crosswalk.international} · {gradeTitle}</p></div><div className={styles.gradePicker}><div className={styles.stageSwitcher} aria-label={ui.stageAria}>{K12_GRADE_BANDS.map(s=><button key={s.id} type="button" className={currentStage===s.id?styles.active:""} onClick={()=>{if(currentStage!==s.id)setSelected(s.grades[0])}}><strong>{lang==="zh"?s.zh:s.label}</strong><small>{lang==="zh"?`${s.label} · ${s.range}`:s.range}</small></button>)}</div><div className={styles.gradeSwitcher} aria-label={ui.gradeAria}>{stage.grades.map(g=><button key={g} type="button" className={selected===g?styles.active:""} onClick={()=>setSelected(g)}>{compactGradeLabel(g)}<small>{ui.gradeWord}</small></button>)}</div></div></div>
+   <div className="training-launchpad-head"><div><span className="eyebrow">{ui.modeEye}</span><h2>{ui.startNow}</h2><p>{ui.current} {crosswalk.international} · {gradeTitle}</p></div><div className={styles.gradePicker}><div className={styles.stageSwitcher} aria-label={ui.stageAria}>{stageBands.map(s=><button key={s.id} type="button" className={currentStage===s.id?styles.active:""} onClick={()=>{if(currentStage!==s.id)setSelected(s.grades[0])}}><strong>{lang==="zh"?s.zh:s.label}</strong><small>{lang==="zh"?`${s.label} · ${s.range}`:s.range}</small></button>)}</div><div className={styles.gradeSwitcher} aria-label={ui.gradeAria}>{stage.grades.map(g=><button key={g} type="button" className={selected===g?styles.active:""} onClick={()=>setSelected(g)}>{compactGradeLabel(g)}<small>{ui.gradeWord}</small></button>)}</div></div></div>
    <div className={styles.gradeCrosswalk}><div><b>International</b><span>{crosswalk.international}</span></div><div><b>US</b><span>{crosswalk.us}</span></div><div><b>England</b><span>{crosswalk.england}</span></div><div><b>Australia</b><span>{crosswalk.australia}</span></div><div><b>IB</b><span>{crosswalk.ib}</span></div><small>{lang==="zh"?K12_GRADE_NOTE:K12_GRADE_NOTE_EN}</small></div>
    <div className={styles.gradeGuide}><div className={styles.gradeGuideIntro}><span>{crosswalk.international} · {gradeTitle} · {ui.content}</span><h3>{guideCopy.headline}</h3><p>{guideCopy.goal}</p><div className={styles.curriculumCount}><b>{p.skills.length}</b><span>{lang==="zh"?"个核心模块":"core modules"}</span><i>+</i><b>{strategyCount}</b><span>{lang==="zh"?"种关键方法":"key methods"}</span></div></div><div className={styles.guideSkills}>{p.skills.map((skill,i)=><article key={skill.id}><div><span>{String(i+1).padStart(2,"0")}</span><b>{lang==="zh"?skill.labelZh:skill.labelEn}</b></div><div className={styles.strategyChips}>{skill.strategies.map(strategy=><em key={strategy}>{STRATEGY_GUIDE[strategy][lang]}</em>)}</div><small>{lang==="zh"?`典型题目标约 ≤ ${(skill.targetMs/1000).toFixed(1)} 秒`:`Typical target ≤ ${(skill.targetMs/1000).toFixed(1)}s`}</small></article>)}</div><div className={styles.guideMeta}><div><b>{ui.how}</b><span>{guideCopy.training}</span></div><div><b>{ui.watch}</b><span>{guideCopy.watch}</span></div><div><b>{ui.benchmark}</b><span>{lang==="zh"?`正确率 ≥ ${Math.round(p.targetAccuracy*100)}% · 典型题中位用时约 ≤ ${(p.targetMedianMs/1000).toFixed(1)} 秒 · ${ui.benchmarkCopy}。`:`Accuracy ≥ ${Math.round(p.targetAccuracy*100)}% · typical median time ≤ ${(p.targetMedianMs/1000).toFixed(1)}s · ${ui.benchmarkCopy}.`}</span></div></div></div>
    <div className="training-primary-grid">

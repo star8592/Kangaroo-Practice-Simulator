@@ -85,6 +85,7 @@
     "audit:security": "npm audit --audit-level=high",
     "test:miniapp-parity": "tsx scripts/audit_miniapp_web_parity.ts",
     "test:miniapp-five-tabs": "tsx scripts/test_miniapp_five_tab_navigation.ts",
+    "test:miniapp-public-catalogue": "tsx scripts/test_miniapp_public_catalogue.ts",
     "test:miniapp-live": "tsx scripts/smoke_miniapp_live.ts",
     "test:exam-access": "tsx scripts/test_guest_exam_access.ts && tsx scripts/test_guest_exam_routes.ts && tsx scripts/test_access_policy.ts && tsx scripts/test_access_catalog.ts",
     "test:exam-access-live": "node scripts/smoke_exam_access_live.mjs",
@@ -99,7 +100,9 @@
     "test:exam-readaloud": "tsx scripts/test_exam_readaloud.ts",
     "test:seamo": "python3 scripts/test_seamo_original_mocks.py && python3 scripts/test_seamo_revised.py && tsx scripts/test_seamo_integration.ts && python3 scripts/test_seamo_no_private.py && tsx scripts/prepare_seamo_readaloud.ts && tsx scripts/test_seamo_native_miniapp.ts",
     "test:miniapp-answer-navigation": "tsx scripts/test_miniapp_answer_navigation.ts",
-    "test:miniapp-blank-paper-flow": "tsx scripts/test_miniapp_blank_paper_flow.ts"
+    "test:miniapp-blank-paper-flow": "tsx scripts/test_miniapp_blank_paper_flow.ts",
+    "test:k12-actionable-home": "tsx scripts/test_k12_actionable_home.ts",
+    "test:actionable-calc-trend": "tsx scripts/test_actionable_calculation_change.ts"
   },
   "dependencies": {
     "next": "16.3.8",

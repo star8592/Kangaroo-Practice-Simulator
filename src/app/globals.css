@@ -325,5 +325,7 @@
 }
 
 /* One clear family sign-in action; training stays independently accessible. */
-.home-hero .home-login-primary{min-height:54px;padding-inline:24px;font-size:16px;box-shadow:0 10px 24px rgba(0,0,0,.19)}
-.home-hero .home-login-primary:focus-visible{outline:3px solid #fff;outline-offset:3px}
+.home-hero .home-practice-primary{min-height:54px;padding-inline:24px;font-size:16px;box-shadow:0 10px 24px rgba(0,0,0,.19)}
+.home-hero .home-practice-primary:focus-visible{outline:3px solid #fff;outline-offset:3px}
+
+/* Immediately visible 1–12 grade coverage on the public web homepage. */

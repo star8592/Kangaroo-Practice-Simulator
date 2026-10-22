@@ -77,7 +77,7 @@ const worldwideResponse = await getMiniappWorldCompetitions(request('/api/miniap
 assert.equal(worldwideResponse.status, 200)
 const worldwidePayload = await worldwideResponse.json()
 assert.deepEqual(worldwidePayload.entries.map((x:{event:{id:string}})=>x.event.id),
-  WORLD_COMPETITIONS.map(x=>x.id), 'worldwide catalogue parity failed')
+  WORLD_COMPETITIONS.filter(x=>x.region!=='CN').map(x=>x.id), 'miniapp international catalogue parity failed')
 for (const entry of worldwidePayload.entries) {
   assert.ok(entry.companion, 'every world event must have a companion')
   assert.equal(entry.following, null, 'disposable guest must not have persisted follows')
@@ -93,22 +93,15 @@ const surfaces = {
   competitions: fs.readFileSync(path.join(root, 'apps/miniapp/src/pages/competitions/index.tsx'), 'utf8'),
   events: fs.readFileSync(path.join(root, 'apps/miniapp/src/pages/events/index.tsx'), 'utf8'),
   review: fs.readFileSync(path.join(root, 'apps/miniapp/src/pages/review/index.tsx'), 'utf8'),
+  profile: fs.readFileSync(path.join(root, 'apps/miniapp/src/pages/profile/index.tsx'), 'utf8'),
 }
-// Wire parity above is independent of which values deserve space on the home screen.
-// Keep the full analytics API for authenticated Web/mobile consumers, but the student
-// landing should prioritize what to practise next instead of internal confidence scores.
-for (const needle of [
-  "/api/student/analytics",
-  'analytics?.nextPlan',
-  'analytics?.recommendedExams',
-  'analytics?.arithmetic?.plan?.summaryZh',
-  'analytics?.overview?.accuracy',
-  'analytics?.overview?.examAttempts',
-  'analytics?.arithmetic?.sessions',
-]) assert.ok(surfaces.home.includes(needle), `home is missing actionable analytics mapping: ${needle}`)
-assert.ok(!surfaces.home.includes('analytics?.readiness') &&
-          !surfaces.home.includes('analytics?.dataConfidence'),
-          'internal technical scores must not dominate the student home')
+// Data parity is an API contract, not a requirement to fill the first screen with vanity metrics.
+for(const needle of ["api('/api/student/analytics')",'learnerNextAction(analytics)','analytics?.recommendedExams','小学 · 初中 · 高中'])
+  assert.ok(surfaces.home.includes(needle), `home action/coverage missing: ${needle}`)
+for(const needle of ["api('/api/student/analytics')",'data?.nextPlan','data?.arithmetic?.plan?.summaryZh','展开详细记录与依据','showNumbers'])
+  assert.ok(surfaces.profile.includes(needle), `opt-in learning evidence missing: ${needle}`)
+assert.ok(!surfaces.home.includes('综合训练指数')&&!surfaces.home.includes('数据置信度'),
+  'technical model metrics must not dominate the home screen')
 for (const needle of ['/api/miniapp/exams','ex.name','ex.year','ex.grades','ex.questionCount','ex.miniappReady']) {
   assert.ok(surfaces.competitions.includes(needle), `competition UI mapping missing: ${needle}`)
 }

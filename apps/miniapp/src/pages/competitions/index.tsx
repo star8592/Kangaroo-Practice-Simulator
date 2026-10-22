@@ -27,7 +27,7 @@ export default function CompetitionsPage(){
   const loadExams=async()=>{
     setLoading(true);setLoadError('')
     try {
-      const data=await api<any>('/api/miniapp/exams')
+      const data=await api<any>('/api/miniapp/exams',{auth:Boolean(authStore.token())})
       if(!Array.isArray(data.exams))throw new Error('试卷列表格式异常')
       setExams(data.exams)
     } catch(e) {

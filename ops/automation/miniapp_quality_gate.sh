@@ -5,8 +5,10 @@ APP="$ROOT/apps/miniapp"
 cd "$ROOT"
 npm run test:miniapp-exam-entry
 npm run test:miniapp-answer-navigation
-./node_modules/.bin/tsx scripts/test_miniapp_learning_home.ts
+npm run test:k12-actionable-home
+npm run test:actionable-calc-trend
 npm run test:miniapp-five-tabs
+npm run test:miniapp-public-catalogue
 npm run test:miniapp-arithmetic-idempotency
 npm run test:exam-submit-recovery
 npm run test:miniapp-blank-paper-flow
