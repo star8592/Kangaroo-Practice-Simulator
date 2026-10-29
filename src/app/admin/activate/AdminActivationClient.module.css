@@ -1,0 +1,9 @@
+.form{display:grid;gap:18px;max-width:520px;margin:16px 0}
+.form label{display:grid;gap:9px;font-size:14px;font-weight:700;color:var(--ink)}
+.form input{width:100%;min-height:48px;padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--panel);color:var(--ink);font-size:16px}
+.form input:focus{outline:2px solid var(--accent)}
+.form button{min-height:48px;border-radius:10px;border:0;background:var(--ink);color:#fff;padding:12px 20px;font-weight:750;font-size:15px;cursor:pointer}
+.form button:disabled{opacity:.5;cursor:wait}
+.note{color:var(--muted);font-size:12px;line-height:1.8}
+.error,.invalid{font-size:14px;color:#b42318;line-height:1.8}
+.invalid{padding:16px}
