@@ -100,8 +100,8 @@
     "test:seamo": "python3 scripts/test_seamo_original_mocks.py && python3 scripts/test_seamo_revised.py && tsx scripts/test_seamo_integration.ts && python3 scripts/test_seamo_no_private.py && tsx scripts/prepare_seamo_readaloud.ts && tsx scripts/test_seamo_native_miniapp.ts"
   },
   "dependencies": {
-    "next": "16.3.8",
-    "nodemailer": "^10.0.10",
+    "next": "16.4.3",
+    "nodemailer": "10.1.5",
     "pg": "^8.22.0",
     "qrcode": "^1.5.4",
     "react": "19.2.8",
