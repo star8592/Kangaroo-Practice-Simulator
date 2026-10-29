@@ -37,14 +37,18 @@ async function main() {
   const adminAccount = createAdmin({ username: "admin-pin-test", name: "负责人", pin: "strong-admin-test-pin" });
   const { POST: adminLogin } = await import("../src/app/api/admin/login/route");
   const { NextRequest } = await import("next/server");
-  const loginRequest = (username: string, pin: string, origin = "https://socthink.cn") =>
-    new NextRequest("https://socthink.cn/api/admin/login", {
+  const loginRequest = (username: string, pin: string, origin = "https://socthink.cn", proxied = false) =>
+    new NextRequest(proxied ? "http://127.0.0.1:3000/api/admin/login" : "https://socthink.cn/api/admin/login", {
       method: "POST",
-      headers: { "content-type": "application/json", origin, "x-real-ip": "192.0.2.41" },
+      headers: { "content-type": "application/json", origin, "x-real-ip": "192.0.2.41", ...(proxied ? { host: "socthink.cn" } : {}) },
       body: JSON.stringify({ username, pin }),
     });
   const blockedCrossOrigin = await adminLogin(loginRequest("admin-pin-test", "strong-admin-test-pin", "https://other.example"));
   assert.equal(blockedCrossOrigin.status, 403, "cross-origin admin login must be refused");
+  const proxiedInvalid = await adminLogin(loginRequest("nonexistent-proxy-fixture", "invalid-test-value", "https://socthink.cn", true));
+  assert.equal(proxiedInvalid.status, 401, "legitimate proxied login must reach credential verification rather than return 403");
+  const proxyCrossOrigin = await adminLogin(loginRequest("nonexistent-proxy-fixture", "invalid-test-value", "https://untrusted.example", true));
+  assert.equal(proxyCrossOrigin.status, 403, "different-origin login remains forbidden behind proxy");
   const blockedStudent = await adminLogin(loginRequest("learner", "student-pin-wrong"));
   assert.ok(blockedStudent.status === 401 || blockedStudent.status === 429);
   assert.equal(blockedStudent.headers.get("set-cookie"), null, "student must not receive admin cookie");
