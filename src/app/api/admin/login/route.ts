@@ -10,7 +10,7 @@ export async function POST(req: NextRequest) {
   // Browser clients must come from the same site. Credentials are not accepted cross-origin.
   if (origin) {
     try {
-      if (new URL(origin).host !== req.nextUrl.host) {
+      if (new URL(origin).host !== (req.headers.get("host") || req.nextUrl.host)) {
         return NextResponse.json({ error: "登录来源无效" }, { status: 403 });
       }
     } catch {
