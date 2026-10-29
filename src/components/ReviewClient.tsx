@@ -8,10 +8,11 @@ import MathVerificationBadge from "@/components/MathVerificationBadge";
 import { conceptLabel, type DisplayLang } from "@/lib/display";
 import { useSiteLanguage } from "@/lib/site-language";
 import SmartSolutionPlayer from "@/components/SmartSolutionPlayer";
+import ExamCustomerFeedback from "@/components/ExamCustomerFeedback";
 import SolutionBookViewer from "@/components/SolutionBookViewer";
 import { hasExactQuestionMapping, solutionBookForExam } from "@/lib/solution-books";
 
-type Attempt = ReviewAttemptPayload & { lang?: DisplayLang };
+type Attempt = ReviewAttemptPayload & { lang?: DisplayLang; attemptId?: string; };
 
 const UI = {
   zh: {
@@ -108,6 +109,8 @@ export default function ReviewClient({ initialAttempt = null }: { initialAttempt
   if (!a) {
     return <div className="center-card"><h2>{ui.none}</h2><Link className="primary-button" href="/">{ui.start}</Link></div>;
   }
+
+  const feedbackAttemptId = a.attemptId || (a.grade as typeof a.grade & { attemptId?: string }).attemptId;
 
   return <div className="review-shell">
     <div className="section-heading">
@@ -230,6 +233,7 @@ export default function ReviewClient({ initialAttempt = null }: { initialAttempt
             </div>
 
             {solutionBook && hasExactQuestionMapping(solutionBook) && <SolutionBookViewer book={solutionBook} questionNo={item.questionNo} lang={questionLang} />}
+            {feedbackAttemptId && <ExamCustomerFeedback attemptId={feedbackAttemptId} examId={a.examId} questionId={item.questionId} source="review" />}
             <SmartSolutionPlayer
               questionId={item.questionId}
               questionNo={item.questionNo}

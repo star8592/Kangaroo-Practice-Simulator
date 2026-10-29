@@ -6,6 +6,7 @@ import type { ExamProfile, GradeResult } from "@/lib/types";
 import { conceptLabel, type DisplayLang } from "@/lib/display";
 import { useSiteLanguage } from "@/lib/site-language";
 import MathCardReveal from "@/components/MathCardReveal";
+import ExamCustomerFeedback from "@/components/ExamCustomerFeedback";
 
 type GradeWithAttempt=GradeResult & {attemptId?:string};
 type Attempt={examId?:string;profile?:ExamProfile;lang?:DisplayLang;grade:GradeWithAttempt;elapsedSeconds:number;submittedAt:number};
@@ -39,6 +40,7 @@ export default function ResultClient(){
       <article className="report-card"><h2>{ui.difficulty}</h2>{a.profile?.competitionId==="maa-amc"&&g.byPosition?Object.entries(g.byPosition).map(([name,v])=><div className="metric-row" key={name}><span>{name}</span><div className="metric-bar"><i style={{width:((v.correct/v.total)*100)+"%"}}/></div><strong>{v.correct}/{v.total}</strong></div>):Object.entries(g.byPoints).sort().map(([p,v])=><div className="metric-row" key={p}><span>{lang==="zh"?p+" "+ui.points:p+ui.points}</span><div className="metric-bar"><i style={{width:((v.correct/v.total)*100)+"%"}}/></div><strong>{v.correct}/{v.total}</strong></div>)}</article>
       <article className="report-card"><h2>{ui.concepts}</h2>{Object.entries(g.byConcept).sort((x,y)=>y[1].total-x[1].total).slice(0,8).map(([name,v])=><div className="metric-row" key={name}><span>{conceptLabel(name,lang)}</span><div className="metric-bar"><i style={{width:((v.correct/v.total)*100)+"%"}}/></div><strong>{v.correct}/{v.total}</strong></div>)}</article>
     </section>
+    {attemptId && <ExamCustomerFeedback attemptId={attemptId} examId={examId} source="result" />}
     <div className="report-actions">{attemptId&&<Link className="primary-button" href={"/report/"+attemptId}>{ui.diagnostic}</Link>}<Link className={attemptId?"secondary-button":"primary-button"} href={attemptId?`/review?attemptId=${encodeURIComponent(attemptId)}`:"/review"}>{ui.review}</Link><Link className="secondary-button" href={"/exam/"+examId}>{mixedBase?ui.same:ui.again}</Link>{mixedBase&&<button className="secondary-button" onClick={(event)=>router.push("/exam/"+mixedBase+"-"+Math.floor(event.timeStamp*1000).toString(36))}>{ui.newMix}</button>}<Link className="secondary-button" href="/">{ui.list}</Link></div>
   </div>;
 }

@@ -17,5 +17,5 @@ export default async function ReviewPage({
   const initialAttempt = attemptId ? buildReviewAttempt(user, attemptId) : null;
   if (attemptId && !initialAttempt) notFound();
 
-  return <ReviewClient initialAttempt={initialAttempt} />;
+  return <ReviewClient initialAttempt={initialAttempt ? { ...initialAttempt, attemptId: attemptId || undefined } : null} />;
 }
