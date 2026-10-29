@@ -10,7 +10,9 @@ export async function POST(req: NextRequest) {
     const user = userFromRequest(req);
     if (!user) return NextResponse.json({ error: "请先登录" }, { status: 401 });
     const origin = req.headers.get("origin");
-    if (origin && new URL(origin).host !== req.nextUrl.host) {
+    const requestHost = req.headers.get("host") || req.nextUrl.host;
+    const parsedOrigin = origin ? new URL(origin) : null;
+    if (parsedOrigin && (!["http:","https:"].includes(parsedOrigin.protocol) || parsedOrigin.host !== requestHost)) {
       return NextResponse.json({ error: "跨站提交不允许" }, { status: 403 });
     }
     if (!req.headers.get("content-type")?.includes("application/json")) {

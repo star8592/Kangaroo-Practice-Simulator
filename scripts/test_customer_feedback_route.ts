@@ -37,6 +37,8 @@ async function main() {
     assert.equal((await POST(req(payload,anotherToken))).status,404);
     assert.equal((await POST(req({...payload,questionId:"q_others"},token))).status,400);
     assert.equal((await POST(req(payload,token,{"origin":"http://evil.example"}))).status,403);
+    const proxyHost=await POST(req({...payload,idempotencyKey:testKey+"proxy"},token,{"host":"socthink.cn","origin":"https://socthink.cn"}));
+    assert.equal(proxyHost.status,201);
     const first=await POST(req(payload,token));
     assert.equal(first.status,201);
     assert.equal((await first.json()).ok,true);
