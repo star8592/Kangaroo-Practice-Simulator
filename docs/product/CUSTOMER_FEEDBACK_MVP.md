@@ -28,3 +28,16 @@
 - 第三方试题与OCR候选不自动获得商业分发许可。
 
 证据等级：E1 本地实现测试；E2 实际主机可用性；E3 外部客户提交并处理反馈的闭环；E4 连续运营指标改善。
+
+
+## 浏览器回归
+在独立 worktree 的合成用户数据环境中启动 Next 服务器（不允许指向生产站）。
+使用本地地址显式开启测试：
+- SOCTHINK_E2E_SYNTHETIC=1
+- E2E_EXTERNAL_SERVER=1
+- E2E_BASE_URL=http://127.0.0.1:4379
+- PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/google-chrome
+
+运行：npx playwright test tests/e2e/customer-feedback.spec.ts --project=desktop-chromium --project=mobile-chromium
+此测试会在当前 worktree 非公开 private/users 下创建合成用户与考试快照；未显式启用或非本机地址时跳过。
+真实浏览器测试发现 Next.js req.nextUrl.host 与实际 Host 不一定一致，已改为按请求 Host 校验同源，避免正常反馈被误报为跨站。
