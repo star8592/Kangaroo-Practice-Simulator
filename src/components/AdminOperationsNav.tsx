@@ -7,5 +7,6 @@ export default function AdminOperationsNav() {
     <Link href="/admin/families">微信用户与家庭</Link>
     <Link href="/admin/students">学生与学习画像</Link>
     <Link href="/admin/questions">题库检查</Link>
+    <Link href="/admin/feedback">客户反馈</Link>
   </nav>;
 }

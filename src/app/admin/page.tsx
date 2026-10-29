@@ -3,6 +3,7 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { isAdmin, SESSION_COOKIE, userFromSessionToken } from "@/lib/auth";
 import { adminOperationsSnapshot } from "@/lib/admin-operations";
+import { readCustomerFeedbackOverview } from "@/lib/customer-feedback-admin";
 import AdminOperationsNav from "@/components/AdminOperationsNav";
 import styles from "@/components/AdminOperations.module.css";
 
@@ -19,6 +20,7 @@ export default async function AdminPage() {
   if (!user) redirect("/admin/login");
   if (!isAdmin(user)) redirect("/");
   const data = adminOperationsSnapshot();
+  const feedback = readCustomerFeedbackOverview({ days: 30, limit: 100 });
   const tiles = [
     { label: "累计家庭账号", value: data.totalFamilies, help: "按家长账号去重，多个孩子仍算一个家庭" },
     { label: "今日新增家庭", value: data.createdToday, help: "北京时间，自然日" },
@@ -49,6 +51,10 @@ export default async function AdminPage() {
       {!data.families.some((row) => row.lastLoginAt !== null) &&
         <p className={styles.empty}>暂无可用的成功登录时间。历史数据不会猜测或补造。</p>}
       <p className={styles.note}>仅管理员可见。扫码新建家庭和再次登录会记录成功时间；“在线人数”需要心跳数据，本版不展示。</p>
+    </section>
+    <section className={styles.panel}>
+      <div className={styles.panelHead}><h2>近30天客户反馈</h2><Link className={styles.textLink} href="/admin/feedback">查看客户反馈处理台 →</Link></div>
+      <p>累计有效反馈 {feedback.total} 条；需要优先核查的题目、答案与报告争议 {feedback.highPriority} 条。只有真实客户提交的记录才会进入统计。</p>
     </section>
     <section className={styles.panel}>
       <h2>现有管理功能</h2>
