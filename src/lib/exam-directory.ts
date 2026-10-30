@@ -28,8 +28,10 @@ export const EXAM_DIRECTORY:readonly ExamDirectoryGroup[]=[
     topic("print-math","数学练习卷打印","Printable math practice","/arithmetic/print"),
     topic("xiaoshengchu-math","小升初数学","Primary-to-middle school math"),
     topic("xiaoshengchu-chinese","小升初语文","Primary-to-middle school Chinese"),
+    topic("xiaoshengchu-english","小升初英语","Primary-to-middle school English"),
     topic("primary-tests","小学期中期末","Primary school exams"),
     topic("middle-math","初中数学与物理","Middle school math & physics"),
+    topic("high-science","高中物理与化学","High school physics & chemistry"),
     topic("zhongkao","中考学科考试","Senior high entrance examinations"),
     topic("gaokao","高考学科考试","University entrance examinations"),
   ]},
@@ -50,6 +52,7 @@ export const EXAM_DIRECTORY:readonly ExamDirectoryGroup[]=[
     topic("cet","英语四级 / 六级","CET-4 / CET-6"),
     topic("gre-gmat","GRE / GMAT","GRE / GMAT"),
     topic("hsk","汉语水平考试 HSK","Chinese HSK"),
+    topic("bec","BEC 商务英语","Business English BEC"),
   ]},
   {domainId:"university",topics:[
     topic("postgraduate-math","考研数学","Postgraduate mathematics"),
@@ -58,6 +61,7 @@ export const EXAM_DIRECTORY:readonly ExamDirectoryGroup[]=[
     topic("postgraduate-specialty","考研专业课","Postgraduate subject exams"),
     topic("university-subjects","大学课程与期末考试","University course exams"),
     topic("academic-skills","学术能力与研究方法","Academic research skills"),
+    topic("university-english","大学专业英语","University academic English"),
   ]},
   {domainId:"career",topics:[
     topic("sql","SQL 数据库实操","SQL practical assessment"),
@@ -77,6 +81,7 @@ export const EXAM_DIRECTORY:readonly ExamDirectoryGroup[]=[
     topic("construction","建造师 / 工程资格","Construction and engineering"),
     topic("economics","经济师 / 金融资格","Economics & financial qualifications"),
     topic("medical","医疗卫生职业资格","Healthcare qualifications"),
+    topic("securities","证券与基金从业资格","Securities and fund qualifications"),
   ]},
   {domainId:"interest",topics:[
     topic("career-interest","职业兴趣探索","Career interest exploration"),
