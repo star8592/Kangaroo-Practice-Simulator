@@ -18,6 +18,11 @@ grep -q 'name")=="CI"' "$SCRIPT"
 grep -q 'conclusion")=="success"' "$SCRIPT"
 grep -q 'CI_SOURCE="${SOCTHINK_CI_SOURCE:-github}"' "$SCRIPT"
 grep -q 'CI_GREEN source=local' "$SCRIPT"
+grep -Fq "FETCH_HEAD^{commit}" "$SCRIPT"
+if grep -Fq 'TARGET_SHA="$(git rev-parse "origin/$BRANCH")"' "$SCRIPT"; then
+  echo "AUTO_DEPLOY_CONTRACT=FAIL stale_origin_branch_ref" >&2
+  exit 1
+fi
 grep -q 'local_ci_sha_mismatch' "$SCRIPT"
 grep -q 'AUTO_DEPLOY=ROLLBACK' "$SCRIPT"
 grep -q 'GIT_CONFIG_KEY_0=safe.directory' "$SCRIPT"

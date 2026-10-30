@@ -7,8 +7,12 @@ SERVER="$ROOT/ops/release/auto_deploy_server.sh"
 bash -n "$LOCAL"
 bash -n "$SERVER"
 grep -q 'npm run verify:public' "$LOCAL"
-grep -q 'origin/$BRANCH' "$LOCAL"
-grep -q -- '-F /dev/null' "$LOCAL"
+grep -Fq 'FETCH_HEAD^{commit}' "$LOCAL"
+grep -q 'root@socthink.cn' "$LOCAL"
+if grep -Fq -- '-F /dev/null' "$LOCAL"; then
+  echo "LOCAL_CI_DEPLOY_CONTRACT=FAIL bypasses_approved_ssh_config" >&2
+  exit 1
+fi
 grep -q 'BatchMode=yes' "$LOCAL"
 grep -q 'SOCTHINK_CI_SOURCE=local' "$LOCAL"
 grep -q 'SOCTHINK_VERIFIED_SHA' "$LOCAL"
