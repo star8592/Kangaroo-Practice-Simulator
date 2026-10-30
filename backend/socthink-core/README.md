@@ -37,3 +37,28 @@ curl -fsS 'http://127.0.0.1:37871/v1/catalog/resources?query=AMC&gradeBand=5-6&l
 The server refuses a non-loopback bind or missing snapshot and has no CORS
 or write endpoints. Any future production call needs internal-only routing,
 snapshot refresh/reconciliation, error monitoring, timeout budget and rollback.
+
+
+## Full-inventory acceptance, 2026-10-31 (local only)
+
+The locally stored archive had 419 JSON exam files. The **existing**
+`listTrainingExamProfiles()` gate, including eligible synthetic mixed
+profiles and bundled originals, exported **450 public metadata rows**.
+The Rust R1 service read those rows without a separate question bank.
+The `scripts/test_rust_catalog_live_parity.ts` script compared every
+result, order, page and total against `filterTrainingResources()` for
+**79 separate filter combinations**, with a PASS result.
+
+Run only on an isolated, private machine with read-only access to the
+original archive; do **not** commit the generated metadata snapshot:
+
+```bash
+# From the project root that holds the authorized private/exams archive:
+# TSX_TSCONFIG_PATH must point to the worktree tsconfig to resolve @/data.
+TSX_TSCONFIG_PATH=/path/to/worktree/tsconfig.json   /path/to/worktree/node_modules/.bin/tsx   /path/to/worktree/scripts/export_training_resource_catalog.ts > /secure/catalog.json
+# Launch the temporary loopback-only Rust service with that file.
+SOCTHINK_CATALOG_SNAPSHOT=/secure/catalog.json   SOCTHINK_RUST_CATALOG_TEST_URL=http://127.0.0.1:37872   npx tsx scripts/test_rust_catalog_live_parity.ts
+```
+
+This proves parity for the tested inventory, not a guarantee of production
+performance, commercial rights, up-to-date source legitimacy or authorization.
