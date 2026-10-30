@@ -1,4 +1,4 @@
-.section{width:min(1260px,calc(100% - 40px));margin:42px auto 70px;color:#1e3328}
+.section{width:min(var(--layout-standard),calc(100% - 40px));margin:42px auto 70px;color:#1e3328}
 .heading{max-width:850px;margin-bottom:24px}
 .eyebrow{font-weight:800;font-size:12px;letter-spacing:.15em;color:#587562}
 .heading h2{font-size:clamp(27px,3.1vw,42px);letter-spacing:-.03em;line-height:1.2;margin:12px 0}
