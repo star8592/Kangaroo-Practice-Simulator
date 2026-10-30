@@ -1,8 +1,7 @@
 import {NextRequest,NextResponse} from "next/server";
-import {billingPool,settleVerifiedOrder} from "@/lib/billing-ledger";
+import {recordVerifiedNativeNotification} from "@/lib/billing-ledger";
 import {decryptWechatV3Resource,validateOfficialWechatPaidTrade,verifyWechatV3Notification} from "@/lib/wechat-native-payment";
 import {nativeApiV3Key,nativeSettlementAllowed,nativeServerContext} from "@/lib/wechat-native-server";
-import {queryVerifiedWechatNativePayment} from "@/lib/wechat-native-transport";
 
 export const runtime="nodejs";
 export const dynamic="force-dynamic";
@@ -10,8 +9,9 @@ const headers={"Cache-Control":"no-store"};
 const reply=(status:number)=>new NextResponse(null,{status,headers});
 
 /** Public WeChat Pay callback: never attach user/session middleware.
- * It MUST authenticate the exact raw bytes and requery the official API
- * before granting a single transaction in the existing PostgreSQL ledger.
+ * Verify exact raw signed bytes, validate the decrypted trade, durably
+ * store the claim in the existing ledger, then ACK promptly. A separate
+ * official-query recovery worker verifies and grants payment entitlements.
  */
 export async function POST(req:NextRequest) {
   if (!nativeSettlementAllowed()) return reply(503);
@@ -47,37 +47,37 @@ export async function POST(req:NextRequest) {
     if (typeof trade.out_trade_no!=="string" ||
       !/^ord_[a-zA-Z0-9_-]{6,28}$/.test(trade.out_trade_no))
       return reply(400);
-    const rows=await billingPool().query<{
-      id:string;provider:string;price_minor:string;currency:string;state:string;
-    }>("SELECT id,provider,price_minor,currency,state FROM billing_orders WHERE id=$1",
-      [trade.out_trade_no]);
-    const order=rows.rows[0];
-    if (!order || order.provider!=="wechat_native" || order.currency!=="CNY" ||
-        !["pending","paid"].includes(order.state)) return reply(409);
+    // The total is sourced from the already authenticated WeChat callback,
+    // never from the client. The single atomic UPDATE below independently
+    // matches this amount against the immutable local PostgreSQL order.
+    const amount=trade.amount;
+    const total=amount && typeof amount==="object" && !Array.isArray(amount)
+      ? (amount as Record<string,unknown>).total : undefined;
+    if(typeof total!=="number" || !Number.isSafeInteger(total) || total<=0)
+      return reply(400);
     const expected={
-      merchantId:context.merchant.merchantId,appId:context.merchant.appId,
-      orderId:order.id,amountMinor:Number(order.price_minor),
+      merchantId:context.merchant.merchantId,
+      appId:context.merchant.appId,
+      orderId:trade.out_trade_no,
+      amountMinor:total,
     };
     if (!validateOfficialWechatPaidTrade({trade,expected}).ok) return reply(409);
-    // This independently verifies the signature of WeChat's direct GET reply.
-    const query=await queryVerifiedWechatNativePayment(context,{
-      orderId:order.id,description:"not_used_for_query",
-      amountMinor:expected.amountMinor,currency:"CNY",
-    });
-    if (query.status!=="VERIFIED_PAID" ||
-      typeof query.transactionId!=="string" ||
-      query.transactionId!==trade.transaction_id)
-      return reply(409);
-    await settleVerifiedOrder({
-      provider:"wechat_native",
+    // Durable, locally authenticated callback proof before ACK. No slow
+    // provider GET and no entitlement grant on the 5-second notification path.
+    // Existing reconciliation worker performs official signed GET and the
+    // atomic settlement; DB failure returns 503 so WeChat will retry.
+    if (typeof trade.transaction_id!=="string" ||
+        !/^[A-Za-z0-9_-]{8,128}$/.test(trade.transaction_id))
+      return reply(400);
+    await recordVerifiedNativeNotification({
+      orderId:trade.out_trade_no,
       eventId:envelope.id,
-      orderId:order.id,
-      transactionId:query.transactionId,
-      amountMinor:expected.amountMinor,currency:"CNY",
+      transactionId:trade.transaction_id,
+      amountMinor:expected.amountMinor,
+      currency:"CNY",
       payloadSha256:proof.payloadSha256,
-      verifiedAt:new Date(),
       signatureVerified:true,
-      providerStatusConfirmed:true,
+      signedTradeMatched:true,
     });
     return reply(204);
   } catch {

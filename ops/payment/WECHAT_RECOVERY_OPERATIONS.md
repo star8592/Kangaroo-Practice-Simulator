@@ -8,17 +8,29 @@ those prerequisites is not a substitute for completing authorized onboarding.
 ## Why it exists
 
 WeChat Pay's official notification may time out or be lost. The callback
-handler uses a signed official GET to confirm payment before settlement; if
-that GET fails, the callback returns non-2xx for WeChat's limited retries.
+authenticates the **original raw body**, decrypts the APIv3 resource,
+checks merchant/appid/amount/currency/native success, and durably records
+the transaction claim on the existing `billing_orders` row **before**
+returning HTTP 204. It does **not** contact the provider GET endpoint or
+grant entitlements while WeChat waits for a response; a database error
+returns non-2xx so WeChat may retry.
+
 The worker independently **queries WeChat Pay's signed order API** for any
-still-pending Native order and commits via the **exact same**
-`settleVerifiedOrder()` function as the webhook. This avoids permanently
-leaving users unpaid in the ledger after a legitimate cash transaction.
+still-pending Native order and commits via the existing atomic
+`settleVerifiedOrder()` function. The authenticated callback resets
+`reconcile_checked_at` to NULL so this order is picked up by the next
+worker cycle, even if it was previously marked as checked.
+No in-memory timeout, unverified callback or client-side "paid=true" can
+grant paid rights. **The worker must be running and health-tested before
+any new real charges can be accepted.**
 
 No second financial state machine: the existing `billing_orders` table is
 authoritative. Additive migration
 `ops/db/002_wechat_reconciliation.sql` creates only a nullable attempt
-timestamp and a pending-order index. The worker atomically claims up to 25
+timestamp and a pending-order index.
+`ops/db/003_native_notification_inbox.sql` adds only signed-callback
+receipt fields to the same `billing_orders` rows: event ID, transaction ID,
+payload SHA256 and timestamp. No additional payment state machine. The worker atomically claims up to 25
 pending orders with `FOR UPDATE SKIP LOCKED`, marks a 2-minute retry
 cooldown, then individually verifies official response signatures,
 order/merchant/appid/currency/amount/transaction ID, and settles.
@@ -30,7 +42,7 @@ an arbitrary synthetic hash.
 
 ## Activation prerequisites (do not bypass)
 
-1. Both additive SQL migrations applied to the *actual* dedicated production
+1. All three versioned SQL migrations (`001`, `002`, `003`) applied to the *actual* dedicated production
    billing DB, with backups and an independently tested restore.
 2. Key files and APIv3 key securely provisioned in the real running service,
    valid merchant Native product/AppID approval and protected HTTPS notify URL.

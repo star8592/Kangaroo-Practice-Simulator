@@ -4,7 +4,7 @@ import fs from "node:fs";
 import { billingPool,closeBillingPoolForTests,createBillingOrder,
   settleVerifiedOrder,refundVerifiedOrder,consumeUsage,verifiedGrantsForParent,
   verifiedParentsForStudent,linkVerifiedFamilyMember,BillingConflictError,
-  BillingQuotaExceededError,type VerifiedPaymentReceipt } from "../src/lib/billing-ledger";
+  BillingQuotaExceededError,recordVerifiedNativeNotification,type VerifiedPaymentReceipt } from "../src/lib/billing-ledger";
 
 const testUrl = new URL(process.env.SOCTHINK_BILLING_DATABASE_URL || "postgres://invalid/invalid");
 if (!process.env.SOCTHINK_BILLING_DATABASE_URL ||
@@ -23,6 +23,7 @@ function receipt(orderId:string, eventId:string, transactionId:string, amountMin
 async function run() {
   await db.query(fs.readFileSync("ops/db/001_billing_entitlements.sql","utf8"));
   await db.query(fs.readFileSync("ops/db/002_wechat_reconciliation.sql","utf8"));
+  await db.query(fs.readFileSync("ops/db/003_native_notification_inbox.sql","utf8"));
   // The caller uses a throwaway database; no production fixture or customer data.
   await db.query("TRUNCATE billing_usage_events,billing_usage_buckets,billing_family_links,billing_entitlements,billing_payment_events,billing_orders,billing_products RESTART IDENTITY CASCADE");
   await db.query("INSERT INTO billing_products(id,tier,period,amount_minor,currency,enabled) VALUES('plus_month','plus','month',3900,'CNY',true)");
@@ -45,12 +46,48 @@ async function run() {
   assert.ok((await db.query(
     "SELECT reconcile_checked_at IS NOT NULL AS checked FROM billing_orders WHERE id=$1",
     [native.id])).rows[0].checked);
+  // Signed callbacks ACK only after durable order-row storage; a callback
+  // is NOT a verified payment and must never grant entitlements on its own.
+  const signedNotice={
+    orderId:native.id,eventId:"notify-native-001",
+    transactionId:"native-tx-01",amountMinor:3900,currency:"CNY" as const,
+    payloadSha256:crypto.createHash("sha256").update("official-signed-callback-fixture").digest("hex"),
+    signatureVerified:true as const,signedTradeMatched:true as const,
+  };
+  assert.equal(await recordVerifiedNativeNotification(signedNotice),"recorded");
+  assert.equal(await recordVerifiedNativeNotification(signedNotice),"recorded");
+  const storedNotice=await db.query(
+    "SELECT state,notification_transaction_id,notification_event_id,notification_received_at IS NOT NULL AS received,reconcile_checked_at FROM billing_orders WHERE id=$1",
+    [native.id]);
+  assert.equal(storedNotice.rows[0].state,"pending");
+  assert.equal(storedNotice.rows[0].notification_transaction_id,"native-tx-01");
+  assert.equal(storedNotice.rows[0].notification_event_id,"notify-native-001");
+  assert.equal(storedNotice.rows[0].received,true);
+  assert.equal(storedNotice.rows[0].reconcile_checked_at,null);
+  assert.equal((await verifiedGrantsForParent("par_native01")).length,0);
+  await assert.rejects(()=>recordVerifiedNativeNotification({
+    ...signedNotice,amountMinor:3901,
+  }),BillingConflictError);
+  await assert.rejects(()=>recordVerifiedNativeNotification({
+    ...signedNotice,transactionId:"native-tx-conflict",
+  }),BillingConflictError);
+  await assert.rejects(()=>recordVerifiedNativeNotification({
+    ...signedNotice,payloadSha256:"invalid",
+  }),BillingConflictError);
+  await assert.rejects(()=>recordVerifiedNativeNotification({
+    ...signedNotice,signatureVerified:false as never,
+  }),BillingConflictError);
+  await assert.rejects(()=>recordVerifiedNativeNotification({
+    ...signedNotice,orderId:one.id,
+  }),BillingConflictError);
   const nativeReceipt={...receipt(native.id,"native-paid-01","native-tx-01"),provider:"wechat_native" as const};
   assert.equal((await settleVerifiedOrder(nativeReceipt)).created,true);
   assert.equal((await settleVerifiedOrder(nativeReceipt)).created,false);
+  assert.equal(await recordVerifiedNativeNotification(signedNotice),"already_settled");
   assert.equal((await verifiedGrantsForParent("par_native01")).length,1);
   assert.equal((await refundVerifiedOrder({...nativeReceipt,eventId:"native-refund-01"})).revoked,true);
   assert.equal((await verifiedGrantsForParent("par_native01")).length,0);
+  assert.equal(await recordVerifiedNativeNotification(signedNotice),"already_settled");
   await assert.rejects(()=>settleVerifiedOrder({...nativeReceipt,provider:"wechat_pay"}),BillingConflictError);
 
   const two=await createBillingOrder("par_test01","plus_month");
