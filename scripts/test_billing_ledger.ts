@@ -34,6 +34,17 @@ async function run() {
   assert.equal((await settleVerifiedOrder(receipt(one.id,"paid-01","wx-01"))).created,false);
   assert.equal((await verifiedGrantsForParent("par_test01")).length,1);
 
+  // Native payment uses the exact same PostgreSQL orders and entitlements.
+  const native=await createBillingOrder("par_native01","plus_month","wechat_native");
+  assert.equal((await db.query("SELECT provider FROM billing_orders WHERE id=$1",[native.id])).rows[0].provider,"wechat_native");
+  const nativeReceipt={...receipt(native.id,"native-paid-01","native-tx-01"),provider:"wechat_native" as const};
+  assert.equal((await settleVerifiedOrder(nativeReceipt)).created,true);
+  assert.equal((await settleVerifiedOrder(nativeReceipt)).created,false);
+  assert.equal((await verifiedGrantsForParent("par_native01")).length,1);
+  assert.equal((await refundVerifiedOrder({...nativeReceipt,eventId:"native-refund-01"})).revoked,true);
+  assert.equal((await verifiedGrantsForParent("par_native01")).length,0);
+  await assert.rejects(()=>settleVerifiedOrder({...nativeReceipt,provider:"wechat_pay"}),BillingConflictError);
+
   const two=await createBillingOrder("par_test01","plus_month");
   const renewal=await settleVerifiedOrder(receipt(two.id,"paid-02","wx-02"));
   assert.equal(renewal.created,true);
@@ -76,7 +87,7 @@ async function run() {
   assert.equal((await refundVerifiedOrder(receipt(one.id,"refund-01","wx-01"))).revoked,false);
   assert.equal((await verifiedGrantsForParent("par_test01")).length,0); // renewal starts after first term
   await refundVerifiedOrder(receipt(two.id,"refund-02","wx-02"));
-  assert.equal((await db.query("SELECT count(*)::int AS count FROM billing_entitlements WHERE revoked_at IS NOT NULL")).rows[0].count,2);
+  assert.equal((await db.query("SELECT count(*)::int AS count FROM billing_entitlements WHERE revoked_at IS NOT NULL")).rows[0].count,3);
   await assert.rejects(()=>settleVerifiedOrder(receipt(one.id,"paid-new","wx-01")),BillingConflictError);
   console.log("BILLING_LEDGER_PASS order-payment, renewal, refund, owner isolation, 4-way quota concurrency, idempotency");
 }

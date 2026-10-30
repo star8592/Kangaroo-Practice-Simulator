@@ -1,0 +1,60 @@
+import {NextRequest,NextResponse} from "next/server";
+import QRCode from "qrcode";
+import {PARENT_SESSION_COOKIE,parentFromSessionToken} from "@/lib/parent-auth";
+import {billingConfigured,billingPool,createBillingOrder} from "@/lib/billing-ledger";
+import {nativeCheckoutAllowed,nativeServerContext} from "@/lib/wechat-native-server";
+import {createVerifiedWechatNativeCheckout} from "@/lib/wechat-native-transport";
+
+export const runtime="nodejs";
+export const dynamic="force-dynamic";
+const NO_STORE={"Cache-Control":"private, no-store, max-age=0"};
+const reply=(payload:object,status:number)=>NextResponse.json(payload,{status,headers:NO_STORE});
+
+export async function POST(req:NextRequest) {
+  if (!nativeCheckoutAllowed() || !billingConfigured())
+    return reply({error:"网站收款尚未开放",code:"WEB_NATIVE_DISABLED"},503);
+  if (req.headers.get("origin")!==process.env.SOCTHINK_PUBLIC_ORIGIN ||
+      req.headers.get("sec-fetch-site")==="cross-site")
+    return reply({error:"请求来源无效"},403);
+  const parent=parentFromSessionToken(req.cookies.get(PARENT_SESSION_COOKIE)?.value);
+  if (!parent || !parent.active || !parent.guardianConfirmedAt)
+    return reply({error:"请使用监护人账号登录"},401);
+  let productId:string;
+  try {
+    const raw=await req.text();
+    if (raw.length>2048) return reply({error:"请求格式不正确"},400);
+    const body:unknown=JSON.parse(raw);
+    const obj=body && typeof body==="object"&&!Array.isArray(body)?
+      body as Record<string,unknown>:null;
+    productId=typeof obj?.productId==="string"?obj.productId:"";
+  } catch {return reply({error:"请求格式不正确"},400);}
+  if (!/^[a-zA-Z0-9_.-]{4,80}$/.test(productId))
+    return reply({error:"商品不可购买"},400);
+  let orderCreated=false;
+  try {
+    const context=nativeServerContext();
+    const recent=await billingPool().query<{count:string}>(
+      "SELECT count(*)::text AS count FROM billing_orders WHERE payer_parent_id=$1 AND provider='wechat_native' AND state='pending' AND created_at > now()-interval '30 minutes'",
+      [parent.id]);
+    if (Number(recent.rows[0]?.count)>2)
+      return reply({error:"待支付订单过多，请稍后再试",code:"TOO_MANY_PENDING"},429);
+    // Product price and delivery tier come from a trusted server table.
+    // Never trust a posted amount, name or entitlement.
+    const product=await billingPool().query<{id:string;amount_minor:string;currency:string}>(
+      "SELECT id,amount_minor,currency FROM billing_products WHERE id=$1 AND enabled=true",[productId]);
+    const p=product.rows[0];
+    if (!p || p.currency!=="CNY" || !Number.isSafeInteger(Number(p.amount_minor)) ||
+      Number(p.amount_minor)<=0) return reply({error:"商品尚未开放购买"},409);
+    const order=await createBillingOrder(parent.id,productId,"wechat_native");
+    orderCreated=true;
+    const payment=await createVerifiedWechatNativeCheckout(context,{
+      orderId:order.id,description:"SOCTHINK "+p.id,
+      amountMinor:order.priceMinor,currency:"CNY",
+    });
+    const qrDataUrl=await QRCode.toDataURL(payment.codeUrl,{margin:1,width:256,errorCorrectionLevel:"M"});
+    return reply({orderId:payment.orderId,qrDataUrl,priceMinor:order.priceMinor,currency:"CNY",
+      status:"pending",note:"请以微信支付结果和服务端权益到账为准"},200);
+  } catch {
+    return reply({error:"微信支付暂时不可用",code:"CHECKOUT_UNAVAILABLE",orderCreated},503);
+  }
+}
