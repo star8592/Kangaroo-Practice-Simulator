@@ -13,7 +13,7 @@
 .heroMain{padding:clamp(30px,4vw,58px);background:radial-gradient(ellipse at 90% 0%,#2252a5 0,transparent 55%),linear-gradient(135deg,#10284b 20%,#12396c 100%)}
 .heroEyebrow{display:flex;align-items:center;gap:8px;text-transform:uppercase;letter-spacing:.08em;font-size:13px;color:#c2d9ff;font-weight:750}
 .eyebrowDot{display:inline-block;background:var(--portal-orange);width:8px;height:8px;border-radius:99px}
-.hero h1{font-size:clamp(35px,4.3vw,62px);line-height:1.16;letter-spacing:-.035em;margin:22px 0 14px;font-weight:850}
+.hero h1{font-size:clamp(35px,4.3vw,62px);line-height:1.16;letter-spacing:-.035em;margin:22px 0 14px;font-weight:850}.hero h1 span{display:block}
 .heroLead{font-size:clamp(18px,2vw,23px);font-weight:650;color:#f3f7ff;line-height:1.65;margin:0 0 9px}
 .heroBody{color:#c1d2e9;font-size:15px;line-height:1.8;max-width:720px;margin:0 0 26px}
 .searchPanel{max-width:920px;background:#fff;border-radius:17px;padding:17px;box-shadow:0 16px 45px #06142a38;color:var(--portal-text)}
@@ -27,8 +27,8 @@
 .searchGo:hover{background:var(--portal-blue-strong)}
 .popular{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-top:13px}
 .popular>span{font-size:12px;color:var(--portal-muted);margin-right:2px}
-.popular button{padding:5px 11px;border-radius:99px;background:#f0f4fa;border:1px solid #e4eaf3;color:#425975;font-weight:650;font-size:12px}
-.popular button:hover{background:var(--portal-blue-soft);color:var(--portal-blue)}
+.popular a{padding:5px 11px;border-radius:99px;background:#f0f4fa;border:1px solid #e4eaf3;color:#425975;font-weight:650;font-size:12px}
+.popular a:hover{background:var(--portal-blue-soft);color:var(--portal-blue)}
 .heroAside{padding:35px 25px;background:linear-gradient(170deg,#0c2241,#102f5e);display:flex;flex-direction:column;justify-content:center}
 .overline{font-size:11px;color:#aec5e8;letter-spacing:.12em;font-weight:750;margin-bottom:24px}
 .heroMeasure{display:flex;align-items:baseline;gap:14px}
