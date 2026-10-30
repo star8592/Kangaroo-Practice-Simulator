@@ -16,11 +16,15 @@ test("one assessment portal links to real products and never sells unlaunched te
   await expect(planned.locator("a")).toHaveCount(0);
   await expect(available.getByRole("link",{name:/开始数学能力训练/})).toBeVisible();
   await expect(available.getByRole("link",{name:/进入国际数学竞赛/})).toBeVisible();
-  await available.getByRole("link",{name:/开始数学能力训练/}).click();
-  await expect(page).toHaveURL(/\/arithmetic/);
-  await page.goto("/");
   const mobile = (page.viewportSize()?.width ?? 1280) <= 760;
   if (mobile) await page.getByRole("button",{name:"打开导航菜单"}).click();
+  await page.getByRole("button",{name:"EN"}).first().click();
+  await expect(page.getByRole("heading",{name:"Available today"})).toBeVisible();
+  if (mobile) await page.getByRole("button",{name:"Open navigation menu"}).click();
+  await available.getByRole("link",{name:/Start math practice/}).click();
+  await expect(page).toHaveURL(/\/arithmetic/);
+  await page.goto("/");
+  if (mobile) await page.getByRole("button",{name:"Open navigation menu"}).click();
   const navigable = page.locator('a[href="/assessments"]:visible').first();
   await expect(navigable).toBeVisible();
   await navigable.click();
