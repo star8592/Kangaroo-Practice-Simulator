@@ -14,7 +14,7 @@ export default function EventsCompanionClient({
 }) {
   const lang = useSiteLanguage();
   const router = useRouter();
-  return <main className="home-shell">
+  return <div className="home-shell">
     <WorldCompetitionHub
       lang={lang}
       today={today}
@@ -22,5 +22,5 @@ export default function EventsCompanionClient({
       initialSelected={selectedEvent}
       onSelectTraining={id => router.push(`/competitions?c=${encodeURIComponent(id)}`)}
     />
-  </main>;
+  </div>;
 }

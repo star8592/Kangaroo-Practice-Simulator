@@ -15,6 +15,7 @@ const NAV_ITEMS=[
   {href:"/arithmetic",zh:"数学训练",en:"Math practice"},
   {href:"/competitions",zh:"竞赛模拟",en:"Competition practice"},
   {href:"/events",zh:"赛事管家",en:"Competition calendar"},
+  {href:"/membership",zh:"购买与权益",en:"Purchases"},
   {href:"/account",zh:"我的账号",en:"My account"},
 ] as const;
 const FEATURED=[

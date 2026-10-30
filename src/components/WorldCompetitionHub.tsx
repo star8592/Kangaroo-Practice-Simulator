@@ -61,7 +61,7 @@ export default function WorldCompetitionHub({lang, today, exams, initialSelected
     <div className="section-heading">
       <div>
         <span className="eyebrow">WORLD MATH COMPETITION COMPANION</span>
-        <h2>{zh?"全球数学赛事管家":"World Math Competition Companion"}</h2>
+        <h1>{zh?"全球数学赛事管家":"World Math Competition Companion"}</h1>
         <p>{zh?"中国、美国、澳洲、加拿大、英国及全球性数学赛事，同一套管理流程。按地区筛选，不按国别分高低。":"One unified journey for math competitions in China and worldwide. Region is a filter, never a hierarchy."}</p>
       </div>
     </div>

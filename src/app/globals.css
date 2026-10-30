@@ -330,3 +330,23 @@
 /* One clear family sign-in action; training stays independently accessible. */
 .home-hero .home-login-primary{min-height:54px;padding-inline:24px;font-size:16px;box-shadow:0 10px 24px rgba(0,0,0,.19)}
 .home-hero .home-login-primary:focus-visible{outline:3px solid #fff;outline-offset:3px}
+
+/* Competition subheadings are headings within one main page, not extra H1s. */
+.competition-heading h2,.home-shell .section-heading h2{
+  font-size:clamp(24px,3vw,35px);line-height:1.18;letter-spacing:-.025em;
+}
+
+/* Public competition, calculation and report hero accents now share the
+ * portal navy/blue palette. Exercise/answer correctness colors stay distinct.
+ */
+.home-shell>.hero-card,.arithmetic-hero,.student-hero,.verification-hero{
+  background:linear-gradient(115deg,var(--portal-navy),#164d91 85%);
+}
+.home-shell .eyebrow{color:var(--portal-blue)}
+.home-shell>.hero-card .eyebrow{color:#bad5ff}
+.home-shell>.hero-card .hero-copy{color:#d8e7ff}
+.home-shell .primary-button{background:var(--portal-blue);color:#fff}
+.home-shell .primary-button:hover{background:var(--portal-blue-strong);color:#fff}
+.home-shell>.hero-card .primary-button{background:#fff;color:var(--portal-blue)}
+.home-shell>.hero-card .primary-button:hover{background:#eaf2ff;color:var(--portal-blue)}
+.home-shell>.hero-card .secondary-button{background:#ffffff17;color:#fff}

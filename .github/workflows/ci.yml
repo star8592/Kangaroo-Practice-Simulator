@@ -39,6 +39,9 @@ jobs:
       - name: Digital sales policy explicit consent
         run: npm run test:digital-sales-policy
 
+      - name: Consistent portal commerce and account surface
+        run: npm run test:portal-commerce
+
       - name: Public quality gate
         run: npm run verify:public
 

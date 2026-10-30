@@ -99,7 +99,7 @@ export default function UnifiedLoginClient({nextPath}:{nextPath:string}) {
     catch{setMessage("请把当前网页地址复制到微信中打开。");}
   }
 
-  return <main className={styles.unifiedShell}>
+  return <div className={styles.unifiedShell}>
     <section className={styles.unifiedIntro}>
       <span className={styles.formKicker}>SOC THINK · 考试与资料服务</span>
       <h1>一个微信账号，直接使用</h1>
@@ -128,5 +128,5 @@ export default function UnifiedLoginClient({nextPath}:{nextPath:string}) {
           {mode==="qr"?"刷新登录二维码":"重新连接微信"}
         </button>}
     </section>
-  </main>;
+  </div>;
 }

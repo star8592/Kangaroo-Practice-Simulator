@@ -8,7 +8,7 @@ export default function SiteFooter(){
     {href:"/assessments",zh:"考试大全",en:"All exams"},
     {href:"/resources",zh:"资料中心",en:"Resources"},
     {href:"/events",zh:"赛事管家",en:"Event companion"},
-    {href:"/membership",zh:"学习权益",en:"Membership"},
+    {href:"/membership",zh:"购买与权益",en:"Purchases & access"},
     {href:"/privacy",zh:"隐私政策",en:"Privacy"},
     {href:"/terms",zh:"服务条款",en:"Terms"},
     {href:"/digital-purchase-policy",zh:"数字商品售后",en:"Digital purchase terms"},
