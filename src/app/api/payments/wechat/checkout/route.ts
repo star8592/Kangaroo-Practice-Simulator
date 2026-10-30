@@ -1,7 +1,8 @@
 import {NextRequest,NextResponse} from "next/server";
 import QRCode from "qrcode";
 import {PARENT_SESSION_COOKIE,parentFromSessionToken} from "@/lib/parent-auth";
-import {billingConfigured,billingPool,createBillingOrder} from "@/lib/billing-ledger";
+import {billingConfigured,billingPool,createBillingOrder,hasVerifiedItemEntitlement} from "@/lib/billing-ledger";
+import {isExamBundleTrainingReady,loadTrainingExamBundle} from "@/lib/training-question-bank";
 import {nativeCheckoutAllowed,nativeServerContext} from "@/lib/wechat-native-server";
 import {createVerifiedWechatNativeCheckout} from "@/lib/wechat-native-transport";
 
@@ -40,11 +41,27 @@ export async function POST(req:NextRequest) {
       return reply({error:"待支付订单过多，请稍后再试",code:"TOO_MANY_PENDING"},429);
     // Product price and delivery tier come from a trusted server table.
     // Never trust a posted amount, name or entitlement.
-    const product=await billingPool().query<{id:string;amount_minor:string;currency:string}>(
-      "SELECT id,amount_minor,currency FROM billing_products WHERE id=$1 AND enabled=true",[productId]);
+    const product=await billingPool().query<{
+      id:string;amount_minor:string;currency:string;product_kind:"subscription"|"item";
+      content_kind:"exam"|"resource"|null;content_id:string|null;title_zh:string|null;
+      rights_approved:boolean;delivery_verified:boolean;access_restricted:boolean;
+    }>(
+      "SELECT id,amount_minor,currency,product_kind,content_kind,content_id,title_zh,rights_approved,delivery_verified,access_restricted FROM billing_products WHERE id=$1 AND enabled=true",[productId]);
     const p=product.rows[0];
     if (!p || p.currency!=="CNY" || !Number.isSafeInteger(Number(p.amount_minor)) ||
       Number(p.amount_minor)<=0) return reply({error:"商品尚未开放购买"},409);
+    if(p.product_kind==="item"){
+      if(process.env.SOCTHINK_ITEM_ACCESS_ENFORCED!=="1" ||
+         !p.rights_approved || !p.delivery_verified || !p.access_restricted ||
+         p.content_kind!=="exam" || !p.content_id || !p.title_zh)
+        return reply({error:"本商品尚未开放购买"},409);
+      try{
+        if(!isExamBundleTrainingReady(loadTrainingExamBundle(p.content_id)))
+          return reply({error:"试卷尚未完成交付验收"},409);
+      }catch{return reply({error:"试卷尚未完成交付验收"},409);}
+      if(await hasVerifiedItemEntitlement(parent.id,"exam",p.content_id))
+        return reply({error:"已购买此试卷，请在我的账号中使用",code:"ALREADY_OWNED"},409);
+    }
     const order=await createBillingOrder(parent.id,productId,"wechat_native");
     orderCreated=true;
     const payment=await createVerifiedWechatNativeCheckout(context,{

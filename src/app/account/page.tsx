@@ -12,6 +12,7 @@ export const dynamic="force-dynamic";
 type PurchasedOrder={
   id:string;product_id:string;state:string;
   price_minor:string;currency:string;created_at:Date;
+  product_kind:string;content_kind:string|null;content_id:string|null;title_snapshot:string|null;
 };
 export default async function AccountPage(){
   const jar=await cookies();
@@ -26,7 +27,7 @@ export default async function AccountPage(){
     plan=effectivePlan(context);
     if(billingConfigured()){
       const q=await billingPool().query<PurchasedOrder>(
-        "SELECT id,product_id,state,price_minor,currency,created_at FROM billing_orders WHERE payer_parent_id=$1 ORDER BY created_at DESC LIMIT 30",
+        "SELECT id,product_id,state,price_minor,currency,created_at,product_kind,content_kind,content_id,title_snapshot FROM billing_orders WHERE payer_parent_id=$1 ORDER BY created_at DESC LIMIT 30",
         [account.id],
       );
       orderList=q.rows;
@@ -57,9 +58,11 @@ export default async function AccountPage(){
         orderList.length===0?<p>目前没有已购买的服务。正式支付开放后，订单和使用权限将在这里展示。</p>:
         <ul style={{listStyle:"none",padding:0,display:"grid",gap:12}}>
           {orderList.map(order=><li key={order.id} style={{borderBottom:"1px solid #e6edf3",paddingBottom:12}}>
-            <strong>{order.product_id}</strong>
+            <strong>{order.title_snapshot||order.product_id}</strong>
             <span style={{marginLeft:12}}>{order.state==="paid"?"已付款":order.state==="pending"?"待付款":order.state==="refunded"?"已退款":order.state}</span>
             <p>{order.currency==="CNY"?"¥"+(Number(order.price_minor)/100).toFixed(2):order.currency} · {new Date(order.created_at).toLocaleDateString("zh-CN")}</p>
+            {order.state==="paid"&&order.content_kind==="exam"&&order.content_id&&
+              <Link href={"/exam/"+encodeURIComponent(order.content_id)}>进入已购试卷</Link>}
           </li>)}
         </ul>}
       <Link className="secondary-button" href="/membership">查看可购买服务</Link>
