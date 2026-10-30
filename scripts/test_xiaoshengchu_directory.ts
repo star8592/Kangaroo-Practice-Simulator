@@ -24,6 +24,7 @@ assert.equal(canonicalXiaoshengchuSchool("光谷未来"),"武汉光谷未来学�
 assert.equal(canonicalXiaoshengchuSchool("光谷为明"),"光谷为明学校");
 assert.notEqual(canonicalXiaoshengchuSchool("光谷未来"),canonicalXiaoshengchuSchool("光谷为明"));
 assert.equal(canonicalXiaoshengchuSchool("多校/跨平台","武汉小升初汇总"),"综合资料／学校待核");
+assert.equal(canonicalXiaoshengchuSchool("多校/跨平台","武钢实验与华宜寄宿试题汇编"),"综合资料／学校待核");
 
 assert.equal(classifyXiaoshengchuSource({title:"2026回忆版",recordType:"网站标称试卷"}),"回忆题");
 assert.equal(classifyXiaoshengchuSource({title:"2026模拟预测题",recordType:"数学试卷"}),"预测模拟");
