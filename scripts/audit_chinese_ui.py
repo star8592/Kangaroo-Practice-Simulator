@@ -28,7 +28,7 @@ checks={
     'must_not':['WorldCompetitionHub','全球数学赛事管家','<div className="eyebrow">COMPETITION FORMAT LAB</div>','<span className="eyebrow">COMPETITIONS</span>','<span className="eyebrow">MAA AMC PATHWAY</span>','<span className="eyebrow">SMART BY FORMAT</span>','<span className="eyebrow">OFFICIAL SAMPLES</span>','<span className="eyebrow">OFFICIAL PRACTICE</span>','<span className="eyebrow">PAST PAPERS</span>'],
   },
   'src/components/SiteHeader.tsx':{
-    'must':['数学训练','竞赛模拟','赛事管家','我的账号'],
+    'must':['考试大全','资料中心','数学训练','竞赛模拟','赛事管家','我的账号'],
     'must_not':[],
   },
   'src/components/EventsCompanionClient.tsx':{
