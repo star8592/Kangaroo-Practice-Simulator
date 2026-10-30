@@ -5,9 +5,9 @@ ROOT = Path(__file__).resolve().parents[1]
 checks = {
     "src/app/layout.tsx": ["<SiteHeader/>", "<SiteFooter/>"],
     "src/app/page.tsx": ["PublicHome"],
-    "src/components/PublicHome.tsx": ["useSiteLanguage", "SOC THINK · ASSESSMENT PLATFORM", "Explore all exams", "Find exam resources", "Start math practice", "Try mock exams", "Explore events", "Mock competitions", "More than a one-time score"],
+    "src/components/PublicHome.tsx": ["useSiteLanguage", "SOCTHINK · Exams and Learning Resources", "Find the exam. Start learning.", "Start math practice", "Try mock exams", "EXAM_DIRECTORY", "Available now", "Search exams"],
     "src/components/WorldCompetitionHub.tsx": ["World Math Competition Companion", "WORLD MATH COMPETITION COMPANION", "Filter events by region", "Open companion", "WORLD_REGION_OPTIONS"],
-    "src/components/SiteHeader.tsx": ["GlobalLanguageSwitch", "useSiteLanguage", "usePathname", "SITE_BRAND.nameEn", "All exams", "/assessments", "Resources", "/resources", "Competition practice", "Competition calendar", "My account", "mobilePanel"],
+    "src/components/SiteHeader.tsx": ["GlobalLanguageSwitch", "useSiteLanguage", "usePathname", "SITE_BRAND.nameEn", "All exams", "/assessments", "Resources", "/resources", "Competition practice", "Competition calendar", "My account", "mobilePanel", "FEATURED"],
     "src/components/SessionNav.tsx": ["useSiteLanguage", "WeChat sign in", "My account", "Exams & resources", "Sign out", "/api/auth/parent/me", "accountMenu"],
      "src/app/assessments/page.tsx": ["AssessmentPortalClient", "综合考试与测评中心"],
     "src/components/AssessmentPortalClient.tsx": ["useSiteLanguage", "ALL EXAMS", "Exams, papers, resources and practice", "考试、真题、资料与能力训练", "ExamDirectory"],
