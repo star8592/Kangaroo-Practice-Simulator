@@ -16,7 +16,7 @@ checks = {
     "src/components/SiteFooter.tsx": ["useSiteLanguage", "All rights reserved"],
     "src/components/GlobalLanguageSwitch.tsx": ["useSiteLanguage", "setSiteLanguage", "router.refresh()", ">中文</button>", ">EN</button>"],
     "src/lib/site-language.ts": ["useSyncExternalStore", "socthink.lang", "socthink_lang=", "socthink:language-change"],
-    "src/components/GlobalLanguageSwitch.module.css": [".switcher", ".active", "background:#eef3ef"],
+    "src/components/GlobalLanguageSwitch.module.css": [".switcher", ".active", "background:var(--portal-blue-soft)"],
     "src/components/SiteHeader.module.css": [".primaryNav", ".accountMenu", ".guestParent", ".mobilePanelOpen", "@media(max-width:1080px)", "@media(max-width:760px)"],
     "src/components/ReviewClient.tsx": ["useSiteLanguage", "const ui=UI[lang]", "Answer review", "中文题面", "Original English"],
     "src/components/ResultClient.tsx": ["useSiteLanguage", "const ui=UI[lang]", "Your result", "Review answers"],
