@@ -57,7 +57,10 @@ cd "$APP"
 git remote set-url origin "https://github.com/${REPO}.git"
 if ! git fetch --prune origin "$BRANCH"; then log "AUTO_DEPLOY=SKIP reason=git_fetch_failed"; exit 0; fi
 
-TARGET_SHA="$(git rev-parse "origin/$BRANCH")"
+# When fetch is given an explicit branch it always writes FETCH_HEAD, while
+# origin/main can remain stale under a fetch-only refspec. Use the fetched
+# exact commit, never a previously cached remote-tracking reference.
+TARGET_SHA="$(git rev-parse --verify 'FETCH_HEAD^{commit}')"
 HEAD_SHA="$(git rev-parse HEAD)"
 DEPLOYED_SHA="$(cat .release/deployed_sha 2>/dev/null || true)"
 if [[ "$TARGET_SHA" == "$HEAD_SHA" && "$TARGET_SHA" == "$DEPLOYED_SHA" && -L "$CURRENT" && -f "$IMMUTABLE_DROPIN" ]]; then

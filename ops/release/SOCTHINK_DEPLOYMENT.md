@@ -1396,3 +1396,23 @@ systemctl start socthink-auto-deploy.service
 ~~~
 
 现有 `.github/workflows/deploy.yml` 保留为人工应急发布入口；常规发布不再要求 GitHub 保存生产 root SSH 私钥。
+
+
+## 2026-10-30 生产发布根因纠正：不要信过时的 origin/main
+
+生产真实事故：`socthink-auto-deploy.timer` 正常运行，但仓库
+`git ls-remote origin main` 已有新提交时，脚本仍读取旧的
+`origin/main`，误报 `AUTO_DEPLOY=CURRENT`。当显式执行
+`git fetch origin main` 但 remote tracking refspec 未按预期更新时，
+`FETCH_HEAD` 才是此次实际 fetch 的精确提交。
+
+统一正式链：`git fetch origin main` 成功后始终以
+`git rev-parse --verify 'FETCH_HEAD^{commit}'` 得到发布目标，
+继而严格验证同一个 SHA 的 CI、构建、smoke、公网 `/api/release`。
+不得移除 CI/回滚规则，只纠正目标指针。隔离 Git fixture
+`scripts/test_git_fetch_head_precedence.py` 模拟旧 tracking ref 与
+新的 FETCH_HEAD 不同，证明修复。
+
+**SSH 经验同步：** 手动救援 `local_ci_deploy.sh` 使用历史验证的
+`root@socthink.cn` 免密主机别名，且不再传 `-F /dev/null` 跳过
+用户既有 SSH config。参见 EngineeringOS 唯一跨项目访问手册。

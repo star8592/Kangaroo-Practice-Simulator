@@ -4,7 +4,7 @@ set -Eeuo pipefail
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 REPO="${SOCTHINK_REPO:-star8592/Kangaroo-Practice-Simulator}"
 BRANCH="${SOCTHINK_BRANCH:-main}"
-TARGET_HOST="${SOCTHINK_TARGET_HOST:-root@8.166.137.232}"
+TARGET_HOST="${SOCTHINK_TARGET_HOST:-root@socthink.cn}"
 APP="${SOCTHINK_APP_DIR:-/opt/socthink-math}"
 PUBLIC_BASE="${SOCTHINK_PUBLIC_BASE:-https://socthink.cn}"
 SSH_BIN="${SOCTHINK_SSH_BIN:-ssh}"
@@ -20,7 +20,7 @@ for command in git npm python3 curl "$SSH_BIN"; do
 done
 
 git fetch --prune origin "$BRANCH"
-REMOTE_SHA="$(git rev-parse "origin/$BRANCH")"
+REMOTE_SHA="$(git rev-parse --verify 'FETCH_HEAD^{commit}')"
 if [[ -z "$TARGET_SHA" ]]; then
   TARGET_SHA="$REMOTE_SHA"
 fi
@@ -47,8 +47,8 @@ test "$(git rev-parse HEAD)" = "$TARGET_SHA"
 
 REMOTE_SCRIPT="/tmp/socthink-auto-deploy-$TARGET_SHA"
 echo "LOCAL_CI_DEPLOY=RELEASE sha=$TARGET_SHA target=$TARGET_HOST"
-"$SSH_BIN" -F /dev/null -o BatchMode=yes "$TARGET_HOST" \
-  "cd '$APP' && git remote set-url origin 'https://github.com/$REPO.git' && git fetch --prune origin '$BRANCH' && test \"\$(git rev-parse 'origin/$BRANCH')\" = '$TARGET_SHA' && git show '$TARGET_SHA:ops/release/auto_deploy_server.sh' > '$REMOTE_SCRIPT' && chmod 700 '$REMOTE_SCRIPT' && SOCTHINK_CI_SOURCE=local SOCTHINK_VERIFIED_SHA='$TARGET_SHA' SOCTHINK_REPO='$REPO' SOCTHINK_BRANCH='$BRANCH' SOCTHINK_APP_DIR='$APP' '$REMOTE_SCRIPT'; rc=\$?; rm -f '$REMOTE_SCRIPT'; exit \$rc"
+"$SSH_BIN" -o BatchMode=yes "$TARGET_HOST" \
+  "cd '$APP' && git remote set-url origin 'https://github.com/$REPO.git' && git fetch --prune origin '$BRANCH' && test \"\$(git rev-parse 'FETCH_HEAD^{commit}')\" = '$TARGET_SHA' && git show '$TARGET_SHA:ops/release/auto_deploy_server.sh' > '$REMOTE_SCRIPT' && chmod 700 '$REMOTE_SCRIPT' && SOCTHINK_CI_SOURCE=local SOCTHINK_VERIFIED_SHA='$TARGET_SHA' SOCTHINK_REPO='$REPO' SOCTHINK_BRANCH='$BRANCH' SOCTHINK_APP_DIR='$APP' '$REMOTE_SCRIPT'; rc=\$?; rm -f '$REMOTE_SCRIPT'; exit \$rc"
 
 PUBLIC_RELEASE="$(curl -fsS --max-time 15 "$PUBLIC_BASE/api/release")"
 RELEASE_PAYLOAD="$PUBLIC_RELEASE" EXPECTED_SHA="$TARGET_SHA" python3 - <<'PY'
