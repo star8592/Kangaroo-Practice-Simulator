@@ -85,3 +85,6 @@ test-results/
 
 # G1/G2 question narration MP3 assets are promoted separately after checksum audit.
 /public/exam-read-aloud/*
+
+# Rust catalog build output
+/backend/socthink-core/target/

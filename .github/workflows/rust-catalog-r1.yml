@@ -1,0 +1,40 @@
+name: Rust Catalog R1
+
+on:
+  pull_request:
+    paths:
+      - 'backend/socthink-core/**'
+      - 'scripts/export_training_resource_catalog.ts'
+      - 'scripts/test_rust_catalog_snapshot.ts'
+      - '.github/workflows/rust-catalog-r1.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'backend/socthink-core/**'
+      - 'scripts/export_training_resource_catalog.ts'
+      - 'scripts/test_rust_catalog_snapshot.ts'
+      - '.github/workflows/rust-catalog-r1.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: rust-catalog-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  unit-and-api-contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - name: Rust stable toolchain
+        run: rustup default stable
+      - name: Check formatting
+        run: cargo fmt --manifest-path backend/socthink-core/Cargo.toml --check
+      - name: Rust read-only API and catalog tests
+        run: cargo test --locked --all-targets --manifest-path backend/socthink-core/Cargo.toml
+      - name: Install TypeScript contract dependencies
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Same metadata schema in TypeScript and Rust
+        run: npx tsx scripts/test_rust_catalog_snapshot.ts
