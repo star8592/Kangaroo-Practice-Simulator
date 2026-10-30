@@ -60,6 +60,7 @@ async function run() {
   await db.query(fs.readFileSync("ops/db/003_native_notification_inbox.sql","utf8"));
   await db.query(fs.readFileSync("ops/db/004_item_purchases.sql","utf8"));
   await db.query(fs.readFileSync("ops/db/005_digital_resource_delivery.sql","utf8"));
+  await db.query(fs.readFileSync("ops/db/006_unique_active_item_orders.sql","utf8"));
   // The caller uses a throwaway database; no production fixture or customer data.
   await db.query("TRUNCATE billing_usage_events,billing_usage_buckets,billing_family_links,billing_item_entitlements,billing_entitlements,billing_payment_events,billing_orders,billing_products,billing_resource_assets RESTART IDENTITY CASCADE");
   assert.equal((await downloadResource(authed(owner.id),target)).status,403);
@@ -138,6 +139,16 @@ async function run() {
   fs.writeFileSync(digestFile,Buffer.alloc(bytes.length,88));
   await assert.rejects(()=>createBillingOrder(owner.id,"digital_pack_a","wechat_native"),BillingConflictError);
   fs.writeFileSync(digestFile,bytes);
+  // Simultaneous HTTP checkout clicks cannot create two payable QR orders.
+  const concurrent=await Promise.allSettled(
+    Array.from({length:4},()=>createBillingOrder("par_concurrent01","digital_pack_a","wechat_native")));
+  assert.equal(concurrent.filter(x=>x.status==="fulfilled").length,1);
+  assert.equal(concurrent.filter(x=>x.status==="rejected"&&x.reason instanceof BillingConflictError).length,3);
+  const uniquePending=await db.query<{count:number}>(`
+    SELECT COUNT(*)::int AS count FROM billing_orders
+     WHERE payer_parent_id='par_concurrent01' AND product_kind='item'
+      AND content_kind='resource' AND content_id=$1 AND state='pending'`,[resourceId]);
+  assert.equal(uniquePending.rows[0].count,1);
   const resourceOrder=await createBillingOrder(owner.id,"digital_pack_a","wechat_native");
   assert.equal(resourceOrder.priceMinor,299);
   assert.equal((await downloadResource(authed(owner.id),target)).status,403);
@@ -178,6 +189,11 @@ async function run() {
   await db.query("UPDATE billing_resource_assets SET rights_approved=true WHERE resource_id=$1",[resourceId]);
   await refundVerifiedOrder({...resourceReceipt,eventId:"resource-refund-01"});
   assert.equal(await hasVerifiedItemEntitlement(owner.id,"resource",resourceId),false);
+  // A verified refund releases the unique slot so the buyer can repurchase.
+  const repurchase=await createBillingOrder(owner.id,"digital_pack_a","wechat_native");
+  assert.ok(repurchase.id!==resourceOrder.id);
+  await assert.rejects(()=>createBillingOrder(owner.id,"digital_pack_a","wechat_native"),
+    BillingConflictError);
   assert.equal((await downloadResource(authed(owner.id),target)).status,403);
   fs.rmSync(dir,{recursive:true,force:true});
   fs.rmSync(userdir,{recursive:true,force:true});

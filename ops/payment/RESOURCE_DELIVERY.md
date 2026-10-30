@@ -94,3 +94,12 @@ SOCTHINK_DIGITAL_FILES_DIR=/srv/socthink/private-resources \
 网站 OAuth 与微信小程序 OpenID 不等价；小程序内虚拟内容购买需
 分别遵守该平台的产品和支付规则，不能借用 PC 扫码收款假装
 小程序支付已上线。
+
+## 2026-10-31：同一单品的并发收款防重约束
+
+引入 `ops/db/006_unique_active_item_orders.sql`。
+**当前迁移顺序为 001→002→003→004→005→006**；该 migration
+不增加新的表，仍为 10 张专属账本表。任何同一买家同一资源的
+pending/paid 多笔订单都必须先资金级对账，迁移不会自动删除。
+详见 `docs/engineering/ITEM_ORDER_SINGLE_PAYABLE_20261031.md`，
+尤其注意微信官方关单并未完成，关闭收款开关不得影响已支付订单的交付。

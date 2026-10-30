@@ -1,7 +1,7 @@
 import {NextRequest,NextResponse} from "next/server";
 import QRCode from "qrcode";
 import {PARENT_SESSION_COOKIE,parentFromSessionToken} from "@/lib/parent-auth";
-import {billingConfigured,billingPool,createBillingOrder,hasVerifiedItemEntitlement} from "@/lib/billing-ledger";
+import {BillingConflictError,billingConfigured,billingPool,createBillingOrder,hasVerifiedItemEntitlement} from "@/lib/billing-ledger";
 import {isExamBundleTrainingReady,loadTrainingExamBundle} from "@/lib/training-question-bank";
 import {nativeCheckoutAllowed,nativeServerContext} from "@/lib/wechat-native-server";
 import {createVerifiedWechatNativeCheckout} from "@/lib/wechat-native-transport";
@@ -76,7 +76,13 @@ export async function POST(req:NextRequest) {
     const qrDataUrl=await QRCode.toDataURL(payment.codeUrl,{margin:1,width:256,errorCorrectionLevel:"M"});
     return reply({orderId:payment.orderId,qrDataUrl,priceMinor:order.priceMinor,currency:"CNY",
       status:"pending",note:"请以微信支付结果和服务端权益到账为准"},200);
-  } catch {
+  } catch(error) {
+    if(error instanceof BillingConflictError &&
+       error.message==="Item payment already pending")
+      return reply({error:"该商品已有待支付订单，请先完成或关闭原订单，避免重复扣款",
+        code:"ITEM_PAYMENT_PENDING"},409);
+    if(error instanceof BillingConflictError && error.message==="Item already owned")
+      return reply({error:"已购买该商品，请在我的账号中使用",code:"ALREADY_OWNED"},409);
     return reply({error:"微信支付暂时不可用",code:"CHECKOUT_UNAVAILABLE",orderCreated},503);
   }
 }

@@ -86,6 +86,17 @@ export async function createBillingOrder(parentId:string,productId:string,provid
             AND e.content_id=$3 AND e.revoked_at IS NULL AND o.state='paid'
         ) AS owned`,[parentId,p.content_kind,p.content_id]);
       if(owned.rows[0]?.owned) throw new BillingConflictError("Item already owned");
+      // Treat all pending orders as still payable. Never issue a second
+      // WeChat QR with a different order number for the same item/buyer;
+      // the first QR might still be scanned and charged later.
+      const active=await c.query<{state:string}>(`
+        SELECT state FROM billing_orders WHERE payer_parent_id=$1
+          AND product_kind='item' AND content_kind=$2 AND content_id=$3
+          AND state IN ('pending','paid') LIMIT 1
+      `,[parentId,p.content_kind,p.content_id]);
+      if(active.rows[0])throw new BillingConflictError(
+        active.rows[0].state==="pending"?"Item payment already pending":"Item already owned"
+      );
     }
     await c.query("INSERT INTO billing_orders(id,payer_parent_id,product_id,price_minor,currency,provider,product_kind,content_kind,content_id,title_snapshot) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)",
       [id,parentId,productId,p.amount_minor,p.currency,provider,p.product_kind,p.content_kind,p.content_id,p.title_zh]);
