@@ -89,8 +89,24 @@ export async function createVerifiedWechatNativeCheckout(
   );
   const result = await signedProviderExchange(req,context);
   const codeUrl = result.code_url;
-  if (typeof codeUrl !== "string" ||
-      !/^weixin:\/\/wxpay\/bizpayurl\?pr=[A-Za-z0-9_-]{8,512}$/.test(codeUrl))
+  // Official 2026 Native API example:
+  // weixin://wxpay/bizpayurl/up?pr=NwY5Mz9&groupid=00
+  // Both the /up segment and an optional groupid must be accepted.
+  if (typeof codeUrl !== "string" || codeUrl.length > 1024)
+    throw new WechatPaymentProtocolError("INVALID_NATIVE_CODE_URL");
+  let parsed:URL;
+  try { parsed = new URL(codeUrl); }
+  catch { throw new WechatPaymentProtocolError("INVALID_NATIVE_CODE_URL"); }
+  const parts = [...parsed.searchParams.entries()];
+  if (parsed.protocol !== "weixin:" || parsed.hostname !== "wxpay" ||
+      !["/bizpayurl/up", "/bizpayurl"].includes(parsed.pathname) ||
+      parsed.username || parsed.password || parsed.hash ||
+      parsed.searchParams.getAll("pr").length !== 1 ||
+      !/^[A-Za-z0-9_-]{4,512}$/.test(parsed.searchParams.get("pr") ?? "") ||
+      parts.some(([key,value]) =>
+        !["pr","groupid"].includes(key) ||
+        !/^[A-Za-z0-9_-]{1,512}$/.test(value)) ||
+      parsed.searchParams.getAll("groupid").length > 1)
     throw new WechatPaymentProtocolError("INVALID_NATIVE_CODE_URL");
   return { orderId:order.orderId, codeUrl };
 }

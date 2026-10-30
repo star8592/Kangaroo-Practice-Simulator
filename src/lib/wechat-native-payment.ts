@@ -93,7 +93,7 @@ export function prepareWechatNativeRequest(
   nonce: string,
 ): PreparedNativeRequest {
   requireProtocol(validTradeNo(order.orderId), "INVALID_ORDER_ID");
-  requireProtocol(/^wx[0-9a-fA-F]{16}$/.test(config.appId), "INVALID_APPID");
+  requireProtocol(/^wx[a-zA-Z0-9]{16}$/.test(config.appId), "INVALID_APPID");
   requireProtocol(/^[0-9]{8,15}$/.test(config.merchantId), "INVALID_MERCHANT");
   requireProtocol(/^[0-9A-Fa-f]{8,64}$/.test(config.merchantCertificateSerial), "INVALID_CERT_SERIAL");
   requireProtocol(validNotify(config), "INVALID_NOTIFY_URL");
@@ -135,7 +135,7 @@ export function prepareWechatNativeQuery(
   nonce: string,
 ): PreparedNativeQuery {
   requireProtocol(validTradeNo(orderId), "INVALID_ORDER_ID");
-  requireProtocol(/^wx[0-9a-fA-F]{16}$/.test(config.appId), "INVALID_APPID");
+  requireProtocol(/^wx[a-zA-Z0-9]{16}$/.test(config.appId), "INVALID_APPID");
   requireProtocol(/^[0-9A-Fa-f]{8,64}$/.test(config.merchantCertificateSerial), "INVALID_CERT_SERIAL");
   requireProtocol(/^[0-9]{8,15}$/.test(config.merchantId), "INVALID_MERCHANT");
   const path = `/v3/pay/transactions/out-trade-no/${orderId}?mchid=${config.merchantId}`;

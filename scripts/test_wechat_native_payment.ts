@@ -13,7 +13,7 @@ import {
 const merchant = generateKeyPairSync("rsa", {modulusLength:2048});
 const platform = generateKeyPairSync("rsa", {modulusLength:2048});
 const testConfig = {
-  appId: "wx1234567890abcdef",merchantId:"1234567890",
+  appId: "wxd678efh567hg6787",merchantId:"1234567890",
   merchantCertificateSerial:"AABBCCDD01234567",
   merchantPrivateKey:merchant.privateKey,
   notifyUrl:"https://test.example.com/api/payments/wechat/notify",

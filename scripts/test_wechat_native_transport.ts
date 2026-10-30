@@ -12,7 +12,7 @@ const platform=generateKeyPairSync("rsa",{modulusLength:2048});
 const nowSeconds=1793366400;
 const nonce="0123456789abcdeffedcba9876543210";
 const merchantConfig={
-  appId:"wx1234567890abcdef",
+  appId:"wxd678efh567hg6787",
   merchantId:"1234567890",
   merchantCertificateSerial:"AABBCCDDEEFF01",
   merchantPrivateKey:merchant.privateKey,
@@ -38,7 +38,7 @@ function signedResponse(data:Record<string,unknown>,options?:{alterSignature?:bo
   });
 }
 let calls=0;
-const validNativeUrl="weixin://wxpay/bizpayurl?pr=syntheticReference123";
+const validNativeUrl="weixin://wxpay/bizpayurl/up?pr=NwY5Mz9&groupid=00";
 const fake:WechatNativeTransport=async (url,init) => {
   calls+=1;
   assert.equal(url,"https://api.mch.weixin.qq.com/v3/pay/transactions/native");
@@ -56,6 +56,15 @@ const failed:WechatNativeTransport=async()=>signedResponse({code_url:validNative
 await assert.rejects(()=>createVerifiedWechatNativeCheckout({...context,transport:failed},order),WechatPaymentProtocolError);
 const bogus:WechatNativeTransport=async()=>signedResponse({code_url:"https://thirdparty.example.com/qr.png"});
 await assert.rejects(()=>createVerifiedWechatNativeCheckout({...context,transport:bogus},order),WechatPaymentProtocolError);
+for(const invalidCode of [
+  "weixin://evil.example.com/bizpayurl/up?pr=NwY5Mz9",
+  "weixin://wxpay/bizpayurl/up?pr=NwY5Mz9&redirect=https://evil.example",
+  "weixin://wxpay/bizpayurl/up?pr=NwY5Mz9&pr=OTHER",
+  "weixin://wxpay/bizpayurl/up?pr=NwY5Mz9#fragment",
+]) {
+  const mock:WechatNativeTransport=async()=>signedResponse({code_url:invalidCode});
+  await assert.rejects(()=>createVerifiedWechatNativeCheckout({...context,transport:mock},order),WechatPaymentProtocolError);
+}
 const noNetwork:WechatNativeTransport=async()=>{throw new Error("SENSITIVE_INTERNAL_TRANSPORT_DETAIL");};
 await assert.rejects(()=>createVerifiedWechatNativeCheckout({...context,transport:noNetwork},order),
   (e:unknown)=>e instanceof WechatPaymentProtocolError && e.code==="WECHAT_NETWORK_FAILURE" && !String(e).includes("SENSITIVE"));
