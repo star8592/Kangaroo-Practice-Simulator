@@ -1,0 +1,61 @@
+{
+  "schemaVersion": "1.0",
+  "dataset": "wuhan-k12-xiaoshengchu-2026",
+  "generatedDate": "2026-10-30",
+  "sourceSystem": "Windows offline YSY source catalog and question_bank.sqlite",
+  "targetProject": "star8592/Kangaroo-Practice-Simulator",
+  "targetDomain": "school",
+  "targetSubcategory": "xiaoshengchu",
+  "region": "CN-HB-Wuhan",
+  "files": [
+    {
+      "file": "sources-01.json",
+      "count": 45,
+      "bytes": 34179
+    },
+    {
+      "file": "sources-02.json",
+      "count": 45,
+      "bytes": 34626
+    },
+    {
+      "file": "sources-03.json",
+      "count": 45,
+      "bytes": 34697
+    },
+    {
+      "file": "sources-04.json",
+      "count": 45,
+      "bytes": 33679
+    },
+    {
+      "file": "sources-05.json",
+      "count": 2,
+      "bytes": 1493
+    },
+    {
+      "file": "claims.json",
+      "count": 39,
+      "bytes": 17368
+    }
+  ],
+  "privateCorpusCounts": {
+    "source_pages": 180,
+    "ocr_question_candidates_unverified": 808,
+    "manual_digitization_pilot_questions_not_officially_verified": 8,
+    "source_links": 182,
+    "school_source_claims": 39,
+    "real_2026_full_papers_officially_verified": 0
+  },
+  "publicationRights": "no source in this transfer is approved for publication; all metadata is staging-only",
+  "outOfScope": [
+    "source image bytes",
+    "PDF/Word full text",
+    "OCR question text",
+    "student records",
+    "answer keys",
+    "payment credentials",
+    "license keys"
+  ],
+  "notes": "2026 cohort, academic year, calendar year and article publication year MUST be independently modeled. 2019/2020 paper previews in 2026 articles are historic, not 2026 authentic papers."
+}
