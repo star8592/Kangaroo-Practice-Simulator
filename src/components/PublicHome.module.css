@@ -1,16 +1,5 @@
 /* SOCTHINK v2 public portal: one coherent, scoped design language. */
 .portal{
-  --portal-navy:#10284b;
-  --portal-blue:#1454a8;
-  --portal-blue-strong:#0f458f;
-  --portal-blue-soft:#eaf2ff;
-  --portal-orange:#f09a4a;
-  --portal-text:#14253d;
-  --portal-muted:#5d6c82;
-  --portal-border:#dee5f0;
-  --portal-canvas:#f5f7fb;
-  --portal-white:#fff;
-  --portal-success:#11765b;
   --portal-width:var(--layout-wide);
   background:var(--portal-canvas);
   color:var(--portal-text);
