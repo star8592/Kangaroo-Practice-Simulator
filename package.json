@@ -98,7 +98,10 @@
     "test:miniapp-arithmetic-idempotency": "tsx scripts/test_miniapp_arithmetic_idempotency.ts",
     "test:exam-submit-recovery": "tsx scripts/test_exam_submit_recovery.ts",
     "test:exam-readaloud": "tsx scripts/test_exam_readaloud.ts",
-    "test:seamo": "python3 scripts/test_seamo_original_mocks.py && python3 scripts/test_seamo_revised.py && tsx scripts/test_seamo_integration.ts && python3 scripts/test_seamo_no_private.py && tsx scripts/prepare_seamo_readaloud.ts && tsx scripts/test_seamo_native_miniapp.ts"
+    "test:seamo": "python3 scripts/test_seamo_original_mocks.py && python3 scripts/test_seamo_revised.py && tsx scripts/test_seamo_integration.ts && python3 scripts/test_seamo_no_private.py && tsx scripts/prepare_seamo_readaloud.ts && tsx scripts/test_seamo_native_miniapp.ts",
+    "test:wechat-native-boundary": "tsx scripts/test_wechat_native_payment.ts",
+    "test:wechat-pay-scopes": "node scripts/test_wechat_pay_readiness.mjs && node scripts/test_wechat_pay_channel_scopes.mjs",
+    "test:wechat-native-transport": "tsx scripts/test_wechat_native_transport.ts"
   },
   "dependencies": {
     "next": "16.4.3",

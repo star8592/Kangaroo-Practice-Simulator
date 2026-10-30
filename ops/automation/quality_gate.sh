@@ -44,7 +44,9 @@ step "worldwide mathematics competition source and identity contract" npx tsx sc
 step "verified competition intelligence" npm run test:competition-intelligence
 step "official source watch and review queue" npm run test:competition-source-watch
 step "public membership benefits catalog" npx tsx scripts/test_access_catalog.ts
-step "payment configuration safeguards (no real credentials)" node scripts/test_wechat_pay_readiness.mjs
+step "web Native and miniapp virtual-payment preflight separation" npm run test:wechat-pay-scopes
+step "WeChat Native cryptographic protocol contract (synthetic keys)" npm run test:wechat-native-boundary
+step "WeChat Native signed server transport and official query contract" npm run test:wechat-native-transport
 step "local CI deploy contract" bash ops/release/test_local_ci_deploy_contract.sh
 step "auth email SMTP contract" bash ops/release/test_auth_email_smtp_contract.sh
 step "parent auth regression" npm run test:parent-auth
