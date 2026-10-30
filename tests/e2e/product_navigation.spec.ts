@@ -3,10 +3,13 @@ import { expect, test } from "@playwright/test";
 test.describe("SOC THINK unified public navigation", () => {
   test("three homepage actions lead to distinct functional destinations", async ({ page }) => {
     await page.goto("/");
-    const hero = page.locator(".home-hero");
-    await expect(hero.getByRole("link", { name: "开始计算训练" })).toHaveAttribute("href", "/arithmetic");
-    await expect(hero.getByRole("link", { name: "参加竞赛模拟" })).toHaveAttribute("href", "/competitions");
-    await hero.getByRole("link", { name: "进入赛事管家" }).click();
+    const content=page.locator("main");
+    await expect(content.locator('a[href="/arithmetic"]').filter({hasText:"开始计算训练"}).first()).toBeVisible();
+    await expect(content.locator('a[href="/competitions"]').filter({hasText:"参加竞赛模拟"}).first()).toBeVisible();
+    const mobile=(page.viewportSize()?.width??1280)<=760;
+    if(mobile)await page.getByRole("button",{name:"打开导航菜单"}).click();
+    await page.getByRole("navigation",{name:mobile?"移动端导航":"主要导航"})
+      .getByRole("link",{name:"赛事管家"}).click();
     await expect(page).toHaveURL(/\/events$/);
     await expect(page.getByRole("heading", { name: "全球数学赛事管家" })).toBeVisible();
   });

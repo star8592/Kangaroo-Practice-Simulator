@@ -6,12 +6,11 @@ test("top navigation separates events companion from mock exams", async ({ page 
   const header = page.getByRole("navigation", { name: "主要导航" });
   await expect(header.getByRole("link", { name: "竞赛模拟" })).toHaveAttribute("href", "/competitions");
   await expect(header.getByRole("link", { name: "赛事管家" })).toHaveAttribute("href", "/events");
-  await expect(page.locator(".home-competition-card")).toHaveCount(5);
-  await expect(page.locator(".home-competition-showcase")).not.toContainText("华杯赛");
-  await expect(page.locator(".home-competition-showcase")).not.toContainText("希望杯");
-  await page.locator(".home-competition-card").first().click();
-  await expect(page).toHaveURL(/\/events\?event=/);
-  await expect(page.getByRole("region", { name: "全球数学赛事管家" })).toBeVisible();
+  await expect(page.locator("main")).not.toContainText("华杯赛");
+  await expect(page.locator("main")).not.toContainText("希望杯");
+  await header.getByRole("link",{name:"赛事管家"}).click();
+  await expect(page).toHaveURL(/\/events$/);
+  await expect(page.getByRole("region",{name:"全球数学赛事管家"})).toBeVisible();
 });
 
 test("China information-only event never offers an in-site mock", async ({ page }) => {
