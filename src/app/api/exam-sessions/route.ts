@@ -1,6 +1,7 @@
 import { NextRequest,NextResponse } from "next/server";
 import { userFromRequest } from "@/lib/auth";
 import { hasFullExamAccess } from "@/lib/exam-access";
+import { deniedItemExamResponse } from "@/lib/item-access-server";
 import { isExamBundleTrainingReady,loadTrainingExamBundle } from "@/lib/training-question-bank";
 import { activeExamSession,lockExamSection,saveExamSectionDraft,startExamSection,startExamSession } from "@/lib/exam-session";
 
@@ -10,6 +11,7 @@ export async function GET(r:NextRequest){
   const u=user(r);
   if(!hasFullExamAccess(u))return NextResponse.json({error:"请先登录正式考生账号"},{status:401});
   const id=r.nextUrl.searchParams.get("examId")||"";
+  const denied=await deniedItemExamResponse(r,id);if(denied)return denied;
   return id?NextResponse.json({session:activeExamSession(u.id,id),serverNow:Date.now()}):NextResponse.json({error:"missing examId"},{status:400});
 }
 
@@ -17,7 +19,9 @@ export async function POST(r:NextRequest){
   try{
     const u=user(r);
     if(!hasFullExamAccess(u))return NextResponse.json({error:"请先登录正式考生账号"},{status:401});
-    const b=await r.json(),id=String(b?.examId||""),bundle=loadTrainingExamBundle(id);
+    const b=await r.json(),id=String(b?.examId||"");
+    const denied=await deniedItemExamResponse(r,id);if(denied)return denied;
+    const bundle=loadTrainingExamBundle(id);
     if(!isExamBundleTrainingReady(bundle))return NextResponse.json({error:"Exam is not training-ready"},{status:404});
     return NextResponse.json({
       ...startExamSession(u.id,id,bundle.profile.durationSeconds,bundle.profile.timingSections),
@@ -34,6 +38,7 @@ export async function PATCH(r:NextRequest){
     const u=user(r);
     if(!hasFullExamAccess(u))return NextResponse.json({error:"请先登录正式考生账号"},{status:401});
     const b=await r.json(),id=String(b?.examId||""),sid=String(b?.sessionId||""),action=String(b?.action||"");
+    const denied=await deniedItemExamResponse(r,id);if(denied)return denied;
     const bundle=loadTrainingExamBundle(id),sections=bundle.profile.timingSections||[];
     if(!sections.length)return NextResponse.json({error:"该考试不是分段计时赛制"},{status:400});
     const idx=Number(b?.sectionIndex);

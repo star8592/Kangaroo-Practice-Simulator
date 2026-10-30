@@ -6,13 +6,10 @@ import Link from "next/link";
 import {useSiteLanguage} from "@/lib/site-language";
 import styles from "./MembershipPage.module.css";
 
-export type PublishedMembershipOffer=Readonly<{
-  id:string;
-  tier:"plus"|"pro";
-  period:"month"|"year";
-  priceMinor:number;
-  currency:"CNY";
-}>;
+export type PublishedMembershipOffer=Readonly<
+  {kind:"subscription";id:string;tier:"plus"|"pro";period:"month"|"year";priceMinor:number;currency:"CNY"}
+  | {kind:"item";id:string;contentKind:"exam";contentId:string;titleZh:string;priceMinor:number;currency:"CNY"}
+>;
 
 type CheckoutReply={
   orderId?:string;qrDataUrl?:string;code?:string;error?:string;
@@ -79,7 +76,9 @@ export default function NativeCheckoutPanel({offers,accountLoggedIn}:{
     {!accountLoggedIn && <p>{en?"Sign in with WeChat to purchase.":"请先微信登录，再购买考试或资料。"} <Link href="/login?next=%2Fmembership">{en?"WeChat sign in":"微信登录"}</Link></p>}
     <div className={styles.checkoutOffers}>
       {offers.map(offer=><div key={offer.id} className={styles.checkoutOffer}>
-        <b>{offer.tier.toUpperCase()} · {offer.period==="month"?(en?"Monthly":"月度"):(en?"Yearly":"年度")}</b>
+        <b>{offer.kind==="item"
+          ? (en?"Individual exam":"单张试卷")+" · "+offer.titleZh
+          : offer.tier.toUpperCase()+" · "+(offer.period==="month"?(en?"Monthly":"月度"):(en?"Yearly":"年度"))}</b>
         <span>¥{(offer.priceMinor/100).toFixed(2)}</span>
         <button type="button" onClick={()=>void purchase(offer.id)}
           disabled={!accountLoggedIn||loading||state==="pending"}>

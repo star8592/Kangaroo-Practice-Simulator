@@ -1,8 +1,9 @@
 import assert from "node:assert/strict";
 import crypto from "node:crypto";
 import fs from "node:fs";
+import {canOpenItemExam} from "../src/lib/item-access-server";
 import { billingPool,closeBillingPoolForTests,createBillingOrder,
-  settleVerifiedOrder,refundVerifiedOrder,consumeUsage,verifiedGrantsForParent,
+  settleVerifiedOrder,refundVerifiedOrder,consumeUsage,verifiedGrantsForParent,hasVerifiedItemEntitlement,
   verifiedParentsForStudent,linkVerifiedFamilyMember,BillingConflictError,
   BillingQuotaExceededError,recordVerifiedNativeNotification,type VerifiedPaymentReceipt } from "../src/lib/billing-ledger";
 
@@ -24,8 +25,9 @@ async function run() {
   await db.query(fs.readFileSync("ops/db/001_billing_entitlements.sql","utf8"));
   await db.query(fs.readFileSync("ops/db/002_wechat_reconciliation.sql","utf8"));
   await db.query(fs.readFileSync("ops/db/003_native_notification_inbox.sql","utf8"));
+  await db.query(fs.readFileSync("ops/db/004_item_purchases.sql","utf8"));
   // The caller uses a throwaway database; no production fixture or customer data.
-  await db.query("TRUNCATE billing_usage_events,billing_usage_buckets,billing_family_links,billing_entitlements,billing_payment_events,billing_orders,billing_products RESTART IDENTITY CASCADE");
+  await db.query("TRUNCATE billing_usage_events,billing_usage_buckets,billing_family_links,billing_item_entitlements,billing_entitlements,billing_payment_events,billing_orders,billing_products RESTART IDENTITY CASCADE");
   await db.query("INSERT INTO billing_products(id,tier,period,amount_minor,currency,enabled) VALUES('plus_month','plus','month',3900,'CNY',true)");
   const one=await createBillingOrder("par_test01","plus_month");
   assert.equal(one.priceMinor,3900);
@@ -35,6 +37,44 @@ async function run() {
   assert.equal(paid.created,true);
   assert.equal((await settleVerifiedOrder(receipt(one.id,"paid-01","wx-01"))).created,false);
   assert.equal((await verifiedGrantsForParent("par_test01")).length,1);
+
+  process.env.SOCTHINK_ITEM_ACCESS_ENFORCED="1";
+  assert.equal(await canOpenItemExam("uncharged-public-exam",null),true);
+
+  // Item SKUs are independent of PLUS/PRO subscriptions and fail closed until
+  // human rights review and real content-delivery checks are both complete.
+  await db.query(`INSERT INTO billing_products
+    (id,tier,period,product_kind,content_kind,content_id,title_zh,amount_minor,currency,enabled)
+    VALUES('exam_sample_a',NULL,NULL,'item','exam','verified-sample-a','已核实样卷',199,'CNY',true)`);
+  await assert.rejects(()=>createBillingOrder("par_item01","exam_sample_a"),BillingConflictError);
+  await db.query("UPDATE billing_products SET rights_approved=true WHERE id='exam_sample_a'");
+  await assert.rejects(()=>createBillingOrder("par_item01","exam_sample_a"),BillingConflictError);
+  await db.query("UPDATE billing_products SET delivery_verified=true,access_restricted=true WHERE id='exam_sample_a'");
+  assert.equal(await canOpenItemExam("verified-sample-a",null),false);
+  assert.equal(await canOpenItemExam("verified-sample-a","par_item01"),false);
+  const item=await createBillingOrder("par_item01","exam_sample_a","wechat_native");
+  assert.equal(item.priceMinor,199);
+  assert.equal(await hasVerifiedItemEntitlement("par_item01","exam","verified-sample-a"),false);
+  const itemReceipt={...receipt(item.id,"item-paid-01","item-tx-01",199),provider:"wechat_native" as const};
+  await assert.rejects(()=>settleVerifiedOrder({...itemReceipt,amountMinor:200}),BillingConflictError);
+  const itemPaid=await settleVerifiedOrder(itemReceipt);
+  assert.equal(itemPaid.created,true);
+  assert.equal(itemPaid.tier,null);
+  assert.equal((await settleVerifiedOrder(itemReceipt)).created,false);
+  assert.equal(await hasVerifiedItemEntitlement("par_item01","exam","verified-sample-a"),true);
+  assert.equal(await canOpenItemExam("verified-sample-a","par_item01"),true);
+  assert.equal(await canOpenItemExam("verified-sample-a","par_stranger"),false);
+  await assert.rejects(()=>createBillingOrder("par_item01","exam_sample_a","wechat_native"),BillingConflictError);
+  assert.equal(await hasVerifiedItemEntitlement("par_stranger","exam","verified-sample-a"),false);
+  assert.equal(await hasVerifiedItemEntitlement("par_item01","resource","verified-sample-a"),false);
+  assert.equal((await verifiedGrantsForParent("par_item01")).length,0);
+  // Existing orders retain immutable content even after catalog changes.
+  await db.query("UPDATE billing_products SET content_id='different-content',enabled=false WHERE id='exam_sample_a'");
+  assert.equal(await hasVerifiedItemEntitlement("par_item01","exam","verified-sample-a"),true);
+  assert.equal(await hasVerifiedItemEntitlement("par_item01","exam","different-content"),false);
+  assert.equal((await refundVerifiedOrder({...itemReceipt,eventId:"item-refund-01"})).revoked,true);
+  assert.equal(await hasVerifiedItemEntitlement("par_item01","exam","verified-sample-a"),false);
+  assert.equal(await canOpenItemExam("verified-sample-a","par_item01"),false);
 
   // Native payment uses the exact same PostgreSQL orders and entitlements.
   const native=await createBillingOrder("par_native01","plus_month","wechat_native");
