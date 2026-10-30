@@ -102,3 +102,35 @@
 ## 6. 维护机制
 
 今后修改支付代码或官方文档发生变更时，应先更新**这一份**对照矩阵及相关自动回归，不另建相似的第二份表格。任何状态升级需粘贴**脱敏原始回执的证据标识**：明确 commit SHA、官方文档更新时间、测试结果、生产部署时间、实际商户交易及查询回执。**没有证据，状态只写 UNKNOWN/NOT_LIVE。** 与 [EngineeringOS 跨项目访问规范](https://github.com/star8592/EngineeringOS/blob/main/docs/operations/CROSS_PROJECT_ACCESS_AND_AUTH_LESSONS.md) 共用同一套登录防误判规则。
+
+## 2026-10-30 微信官方现行配置核对（以网页原文为准）
+
+本节直接核对普通商户官网当日可见的版本与设置路径，不把旧 Google Docs 的变量名误认为微信官方 API JSON 参数。官网页面**更新时间分别不同**：开发必要参数说明 **2026-10-13**、Native 开发指引 **2026-06-09**、退款开发指引 **2026-10-13**、微信支付公钥介绍 **2026-05-20**、APPID 绑定指引 **2025-10-28**、经营场景管理 **2026-02-05**；不能仅凭首页“最新”自动认定接口全部改变。
+
+| 类别 | 官方实际字段或路径 | 当前实现/待修 |
+|---|---|---|
+| 商户身份 | `mchid`、与该商户号绑定的 `appid`；商户平台「账户中心 → 商户信息」「产品中心 → APPID账号管理 → 我关联的APPID账号」 | Node 环境键名自行约定 `WECHAT_PAY_MCHID/WECHAT_PAY_APPID`；旧私有笔记写 `WECHAT_PAY_MCH_ID/WECHAT_PAY_APP_ID`，**必须映射一次，不能混用**；新站产品权限尚未获得商户后台回执 |
+| API v3 私钥签名 | 请求 `Authorization: WECHATPAY2-SHA256-RSA2048 ... serial_no=<商户API证书序列号>`；商户 API 证书**私钥**签名原始 HTTP 报文 | 当前代码签名原始 JSON 正文；切勿把商户证书序列号误作微信公钥 ID |
+| API v3 解密 | `APIv3 Key` 32 个字符，商户平台「账户中心 → 账户设置 → API安全 → 解密回调 → APIv3密钥」；**不支持查看已设密钥，只能重新设置** | 用于 AES-GCM 回调密文解密，不是 Authorization 签名私钥，也不是 APIv2 Key；切勿盲目重置影响旧站真实收款 |
+| 微信支付公钥验签（官方推荐） | 商户平台「账户中心 → API安全 → 微信支付公钥 → 管理公钥」获取 PEM + `PUB_KEY_ID_...`；响应/回调 `Wechatpay-Serial` 指明对应公钥 | 新版只支持单公钥 ID 进行验签；若商户仍在平台证书/公钥灰度切换，必须先核实官方实际模式，不能擅自切换影响旧站 |
+| **请求微信公钥模式的关键 Header** | **`Wechatpay-Serial: PUB_KEY_ID_...`**；官方 FAQ 明确该请求头影响**应答验签模式**，并举 GET 示例 | **新 `wechat-native-transport.ts` 当前遗漏此请求头，P0：即使有正确公钥文件，也可能收到平台证书签名的合法应答而验签拒绝；必须修复并增加断言** |
+| Native 下单 | `POST /v3/pay/transactions/native`，`appid`、`mchid`、`description`、`out_trade_no`、`notify_url`、`amount.total`、`amount.currency`；`time_expire` 可指定订单截止 | 订单号须每商户唯一，金额必须来自账本；新站不把小程序 APPID 强行等同网站 APPID |
+| 支付有效期 | 默认订单支付期限 7 天；`code_url` 仅 **2 小时**；过期可用**原下单参数**重新下单获取新二维码 | 当前前端尚缺倒计时/订单状态保护/同单刷新，应修 |
+| 回调应答 | 验签后应返回 200/204；**超时 5 秒会重试**；官方建议业务异步处理，不能仅靠回调 | 当前先同步 GET 官方订单再回复，GET 最高等 10 秒，违反可靠性目标；必须先验签并持久化再 ACK，恢复任务使用同一 PG 账本 |
+| 退款 | 请求受理 ≠ 退款成功；`PROCESSING/SUCCESS/CLOSED/ABNORMAL` 处理分离，同一 `out_refund_no` 超时重试不能换号；退款默认 365 天期限 | 正式退款 adapter 和最终确认、权益冲正未实现；不能称正式收款闭环 |
+| 经营场景 | 商户平台「账户中心 → 经营场景管理 → 添加场景」，检查新的线上教育数字商品场景和实际商户主体 | 需持有人登录商户后台才能得到**该账号**的授权回执；公开文档不能代替商户后台实际批准 |
+
+### 本节官方原始页面（2026-10-30 访问）
+
+- 开发必要参数（2026-10-13）：https://pay.wechatpay.cn/doc/v3/merchant/4013070756
+- Native 下单：https://pay.wechatpay.cn/doc/v3/merchant/4012791877
+- Native 开发指引（2026-06-09）：https://pay.wechatpay.cn/doc/v3/merchant/4012791891
+- 微信支付公钥介绍（2026-05-20）：https://pay.wechatpay.cn/doc/v3/merchant/4012153196
+- 微信支付公钥 FAQ——**Wechatpay-Serial 请求头与灰度**：https://pay.wechatpay.cn/doc/v3/merchant/4013038816
+- 公众号/小程序 APPID 绑定管理（2025-10-28）：https://pay.wechatpay.cn/doc/v3/merchant/4016328613
+- 经营场景管理（2026-02-05）：https://pay.wechatpay.cn/doc/v3/merchant/4017312501
+- APIv3 密钥配置：https://pay.wechatpay.cn/doc/v3/merchant/4012072195
+- 普通商户支付成功回调（含 Native，5 秒）：https://pay.wechatpay.cn/doc/v3/merchant/4013070368
+- 退款开发指引（2026-10-13）：https://pay.wechatpay.cn/doc/v3/merchant/4013071031
+
+**当前判断：** 核心 API 名称没有凭空发生全面替换；新版最突出参数差异是公钥应答头缺失、旧笔记的环境变量别名差异、商户后台关联/公钥灰度状态缺乏实证。以上不是对私有文档敏感字段的披露，也不是操作商户后台。
