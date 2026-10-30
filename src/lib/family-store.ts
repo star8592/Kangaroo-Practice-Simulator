@@ -11,6 +11,15 @@ export function addStudentToFamily(parentId:string,studentId:string){const rows=
  if(rows.some(x=>x.parentId!==parentId&&x.studentIds.includes(studentId)))throw new Error("该学生账号已属于其他家庭，请先联系原家庭解绑");
 let f=rows.find(x=>x.parentId===parentId);if(!f){f={id:"fam_"+crypto.randomBytes(8).toString("hex"),parentId,studentIds:[],createdAt:Date.now()};rows.push(f)}if(!f.studentIds.includes(studentId))f.studentIds.push(studentId);save(rows);return f}
 export function familyOwnsStudent(parentId:string,studentId:string){return !!familyForParent(parentId)?.studentIds.includes(studentId)}
+/** The existing parent-PIN-verified family relationship is the single
+ * family-ownership source for both free and paid features. For safety,
+ * malformed data that names two different parent owners fails closed.
+ */
+export function familyParentForStudent(studentId:string):string|null {
+ const parents=load().filter(row=>row.studentIds.includes(studentId));
+ const owners=[...new Set(parents.map(row=>row.parentId))];
+ return owners.length===1?owners[0]:null;
+}
 export function publicFamilyStudents(parentId:string){const ids=new Set(familyForParent(parentId)?.studentIds||[]);return loadUsers().filter(x=>ids.has(x.id)&&x.role==="student").map(({pinHash,...u})=>{void pinHash;return u})}
 
 

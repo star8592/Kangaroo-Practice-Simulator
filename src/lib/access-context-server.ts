@@ -1,6 +1,6 @@
-import { familyOwnsStudent, publicFamilyStudents } from "./family-store";
-import { billingConfigured, verifiedGrantsForParent, verifiedParentsForStudent } from "./billing-ledger";
-import { effectivePlan, type AccessContext, type AccessGrant } from "./access-policy";
+import { familyParentForStudent, publicFamilyStudents } from "./family-store";
+import { billingConfigured, verifiedGrantsForParent } from "./billing-ledger";
+import { effectivePlan, maxFamilyStudents, type AccessContext } from "./access-policy";
 
 /**
  * Build authoritative feature-discovery context from server-validated user ID.
@@ -16,23 +16,35 @@ export async function attachVerifiedBilling(base: AccessContext): Promise<Access
     return { ...base, linkedStudentIds, grants };
   }
   if (base.kind !== "student" || !base.accountId) return base;
-  // Require agreement of the existing family store AND transactional link
-  // before a student can inherit a guardian's paid entitlement.
-  const parentIds = (await verifiedParentsForStudent(base.accountId))
-    .filter(parentId => familyOwnsStudent(parentId, base.accountId!));
-  let selectedOwner: string | undefined;
-  let selectedGrants: AccessGrant[] = [];
-  let currentRank = 0;
-  for (const parentId of parentIds) {
-    const grants = await verifiedGrantsForParent(parentId);
-    const candidate: AccessContext = { ...base, billingOwnerId: parentId, grants };
-    const tier = effectivePlan(candidate);
-    const rank = tier === "pro" ? 2 : tier === "plus" ? 1 : 0;
-    if (rank > currentRank) {
-      currentRank = rank;
-      selectedOwner = parentId;
-      selectedGrants = grants;
-    }
-  }
-  return { ...base, billingOwnerId: selectedOwner, grants: selectedGrants };
+  // A guardian is already authenticated when creating a child, or both
+  // guardian session and existing student's PIN are validated when linking.
+  // Do not require a shadow PG family_links row which these verified routes
+  // never wrote. Billing DB remains authoritative ONLY for paid grants.
+  const parentId=familyParentForStudent(base.accountId);
+  if (!parentId) return base;
+  const grants=await verifiedGrantsForParent(parentId);
+  return { ...base, billingOwnerId:parentId, grants };
+
+}
+
+
+/** Null keeps existing pre-billing family behavior intact.
+ * When the one official paid ledger is installed, enforce real family seats
+ * on future new child creation/link; never silently unlink legacy children.
+ */
+export async function paidFamilySeatLimit(parentId:string):Promise<number|null> {
+  if (!billingConfigured()) return null;
+  const grants=await verifiedGrantsForParent(parentId);
+  return maxFamilyStudents(effectivePlan({
+    kind:"parent",accountId:parentId,grants,
+  }));
+}
+
+export function familySeatAvailable(
+  existingStudentIds:readonly string[],studentId:string|null,limit:number|null,
+):boolean {
+  if(studentId && existingStudentIds.includes(studentId)) return true;
+  if(limit===null)return true;
+  if(!Number.isInteger(limit)||limit<1)return false;
+  return new Set(existingStudentIds).size<limit;
 }

@@ -27,6 +27,12 @@ async function main(){
   const first=await PUT(request(a.id,s.username,"334455"));
   assert.equal(first.status,200,await first.text().catch(()=>"?"));
   assert.equal(family.familyOwnsStudent(a.id,s.id),true);
+  assert.equal(family.familyParentForStudent(s.id),a.id);
+  const {familySeatAvailable,paidFamilySeatLimit}=await import("../src/lib/access-context-server");
+  assert.equal(await paidFamilySeatLimit(a.id),null,"Legacy family behavior unchanged without billing");
+  assert.equal(familySeatAvailable([s.id],s.id,1),true);
+  assert.equal(familySeatAvailable([s.id],null,1),false);
+  assert.equal(familySeatAvailable([s.id],null,3),true);
   assert.equal((await PUT(request(a.id,"EXIST100","334455"))).status,200,"idempotent link");
   assert.equal((await PUT(request(b.id,s.username,"334455"))).status,409,"other family cannot claim");
   assert.equal(family.familyOwnsStudent(b.id,s.id),false);

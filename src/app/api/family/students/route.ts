@@ -11,6 +11,7 @@ import {
   publicFamilyStudents,
 } from "@/lib/family-store";
 import { buildStudentAttention } from "@/lib/academic-events/student-attention";
+import { familySeatAvailable, paidFamilySeatLimit } from "@/lib/access-context-server";
 import {
   parentFromSessionToken,
   PARENT_SESSION_COOKIE,
@@ -83,6 +84,15 @@ export async function POST(req: NextRequest) {
     if (providedPin && !/^\d{4,12}$/.test(providedPin)) {
       return NextResponse.json({ error: "独立登录 PIN 必须为 4–12 位数字" }, { status: 400 });
     }
+
+    // Check actual verified paid plan before creating any new learner. A
+    // failed billing lookup must NOT silently fall back to an unpaid limit.
+    let seatLimit:number|null;
+    try {seatLimit=await paidFamilySeatLimit(p.id);}
+    catch {return NextResponse.json({error:"会员权益暂时无法查询，请稍后重试"},{status:503});}
+    const existing=publicFamilyStudents(p.id).map(s=>s.id);
+    if(!familySeatAvailable(existing,null,seatLimit))
+      return NextResponse.json({error:"当前家庭学生名额已满，请升级会员后添加"},{status:409});
 
     const username = String(body?.username || "").trim()
       || ("kid" + crypto.randomBytes(3).toString("hex"));
@@ -192,6 +202,11 @@ export async function PUT(req:NextRequest){
   return NextResponse.json({error:"学生账号或 PIN 不正确"},{status:401});
  }
  clearLoginFailures(key);
+ let seatLimit:number|null;
+ try {seatLimit=await paidFamilySeatLimit(p.id);}
+ catch {return NextResponse.json({error:"会员权益暂时无法查询，请稍后重试"},{status:503});}
+ if(!familySeatAvailable(publicFamilyStudents(p.id).map(s=>s.id),learner.id,seatLimit))
+  return NextResponse.json({error:"当前家庭学生名额已满，请升级会员后绑定"},{status:409});
  try{
   const link=linkVerifiedStudentToFamily(p.id,learner.id);
   return NextResponse.json({ok:true,student:{id:learner.id,name:learner.name,grade:learner.grade},alreadyLinked:link.alreadyLinked});
