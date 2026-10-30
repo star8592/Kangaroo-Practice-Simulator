@@ -11,8 +11,14 @@ import { billingConfigured, billingPool, hasVerifiedItemEntitlement } from "./bi
  * Once any item is sold, keep it on even when pausing new sales.
  */
 export async function canOpenItemExam(examId: string, verifiedBuyerId: string | null): Promise<boolean> {
-  if (process.env.SOCTHINK_ITEM_ACCESS_ENFORCED !== "1") return true;
-  if (!billingConfigured()) throw new Error("ITEM_BILLING_UNAVAILABLE");
+  // Once a billing DB exists, always inspect its paid-content rows, even
+  // if an operator mistakenly clears the activation flag later. A sold item
+  // must never become free solely because new checkout was paused.
+  if (!billingConfigured()) {
+    if (process.env.SOCTHINK_ITEM_ACCESS_ENFORCED === "1")
+      throw new Error("ITEM_BILLING_UNAVAILABLE");
+    return true;
+  }
   if (!examId || examId.length > 200) return false;
   const res = await billingPool().query<{restricted:boolean}>(`
     SELECT (

@@ -64,6 +64,11 @@ async function run() {
   assert.equal(await hasVerifiedItemEntitlement("par_item01","exam","verified-sample-a"),true);
   assert.equal(await canOpenItemExam("verified-sample-a","par_item01"),true);
   assert.equal(await canOpenItemExam("verified-sample-a","par_stranger"),false);
+  // Checkout flag removal cannot bypass an already-sold item entitlement.
+  delete process.env.SOCTHINK_ITEM_ACCESS_ENFORCED;
+  assert.equal(await canOpenItemExam("verified-sample-a","par_item01"),true);
+  assert.equal(await canOpenItemExam("verified-sample-a","par_stranger"),false);
+  process.env.SOCTHINK_ITEM_ACCESS_ENFORCED="1";
   await assert.rejects(()=>createBillingOrder("par_item01","exam_sample_a","wechat_native"),BillingConflictError);
   assert.equal(await hasVerifiedItemEntitlement("par_stranger","exam","verified-sample-a"),false);
   assert.equal(await hasVerifiedItemEntitlement("par_item01","resource","verified-sample-a"),false);
