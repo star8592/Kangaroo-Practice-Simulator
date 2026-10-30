@@ -69,7 +69,8 @@ def preflight() -> dict[str, bool]:
         "target_repo": ROOT.resolve() == EXPECTED_ROOT and
             (ROOT / ".git").exists(),
         "schema_found": DDL.is_file() and
-            (ROOT / "ops/db/002_wechat_reconciliation.sql").is_file(),
+            (ROOT / "ops/db/002_wechat_reconciliation.sql").is_file() and
+            (ROOT / "ops/db/003_native_notification_inbox.sql").is_file(),
         "postgres_binary": Path("/usr/bin/psql").exists(),
         "role_absent": False,
         "database_absent": False,
@@ -128,6 +129,9 @@ def main() -> int:
     run(["runuser", "-u", "postgres", "--", "psql",
          "-X", "-q", "-v", "ON_ERROR_STOP=1", "-d", DATABASE,
          "-f", str(ROOT / "ops/db/002_wechat_reconciliation.sql")])
+    run(["runuser", "-u", "postgres", "--", "psql",
+         "-X", "-q", "-v", "ON_ERROR_STOP=1", "-d", DATABASE,
+         "-f", str(ROOT / "ops/db/003_native_notification_inbox.sql")])
     pg(f"GRANT USAGE ON SCHEMA public TO {ROLE};"
        f"GRANT SELECT,INSERT,UPDATE,DELETE ON ALL TABLES IN SCHEMA public TO {ROLE};"
        f"GRANT USAGE,SELECT ON ALL SEQUENCES IN SCHEMA public TO {ROLE};",
@@ -141,6 +145,12 @@ def main() -> int:
           "WHERE table_schema='public' AND table_name='billing_orders' "
           "AND column_name='reconcile_checked_at';", DATABASE) != "1":
         raise RuntimeError("RECOVERY_MIGRATION_NOT_APPLIED")
+    if pg("SELECT COUNT(*) FROM information_schema.columns "
+          "WHERE table_schema='public' AND table_name='billing_orders' "
+          "AND column_name IN ('notification_received_at','notification_event_id', "
+          "'notification_transaction_id','notification_payload_sha256');",
+          DATABASE) != "4":
+        raise RuntimeError("SIGNED_NOTIFICATION_MIGRATION_NOT_APPLIED")
 
     # Verify a real TCP password login, matching the Node pg client path.
     secret_env = dict(os.environ, PGPASSWORD=secret, PGCONNECT_TIMEOUT="5")

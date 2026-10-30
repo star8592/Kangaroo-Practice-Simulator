@@ -5,7 +5,7 @@
 ## 实现（当前只对应老 PostgreSQL PLUS/PRO 订阅商品）
 
 - `POST /api/payments/wechat/checkout`：必须启用双重商户授权和新订单开关；要求已有真实监护人服务端会话、同源浏览器请求和正常已启用的 `billing_products`；价格始终服务端取，不使用客户端金额、用户名、商户或“已支付”标识；单一 PostgreSQL 账本插入 `provider=wechat_native` 的独立待支付订单；调用签名官方 Native API，并**在自己的 Next.js 进程里**用 `qrcode` 生成 PNG data URL。第三方 QR 服务不接触支付链接。
-- `POST /api/payments/wechat/notify`：无用户登录（微信支付机器到机器回调）。**用微信官方公钥+匹配 key ID 对原始响应体验签**，检查 timestamp/nonce；APIv3 Key 解密微信 AES-GCM，检查事件类型和订单格式；从当前 PG 查出待结算订单，验证 `transaction_id/mchid/appid/amount/currency/trade_type`；**独立以签名方式调用微信官方 GET 查单并验证微信应答签名**；只有相同平台交易 ID 且成功的订单才调用已有 `settleVerifiedOrder`，在唯一事务内记账和授权。非法签名拒绝，数据库或网络故障返回非 2xx 允许微信重试，重复回调严格依账本幂等。
+- `POST /api/payments/wechat/notify`：**2026-10-30 新回调修复**：无用户登录，校验原始签名、时间窗口及公钥 ID，AES-GCM 解密并确认 Native SUCCESS / 商户 / AppID / 金额 / 币种；在同一订单账本上**原子持久写入通知事件 ID、交易号、回调哈希和时间戳**，随后立即 HTTP 204。回调本身不进行 10 秒远端查单、不发放权益；DB 失败返回非成功，允许微信重试。官方签名 GET 查单由已存在的同一账本补单 worker 完成，成功后才事务结算权益。
 - `GET /api/payments/wechat/orders/[orderId]`：只有原支付监护人账户可以读取其付款状态，匿名/其他用户不得查询，绝不显示商户秘钥、平台流水等敏感信息。
 - `/membership`：动态按现有 `billing_products.enabled=true`、实际大于零的 CNY 价格和完整**新订单启用开关**提取当前 PLUS/PRO SKU。**没有任何真实可售产品或开关未通过时，保留原“收费未开放”界面，绝不显示购买按钮**。若具备授权和活跃商品，则向已登录监护人展示定价、通过本站 checkout API 请求订单、以本地生成的 QR PNG 扫码支付，定时只读查询本人订单状态。前端不会凭页面提示直接发放权益。该 UI 尚未通过真实商户回执与浏览器 E2E。
 - `src/lib/wechat-native-server.ts`：仅服务端按受控绝对路径加载私钥和微信支付公钥并要求文件权限安全；不输出密钥。可信公网 `SOCTHINK_PUBLIC_ORIGIN` 必须与完整 HTTPS notify URL 同源，路径必须为正式路由。

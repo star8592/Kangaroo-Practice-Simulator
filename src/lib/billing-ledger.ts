@@ -54,6 +54,60 @@ export async function createBillingOrder(parentId:string,productId:string,provid
     return {id,priceMinor:Number(p.amount_minor),currency:p.currency};
   });
 }
+/** A verified provider CALLBACK, not yet an independently queried payment.
+ * ACKing this records a recoverable fact; it never grants user rights.
+ */
+export type VerifiedNativeNotification = {
+  orderId:string;
+  eventId:string;
+  transactionId:string;
+  amountMinor:number;
+  currency:"CNY";
+  payloadSha256:string;
+  signatureVerified:true;
+  signedTradeMatched:true;
+};
+
+export async function recordVerifiedNativeNotification(n:VerifiedNativeNotification):Promise<"recorded"|"already_settled"> {
+  identifier(n.orderId);identifier(n.eventId);identifier(n.transactionId);
+  if (n.signatureVerified!==true || n.signedTradeMatched!==true ||
+      !/^ord_[a-zA-Z0-9_-]{6,28}$/.test(n.orderId) ||
+      !/^[0-9a-f]{64}$/.test(n.payloadSha256) ||
+      !Number.isSafeInteger(n.amountMinor) || n.amountMinor<=0 ||
+      n.currency!=="CNY")
+    throw new BillingConflictError("Invalid Native payment callback evidence");
+  // Single atomic WAL-backed UPDATE: on ACK success the existing recovery
+  // worker can query WeChat independently. No callback needs an external API.
+  const r=await billingPool().query<{id:string}>({
+    text:`UPDATE billing_orders
+      SET notification_received_at=now(),
+          notification_event_id=$2,
+          notification_transaction_id=$3,
+          notification_payload_sha256=$4,
+          reconcile_checked_at=NULL
+      WHERE id=$1 AND provider='wechat_native' AND state='pending'
+        AND price_minor=$5 AND currency=$6
+        AND (notification_transaction_id IS NULL OR notification_transaction_id=$3)
+      RETURNING id`,
+    values:[n.orderId,n.eventId,n.transactionId,n.payloadSha256,n.amountMinor,n.currency],
+  });
+  if(r.rows[0]) return "recorded";
+  // A genuine replay after settlement or refund must ACK, not trigger
+  // endless retries, but only for the exact same trusted transaction.
+  const x=await billingPool().query<{state:string;provider_transaction_id:string|null;
+    price_minor:string;currency:string;provider:string}>({
+    text:"SELECT state,provider_transaction_id,price_minor,currency,provider FROM billing_orders WHERE id=$1",
+    values:[n.orderId],
+  });
+  const o=x.rows[0];
+  if(o && ["paid","refunded"].includes(o.state) &&
+      o.provider==="wechat_native" &&
+      o.provider_transaction_id===n.transactionId &&
+      Number(o.price_minor)===n.amountMinor && o.currency===n.currency)
+    return "already_settled";
+  throw new BillingConflictError("Native callback order not payable or conflicting");
+}
+
 function validateReceipt(r:VerifiedPaymentReceipt){
   identifier(r.eventId);identifier(r.orderId);identifier(r.transactionId);
   if(!["wechat_pay","wechat_native"].includes(r.provider) || r.signatureVerified!==true || r.providerStatusConfirmed!==true ||

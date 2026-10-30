@@ -20,7 +20,7 @@ python3 ops/payment/provision_billing_postgres.py --check
 sudo python3 ops/payment/provision_billing_postgres.py --apply --confirm INITIALIZE_SOCTHINK_BILLING
 ```
 
-该脚本**不在 npm build、GitHub CI、自动部署和日常服务启动时运行**。它只创建专属 Postgres `socthink_billing_prod` 和权限受限的登录角色，运行版本化 `ops/db/001_billing_entitlements.sql` 和增量 `ops/db/002_wechat_reconciliation.sql`，验证 8 张账本表及补偿查单列，并将随机 256 位数据库密码仅存入权限 0600 的 `/etc/socthink-math-billing.env`。通过独立 `40-billing.conf` 添加 systemd 环境文件；不会覆盖既有 `/etc/socthink-math-wechat.env` 用户微信登录配置，不重置旧账号，不开启实际收款；不会输出数据库 URL、密码或任何私钥。
+该脚本**不在 npm build、GitHub CI、自动部署和日常服务启动时运行**。它只创建专属 Postgres `socthink_billing_prod` 和权限受限的登录角色，运行版本化 `ops/db/001_billing_entitlements.sql` 、增量 `ops/db/002_wechat_reconciliation.sql` 和 `ops/db/003_native_notification_inbox.sql`，验证 8 张账本表、补偿水位列及签名通知落盘列，并将随机 256 位数据库密码仅存入权限 0600 的 `/etc/socthink-math-billing.env`。通过独立 `40-billing.conf` 添加 systemd 环境文件；不会覆盖既有 `/etc/socthink-math-wechat.env` 用户微信登录配置，不重置旧账号，不开启实际收款；不会输出数据库 URL、密码或任何私钥。
 
 **如果遇到现存 DB/角色/envfile、旧数据、只读文件系统或任一部分失败，脚本拒绝覆盖或自动删除。需先运维人工审计、保留数据后修复，绝不可反复运行。**
 
@@ -51,8 +51,8 @@ sudo python3 ops/payment/provision_billing_postgres.py --apply --confirm INITIAL
 
 1. 在新站选择实际可交付商品，由服务器从唯一 PG 表读取价格并生成 `ord_...`。
 2. 收到微信支付官方 Native 下单的**真实**二维码，买家使用微信扫码并实际完成资金支付。
-3. 生产 `notify_url` 经公网 HTTPS 获得微信回调，原始报文公钥验签和 AES-GCM 解密成功。
-4. 服务端独立签名调用微信官方查单，金额、币种、商户、AppID、平台交易 ID 与本地订单完全一致。
+3. 生产 `notify_url` 经公网 HTTPS 获得微信回调，原始报文公钥验签和 AES-GCM 解密成功；在同一真实账本上**持久保存通知证据后快速返回 204**，超时/数据库异常不假装成功。
+4. 已经实际运行的唯一官方查单补偿 worker 独立签名调用微信官方查单，金额、币种、商户、AppID、平台交易 ID 与本地订单完全一致。
 5. **同一 PostgreSQL 事务**使订单从 `pending` 到 `paid`，发放权益；重复推送/断网重试不重复授权；买家重新登录仍可使用购买的服务。
 6. 正式发起微信官方退款并核验退款成功，对应权益冲正和流水对账一致；异常可安全暂停新订单但保留已付订单结算。
 
