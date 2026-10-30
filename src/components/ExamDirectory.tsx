@@ -1,5 +1,4 @@
 "use client";
-
 import Link from "next/link";
 import {useMemo,useState} from "react";
 import {ASSESSMENT_DOMAINS} from "@/lib/assessment-platform";
@@ -9,85 +8,97 @@ import styles from "./ExamDirectory.module.css";
 
 const LABEL={
   zh:{
-    eyebrow:"EXAM DIRECTORY",
+    eyebrow:"EXAM INDEX / 全国考试导航",
     title:"全部考试，一站查找",
-    description:"按学段、考试和技能方向找内容。已开放项目可以直接练习；筹备中的栏目先展示清楚，只有可核实的试卷和服务才开放使用。",
-    search:"搜索考试，如：小升初、AMC、雅思、公考、SQL",
-    live:"可直接使用",pending:"内容建设中",more:"查看本栏目全部考试",
-    resources:"查找真实练习卷",exams:"进入在线考试",event:"全球赛事管家",
-    empty:"暂未匹配到考试分类，可以换个关键词试试。",
-    count:"考试方向",categories:"大类",
+    description:"按考试领域、学科和方向查找。可以使用的服务直接打开，建设中的方向不显示虚假考试和购买入口。",
+    search:"搜索考试名称、考试方向或关键词",all:"考试分类",topics:"考试方向",
+    ready:"立即使用",soon:"内容准备中",available:"部分内容已开放",
+    empty:"没有找到相关考试方向，请调整搜索条件。",reset:"清空",
+    count:"考试方向",categories:"考试大类",more:"查看可用练习卷",
+    browse:"真实试卷资料",calendar:"全球赛事管家",
   },
   en:{
-    eyebrow:"EXAM DIRECTORY",
+    eyebrow:"EXAM INDEX / ALL CATEGORIES",
     title:"Find any exam in one place",
-    description:"Browse by school stage, examination or skill. Live topics open real practice; planned sections are clearly labelled and never sold as finished products.",
-    search:"Search exams, e.g. AMC, IELTS, SQL",
-    live:"Available",pending:"Coming later",more:"See every topic in this category",
-    resources:"Find practice papers",exams:"Start an assessment",event:"Competition companion",
-    empty:"No matching exam categories. Try another keyword.",
-    count:"topics",categories:"categories",
+    description:"Browse exam areas, subjects and topics. Open real practice immediately; planned exams never lead to fictional checkouts.",
+    search:"Search exam, subject or keyword",all:"Categories",topics:"Exam directions",
+    ready:"Open practice",soon:"Coming later",available:"Some services available",
+    empty:"No matching exams. Try another keyword.",reset:"Clear",
+    count:"directions",categories:"exam categories",more:"Find available practice papers",
+    browse:"Available papers",calendar:"Competition calendar",
   },
 } as const;
 
-export default function ExamDirectory({compact=false}:{compact?:boolean}){
+const DOMAIN_BY_ID=new Map(ASSESSMENT_DOMAINS.map(d=>[d.id,d]));
+const TOTAL=EXAM_DIRECTORY.reduce((sum,group)=>sum+group.topics.length,0);
+
+export default function ExamDirectory(){
   const lang=useSiteLanguage(),t=LABEL[lang];
   const [query,setQuery]=useState("");
-  const shown=useMemo(()=>{
+  const matched=useMemo(()=>{
     const term=query.trim().toLocaleLowerCase();
     return EXAM_DIRECTORY.map(group=>{
-      const domain=ASSESSMENT_DOMAINS.find(x=>x.id===group.domainId)!;
-      const matchesDomain=[domain.name.zh,domain.name.en,domain.summary.zh,domain.summary.en]
-        .some(x=>x.toLocaleLowerCase().includes(term));
-      const relevant=!term||matchesDomain?group.topics:group.topics.filter(x=>
-        [x.title.zh,x.title.en,x.id].some(v=>v.toLocaleLowerCase().includes(term)));
-      return {domain,topics:compact&&!term?relevant.slice(0,4):relevant,allCount:group.topics.length};
-    }).filter(x=>x.topics.length>0);
-  },[query,compact]);
-  const count=EXAM_DIRECTORY.reduce((sum,group)=>sum+group.topics.length,0);
+      const domain=DOMAIN_BY_ID.get(group.domainId)!;
+      const inDomain=[domain.name.zh,domain.name.en,domain.summary.zh,domain.summary.en]
+        .some(v=>v.toLocaleLowerCase().includes(term));
+      const topics=term&&!inDomain?group.topics.filter(topic=>
+        [topic.id,topic.title.zh,topic.title.en].some(v=>v.toLocaleLowerCase().includes(term))):group.topics;
+      return {domain,topics};
+    }).filter(group=>group.topics.length>0);
+  },[query]);
   return <section className={styles.section} aria-label={t.title} id="exam-directory">
     <header className={styles.heading}>
       <div className={styles.eyebrow}>{t.eyebrow}</div>
-      <h2>{t.title}</h2>
-      <p>{t.description}</p>
-      <div className={styles.metrics}><span><strong>{EXAM_DIRECTORY.length}</strong> {t.categories}</span>
-        <span><strong>{count}</strong> {t.count}</span></div>
-    </header>
-    {!compact&&<label className={styles.search}>
-      <span className={styles.visuallyHidden}>{t.search}</span>
-      <input type="search" value={query} placeholder={t.search}
-        onChange={e=>setQuery(e.target.value)}/>
-    </label>}
-    <div className={styles.grid}>
-      {shown.map(({domain,topics,allCount})=><article className={styles.card}
-        id={compact?undefined:`domain-${domain.id}`} key={domain.id}>
-        <header className={styles.cardHeader}>
-          <div className={styles.label}>{domain.audience[lang]}</div>
-          <span className={domain.readiness==="live"?styles.statusLive:styles.statusPlanned}>
-            {domain.readiness==="live"?t.live:t.pending}
-          </span>
-        </header>
-        <h3>{domain.name[lang]}</h3>
-        <p>{domain.summary[lang]}</p>
-        <div className={styles.topics}>
-          {topics.map(topic=>topic.href?<Link href={topic.href} key={topic.id}
-            className={styles.topicLive}>{topic.title[lang]}<span aria-hidden="true"> ↗</span></Link>:
-            <span key={topic.id} className={styles.topicPlanned}
-              title={t.pending}>{topic.title[lang]}</span>)}
+      <div className={styles.headingRow}>
+        <div><h2>{t.title}</h2><p>{t.description}</p></div>
+        <div className={styles.metrics}><span><strong>{ASSESSMENT_DOMAINS.length}</strong>{t.categories}</span>
+          <span><strong>{TOTAL}</strong>{t.count}</span></div>
+      </div>
+      <div className={styles.searchBar}>
+        <label htmlFor="exam-directory-search">{t.search}</label>
+        <div><svg width="20" height="20" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <circle cx="11" cy="11" r="7"/><path d="m16 16 5 5"/></svg>
+          <input id="exam-directory-search" type="search" value={query} placeholder={t.search}
+            onChange={e=>setQuery(e.target.value)}/>
+          {query&&<button type="button" onClick={()=>setQuery("")}>{t.reset}</button>}
         </div>
-        {compact&&allCount>topics.length&&<Link className={styles.more}
-          href={`/assessments#domain-${domain.id}`}>{t.more}</Link>}
-        {!compact&&domain.readiness==="live"&&<div className={styles.available}>
-          {domain.liveRoutes.map(link=><Link key={link.href} href={link.href}>
-            {link.title[lang]} →</Link>)}
-        </div>}
-      </article>)}
+      </div>
+    </header>
+    <div className={styles.layout}>
+      <nav className={styles.side} aria-label={t.all}>
+        <span className={styles.sideTitle}>{t.all}</span>
+        {EXAM_DIRECTORY.map((group,i)=>{
+          const domain=DOMAIN_BY_ID.get(group.domainId)!;
+          return <a key={group.domainId} href={`#domain-${group.domainId}`}
+            onClick={()=>setQuery("")}>
+            <span>{String(i+1).padStart(2,"0")}</span>
+            <strong>{domain.name[lang]}</strong><em>{group.topics.length}</em>
+          </a>;
+        })}
+      </nav>
+      <div className={styles.groups} aria-live="polite">
+        {!matched.length&&<div className={styles.empty}>{t.empty}</div>}
+        {matched.map(({domain,topics})=><article className={styles.group}
+          id={`domain-${domain.id}`} key={domain.id}>
+          <div className={styles.groupTop}>
+            <div><h3>{domain.name[lang]}</h3><p>{domain.summary[lang]}</p></div>
+            <span className={domain.readiness==="live"?styles.live:styles.pending}>
+              {domain.readiness==="live"?t.available:t.soon}
+            </span>
+          </div>
+          <div className={styles.topics}>
+            {topics.map(topic=>topic.href?<Link href={topic.href} key={topic.id}
+              className={styles.topicLive}><span>{topic.title[lang]}</span><small>{t.ready} ↗</small></Link>:
+              <div key={topic.id} className={styles.topicPending}><span>{topic.title[lang]}</span><small>{t.soon}</small></div>)}
+          </div>
+          {domain.readiness==="live"&&<div className={styles.realLinks}>
+            {domain.liveRoutes.map(route=><Link href={route.href} key={route.href}>{route.title[lang]} →</Link>)}
+          </div>}
+        </article>)}
+      </div>
     </div>
-    {!shown.length&&<p className={styles.empty}>{t.empty}</p>}
-    <nav className={styles.actions} aria-label={lang==="zh"?"使用入口":"Live services"}>
-      <Link href="/resources">{t.resources}</Link>
-      <Link href="/competitions">{t.exams}</Link>
-      <Link href="/events">{t.event}</Link>
+    <nav className={styles.actions} aria-label={lang==="zh"?"可用服务":"Available services"}>
+      <Link href="/resources">{t.browse}</Link><Link href="/events">{t.calendar}</Link>
     </nav>
   </section>;
 }
