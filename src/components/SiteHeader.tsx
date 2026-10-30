@@ -10,11 +10,12 @@ import { useSiteLanguage } from "@/lib/site-language";
 import styles from "./SiteHeader.module.css";
 
 const NAV_ITEMS = [
-  { href: "/assessments", zh: "全部测评", en: "Assessments" },
+  { href: "/assessments", zh: "考试大全", en: "All exams" },
+  { href: "/resources", zh: "资料中心", en: "Resources" },
   { href: "/arithmetic", zh: "数学训练", en: "Math practice" },
-  { href: "/competitions", zh: "竞赛模拟", en: "Mock exams" },
-  { href: "/events", zh: "赛事管家", en: "Event companion" },
-  { href: "/student", zh: "数学成长", en: "Math growth" },
+  { href: "/competitions", zh: "竞赛模拟", en: "Competition practice" },
+  { href: "/events", zh: "赛事管家", en: "Competition calendar" },
+  { href: "/student", zh: "学习记录", en: "My progress" },
 ] as const;
 
 function MenuIcon({ open }: { open: boolean }) {
