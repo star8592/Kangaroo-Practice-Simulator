@@ -1,5 +1,8 @@
 /* Socthink design system: shared tokens for every public, student, parent and admin surface. */
 :root{
+ --portal-navy:#10284b;--portal-blue:#1454a8;--portal-blue-strong:#0f458f;--portal-blue-soft:#eaf2ff;
+ --portal-orange:#f09a4a;--portal-text:#14253d;--portal-muted:#5d6c82;--portal-border:#dee5f0;
+ --portal-canvas:#f5f7fb;--portal-white:#fff;--portal-success:#11765b;
  --bg:#f4f6f1;--ink:#17231d;--muted:#6d786f;--line:#dbe1d9;--panel:#fff;--surface-subtle:#f7f9f6;--surface-muted:#fbfcfa;--field-border:#d9dfda;--field-hover:#c5cec7;
  --accent:#ff7a45;--accent-dark:#e85c25;--green:#225a42;--soft-green:#e8f1ea;--yellow:#f4c95d;--red:#b84437;
  --layout-standard:1200px;--layout-wide:1440px;--layout-focus:960px;--layout-auth:1040px;--layout-reading:820px;
