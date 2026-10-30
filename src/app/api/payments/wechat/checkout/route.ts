@@ -72,6 +72,7 @@ export async function POST(req:NextRequest) {
     const payment=await createVerifiedWechatNativeCheckout(context,{
       orderId:order.id,description:"SOCTHINK "+p.id,
       amountMinor:order.priceMinor,currency:"CNY",
+      timeExpireSeconds:context.nowSeconds+30*60,
     });
     const qrDataUrl=await QRCode.toDataURL(payment.codeUrl,{margin:1,width:256,errorCorrectionLevel:"M"});
     return reply({orderId:payment.orderId,qrDataUrl,priceMinor:order.priceMinor,currency:"CNY",

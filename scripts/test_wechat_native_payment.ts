@@ -4,7 +4,7 @@ import {
   verify as verifySignature,
 } from "node:crypto";
 import {
-  prepareWechatNativeRequest, prepareWechatNativeQuery, signWechatV3Request,
+  prepareWechatNativeRequest, prepareWechatNativeQuery, prepareWechatNativeClose, signWechatV3Request,
   verifyWechatV3Notification, decryptWechatV3Resource,
   matchWechatPaidTrade, WechatPaymentProtocolError,
 } from "../src/lib/wechat-native-payment";
@@ -26,6 +26,23 @@ const snapshot = {
 const timestamp=1793366400,nonce="0123456789abcdeffedcba9876543210";
 const request=prepareWechatNativeRequest(testConfig,snapshot,timestamp,nonce);
 assert.equal(request.method,"POST");
+const withExpiry=prepareWechatNativeRequest(testConfig,{
+  ...snapshot,timeExpireSeconds:timestamp+30*60},timestamp,nonce);
+assert.equal(JSON.parse(withExpiry.bodyText).time_expire,
+  new Date((timestamp+30*60)*1000).toISOString());
+assert.throws(()=>prepareWechatNativeRequest(testConfig,{
+  ...snapshot,timeExpireSeconds:timestamp-5},timestamp,nonce),WechatPaymentProtocolError);
+const close=prepareWechatNativeClose(testConfig,snapshot.orderId,timestamp,nonce);
+assert.equal(close.method,"POST");
+assert.equal(close.url,"https://api.mch.weixin.qq.com/v3/pay/transactions/out-trade-no/"+snapshot.orderId+"/close");
+assert.deepEqual(JSON.parse(close.bodyText),{mchid:testConfig.merchantId});
+const signedClose=close.headers.Authorization.match(/signature="([^"]+)"/)?.[1];
+assert.ok(signedClose);
+assert.equal(verifySignature("RSA-SHA256",
+  Buffer.from(`POST\n/v3/pay/transactions/out-trade-no/${snapshot.orderId}/close\n${timestamp}\n${nonce}\n${close.bodyText}\n`),
+  merchant.publicKey,Buffer.from(signedClose,"base64")),true);
+assert.throws(()=>prepareWechatNativeClose(testConfig,"../escape",timestamp,nonce),
+  WechatPaymentProtocolError);
 const query=prepareWechatNativeQuery(testConfig,snapshot.orderId,timestamp,nonce);
 assert.equal(query.method,"GET");
 assert.equal(query.url,"https://api.mch.weixin.qq.com/v3/pay/transactions/out-trade-no/"+snapshot.orderId+"?mchid="+testConfig.merchantId);

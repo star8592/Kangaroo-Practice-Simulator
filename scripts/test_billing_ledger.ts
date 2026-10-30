@@ -7,7 +7,7 @@ import {NextRequest} from "next/server";
 import {readVerifiedDigitalResource} from "../src/lib/digital-resource-file";
 import { billingPool,closeBillingPoolForTests,createBillingOrder,
   settleVerifiedOrder,refundVerifiedOrder,consumeUsage,verifiedGrantsForParent,hasVerifiedItemEntitlement,
-  verifiedParentsForStudent,linkVerifiedFamilyMember,BillingConflictError,
+  verifiedParentsForStudent,linkVerifiedFamilyMember,closeVerifiedNativeOrder,BillingConflictError,
   BillingQuotaExceededError,recordVerifiedNativeNotification,type VerifiedPaymentReceipt } from "../src/lib/billing-ledger";
 
 const testUrl = new URL(process.env.SOCTHINK_BILLING_DATABASE_URL || "postgres://invalid/invalid");
@@ -61,6 +61,7 @@ async function run() {
   await db.query(fs.readFileSync("ops/db/004_item_purchases.sql","utf8"));
   await db.query(fs.readFileSync("ops/db/005_digital_resource_delivery.sql","utf8"));
   await db.query(fs.readFileSync("ops/db/006_unique_active_item_orders.sql","utf8"));
+  await db.query(fs.readFileSync("ops/db/007_native_close_proof.sql","utf8"));
   // The caller uses a throwaway database; no production fixture or customer data.
   await db.query("TRUNCATE billing_usage_events,billing_usage_buckets,billing_family_links,billing_item_entitlements,billing_entitlements,billing_payment_events,billing_orders,billing_products,billing_resource_assets RESTART IDENTITY CASCADE");
   assert.equal((await downloadResource(authed(owner.id),target)).status,403);
@@ -149,6 +150,34 @@ async function run() {
      WHERE payer_parent_id='par_concurrent01' AND product_kind='item'
       AND content_kind='resource' AND content_id=$1 AND state='pending'`,[resourceId]);
   assert.equal(uniquePending.rows[0].count,1);
+  const pendingId=concurrent.find(x=>x.status==="fulfilled")!.value.id;
+  // Even an accidental direct DB transition cannot mark pending as CLOSED
+  // without durable provider proof: enforce this at the schema boundary.
+  await assert.rejects(()=>db.query(
+    "UPDATE billing_orders SET state='closed' WHERE id=$1",[pendingId]));
+  const proof={orderId:pendingId,
+    payloadSha256:crypto.createHash("sha256").update("official-signed-closed").digest("hex"),
+    verifiedAt:new Date(),signatureVerified:true as const,
+    providerClosedConfirmed:true as const};
+  await assert.rejects(()=>closeVerifiedNativeOrder({...proof,providerClosedConfirmed:false as never}),
+    BillingConflictError);
+  assert.equal((await closeVerifiedNativeOrder(proof)).closed,true);
+  assert.equal((await closeVerifiedNativeOrder(proof)).closed,false);
+  assert.equal((await db.query("SELECT state FROM billing_orders WHERE id=$1",[pendingId])).rows[0].state,"closed");
+  // Only a signed official closed query can release the pending slot.
+  const reopened=await createBillingOrder("par_concurrent01","digital_pack_a","wechat_native");
+  assert.ok(reopened.id!==pendingId);
+  const closeEvidence=await db.query<{
+    closed_at:Date|null;close_provider_payload_sha256:string|null
+  }>("SELECT closed_at,close_provider_payload_sha256 FROM billing_orders WHERE id=$1",
+    [pendingId]);
+  assert.ok(closeEvidence.rows[0].closed_at);
+  assert.equal(closeEvidence.rows[0].close_provider_payload_sha256,proof.payloadSha256);
+  await settleVerifiedOrder({...receipt(reopened.id,"reopen-paid-01","reopen-tx-01",299),
+    provider:"wechat_native" as const});
+  await assert.rejects(()=>closeVerifiedNativeOrder({...proof,orderId:reopened.id}),
+    BillingConflictError);
+  assert.equal(await hasVerifiedItemEntitlement("par_concurrent01","resource",resourceId),true);
   const resourceOrder=await createBillingOrder(owner.id,"digital_pack_a","wechat_native");
   assert.equal(resourceOrder.priceMinor,299);
   assert.equal((await downloadResource(authed(owner.id),target)).status,403);

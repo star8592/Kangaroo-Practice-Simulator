@@ -92,7 +92,7 @@ export default function NativeCheckoutPanel({offers,accountLoggedIn}:{
     {state==="pending"&&qrDataUrl&&<div className={styles.checkoutQr} role="status">
       <strong>{en?"Scan the official WeChat Pay QR code":"请使用微信扫码支付"}</strong>
       <Image src={qrDataUrl} width={256} height={256} alt={en?"WeChat Pay QR code":"微信支付二维码"} unoptimized/>
-      <span>{en?"Payment status is checked automatically. Do not close this page.":"系统正在核对微信官方支付状态。支付后自动确认权益。"}</span>
+      <span>{en?"Payment status is checked automatically. Payment window: 30 minutes.":"系统正在核对微信官方支付状态。本订单可支付时间为30分钟；超时后须等待微信官方确认关单再重新购买。"}</span>
     </div>}
     {state==="paid"&&<p role="status">{en?"Verified payment recorded. Your membership rights can now be viewed in your account.":"已确认微信付款并完成权益记账，请在账号中心查看会员权益。"}</p>}
     {state==="failed"&&<p role="alert">{message||(en?"Order closed or refunded":"订单已关闭或退款")}</p>}

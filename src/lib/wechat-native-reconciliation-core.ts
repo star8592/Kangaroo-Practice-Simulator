@@ -12,7 +12,7 @@ export type PendingNativeOrder = Readonly<{
 }>;
 
 export type OfficialVerifiedQuery = Readonly<{
-  status: "NOT_PAID" | "VERIFIED_PAID";
+  status: "NOT_PAID" | "VERIFIED_PAID" | "VERIFIED_CLOSED";
   transactionId?: string;
   verifiedBodySha256?: string;
 }>;
@@ -20,19 +20,32 @@ export type OfficialVerifiedQuery = Readonly<{
 export type RecoveryDependencies = Readonly<{
   query: (order: PendingNativeOrder) => Promise<OfficialVerifiedQuery>;
   settle: (receipt: VerifiedPaymentReceipt) => Promise<unknown>;
+  close?: (proof:{
+    orderId:string;payloadSha256:string;verifiedAt:Date;
+    signatureVerified:true;providerClosedConfirmed:true;
+  }) => Promise<unknown>;
   now: () => Date;
 }>;
 
 export async function reconcileOneNativeOrder(
   order: PendingNativeOrder,
   deps: RecoveryDependencies,
-): Promise<"NOT_PAID" | "SETTLED"> {
+): Promise<"NOT_PAID" | "SETTLED" | "CLOSED"> {
   if (!/^ord_[a-zA-Z0-9_-]{6,28}$/.test(order.id) ||
       !Number.isSafeInteger(order.amountMinor) ||
       order.amountMinor <= 0 || order.currency !== "CNY")
     throw new Error("INVALID_LOCAL_ORDER_SNAPSHOT");
   const verified = await deps.query(order);
   if (verified.status === "NOT_PAID") return "NOT_PAID";
+  if (verified.status === "VERIFIED_CLOSED") {
+    if(!/^[a-f0-9]{64}$/.test(verified.verifiedBodySha256??"") ||
+       !deps.close)throw new Error("UNVERIFIED_PROVIDER_CLOSE");
+    const at=deps.now();
+    if(!Number.isFinite(at.getTime()))throw new Error("INVALID_VERIFIED_TIME");
+    await deps.close({orderId:order.id,payloadSha256:verified.verifiedBodySha256!,
+      verifiedAt:at,signatureVerified:true,providerClosedConfirmed:true});
+    return "CLOSED";
+  }
   if (verified.status !== "VERIFIED_PAID" ||
       !/^[A-Za-z0-9_-]{8,128}$/.test(verified.transactionId ?? "") ||
       !/^[0-9a-f]{64}$/.test(verified.verifiedBodySha256 ?? ""))
