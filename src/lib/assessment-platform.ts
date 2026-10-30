@@ -34,6 +34,7 @@ export const ASSESSMENT_DOMAINS: readonly AssessmentDomain[] = [
     liveRoutes:[
       {href:"/arithmetic",title:{zh:"开始数学能力训练",en:"Start math practice"}},
       {href:"/arithmetic/print",title:{zh:"打印数学练习卷",en:"Printable math worksheets"}},
+      {href:"/assessments/school/xiaoshengchu",title:{zh:"查小升初学校与试卷来源",en:"Find school admission exam sources"}},
     ],
     nextProof:{zh:"复用同一考试、评分及报告协议，接入其他学科。",en:"Unify exam, grading and report contracts before expanding subjects."},
   },
