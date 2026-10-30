@@ -1,7 +1,8 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { SESSION_COOKIE, userFromSessionToken } from "@/lib/auth";
+import { SESSION_COOKIE, userFromSessionToken, wechatBuyerStudyUser } from "@/lib/auth";
+import {PARENT_SESSION_COOKIE,parentFromSessionToken} from "@/lib/parent-auth";
 import { loadExamAttempts } from "@/lib/attempt-store";
 import { loadArithmeticSessions } from "@/lib/arithmetic-session-store";
 import { buildArithmeticHonorCards } from "@/lib/arithmetic-honors";
@@ -26,7 +27,9 @@ export const dynamic = "force-dynamic";
 
 export default async function StudentCardsPage() {
   const jar = await cookies();
-  const user = userFromSessionToken(jar.get(SESSION_COOKIE)?.value);
+  const buyer=parentFromSessionToken(jar.get(PARENT_SESSION_COOKIE)?.value);
+  const user=buyer?.active&&(buyer.wechatId||buyer.wechatOpenId)
+    ? wechatBuyerStudyUser(buyer.id) : userFromSessionToken(jar.get(SESSION_COOKIE)?.value);
   if (!user) redirect("/login?next=/student/cards");
 
   const lang = jar.get("socthink_lang")?.value === "en" ? "en" : "zh";

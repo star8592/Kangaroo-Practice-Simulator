@@ -1,7 +1,10 @@
 import {test,expect} from "@playwright/test";
 import fs from "node:fs";
 import path from "node:path";
-import crypto from "node:crypto";
+import {
+ authenticateOrCreateWechatParent,createParentSessionToken,PARENT_SESSION_COOKIE,
+} from "../../src/lib/parent-auth";
+import {wechatBuyerStudyUser} from "../../src/lib/auth";
 
 const protectedExam="/exam/maa-amc12-practice-geometry";
 const fixtureExamId="e2e-browser-amc12-fixture";
@@ -12,7 +15,14 @@ const sessionsFile=path.join(fixtureRoot,"users","exam-sessions.json");
 const attemptsFile=path.join(fixtureRoot,"users","exam-attempts.jsonl");
 const followsFile=path.join(fixtureRoot,"users","world-competition-follows.json");
 const regionsFile=path.join(fixtureRoot,"users","world-competition-regions.json");
-let account:{id:string;username:string;pin:string}|undefined;
+let account:{id:string;token:string;studyId:string}|undefined;
+const parentsFile=path.join(fixtureRoot,"users","parents.json");
+let parentsBackup:Buffer|null=null;
+async function loginAsBuyer(page:import("@playwright/test").Page){
+ if(!account)throw new Error("Synthetic WeChat account fixture missing");
+ await page.context().addCookies([{name:PARENT_SESSION_COOKIE,value:account.token,
+  domain:"127.0.0.1",path:"/",httpOnly:true,sameSite:"Strict"}]);
+}
 
 function readArray(file:string):Record<string,unknown>[] {
   if(!fs.existsSync(file))return [];
@@ -41,26 +51,29 @@ test.beforeAll(()=>{
     timingMode:"official",sourceLabel:"Synthetic test only"
   };
   fs.writeFileSync(fixtureFile,JSON.stringify({profile,questions}));
-  const id="stu_e2e_"+crypto.randomBytes(8).toString("hex");
-  const pin=crypto.randomInt(100000,999999).toString();
-  const salt=crypto.randomBytes(16).toString("hex");
-  const key=crypto.scryptSync(pin,salt,32,{N:16384,r:8,p:1}).toString("hex");
-  account={id,username:id,pin};
-  const users=readArray(usersFile);
-  users.push({id,username:id,candidateNo:"E2E"+id.slice(-8),name:"Synthetic Student",
-    grade:12,onboardingCompleted:true,pinHash:"scrypt$"+salt+"$"+key,
-    createdAt:Date.now(),active:true,role:"student",sessionVersion:1});
-  fs.writeFileSync(usersFile,JSON.stringify(users));
+  parentsBackup=fs.existsSync(parentsFile)?fs.readFileSync(parentsFile):null;
+  const buyer=authenticateOrCreateWechatParent({
+    wechatId:"e2e-exam-buyer-"+process.pid,
+    openId:"e2e-exam-open-"+process.pid,
+    name:"Synthetic WeChat buyer",
+  });
+  account={id:buyer.id,token:createParentSessionToken(buyer.id),
+   studyId:wechatBuyerStudyUser(buyer.id).id};
 });
 test.afterAll(()=>{
   if(fs.existsSync(fixtureFile))fs.rmSync(fixtureFile);
   if(!account)return;
-  if(fs.existsSync(usersFile))fs.writeFileSync(usersFile,JSON.stringify(readArray(usersFile).filter(x=>x.id!==account?.id)));
-  if(fs.existsSync(sessionsFile))fs.writeFileSync(sessionsFile,JSON.stringify(readArray(sessionsFile).filter(x=>x.userId!==account?.id)));
-  if(fs.existsSync(followsFile))fs.writeFileSync(followsFile,JSON.stringify(readArray(followsFile).filter(x=>x.userId!==account?.id)));
-  if(fs.existsSync(regionsFile))fs.writeFileSync(regionsFile,JSON.stringify(readArray(regionsFile).filter(x=>x.userId!==account?.id)));
+  if(parentsBackup){fs.writeFileSync(parentsFile,parentsBackup);}
+  else if(fs.existsSync(parentsFile))fs.rmSync(parentsFile);
+  if(fs.existsSync(sessionsFile))
+    fs.writeFileSync(sessionsFile,JSON.stringify(readArray(sessionsFile).filter(x=>x.userId!==account?.studyId)));
+  if(fs.existsSync(followsFile))
+    fs.writeFileSync(followsFile,JSON.stringify(readArray(followsFile).filter(x=>x.userId!==account?.studyId)));
+  if(fs.existsSync(regionsFile))
+    fs.writeFileSync(regionsFile,JSON.stringify(readArray(regionsFile).filter(x=>x.userId!==account?.studyId)));
   if(fs.existsSync(attemptsFile)){
-    const remaining=fs.readFileSync(attemptsFile,"utf8").split("\n").filter(line=>line.trim()&&JSON.parse(line).userId!==account?.id);
+    const remaining=fs.readFileSync(attemptsFile,"utf8").split("\n").filter(
+      line=>line.trim()&&JSON.parse(line).userId!==account?.studyId);
     fs.writeFileSync(attemptsFile,remaining.length?remaining.join("\n")+"\n":"");
   }
 });
@@ -73,18 +86,17 @@ test("homepage competition CTA opens independent mock exams",async({page})=>{
   await expect(page.getByRole("region",{name:/全球数学赛事管家|World math competition companion/})).toHaveCount(0);
   await expect(page.getByRole("link",{name:/进入赛事管家|Event companion/}).first()).toBeVisible();
 });
-test("homepage has one WeChat-first entry and optional legacy login",async({page})=>{
+test("homepage leads to only one WeChat login and no student PIN",async({page})=>{
   await page.goto("/");
   await page.getByRole("link",{name:/微信登录 \/ 注册|Sign in \/ Join with WeChat/}).first().click();
   await expect(page).toHaveURL(/\/login(?:\?|$)/);
-  await expect(page.getByRole("heading",{name:"微信扫一扫，马上开始学习"})).toBeVisible();
-  await page.getByText("其他登录方式（已有账号）").click();
-  await expect(page.locator('input[type="password"]')).toBeVisible();
+  await expect(page.getByRole("heading",{name:"一个微信账号，直接使用"})).toBeVisible();
+  await expect(page.getByLabel("学生 PIN")).toHaveCount(0);
 });
 test("anonymous and arithmetic guest cannot enter full exam",async({page,context})=>{
   await page.goto(protectedExam);
   await expect(page).toHaveURL(/\/login\?next=/);
-  await expect(page.getByRole("heading",{name:"微信扫一扫，马上开始学习"})).toBeVisible();
+  await expect(page.getByRole("heading",{name:"一个微信账号，直接使用"})).toBeVisible();
   expect((await context.cookies()).some(c=>c.name==="kangaroo_session")).toBe(false);
   await page.goto("/");
   await page.getByRole("link",{name:/开始计算训练|Start math practice/}).first().click();
@@ -92,8 +104,7 @@ test("anonymous and arithmetic guest cannot enter full exam",async({page,context
   // The URL can settle before the redirected response cookie has been committed.\n  // Wait for the browser session itself, not only navigation completion.\n  await expect.poll(async()=> (await context.cookies()).some(c=>c.name==="kangaroo_session"),{timeout:10000}).toBe(true);
   await page.goto(protectedExam);
   await expect(page).toHaveURL(/\/login\?next=/);
-  await page.getByText("其他登录方式（已有账号）").click();
-  await expect(page.locator('input[type="password"]')).toBeVisible();
+  await expect(page.getByLabel("学生 PIN")).toHaveCount(0);
 });
 
 
@@ -105,10 +116,8 @@ test("real exam card click, registered login, start, answer and submit",async({p
   await expect(card).toBeVisible();
   await card.getByRole("button",{name:"开始考试"}).click();
   await expect(page).toHaveURL(/\/login\?next=/);
-  await page.getByText("其他登录方式（已有账号）").click();
-  await page.getByLabel("已有学生账号 / 准考证号").fill(account.username);
-  await page.getByLabel("学生 PIN").fill(account.pin);
-  await page.getByRole("button",{name:"使用已有学生账号"}).click();
+  await loginAsBuyer(page);
+  await page.goto("/exam/"+fixtureExamId);
   await expect(page).toHaveURL(new RegExp("/exam/"+fixtureExamId+"$"),{timeout:15000});
   await page.getByRole("button",{name:"确认信息并开始考试"}).click();
   await expect(page.locator(".question-stem")).toContainText("2 + 2");
@@ -139,13 +148,10 @@ test("real exam card click, registered login, start, answer and submit",async({p
 
 test("logged-in student follows UKMT and sees it in their personal calendar", async ({page})=>{
   if(!account)throw new Error("student login fixture missing");
-  await page.goto("/login");
-  await page.getByText("其他登录方式（已有账号）").click();
-  await page.getByLabel("已有学生账号 / 准考证号").fill(account.username);
-  await page.getByLabel("学生 PIN").fill(account.pin);
-  await page.getByRole("button",{name:"使用已有学生账号"}).click();
-  await expect(page).toHaveURL(/\/(?:\?|$)/,{timeout:15000});
-  await expect.poll(async()=> (await page.context().cookies()).some(c=>c.name==="kangaroo_session"),{timeout:10000}).toBe(true);
+  await loginAsBuyer(page);
+  await page.goto("/events?event=ukmt");
+  await expect(page).toHaveURL(/\/events\?event=ukmt/,{timeout:15000});
+  await expect.poll(async()=> (await page.context().cookies()).some(c=>c.name===PARENT_SESSION_COOKIE),{timeout:10000}).toBe(true);
   await page.goto("/events?event=ukmt");
   const hub=page.getByRole("region",{name:"全球数学赛事管家"});
   await hub.getByRole("button",{name:"＋ 关注赛事"}).click();
@@ -169,11 +175,8 @@ test("student can select competition alert region without fabricating dates",asy
   const denied=await request.patch("/api/competition-intelligence",{data:{region:"GB"}});
   expect(denied.status()).toBe(401);
   if(!account)throw new Error("synthetic student fixture missing");
-  await page.goto("/login?next=/student/calendar");
-  await page.getByText("其他登录方式（已有账号）").click();
-  await page.getByLabel("已有学生账号 / 准考证号").fill(account.username);
-  await page.getByLabel("学生 PIN").fill(account.pin);
-  await page.getByRole("button",{name:"使用已有学生账号"}).click();
+  await loginAsBuyer(page);
+  await page.goto("/student/calendar");
   await expect(page).toHaveURL(/\/student\/calendar(?:\?|$)/,{timeout:15000});
   const alerts=page.getByRole("region",{name:"赛事情报与提醒"});
   await expect(alerts.getByRole("heading",{name:"我的赛事情报"})).toBeVisible();
