@@ -1,15 +1,16 @@
 "use client";
 
 import Link from "next/link";
+import ExamDirectory from "@/components/ExamDirectory";
 import { INTERNATIONAL_SHOWCASE_COMPETITIONS, worldRegionName } from "@/lib/world-competitions";
 import { useSiteLanguage } from "@/lib/site-language";
 
 const UI={
  zh:{
   eye:"SOC THINK · 超级考试与测评平台",
-  title1:"练好数学，",title2:"探索世界数学竞赛",
-  copy:"面向 G1–G12 的数学训练、竞赛模拟与全球赛事管家。今天可以练计算，也可以参加模拟。赛事查询、报名信息和备赛安排统一在赛事管家查看。",
-  primary:"开始计算训练",competition:"参加竞赛模拟",catalogue:"全部测评服务",events:"进入赛事管家",login:"已有账号登录",register:"微信登录 / 注册 · 扫码即用",
+  title1:"考试、资料、练习，",title2:"一个平台都能找到",
+  copy:"从小升初、中高考到大学、语言、职业资格和岗位实操，先把考试与资料大类放在一个入口。数学训练和国际数学竞赛现已开放，其余内容按真实题源与交付质量逐步建设。",
+  primary:"开始计算训练",competition:"参加竞赛模拟",catalogue:"浏览全部考试",resources:"查找考试资料",events:"进入赛事管家",login:"已有账号登录",register:"微信登录 / 注册 · 扫码即用",
   loop:"一次训练，应该回答四个问题",
   s1:"现在在哪里",s1d:"从年级、正确率、速度和题型表现建立当前能力基线。",
   s2:"为什么会错",s2d:"区分知识缺口、计算失误、策略不足和速度问题，而不是只记录对错。",
@@ -22,9 +23,9 @@ const UI={
  },
  en:{
   eye:"SOC THINK · ASSESSMENT PLATFORM",
-  title1:"Practice math with confidence.",title2:"Explore competitions worldwide.",
-  copy:"Practice math, take realistic mock exams, and explore competition information in the separate Events Companion. Follow your progress and choose your next challenge.",
-  primary:"Start math practice",competition:"Try mock exams",catalogue:"All assessments",events:"Explore events",login:"Existing account",register:"Sign in / Join with WeChat",
+  title1:"Exams, resources and practice.",title2:"All in one place.",
+  copy:"Browse school, university, language, professional and practical-skills exams from one directory. Math practice and international math competitions are available today; more subjects are being built and verified.",
+  primary:"Start math practice",competition:"Try mock exams",catalogue:"Explore all exams",resources:"Find exam resources",events:"Explore events",login:"Existing account",register:"Sign in / Join with WeChat",
   loop:"Every practice session should answer four questions",
   s1:"Where am I now?",s1d:"Build a baseline from grade, accuracy, speed and performance by skill.",
   s2:"Why did I miss it?",s2d:"Separate knowledge gaps, calculation errors, weak strategy and fluency issues.",
@@ -48,14 +49,17 @@ export default function PublicHome(){
    <h1>{ui.title1}<br/><span>{ui.title2}</span></h1>
    <p className="hero-copy">{ui.copy}</p>
    <div className="hero-actions">
-    <Link className="primary-button home-login-primary" href="/login">{ui.register}</Link>
+    <Link className="primary-button home-login-primary" href="/assessments">{ui.catalogue}</Link>
     <Link className="secondary-button" href="/arithmetic">{ui.primary}</Link>
     <Link className="secondary-button" href="/competitions">{ui.competition}</Link>
-    <Link className="secondary-button" href="/assessments">{ui.catalogue}</Link>
+    <Link className="secondary-button" href="/resources">{ui.resources}</Link>
+    <Link className="secondary-button" href="/login">{ui.register}</Link>
     <Link className="secondary-button" href="/events">{ui.events}</Link>
    </div>
 
   </section>
+
+  <ExamDirectory compact/>
 
   <section className="home-loop" aria-label={ui.loop}>
    <div className="section-heading"><div><span className="eyebrow">DIAGNOSE → PRACTICE → REVIEW → GROW</span><h1>{ui.loop}</h1></div></div>
