@@ -3,6 +3,7 @@ import { gradeExam } from "@/lib/grading";
 import { isExamBundleTrainingReady,loadTrainingExamBundle } from "@/lib/training-question-bank";
 import { userFromRequest } from "@/lib/auth";
 import { hasFullExamAccess } from "@/lib/exam-access";
+import { deniedItemExamResponse } from "@/lib/item-access-server";
 import { appendExamAttempt,type ExamEvent } from "@/lib/attempt-store";
 import { withExamSubmitLock } from "@/lib/exam-submit-recovery";
 import {
@@ -31,6 +32,7 @@ export async function POST(r:NextRequest){
     const u=userFromRequest(r);
     if(!hasFullExamAccess(u))return NextResponse.json({error:"请先登录正式考生账号"},{status:401});
     const b=await r.json(),id=String(b?.examId||"level-a"),sid=String(b?.sessionId||"");
+    const denied=await deniedItemExamResponse(r,id);if(denied)return denied;
     // A lost network response must not create a second attempt or strand the
     // student without a result. Lock before validating or writing the ticket.
     const result=withExamSubmitLock(u.id,id,sid,()=>{

@@ -44,13 +44,38 @@ export async function createBillingOrder(parentId:string,productId:string,provid
   if (!["wechat_pay", "wechat_native"].includes(provider))
     throw new BillingConflictError("Invalid provider");
   return transaction(async c=>{
-    const product=await c.query<{amount_minor:string;currency:string}>(
-      "SELECT amount_minor,currency FROM billing_products WHERE id=$1 AND enabled=true",[productId]);
+    const product=await c.query<{
+      amount_minor:string;currency:string;product_kind:"subscription"|"item";
+      content_kind:"exam"|"resource"|null;content_id:string|null;
+      rights_approved:boolean;delivery_verified:boolean;access_restricted:boolean;title_zh:string|null;
+    }>(
+      "SELECT amount_minor,currency,product_kind,content_kind,content_id,rights_approved,delivery_verified,access_restricted,title_zh FROM billing_products WHERE id=$1 AND enabled=true",[productId]);
     if(!product.rows[0])throw new BillingConflictError("Product unavailable");
     const id="ord_"+crypto.randomBytes(12).toString("hex");
     const p=product.rows[0];
-    await c.query("INSERT INTO billing_orders(id,payer_parent_id,product_id,price_minor,currency,provider) VALUES($1,$2,$3,$4,$5,$6)",
-      [id,parentId,productId,p.amount_minor,p.currency,provider]);
+    // Item sales require separate verified content rights and a working delivery target.
+    if(p.product_kind==="item" && (!p.rights_approved || !p.delivery_verified ||
+        !p.access_restricted || !p.content_kind || !p.content_id ||
+        !p.title_zh?.trim()))
+      throw new BillingConflictError("Item unavailable for sale");
+    if(p.product_kind!=="subscription" && p.product_kind!=="item")
+      throw new BillingConflictError("Unsupported product");
+    if(p.product_kind==="item"){
+      // Prevent repeat sales of already-owned content. The advisory transaction
+      // lock serializes buyer+content checks across concurrent checkout calls.
+      await c.query("SELECT pg_advisory_xact_lock(hashtextextended($1,0))",
+        [parentId+":"+p.content_kind+":"+p.content_id]);
+      const owned=await c.query<{owned:boolean}>(`
+        SELECT EXISTS (
+          SELECT 1 FROM billing_item_entitlements e
+          JOIN billing_orders o ON o.id=e.source_order_id
+          WHERE e.payer_parent_id=$1 AND e.content_kind=$2
+            AND e.content_id=$3 AND e.revoked_at IS NULL AND o.state='paid'
+        ) AS owned`,[parentId,p.content_kind,p.content_id]);
+      if(owned.rows[0]?.owned) throw new BillingConflictError("Item already owned");
+    }
+    await c.query("INSERT INTO billing_orders(id,payer_parent_id,product_id,price_minor,currency,provider,product_kind,content_kind,content_id,title_snapshot) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)",
+      [id,parentId,productId,p.amount_minor,p.currency,provider,p.product_kind,p.content_kind,p.content_id,p.title_zh]);
     return {id,priceMinor:Number(p.amount_minor),currency:p.currency};
   });
 }
@@ -122,14 +147,17 @@ export async function settleVerifiedOrder(r:VerifiedPaymentReceipt){
   return transaction(async c=>{
     const result=await c.query<{
       id:string;payer_parent_id:string;price_minor:string;currency:string;provider:string;
-      provider_transaction_id:string|null;state:string;tier:"plus"|"pro";period:"month"|"year";
+      provider_transaction_id:string|null;state:string;
+      tier:"plus"|"pro"|null;period:"month"|"year"|null;
+      product_kind:"subscription"|"item";content_kind:"exam"|"resource"|null;content_id:string|null;
     }>("SELECT o.*,p.tier,p.period FROM billing_orders o JOIN billing_products p ON p.id=o.product_id WHERE o.id=$1 FOR UPDATE OF o",[r.orderId]);
     const o=result.rows[0];
     if(!o || o.provider!==r.provider || Number(o.price_minor)!==r.amountMinor || o.currency!==r.currency)
       throw new BillingConflictError("Provider order amount/currency mismatch");
     if(o.state==="paid"){
       if(o.provider_transaction_id!==r.transactionId)throw new BillingConflictError("Transaction already settled differently");
-      const e=await c.query<{id:string}>("SELECT id FROM billing_entitlements WHERE source_order_id=$1",[o.id]);
+      const grantTable=o.product_kind==="item"?"billing_item_entitlements":"billing_entitlements";
+      const e=await c.query<{id:string}>(`SELECT id FROM ${grantTable} WHERE source_order_id=$1`,[o.id]);
       if(!e.rows[0])throw new BillingConflictError("Paid order without grant");
       return {orderId:o.id,grantId:e.rows[0].id,tier:o.tier,created:false};
     }
@@ -138,6 +166,17 @@ export async function settleVerifiedOrder(r:VerifiedPaymentReceipt){
       [r.provider,r.eventId,o.id,r.transactionId,r.verifiedAt,r.payloadSha256]);
     await c.query("UPDATE billing_orders SET state='paid',paid_at=$2,provider_transaction_id=$3 WHERE id=$1",
       [o.id,r.verifiedAt,r.transactionId]);
+    if(o.product_kind==="item"){
+      // Snapshot on the order, not mutable SKU metadata, controls delivery.
+      if(!o.content_kind || !o.content_id)
+        throw new BillingConflictError("Item order missing immutable content target");
+      const id="ent_"+crypto.randomBytes(12).toString("hex");
+      await c.query("INSERT INTO billing_item_entitlements(id,payer_parent_id,source_order_id,content_kind,content_id,granted_at) VALUES($1,$2,$3,$4,$5,$6)",
+        [id,o.payer_parent_id,o.id,o.content_kind,o.content_id,r.verifiedAt]);
+      return {orderId:o.id,grantId:id,tier:null,created:true};
+    }
+    if(o.product_kind!=="subscription" || !o.tier || !o.period)
+      throw new BillingConflictError("Invalid subscription order");
     await c.query("SELECT pg_advisory_xact_lock(hashtextextended($1,0))",[o.payer_parent_id+":"+o.tier]);
     const dates=await c.query<{starts_at:Date;ends_at:Date}>(
       "WITH p AS (SELECT MAX(ends_at) AS last_end FROM billing_entitlements WHERE payer_parent_id=$1 AND tier=$2 AND revoked_at IS NULL) SELECT GREATEST($3::timestamptz,COALESCE(last_end,$3::timestamptz)) AS starts_at,GREATEST($3::timestamptz,COALESCE(last_end,$3::timestamptz)) + (CASE WHEN $4='year' THEN INTERVAL '1 year' ELSE INTERVAL '1 month' END) AS ends_at FROM p",
@@ -164,6 +203,7 @@ export async function refundVerifiedOrder(r:VerifiedPaymentReceipt){
       [r.provider,r.eventId,o.id,r.transactionId,r.verifiedAt,r.payloadSha256]);
     await c.query("UPDATE billing_orders SET state='refunded',refunded_at=$2 WHERE id=$1",[o.id,r.verifiedAt]);
     await c.query("UPDATE billing_entitlements SET revoked_at=$2 WHERE source_order_id=$1 AND revoked_at IS NULL",[o.id,r.verifiedAt]);
+    await c.query("UPDATE billing_item_entitlements SET revoked_at=$2 WHERE source_order_id=$1 AND revoked_at IS NULL",[o.id,r.verifiedAt]);
     return {orderId:o.id,revoked:true};
   });
 }
@@ -173,6 +213,25 @@ export async function verifiedGrantsForParent(parentId:string,now=new Date()):Pr
   }>("SELECT e.payer_parent_id,e.tier,e.starts_at,e.ends_at,e.revoked_at FROM billing_entitlements e JOIN billing_orders o ON o.id=e.source_order_id WHERE e.payer_parent_id=$1 AND o.state='paid' AND e.starts_at<=$2 AND e.ends_at>$2 AND (e.revoked_at IS NULL OR e.revoked_at>$2)",
     [parentId,now]);
   return rows.rows.map(e=>({ownerId:e.payer_parent_id,tier:e.tier,verified:true,startsAt:e.starts_at.getTime(),expiresAt:e.ends_at.getTime(),revokedAt:e.revoked_at?.getTime()}));
+}
+/** Item access is verified against the same settled orders, not a client-owned flag.
+ * The caller must derive buyerId from an authenticated WeChat session.
+ */
+export async function hasVerifiedItemEntitlement(
+  buyerId:string,contentKind:"exam"|"resource",contentId:string,
+):Promise<boolean>{
+  if(!/^par_[a-zA-Z0-9_]+$/.test(buyerId) ||
+     !["exam","resource"].includes(contentKind) ||
+     !contentId || contentId.length>200)
+    throw new BillingConflictError("Invalid item entitlement lookup");
+  const r=await billingPool().query<{owned:boolean}>(`
+    SELECT EXISTS (
+      SELECT 1 FROM billing_item_entitlements e
+      JOIN billing_orders o ON o.id=e.source_order_id
+      WHERE e.payer_parent_id=$1 AND e.content_kind=$2 AND e.content_id=$3
+        AND o.state='paid' AND e.revoked_at IS NULL
+    ) AS owned`,[buyerId,contentKind,contentId]);
+  return r.rows[0]?.owned===true;
 }
 export async function verifiedParentsForStudent(studentId:string):Promise<string[]>{
   const x=await billingPool().query<{parent_id:string}>("SELECT parent_id FROM billing_family_links WHERE student_id=$1 AND status='active'",[studentId]);
