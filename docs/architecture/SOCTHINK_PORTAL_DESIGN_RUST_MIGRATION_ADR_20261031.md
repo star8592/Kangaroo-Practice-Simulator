@@ -45,6 +45,12 @@
 - 考试作答：独立专注布局，保留题目与公式输入、语音、计时、恢复和评分，不因公共门户换肤而破坏考场操作。
 - 账号/支付：一个微信身份，购买必须经过官方支付确认；不以有按钮等于已成交。
 
+## 标准化 UI 组件选择
+- 公共排版/信息架构由平台统一 token 和布局组件控制；**复杂交互控件优先采用 shadcn/ui + Tailwind CSS v4 + 无障碍组件原语**（弹层、组合框、下拉菜单、日期等），减少自造复杂控件。项目目前尚未安装这些依赖，不把拟采用当成已接入。
+- 官方方案： https://ui.shadcn.com/docs/installation/next 、https://tailwindcss.com/docs/installation/framework-guides/nextjs 。引入时先通过最小真实控件验证 CSS 优先级、包体积和 WebKit，再替换旧控件，避免把完整现有 98KB 全局样式盲目转换。
+- 若坚持 Vue，则最佳对应栈是 `Nuxt 4 + Nuxt UI / shadcn-vue`，不是仅仅“装 Vue 模板”。但在本产品中不做双栈生产运行。
+- 成本重点：公开考试与资料页尽量 SSG/缓存/CDN；仅必要的私人/实时视图运行 Next SSR，所有权威业务 API 迁 Rust。**Next SSR 仍需要 JavaScript 服务端运行时**，所以“业务后端全 Rust”不等于“服务器里绝无 Node 进程”；若未来明确追求零 Node 常驻，必须单独验证静态输出 + Rust API 的 SEO、登录、权限与成本取舍。
+
 ## 全站模板 / 底层共用契约
 1. PortalHome（全站大搜索+7领域+真实可用入口）
 2. Directory（目录/省份/年级/考试分层，可搜索）
