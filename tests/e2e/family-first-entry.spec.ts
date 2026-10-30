@@ -23,7 +23,7 @@ test.beforeEach(async({context})=>{
 test("WeChat buyer goes straight to one account; no child or PIN onboarding",async({page})=>{
  await page.goto("/parent/login");
  await expect(page).toHaveURL(/\/account$/);
- await expect(page.getByText("考试用户")).toBeVisible();
+ await expect(page.getByRole("heading",{name:"考试用户",exact:true})).toBeVisible();
  await expect(page.getByRole("heading",{name:"我的订单与权益"})).toBeVisible();
  await expect(page.getByRole("link",{name:"选择考试或资料"})).toBeVisible();
  await expect(page.getByText("添加孩子")).toHaveCount(0);

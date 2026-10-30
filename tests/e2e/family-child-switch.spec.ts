@@ -25,7 +25,7 @@ test("one WeChat buyer has only one account and no family-child chooser",async({
  await page.goto("/parent");
  await expect(page).toHaveURL(/\/account$/);
  await expect(page.getByRole("heading",{name:"考试与资料"})).toBeVisible();
- await expect(page.getByText("买家 A")).toBeVisible();
+ await expect(page.getByRole("heading",{name:"买家 A",exact:true})).toBeVisible();
  await expect(page.getByText("添加孩子")).toHaveCount(0);
  await expect(page.getByText("切换孩子")).toHaveCount(0);
  const first=await (await page.request.get("/api/auth/me")).json();
@@ -35,7 +35,7 @@ test("one WeChat buyer has only one account and no family-child chooser",async({
  const second=await (await page.request.get("/api/auth/me")).json();
  expect(second.user?.id).toMatch(/^guest_family_[0-9a-f]{32}$/);
  expect(second.user.id).not.toBe(first.user.id);
- await expect(page.getByText("买家 B")).toBeVisible();
+ await expect(page.getByRole("heading",{name:"买家 B",exact:true})).toBeVisible();
 });
 test("one WeChat account logout clears its own buyer session",async({page,context})=>{
  await setBuyer(context,a);
