@@ -46,11 +46,21 @@ async function signedProviderExchange(
   // The signed body is sent verbatim. Never use fetch's json/JSON.stringify
   // again after signing; a changed byte invalidates API v3 Authorization.
   const body = request.method === "POST" ? request.bodyText : undefined;
+  // WeChat Pay official public-key mode requires this REQUEST header to
+  // select the corresponding public-key signature on the API RESPONSE.
+  // It is NOT the merchant API certificate serial in Authorization.
+  // Never silently fall back to unverified platform-certificate responses.
+  if (!/^PUB_KEY_ID_[0-9]{1,64}$/.test(context.wechatPayPublicKeyId))
+    throw new WechatPaymentProtocolError("INVALID_WECHAT_PUBLIC_KEY_ID");
+  const requestHeaders = {
+    ...request.headers,
+    "Wechatpay-Serial": context.wechatPayPublicKeyId,
+  };
   let response: Response;
   try {
     response = await (context.transport ?? fetch)(request.url, {
       method: request.method,
-      headers: request.headers,
+      headers: requestHeaders,
       body,
       redirect: "error",
       signal: AbortSignal.timeout(10000),

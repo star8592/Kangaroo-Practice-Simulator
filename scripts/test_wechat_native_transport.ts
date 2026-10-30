@@ -45,10 +45,23 @@ const fake:WechatNativeTransport=async (url,init) => {
   assert.equal(init.method,"POST");
   assert.equal((init.body as string).includes(order.orderId),true);
   assert.ok((init.headers as Record<string,string>).Authorization.startsWith("WECHATPAY2-SHA256-RSA2048 "));
+  assert.equal(
+    (init.headers as Record<string,string>)["Wechatpay-Serial"],
+    context.wechatPayPublicKeyId,
+    "Public-key response mode must be explicitly requested",
+  );
   assert.equal(init.redirect,"error");
   return signedResponse({code_url:validNativeUrl});
 };
 async function run() {
+await assert.rejects(
+  ()=>createVerifiedWechatNativeCheckout({
+    ...context, wechatPayPublicKeyId:"MALFORMED_PUBLIC_KEY_ID", transport:fake,
+  },order),
+  (e:unknown)=>e instanceof WechatPaymentProtocolError &&
+    e.code==="INVALID_WECHAT_PUBLIC_KEY_ID",
+);
+assert.equal(calls,0,"Malformed ID must fail before contacting the merchant API");
 const c=await createVerifiedWechatNativeCheckout({...context,transport:fake},order);
 assert.deepEqual(c,{orderId:order.orderId,codeUrl:validNativeUrl});
 assert.equal(calls,1);
@@ -79,6 +92,11 @@ const paid={
 const query:WechatNativeTransport=async (url,init)=>{
   assert.ok(url.includes("/v3/pay/transactions/out-trade-no/"+order.orderId));
   assert.equal(init.method,"GET");
+  assert.equal(
+    (init.headers as Record<string,string>)["Wechatpay-Serial"],
+    context.wechatPayPublicKeyId,
+    "The official order query must also request public-key response signing",
+  );
   assert.equal(init.body,undefined);
   return signedResponse(paid);
 };
