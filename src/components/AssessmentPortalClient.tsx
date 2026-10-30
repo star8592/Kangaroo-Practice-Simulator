@@ -9,7 +9,7 @@ const UI = {
   zh: {
     hero1:"不只是练题。",hero2:"用真实考试，看见真实能力。",
     copy:"从小学数学到大学生就业技能，我们建设同一套考试、解答、报告和复测系统。现阶段可直接使用数学训练与国际数学竞赛，其他领域会在题目来源、评分和交付验收后逐步开放。",
-    start:"马上开始数学能力训练",contest:"进入国际数学竞赛",
+    start:"马上开始数学能力训练",contest:"进入国际数学竞赛",resources:"检索试卷资料",
     liveEye:"START NOW",liveTitle:"现在就能使用",liveDesc:"有真实考试入口、答题与反馈路径的产品。",
     liveBadge:"已开放",futureEye:"EXPANSION ROADMAP",futureTitle:"同一个平台，延伸至更多考试",
     futureDesc:"以下是规划与验证中的业务。未完成的考试不会显示虚假测评或付款链接。",
@@ -20,7 +20,7 @@ const UI = {
   en: {
     hero1:"Go beyond practice.",hero2:"Prove ability through real assessments.",
     copy:"From school mathematics to job-ready data skills, we're building one system for exams, explanations, reports and retesting. Math practice and competitions are available now; other areas will open only after content rights, scoring and delivery are verified.",
-    start:"Start math practice",contest:"Explore math competitions",
+    start:"Start math practice",contest:"Explore math competitions",resources:"Search papers",
     liveEye:"START NOW",liveTitle:"Available today",liveDesc:"Real assessments and practice flows you can open now.",
     liveBadge:"Available",futureEye:"EXPANSION ROADMAP",futureTitle:"One platform for more kinds of assessment",
     futureDesc:"These categories are under development. We don't show fake exams or checkout links.",
@@ -42,6 +42,7 @@ export default function AssessmentPortalClient() {
       <div className={styles.heroActions}>
         <Link href="/arithmetic" className={styles.primary}>{ui.start}</Link>
         <Link href="/competitions" className={styles.secondary}>{ui.contest}</Link>
+        <Link href="/resources" className={styles.secondary}>{ui.resources}</Link>
       </div>
     </section>
     <section className={styles.section} aria-labelledby="available-assessments">
