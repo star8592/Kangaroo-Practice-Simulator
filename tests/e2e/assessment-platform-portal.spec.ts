@@ -28,15 +28,24 @@ test("all seven exam domains have a real directory without fake purchasable test
   await expect(page).toHaveURL(/\/competitions/);
 });
 
-test("home, resources and mobile navigation share actual working entry points",async({page})=>{
+test("new portal offers real search, seven-domain navigation and working resources on desktop and mobile",async({page})=>{
   await page.goto("/");
-  await expect(page.getByRole("heading",{name:/考试、资料、练习/})).toBeVisible();
-  await expect(page.getByRole("heading",{name:"全部考试，一站查找"})).toBeVisible();
+  await expect(page.getByRole("heading",{name:/找考试，查资料，.*立即开练。/})).toBeVisible();
+  const search=page.getByRole("searchbox",{name:"搜索考试"});
+  await expect(search).toBeVisible();
+  await search.fill("SQL");
+  await expect(page.getByRole("heading",{name:"职业技能与岗位实操"})).toBeVisible();
+  await expect(page.getByText("SQL 数据库实操")).toBeVisible();
+  await search.fill("unmatched-synthetic-query-2391");
+  await expect(page.getByText(/没有找到对应分类/)).toBeVisible();
+  await page.getByRole("button",{name:"清空搜索"}).click();
+  await expect(search).toHaveValue("");
+  await expect(page.getByRole("button",{name:/全球数学竞赛/})).toBeVisible();
   const mobile=(page.viewportSize()?.width??1280)<=760;
   if(mobile)await page.getByRole("button",{name:"打开导航菜单"}).click();
   await expect(page.getByRole("link",{name:"资料中心"}).first()).toBeVisible();
   if(mobile)await page.getByRole("button",{name:"打开导航菜单"}).click();
-  await page.getByRole("link",{name:"查找考试资料"}).first().click();
+  await page.getByRole("link",{name:/可用试卷资料/}).first().click();
   await expect(page).toHaveURL(/\/resources/);
   await expect(page.getByRole("heading",{name:"找到真正能做的试卷"})).toBeVisible();
   await expect(page.getByRole("searchbox")).toBeVisible();

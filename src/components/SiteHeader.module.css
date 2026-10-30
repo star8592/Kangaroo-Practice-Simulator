@@ -1,549 +1,78 @@
-.header{
-  position:sticky;
-  top:0;
-  z-index:80;
-  border-bottom:1px solid rgba(23,35,29,.08);
-  background:rgba(248,250,247,.92);
-  backdrop-filter:saturate(150%) blur(18px);
-  -webkit-backdrop-filter:saturate(150%) blur(18px);
-}
-
-.inner{
-  width:min(100%,var(--layout-wide));
-  min-height:var(--header-height);
-  margin:0 auto;
-  padding:0 28px;
-  display:grid;
-  grid-template-columns:minmax(250px,1fr) auto minmax(250px,1fr);
-  align-items:center;
-  gap:22px;
-}
-
-.brand{
-  min-width:0;
-  display:inline-flex;
-  align-items:center;
-  gap:11px;
-  justify-self:start;
-}
-
-.brandMark{
-  width:36px;
-  height:36px;
-  flex:0 0 36px;
-  display:grid;
-  place-items:center;
-  border-radius:11px;
-  background:#17231d;
-  color:#fff;
-  font-size:14px;
-  font-weight:950;
-  box-shadow:0 8px 22px rgba(23,35,29,.12);
-}
-
-.brandCopy{
-  min-width:0;
-  display:grid;
-  gap:2px;
-}
-
-.brandCopy strong{
-  overflow:hidden;
-  color:#17231d;
-  font-size:13px;
-  font-weight:900;
-  letter-spacing:-.018em;
-  text-overflow:ellipsis;
-  white-space:nowrap;
-}
-
-.brandCopy small{
-  color:#879088;
-  font-size:8px;
-  font-weight:800;
-  letter-spacing:.09em;
-  text-transform:uppercase;
-}
-
-.primaryNav{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:4px;
-  padding:4px;
-  border:1px solid rgba(23,35,29,.07);
-  border-radius:13px;
-  background:rgba(255,255,255,.58);
-}
-
-.primaryNav a{
-  min-height:38px;
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  padding:0 13px;
-  border-radius:9px;
-  color:#58635d;
-  font-size:12px;
-  font-weight:780;
-  white-space:nowrap;
-  transition:background .16s ease,color .16s ease,box-shadow .16s ease;
-}
-
-.primaryNav a:hover{
-  background:#fff;
-  color:#17231d;
-}
-
-.primaryNav a.activeNav{
-  background:#fff;
-  color:#17231d;
-  box-shadow:0 3px 12px rgba(23,35,29,.08);
-}
-
-.actions{
-  min-width:0;
-  display:flex;
-  align-items:center;
-  justify-content:flex-end;
-  gap:9px;
-}
-
+/* One public navigation shell; SessionNav uses the same module, not a parallel theme. */
+.header{position:sticky;top:0;z-index:80;background:#fff;border-bottom:1px solid #dce5f0;box-shadow:0 3px 16px #0c2b4f0a;color:#14253d}
+.utility{background:#10284b;color:#dbe8fc}
+.utilityInner{max-width:var(--layout-wide);margin:0 auto;min-height:28px;padding:0 28px;display:flex;align-items:center;justify-content:space-between;gap:20px;font-size:11px;letter-spacing:.025em}
+.inner{width:min(100%,var(--layout-wide));margin:0 auto;padding:0 28px;min-height:var(--header-height);display:grid;grid-template-columns:minmax(208px,1fr) auto minmax(220px,1fr);align-items:center;gap:18px}
+.brand{min-width:0;display:inline-flex;align-items:center;gap:11px;justify-self:start}
+.brandMark{width:41px;height:41px;flex:0 0 41px;display:grid;place-items:center;background:#1454a8;color:#fff;border-radius:11px;font-size:18px;font-weight:900;box-shadow:0 4px 16px #1454a82c}
+.brandCopy{min-width:0;display:grid;gap:3px}
+.brandCopy strong{color:#10284b;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font-size:18px;font-weight:900;letter-spacing:-.03em}
+.brandCopy small{color:#6a7b93;font-size:10px;font-weight:700;letter-spacing:.04em;white-space:nowrap}
+.primaryNav{display:flex;align-items:center;justify-content:center;gap:2px}
+.primaryNav a{display:inline-flex;justify-content:center;align-items:center;min-height:44px;white-space:nowrap;padding:0 12px;border-radius:8px;font-size:14px;font-weight:700;color:#415671}
+.primaryNav a:hover{background:#f0f5fd;color:#1454a8}
+.primaryNav a.activeNav{background:#eaf2ff;color:#1454a8}
+.actions{min-width:0;display:flex;justify-content:flex-end;align-items:center;gap:10px}
 .languageDesktop{display:block}
-
-.menuButton{
-  width:40px;
-  height:40px;
-  display:none;
-  place-items:center;
-  padding:0;
-  border:1px solid #dfe5df;
-  border-radius:11px;
-  background:#fff;
-  color:#314038;
-}
-
-.menuButton svg{
-  width:19px;
-  height:19px;
-  fill:none;
-  stroke:currentColor;
-  stroke-width:1.8;
-  stroke-linecap:round;
-}
-
+.menuButton{width:42px;height:42px;display:none;place-items:center;padding:0;border:1px solid #d6e1ef;border-radius:10px;background:#fff;color:#10284b}
+.menuButton svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round}
+.featuredBar{background:#f4f7fc;border-top:1px solid #ecf0f6}
+.featuredInner{max-width:var(--layout-wide);padding:0 28px;min-height:36px;display:flex;gap:22px;align-items:center;margin:0 auto}
+.featuredInner>span{font-size:11px;color:#75869d;white-space:nowrap}
+.featuredInner a{font-size:12px;color:#465e7e;font-weight:650;white-space:nowrap}
+.featuredInner a:hover,.featuredInner a:last-child{color:#1454a8}
 .mobilePanel{display:none}
-
-.accountSkeleton{
-  width:116px;
-  height:40px;
-  border-radius:11px;
-  background:linear-gradient(90deg,#edf0ec,#f7f9f6,#edf0ec);
-  background-size:200% 100%;
-  animation:headerShimmer 1.4s linear infinite;
-}
-
+.accountSkeleton{height:43px;width:106px;display:inline-block;border-radius:10px;background:linear-gradient(90deg,#eef2f8,#f8faff,#eef2f8);background-size:200% 100%;animation:headerShimmer 1.4s linear infinite}
 @keyframes headerShimmer{to{background-position:-200% 0}}
-
-.guestActions{
-  display:flex;
-  align-items:center;
-  gap:7px;
-}
-
-.guestStudent{
-  min-height:39px;
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  padding:0 11px;
-  border-radius:10px;
-  color:#59665e;
-  font-size:11px;
-  font-weight:850;
-}
-
-.guestStudent:hover{
-  background:#fff;
-  color:#17231d;
-}
-
-.guestParent{
-  min-height:46px;
-  display:flex;
-  align-items:center;
-  gap:8px;
-  padding:0 16px;
-  border:1px solid #cce2d8;
-  border-radius:12px;
-  background:#e0f2e9;
-  color:#124c32;
-  box-shadow:0 4px 16px rgba(20,84,56,.09);
-}
-
-.guestParent span{
-  font-size:14px;
-  font-weight:950;
-  white-space:nowrap;
-}
-
-.guestParent small{
-  padding-left:8px;
-  border-left:1px solid rgba(141,63,33,.16);
-  color:#b06647;
-  font-size:11px;
-  font-weight:850;
-  white-space:nowrap;
-}
-
-.guestParent:hover{
-  border-color:#9dcdb3;
-  background:#ccebdd;
-}
-
+.guestActions{display:flex;align-items:center}
+.guestParent{min-height:43px;display:flex;align-items:center;gap:8px;background:#1454a8;color:#fff;border-radius:10px;padding:7px 14px;border:1px solid #1454a8}
+.guestParent span{white-space:nowrap;font-size:13px;font-weight:800}
+.guestParent small{font-size:10px;color:#d7e6ff;white-space:nowrap;padding-left:9px;border-left:1px solid #ffffff55}
+.guestParent:hover{background:#0d448e}
 .accountRoot{position:relative}
-
-.accountTrigger{
-  min-height:44px;
-  display:flex;
-  align-items:center;
-  gap:9px;
-  max-width:220px;
-  padding:4px 8px 4px 5px;
-  border:1px solid #dfe5df;
-  border-radius:13px;
-  background:#fff;
-  color:#17231d;
-  box-shadow:0 3px 14px rgba(23,35,29,.04);
-}
-
-.accountTrigger:hover,
-.accountTrigger[aria-expanded="true"]{
-  border-color:#cfd8d1;
-  box-shadow:0 8px 24px rgba(23,35,29,.08);
-}
-
-.accountAvatar,
-.accountAvatarLarge{
-  display:grid;
-  place-items:center;
-  flex:0 0 auto;
-  border-radius:10px;
-  font-weight:950;
-}
-
-.accountAvatar{
-  width:34px;
-  height:34px;
-  font-size:15px;
-}
-
-.accountAvatarLarge{
-  width:44px;
-  height:44px;
-  border-radius:13px;
-  font-size:18px;
-}
-
-.avatar_student{background:#edf5ef;color:#28603d}
-.avatar_parent{background:#fff0e7;color:#a44b25}
-.avatar_admin{background:#e9edf8;color:#334b85}
-
-.accountIdentity{
-  min-width:0;
-  display:grid;
-  gap:1px;
-  text-align:left;
-}
-
-.accountIdentity strong{
-  max-width:110px;
-  overflow:hidden;
-  font-size:11px;
-  font-weight:900;
-  text-overflow:ellipsis;
-  white-space:nowrap;
-}
-
-.accountIdentity small{
-  color:#859087;
-  font-size:8px;
-  font-weight:750;
-}
-
-.chevron{
-  width:16px;
-  height:16px;
-  margin-left:1px;
-  color:#89938c;
-  transition:transform .16s ease;
-}
-
-.chevron svg{
-  width:100%;
-  height:100%;
-  fill:none;
-  stroke:currentColor;
-  stroke-width:1.7;
-  stroke-linecap:round;
-  stroke-linejoin:round;
-}
-
-.chevronOpen{transform:rotate(180deg)}
-
-.accountMenu{
-  position:absolute;
-  top:calc(100% + 10px);
-  right:0;
-  width:310px;
-  padding:8px;
-  border:1px solid rgba(23,35,29,.1);
-  border-radius:17px;
-  background:#fff;
-  box-shadow:0 22px 65px rgba(23,35,29,.16);
-  animation:accountMenuIn .13s ease-out;
-}
-
-@keyframes accountMenuIn{
-  from{opacity:0;transform:translateY(-4px)}
-  to{opacity:1;transform:translateY(0)}
-}
-
-.accountSummary{
-  display:flex;
-  align-items:center;
-  gap:11px;
-  padding:10px 10px 13px;
-}
-
-.accountSummary div{
-  min-width:0;
-  display:grid;
-  gap:3px;
-}
-
-.accountSummary strong{
-  overflow:hidden;
-  font-size:13px;
-  font-weight:900;
-  text-overflow:ellipsis;
-  white-space:nowrap;
-}
-
-.accountSummary span{
-  overflow:hidden;
-  color:#7a867e;
-  font-size:9px;
-  text-overflow:ellipsis;
-  white-space:nowrap;
-}
-
-.accountMenuLinks{
-  display:grid;
-  gap:2px;
-  padding:6px 0;
-  border-top:1px solid #edf0ed;
-  border-bottom:1px solid #edf0ed;
-}
-
-.accountMenuLinks a{
-  min-height:54px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:14px;
-  padding:8px 10px;
-  border-radius:10px;
-  color:#26352d;
-}
-
-.accountMenuLinks a:hover{background:#f6f8f5}
-
-.accountMenuLinks a>span{
-  min-width:0;
-  display:grid;
-  gap:3px;
-}
-
-.accountMenuLinks b{
-  font-size:11px;
-  font-weight:900;
-}
-
-.accountMenuLinks small{
-  color:#89938c;
-  font-size:9px;
-  line-height:1.45;
-}
-
-.accountMenuLinks svg{
-  width:16px;
-  height:16px;
-  flex:0 0 16px;
-  fill:none;
-  stroke:#a0a9a3;
-  stroke-width:1.6;
-  stroke-linecap:round;
-  stroke-linejoin:round;
-}
-
-.accountSwitch{
-  display:grid;
-  grid-template-columns:1fr auto;
-  gap:8px;
-  align-items:center;
-  padding:9px 4px 2px;
-}
-
-.accountSwitch a,
-.accountSwitch button{
-  min-height:34px;
-  display:flex;
-  align-items:center;
-  border:0;
-  border-radius:8px;
-  background:transparent;
-  color:#69756d;
-  font-size:9px;
-  font-weight:820;
-}
-
-.accountSwitch a{padding:0 7px}
-.accountSwitch button{padding:0 7px}
-.accountSwitch a:hover,
-.accountSwitch button:hover{background:#f5f7f4;color:#17231d}
-
+.accountTrigger{display:flex;align-items:center;gap:9px;min-height:43px;max-width:200px;border:1px solid #dbe4ef;border-radius:10px;background:#fff;padding:4px 10px 4px 5px;color:#14253d}
+.accountTrigger:hover,.accountTrigger[aria-expanded="true"]{border-color:#91b4df;background:#f7faff}
+.accountAvatar,.accountAvatarLarge{display:grid;place-items:center;flex:0 0 auto;font-weight:850;border-radius:9px}
+.accountAvatar{width:33px;height:33px;font-size:14px}
+.accountAvatarLarge{width:44px;height:44px;font-size:18px}
+.avatar_student{background:#e8f3ed;color:#11765b}
+.avatar_parent{background:#eaf2ff;color:#1454a8}
+.avatar_admin{background:#edf0fd;color:#455fb3}
+.accountIdentity{min-width:0;text-align:left;display:grid;gap:1px}
+.accountIdentity strong{max-width:105px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px}
+.accountIdentity small{font-size:10px;color:#78879b}
+.accountMenu{position:absolute;right:0;top:calc(100% + 10px);z-index:100;width:min(310px,90vw);padding:9px;border:1px solid #dce6f2;border-radius:13px;background:#fff;box-shadow:0 20px 58px #0e2a4d28}
+.accountMenuLinks{display:grid;gap:2px}
+.accountMenuLinks a{display:block;padding:13px 11px;border-radius:8px;font-weight:650;font-size:14px}
+.accountMenuLinks a:hover{background:#eef5ff;color:#1454a8}
+.accountSwitch{border-top:1px solid #e6ecf4;margin-top:8px;padding:8px 0 0}
+.accountSwitch button{width:100%;text-align:left;padding:11px;border:0;border-radius:8px;background:#fff;color:#8b3541;font-size:13px;font-weight:700}
+.accountSwitch button:hover{background:#fff4f6}
+@media(max-width:1240px){.inner{grid-template-columns:minmax(180px,1fr) auto minmax(150px,1fr);gap:9px}.primaryNav a{padding:0 9px;font-size:13px}.brandCopy strong{font-size:16px}}
 @media(max-width:1080px){
-  .inner{
-    grid-template-columns:minmax(190px,1fr) auto;
-    gap:14px;
-  }
-
-  .primaryNav{display:none}
-  .menuButton{display:grid}
-
-  .mobilePanel{
-    width:min(100%,var(--layout-wide));
-    margin:0 auto;
-    padding:0 20px 14px;
-  }
-
-  .mobilePanelOpen{
-    display:grid;
-    grid-template-columns:minmax(0,1fr) auto;
-    gap:16px;
-    border-top:1px solid rgba(23,35,29,.06);
-  }
-
-  .mobilePanel nav{
-    display:grid;
-    grid-template-columns:repeat(4,minmax(0,1fr));
-    gap:7px;
-    padding-top:12px;
-  }
-
-  .mobilePanel nav a{
-    min-height:46px;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:8px;
-    padding:0 13px;
-    border:1px solid #e4e8e3;
-    border-radius:11px;
-    background:#fff;
-    color:#526058;
-    font-size:11px;
-    font-weight:850;
-  }
-
-  .mobilePanel nav a.mobileActive{
-    border-color:#d2dbd4;
-    background:#eef4ef;
-    color:#1e432e;
-  }
-
-  .mobilePanel nav svg{
-    width:15px;
-    height:15px;
-    fill:none;
-    stroke:currentColor;
-    stroke-width:1.6;
-    stroke-linecap:round;
-    stroke-linejoin:round;
-  }
-
-  .mobileLanguage{display:none}
+  .inner{grid-template-columns:minmax(0,1fr) auto;gap:12px}
+  .primaryNav{display:none}.menuButton{display:grid}
+  .featuredBar{overflow:auto}.featuredInner{min-width:max-content}
+  .mobilePanel{display:none}
+  .mobilePanelOpen{display:block;position:absolute;left:0;right:0;top:100%;background:#fff;border-top:1px solid #e2e9f2;box-shadow:0 18px 28px #0c2a4b1d;max-height:calc(100dvh - 110px);overflow:auto}
+  .mobilePanel nav{display:grid;padding:10px 18px}
+  .mobilePanel nav a{display:flex;align-items:center;justify-content:space-between;min-height:48px;padding:10px 14px;border-radius:9px;font-weight:700;font-size:15px;color:#354a65}
+  .mobilePanel nav a:hover,.mobilePanel nav a.mobileActive{background:#eaf2ff;color:#1454a8}
+  .mobileLanguage{display:flex;align-items:center;justify-content:space-between;border-top:1px solid #e4ebf4;padding:13px 30px}
 }
-
 @media(max-width:760px){
-  .header{background:rgba(250,251,249,.97)}
-
-  .inner{
-    min-height:var(--header-height-mobile);
-    grid-template-columns:minmax(0,1fr) auto;
-    padding:0 var(--page-gutter-mobile);
-    gap:8px;
-  }
-
-  .brand{gap:8px}
-  .brandMark{width:32px;height:32px;flex-basis:32px;border-radius:10px}
-  .brandCopy strong{max-width:150px;font-size:11px}
-  .brandCopy small{display:none}
-
-  .actions{gap:6px}
+  .utility{display:none}
+  .featuredBar{display:none}
+  .inner{min-height:var(--header-height-mobile);padding:0 var(--page-gutter-mobile)}
+  .brandMark{width:36px;height:36px;flex-basis:36px;font-size:16px}
+  .brandCopy strong{font-size:14px}.brandCopy small{font-size:9px}
   .languageDesktop{display:none}
-
-  .guestActions{gap:3px}
-  .guestStudent{min-height:36px;padding:0 8px;font-size:10px}
-  .guestParent{min-height:40px;padding:0 12px}
-  .guestParent span{font-size:12px}
-  .guestParent small{display:none}
-
-  .accountTrigger{
-    min-height:39px;
-    max-width:128px;
-    padding:3px 6px 3px 4px;
-  }
-
-  .accountAvatar{width:31px;height:31px}
-  .accountIdentity strong{max-width:58px;font-size:10px}
-  .accountIdentity small{display:none}
-  .chevron{width:14px;height:14px}
-
-  .menuButton{width:38px;height:38px}
-
-  .accountMenu{
-    position:fixed;
-    top:68px;
-    right:var(--page-gutter-mobile);
-    left:var(--page-gutter-mobile);
-    width:auto;
-  }
-
-  .mobilePanelOpen{
-    grid-template-columns:1fr;
-    padding:0 var(--page-gutter-mobile) 12px;
-  }
-
-  .mobilePanel nav{
-    grid-template-columns:1fr 1fr;
-    padding-top:10px;
-  }
-
-  .mobileLanguage{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    padding:10px 2px 0;
-    color:#7a867e;
-    font-size:10px;
-    font-weight:800;
-  }
+  .guestParent{min-height:38px;padding:6px 10px}.guestParent span{font-size:12px}.guestParent small{display:none}
+  .accountTrigger{min-height:39px;padding:3px}
+  .accountIdentity{display:none}
+  .accountSkeleton{width:40px;height:38px}
+  .menuButton{height:38px;width:38px}
+  .actions{gap:6px}
 }
-
-@media(max-width:420px){
-  .brandCopy strong{max-width:112px}
-  .guestStudent{display:none}
-  .mobilePanel nav{grid-template-columns:1fr}
-}
+@media(max-width:375px){.brandCopy small{display:none}.brand{gap:6px}.brandCopy strong{font-size:13px}}
+@media(prefers-reduced-motion:reduce){.accountSkeleton{animation:none}}
