@@ -10,7 +10,8 @@ function base(env:Readonly<Record<string,string|undefined>>):boolean {
     Boolean(env.SOCTHINK_PUBLIC_ORIGIN);
 }
 export function nativeCheckoutAllowed(env:Readonly<Record<string,string|undefined>>=process.env):boolean {
-  return base(env) && env.SOCTHINK_WEB_NATIVE_PAYMENTS_ENABLED==="1";
+  return nativeSettlementAllowed(env) &&
+    env.SOCTHINK_WEB_NATIVE_PAYMENTS_ENABLED==="1";
 }
 /** Checkout may be emergency-paused while old paid orders remain fulfillable. */
 export function nativeSettlementAllowed(env:Readonly<Record<string,string|undefined>>=process.env):boolean {

@@ -16,7 +16,7 @@
 | 环境变量 | 使用目的 |
 | --- | --- |
 | `SOCTHINK_WECHAT_NATIVE_PRODUCT_APPROVED=1` | 运维人员验证微信商户后台 Native 产品与真实经营场景后才设置 |
-| `SOCTHINK_WEB_NATIVE_PAYMENTS_ENABLED=1` | **新订单创建**单独开关，紧急停止新付款时撤销此开关即可 |
+| `SOCTHINK_WEB_NATIVE_PAYMENTS_ENABLED=1` | **新订单创建**单独开关，必须先打开结算能力才能生效；紧急停止新付款时撤销此开关即可 |
 | `SOCTHINK_WECHAT_NATIVE_RECONCILIATION_ENABLED=1` | **已付款订单后续回调、查单及状态查询**单独开关，不能随停新单而关闭，否则可能造成已付款却不到账 |
 | `PAYMENT_PROVIDER=wechat_native` | 明确网站 Native，而不是小程序虚拟产品 |
 | `SOCTHINK_PAYMENT_SURFACE=web-native` | 独立 Web Native 作用域 |

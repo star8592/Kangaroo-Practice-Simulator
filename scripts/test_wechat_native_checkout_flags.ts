@@ -22,7 +22,8 @@ for(const k of Object.keys(base)){
     assert.equal(nativeSettlementAllowed(value),true,
       "Emergency stop must not abandon preexisting paid orders");
   } else if(k==="SOCTHINK_WECHAT_NATIVE_RECONCILIATION_ENABLED"){
-    assert.equal(nativeCheckoutAllowed(value),true);
+    assert.equal(nativeCheckoutAllowed(value),false,
+      "Do not accept charges when settlement callbacks are disabled");
     assert.equal(nativeSettlementAllowed(value),false);
   } else {
     assert.equal(nativeCheckoutAllowed(value),false,k);
