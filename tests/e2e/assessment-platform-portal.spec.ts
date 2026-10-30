@@ -30,7 +30,7 @@ test("all seven exam domains have a real directory without fake purchasable test
 
 test("new portal offers real search, seven-domain navigation and working resources on desktop and mobile",async({page})=>{
   await page.goto("/");
-  await expect(page.getByRole("heading",{name:"考试资料，找到就能用。"})).toBeVisible();
+  await expect(page.getByRole("heading",{name:"找考试，查资料，立即开练。"})).toBeVisible();
   const search=page.getByRole("searchbox",{name:"搜索考试"});
   await expect(search).toBeVisible();
   await search.fill("SQL");
