@@ -26,3 +26,17 @@
 .actions a + a{background:#fff;color:#234e36;border:1px solid #b8d1c1}
 @media(max-width:870px){.cards{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:600px){.page{padding:26px 16px 64px}.hero{padding:28px 24px}.hero h1{font-size:29px}.cards{grid-template-columns:1fr 1fr;gap:9px}.card{padding:18px 13px;min-height:180px}.card h2{font-size:17px}.card p{font-size:12px}}
+
+/* Enabled only for verified, real server-side products (never mock prices). */
+.checkout{margin:30px 0;padding:26px;border:1px solid #bed8c5;background:#f5faf6;border-radius:18px}
+.checkout h2{font-size:23px;margin:0 0 10px;color:#19442d}
+.checkout p{font-size:13px;line-height:1.7;color:#4c6654}
+.checkoutOffers{display:grid;grid-template-columns:repeat(auto-fit,minmax(195px,1fr));gap:12px;margin-top:20px}
+.checkoutOffer{background:white;border:1px solid #d0e0d4;border-radius:14px;padding:18px;display:grid;gap:12px}
+.checkoutOffer b{font-size:14px;color:#204e35}
+.checkoutOffer span{font-weight:800;font-size:22px;color:#204e35}
+.checkoutOffer button{border:0;border-radius:10px;background:#235a3d;color:white;min-height:42px;cursor:pointer;font-weight:650}
+.checkoutOffer button:disabled{opacity:.55;cursor:not-allowed}
+.checkoutQr{display:flex;flex-direction:column;align-items:center;gap:12px;padding:20px;margin-top:20px;background:white;border-radius:14px}
+.checkoutQr strong{color:#1e4c33}
+.checkoutQr span{font-size:12px;color:#506356;text-align:center}

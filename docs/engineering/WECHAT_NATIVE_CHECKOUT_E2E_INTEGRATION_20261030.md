@@ -7,6 +7,7 @@
 - `POST /api/payments/wechat/checkout`：必须启用双重商户授权和新订单开关；要求已有真实监护人服务端会话、同源浏览器请求和正常已启用的 `billing_products`；价格始终服务端取，不使用客户端金额、用户名、商户或“已支付”标识；单一 PostgreSQL 账本插入 `provider=wechat_native` 的独立待支付订单；调用签名官方 Native API，并**在自己的 Next.js 进程里**用 `qrcode` 生成 PNG data URL。第三方 QR 服务不接触支付链接。
 - `POST /api/payments/wechat/notify`：无用户登录（微信支付机器到机器回调）。**用微信官方公钥+匹配 key ID 对原始响应体验签**，检查 timestamp/nonce；APIv3 Key 解密微信 AES-GCM，检查事件类型和订单格式；从当前 PG 查出待结算订单，验证 `transaction_id/mchid/appid/amount/currency/trade_type`；**独立以签名方式调用微信官方 GET 查单并验证微信应答签名**；只有相同平台交易 ID 且成功的订单才调用已有 `settleVerifiedOrder`，在唯一事务内记账和授权。非法签名拒绝，数据库或网络故障返回非 2xx 允许微信重试，重复回调严格依账本幂等。
 - `GET /api/payments/wechat/orders/[orderId]`：只有原支付监护人账户可以读取其付款状态，匿名/其他用户不得查询，绝不显示商户秘钥、平台流水等敏感信息。
+- `/membership`：动态按现有 `billing_products.enabled=true`、实际大于零的 CNY 价格和完整**新订单启用开关**提取当前 PLUS/PRO SKU。**没有任何真实可售产品或开关未通过时，保留原“收费未开放”界面，绝不显示购买按钮**。若具备授权和活跃商品，则向已登录监护人展示定价、通过本站 checkout API 请求订单、以本地生成的 QR PNG 扫码支付，定时只读查询本人订单状态。前端不会凭页面提示直接发放权益。该 UI 尚未通过真实商户回执与浏览器 E2E。
 - `src/lib/wechat-native-server.ts`：仅服务端按受控绝对路径加载私钥和微信支付公钥并要求文件权限安全；不输出密钥。可信公网 `SOCTHINK_PUBLIC_ORIGIN` 必须与完整 HTTPS notify URL 同源，路径必须为正式路由。
 - `src/lib/billing-ledger.ts` 保留既有 `wechat_pay` 兼容默认值，给新 Native 订单添加`wechat_native` provider，不增表、不另建第二账本；在独立 `*_ci` PostgreSQL 测试中覆盖新 provider 支付与退款。**现有 schema 目前只有 plus/pro month/year，不能声明已支持每卷独立 SKU 或机构账单。**
 
@@ -27,7 +28,7 @@
 
 **上线顺序**：先在原主机安全渠道和商户后台核实真实商户主体/产品授权/有效证书及 AppID 绑定；再为新站部署单一 PG 账本，完成备份与恢复；先启用回调结算与只读状态，确认准备就绪，最后仅允许已授权测试账号启用新订单并走一笔真实交易。完成微信官方查单/账本授权/退款/权益冲正/独立用户 E2E 后，才开放正式 UI。
 
-**未完成**：旧站历史订单不可直接视作当前订单；目前没有对当前服务的正式签名支付、微信商户回执或真实商户密钥装载做过线上验收。当前没有正式退款提供者 API 适配器、完整 SKU 商品表或企业机构席位，不得宣传可售。未打通时此实现必须维持关闭。
+**未完成**：旧站历史订单不可直接视作当前订单；目前没有对当前服务的正式签名支付、微信商户回执或真实商户密钥装载做过线上验收。目前只有通过强制开关才能展示的会员购买 UI；没有正式退款提供者 API 适配器、完整考试 SKU 商品表或企业机构席位，不得宣传新增考试商品可售。未打通时此实现必须维持关闭。
 
 ## 回归命令
 

@@ -4,6 +4,9 @@ import { parentFromSessionToken, PARENT_SESSION_COOKIE } from "@/lib/parent-auth
 import { attachVerifiedBilling } from "@/lib/access-context-server";
 import { effectivePlan, classifyStudentIdentity, type AccessContext } from "@/lib/access-policy";
 import MembershipClient from "./MembershipClient";
+import {nativeCheckoutAllowed} from "@/lib/wechat-native-flags";
+import {billingPool} from "@/lib/billing-ledger";
+import type {PublishedMembershipOffer} from "./NativeCheckoutPanel";
 
 export const dynamic = "force-dynamic";
 
@@ -22,5 +25,22 @@ export default async function MembershipPage({searchParams}:{searchParams:Promis
   let available=true;
   try { plan=effectivePlan(await attachVerifiedBilling(identity)); }
   catch { available=false; }
-  return <MembershipClient identity={identity.kind} plan={plan} ledgerAvailable={available}/>;
+  // Never advertise a pay button without explicit merchant approval,
+  // real billing database, and genuinely enabled server-side SKUs.
+  let offers: PublishedMembershipOffer[]=[];
+  if (nativeCheckoutAllowed() && available) {
+    try {
+      const rows=await billingPool().query<{
+        id:string;tier:"plus"|"pro";period:"month"|"year";
+        amount_minor:string;currency:string;
+      }>("SELECT id,tier,period,amount_minor,currency FROM billing_products WHERE enabled=true AND amount_minor>0 AND currency='CNY' ORDER BY tier,period");
+      offers=rows.rows.filter(p=>Number.isSafeInteger(Number(p.amount_minor)) &&
+        Number(p.amount_minor)>0).map(p=>({
+          id:p.id,tier:p.tier,period:p.period,
+          priceMinor:Number(p.amount_minor),currency:"CNY" as const,
+        }));
+    } catch { offers=[]; }
+  }
+  return <MembershipClient identity={identity.kind} plan={plan}
+    ledgerAvailable={available} offers={offers} parentLoggedIn={Boolean(parent)}/>;
 }
