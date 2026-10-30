@@ -42,7 +42,7 @@ function safeObject(json: string): Record<string, unknown> {
 async function signedProviderExchange(
   request: SignedRequest,
   context: WechatNativeApiContext,
-): Promise<Record<string, unknown>> {
+): Promise<{ data: Record<string, unknown>; verifiedBodySha256: string }> {
   // The signed body is sent verbatim. Never use fetch's json/JSON.stringify
   // again after signing; a changed byte invalidates API v3 Authorization.
   const body = request.method === "POST" ? request.bodyText : undefined;
@@ -72,7 +72,7 @@ async function signedProviderExchange(
     nowSeconds: context.nowSeconds,
   });
   if (!verified.ok) throw new WechatPaymentProtocolError("WECHAT_RESPONSE_" + verified.code);
-  return safeObject(rawBody);
+  return { data: safeObject(rawBody), verifiedBodySha256: verified.payloadSha256! };
 }
 
 /**
@@ -87,7 +87,7 @@ export async function createVerifiedWechatNativeCheckout(
   const req = prepareWechatNativeRequest(
     context.merchant,order,context.nowSeconds,context.nonce ?? randomNonce(),
   );
-  const result = await signedProviderExchange(req,context);
+  const {data: result} = await signedProviderExchange(req,context);
   const codeUrl = result.code_url;
   // Official 2026 Native API example:
   // weixin://wxpay/bizpayurl/up?pr=NwY5Mz9&groupid=00
@@ -114,11 +114,11 @@ export async function createVerifiedWechatNativeCheckout(
 export async function queryVerifiedWechatNativePayment(
   context: WechatNativeApiContext,
   expected: NativeOrderSnapshot,
-): Promise<{ status:"NOT_PAID" | "VERIFIED_PAID"; transactionId?: string }> {
+): Promise<{ status:"NOT_PAID" | "VERIFIED_PAID"; transactionId?: string; verifiedBodySha256?: string }> {
   const req = prepareWechatNativeQuery(
     context.merchant,expected.orderId,context.nowSeconds,context.nonce ?? randomNonce(),
   );
-  const result = await signedProviderExchange(req,context);
+  const {data:result,verifiedBodySha256} = await signedProviderExchange(req,context);
   // This independently checks the server-signed official query response
   // against immutable local order. A response cannot be used for another order.
   if (result.trade_state !== "SUCCESS") {
@@ -138,5 +138,5 @@ export async function queryVerifiedWechatNativePayment(
     },
   });
   if (!checked.ok) throw new WechatPaymentProtocolError(checked.code);
-  return {status:"VERIFIED_PAID",transactionId:result.transaction_id as string};
+  return {status:"VERIFIED_PAID",transactionId:result.transaction_id as string,verifiedBodySha256};
 }

@@ -11,16 +11,16 @@
 
 ## 1. 正式账本：只执行一次、仅限明确获授权的生产环境
 
-先检查两台服务器不要混淆；新站代码目录是 `/opt/socthink-math`，与旧 ThinkAI 不同。保证 Postgres 16 正常，并对数据盘空间、备份路径、恢复能力做只读确认。
+先检查两台服务器不要混淆；正式 systemd 服务 `WorkingDirectory` 是 `/opt/socthink-releases/current`，其真实路径指向不可变提交版本目录；`/opt/socthink-math` 是旧的代码树，不是正式进程工作目录。绝不可在旧目录初始化新收款账本。保证 Postgres 16 正常，并对数据盘空间、备份路径、恢复能力做只读确认。
 
 ```bash
-cd /opt/socthink-math
+cd /opt/socthink-releases/current
 python3 ops/payment/provision_billing_postgres.py --check
 # 所有 preflight 均满足、经过运维批准后，才在生产终端执行：
 sudo python3 ops/payment/provision_billing_postgres.py --apply --confirm INITIALIZE_SOCTHINK_BILLING
 ```
 
-该脚本**不在 npm build、GitHub CI、自动部署和日常服务启动时运行**。它只创建专属 Postgres `socthink_billing_prod` 和权限受限的登录角色，运行版本化 `ops/db/001_billing_entitlements.sql`，验证 8 张账本表，并将随机 256 位数据库密码仅存入权限 0600 的 `/etc/socthink-math-billing.env`。通过独立 `40-billing.conf` 添加 systemd 环境文件；不会覆盖既有 `/etc/socthink-math-wechat.env` 用户微信登录配置，不重置旧账号，不开启实际收款；不会输出数据库 URL、密码或任何私钥。
+该脚本**不在 npm build、GitHub CI、自动部署和日常服务启动时运行**。它只创建专属 Postgres `socthink_billing_prod` 和权限受限的登录角色，运行版本化 `ops/db/001_billing_entitlements.sql` 和增量 `ops/db/002_wechat_reconciliation.sql`，验证 8 张账本表及补偿查单列，并将随机 256 位数据库密码仅存入权限 0600 的 `/etc/socthink-math-billing.env`。通过独立 `40-billing.conf` 添加 systemd 环境文件；不会覆盖既有 `/etc/socthink-math-wechat.env` 用户微信登录配置，不重置旧账号，不开启实际收款；不会输出数据库 URL、密码或任何私钥。
 
 **如果遇到现存 DB/角色/envfile、旧数据、只读文件系统或任一部分失败，脚本拒绝覆盖或自动删除。需先运维人工审计、保留数据后修复，绝不可反复运行。**
 
@@ -64,3 +64,15 @@ sudo python3 ops/payment/provision_billing_postgres.py --apply --confirm INITIAL
 - 尚需独立完成正式微信退款 API 适配、唯一账本退款和权益冲正、产品上线审核与全链路真单 E2E。
 - 有多种付费方式时，PC Native 与小程序虚拟支付、H5、JSAPI 分别按真实产品授权操作，不跨场景借用。
 - 不要为了获得交易回执绕过微信认证、跳到其它独立网站收钱而不匹配订单、或让客户支付未交付的产品。
+
+## 6. 官网支付回调丢失时的自动补账
+
+微信支付通知有时间限制，不可依赖通知必达。见
+[本项目唯一查单恢复操作规程](WECHAT_RECOVERY_OPERATIONS.md)。
+补偿程序复用正式 `settleVerifiedOrder` 事务账本与官方签名查单，
+有数据库游标和重试冷却时间，不另建账本。现有服务端 Node 20
+不自带 TS 运行器，因此已将 `tsx` 从开发依赖移至生产依赖；
+**正式部署相应主分支后**才可由获授权运维人员手动安装该文件
+列出的唯一 systemd timer，不可在旧构建或没密钥/没生产 DB
+的机器上启动。退款必须以微信官方最终成功查询确认再冲正，
+不是提交退款申请就直接废止权益。

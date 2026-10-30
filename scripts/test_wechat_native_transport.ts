@@ -83,7 +83,9 @@ const query:WechatNativeTransport=async (url,init)=>{
   return signedResponse(paid);
 };
 const verified=await queryVerifiedWechatNativePayment({...context,transport:query},order);
-assert.deepEqual(verified,{status:"VERIFIED_PAID",transactionId:paid.transaction_id});
+assert.equal(verified.status,"VERIFIED_PAID");
+assert.equal(verified.transactionId,paid.transaction_id);
+assert.match(verified.verifiedBodySha256 ?? "",/^[0-9a-f]{64}$/);
 const notPaid:WechatNativeTransport=async()=>signedResponse({...paid,trade_state:"NOTPAY"});
 assert.deepEqual(await queryVerifiedWechatNativePayment({...context,transport:notPaid},order),{status:"NOT_PAID"});
 const different:WechatNativeTransport=async()=>signedResponse({...paid,amount:{total:999,currency:"CNY"}});
