@@ -103,3 +103,15 @@ GitHub、`public/` 或临时容器层内。
 不增加新表，仍合计 10 张表。官方关闭微信待付订单之前，不得
 仅凭本地计时释放该约束。说明和 CI 验收见
 `docs/engineering/ITEM_ORDER_SINGLE_PAYABLE_20261031.md`。
+
+## 2026-10-31：正式 Native 关单与重新下单
+
+在 006 后新增 `ops/db/007_native_close_proof.sql`，
+最新 schema **001→002→003→004→005→006→007**，仍为 10 张账本表。
+本次代码为新 Native 付款设置 30 分钟支付截止，
+同一个官方查单 worker 在至少 35 分钟后，先验真 GET 再调用
+官方签名关单接口、验证 204 应答签名，再独立 GET 官方 `CLOSED`，
+最后才在 DB 记录正式关单证据、释放唯一待付槽位。
+详情见 `docs/engineering/WECHAT_NATIVE_PROVIDER_CLOSED_20261031.md`。
+正式商户真实关单、实付、退款和机房运行证据仍须独立验收，不可把
+单元测试或 CI 结果标为 `LIVE_PAYMENT_E2E_VERIFIED`。

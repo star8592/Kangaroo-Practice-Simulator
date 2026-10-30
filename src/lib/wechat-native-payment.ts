@@ -27,6 +27,8 @@ export type NativeOrderSnapshot = Readonly<{
   description: string;
   amountMinor: number;
   currency: "CNY";
+  /** Trusted order expiration, seconds since epoch, 2min–7days after signing. */
+  timeExpireSeconds?: number;
 }>;
 
 export type PreparedNativeRequest = Readonly<{
@@ -100,12 +102,19 @@ export function prepareWechatNativeRequest(
   requireProtocol(order.currency === "CNY", "UNSUPPORTED_CURRENCY");
   requireProtocol(Number.isSafeInteger(order.amountMinor) && order.amountMinor > 0, "INVALID_AMOUNT");
   requireProtocol(order.description.trim().length > 0 && order.description.length <= 127, "INVALID_DESCRIPTION");
+  if(order.timeExpireSeconds!==undefined)
+    requireProtocol(Number.isSafeInteger(order.timeExpireSeconds) &&
+      order.timeExpireSeconds>=timestamp+120 &&
+      order.timeExpireSeconds<=timestamp+7*86400,"INVALID_ORDER_EXPIRY");
   const payload = {
     appid: config.appId,
     mchid: config.merchantId,
     description: order.description,
     out_trade_no: order.orderId,
     notify_url: config.notifyUrl,
+    ...(order.timeExpireSeconds!==undefined
+      ? {time_expire:new Date(order.timeExpireSeconds*1000).toISOString()}
+      : {}),
     amount: { total: order.amountMinor, currency: order.currency },
   };
   const bodyText = JSON.stringify(payload);
@@ -146,6 +155,36 @@ export function prepareWechatNativeQuery(
     headers: { "Authorization": auth, "Accept": "application/json" },
     orderId,
   };
+}
+
+export type PreparedNativeClose = Readonly<{
+  method:"POST";
+  url:string;
+  headers:Readonly<Record<string,string>>;
+  bodyText:string;
+  orderId:string;
+}>;
+
+/** Official API v3 close. Do NOT mark the local order closed when this
+ * signed request is merely constructed or sent; require verified response
+ * and an independent official CLOSED query afterward.
+ */
+export function prepareWechatNativeClose(
+  config:NativeMerchantConfig,orderId:string,timestamp:number,nonce:string,
+):PreparedNativeClose{
+  requireProtocol(validTradeNo(orderId),"INVALID_ORDER_ID");
+  requireProtocol(/^[0-9]{8,15}$/.test(config.merchantId),"INVALID_MERCHANT");
+  requireProtocol(/^[0-9A-Fa-f]{8,64}$/.test(config.merchantCertificateSerial),
+    "INVALID_CERT_SERIAL");
+  const path=`/v3/pay/transactions/out-trade-no/${orderId}/close`;
+  const bodyText=JSON.stringify({mchid:config.merchantId});
+  const signature=signWechatV3Request("POST",path,timestamp,nonce,bodyText,
+    config.merchantPrivateKey);
+  const auth=`WECHATPAY2-SHA256-RSA2048 mchid="${config.merchantId}",nonce_str="${nonce}",signature="${signature}",timestamp="${timestamp}",serial_no="${config.merchantCertificateSerial}"`;
+  return {method:"POST",url:"https://api.mch.weixin.qq.com"+path,
+    headers:{"Authorization":auth,"Accept":"application/json",
+      "Content-Type":"application/json"},
+    bodyText,orderId};
 }
 
 type HeaderBag = Readonly<Record<string, string | undefined>>;

@@ -103,3 +103,13 @@ SOCTHINK_DIGITAL_FILES_DIR=/srv/socthink/private-resources \
 pending/paid 多笔订单都必须先资金级对账，迁移不会自动删除。
 详见 `docs/engineering/ITEM_ORDER_SINGLE_PAYABLE_20261031.md`，
 尤其注意微信官方关单并未完成，关闭收款开关不得影响已支付订单的交付。
+
+## 2026-10-31：官方关单增量迁移
+
+在 006 防重复收费之后添加 007 官方微信关单证明字段。
+最新 schema 依次为 001→002→003→004→005→006→007，仍 10 表。
+原 006 文档中的“官方关单未完成”是其提交时的历史状态：
+现有代码已实现 30分钟截止、官方签名 204 关单及独立签名 CLOSED
+查单的服务端路径；**尚无正式生产商户实测回执**。
+完整验证及未解决的业务边界请见
+`docs/engineering/WECHAT_NATIVE_PROVIDER_CLOSED_20261031.md`。

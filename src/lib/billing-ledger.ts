@@ -231,6 +231,46 @@ export async function refundVerifiedOrder(r:VerifiedPaymentReceipt){
     return {orderId:o.id,revoked:true};
   });
 }
+/** A server-verified, official CLOSED query (not an HTTP request timeout).
+ * No client-supplied flag or browser cancellation can release the payable slot.
+ */
+export type VerifiedNativeCloseProof={
+  orderId:string;
+  payloadSha256:string;
+  verifiedAt:Date;
+  signatureVerified:true;
+  providerClosedConfirmed:true;
+};
+
+export async function closeVerifiedNativeOrder(proof:VerifiedNativeCloseProof){
+  identifier(proof.orderId);
+  if(proof.signatureVerified!==true || proof.providerClosedConfirmed!==true ||
+     !/^[a-f0-9]{64}$/.test(proof.payloadSha256) ||
+     !Number.isFinite(proof.verifiedAt?.getTime()))
+    throw new BillingConflictError("Unverified provider close evidence");
+  return transaction(async c=>{
+    const result=await c.query<{id:string;state:string;provider:string;
+      close_provider_payload_sha256:string|null}>(`
+      SELECT id,state,provider,close_provider_payload_sha256
+      FROM billing_orders WHERE id=$1 FOR UPDATE`,[proof.orderId]);
+    const o=result.rows[0];
+    if(!o || o.provider!=="wechat_native")
+      throw new BillingConflictError("Native order not found");
+    if(o.state==="closed"){
+      if(o.close_provider_payload_sha256!==proof.payloadSha256)
+        throw new BillingConflictError("Conflicting official close proof");
+      return {orderId:o.id,closed:false};
+    }
+    if(o.state!=="pending")
+      throw new BillingConflictError("Paid/refunded order cannot be closed");
+    await c.query(`UPDATE billing_orders
+      SET state='closed',closed_at=$2,close_provider_payload_sha256=$3
+      WHERE id=$1 AND state='pending'`,
+      [o.id,proof.verifiedAt,proof.payloadSha256]);
+    return {orderId:o.id,closed:true};
+  });
+}
+
 export async function verifiedGrantsForParent(parentId:string,now=new Date()):Promise<AccessGrant[]>{
   const rows=await billingPool().query<{
     payer_parent_id:string;tier:"plus"|"pro";starts_at:Date;ends_at:Date;revoked_at:Date|null;

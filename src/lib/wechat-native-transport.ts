@@ -1,6 +1,6 @@
 import { randomBytes, type KeyObject } from "node:crypto";
 import {
-  prepareWechatNativeQuery, prepareWechatNativeRequest,
+  prepareWechatNativeQuery, prepareWechatNativeRequest, prepareWechatNativeClose,
   verifyWechatV3Notification, validateOfficialWechatPaidTrade,
   WechatPaymentProtocolError,
   type NativeMerchantConfig, type NativeOrderSnapshot,
@@ -111,10 +111,37 @@ export async function createVerifiedWechatNativeCheckout(
   return { orderId:order.orderId, codeUrl };
 }
 
+/** Only acknowledge a provider-verified HTTP 204 and signed empty response.
+ * Caller MUST query official CLOSED state before touching the local ledger.
+ */
+export async function closeVerifiedWechatNativePayment(
+  context:WechatNativeApiContext,orderId:string,
+):Promise<void>{
+  const req=prepareWechatNativeClose(context.merchant,orderId,context.nowSeconds,
+    context.nonce??randomNonce());
+  let response:Response;
+  try{
+    response=await (context.transport??fetch)(req.url,{
+      method:req.method,headers:req.headers,body:req.bodyText,
+      redirect:"error",signal:AbortSignal.timeout(10000),cache:"no-store",
+    });
+  }catch{throw new WechatPaymentProtocolError("WECHAT_CLOSE_NETWORK_FAILURE");}
+  if(response.status!==204)throw new WechatPaymentProtocolError("WECHAT_CLOSE_NOT_ACKED");
+  const body=await response.text();
+  if(body!=="")throw new WechatPaymentProtocolError("WECHAT_CLOSE_UNEXPECTED_BODY");
+  const proof=verifyWechatV3Notification({
+    headers:Object.fromEntries(response.headers.entries()),rawBody:body,
+    wechatPayPublicKey:context.wechatPayPublicKey,
+    expectedWechatPaySerial:context.wechatPayPublicKeyId,
+    nowSeconds:context.nowSeconds,
+  });
+  if(!proof.ok)throw new WechatPaymentProtocolError("WECHAT_CLOSE_"+proof.code);
+}
+
 export async function queryVerifiedWechatNativePayment(
   context: WechatNativeApiContext,
   expected: NativeOrderSnapshot,
-): Promise<{ status:"NOT_PAID" | "VERIFIED_PAID"; transactionId?: string; verifiedBodySha256?: string }> {
+): Promise<{ status:"NOT_PAID" | "VERIFIED_PAID" | "VERIFIED_CLOSED"; transactionId?: string; verifiedBodySha256?: string }> {
   const req = prepareWechatNativeQuery(
     context.merchant,expected.orderId,context.nowSeconds,context.nonce ?? randomNonce(),
   );
@@ -126,7 +153,11 @@ export async function queryVerifiedWechatNativePayment(
         result.mchid !== context.merchant.merchantId ||
         result.appid !== context.merchant.appId)
       throw new WechatPaymentProtocolError("QUERY_ORDER_MISMATCH");
-    return {status:"NOT_PAID"};
+    if(result.trade_state==="CLOSED")
+      return {status:"VERIFIED_CLOSED",verifiedBodySha256};
+    if(result.trade_state==="NOTPAY"||result.trade_state==="USERPAYING")
+      return {status:"NOT_PAID"};
+    throw new WechatPaymentProtocolError("UNEXPECTED_OFFICIAL_TRADE_STATE");
   }
   const checked = validateOfficialWechatPaidTrade({
     trade: result,
