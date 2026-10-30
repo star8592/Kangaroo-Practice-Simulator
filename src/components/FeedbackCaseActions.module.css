@@ -1,0 +1,7 @@
+.container{display:grid;gap:8px;min-width:185px;max-width:280px}
+.status{font-size:12px;font-weight:800;color:var(--ink)}
+.form{display:grid;gap:7px}
+.form select,.form textarea,.form input{width:100%;min-width:0;border:1px solid var(--line);border-radius:7px;padding:8px;font-size:12px;font-family:inherit;background:var(--panel);color:var(--ink)}
+.form button{border:0;border-radius:7px;background:var(--ink);color:white;padding:10px;font-size:12px;cursor:pointer}
+.form button:disabled{opacity:.55;cursor:not-allowed}
+.error{color:#b42318;font-size:12px}

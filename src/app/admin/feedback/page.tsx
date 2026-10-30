@@ -3,6 +3,8 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { isAdmin, SESSION_COOKIE, userFromSessionToken } from "@/lib/auth";
 import { readCustomerFeedbackOverview } from "@/lib/customer-feedback-admin";
+import { readCaseStates, type CaseStatus } from "@/lib/customer-feedback-workflow";
+import FeedbackCaseActions from "@/components/FeedbackCaseActions";
 import AdminOperationsNav from "@/components/AdminOperationsNav";
 import styles from "@/components/AdminOperations.module.css";
 
@@ -27,6 +29,8 @@ export default async function FeedbackPage() {
   if (!user) redirect("/admin/login");
   if (!isAdmin(user)) redirect("/");
   const data = readCustomerFeedbackOverview({ days: 30, limit: 100 });
+  const cases = readCaseStates();
+  const pending = data.items.filter(x => !["closed","dismissed"].includes(cases.get(x.id)?.status || "open")).length;
   return <main className={styles.shell}>
     <header className={styles.head}>
       <div><span className={styles.eyebrow}>SOC THINK · 客户驱动</span>
@@ -44,12 +48,12 @@ export default async function FeedbackPage() {
     </section>
     <section className={styles.panel}>
       <div className={styles.panelHead}>
-        <h2>反馈队列（优先级排序）</h2>
-        <span className={styles.pill}>{data.total === 0 ? "尚无实际反馈" : "显示前" + data.items.length + "条"}</span>
+        <h2>反馈处理队列（优先级排序）</h2>
+        <span className={styles.pill}>{data.total === 0 ? "尚无实际反馈" : "待处理 " + pending + " 条"}</span>
       </div>
       {data.items.length === 0 ? <p className={styles.empty}>目前没有可以处理的真实用户反馈；这不等于用户满意度已获验证。</p> :
         <div className={styles.tableWrap}><table className={styles.table}>
-          <thead><tr><th>类型</th><th>考试与题目</th><th>用户意见</th><th>提交时间</th></tr></thead>
+          <thead><tr><th>类型</th><th>考试与题目</th><th>用户意见</th><th>提交时间</th><th>核查与处理</th></tr></thead>
           <tbody>{data.items.map(item => <tr key={item.id}>
             <td><strong>{categoryLabel[item.category]}</strong>
               <small>{item.source === "review" ? "逐题复盘" : "成绩报告"}</small></td>
@@ -57,6 +61,13 @@ export default async function FeedbackPage() {
             <td>{item.message ? item.message : "用户未补充文字"}
               {item.rating !== undefined && <small>体验评分：{item.rating} / 5</small>}</td>
             <td>{time(item.createdAt)}</td>
+            <td><FeedbackCaseActions key={item.id + ":" + (cases.get(item.id)?.version || 0)} feedbackId={item.id}
+              status={(cases.get(item.id)?.status || "open") as CaseStatus}
+              version={cases.get(item.id)?.version || 0}/>
+              {cases.get(item.id)?.lastNote && <small>上次记录：{cases.get(item.id)?.lastNote}</small>}
+              {cases.get(item.id)?.evidenceRef && <small>证据：{cases.get(item.id)?.evidenceRef}</small>}
+              {cases.get(item.id)?.updatedAt && <small>更新时间：{time(cases.get(item.id)!.updatedAt!)}</small>}
+            </td>
           </tr>)}</tbody>
         </table></div>}
       {data.truncated && <p className={styles.note}>只显示优先级最高的100条。完整数据保存在受限服务端，不提供公开下载。</p>}
@@ -65,7 +76,7 @@ export default async function FeedbackPage() {
     </section>
     <section className={styles.panel}>
       <h2>处理原则</h2>
-      <p>题目答案争议优先人工复核，依据原题、计算与题目版本更正；解答与报告意见依据用户可理解性改进。此页面首先完成收集和分类，不会根据一条投诉自动改写试卷或发布未经审查的解析。</p>
+      <p>严格按「待核查 → 核查中 → 已修复／有结论 → 已复测 → 已归档」处理，疑似误报可在核查中附证据驳回，复测失败可退回核查。每一步独立追加审计记录，禁止覆盖原始反馈或依据投诉直接修改试题答案；完成状态不代表客户本人确认满意。</p>
     </section>
   </main>;
 }
