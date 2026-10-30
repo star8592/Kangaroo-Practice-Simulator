@@ -1,0 +1,45 @@
+{
+  "schemaVersion": "1.0",
+  "dataset": "wuhan-k12-xiaoshengchu-2026",
+  "visibility": "staging-only",
+  "items": [
+    {
+      "sourceId": "EXT-71446928acdc6256",
+      "sourceUrl": "https://m.sohu.com/media/100001390",
+      "title": "博奥鹏程教育历史文章栏目",
+      "provider": "博奥鹏程教育",
+      "schoolHint": "多校/跨平台",
+      "examYearLabel": "2026届",
+      "subjectHint": "未判定",
+      "sourceType": "third_party_article",
+      "recordType": "发布账号与历史文章",
+      "publishedAt": null,
+      "access": "public_page",
+      "hasAnswerIndexMention": false,
+      "rightsStatus": "unverified",
+      "authenticityStatus": "unverified",
+      "publicationStatus": "staging_only",
+      "publishable": false,
+      "fullExamObtained": false
+    },
+    {
+      "sourceId": "EXT-3ed14ede3f9de25f",
+      "sourceUrl": "https://www.whjfjy.cn/news/6081.html",
+      "title": "2026届多校游园回忆题与活动报道",
+      "provider": "尖锋教育",
+      "schoolHint": "多校/跨平台",
+      "examYearLabel": "2026届",
+      "subjectHint": "未判定",
+      "sourceType": "third_party_article",
+      "recordType": "回忆题与活动",
+      "publishedAt": "2026-01",
+      "access": "public_page",
+      "hasAnswerIndexMention": false,
+      "rightsStatus": "unverified",
+      "authenticityStatus": "unverified",
+      "publicationStatus": "staging_only",
+      "publishable": false,
+      "fullExamObtained": false
+    }
+  ]
+}
