@@ -1,4 +1,4 @@
-.page{max-width:1200px;margin:0 auto;padding:48px 24px 80px;color:var(--foreground)}
+.page{max-width:var(--layout-standard);margin:0 auto;padding:48px 24px 80px;color:var(--foreground)}
 .hero{padding:12px 0 30px}.eyebrow{font-size:12px;letter-spacing:.14em;font-weight:700;color:#4778ac}
 .hero h1{font-size:clamp(28px,4vw,48px);line-height:1.18;margin:12px 0 16px}
 .hero p{max-width:760px;line-height:1.85;color:var(--muted-foreground,#64748b);font-size:16px}
