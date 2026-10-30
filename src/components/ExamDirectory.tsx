@@ -11,7 +11,7 @@ const LABEL={
     eyebrow:"EXAM INDEX / 全国考试导航",
     title:"全部考试，一站查找",
     description:"按考试领域、学科和方向查找。可以使用的服务直接打开，建设中的方向不显示虚假考试和购买入口。",
-    search:"搜索考试名称、考试方向或关键词",all:"考试分类",topics:"考试方向",
+    search:"搜索考试名称、考试方向或关键词",submit:"搜索",all:"考试分类",topics:"考试方向",
     ready:"立即使用",soon:"内容准备中",available:"部分内容已开放",
     empty:"没有找到相关考试方向，请调整搜索条件。",reset:"清空",
     count:"考试方向",categories:"考试大类",more:"查看可用练习卷",
@@ -21,7 +21,7 @@ const LABEL={
     eyebrow:"EXAM INDEX / ALL CATEGORIES",
     title:"Find any exam in one place",
     description:"Browse exam areas, subjects and topics. Open real practice immediately; planned exams never lead to fictional checkouts.",
-    search:"Search exam, subject or keyword",all:"Categories",topics:"Exam directions",
+    search:"Search exam, subject or keyword",submit:"Search",all:"Categories",topics:"Exam directions",
     ready:"Open practice",soon:"Coming later",available:"Some services available",
     empty:"No matching exams. Try another keyword.",reset:"Clear",
     count:"directions",categories:"exam categories",more:"Find available practice papers",
@@ -32,9 +32,9 @@ const LABEL={
 const DOMAIN_BY_ID=new Map(ASSESSMENT_DOMAINS.map(d=>[d.id,d]));
 const TOTAL=EXAM_DIRECTORY.reduce((sum,group)=>sum+group.topics.length,0);
 
-export default function ExamDirectory(){
+export default function ExamDirectory({initialQuery=""}:{initialQuery?:string}){
   const lang=useSiteLanguage(),t=LABEL[lang];
-  const [query,setQuery]=useState("");
+  const [query,setQuery]=useState(initialQuery);
   const matched=useMemo(()=>{
     const term=query.trim().toLocaleLowerCase();
     return EXAM_DIRECTORY.map(group=>{
@@ -56,12 +56,13 @@ export default function ExamDirectory(){
       </div>
       <div className={styles.searchBar}>
         <label htmlFor="exam-directory-search">{t.search}</label>
-        <div><svg width="20" height="20" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <form method="get" action="/assessments"><svg width="20" height="20" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <circle cx="11" cy="11" r="7"/><path d="m16 16 5 5"/></svg>
-          <input id="exam-directory-search" type="search" value={query} placeholder={t.search}
+          <input id="exam-directory-search" type="search" name="q" maxLength={160} value={query} placeholder={t.search}
             onChange={e=>setQuery(e.target.value)}/>
           {query&&<button type="button" onClick={()=>setQuery("")}>{t.reset}</button>}
-        </div>
+          <button type="submit">{t.submit}</button>
+        </form>
       </div>
     </header>
     <div className={styles.layout}>

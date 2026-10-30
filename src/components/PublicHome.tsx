@@ -98,14 +98,14 @@ export default function PublicHome(){
         <p className={styles.heroBody}>{t.description}</p>
         <div className={styles.searchPanel}>
           <label htmlFor="portal-search">{t.searchTitle}</label>
-          <div className={styles.searchField}>
+          <form className={styles.searchField} action="/assessments" method="get" role="search">
             <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="7"/><path d="m16 16 5 5"/></svg>
-            <input id="portal-search" type="search" value={search} placeholder={t.search}
+            <input id="portal-search" type="search" name="q" maxLength={160} value={search} placeholder={t.search}
               aria-label={t.searchLabel} onChange={e=>setSearch(e.target.value)}/>
-            <a className={styles.searchGo} href="#portal-directory">{t.jump}</a>
-          </div>
+            <button type="submit" className={styles.searchGo}>{t.jump}</button>
+          </form>
           <div className={styles.popular}><span>{t.popular}</span>
-            {POPULAR.map(item=><a key={item.zh} href="#portal-directory" onClick={()=>setSearch(item.q)}>{item[lang]}</a>)}
+            {POPULAR.map(item=><Link key={item.zh} href={`/assessments?q=${encodeURIComponent(item.q)}`}>{item[lang]}</Link>)}
           </div>
         </div>
       </div>

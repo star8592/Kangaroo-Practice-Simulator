@@ -55,3 +55,30 @@ test("new portal offers real search, seven-domain navigation and working resourc
   await page.getByRole("button",{name:"清除条件"}).click();
   await expect(page.getByRole("searchbox")).toHaveValue("");
 });
+
+test("exam search works with JavaScript disabled (before hydration)",async({browser})=>{
+  const context=await browser.newContext({javaScriptEnabled:false,viewport:{width:390,height:844}});
+  try{
+    const page=await context.newPage();
+    await page.goto("/");
+    const form=page.locator('form[action="/assessments"]');
+    await expect(form.locator('input[name="q"]')).toBeVisible();
+    await form.locator('input[name="q"]').fill("SQL");
+    await form.locator('button[type="submit"]').click();
+    await expect(page).toHaveURL(/\/assessments\?q=SQL/);
+    await expect(page.getByText("SQL 数据库实操",{exact:true})).toBeVisible();
+    await expect(page.getByText("雅思 IELTS",{exact:true})).toHaveCount(0);
+
+    await page.goto("/assessments?q=%E9%9B%85%E6%80%9D");
+    await expect(page.getByText("雅思 IELTS",{exact:true})).toBeVisible();
+    await expect(page.getByText("SQL 数据库实操",{exact:true})).toHaveCount(0);
+
+    const directoryForm=page.locator('form[action="/assessments"]');
+    await directoryForm.locator('input[name="q"]').fill("SQL");
+    await directoryForm.locator('button[type="submit"]').click();
+    await expect(page).toHaveURL(/\/assessments\?q=SQL/);
+    await expect(page.getByText("SQL 数据库实操",{exact:true})).toBeVisible();
+  }finally{
+    await context.close();
+  }
+});

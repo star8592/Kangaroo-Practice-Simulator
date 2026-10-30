@@ -24,7 +24,7 @@
 .searchField input:focus-visible{outline:none}
 .searchField:focus-within{box-shadow:0 0 0 3px #dbe8fa;border-color:#3072bf}
 .searchGo{display:inline-flex;align-items:center;justify-content:center;white-space:nowrap;background:var(--portal-blue);color:#fff;border-radius:9px;font-weight:750;font-size:14px;padding:0 19px;min-height:42px}
-.searchGo:hover{background:var(--portal-blue-strong)}
+.searchGo:hover{background:var(--portal-blue-strong)}\n.searchGo{border:0;cursor:pointer;font:inherit;font-size:14px;font-weight:750}
 .popular{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-top:13px}
 .popular>span{font-size:12px;color:var(--portal-muted);margin-right:2px}
 .popular a{padding:5px 11px;border-radius:99px;background:#f0f4fa;border:1px solid #e4eaf3;color:#425975;font-weight:650;font-size:12px}

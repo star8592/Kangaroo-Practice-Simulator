@@ -26,7 +26,7 @@ const COPY={
   }
 } as const;
 
-export default function AssessmentPortalClient(){
+export default function AssessmentPortalClient({initialQuery=""}:{initialQuery?:string}){
   const lang=useSiteLanguage(),ui=COPY[lang];
   return <div>
     <div className={styles.shell}>
@@ -41,7 +41,7 @@ export default function AssessmentPortalClient(){
         </div>
       </section>
     </div>
-    <ExamDirectory/>
+    <ExamDirectory initialQuery={initialQuery}/>
     <div className={styles.shell}>
       <section className={styles.flow}>
         <span className={styles.eyebrow}>ONE PLATFORM / SHARED ASSESSMENT ENGINE</span>
