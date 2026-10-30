@@ -20,7 +20,7 @@ checks={
     'must_not':['Professional Diagnostic Report','Professional Learning Diagnostic','Ability & Strategy Profile','Evidence-based Findings','Personalized Prescription','Question-level Evidence','Growth Record & Methodology'],
   },
   'src/components/PublicHome.tsx':{
-    'must':['INTERNATIONAL_SHOWCASE_COMPETITIONS','worldRegionName','国际数学竞赛，一目了然','进入赛事管家','参加竞赛模拟','开始计算训练','/events?event='],
+    'must':['EXAM_DIRECTORY','ASSESSMENT_DOMAINS','搜索考试名称','考试资料，找到就能用','参加竞赛模拟','开始计算训练','微信登录 / 注册','内容准备中'],
     'must_not':['全球数学赛事，一站式管理','中国与世界其他地区的数学赛事平等呈现','查看国际数学竞赛','不止袋鼠：每项赛事都是独立业务入口'],
   },
   'src/components/HomeClient.tsx':{
