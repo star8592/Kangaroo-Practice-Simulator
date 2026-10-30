@@ -14,7 +14,7 @@
     "admin:create": "tsx scripts/create_admin.ts",
     "test:smoke": "python3 scripts/smoke_test.py",
     "test:brand": "python3 scripts/brand_audit.py",
-    "prebuild": "npm run test:rights && npm run test:china-companions && npm run test:world-companions && npm run test:world-follows && npm run test:competition-intelligence && npm run test:competition-source-watch && python3 scripts/brand_audit.py",
+    "prebuild": "npm run test:rights && npm run test:china-companions && npm run test:world-companions && npm run test:world-follows && npm run test:competition-intelligence && npm run test:competition-source-watch && python3 scripts/brand_audit.py && npm run test:xiaoshengchu",
     "test:maa": "tsx scripts/test_maa_scoring.ts",
     "test:maa-library": "python3 scripts/validate_maa_library.py",
     "test:competition-identity": "python3 scripts/test_competition_identity.py",
@@ -101,7 +101,8 @@
     "test:seamo": "python3 scripts/test_seamo_original_mocks.py && python3 scripts/test_seamo_revised.py && tsx scripts/test_seamo_integration.ts && python3 scripts/test_seamo_no_private.py && tsx scripts/prepare_seamo_readaloud.ts && tsx scripts/test_seamo_native_miniapp.ts",
     "test:wechat-native-boundary": "tsx scripts/test_wechat_native_payment.ts",
     "test:wechat-pay-scopes": "node scripts/test_wechat_pay_readiness.mjs && node scripts/test_wechat_pay_channel_scopes.mjs",
-    "test:wechat-native-transport": "tsx scripts/test_wechat_native_transport.ts"
+    "test:wechat-native-transport": "tsx scripts/test_wechat_native_transport.ts",
+    "test:xiaoshengchu": "node scripts/validate_xiaoshengchu_staging.mjs && tsx scripts/test_xiaoshengchu_directory.ts"
   },
   "dependencies": {
     "next": "16.4.3",
