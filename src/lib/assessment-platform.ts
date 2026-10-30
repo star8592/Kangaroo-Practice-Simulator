@@ -50,10 +50,10 @@ export const ASSESSMENT_DOMAINS: readonly AssessmentDomain[] = [
   },
   {
     id:"language",name:{zh:"语言与国际考试",en:"Language & international exams"},
-    summary:{zh:"阅读、听力、口语、写作与国际标准化考试。",en:"Reading, listening, speaking, writing and standardized exams."},
+    summary:{zh:"剑桥 KET/PET、雅思、2026 新版托福、PTE 的 AI 考官式口语模拟及听读写考试。",en:"AI-examiner oral mocks for Cambridge KET/PET, IELTS, updated TOEFL and PTE, plus other language skills."},
     audience:{zh:"英语学习者及留学申请者",en:"Language learners and applicants"},
     readiness:"planned",formats:["single-choice","listening","speaking","essay"],
-    liveRoutes:[],nextProof:{zh:"先验证合法来源与口语/写作评分，再开放真实样卷。",en:"Prove source rights and speaking/writing rubrics before launch."},
+    liveRoutes:[],nextProof:{zh:"优先打通有录音证据的 AI 考官口试，核验考试制度、口语评分、音频持久化与合法题源后再开放。",en:"Prove versioned oral-exam flow, audio evidence, scoring calibration and source rights before launch."},
   },
   {
     id:"university",name:{zh:"大学与研究生考试",en:"University & postgraduate"},
