@@ -72,10 +72,13 @@ export function canonicalXiaoshengchuSchool(hint: string, title = ""): string {
   const explicit = hint.trim();
   const generic = /^(?:其他|未标注|多校|综合|待归属|未知|未判定)/.test(explicit);
   const primary = generic ? title : explicit;
-  const matched = schoolAliases.find(([alias]) => primary.includes(alias));
-  if (matched) return matched[1];
-  // Never present a generic/multi-school article as a school's authenticated paper.
-  return generic || !primary ? "综合资料／学校待核" : explicit;
+  const matches = [...new Set(schoolAliases
+    .filter(([alias]) => primary.includes(alias)).map(([,canonical])=>canonical))];
+  if (matches.length === 1) return matches[0];
+  // A multi-school article does not belong to one school, even when both
+  // school names are present in its title or in a metadata hint.
+  if (matches.length > 1 || generic || !primary) return "综合资料／学校待核";
+  return explicit;
 }
 
 export function classifyXiaoshengchuSource(source: Pick<StagedSource, "title" | "recordType">): XiaoshengchuKind {
