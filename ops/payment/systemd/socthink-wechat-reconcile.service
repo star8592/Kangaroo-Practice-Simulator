@@ -1,0 +1,31 @@
+[Unit]
+Description=SOCTHINK verified WeChat Native missed-callback reconciliation
+Wants=network-online.target
+After=network-online.target postgresql.service
+ConditionPathExists=/etc/socthink-math-billing.env
+ConditionPathExists=/etc/socthink-math-payment.env
+
+[Service]
+Type=oneshot
+# Production's existing socthink-math.service currently runs as root.
+# Move both app and this worker to a dedicated non-root service identity
+# after secure key ACLs are migrated together.
+User=root
+WorkingDirectory=/opt/socthink-releases/current
+Environment=NODE_ENV=production
+EnvironmentFile=/etc/socthink-math-billing.env
+EnvironmentFile=/etc/socthink-math-payment.env
+ExecStart=/usr/bin/npm run --silent payment:reconcile-native
+TimeoutStartSec=300
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+CapabilityBoundingSet=
+
+[Install]
+WantedBy=multi-user.target

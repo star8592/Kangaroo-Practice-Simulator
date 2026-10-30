@@ -102,7 +102,9 @@
     "test:wechat-native-boundary": "tsx scripts/test_wechat_native_payment.ts",
     "test:wechat-pay-scopes": "node scripts/test_wechat_pay_readiness.mjs && node scripts/test_wechat_pay_channel_scopes.mjs",
     "test:wechat-native-transport": "tsx scripts/test_wechat_native_transport.ts",
-    "test:wechat-native-flags": "tsx scripts/test_wechat_native_checkout_flags.ts"
+    "test:wechat-native-flags": "tsx scripts/test_wechat_native_checkout_flags.ts",
+    "test:wechat-native-recovery": "tsx scripts/test_wechat_native_recovery.ts",
+    "payment:reconcile-native": "tsx scripts/reconcile_wechat_native_orders.ts"
   },
   "dependencies": {
     "next": "16.4.3",
@@ -111,7 +113,8 @@
     "qrcode": "^1.5.4",
     "react": "19.2.8",
     "react-dom": "19.2.8",
-    "three": "^0.186.0"
+    "three": "^0.186.0",
+    "tsx": "^4.23.13"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",
@@ -126,7 +129,6 @@
     "eslint": "10.0.1",
     "eslint-plugin-react-hooks": "7.1.1",
     "globals": "17.13.0",
-    "tsx": "^4.23.13",
     "typescript": "^5",
     "typescript-eslint": "8.71.1"
   },

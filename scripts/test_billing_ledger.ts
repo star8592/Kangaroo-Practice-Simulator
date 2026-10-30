@@ -22,6 +22,7 @@ function receipt(orderId:string, eventId:string, transactionId:string, amountMin
 }
 async function run() {
   await db.query(fs.readFileSync("ops/db/001_billing_entitlements.sql","utf8"));
+  await db.query(fs.readFileSync("ops/db/002_wechat_reconciliation.sql","utf8"));
   // The caller uses a throwaway database; no production fixture or customer data.
   await db.query("TRUNCATE billing_usage_events,billing_usage_buckets,billing_family_links,billing_entitlements,billing_payment_events,billing_orders,billing_products RESTART IDENTITY CASCADE");
   await db.query("INSERT INTO billing_products(id,tier,period,amount_minor,currency,enabled) VALUES('plus_month','plus','month',3900,'CNY',true)");
@@ -37,6 +38,13 @@ async function run() {
   // Native payment uses the exact same PostgreSQL orders and entitlements.
   const native=await createBillingOrder("par_native01","plus_month","wechat_native");
   assert.equal((await db.query("SELECT provider FROM billing_orders WHERE id=$1",[native.id])).rows[0].provider,"wechat_native");
+  const beforeAttempt=await db.query(
+    "SELECT reconcile_checked_at FROM billing_orders WHERE id=$1",[native.id]);
+  assert.equal(beforeAttempt.rows[0].reconcile_checked_at,null);
+  await db.query("UPDATE billing_orders SET reconcile_checked_at=now() WHERE id=$1",[native.id]);
+  assert.ok((await db.query(
+    "SELECT reconcile_checked_at IS NOT NULL AS checked FROM billing_orders WHERE id=$1",
+    [native.id])).rows[0].checked);
   const nativeReceipt={...receipt(native.id,"native-paid-01","native-tx-01"),provider:"wechat_native" as const};
   assert.equal((await settleVerifiedOrder(nativeReceipt)).created,true);
   assert.equal((await settleVerifiedOrder(nativeReceipt)).created,false);

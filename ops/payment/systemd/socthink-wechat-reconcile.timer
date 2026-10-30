@@ -1,0 +1,12 @@
+[Unit]
+Description=SOCTHINK single official-query payment recovery cadence
+
+[Timer]
+OnBootSec=2min
+OnUnitInactiveSec=2min
+Unit=socthink-wechat-reconcile.service
+AccuracySec=15s
+RandomizedDelaySec=5s
+
+[Install]
+WantedBy=timers.target
