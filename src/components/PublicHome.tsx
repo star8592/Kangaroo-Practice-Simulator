@@ -9,7 +9,7 @@ import styles from "./PublicHome.module.css";
 
 const TEXT={
   zh:{
-    eyebrow:"SOCTHINK · 考试与学习资源平台",title:"考试资料，找到就能用。",subtitle:"从小升初到职业资格，一站找到考试、真题资料与学习训练。",
+    eyebrow:"SOCTHINK · 考试与学习资源平台",title:"找考试，查资料，立即开练。",subtitle:"从小升初到职业资格，一站找到考试、真题资料与学习训练。",
     description:"七大考试领域统一分类。可用内容直接开练，尚在建设的项目清晰标记，不让你在空白页面里反复寻找。",
     search:"搜索考试名称、学科或关键词，例如 AMC、雅思、考研、SQL",
     searchLabel:"搜索考试",searchTitle:"从一项考试开始",popular:"大家常找",found:"搜索结果",
@@ -89,11 +89,11 @@ export default function PublicHome(){
     [t.step3,t.step3d],[t.step4,t.step4d],
   ] as const;
 
-  return <main className={styles.portal}>
+  return <div className={styles.portal}>
     <section className={styles.hero}>
       <div className={styles.heroMain}>
         <div className={styles.heroEyebrow}><span className={styles.eyebrowDot}/> {t.eyebrow}</div>
-        <h1>{t.title}</h1>
+        <h1>{lang==="zh"?<>找考试，查资料，<span>立即开练。</span></>:t.title}</h1>
         <p className={styles.heroLead}>{t.subtitle}</p>
         <p className={styles.heroBody}>{t.description}</p>
         <div className={styles.searchPanel}>
@@ -105,7 +105,7 @@ export default function PublicHome(){
             <a className={styles.searchGo} href="#portal-directory">{t.jump}</a>
           </div>
           <div className={styles.popular}><span>{t.popular}</span>
-            {POPULAR.map(item=><button key={item.zh} type="button" onClick={()=>setSearch(item.q)}>{item[lang]}</button>)}
+            {POPULAR.map(item=><a key={item.zh} href="#portal-directory" onClick={()=>setSearch(item.q)}>{item[lang]}</a>)}
           </div>
         </div>
       </div>
@@ -177,5 +177,5 @@ export default function PublicHome(){
         <div key={title} className={styles.step}><span>{String(i+1).padStart(2,"0")}</span>
           <h3>{title}</h3><p>{description}</p></div>)}</div>
     </section>
-  </main>;
+  </div>;
 }
