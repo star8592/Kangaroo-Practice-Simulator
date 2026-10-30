@@ -115,3 +115,14 @@ GitHub、`public/` 或临时容器层内。
 详情见 `docs/engineering/WECHAT_NATIVE_PROVIDER_CLOSED_20261031.md`。
 正式商户真实关单、实付、退款和机房运行证据仍须独立验收，不可把
 单元测试或 CI 结果标为 `LIVE_PAYMENT_E2E_VERIFIED`。
+
+## 2026-10-31 数字产品无理由退款告知与订单确认
+
+生产初建 migraton 新增 `ops/db/008_digital_sales_consent.sql`：
+正式最新顺序为 001→002→003→004→005→006→007→008，仍为 10 张表。
+新网站订单均需购买前主动确认数字内容开通/交付后不适用无理由退款的条款，
+并在唯一账本留存固定规则版本与服务器时间；未经确认不能创建 Native 二维码。
+法律规定的未履约、严重不符与质量救济依法处理，不能仅凭“售出不退”
+拒绝一切售后。详见 `docs/legal/DIGITAL_SALES_POLICY_V1_20261031.md`
+及 `docs/engineering/DIGITAL_SALES_POLICY_ACCEPTANCE_20261031.md`。
+该变更不等于真实生产商户、退款通道或结算账本已获得授权。

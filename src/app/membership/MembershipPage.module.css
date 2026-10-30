@@ -40,3 +40,10 @@
 .checkoutQr{display:flex;flex-direction:column;align-items:center;gap:12px;padding:20px;margin-top:20px;background:white;border-radius:14px}
 .checkoutQr strong{color:#1e4c33}
 .checkoutQr span{font-size:12px;color:#506356;text-align:center}
+
+.purchasePolicyNotice{margin-top:18px;border:1px solid #d4b891;border-radius:12px;background:#fff9ef;padding:14px 16px}
+.purchasePolicyNotice strong{font-size:14px;color:#654214}
+.purchasePolicyNotice p{margin:7px 0 0;color:#604829;line-height:1.65;font-size:13px}
+.purchasePolicyNotice a{color:#1454a8;font-weight:650}
+.purchasePolicyCheckbox{display:flex;gap:9px;align-items:flex-start;font-size:12px;line-height:1.6;color:#344055;cursor:pointer}
+.purchasePolicyCheckbox input{width:17px;height:17px;flex:0 0 auto;margin-top:2px;accent-color:#1454a8}
