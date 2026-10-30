@@ -2,6 +2,7 @@ import crypto from "node:crypto";
 import { Pool, type PoolClient } from "pg";
 import type { AccessGrant } from "./access-policy";
 import {verifyDigitalResourceIntegrity,type DigitalResourceFile} from "./digital-resource-file";
+import {DIGITAL_SALES_POLICY_VERSION} from "./digital-sales-policy";
 
 // Internal transactional ledger; no HTTP handler exposes settlement mutations.
 export type VerifiedPaymentReceipt = {
@@ -39,11 +40,23 @@ const identifier=(id:string)=>{
   if(!id || id.length>256)throw new BillingConflictError("Invalid identifier");
   return id;
 };
-export async function createBillingOrder(parentId:string,productId:string,provider:"wechat_pay"|"wechat_native"="wechat_pay"){
+export async function createBillingOrder(
+  parentId:string,productId:string,
+  provider:"wechat_pay"|"wechat_native"="wechat_pay",
+  consent?:{policyVersion:string;acceptedAt:Date},
+){
   if(!/^par_[a-zA-Z0-9_]+$/.test(parentId))throw new BillingConflictError("Invalid parent account");
   identifier(productId);
   if (!["wechat_pay", "wechat_native"].includes(provider))
     throw new BillingConflictError("Invalid provider");
+  // The Web Native route must collect an explicit, unchecked-by-default
+  // customer acknowledgement. Legacy non-Native internal callers remain
+  // compatible; historical orders cannot be backfilled with fake consent.
+  if(provider==="wechat_native" &&
+     (!consent || consent.policyVersion!==DIGITAL_SALES_POLICY_VERSION ||
+      !(consent.acceptedAt instanceof Date) ||
+      !Number.isFinite(consent.acceptedAt.getTime())))
+    throw new BillingConflictError("Digital sales policy confirmation required");
   return transaction(async c=>{
     const product=await c.query<{
       amount_minor:string;currency:string;product_kind:"subscription"|"item";
@@ -98,8 +111,9 @@ export async function createBillingOrder(parentId:string,productId:string,provid
         active.rows[0].state==="pending"?"Item payment already pending":"Item already owned"
       );
     }
-    await c.query("INSERT INTO billing_orders(id,payer_parent_id,product_id,price_minor,currency,provider,product_kind,content_kind,content_id,title_snapshot) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)",
-      [id,parentId,productId,p.amount_minor,p.currency,provider,p.product_kind,p.content_kind,p.content_id,p.title_zh]);
+    await c.query("INSERT INTO billing_orders(id,payer_parent_id,product_id,price_minor,currency,provider,product_kind,content_kind,content_id,title_snapshot,sales_policy_version,sales_policy_accepted_at) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)",
+      [id,parentId,productId,p.amount_minor,p.currency,provider,p.product_kind,p.content_kind,p.content_id,p.title_zh,
+        consent?.policyVersion??null,consent?.acceptedAt??null]);
     return {id,priceMinor:Number(p.amount_minor),currency:p.currency};
   });
 }

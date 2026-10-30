@@ -5,6 +5,8 @@ import Image from "next/image";
 import Link from "next/link";
 import {useSiteLanguage} from "@/lib/site-language";
 import styles from "./MembershipPage.module.css";
+import {DIGITAL_SALES_POLICY_VERSION,DIGITAL_SALES_POLICY_SHORT_ZH,
+  DIGITAL_SALES_POLICY_SHORT_EN} from "@/lib/digital-sales-policy";
 
 export type PublishedMembershipOffer=Readonly<
   {kind:"subscription";id:string;tier:"plus"|"pro";period:"month"|"year";priceMinor:number;currency:"CNY"}
@@ -26,6 +28,8 @@ export default function NativeCheckoutPanel({offers,accountLoggedIn}:{
   const [loading,setLoading]=useState(false);
   const [state,setState]=useState<"idle"|"pending"|"paid"|"failed">("idle");
   const [message,setMessage]=useState<string>("");
+  // A separate explicit, initially UNCHECKED confirmation per SKU.
+  const [policyAcknowledgements,setPolicyAcknowledgements]=useState<Record<string,boolean>>({});
 
   useEffect(()=>{
     if (!pendingId || state!=="pending") return;
@@ -50,7 +54,7 @@ export default function NativeCheckoutPanel({offers,accountLoggedIn}:{
   },[pendingId,state]);
 
   async function purchase(productId:string) {
-    if (loading || state==="pending") return;
+    if (loading || state==="pending" || !policyAcknowledgements[productId]) return;
     setLoading(true);
     setMessage("");
     try {
@@ -58,13 +62,15 @@ export default function NativeCheckoutPanel({offers,accountLoggedIn}:{
         method:"POST",
         credentials:"same-origin",
         headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({productId}),
+        body:JSON.stringify({productId,policyAccepted:true,
+          policyVersion:DIGITAL_SALES_POLICY_VERSION}),
       });
       const data:CheckoutReply=await response.json();
       if(!response.ok || !data.orderId || !data.qrDataUrl){
         setState("failed");setMessage(data.error||(en?"Checkout temporarily unavailable":"微信支付暂时不可用"));return;
       }
       setPendingId(data.orderId);setQrDataUrl(data.qrDataUrl);setState("pending");
+      setPolicyAcknowledgements(prev=>({...prev,[productId]:false}));
     } catch {
       setState("failed");setMessage(en?"Network unavailable; no payment confirmed":"网络暂不可用，未确认支付成功");
     } finally {setLoading(false);}
@@ -74,6 +80,12 @@ export default function NativeCheckoutPanel({offers,accountLoggedIn}:{
   return <section className={styles.checkout} aria-label={en?"WeChat Native checkout":"微信扫码购买"}>
     <h2>{en?"WeChat QR payment":"微信扫码购买"}</h2>
     <p>{en?"Only active offers from the live billing catalogue are shown. Confirm pricing before you pay.":"以下仅展示当前交易账本正式启用的套餐，支付前请确认价格与交付内容。"}</p>
+    <div className={styles.purchasePolicyNotice} role="note">
+      <strong>{en?"Important: digital purchase terms":"重要提醒：数字内容不支持无理由退款"}</strong>
+      <p>{en?DIGITAL_SALES_POLICY_SHORT_EN:DIGITAL_SALES_POLICY_SHORT_ZH}{" "}
+        <Link href="/digital-purchase-policy">{en?"Read the full policy":"查看完整购买与售后规则"}</Link>
+      </p>
+    </div>
     {!accountLoggedIn && <p>{en?"Sign in with WeChat to purchase.":"请先微信登录，再购买考试或资料。"} <Link href="/login?next=%2Fmembership">{en?"WeChat sign in":"微信登录"}</Link></p>}
     <div className={styles.checkoutOffers}>
       {offers.map(offer=><div key={offer.id} className={styles.checkoutOffer}>
@@ -83,8 +95,18 @@ export default function NativeCheckoutPanel({offers,accountLoggedIn}:{
         {offer.kind==="item"&&offer.contentKind==="resource"&&
           <small>{offer.fileName} · {(offer.sizeBytes/1048576).toFixed(2)} MB · {en?"Download immediately after verified payment":"付款核实后在我的账号下载"}</small>}
         <span>¥{(offer.priceMinor/100).toFixed(2)}</span>
+        <label className={styles.purchasePolicyCheckbox}>
+          <input type="checkbox"
+            checked={policyAcknowledgements[offer.id]===true}
+            onChange={event=>setPolicyAcknowledgements(prev=>({
+              ...prev,[offer.id]:event.target.checked
+            }))}/>
+          <span>{en
+            ?"I have read and agree: no change-of-mind refunds once this digital item or service is delivered/activated; statutory rights remain."
+            :"我已阅读并确认：本考试、数字资料或服务开通／交付后不支持无理由退款，法定售后权利不受影响。"}</span>
+        </label>
         <button type="button" onClick={()=>void purchase(offer.id)}
-          disabled={!accountLoggedIn||loading||state==="pending"}>
+          disabled={!accountLoggedIn||!policyAcknowledgements[offer.id]||loading||state==="pending"}>
           {loading?(en?"Creating order…":"正在创建订单…"):(en?"Pay with WeChat":"微信扫码购买")}
         </button>
       </div>)}
