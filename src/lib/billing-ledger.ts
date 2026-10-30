@@ -1,7 +1,7 @@
 import crypto from "node:crypto";
 import { Pool, type PoolClient } from "pg";
 import type { AccessGrant } from "./access-policy";
-import {readVerifiedDigitalResource,type DigitalResourceFile} from "./digital-resource-file";
+import {verifyDigitalResourceIntegrity,type DigitalResourceFile} from "./digital-resource-file";
 
 // Internal transactional ledger; no HTTP handler exposes settlement mutations.
 export type VerifiedPaymentReceipt = {
@@ -70,7 +70,7 @@ export async function createBillingOrder(parentId:string,productId:string,provid
         WHERE resource_id=$1 AND rights_approved=true AND delivery_verified=true
       `,[p.content_id]);
       if(!file.rows[0])throw new BillingConflictError("Resource is not deliverable");
-      try{await readVerifiedDigitalResource(file.rows[0]);}
+      try{await verifyDigitalResourceIntegrity(file.rows[0]);}
       catch{throw new BillingConflictError("Resource file failed delivery verification");}
     }
     if(p.product_kind==="item"){

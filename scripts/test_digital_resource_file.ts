@@ -4,7 +4,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import {
-  attachmentFilename,readVerifiedDigitalResource,resourceFileSizeMatches,
+  attachmentFilename,readVerifiedDigitalResource,verifyDigitalResourceIntegrity,resourceFileSizeMatches,
   validateDigitalResourceFile,MAX_DIGITAL_RESOURCE_BYTES
 } from "../src/lib/digital-resource-file";
 
@@ -22,6 +22,7 @@ async function run(){
     const meta={sha256,size_bytes:bytes.length,file_name:"小学复习笔记.txt",mime_type:"text/plain"};
     assert.equal(validateDigitalResourceFile(meta),bytes.length);
     assert.equal(await resourceFileSizeMatches(meta),true);
+    await verifyDigitalResourceIntegrity(meta);
     assert.deepEqual(await readVerifiedDigitalResource(meta),bytes);
     assert.match(attachmentFilename(meta.file_name),/filename\*=UTF-8''/);
     assert.throws(()=>validateDigitalResourceFile({...meta,file_name:"../secrets"}));
@@ -32,6 +33,7 @@ async function run(){
     fs.writeFileSync(file,Buffer.alloc(bytes.length,47));
     assert.equal(await resourceFileSizeMatches(meta),true);
     await assert.rejects(()=>readVerifiedDigitalResource(meta),/HASH_MISMATCH/);
+    await assert.rejects(()=>verifyDigitalResourceIntegrity(meta),/HASH_MISMATCH/);
     fs.unlinkSync(file);
     fs.symlinkSync(path.join(root,"some-private-file"),file);
     assert.equal(await resourceFileSizeMatches(meta),false);

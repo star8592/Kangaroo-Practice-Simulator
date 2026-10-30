@@ -62,6 +62,28 @@ async function openPrivateResource(asset:DigitalResourceFile):Promise<FileHandle
   }catch(error){await file.close();throw error;}
 }
 
+/** Hash a private asset in 1MiB chunks without allocating the entire file.
+ * Checkout and asset staging use this; download separately reads exact bytes
+ * before serving so integrity is checked on both sides of the transaction.
+ */
+export async function verifyDigitalResourceIntegrity(asset:DigitalResourceFile):Promise<void>{
+  const size=validateDigitalResourceFile(asset);
+  const file=await openPrivateResource(asset);
+  try{
+    const hash=createHash("sha256");
+    const chunk=Buffer.allocUnsafe(1024*1024);
+    let position=0;
+    while(position<size){
+      const read=await file.read(chunk,0,Math.min(chunk.length,size-position),position);
+      if(read.bytesRead<=0)throw new Error("DIGITAL_RESOURCE_TRUNCATED");
+      hash.update(chunk.subarray(0,read.bytesRead));
+      position+=read.bytesRead;
+    }
+    if(hash.digest("hex")!==asset.sha256)
+      throw new Error("DIGITAL_RESOURCE_HASH_MISMATCH");
+  }finally{await file.close();}
+}
+
 /** Cheap inventory probe for the public offer list (full hash checks happen
  * at order creation and at every download).
  */

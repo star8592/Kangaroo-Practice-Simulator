@@ -8,7 +8,7 @@ import {open,mkdir,link,stat,lstat,unlink,realpath} from "node:fs/promises";
 import {basename,isAbsolute,join,resolve,sep} from "node:path";
 import {randomBytes} from "node:crypto";
 import {MAX_DIGITAL_RESOURCE_BYTES,validateDigitalResourceFile,
-  readVerifiedDigitalResource} from "../src/lib/digital-resource-file";
+  verifyDigitalResourceIntegrity} from "../src/lib/digital-resource-file";
 
 async function main(){
   const [source,resourceId,displayName,mimeType,...options]=process.argv.slice(2);
@@ -84,7 +84,7 @@ async function main(){
         // A repeat staging of identical bytes is an idempotent success.
         // A corrupt existing digest path will still fail verification.
       }
-      await readVerifiedDigitalResource(meta);
+      await verifyDigitalResourceIntegrity(meta);
     }catch(e){
       if(linked)await unlink(destination).catch(()=>{});
       throw e;

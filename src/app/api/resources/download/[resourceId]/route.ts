@@ -35,7 +35,7 @@ export async function GET(req:NextRequest,ctx:{params:Promise<{resourceId:string
     if(!meta.rows[0])return reply("RESOURCE_UNAVAILABLE",503);
     const bytes=await readVerifiedDigitalResource(meta.rows[0]);
     const fileName=attachmentFilename(meta.rows[0].file_name);
-    return new NextResponse(new Uint8Array(bytes),{
+    return new NextResponse(new Uint8Array(bytes.buffer as ArrayBuffer,bytes.byteOffset,bytes.byteLength),{
       status:200,
       headers:{...headers,"Content-Type":meta.rows[0].mime_type,
         "Content-Length":String(bytes.length),"Content-Disposition":fileName},
