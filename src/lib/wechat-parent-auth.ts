@@ -93,7 +93,7 @@ export async function wechatUserInfo(code: string, forcedMode?: WechatLoginMode)
   return {
     wechatId: String(info.unionid || info.openid),
     openId: String(info.openid),
-    name: String(info.nickname || "微信家长"),
+    name: String(info.nickname || "微信用户"),
     avatarUrl: typeof info.headimgurl === "string" ? info.headimgurl : undefined,
   };
 }

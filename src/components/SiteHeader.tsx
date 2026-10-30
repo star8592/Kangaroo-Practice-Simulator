@@ -14,7 +14,7 @@ const NAV_ITEMS = [
   { href: "/arithmetic", zh: "数学训练", en: "Math practice" },
   { href: "/competitions", zh: "竞赛模拟", en: "Mock exams" },
   { href: "/events", zh: "赛事管家", en: "Event companion" },
-  { href: "/student", zh: "数学成长", en: "Math growth" },
+  { href: "/account", zh: "我的账号", en: "My account" },
 ] as const;
 
 function MenuIcon({ open }: { open: boolean }) {

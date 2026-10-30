@@ -17,8 +17,8 @@ export async function POST(req:NextRequest) {
       req.headers.get("sec-fetch-site")==="cross-site")
     return reply({error:"请求来源无效"},403);
   const parent=parentFromSessionToken(req.cookies.get(PARENT_SESSION_COOKIE)?.value);
-  if (!parent || !parent.active || !parent.guardianConfirmedAt)
-    return reply({error:"请使用监护人账号登录"},401);
+  if (!parent || !parent.active || !(parent.wechatId||parent.wechatOpenId))
+    return reply({error:"请先使用微信登录"},401);
   let productId:string;
   try {
     const raw=await req.text();

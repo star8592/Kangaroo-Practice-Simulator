@@ -19,8 +19,8 @@ type CheckoutReply={
   status?:string;priceMinor?:number;currency?:string;
 };
 
-export default function NativeCheckoutPanel({offers,parentLoggedIn}:{
-  offers:readonly PublishedMembershipOffer[];parentLoggedIn:boolean;
+export default function NativeCheckoutPanel({offers,accountLoggedIn}:{
+  offers:readonly PublishedMembershipOffer[];accountLoggedIn:boolean;
 }) {
   const en=useSiteLanguage()==="en";
   const [pendingId,setPendingId]=useState<string|null>(null);
@@ -76,13 +76,13 @@ export default function NativeCheckoutPanel({offers,parentLoggedIn}:{
   return <section className={styles.checkout} aria-label={en?"WeChat Native checkout":"微信扫码购买"}>
     <h2>{en?"WeChat QR payment":"微信扫码购买"}</h2>
     <p>{en?"Only active offers from the live billing catalogue are shown. Confirm pricing before you pay.":"以下仅展示当前交易账本正式启用的套餐，支付前请确认价格与交付内容。"}</p>
-    {!parentLoggedIn && <p>{en?"Please sign in with a parent account before checkout.":"购买前请先登录家长账号。"} <Link href="/parent/login">{en?"Parent login":"家长登录"}</Link></p>}
+    {!accountLoggedIn && <p>{en?"Sign in with WeChat to purchase.":"请先微信登录，再购买考试或资料。"} <Link href="/login?next=%2Fmembership">{en?"WeChat sign in":"微信登录"}</Link></p>}
     <div className={styles.checkoutOffers}>
       {offers.map(offer=><div key={offer.id} className={styles.checkoutOffer}>
         <b>{offer.tier.toUpperCase()} · {offer.period==="month"?(en?"Monthly":"月度"):(en?"Yearly":"年度")}</b>
         <span>¥{(offer.priceMinor/100).toFixed(2)}</span>
         <button type="button" onClick={()=>void purchase(offer.id)}
-          disabled={!parentLoggedIn||loading||state==="pending"}>
+          disabled={!accountLoggedIn||loading||state==="pending"}>
           {loading?(en?"Creating order…":"正在创建订单…"):(en?"Pay with WeChat":"微信扫码购买")}
         </button>
       </div>)}

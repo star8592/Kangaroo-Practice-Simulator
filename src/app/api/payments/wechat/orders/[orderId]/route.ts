@@ -12,7 +12,8 @@ const reply=(data:object,status:number)=>NextResponse.json(data,{status,headers}
 export async function GET(req:NextRequest,ctx:{params:Promise<{orderId:string}>}) {
   if (!nativeSettlementAllowed() || !billingConfigured()) return reply({code:"WEB_NATIVE_DISABLED"},503);
   const parent=parentFromSessionToken(req.cookies.get(PARENT_SESSION_COOKIE)?.value);
-  if (!parent || !parent.active) return reply({error:"请登录家长账号"},401);
+  if (!parent || !parent.active || !(parent.wechatId||parent.wechatOpenId))
+    return reply({error:"请先微信登录"},401);
   const {orderId}=await ctx.params;
   if (!/^ord_[a-zA-Z0-9_-]{6,28}$/.test(orderId)) return reply({error:"订单不存在"},404);
   try {

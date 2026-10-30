@@ -3,8 +3,8 @@ import {newWechatState,wechatAuthorizeUrl,wechatConfigured,WECHAT_CALLBACK_ORIGI
 export const WECHAT_NEXT_COOKIE="socthink_parent_wechat_next";
 export async function GET(req:NextRequest){
  if(!wechatConfigured())return NextResponse.redirect(`${WECHAT_CALLBACK_ORIGIN}/login?wechat=unavailable`);
- const candidate=req.nextUrl.searchParams.get("next")||"/parent";
- const next=candidate.startsWith("/")&&!candidate.startsWith("//")&&!candidate.includes("\\")?candidate.slice(0,1024):"/parent";
+ const candidate=req.nextUrl.searchParams.get("next")||"/account";
+ const next=candidate.startsWith("/")&&!candidate.startsWith("//")&&!candidate.includes("\\")?candidate.slice(0,1024):"/account";
  const state=newWechatState();
  const r=NextResponse.redirect(wechatAuthorizeUrl(state));
  const opts={httpOnly:true,secure:true,sameSite:"lax" as const,path:"/",domain:".socthink.cn",maxAge:600};

@@ -2,7 +2,8 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import ReportDownloadButton from "@/components/ReportDownloadButton";
-import { SESSION_COOKIE, userFromSessionToken } from "@/lib/auth";
+import { SESSION_COOKIE, userFromSessionToken,wechatBuyerStudyUser } from "@/lib/auth";
+import {PARENT_SESSION_COOKIE,parentFromSessionToken} from "@/lib/parent-auth";
 import { buildStudentAnalytics } from "@/lib/student-analytics";
 import { studentAvatarEmoji } from "@/lib/student-avatar";
 import styles from "./StudentDashboard.module.css";
@@ -20,7 +21,10 @@ const UI={
 
 export default async function StudentPage() {
   const jar = await cookies();
-  const user = userFromSessionToken(jar.get(SESSION_COOKIE)?.value);
+  const buyer=parentFromSessionToken(jar.get(PARENT_SESSION_COOKIE)?.value);
+  const user=buyer?.active&&(buyer.wechatId||buyer.wechatOpenId)
+    ? wechatBuyerStudyUser(buyer.id)
+    : userFromSessionToken(jar.get(SESSION_COOKIE)?.value);
   if (!user) redirect("/login?next=/student");
   const lang=jar.get("socthink_lang")?.value==="en"?"en":"zh";
   const ui=UI[lang];
@@ -35,8 +39,8 @@ export default async function StudentPage() {
         <div className={styles.heroMain}>
           <span className={styles.heroLabel}>{ui.report}</span>
           <h1>{studentAvatarEmoji(user.avatarKey)} {lang==="zh"?`${user.name} ${ui.titleSuffix}`:`${user.name}${ui.titleSuffix}`}</h1>
-          <p className={styles.heroMeta}>{user.candidateNo} · {lang==="zh"?`${user.grade} ${ui.grade}`:`${ui.grade} ${user.grade}`}{user.school ? ` · ${user.school}` : ""}</p>
-          <div className={styles.heroActions}><Link className="secondary-button" href="/student/settings">{ui.edit}</Link><Link className="primary-button" href="/student/cards">{lang==="zh"?"我的卡册":"My Card Book"}</Link></div>
+          <p className={styles.heroMeta}>{user.candidateNo==="WECHAT"?"微信账号":`${user.candidateNo} · ${lang==="zh"?`${user.grade} ${ui.grade}`:`${ui.grade} ${user.grade}`}`}{user.school ? ` · ${user.school}` : ""}</p>
+          <div className={styles.heroActions}><Link className="secondary-button" href={buyer?.wechatId||buyer?.wechatOpenId?"/account":"/student/settings"}>{buyer?.wechatId||buyer?.wechatOpenId?"我的账号":ui.edit}</Link><Link className="primary-button" href="/student/cards">{lang==="zh"?"我的卡册":"My Card Book"}</Link></div>
         </div>
         <div className={styles.readinessCard}>
           <div className={styles.readinessHead}><strong>{a.readiness ?? "—"}</strong><span>{a.readiness === null ? ui.pending : "/ 100"}</span></div>

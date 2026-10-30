@@ -1,75 +1,45 @@
 "use client";
-
 import Link from "next/link";
-import { useSiteLanguage } from "@/lib/site-language";
-import { publicAccessCatalog } from "@/lib/access-catalog";
-import type { IdentityKind, Plan } from "@/lib/access-policy";
+import {useSiteLanguage} from "@/lib/site-language";
+import type {Plan} from "@/lib/access-policy";
+import NativeCheckoutPanel,{type PublishedMembershipOffer} from "./NativeCheckoutPanel";
 import styles from "./MembershipPage.module.css";
-import NativeCheckoutPanel, { type PublishedMembershipOffer } from "./NativeCheckoutPanel";
 
-const catalog=publicAccessCatalog();
-type TierId = "guest" | Plan;
-export default function MembershipClient({identity,plan,ledgerAvailable,offers,parentLoggedIn}:{
-  identity:IdentityKind;plan:Plan;ledgerAvailable:boolean;
-  offers:readonly PublishedMembershipOffer[];parentLoggedIn:boolean;
+export default function MembershipClient({
+ plan,ledgerAvailable,offers,accountLoggedIn,
+}:{
+ plan:Plan;ledgerAvailable:boolean;
+ offers:readonly PublishedMembershipOffer[];accountLoggedIn:boolean;
 }) {
-  const lang=useSiteLanguage();
-  const en=lang==="en";
-  const active:TierId=identity==="guest" || identity==="anonymous"?"guest":plan;
-  const current=catalog.plans.find(item=>item.id===active);
-  return <main className={styles.page}>
-    <section className={styles.hero}>
-      <small>{en?"MEMBERSHIP & LEARNING ACCESS":"学习权益 · 公开透明"}</small>
-      <h1>{en?"Learn freely. Upgrade for deeper guidance.":"基础学习始终开放，深度服务按需选择"}</h1>
-      <p>{en
-        ?"Guests can try public exams. Registered learners keep their study records. Paid plans focus on personalization and family support."
-        :"游客直接做公开样题，注册后保存长期成长档案。未来会员将主要提供个性化诊断、智能组卷和家庭管理，不影响现有免费学习。"}
-      </p>
-      <div className={styles.status}>
-        <b>{en?"Your access":"当前权益"}：{current ? (en?current.en:current.zh) : active.toUpperCase()}</b>
-        <span>{!ledgerAvailable ? (en?"Entitlements temporarily unavailable":"会员权益暂时无法读取，请稍后重试") :
-          (offers.length?(en?"Verified WeChat checkout is available for listed offers.":"下方已开放经过验证的微信扫码购买套餐。"):(en?"No payment or checkout is enabled yet.":"正式收费尚未开放，当前不会向您收款。"))}</span>
-      </div>
-    </section>
-    <section className={styles.cards} aria-label={en?"Plan overview":"权益级别"}>
-      {catalog.plans.map(item=><article key={item.id} className={styles.card+(active===item.id?" "+styles.current:"")}>
-        <small>{item.id.toUpperCase()}{active===item.id?(en?" · CURRENT":" · 当前"):null}</small>
-        <h2>{en?item.en:item.zh}</h2>
-        <p>{en
-          ? (item.id==="guest"?"Try public questions and arithmetic.":item.id==="free"?"Save study history.":item.id==="plus"?"Personalized family learning.":"More in-depth AI guidance.")
-          :item.description}</p>
-        <em>{item.familySeats? (en?"Up to "+item.familySeats+" children":"最多 "+item.familySeats+" 名学生") :
-          (en?"No account needed":"无需注册即可体验")}</em>
-      </article>)}
-    </section>
-    <h2>{en?"Feature comparison":"功能与权益对照"}</h2>
-    <div className={styles.tableOuter}>
-      <table className={styles.table}>
-        <thead><tr><th>{en?"Learning features":"学习功能"}</th>{catalog.plans.map(p=><th key={p.id}>{en?p.en:p.zh}</th>)}</tr></thead>
-        <tbody>{catalog.features.map(feature=><tr key={feature.id}>
-          <td>{en?feature.en:feature.zh}</td>
-          {catalog.plans.map(p=>{
-            const allowed=Boolean(feature.tiers[p.id]);
-            return <td key={p.id} aria-label={(en?p.en:p.zh)+(allowed?(en?" available":" 可用"):(en?" not included":" 不包含"))}>
-              <span className={allowed?styles.yes:styles.no}>{allowed?"✓":"—"}</span>
-            </td>;
-          })}
-        </tr>)}</tbody>
-      </table>
-    </div>
-    <NativeCheckoutPanel offers={offers} parentLoggedIn={parentLoggedIn}/>
-    <p className={styles.note}>{offers.length
-      ? (en
-        ? "Only currently active, real-price membership offers are available for payment. Questions and AI capabilities remain subject to source rights and service quotas."
-        : "仅当前正式开通、具备真实价格和交付权益的会员套餐可购买。题目版权、AI使用额度和具体服务以实际商品内容为准。")
-      : (en
-        ? "The feature comparison is a proposed plan structure, not a statement that paid checkout is live. Access to published questions also depends on source permissions and quality review."
-        : "以上为计划实施的权益矩阵，不代表已开通收款或已经交付全部高级功能。题目是否可展示仍以来源授权与内容审核为准。会员失效后，历史基础成绩不会被删除。")}
-    </p>
-    <div className={styles.actions}>
-      <Link href="/exam/au-amc-pre-a-sample-2">{en?"Try a free sample":"免费体验 AMC 样题"}</Link>
-      <Link href="/parent/login">{en?"Parent account":"家长账号"}</Link>
-      <Link href="/login">{en?"Student login":"学生登录"}</Link>
-    </div>
-  </main>;
+ const en=useSiteLanguage()==="en";
+ return <main className={styles.page}>
+  <section className={styles.hero}>
+   <small>{en?"EXAMS · DIGITAL RESOURCES":"考试 · 测评 · 数字资料"}</small>
+   <h1>{en?"Choose what you need. Pay only when ready.":"选择考试或资料，按需购买"}</h1>
+   <p>{en?"One verified WeChat account holds your purchases, exam history and access.":
+     "用一个微信账号浏览、购买、参加考试或获取资料。无需添加孩子、选择学生或重复注册。"}</p>
+   <div className={styles.status}>
+    <b>{en?"Current account access":"当前账号权益"}：{accountLoggedIn?plan.toUpperCase():"未登录"}</b>
+    <span>{!ledgerAvailable
+      ? (en?"Purchase records temporarily unavailable.":"暂时无法查询权益，系统不会重复扣款。")
+      : offers.length
+        ? (en?"Only the listed verified products can be purchased.":"仅下方真实启用的商品可以购买。")
+        : (en?"Payments are not yet enabled; no charges will be made.":"正式收款尚未开放，当前不会向你收款。")}</span>
+   </div>
+  </section>
+  <div className={styles.actions}>
+   <Link href="/assessments">{en?"Browse exams & resources":"浏览考试与资料"}</Link>
+   <Link href="/competitions">{en?"Mock exams":"竞赛模拟"}</Link>
+   <Link href="/account">{en?"My purchases":"我的订单与权益"}</Link>
+  </div>
+  <NativeCheckoutPanel offers={offers} accountLoggedIn={accountLoggedIn}/>
+  {!accountLoggedIn&&<p className={styles.note}>
+   {en?"When a product is ready, sign in with WeChat to buy and use it.":
+     "购买时只需微信登录，不需要创建学生或家庭档案。"}{" "}
+   <Link href="/login?next=%2Fmembership">{en?"WeChat sign in":"微信登录"}</Link>
+  </p>}
+  <p className={styles.note}>{en
+   ?"Only actual published products with verified fulfillment and pricing may be sold. Existing free practice remains available."
+   :"只会对实际可交付、价格明确且经过支付验收的商品开放收款。免费的样题和训练继续保留。"}</p>
+ </main>;
 }
