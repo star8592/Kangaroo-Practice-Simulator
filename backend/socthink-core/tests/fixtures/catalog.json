@@ -1,0 +1,36 @@
+{
+  "version": 1,
+  "generatedAt": "2026-10-31T00:00:00.000Z",
+  "rows": [
+    {
+      "id": "au-amc-2024-primary",
+      "titleZh": "2024 澳洲 AMC 小学组",
+      "titleEn": "AMC 2024 primary",
+      "competition": "australian-amc",
+      "competitionZh": "澳洲 AMC",
+      "year": 2024,
+      "gradeBand": "5-6",
+      "gradeZh": "五六年级",
+      "gradeEn": "Grade 5-6",
+      "paperType": "past",
+      "questionCount": 30,
+      "durationMinutes": 60,
+      "examUrl": "/exam/au-amc-2024-primary"
+    },
+    {
+      "id": "maa-2023-amc8",
+      "titleZh": "美国 AMC8 样题",
+      "titleEn": "AMC8 2023 sample",
+      "competition": "maa-amc",
+      "competitionZh": "美国 AMC",
+      "year": 2023,
+      "gradeBand": "7-8",
+      "gradeZh": "七八年级",
+      "gradeEn": "Grade 7-8",
+      "paperType": "sample",
+      "questionCount": 25,
+      "durationMinutes": null,
+      "examUrl": "/exam/maa-2023-amc8"
+    }
+  ]
+}
