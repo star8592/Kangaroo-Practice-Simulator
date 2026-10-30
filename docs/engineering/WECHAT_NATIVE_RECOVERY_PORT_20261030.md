@@ -43,3 +43,24 @@ npx tsc --noEmit
 - Native 开发指引（2026-06-09）：https://pay.wechatpay.cn/doc/v3/merchant/4012791891
 - 签名验签工具：https://pay.wechatpay.cn/doc/v3/merchant/4012365352
 - 回调验签与 WeChat Pay 公钥 ID：https://pay.wechatpay.cn/doc/v3/merchant/4012587960
+
+## 2026-10-30 当前公网双入口实测（在 Z890 上只读 curl，不发订单）
+
+必须区分两个域名，过去的反复登录错误部分来自**把不同服务器当成同一个环境**：
+
+| 公网 URL | TLS/HTTP | 当前物理服务器 | 业务类型 |
+| --- | --- | --- | --- |
+| `https://www.socthink.cn/` | HTTP 200，TLS 验证通过 | `8.148.186.49` | **旧 ThinkAI，历史微信支付** |
+| `https://socthink.cn/` | HTTP 200，TLS 验证通过 | `8.166.137.232` | **当前 Next.js 数学平台** |
+
+旧 ThinkAI 的**现网** `https://www.socthink.cn/api/subscription/provider-status` 当前返回的**安全白名单字段**：
+
+```json
+{"provider":"wechat_native","display_name":"WeChat Native","configured":true,"mock_mode":false,"callback_ready":true}
+```
+
+这是实测只读响应，不是模拟测试。另 `/api/subscription/plans` 返回 200、3 个套餐；`/api/subscription/orders` 和 `/api/subscription/me` 在游客态都按预期返回 401。没有打印套餐价格、登录令牌、订单或密钥。
+
+**解释**：旧服务**目前在线并自报真实微信 Native 配置完整**，2026-06-16 曾有真实付款成功记录。但是当前没有授权操作交易端或读取商户平台新回执，不能由此推出“今天新付款或退款已验收”；这一步仍是 `LIVE_PAYMENT_UNVERIFIED`。新 `socthink.cn/membership` 同时仍写“正式收费尚未开放”，两者**不是同一交易系统**。不可仅通过 DNS 切换、前端按钮或跨子域跳转将老订单伪装为新账本订单。
+
+**下一步最短路径**：以 `www` 已运行的旧支付服务作为真实商户协议回归的来源，保留其生产配置不动；新系统单独实现授权家长创建订单 → 生成本地二维码 → 微信官方回执与主动查单验真 → 唯一 PostgreSQL 事务账本发放权益。需要在一笔受控真单中验证新站，不可直接复用旧 `/api/subscription/checkout` 给新站学生授权，除非完成账户与账务迁移核验。
