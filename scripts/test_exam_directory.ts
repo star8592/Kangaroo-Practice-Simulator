@@ -5,7 +5,7 @@ import {EXAM_DIRECTORY,validateExamDirectory} from "../src/lib/exam-directory";
 assert.deepEqual(validateExamDirectory(),[],"All topics and routes must be consistent");
 assert.equal(EXAM_DIRECTORY.length,ASSESSMENT_DOMAINS.length,"Every platform domain is represented");
 const topics=EXAM_DIRECTORY.flatMap(g=>g.topics);
-assert.ok(topics.length>=45,"Large platform directory must not shrink into a math-only navigation");
+assert.ok(topics.length>=50,"Large platform directory must not shrink into a math-only navigation");
 assert.ok(topics.some(t=>t.title.zh.includes("小升初")),"K12 should include the Chinese school transition");
 assert.ok(topics.some(t=>t.title.zh.includes("法律职业资格")),"Professional exams must be represented");
 assert.ok(topics.some(t=>t.title.zh.includes("SQL")),"Practical job assessments must be represented");
