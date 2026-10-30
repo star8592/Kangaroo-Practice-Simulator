@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import {generateKeyPairSync,sign} from "node:crypto";
 import {
   createVerifiedWechatNativeCheckout,queryVerifiedWechatNativePayment,
+  closeVerifiedWechatNativePayment,
   type WechatNativeTransport,
 } from "../src/lib/wechat-native-transport";
 import {WechatPaymentProtocolError} from "../src/lib/wechat-native-payment";
@@ -88,6 +89,38 @@ assert.equal(verified.transactionId,paid.transaction_id);
 assert.match(verified.verifiedBodySha256 ?? "",/^[0-9a-f]{64}$/);
 const notPaid:WechatNativeTransport=async()=>signedResponse({...paid,trade_state:"NOTPAY"});
 assert.deepEqual(await queryVerifiedWechatNativePayment({...context,transport:notPaid},order),{status:"NOT_PAID"});
+const officiallyClosed:WechatNativeTransport=async()=>signedResponse({
+  mchid:merchantConfig.merchantId,appid:merchantConfig.appId,
+  out_trade_no:order.orderId,trade_state:"CLOSED",trade_type:"NATIVE"
+});
+const verifiedClosed=await queryVerifiedWechatNativePayment({
+  ...context,transport:officiallyClosed},order);
+assert.equal(verifiedClosed.status,"VERIFIED_CLOSED");
+assert.match(verifiedClosed.verifiedBodySha256??"",/^[a-f0-9]{64}$/);
+const verified204=(badSignature=false)=> {
+  const raw="";
+  const sig=sign("RSA-SHA256",Buffer.from(`${nowSeconds}\n${nonce}\n${raw}\n`),
+    platform.privateKey).toString("base64");
+  return new Response(null,{status:204,headers:{
+    "Wechatpay-Timestamp":String(nowSeconds),"Wechatpay-Nonce":nonce,
+    "Wechatpay-Serial":context.wechatPayPublicKeyId,
+    "Wechatpay-Signature":badSignature?sig.slice(0,-6)+"ABCDEF":sig,
+  }});
+};
+const close:WechatNativeTransport=async(url,init)=>{
+  assert.equal(url,"https://api.mch.weixin.qq.com/v3/pay/transactions/out-trade-no/"+
+    order.orderId+"/close");
+  assert.equal(init.method,"POST");
+  assert.deepEqual(JSON.parse(init.body as string),{mchid:merchantConfig.merchantId});
+  return verified204();
+};
+await closeVerifiedWechatNativePayment({...context,transport:close},order.orderId);
+await assert.rejects(()=>closeVerifiedWechatNativePayment({
+  ...context,transport:async()=>verified204(true)},order.orderId),
+  WechatPaymentProtocolError);
+await assert.rejects(()=>closeVerifiedWechatNativePayment({
+  ...context,transport:async()=>signedResponse({error:"not-closed"},{status:500})},order.orderId),
+  WechatPaymentProtocolError);
 const different:WechatNativeTransport=async()=>signedResponse({...paid,amount:{total:999,currency:"CNY"}});
 await assert.rejects(()=>queryVerifiedWechatNativePayment({...context,transport:different},order),WechatPaymentProtocolError);
 const wrong:WechatNativeTransport=async()=>signedResponse({...paid,out_trade_no:"other_order"});

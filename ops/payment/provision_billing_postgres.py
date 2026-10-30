@@ -71,7 +71,11 @@ def preflight() -> dict[str, bool]:
         "schema_found": DDL.is_file() and
             (ROOT / "ops/db/002_wechat_reconciliation.sql").is_file() and
             (ROOT / "ops/db/003_native_notification_inbox.sql").is_file() and
-            (ROOT / "ops/db/004_item_purchases.sql").is_file(),
+            (ROOT / "ops/db/004_item_purchases.sql").is_file() and
+            (ROOT / "ops/db/005_digital_resource_delivery.sql").is_file() and
+            (ROOT / "ops/db/006_unique_active_item_orders.sql").is_file() and
+            (ROOT / "ops/db/007_native_close_proof.sql").is_file() and
+            (ROOT / "ops/db/008_digital_sales_consent.sql").is_file(),
         "postgres_binary": Path("/usr/bin/psql").exists(),
         "role_absent": False,
         "database_absent": False,
@@ -136,6 +140,18 @@ def main() -> int:
     run(["runuser", "-u", "postgres", "--", "psql",
          "-X", "-q", "-v", "ON_ERROR_STOP=1", "-d", DATABASE,
          "-f", str(ROOT / "ops/db/004_item_purchases.sql")])
+    run(["runuser", "-u", "postgres", "--", "psql",
+         "-X", "-q", "-v", "ON_ERROR_STOP=1", "-d", DATABASE,
+         "-f", str(ROOT / "ops/db/005_digital_resource_delivery.sql")])
+    run(["runuser", "-u", "postgres", "--", "psql",
+         "-X", "-q", "-v", "ON_ERROR_STOP=1", "-d", DATABASE,
+         "-f", str(ROOT / "ops/db/006_unique_active_item_orders.sql")])
+    run(["runuser", "-u", "postgres", "--", "psql",
+         "-X", "-q", "-v", "ON_ERROR_STOP=1", "-d", DATABASE,
+         "-f", str(ROOT / "ops/db/007_native_close_proof.sql")])
+    run(["runuser", "-u", "postgres", "--", "psql",
+         "-X", "-q", "-v", "ON_ERROR_STOP=1", "-d", DATABASE,
+         "-f", str(ROOT / "ops/db/008_digital_sales_consent.sql")])
     pg(f"GRANT USAGE ON SCHEMA public TO {ROLE};"
        f"GRANT SELECT,INSERT,UPDATE,DELETE ON ALL TABLES IN SCHEMA public TO {ROLE};"
        f"GRANT USAGE,SELECT ON ALL SEQUENCES IN SCHEMA public TO {ROLE};",
@@ -143,8 +159,8 @@ def main() -> int:
     number = pg("SELECT COUNT(*) FROM pg_tables "
                 "WHERE schemaname='public' AND tablename LIKE 'billing_%';",
                 DATABASE)
-    if number != "9":
-        raise RuntimeError("EXPECTED_NINE_BILLING_TABLES_MISSING")
+    if number != "10":
+        raise RuntimeError("EXPECTED_TEN_BILLING_TABLES_MISSING")
     if pg("SELECT COUNT(*) FROM information_schema.columns "
           "WHERE table_schema='public' AND table_name='billing_orders' "
           "AND column_name='reconcile_checked_at';", DATABASE) != "1":
@@ -172,7 +188,7 @@ def main() -> int:
     os.chmod(DROP_IN, 0o644)
     run(["systemctl", "daemon-reload"])
     print("BILLING_BOOTSTRAP_COMPLETED=YES")
-    print("SCHEMA_TABLES=9")
+    print("SCHEMA_TABLES=10")
     print("PRODUCTION_PAYMENT_ENABLED=NO")
     print("SECRET_EXPORTED_TO_CHAT_OR_LOGS=NO")
     print("SCHEMA_SHA256="+hashlib.sha256(DDL.read_bytes()).hexdigest())

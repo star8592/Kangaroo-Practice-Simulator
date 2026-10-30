@@ -1,10 +1,11 @@
 import {NextRequest,NextResponse} from "next/server";
 import QRCode from "qrcode";
 import {PARENT_SESSION_COOKIE,parentFromSessionToken} from "@/lib/parent-auth";
-import {billingConfigured,billingPool,createBillingOrder,hasVerifiedItemEntitlement} from "@/lib/billing-ledger";
+import {BillingConflictError,billingConfigured,billingPool,createBillingOrder,hasVerifiedItemEntitlement} from "@/lib/billing-ledger";
 import {isExamBundleTrainingReady,loadTrainingExamBundle} from "@/lib/training-question-bank";
 import {nativeCheckoutAllowed,nativeServerContext} from "@/lib/wechat-native-server";
 import {createVerifiedWechatNativeCheckout} from "@/lib/wechat-native-transport";
+import {DIGITAL_SALES_POLICY_VERSION,validDigitalSalesPolicyConsent} from "@/lib/digital-sales-policy";
 
 export const runtime="nodejs";
 export const dynamic="force-dynamic";
@@ -21,6 +22,7 @@ export async function POST(req:NextRequest) {
   if (!parent || !parent.active || !(parent.wechatId||parent.wechatOpenId))
     return reply({error:"请先使用微信登录"},401);
   let productId:string;
+  let policyAccepted=false;
   try {
     const raw=await req.text();
     if (raw.length>2048) return reply({error:"请求格式不正确"},400);
@@ -28,9 +30,13 @@ export async function POST(req:NextRequest) {
     const obj=body && typeof body==="object"&&!Array.isArray(body)?
       body as Record<string,unknown>:null;
     productId=typeof obj?.productId==="string"?obj.productId:"";
+    policyAccepted=validDigitalSalesPolicyConsent(obj);
   } catch {return reply({error:"请求格式不正确"},400);}
   if (!/^[a-zA-Z0-9_.-]{4,80}$/.test(productId))
     return reply({error:"商品不可购买"},400);
+  if(!policyAccepted)
+    return reply({error:"请先主动确认数字内容交付及无理由退款规则",
+      code:"PURCHASE_POLICY_CONFIRMATION_REQUIRED"},409);
   let orderCreated=false;
   try {
     const context=nativeServerContext();
@@ -53,25 +59,39 @@ export async function POST(req:NextRequest) {
     if(p.product_kind==="item"){
       if(process.env.SOCTHINK_ITEM_ACCESS_ENFORCED!=="1" ||
          !p.rights_approved || !p.delivery_verified || !p.access_restricted ||
-         p.content_kind!=="exam" || !p.content_id || !p.title_zh)
+         !p.content_id || !p.title_zh ||
+         (p.content_kind!=="exam" && p.content_kind!=="resource"))
         return reply({error:"本商品尚未开放购买"},409);
-      try{
-        if(!isExamBundleTrainingReady(loadTrainingExamBundle(p.content_id)))
-          return reply({error:"试卷尚未完成交付验收"},409);
-      }catch{return reply({error:"试卷尚未完成交付验收"},409);}
-      if(await hasVerifiedItemEntitlement(parent.id,"exam",p.content_id))
-        return reply({error:"已购买此试卷，请在我的账号中使用",code:"ALREADY_OWNED"},409);
+      if(p.content_kind==="exam"){
+        try{
+          if(!isExamBundleTrainingReady(loadTrainingExamBundle(p.content_id)))
+            return reply({error:"试卷尚未完成交付验收"},409);
+        }catch{return reply({error:"试卷尚未完成交付验收"},409);}
+      }
+      // For resources, createBillingOrder verifies rights and the exact
+      // private SHA256 file bytes before an order can reach WeChat Pay.
+      if(await hasVerifiedItemEntitlement(parent.id,p.content_kind,p.content_id))
+        return reply({error:"已购买该商品，请在我的账号中使用",code:"ALREADY_OWNED"},409);
     }
-    const order=await createBillingOrder(parent.id,productId,"wechat_native");
+    const order=await createBillingOrder(parent.id,productId,"wechat_native",{
+      policyVersion:DIGITAL_SALES_POLICY_VERSION,acceptedAt:new Date(),
+    });
     orderCreated=true;
     const payment=await createVerifiedWechatNativeCheckout(context,{
       orderId:order.id,description:"SOCTHINK "+p.id,
       amountMinor:order.priceMinor,currency:"CNY",
+      timeExpireSeconds:context.nowSeconds+30*60,
     });
     const qrDataUrl=await QRCode.toDataURL(payment.codeUrl,{margin:1,width:256,errorCorrectionLevel:"M"});
     return reply({orderId:payment.orderId,qrDataUrl,priceMinor:order.priceMinor,currency:"CNY",
       status:"pending",note:"请以微信支付结果和服务端权益到账为准"},200);
-  } catch {
+  } catch(error) {
+    if(error instanceof BillingConflictError &&
+       error.message==="Item payment already pending")
+      return reply({error:"该商品已有待支付订单，请先完成或关闭原订单，避免重复扣款",
+        code:"ITEM_PAYMENT_PENDING"},409);
+    if(error instanceof BillingConflictError && error.message==="Item already owned")
+      return reply({error:"已购买该商品，请在我的账号中使用",code:"ALREADY_OWNED"},409);
     return reply({error:"微信支付暂时不可用",code:"CHECKOUT_UNAVAILABLE",orderCreated},503);
   }
 }

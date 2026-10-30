@@ -1,6 +1,8 @@
 import crypto from "node:crypto";
 import { Pool, type PoolClient } from "pg";
 import type { AccessGrant } from "./access-policy";
+import {verifyDigitalResourceIntegrity,type DigitalResourceFile} from "./digital-resource-file";
+import {DIGITAL_SALES_POLICY_VERSION} from "./digital-sales-policy";
 
 // Internal transactional ledger; no HTTP handler exposes settlement mutations.
 export type VerifiedPaymentReceipt = {
@@ -38,11 +40,23 @@ const identifier=(id:string)=>{
   if(!id || id.length>256)throw new BillingConflictError("Invalid identifier");
   return id;
 };
-export async function createBillingOrder(parentId:string,productId:string,provider:"wechat_pay"|"wechat_native"="wechat_pay"){
+export async function createBillingOrder(
+  parentId:string,productId:string,
+  provider:"wechat_pay"|"wechat_native"="wechat_pay",
+  consent?:{policyVersion:string;acceptedAt:Date},
+){
   if(!/^par_[a-zA-Z0-9_]+$/.test(parentId))throw new BillingConflictError("Invalid parent account");
   identifier(productId);
   if (!["wechat_pay", "wechat_native"].includes(provider))
     throw new BillingConflictError("Invalid provider");
+  // The Web Native route must collect an explicit, unchecked-by-default
+  // customer acknowledgement. Legacy non-Native internal callers remain
+  // compatible; historical orders cannot be backfilled with fake consent.
+  if(provider==="wechat_native" &&
+     (!consent || consent.policyVersion!==DIGITAL_SALES_POLICY_VERSION ||
+      !(consent.acceptedAt instanceof Date) ||
+      !Number.isFinite(consent.acceptedAt.getTime())))
+    throw new BillingConflictError("Digital sales policy confirmation required");
   return transaction(async c=>{
     const product=await c.query<{
       amount_minor:string;currency:string;product_kind:"subscription"|"item";
@@ -60,6 +74,18 @@ export async function createBillingOrder(parentId:string,productId:string,provid
       throw new BillingConflictError("Item unavailable for sale");
     if(p.product_kind!=="subscription" && p.product_kind!=="item")
       throw new BillingConflictError("Unsupported product");
+    if(p.product_kind==="item" && p.content_kind==="resource"){
+      // Never create a payable order for a missing, corrupted, unapproved
+      // or public-directory file. A fixture metadata row alone is insufficient.
+      const file=await c.query<DigitalResourceFile>(`
+        SELECT sha256,size_bytes,file_name,mime_type
+        FROM billing_resource_assets
+        WHERE resource_id=$1 AND rights_approved=true AND delivery_verified=true
+      `,[p.content_id]);
+      if(!file.rows[0])throw new BillingConflictError("Resource is not deliverable");
+      try{await verifyDigitalResourceIntegrity(file.rows[0]);}
+      catch{throw new BillingConflictError("Resource file failed delivery verification");}
+    }
     if(p.product_kind==="item"){
       // Prevent repeat sales of already-owned content. The advisory transaction
       // lock serializes buyer+content checks across concurrent checkout calls.
@@ -73,9 +99,21 @@ export async function createBillingOrder(parentId:string,productId:string,provid
             AND e.content_id=$3 AND e.revoked_at IS NULL AND o.state='paid'
         ) AS owned`,[parentId,p.content_kind,p.content_id]);
       if(owned.rows[0]?.owned) throw new BillingConflictError("Item already owned");
+      // Treat all pending orders as still payable. Never issue a second
+      // WeChat QR with a different order number for the same item/buyer;
+      // the first QR might still be scanned and charged later.
+      const active=await c.query<{state:string}>(`
+        SELECT state FROM billing_orders WHERE payer_parent_id=$1
+          AND product_kind='item' AND content_kind=$2 AND content_id=$3
+          AND state IN ('pending','paid') LIMIT 1
+      `,[parentId,p.content_kind,p.content_id]);
+      if(active.rows[0])throw new BillingConflictError(
+        active.rows[0].state==="pending"?"Item payment already pending":"Item already owned"
+      );
     }
-    await c.query("INSERT INTO billing_orders(id,payer_parent_id,product_id,price_minor,currency,provider,product_kind,content_kind,content_id,title_snapshot) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)",
-      [id,parentId,productId,p.amount_minor,p.currency,provider,p.product_kind,p.content_kind,p.content_id,p.title_zh]);
+    await c.query("INSERT INTO billing_orders(id,payer_parent_id,product_id,price_minor,currency,provider,product_kind,content_kind,content_id,title_snapshot,sales_policy_version,sales_policy_accepted_at) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)",
+      [id,parentId,productId,p.amount_minor,p.currency,provider,p.product_kind,p.content_kind,p.content_id,p.title_zh,
+        consent?.policyVersion??null,consent?.acceptedAt??null]);
     return {id,priceMinor:Number(p.amount_minor),currency:p.currency};
   });
 }
@@ -207,6 +245,46 @@ export async function refundVerifiedOrder(r:VerifiedPaymentReceipt){
     return {orderId:o.id,revoked:true};
   });
 }
+/** A server-verified, official CLOSED query (not an HTTP request timeout).
+ * No client-supplied flag or browser cancellation can release the payable slot.
+ */
+export type VerifiedNativeCloseProof={
+  orderId:string;
+  payloadSha256:string;
+  verifiedAt:Date;
+  signatureVerified:true;
+  providerClosedConfirmed:true;
+};
+
+export async function closeVerifiedNativeOrder(proof:VerifiedNativeCloseProof){
+  identifier(proof.orderId);
+  if(proof.signatureVerified!==true || proof.providerClosedConfirmed!==true ||
+     !/^[a-f0-9]{64}$/.test(proof.payloadSha256) ||
+     !Number.isFinite(proof.verifiedAt?.getTime()))
+    throw new BillingConflictError("Unverified provider close evidence");
+  return transaction(async c=>{
+    const result=await c.query<{id:string;state:string;provider:string;
+      close_provider_payload_sha256:string|null}>(`
+      SELECT id,state,provider,close_provider_payload_sha256
+      FROM billing_orders WHERE id=$1 FOR UPDATE`,[proof.orderId]);
+    const o=result.rows[0];
+    if(!o || o.provider!=="wechat_native")
+      throw new BillingConflictError("Native order not found");
+    if(o.state==="closed"){
+      if(o.close_provider_payload_sha256!==proof.payloadSha256)
+        throw new BillingConflictError("Conflicting official close proof");
+      return {orderId:o.id,closed:false};
+    }
+    if(o.state!=="pending")
+      throw new BillingConflictError("Paid/refunded order cannot be closed");
+    await c.query(`UPDATE billing_orders
+      SET state='closed',closed_at=$2,close_provider_payload_sha256=$3
+      WHERE id=$1 AND state='pending'`,
+      [o.id,proof.verifiedAt,proof.payloadSha256]);
+    return {orderId:o.id,closed:true};
+  });
+}
+
 export async function verifiedGrantsForParent(parentId:string,now=new Date()):Promise<AccessGrant[]>{
   const rows=await billingPool().query<{
     payer_parent_id:string;tier:"plus"|"pro";starts_at:Date;ends_at:Date;revoked_at:Date|null;
