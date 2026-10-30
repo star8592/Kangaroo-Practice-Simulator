@@ -47,7 +47,8 @@ BEGIN
   END IF;
   IF TG_OP='DELETE' THEN RETURN OLD; END IF;
   RETURN NEW;
-END $$;
+END;
+$$;
 DROP TRIGGER IF EXISTS billing_resource_sold_guard ON billing_resource_assets;
 CREATE TRIGGER billing_resource_sold_guard
   BEFORE UPDATE OR DELETE ON billing_resource_assets
