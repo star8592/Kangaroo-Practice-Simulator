@@ -43,7 +43,7 @@ export default async function AccountPage(){
   }catch{queryFailed=true;}
   const planLabel=plan==="free"?"免费账号":plan.toUpperCase();
   const entries=[
-    {href:"/assessments",title:"考试大全",desc:"发现考试方向和已开放测评"},
+    {href:"/assessments",title:"选择考试或资料",desc:"查看考试大全，发现考试方向和已开放测评"},
     {href:"/resources",title:"试卷资料",desc:"检索已核查的在线练习资料"},
     {href:"/arithmetic",title:"数学训练",desc:"直接进入计算与巧算训练"},
     {href:"/student",title:"学习报告",desc:"查看同一账号累积的练习记录"},
@@ -56,7 +56,8 @@ export default async function AccountPage(){
       <div>
         <small>SOCTHINK / ONE WECHAT ACCOUNT</small>
         <h1>我的学习与订单</h1>
-        <p>已登录微信 · {account.name||"微信账号"}。考试、练习、购买记录统一归属这个账号，无需设置额外家庭档案或学生身份。</p>
+        <h2 className={styles.accountName}>{account.name||"微信账号"}</h2>
+        <p>已登录微信 · 考试、练习、购买记录统一归属这个账号，无需设置额外家庭档案或学生身份。</p>
         <div className={styles.heroStatus} role="status">
           <strong>{planLabel}</strong>
           <span>{queryFailed?"权益暂时不可查询":!billingReady
@@ -68,7 +69,7 @@ export default async function AccountPage(){
 
     <section className={styles.section} aria-label="可用功能">
       <div className={styles.sectionHeading}>
-        <small>START HERE</small><h2>一个账号，直接使用</h2>
+        <small>START HERE · 一个账号，直接使用</small><h2>考试与资料</h2>
         <p>选择考试或资料后即可进入对应服务，不必先购买套餐或填写家庭资料。</p>
       </div>
       <div className={styles.serviceGrid}>

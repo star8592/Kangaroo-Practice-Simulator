@@ -38,3 +38,5 @@
 @media(max-width:1050px){.serviceGrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:760px){.page{width:calc(100% - 28px);padding:15px 0 60px}.hero{padding:24px 20px;display:block}.hero h1{font-size:30px}.hero p{font-size:14px}.logout{margin-top:14px}.serviceGrid{gap:10px}.service{padding:17px}.orders{margin-top:26px}.empty{padding:19px}}
 @media(max-width:440px){.serviceGrid{grid-template-columns:1fr}}
+
+.accountName{font-size:clamp(18px,2vw,24px);font-weight:800;color:#fff;margin:0 0 9px}
