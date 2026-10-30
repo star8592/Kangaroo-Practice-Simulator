@@ -87,10 +87,18 @@
 2. [Native 下单 API：`code_url` 和原始返回示例](https://pay.wechatpay.cn/doc/v3/merchant/4012791877)。
 3. [商户订单号查单 API](https://pay.wechatpay.cn/doc/v3/merchant/4012526919)。
 4. [API v3 签名/验签工具与规范](https://pay.wechatpay.cn/doc/v3/merchant/4012365352)。
-5. [支付通知：5 秒应答、重试与不能只依赖通知](https://pay.wechatpay.cn/doc/v3/merchant/4012166360)（此页面为合单场景，应继续核对普通商户 Native 实际通知页面；此处只引用其共通超时机制）。
+5. [普通商户 API v3 支付成功回调通知：5 秒应答、200/204、推荐异步后处理](https://pay.wechatpay.cn/doc/v3/merchant/4013070368)（APP 支付品类页面，说明 API v3 普通商户统一回调处理流程）。
 6. [官方普通商户退款开发指引，更新 2026-10-13](https://pay.wechatpay.cn/doc/v3/merchant/4013071031)。
 7. [按商户退款单号查询真实最终状态](https://pay.wechatpay.cn/doc/v3/merchant/4012791884)。
 
-## 5. 维护机制
+## 5. 对照后的代码整改优先级（给联调人员）
+
+**第一轮 P0**：把新站 `POST /api/payments/wechat/notify` 的签名验证与持续 10 秒的远程 GET 查单解耦。官方普通商户回调示例明确：验签后返回 200/204，业务逻辑推荐异步；我们仍须确保完成可恢复持久化（订单收款安全关键场景），数据库失败则返回非成功响应，不能仅内存 `setTimeout`。验收模拟官方 GET 10 秒超时，微信回调须在 5 秒内有可确定的应答，并且真实数据库故障不得 ACK 成功。
+
+**第二轮 P0**：微信退款正式申请→持久化 `out_refund_no`→按官方接口查询 `PROCESSING/SUCCESS/CLOSED/ABNORMAL`→仅最终 `SUCCESS` 冲正权益。官方最新 2026-10-13 退款指引，资金受理不能冒充到账。退款相关任何测试都不得触及真实商户未授权账户。
+
+**第三轮 P1**：对 Web Native `code_url` 实际 2 小时 TTL 进行前端时钟测试、状态查询和同商户订单号重取，而不是旧版硬编码 10 分钟或者二维码永久展示。
+
+## 6. 维护机制
 
 今后修改支付代码或官方文档发生变更时，应先更新**这一份**对照矩阵及相关自动回归，不另建相似的第二份表格。任何状态升级需粘贴**脱敏原始回执的证据标识**：明确 commit SHA、官方文档更新时间、测试结果、生产部署时间、实际商户交易及查询回执。**没有证据，状态只写 UNKNOWN/NOT_LIVE。** 与 [EngineeringOS 跨项目访问规范](https://github.com/star8592/EngineeringOS/blob/main/docs/operations/CROSS_PROJECT_ACCESS_AND_AUTH_LESSONS.md) 共用同一套登录防误判规则。
