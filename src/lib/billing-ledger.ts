@@ -4,7 +4,7 @@ import type { AccessGrant } from "./access-policy";
 
 // Internal transactional ledger; no HTTP handler exposes settlement mutations.
 export type VerifiedPaymentReceipt = {
-  provider: "wechat_pay";
+  provider: "wechat_pay" | "wechat_native";
   eventId: string;
   orderId: string;
   transactionId: string;
@@ -38,23 +38,25 @@ const identifier=(id:string)=>{
   if(!id || id.length>256)throw new BillingConflictError("Invalid identifier");
   return id;
 };
-export async function createBillingOrder(parentId:string,productId:string){
+export async function createBillingOrder(parentId:string,productId:string,provider:"wechat_pay"|"wechat_native"="wechat_pay"){
   if(!/^par_[a-zA-Z0-9_]+$/.test(parentId))throw new BillingConflictError("Invalid parent account");
   identifier(productId);
+  if (!["wechat_pay", "wechat_native"].includes(provider))
+    throw new BillingConflictError("Invalid provider");
   return transaction(async c=>{
     const product=await c.query<{amount_minor:string;currency:string}>(
       "SELECT amount_minor,currency FROM billing_products WHERE id=$1 AND enabled=true",[productId]);
     if(!product.rows[0])throw new BillingConflictError("Product unavailable");
     const id="ord_"+crypto.randomBytes(12).toString("hex");
     const p=product.rows[0];
-    await c.query("INSERT INTO billing_orders(id,payer_parent_id,product_id,price_minor,currency,provider) VALUES($1,$2,$3,$4,$5,'wechat_pay')",
-      [id,parentId,productId,p.amount_minor,p.currency]);
+    await c.query("INSERT INTO billing_orders(id,payer_parent_id,product_id,price_minor,currency,provider) VALUES($1,$2,$3,$4,$5,$6)",
+      [id,parentId,productId,p.amount_minor,p.currency,provider]);
     return {id,priceMinor:Number(p.amount_minor),currency:p.currency};
   });
 }
 function validateReceipt(r:VerifiedPaymentReceipt){
   identifier(r.eventId);identifier(r.orderId);identifier(r.transactionId);
-  if(r.provider!=="wechat_pay" || r.signatureVerified!==true || r.providerStatusConfirmed!==true ||
+  if(!["wechat_pay","wechat_native"].includes(r.provider) || r.signatureVerified!==true || r.providerStatusConfirmed!==true ||
      !/^[0-9a-f]{64}$/.test(r.payloadSha256) || !Number.isSafeInteger(r.amountMinor) ||
      r.amountMinor<0 || !/^[A-Z]{3}$/.test(r.currency) ||
      !(r.verifiedAt instanceof Date) || !Number.isFinite(r.verifiedAt.getTime()))

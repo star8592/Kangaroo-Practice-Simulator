@@ -5,11 +5,13 @@ import { useSiteLanguage } from "@/lib/site-language";
 import { publicAccessCatalog } from "@/lib/access-catalog";
 import type { IdentityKind, Plan } from "@/lib/access-policy";
 import styles from "./MembershipPage.module.css";
+import NativeCheckoutPanel, { type PublishedMembershipOffer } from "./NativeCheckoutPanel";
 
 const catalog=publicAccessCatalog();
 type TierId = "guest" | Plan;
-export default function MembershipClient({identity,plan,ledgerAvailable}:{
+export default function MembershipClient({identity,plan,ledgerAvailable,offers,parentLoggedIn}:{
   identity:IdentityKind;plan:Plan;ledgerAvailable:boolean;
+  offers:readonly PublishedMembershipOffer[];parentLoggedIn:boolean;
 }) {
   const lang=useSiteLanguage();
   const en=lang==="en";
@@ -26,7 +28,7 @@ export default function MembershipClient({identity,plan,ledgerAvailable}:{
       <div className={styles.status}>
         <b>{en?"Your access":"当前权益"}：{current ? (en?current.en:current.zh) : active.toUpperCase()}</b>
         <span>{!ledgerAvailable ? (en?"Entitlements temporarily unavailable":"会员权益暂时无法读取，请稍后重试") :
-          (en?"No payment or checkout is enabled yet.":"正式收费尚未开放，当前不会向您收款。")}</span>
+          (offers.length?(en?"Verified WeChat checkout is available for listed offers.":"下方已开放经过验证的微信扫码购买套餐。"):(en?"No payment or checkout is enabled yet.":"正式收费尚未开放，当前不会向您收款。"))}</span>
       </div>
     </section>
     <section className={styles.cards} aria-label={en?"Plan overview":"权益级别"}>
@@ -55,9 +57,14 @@ export default function MembershipClient({identity,plan,ledgerAvailable}:{
         </tr>)}</tbody>
       </table>
     </div>
-    <p className={styles.note}>{en
-      ?"The feature comparison is a proposed plan structure, not a statement that paid checkout is live. Access to published questions also depends on source permissions and quality review."
-      :"以上为计划实施的权益矩阵，不代表已开通收款或已经交付全部高级功能。题目是否可展示仍以来源授权与内容审核为准。会员失效后，历史基础成绩不会被删除。"}
+    <NativeCheckoutPanel offers={offers} parentLoggedIn={parentLoggedIn}/>
+    <p className={styles.note}>{offers.length
+      ? (en
+        ? "Only currently active, real-price membership offers are available for payment. Questions and AI capabilities remain subject to source rights and service quotas."
+        : "仅当前正式开通、具备真实价格和交付权益的会员套餐可购买。题目版权、AI使用额度和具体服务以实际商品内容为准。")
+      : (en
+        ? "The feature comparison is a proposed plan structure, not a statement that paid checkout is live. Access to published questions also depends on source permissions and quality review."
+        : "以上为计划实施的权益矩阵，不代表已开通收款或已经交付全部高级功能。题目是否可展示仍以来源授权与内容审核为准。会员失效后，历史基础成绩不会被删除。")}
     </p>
     <div className={styles.actions}>
       <Link href="/exam/au-amc-pre-a-sample-2">{en?"Try a free sample":"免费体验 AMC 样题"}</Link>
