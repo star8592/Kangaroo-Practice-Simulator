@@ -53,14 +53,19 @@ export async function POST(req:NextRequest) {
     if(p.product_kind==="item"){
       if(process.env.SOCTHINK_ITEM_ACCESS_ENFORCED!=="1" ||
          !p.rights_approved || !p.delivery_verified || !p.access_restricted ||
-         p.content_kind!=="exam" || !p.content_id || !p.title_zh)
+         !p.content_id || !p.title_zh ||
+         (p.content_kind!=="exam" && p.content_kind!=="resource"))
         return reply({error:"本商品尚未开放购买"},409);
-      try{
-        if(!isExamBundleTrainingReady(loadTrainingExamBundle(p.content_id)))
-          return reply({error:"试卷尚未完成交付验收"},409);
-      }catch{return reply({error:"试卷尚未完成交付验收"},409);}
-      if(await hasVerifiedItemEntitlement(parent.id,"exam",p.content_id))
-        return reply({error:"已购买此试卷，请在我的账号中使用",code:"ALREADY_OWNED"},409);
+      if(p.content_kind==="exam"){
+        try{
+          if(!isExamBundleTrainingReady(loadTrainingExamBundle(p.content_id)))
+            return reply({error:"试卷尚未完成交付验收"},409);
+        }catch{return reply({error:"试卷尚未完成交付验收"},409);}
+      }
+      // For resources, createBillingOrder verifies rights and the exact
+      // private SHA256 file bytes before an order can reach WeChat Pay.
+      if(await hasVerifiedItemEntitlement(parent.id,p.content_kind,p.content_id))
+        return reply({error:"已购买该商品，请在我的账号中使用",code:"ALREADY_OWNED"},409);
     }
     const order=await createBillingOrder(parent.id,productId,"wechat_native");
     orderCreated=true;

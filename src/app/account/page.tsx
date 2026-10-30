@@ -63,6 +63,10 @@ export default async function AccountPage(){
             <p>{order.currency==="CNY"?"¥"+(Number(order.price_minor)/100).toFixed(2):order.currency} · {new Date(order.created_at).toLocaleDateString("zh-CN")}</p>
             {order.state==="paid"&&order.content_kind==="exam"&&order.content_id&&
               <Link href={"/exam/"+encodeURIComponent(order.content_id)}>进入已购试卷</Link>}
+            {order.state==="paid"&&order.content_kind==="resource"&&order.content_id&&
+              <a href={"/api/resources/download/"+encodeURIComponent(order.content_id)}>
+                下载已购资料
+              </a>}
           </li>)}
         </ul>}
       <Link className="secondary-button" href="/membership">查看可购买服务</Link>

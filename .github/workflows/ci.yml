@@ -33,6 +33,9 @@ jobs:
       - name: Production receipt concurrency contract
         run: node scripts/test_production_receipt_policy.mjs
 
+      - name: Private digital delivery file safety
+        run: npm run test:digital-resource-file
+
       - name: Public quality gate
         run: npm run verify:public
 
