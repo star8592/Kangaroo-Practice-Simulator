@@ -1,6 +1,7 @@
 import crypto from "node:crypto";
 import { Pool, type PoolClient } from "pg";
 import type { AccessGrant } from "./access-policy";
+import {verifyDigitalResourceIntegrity,type DigitalResourceFile} from "./digital-resource-file";
 
 // Internal transactional ledger; no HTTP handler exposes settlement mutations.
 export type VerifiedPaymentReceipt = {
@@ -60,6 +61,18 @@ export async function createBillingOrder(parentId:string,productId:string,provid
       throw new BillingConflictError("Item unavailable for sale");
     if(p.product_kind!=="subscription" && p.product_kind!=="item")
       throw new BillingConflictError("Unsupported product");
+    if(p.product_kind==="item" && p.content_kind==="resource"){
+      // Never create a payable order for a missing, corrupted, unapproved
+      // or public-directory file. A fixture metadata row alone is insufficient.
+      const file=await c.query<DigitalResourceFile>(`
+        SELECT sha256,size_bytes,file_name,mime_type
+        FROM billing_resource_assets
+        WHERE resource_id=$1 AND rights_approved=true AND delivery_verified=true
+      `,[p.content_id]);
+      if(!file.rows[0])throw new BillingConflictError("Resource is not deliverable");
+      try{await verifyDigitalResourceIntegrity(file.rows[0]);}
+      catch{throw new BillingConflictError("Resource file failed delivery verification");}
+    }
     if(p.product_kind==="item"){
       // Prevent repeat sales of already-owned content. The advisory transaction
       // lock serializes buyer+content checks across concurrent checkout calls.

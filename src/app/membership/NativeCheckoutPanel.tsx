@@ -9,6 +9,7 @@ import styles from "./MembershipPage.module.css";
 export type PublishedMembershipOffer=Readonly<
   {kind:"subscription";id:string;tier:"plus"|"pro";period:"month"|"year";priceMinor:number;currency:"CNY"}
   | {kind:"item";id:string;contentKind:"exam";contentId:string;titleZh:string;priceMinor:number;currency:"CNY"}
+  | {kind:"item";id:string;contentKind:"resource";contentId:string;titleZh:string;fileName:string;sizeBytes:number;priceMinor:number;currency:"CNY"}
 >;
 
 type CheckoutReply={
@@ -77,8 +78,10 @@ export default function NativeCheckoutPanel({offers,accountLoggedIn}:{
     <div className={styles.checkoutOffers}>
       {offers.map(offer=><div key={offer.id} className={styles.checkoutOffer}>
         <b>{offer.kind==="item"
-          ? (en?"Individual exam":"单张试卷")+" · "+offer.titleZh
+          ? (offer.contentKind==="exam"?(en?"Individual exam":"单张试卷"):(en?"Digital resource":"数字资料"))+" · "+offer.titleZh
           : offer.tier.toUpperCase()+" · "+(offer.period==="month"?(en?"Monthly":"月度"):(en?"Yearly":"年度"))}</b>
+        {offer.kind==="item"&&offer.contentKind==="resource"&&
+          <small>{offer.fileName} · {(offer.sizeBytes/1048576).toFixed(2)} MB · {en?"Download immediately after verified payment":"付款核实后在我的账号下载"}</small>}
         <span>¥{(offer.priceMinor/100).toFixed(2)}</span>
         <button type="button" onClick={()=>void purchase(offer.id)}
           disabled={!accountLoggedIn||loading||state==="pending"}>
