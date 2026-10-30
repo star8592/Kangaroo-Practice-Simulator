@@ -4,7 +4,7 @@ import {DIGITAL_SALES_POLICY_VERSION,DIGITAL_SALES_POLICY_SHORT_ZH} from "@/lib/
 export const metadata={title:"数字商品购买与售后规则 · SOCTHINK"};
 
 export default function DigitalPurchasePolicyPage(){
-  return <main className="legal-page">
+  return <div className="legal-page">
     <h1>数字商品购买与售后规则</h1>
     <p><strong>{DIGITAL_SALES_POLICY_SHORT_ZH}</strong></p>
     <h2>一、适用范围</h2>
@@ -19,5 +19,5 @@ export default function DigitalPurchasePolicyPage(){
     <p>交易通过同一微信买家账号处理。订单将记录所确认的规则版本和确认时间，支付状态须由微信支付官方验签、独立查单后才能确认为已支付。正式付费商品可在 <Link href="/account">我的订单与权益</Link> 中查看。法定售后事件在核实后按规定处理，不会因为“原则上不接受无理由退款”而被系统直接拒绝。</p>
     <p>版本：{DIGITAL_SALES_POLICY_VERSION}</p>
     <p><Link href="/membership">返回考试和资料购买页</Link></p>
-  </main>;
+  </div>;
 }

@@ -1,6 +1,6 @@
 import Link from "next/link";
 export default function TermsPage(){
-  return <main className="legal-page">
+  return <div className="legal-page">
     <h1>用户协议</h1>
     <p>SOCTHINK 提供考试、数字资料、在线测评及学习服务。网站通过微信账号提供便捷使用，未成年人应在监护人指导下使用及购买付费商品。</p>
     <h2>账号与安全</h2>
@@ -10,5 +10,5 @@ export default function TermsPage(){
     <p>商品不能正常交付、与说明严重不符或存在依法应承担责任的问题，用户仍可依法主张相应权利；不得用格式条款排除法律规定的消费者权益。</p>
     <h2>合理使用</h2>
     <p>不得破坏服务、绕过授权、批量抓取受保护题库或传播无权分发的受版权保护资料。</p>
-  </main>;
+  </div>;
 }

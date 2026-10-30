@@ -54,6 +54,7 @@
     "test:billing-ledger": "tsx scripts/test_billing_ledger.ts",
     "test:digital-resource-file": "tsx scripts/test_digital_resource_file.ts",
     "test:digital-sales-policy": "tsx scripts/test_digital_sales_policy.ts",
+    "test:portal-commerce": "node scripts/test_portal_commerce_contract.mjs",
     "test:rights": "python3 scripts/validate_competition_source_registry.py",
     "data:collection-plan": "python3 scripts/build_competition_collection_plan.py",
     "data:rights-review": "python3 scripts/build_rights_review_queue.py",

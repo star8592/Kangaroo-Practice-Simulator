@@ -1,6 +1,14 @@
 import {defineConfig,devices} from "@playwright/test";
 
 const BASE_URL=process.env.E2E_BASE_URL||"http://127.0.0.1:4318";
+const TEST_ORIGIN=new URL(BASE_URL);
+if(!process.env.E2E_EXTERNAL_SERVER &&
+   (TEST_ORIGIN.protocol!=="http:" ||
+    !["127.0.0.1","localhost"].includes(TEST_ORIGIN.hostname)))
+  throw new Error("LOCAL_E2E_REQUIRES_LOOPBACK_ORIGIN");
+const TEST_PORT=Number(TEST_ORIGIN.port||80);
+if(!Number.isSafeInteger(TEST_PORT)||TEST_PORT<1024||TEST_PORT>65535)
+  throw new Error("INVALID_E2E_PORT");
 export default defineConfig({
   testDir:"./tests/e2e",
   timeout:30000,
@@ -23,10 +31,12 @@ export default defineConfig({
     {name:"mobile-chromium",use:{...devices["Pixel 7"]}},
   ],
   webServer:process.env.E2E_EXTERNAL_SERVER?undefined:{
-    command:"npm run start -- -p 4318",
+    command:`npm run start -- -p ${TEST_PORT} -H 127.0.0.1`,
     url:BASE_URL+"/api/release",
     timeout:60000,
-    reuseExistingServer:!process.env.CI,
+    // Never reuse an unverified listener. Another workspace may return
+    // HTTP 200 for /api/release via SPA fallback, causing false-green CI.
+    reuseExistingServer:false,
     stdout:"ignore",
     stderr:"pipe",
   },
