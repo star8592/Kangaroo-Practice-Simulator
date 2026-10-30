@@ -10,6 +10,7 @@ import { useSiteLanguage } from "@/lib/site-language";
 import styles from "./SiteHeader.module.css";
 
 const NAV_ITEMS = [
+  { href: "/assessments", zh: "全部测评", en: "Assessments" },
   { href: "/arithmetic", zh: "数学训练", en: "Math practice" },
   { href: "/competitions", zh: "竞赛模拟", en: "Mock exams" },
   { href: "/events", zh: "赛事管家", en: "Event companion" },
@@ -43,7 +44,7 @@ export default function SiteHeader() {
           <span className={styles.brandMark}>{SITE_BRAND.mark}</span>
           <span className={styles.brandCopy}>
             <strong>{lang === "zh" ? SITE_BRAND.nameZh : SITE_BRAND.nameEn}</strong>
-            <small>{lang === "zh" ? "全球数学竞赛与成长" : "Global Math Growth"}</small>
+            <small>{lang === "zh" ? "考试测评与能力成长" : "Assess · Learn · Grow"}</small>
           </span>
         </Link>
 

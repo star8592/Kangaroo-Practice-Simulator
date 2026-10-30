@@ -6,10 +6,10 @@ import { useSiteLanguage } from "@/lib/site-language";
 
 const UI={
  zh:{
-  eye:"SOC THINK · 全球数学竞赛与成长",
+  eye:"SOC THINK · 超级考试与测评平台",
   title1:"练好数学，",title2:"探索世界数学竞赛",
   copy:"面向 G1–G12 的数学训练、竞赛模拟与全球赛事管家。今天可以练计算，也可以参加模拟。赛事查询、报名信息和备赛安排统一在赛事管家查看。",
-  primary:"开始计算训练",competition:"参加竞赛模拟",events:"进入赛事管家",login:"已有账号登录",register:"微信登录 / 注册 · 扫码即用",
+  primary:"开始计算训练",competition:"参加竞赛模拟",catalogue:"全部测评服务",events:"进入赛事管家",login:"已有账号登录",register:"微信登录 / 注册 · 扫码即用",
   loop:"一次训练，应该回答四个问题",
   s1:"现在在哪里",s1d:"从年级、正确率、速度和题型表现建立当前能力基线。",
   s2:"为什么会错",s2d:"区分知识缺口、计算失误、策略不足和速度问题，而不是只记录对错。",
@@ -21,10 +21,10 @@ const UI={
   profile:"学习结果不是一次分数",profileDesc:"训练记录、速度、正确率、错因与考试表现汇入长期档案。登录后可继续上次进度并查看个人学习报告。",profileCta:"查看我的学习报告",
  },
  en:{
-  eye:"SOC THINK · GLOBAL MATH GROWTH",
+  eye:"SOC THINK · ASSESSMENT PLATFORM",
   title1:"Practice math with confidence.",title2:"Explore competitions worldwide.",
   copy:"Practice math, take realistic mock exams, and explore competition information in the separate Events Companion. Follow your progress and choose your next challenge.",
-  primary:"Start math practice",competition:"Try mock exams",events:"Explore events",login:"Existing account",register:"Sign in / Join with WeChat",
+  primary:"Start math practice",competition:"Try mock exams",catalogue:"All assessments",events:"Explore events",login:"Existing account",register:"Sign in / Join with WeChat",
   loop:"Every practice session should answer four questions",
   s1:"Where am I now?",s1d:"Build a baseline from grade, accuracy, speed and performance by skill.",
   s2:"Why did I miss it?",s2d:"Separate knowledge gaps, calculation errors, weak strategy and fluency issues.",
@@ -51,6 +51,7 @@ export default function PublicHome(){
     <Link className="primary-button home-login-primary" href="/login">{ui.register}</Link>
     <Link className="secondary-button" href="/arithmetic">{ui.primary}</Link>
     <Link className="secondary-button" href="/competitions">{ui.competition}</Link>
+    <Link className="secondary-button" href="/assessments">{ui.catalogue}</Link>
     <Link className="secondary-button" href="/events">{ui.events}</Link>
    </div>
 
