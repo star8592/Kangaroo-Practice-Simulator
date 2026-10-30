@@ -14,12 +14,12 @@ const TEXT={
     search:"搜索考试名称、学科或关键词，例如 AMC、雅思、考研、SQL",
     searchLabel:"搜索考试",searchTitle:"从一项考试开始",popular:"大家常找",found:"搜索结果",
     categories:"考试大类",directions:"考试方向",liveServices:"已开放的领域",enter:"立即使用",
-    jump:"查看全部考试",papers:"检索试卷资料",tools:"直达可用服务",
+    jump:"查看全部考试",papers:"检索试卷资料",signIn:"微信登录 / 注册",tools:"直达可用服务",
     topics:"该方向的考试与训练",partial:"部分服务开放",pending:"内容准备中",ready:"已可使用",
     source:"仅链接真实可用内容，未验收服务不会显示考试或购买入口。",
     noResults:"没有找到对应分类，请换一个关键词试试。",clear:"清空搜索",viewAll:"查看所有方向",
-    liveMath:"数学计算与能力训练",liveMathDesc:"小学到高中，直接进入现有在线数学训练。",
-    liveCompetition:"国际数学竞赛模拟",liveCompetitionDesc:"按赛制选择比赛，进入现有模拟与练习。",
+    liveMath:"开始计算训练",liveMathDesc:"小学到高中，直接进入现有在线数学训练。",
+    liveCompetition:"参加竞赛模拟",liveCompetitionDesc:"按赛制选择比赛，进入现有模拟与练习。",
     livePaper:"可用试卷资料",livePaperDesc:"根据竞赛、年份、年级筛选已有训练卷。",
     stages:"一条完整的学习路径",stageDesc:"同一内容体系，连通发现、练习、诊断和复测。",
     step1:"查考试",step1d:"先找到适合自己的考试及资料",
@@ -35,12 +35,12 @@ const TEXT={
     search:"Search exam, subject or keyword: AMC, IELTS, postgraduate, SQL",
     searchLabel:"Search exams",searchTitle:"Start with one exam",popular:"Popular searches",found:"Search results",
     categories:"Exam categories",directions:"Exam directions",liveServices:"Live domains",enter:"Open",
-    jump:"Browse all exams",papers:"Search practice papers",tools:"Services ready now",
+    jump:"Browse all exams",papers:"Search practice papers",signIn:"Sign in / Join with WeChat",tools:"Services ready now",
     topics:"Exams and exercises",partial:"Some services available",pending:"In preparation",ready:"Available now",
     source:"Only real destinations are linked; unverified exams are not open or for sale.",
     noResults:"No matching categories. Try another keyword.",clear:"Clear search",viewAll:"See all exam directions",
-    liveMath:"Math skills and practice",liveMathDesc:"Use the existing school mathematics practice.",
-    liveCompetition:"International math competitions",liveCompetitionDesc:"Select authentic formats and practise existing mocks.",
+    liveMath:"Start math practice",liveMathDesc:"Use the existing school mathematics practice.",
+    liveCompetition:"Try mock exams",liveCompetitionDesc:"Select authentic formats and practise existing mocks.",
     livePaper:"Training-ready paper library",livePaperDesc:"Filter existing papers by contest, grade or year.",
     stages:"One connected learning journey",stageDesc:"Discover, attempt, understand and improve within one platform.",
     step1:"Find",step1d:"Find the right exam and resources",
@@ -122,7 +122,7 @@ export default function PublicHome(){
 
     <section className={styles.quickSection} aria-labelledby="quick-services-heading">
       <div className={styles.sectionTop}><h2 id="quick-services-heading">{t.tools}</h2>
-        <Link href="/resources">{t.papers} <span aria-hidden="true">→</span></Link></div>
+        <Link href="/login">{t.signIn} <span aria-hidden="true">→</span></Link></div>
       <div className={styles.quickGrid}>{QUICK_SERVICES.map(s=>
         <Link key={s.href} href={s.href} className={styles.quickItem}>
           <span className={styles.quickNumber}>{s.number}</span><div><strong>{t[s.key]}</strong><p>{t[s.description]}</p></div>
