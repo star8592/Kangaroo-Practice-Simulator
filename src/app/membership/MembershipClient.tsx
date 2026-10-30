@@ -4,6 +4,7 @@ import {useSiteLanguage} from "@/lib/site-language";
 import type {Plan} from "@/lib/access-policy";
 import NativeCheckoutPanel,{type PublishedMembershipOffer} from "./NativeCheckoutPanel";
 import styles from "./MembershipPage.module.css";
+import {DIGITAL_SALES_POLICY_SHORT_ZH,DIGITAL_SALES_POLICY_SHORT_EN} from "@/lib/digital-sales-policy";
 
 export default function MembershipClient({
  plan,ledgerAvailable,offers,accountLoggedIn,
@@ -32,6 +33,12 @@ export default function MembershipClient({
    <Link href="/competitions">{en?"Mock exams":"竞赛模拟"}</Link>
    <Link href="/account">{en?"My purchases":"我的订单与权益"}</Link>
   </div>
+  <section className={styles.purchasePolicyNotice} aria-label={en?"Digital purchase terms":"数字商品售后提示"}>
+    <strong>{en?"Read before buying · No change-of-mind returns after delivery":"购买前须知 · 数字内容交付后不支持无理由退款"}</strong>
+    <p>{en?DIGITAL_SALES_POLICY_SHORT_EN:DIGITAL_SALES_POLICY_SHORT_ZH}{" "}
+      <Link href="/digital-purchase-policy">{en?"Full purchase terms":"查看完整规则"}</Link>
+    </p>
+  </section>
   <NativeCheckoutPanel offers={offers} accountLoggedIn={accountLoggedIn}/>
   {!accountLoggedIn&&<p className={styles.note}>
    {en?"When a product is ready, sign in with WeChat to buy and use it.":

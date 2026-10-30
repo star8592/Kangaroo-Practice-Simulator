@@ -11,6 +11,7 @@ export default function SiteFooter(){
     {href:"/membership",zh:"学习权益",en:"Membership"},
     {href:"/privacy",zh:"隐私政策",en:"Privacy"},
     {href:"/terms",zh:"服务条款",en:"Terms"},
+    {href:"/digital-purchase-policy",zh:"数字商品售后",en:"Digital purchase terms"},
   ];
   return <footer className="site-footer">
     <div className="site-footer-inner">

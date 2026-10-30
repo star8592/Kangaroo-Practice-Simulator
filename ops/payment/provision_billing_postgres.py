@@ -72,9 +72,10 @@ def preflight() -> dict[str, bool]:
             (ROOT / "ops/db/002_wechat_reconciliation.sql").is_file() and
             (ROOT / "ops/db/003_native_notification_inbox.sql").is_file() and
             (ROOT / "ops/db/004_item_purchases.sql").is_file() and
-            (ROOT / "ops/db/005_digital_resource_delivery.sql").is_file(),
-            (ROOT / "ops/db/006_unique_active_item_orders.sql").is_file(),
-            (ROOT / "ops/db/007_native_close_proof.sql").is_file(),
+            (ROOT / "ops/db/005_digital_resource_delivery.sql").is_file() and
+            (ROOT / "ops/db/006_unique_active_item_orders.sql").is_file() and
+            (ROOT / "ops/db/007_native_close_proof.sql").is_file() and
+            (ROOT / "ops/db/008_digital_sales_consent.sql").is_file(),
         "postgres_binary": Path("/usr/bin/psql").exists(),
         "role_absent": False,
         "database_absent": False,
@@ -148,6 +149,9 @@ def main() -> int:
     run(["runuser", "-u", "postgres", "--", "psql",
          "-X", "-q", "-v", "ON_ERROR_STOP=1", "-d", DATABASE,
          "-f", str(ROOT / "ops/db/007_native_close_proof.sql")])
+    run(["runuser", "-u", "postgres", "--", "psql",
+         "-X", "-q", "-v", "ON_ERROR_STOP=1", "-d", DATABASE,
+         "-f", str(ROOT / "ops/db/008_digital_sales_consent.sql")])
     pg(f"GRANT USAGE ON SCHEMA public TO {ROLE};"
        f"GRANT SELECT,INSERT,UPDATE,DELETE ON ALL TABLES IN SCHEMA public TO {ROLE};"
        f"GRANT USAGE,SELECT ON ALL SEQUENCES IN SCHEMA public TO {ROLE};",

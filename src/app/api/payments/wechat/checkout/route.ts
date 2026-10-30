@@ -5,6 +5,7 @@ import {BillingConflictError,billingConfigured,billingPool,createBillingOrder,ha
 import {isExamBundleTrainingReady,loadTrainingExamBundle} from "@/lib/training-question-bank";
 import {nativeCheckoutAllowed,nativeServerContext} from "@/lib/wechat-native-server";
 import {createVerifiedWechatNativeCheckout} from "@/lib/wechat-native-transport";
+import {DIGITAL_SALES_POLICY_VERSION,validDigitalSalesPolicyConsent} from "@/lib/digital-sales-policy";
 
 export const runtime="nodejs";
 export const dynamic="force-dynamic";
@@ -21,6 +22,7 @@ export async function POST(req:NextRequest) {
   if (!parent || !parent.active || !(parent.wechatId||parent.wechatOpenId))
     return reply({error:"请先使用微信登录"},401);
   let productId:string;
+  let policyAccepted=false;
   try {
     const raw=await req.text();
     if (raw.length>2048) return reply({error:"请求格式不正确"},400);
@@ -28,9 +30,13 @@ export async function POST(req:NextRequest) {
     const obj=body && typeof body==="object"&&!Array.isArray(body)?
       body as Record<string,unknown>:null;
     productId=typeof obj?.productId==="string"?obj.productId:"";
+    policyAccepted=validDigitalSalesPolicyConsent(obj);
   } catch {return reply({error:"请求格式不正确"},400);}
   if (!/^[a-zA-Z0-9_.-]{4,80}$/.test(productId))
     return reply({error:"商品不可购买"},400);
+  if(!policyAccepted)
+    return reply({error:"请先主动确认数字内容交付及无理由退款规则",
+      code:"PURCHASE_POLICY_CONFIRMATION_REQUIRED"},409);
   let orderCreated=false;
   try {
     const context=nativeServerContext();
@@ -67,7 +73,9 @@ export async function POST(req:NextRequest) {
       if(await hasVerifiedItemEntitlement(parent.id,p.content_kind,p.content_id))
         return reply({error:"已购买该商品，请在我的账号中使用",code:"ALREADY_OWNED"},409);
     }
-    const order=await createBillingOrder(parent.id,productId,"wechat_native");
+    const order=await createBillingOrder(parent.id,productId,"wechat_native",{
+      policyVersion:DIGITAL_SALES_POLICY_VERSION,acceptedAt:new Date(),
+    });
     orderCreated=true;
     const payment=await createVerifiedWechatNativeCheckout(context,{
       orderId:order.id,description:"SOCTHINK "+p.id,
