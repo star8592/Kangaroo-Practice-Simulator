@@ -106,7 +106,8 @@
     "test:wechat-native-transport": "tsx scripts/test_wechat_native_transport.ts",
     "test:wechat-native-flags": "tsx scripts/test_wechat_native_checkout_flags.ts",
     "test:wechat-native-recovery": "tsx scripts/test_wechat_native_recovery.ts",
-    "payment:reconcile-native": "tsx scripts/reconcile_wechat_native_orders.ts"
+    "payment:reconcile-native": "tsx scripts/reconcile_wechat_native_orders.ts",
+    "test:single-wechat-buyer": "tsx scripts/test_single_wechat_buyer.ts"
   },
   "dependencies": {
     "next": "16.4.3",

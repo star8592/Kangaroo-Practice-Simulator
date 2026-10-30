@@ -1,7 +1,8 @@
 import {cookies} from "next/headers";
 import {redirect} from "next/navigation";
 import Link from "next/link";
-import {SESSION_COOKIE,userFromSessionToken} from "@/lib/auth";
+import {SESSION_COOKIE,userFromSessionToken,wechatBuyerStudyUser} from "@/lib/auth";
+import {PARENT_SESSION_COOKIE,parentFromSessionToken} from "@/lib/parent-auth";
 import {buildAcademicCalendar} from "@/lib/academic-events/calendar";
 import {buildWorldFollowedCalendar} from "@/lib/world-followed-calendar";
 import CompetitionIntelligencePanel from "@/components/CompetitionIntelligencePanel";
@@ -10,7 +11,9 @@ export const dynamic="force-dynamic";
 
 export default async function Page(){
   const jar=await cookies();
-  const user=userFromSessionToken(jar.get(SESSION_COOKIE)?.value);
+  const buyer=parentFromSessionToken(jar.get(PARENT_SESSION_COOKIE)?.value);
+  const user=buyer?.active&&(buyer.wechatId||buyer.wechatOpenId)
+    ? wechatBuyerStudyUser(buyer.id) : userFromSessionToken(jar.get(SESSION_COOKIE)?.value);
   if(!user||user.role!=="student")redirect("/login?next=/student/calendar");
   const today=new Date().toLocaleDateString("en-CA",{timeZone:"Asia/Shanghai"});
   const rows=buildAcademicCalendar(user,today);

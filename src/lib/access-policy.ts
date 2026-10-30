@@ -30,8 +30,6 @@ export type Capability =
   | "competition_reminder"
   | "awards_basic"
   | "awards_premium"
-  | "family_dashboard"
-  | "family_multi_student"
   | "personalized_exam"
   | "personalized_study_plan";
 
@@ -78,7 +76,6 @@ const CAPS: Record<Capability, {
   guest: boolean;
   free: boolean;
   requiredPlan: Plan;
-  parentOnly?: boolean;
 }> = {
   competition_catalog:             { guest: true,  free: true,  requiredPlan: "free" },
   public_sample_exam:              { guest: true,  free: true,  requiredPlan: "free" },
@@ -98,20 +95,23 @@ const CAPS: Record<Capability, {
   competition_reminder:           { guest: false, free: true,  requiredPlan: "free" },
   awards_basic:                   { guest: true,  free: true,  requiredPlan: "free" },
   awards_premium:                 { guest: false, free: false, requiredPlan: "plus" },
-  family_dashboard:               { guest: false, free: true,  requiredPlan: "free", parentOnly: true },
-  family_multi_student:           { guest: false, free: false, requiredPlan: "plus", parentOnly: true },
   personalized_exam:              { guest: false, free: false, requiredPlan: "plus" },
   personalized_study_plan:        { guest: false, free: false, requiredPlan: "plus" },
 };
-export const ACCESS_POLICY_VERSION = "2026-10-08-v2";
+export const ACCESS_POLICY_VERSION = "2026-10-30-one-wechat-v1";
 export const CAPABILITIES = Object.freeze(Object.keys(CAPS) as Capability[]);
 
 export function classifyStudentIdentity(user: {
   id: string;
   role: "admin" | "student";
+  candidateNo?: string;
 } | null | undefined): IdentityKind {
   if (!user) return "anonymous";
   if (user.role === "admin") return "admin";
+  // This exact historical study id is derived only from a verified WeChat
+  // buyer session when paired with candidateNo=WECHAT by server auth.
+  if (user.candidateNo === "WECHAT" &&
+      /^guest_family_[0-9a-f]{32}$/.test(user.id)) return "student";
   if (user.id.startsWith("guest_")) return "guest";
   return "student";
 }
@@ -131,10 +131,6 @@ export function effectivePlan(ctx: AccessContext): Plan {
   return tier;
 }
 
-export function maxFamilyStudents(tier: Plan): number {
-  return tier === "pro" ? 5 : tier === "plus" ? 3 : 1;
-}
-
 /** Pure policy decision. Caller MUST supply source clearance and owner checks. */
 export function canAccess(
   capability: Capability,
@@ -151,7 +147,6 @@ export function canAccess(
     const guardianOwns = ctx.kind === "parent" && (ctx.linkedStudentIds ?? []).includes(resource.ownerStudentId);
     if (!owns && !guardianOwns) return deny("forbidden");
   }
-  if (rule.parentOnly && ctx.kind !== "parent") return deny("forbidden");
   if (ctx.kind === "anonymous") return rule.guest
     ? { allowed: true, reason: "allowed", currentPlan: plan, requiredPlan: rule.requiredPlan }
     : deny("login_required");

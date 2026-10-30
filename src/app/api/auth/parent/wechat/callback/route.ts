@@ -44,7 +44,7 @@ export async function GET(req: NextRequest) {
   const qrFlow = /^wqs_[0-9a-f]{48}$/.test(state);
 
   if (!code || !state) {
-    return NextResponse.redirect(`${WECHAT_CALLBACK_ORIGIN}/parent/login?wechat=state_error`);
+    return NextResponse.redirect(`${WECHAT_CALLBACK_ORIGIN}/login?wechat=state_error`);
   }
 
   if (qrFlow) {
@@ -54,7 +54,7 @@ export async function GET(req: NextRequest) {
   } else {
     const expected = req.cookies.get(WECHAT_STATE_COOKIE)?.value || "";
     if (!expected || state !== expected) {
-      return NextResponse.redirect(`${WECHAT_CALLBACK_ORIGIN}/parent/login?wechat=state_error`);
+      return NextResponse.redirect(`${WECHAT_CALLBACK_ORIGIN}/login?wechat=state_error`);
     }
   }
 
@@ -69,8 +69,8 @@ export async function GET(req: NextRequest) {
       return mobileResultPage(true, "电脑端正在自动完成登录。你可以关闭此页面并返回电脑继续使用。");
     }
 
-    const nextCookie=req.cookies.get("socthink_parent_wechat_next")?.value||"/parent";
-    const returnPath=nextCookie.startsWith("/")&&!nextCookie.startsWith("//")&&!nextCookie.includes("\\")?nextCookie:"/parent";
+    const nextCookie=req.cookies.get("socthink_parent_wechat_next")?.value||"/account";
+    const returnPath=nextCookie.startsWith("/")&&!nextCookie.startsWith("//")&&!nextCookie.includes("\\")?nextCookie:"/account";
     const response = NextResponse.redirect(`${WECHAT_CALLBACK_ORIGIN}${returnPath}`);
     response.cookies.set(PARENT_SESSION_COOKIE, createParentSessionToken(user.id), {
       httpOnly: true,
@@ -90,6 +90,6 @@ export async function GET(req: NextRequest) {
     return response;
   } catch {
     if (qrFlow) return mobileResultPage(false, "微信授权失败，请回到电脑重新扫码。");
-    return NextResponse.redirect(`${WECHAT_CALLBACK_ORIGIN}/parent/login?wechat=failed`);
+    return NextResponse.redirect(`${WECHAT_CALLBACK_ORIGIN}/login?wechat=failed`);
   }
 }

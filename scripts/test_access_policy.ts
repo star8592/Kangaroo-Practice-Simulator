@@ -5,7 +5,6 @@ import {
   canAccess,
   classifyStudentIdentity,
   effectivePlan,
-  maxFamilyStudents,
   type AccessContext,
 } from "../src/lib/access-policy";
 
@@ -22,8 +21,15 @@ const pro: AccessContext = {
   grants: [{ tier: "pro", ownerId: "stu_1", verified: true, startsAt: NOW - 1000, expiresAt: NOW + 1000 }],
 };
 
-assert.equal(CAPABILITIES.length, 22);
+assert.equal(CAPABILITIES.length, 20);
 assert.equal(classifyStudentIdentity({ id: "guest_abc", role: "student" }), "guest");
+assert.equal(classifyStudentIdentity({
+  id:"guest_family_"+"a".repeat(32),role:"student",candidateNo:"WECHAT",
+}),"student","Authenticated WeChat buyer may use exam with stable study identity");
+assert.equal(classifyStudentIdentity({
+  id:"guest_family_"+"a".repeat(32),role:"student",candidateNo:"GUEST",
+}),"guest","Historical guest practice session stays restricted");
+
 assert.equal(classifyStudentIdentity({ id: "wx_abc", role: "student" }), "student");
 assert.equal(classifyStudentIdentity({ id: "adm_abc", role: "admin" }), "admin");
 assert.equal(classifyStudentIdentity(null), "anonymous");
@@ -40,9 +46,6 @@ assert.equal(canAccess("solution_ai", pro).allowed, true);
 assert.equal(canAccess("report_basic", free, { ownerStudentId: "stu_2" }).reason, "forbidden");
 assert.equal(canAccess("report_basic", parent, { ownerStudentId: "stu_1" }).allowed, true);
 assert.equal(canAccess("report_basic", parent, { ownerStudentId: "stu_2" }).reason, "forbidden");
-assert.equal(canAccess("family_dashboard", free).reason, "forbidden");
-assert.equal(canAccess("family_dashboard", parent).allowed, true);
-assert.equal(canAccess("family_multi_student", parent).reason, "upgrade_required");
 assert.equal(canAccess("public_sample_exam", pro, { sourceAllowed: false }).reason, "source_unavailable");
 assert.equal(canAccess("exam_premium", free, { legacyPublic: true }).allowed, true);
 assert.equal(effectivePlan(plus), "plus");
@@ -52,7 +55,4 @@ assert.equal(effectivePlan({ ...plus, grants: [{ ...plus.grants![0], verified: f
 assert.equal(effectivePlan({ ...plus, grants: [{ ...plus.grants![0], ownerId: "par_other" }] }), "free");
 assert.equal(effectivePlan({ ...plus, grants: [{ ...plus.grants![0], revokedAt: NOW - 1 }] }), "free");
 assert.equal(effectivePlan({ ...plus, kind: "guest" }), "free");
-assert.equal(maxFamilyStudents("free"), 1);
-assert.equal(maxFamilyStudents("plus"), 3);
-assert.equal(maxFamilyStudents("pro"), 5);
 console.log("ACCESS_POLICY_PASS", ACCESS_POLICY_VERSION, CAPABILITIES.length, "capabilities; guest/free/plus/pro/expired/owner/source cases");

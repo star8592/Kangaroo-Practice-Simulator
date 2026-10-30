@@ -19,7 +19,7 @@ const UI={
   modes:"数学训练与竞赛模拟，连接长期成长档案",
   calc:"计算与基础能力",calcDesc:"覆盖 G1–G12，从基础运算延伸到代数、函数、概率与统计。支持诊断、自适应训练、限时训练和巧算策略。",calcCta:"进入计算训练",
   comp:"竞赛模拟考试",compDesc:"不同赛事的真实赛制、真题及模拟练习，配套成绩与错题复盘；赛历、报名核验和备赛计划请进入全球赛事。",compCta:"参加竞赛模拟",
-  profile:"学习结果不是一次分数",profileDesc:"训练记录、速度、正确率、错因与考试表现汇入长期档案。登录后可继续上次进度并查看个人学习报告。",profileCta:"查看我的学习报告",
+  profile:"学习结果不是一次分数",profileDesc:"训练记录、速度、正确率、错因与考试表现汇入长期档案。登录后可继续上次进度并查看个人学习报告。",profileCta:"我的账号与已购记录",
  },
  en:{
   eye:"SOC THINK · ASSESSMENT PLATFORM",
@@ -34,7 +34,7 @@ const UI={
   modes:"Two practice modes. One long-term learner profile.",
   calc:"Fluency & core skills",calcDesc:"G1–G12 practice from arithmetic through algebra, functions, probability and statistics, with diagnostics and adaptive practice.",calcCta:"Open calculation training",
   comp:"Mock competitions",compDesc:"Practice past papers and timed mock exams by authentic formats, and review answers. Explore the events directory for registrations and preparation.",compCta:"Try mock exams",
-  profile:"More than a one-time score",profileDesc:"Accuracy, speed, errors, practice history and mock-exam performance build one long-term learner record.",profileCta:"View my learning report",
+  profile:"More than a one-time score",profileDesc:"Accuracy, speed, errors, practice history and mock-exam performance build one long-term learner record.",profileCta:"My account and purchases",
  },
 } as const;
 
@@ -81,7 +81,7 @@ export default function PublicHome(){
 
   <section className="home-profile">
    <div><span className="eyebrow">LEARNER PROFILE</span><h2>{ui.profile}</h2><p>{ui.profileDesc}</p></div>
-   <Link className="secondary-button" href="/student">{ui.profileCta}</Link>
+   <Link className="secondary-button" href="/account">{ui.profileCta}</Link>
   </section>
  </div>;
 }

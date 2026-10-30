@@ -28,7 +28,7 @@ checks={
     'must_not':['WorldCompetitionHub','全球数学赛事管家','<div className="eyebrow">COMPETITION FORMAT LAB</div>','<span className="eyebrow">COMPETITIONS</span>','<span className="eyebrow">MAA AMC PATHWAY</span>','<span className="eyebrow">SMART BY FORMAT</span>','<span className="eyebrow">OFFICIAL SAMPLES</span>','<span className="eyebrow">OFFICIAL PRACTICE</span>','<span className="eyebrow">PAST PAPERS</span>'],
   },
   'src/components/SiteHeader.tsx':{
-    'must':['考试大全','资料中心','数学训练','竞赛模拟','赛事管家','学习记录'],
+    'must':['考试大全','资料中心','数学训练','竞赛模拟','赛事管家','我的账号'],
     'must_not':[],
   },
   'src/components/EventsCompanionClient.tsx':{
@@ -47,17 +47,13 @@ checks={
     'must':['智能计算训练','学生画像','这个年级要练到什么程度','gradeAria:"选择年级"','aria-label={ui.gradeAria}','个性化模型','ADAPTIVE CALCULATION','Four-dimensional skill profile','useSiteLanguage'],
     'must_not':['ADAPTIVE MENTAL MATH','STUDENT PROFILE','GRADE PROFILES','PERSONAL MODEL'],
   },
-  'src/components/LoginClient.tsx':{
-    'must':['国际数学竞赛训练中心'],
-    'must_not':['Math Competition Learning Lab'],
+  'src/components/UnifiedLoginClient.tsx':{
+    'must':['微信登录','一个微信账号','选择考试或资料','WechatWebsiteQr'],
+    'must_not':['家长账号集中管理','使用已有学生账号','学生 PIN 登录','邮箱注册'],
   },
-  'src/components/ParentLoginClient.tsx':{
-    'must':['家长学习中心'],
-    'must_not':['Parent Learning Console'],
-  },
-  'src/components/ParentRegisterClient.tsx':{
-    'must':['家庭安全注册'],
-    'must_not':['Secure Family Onboarding'],
+  'src/app/account/page.tsx':{
+    'must':['我的账号','我的订单与权益','选择考试或资料'],
+    'must_not':['添加孩子','创建学生账号','家庭与孩子账号'],
   },
   'src/app/admin/students/[id]/page.tsx':{
     'must':['教师视图 · 学习模型','教学重点','下一步训练'],
