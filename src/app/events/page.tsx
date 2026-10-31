@@ -6,6 +6,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "赛事管家 | SOC THINK",
   description: "管理中国与世界数学赛事资讯、赛事关注、报名核验、备赛清单及赛历。站内模拟考试为独立业务。",
+  alternates: { canonical: "/events" },
 };
 
 export default async function EventsPage({
