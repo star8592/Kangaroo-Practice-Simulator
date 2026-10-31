@@ -60,9 +60,9 @@ const breadcrumbs = {
 };
 
 function gradeName(grade: ArithmeticGrade) {
-  return grade <= 6 ? \`小学\${["一", "二", "三", "四", "五", "六"][grade - 1]}年级\` :
-    grade <= 9 ? \`初中\${["一", "二", "三"][grade - 7]}年级（\${["七", "八", "九"][grade - 7]}年级）\` :
-    \`高中\${["一", "二", "三"][grade - 10]}年级\`;
+  return grade <= 6 ? `小学${["一", "二", "三", "四", "五", "六"][grade - 1]}年级` :
+    grade <= 9 ? `初中${["一", "二", "三"][grade - 7]}年级（${["七", "八", "九"][grade - 7]}年级）` :
+    `高中${["一", "二", "三"][grade - 10]}年级`;
 }
 
 export default function MathPracticeLanding() {
