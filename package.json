@@ -10,7 +10,7 @@
     "test:arithmetic": "tsx scripts/test_arithmetic_strategy_tree.ts && tsx scripts/test_arithmetic_symbolic.ts && tsx scripts/test_arithmetic_input.ts && tsx scripts/test_arithmetic_display.ts",
     "test:arithmetic-print": "tsx scripts/test_arithmetic_print.ts",
     "test:math-answer-input": "tsx scripts/test_math_answer_input_parity.ts",
-    "test:platform": "tsx scripts/test_assessment_platform.ts && tsx scripts/test_resource_catalog.ts && tsx scripts/test_exam_directory.ts",
+    "test:platform": "tsx scripts/test_assessment_platform.ts && tsx scripts/test_resource_catalog.ts && tsx scripts/test_exam_directory.ts && npm run test:measurement-center",
     "test:exam-directory": "tsx scripts/test_exam_directory.ts",
     "test:resource-catalog": "tsx scripts/test_resource_catalog.ts",
     "test:rust-catalog-contract": "tsx scripts/test_rust_catalog_snapshot.ts",
@@ -113,7 +113,8 @@
     "test:wechat-native-flags": "tsx scripts/test_wechat_native_checkout_flags.ts",
     "test:wechat-native-recovery": "tsx scripts/test_wechat_native_recovery.ts",
     "payment:reconcile-native": "tsx scripts/reconcile_wechat_native_orders.ts",
-    "test:single-wechat-buyer": "tsx scripts/test_single_wechat_buyer.ts"
+    "test:single-wechat-buyer": "tsx scripts/test_single_wechat_buyer.ts",
+    "test:measurement-center": "tsx scripts/test_measurement_center.ts"
   },
   "dependencies": {
     "next": "16.4.3",
