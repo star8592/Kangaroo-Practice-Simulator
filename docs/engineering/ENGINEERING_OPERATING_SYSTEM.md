@@ -1,6 +1,6 @@
 # 全球数学赛事管家 · 工程开发、发布与运维统一标准
 
-**状态：实施中（2026-10-10）**。仓库：star8592/Kangaroo-Practice-Simulator。本文是默认工程主流程，原有分散说明作为执行细则，不得降低这里的发布、安全和验收门禁。
+**状态：实施中（2026-10-10）**。仓库：star8592/Kangaroo-Practice-Simulator。本文保留完整的数据安全与可靠性要求。自2026-10-31起，具体模块边界与精简发布泳道遵循 [模块化单体与减法式工程治理](../architecture/SOCTHINK_MODULAR_MONOLITH_20261031.md)：不允许用无关模块的诊断结果串行阻塞普通发布，也不允许借精简掩盖考试/资金错误。
 
 ## 0. 最高原则
 
@@ -54,7 +54,7 @@ P0：考试无法提交/权限泄漏/资金错付/全站停机，立即停止发
 
 ## 7. 自动控制 vs 人工工作
 
-ops/engineering/controls.json 是机器可检查的控制目录；scripts/verify_engineering_controls.py 与其单元变异测试在公开质量门禁中执行。控制脚本检查的是仓库 wiring 和安全不变量，**不是生产运行证明**。生产使用 ops/engineering/production_readiness.sh 只读核验并输出真实证据。任何 control 中的 OPEN 风险都应在基线审计中列明、分配责任和安排实测。仅 PR 文本模板不能替代 CI 和 Github branch protection 的真实设置。
+ops/engineering/controls.json 是机器可检查的控制目录；其完整自检及变异测试现属于按需执行的扩展诊断，**不属于普通网页公共发布的同步依赖**。控制脚本检查的是仓库 wiring 和安全不变量，**不是生产运行证明**。生产使用 ops/engineering/production_readiness.sh 只读核验并输出真实证据。任何 control 中的 OPEN 风险都应在基线审计中列明、分配责任和安排实测。仅 PR 文本模板不能替代 CI 和 Github branch protection 的真实设置。
 
 
 ## GOV-03 实施入口（2026-10-10）

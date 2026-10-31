@@ -6,11 +6,14 @@ Releases are automation-first. A human should not manually reproduce machine che
 
 - [ ] Acceptance contract exists for behavior-changing work.
 - [ ] `npm run verify:public` passes.
-- [ ] `npm run verify:full` passes when private data is available.
 - [ ] Exact commit is pushed to GitHub.
 - [ ] Staging release boots and passes health + authenticated smoke checks.
 - [ ] Live deployment receipt matches the exact Git SHA.
 - [ ] Rollback target remains available.
+
+## Optional deep diagnostics (independent of ordinary release)
+
+Run `npm run verify:full` or a relevant subsystem test when changing source ingestion, backup, TPM or other specialized workflows. Report findings separately. These checks do not gate unrelated page releases.
 
 ## Local deployment
 

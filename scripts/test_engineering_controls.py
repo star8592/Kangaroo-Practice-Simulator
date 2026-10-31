@@ -14,7 +14,7 @@ scenarios = [
  ("ci","billing-ledger:","payment regression"),
  ("ci","miniapp-build-and-contract:","native CI"),
  ("quality","npm run test:exam-access","guest authorization"),
- ("quality","step \"engineering operating controls\" npm run test:engineering-controls","policy inside CI"),
+ ("diagnostics","step \"engineering operating controls\" npm run test:engineering-controls","deep diagnostics policy"),
  ("deploy","CI_NOT_GREEN","production CI gate"),
  ("deploy","restore_runtime","rollback"),
  ("receipt","deployedSha","public release identity"),
@@ -41,7 +41,7 @@ scenarios = [
  ("tpm_seal","StrictHostKeyChecking=yes","host identity for secret transport"),
  ("tpm_restore","tmpfs_required","plaintext never extracted to disk"),
  ("tpm_restore","verify_offsite_replica.py","hash before decrypt"),
- ("quality","scripts/test_tpm_offsite_recovery.py","hardware DR fixture"),
+ ("diagnostics","scripts/test_tpm_offsite_recovery.py","hardware DR fixture"),
 
 
 
