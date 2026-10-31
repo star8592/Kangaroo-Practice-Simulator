@@ -43,7 +43,7 @@ test("new portal offers real search, seven-domain navigation and working resourc
   await expect(page.getByRole("button",{name:/全球数学竞赛/})).toBeVisible();
   const mobile=(page.viewportSize()?.width??1280)<=760;
   if(mobile)await page.getByRole("button",{name:"打开导航菜单"}).click();
-  await expect(page.getByRole("link",{name:"资料中心"}).first()).toBeVisible();
+  await expect(page.getByRole("link",{name:"真题资料"}).first()).toBeVisible();
   if(mobile)await page.getByRole("button",{name:"打开导航菜单"}).click();
   await page.getByRole("link",{name:/可用试卷资料/}).first().click();
   await expect(page).toHaveURL(/\/resources/);
