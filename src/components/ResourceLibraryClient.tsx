@@ -17,7 +17,7 @@ const COPY = {
   zh: {
     eyebrow: "SOCTHINK / RESOURCE FINDER",
     heading: "找到真正能做的试卷",
-    intro: "按竞赛、年份、年级检索现有练习卷。这里的每套试卷都经过答题完整性检查，并直接使用平台已有的在线考试流程。",
+    intro: "目前已开放的是国际数学竞赛训练卷，可按竞赛、年份、年级筛选并进入在线练习。其他考试资料请先从「全部考试」查看开放状态；尚未上线的内容不会冒充可下载资料。",
     search: "搜索竞赛、年份或试卷名称",
     competition: "全部竞赛", grade: "全部年级", type: "全部类型",
     all: "全部", total: "可用训练卷", matched: "符合条件", questions: "题",
