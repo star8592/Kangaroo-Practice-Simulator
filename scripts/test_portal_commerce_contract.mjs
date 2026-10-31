@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import {readFileSync} from "node:fs";
 const read=p=>readFileSync(p,"utf8");
 const header=read("src/components/SiteHeader.tsx");
+const accountNav=read("src/components/SessionNav.tsx");
 const footer=read("src/components/SiteFooter.tsx");
 const member=read("src/app/membership/MembershipClient.tsx");
 const account=read("src/app/account/page.tsx");
@@ -14,10 +15,13 @@ const eventHub=read("src/components/WorldCompetitionHub.tsx");
 const resourceClient=read("src/components/ResourceLibraryClient.tsx");
 const loginClient=read("src/components/UnifiedLoginClient.tsx");
 
-for(const slug of ["/assessments","/resources","/arithmetic","/competitions",
-  "/events","/membership","/account"]){
+for(const slug of ["/assessments","/resources","/events","/membership",
+  "/arithmetic","/competitions","/review"]){
   assert.ok(header.includes(`href:"${slug}"`),`NAV_MISSING_${slug}`);
 }
+assert.ok(accountNav.includes('href="/login?next=%2Faccount"')&&accountNav.includes('"/account"'),
+  "ACCOUNT_ENTRY_MUST_HAVE_ONE_SESSION_NAV");
+assert.match(header,/EXAM_DIRECTORY\.map\(/,"Navigation must read the existing full exam taxonomy");
 assert.match(footer,/href:"\/membership"/);
 for(const slug of ["/assessments","/resources","/arithmetic","/account"]){
   assert.ok(member.includes(`href:"${slug}"`),`REAL_SERVICE_ENTRY_MISSING_${slug}`);
