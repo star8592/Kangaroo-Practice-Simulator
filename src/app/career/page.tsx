@@ -1,6 +1,7 @@
 import Link from "next/link";
 import {CAREER_DEMAND_OBSERVED_AT, CAREER_FAMILIES, countCareerEvidence,
   searchCareerDemand} from "@/lib/career-demand";
+import {getCareerSupplyCandidates} from "@/lib/career-product-mapper";
 import styles from "./career.module.css";
 
 export const metadata={
@@ -65,7 +66,7 @@ export default async function CareerDemandPage({searchParams}:{searchParams:Sear
     <p className={styles.resultCount}>符合条件的岗位领域：{results.length}</p>
     {results.length===0?<div className={styles.empty}>目前样本中没有对应记录。请换一个关键词；这不代表企业没有这类需求。</div>:
     <div className={styles.grid}>
-      {results.map(group=><article className={styles.card} key={group.id}>
+      {results.map(group=>{const candidates=getCareerSupplyCandidates(group.id);return <article className={styles.card} key={group.id}>
         <div className={styles.cardHeading}>
           <div><span className={styles.idTag}>{group.id.toUpperCase()}</span><h3>{group.name}</h3></div>
           <span className={styles.evidenceCount}>{group.signals.length} 条公开样本</span>
@@ -85,9 +86,11 @@ export default async function CareerDemandPage({searchParams}:{searchParams:Sear
         </>}
         <div className={styles.proposal}>
           <div className={styles.proposalTop}><strong>本站训练供应方向</strong><span>规划中 · 非企业官方考题</span></div>
-          <ul>{group.ideas.map(idea=><li key={idea}>{idea}</li>)}</ul>
+          {candidates.length>0?<ul>{candidates.map(candidate=><li key={candidate.id}>
+            {candidate.title}<small> · {candidate.evidenceCount} 条具体岗位证据 · 未上架</small>
+          </li>)}</ul>:<p className={styles.noSupply}>目前只有岗位类别证据，没有足够具体的岗位能力要求；暂不自动生成培训商品。</p>}
         </div>
-      </article>)}
+      </article>;})}
     </div>}
     <section className={styles.disclosure}>
       <h2>依据和产品分开，才能真正专业</h2>
