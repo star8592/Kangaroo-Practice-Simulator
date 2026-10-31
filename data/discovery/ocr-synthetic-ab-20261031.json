@@ -1,0 +1,195 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-31",
+  "pilotType": "controlled synthetic image pairwise OCR sanity check, NOT representative examination-page benchmark",
+  "sampleCount": 4,
+  "referenceGoldSource": "Human-authored self-created fixture text; checked against rendered image",
+  "imageEvidence": [
+    {
+      "id": "demo01",
+      "category": "clean_print",
+      "imageSha256": "21ee5c672b54e7201429af74589a7b230a6c34b8104a125b19ed57322c0d6050",
+      "goldLabelHumanReviewed": true,
+      "sourceType": "self_created_synthetic_test_image",
+      "originalExam": false
+    },
+    {
+      "id": "mathsymbols02",
+      "category": "math_formula",
+      "imageSha256": "937416a4a2c5278ad1ca118ea48c6e9391085e14f526765d9489974e8ea71fea",
+      "goldLabelHumanReviewed": true,
+      "sourceType": "self_created_synthetic_test_image",
+      "originalExam": false
+    },
+    {
+      "id": "mathlogic03",
+      "category": "critical_symbols",
+      "imageSha256": "88fa378f87af1483bbe19c0c167fa7f434f90ad84d819a2fb2cc0174d520025b",
+      "goldLabelHumanReviewed": true,
+      "sourceType": "self_created_synthetic_test_image",
+      "originalExam": false
+    },
+    {
+      "id": "lowres04",
+      "category": "low_res_screen",
+      "imageSha256": "9ea79d9d5924db677c25635350c1bf5d4396119d827bc06fbf1c0993b1f1e198",
+      "goldLabelHumanReviewed": true,
+      "sourceType": "self_created_synthetic_test_image",
+      "originalExam": false
+    }
+  ],
+  "models": {
+    "RapidOCR3.10_PP-OCRv6-small_CPU": {
+      "runtime": "ONNX Runtime 1.31.1 / CPU",
+      "declaredModel": "PP-OCRv6 small"
+    },
+    "Qwen3-VL8B_Ollama_local": {
+      "runtime": "Ollama local / RTX 5070 Ti",
+      "declaredModel": "qwen3-vl:8b"
+    }
+  },
+  "results": {
+    "Qwen3-VL8B_Ollama_local": {
+      "samples": 4,
+      "coverage": 1.0,
+      "overall_cer": 0.3744292237442922,
+      "math_canonical_cer": 0.1004566210045662,
+      "numeric_exact_rate": 0.25,
+      "math_canonical_numeric_exact_rate": 0.75,
+      "formula_exact_rate": null,
+      "critical_symbol_recall": 0.47619047619047616,
+      "insertion_ratio_proxy_avg": 0.2924437082525318,
+      "latency_ms_mean": 10830.606666666667,
+      "unreadable_source_count": 0,
+      "human_reviewed_reference_count": 4,
+      "by_category": {
+        "clean_print": {
+          "samples": 1,
+          "cer": 0.21666666666666667,
+          "numeric_exact_rate": 1.0
+        },
+        "critical_symbols": {
+          "samples": 1,
+          "cer": 0.23214285714285715,
+          "numeric_exact_rate": 0.0
+        },
+        "low_res_screen": {
+          "samples": 1,
+          "cer": 0.5961538461538461,
+          "numeric_exact_rate": 0.0
+        },
+        "math_formula": {
+          "samples": 1,
+          "cer": 0.49019607843137253,
+          "numeric_exact_rate": 0.0
+        }
+      },
+      "error_samples": [
+        {
+          "id": "lowres04",
+          "category": "low_res_screen",
+          "cer": 0.5961538461538461,
+          "numeric_exact": false,
+          "critical_missing": 6
+        },
+        {
+          "id": "mathsymbols02",
+          "category": "math_formula",
+          "cer": 0.49019607843137253,
+          "numeric_exact": false,
+          "critical_missing": 4
+        },
+        {
+          "id": "mathlogic03",
+          "category": "critical_symbols",
+          "cer": 0.23214285714285715,
+          "numeric_exact": false,
+          "critical_missing": 1
+        },
+        {
+          "id": "demo01",
+          "category": "clean_print",
+          "cer": 0.21666666666666667,
+          "numeric_exact": true,
+          "critical_missing": 0
+        }
+      ]
+    },
+    "RapidOCR3.10_PP-OCRv6-small_CPU": {
+      "samples": 4,
+      "coverage": 1.0,
+      "overall_cer": 0.0593607305936073,
+      "math_canonical_cer": 0.0,
+      "numeric_exact_rate": 1.0,
+      "math_canonical_numeric_exact_rate": 1.0,
+      "formula_exact_rate": null,
+      "critical_symbol_recall": 1.0,
+      "insertion_ratio_proxy_avg": 0.06217544710191769,
+      "latency_ms_mean": 1059.455,
+      "unreadable_source_count": 0,
+      "human_reviewed_reference_count": 4,
+      "by_category": {
+        "clean_print": {
+          "samples": 1,
+          "cer": 0.016666666666666666,
+          "numeric_exact_rate": 1.0
+        },
+        "critical_symbols": {
+          "samples": 1,
+          "cer": 0.017857142857142856,
+          "numeric_exact_rate": 1.0
+        },
+        "low_res_screen": {
+          "samples": 1,
+          "cer": 0.07692307692307693,
+          "numeric_exact_rate": 1.0
+        },
+        "math_formula": {
+          "samples": 1,
+          "cer": 0.13725490196078433,
+          "numeric_exact_rate": 1.0
+        }
+      },
+      "error_samples": [
+        {
+          "id": "mathsymbols02",
+          "category": "math_formula",
+          "cer": 0.13725490196078433,
+          "numeric_exact": true,
+          "critical_missing": 0
+        },
+        {
+          "id": "lowres04",
+          "category": "low_res_screen",
+          "cer": 0.07692307692307693,
+          "numeric_exact": true,
+          "critical_missing": 0
+        },
+        {
+          "id": "mathlogic03",
+          "category": "critical_symbols",
+          "cer": 0.017857142857142856,
+          "numeric_exact": true,
+          "critical_missing": 0
+        },
+        {
+          "id": "demo01",
+          "category": "clean_print",
+          "cer": 0.016666666666666666,
+          "numeric_exact": true,
+          "critical_missing": 0
+        }
+      ]
+    }
+  },
+  "interpretation": {
+    "qwenIncompleteLowResScreenshot": true,
+    "qwenMissingOriginalContent": "Low-resolution sample truncated after second item; later questions omitted",
+    "numericSequenceMiss": "Qwen output for low-resolution sample differed from the reference",
+    "rapidOCRFullWidthBracketDifference": "Some full-width source brackets became ASCII half-width; normalized equivalently",
+    "latexNotationDifference": "Qwen3-VL rewrote numeric fractions and radicals in LaTeX; limited notation-equivalent normalization was applied",
+    "latencyCaveat": "Rapid had 4 timed CPU calls in one process; Qwen had 3 timed local GPU calls, first prior result with unknown latency; timings are not hardware/initialization matched",
+    "generalization": "No engine can be declared best for real exams from four clean/controlled synthetic images"
+  },
+  "dataPrivacy": "Original fixture images and full model transcripts remain only in Z890 private archive. This index contains no private absolute paths, raw screenshot bytes, credentials, or third-party documents."
+}
