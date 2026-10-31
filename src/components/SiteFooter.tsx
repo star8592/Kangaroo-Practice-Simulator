@@ -7,7 +7,7 @@ export default function SiteFooter(){
   const items=[
     {href:"/assessments",zh:"考试大全",en:"All exams"},
     {href:"/resources",zh:"真题资料",en:"Practice papers"},
-    {href:"/events",zh:"数学赛事",en:"Math events"},
+    {href:"/exam-planner",zh:"考试管理",en:"Exam planner"},
     {href:"/membership",zh:"购买与权益",en:"Purchases & access"},
     {href:"/privacy",zh:"隐私政策",en:"Privacy"},
     {href:"/terms",zh:"服务条款",en:"Terms"},
