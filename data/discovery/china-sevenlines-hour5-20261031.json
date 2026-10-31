@@ -49,7 +49,8 @@
       "rights_status": "unknown",
       "commercial_sale_authorized": false,
       "file_sha256": null,
-      "publication_year": null
+      "publication_year": null,
+      "file_status": "attachment_returns_html_not_pdf"
     },
     {
       "lane": "career",
@@ -61,7 +62,8 @@
       "rights_status": "unknown",
       "commercial_sale_authorized": false,
       "file_sha256": null,
-      "publication_year": null
+      "publication_year": null,
+      "file_status": "captcha_attachment_no_file"
     },
     {
       "lane": "professional",
@@ -81,12 +83,28 @@
       "source_page": "https://www.scst.edu.cn/ygzs/75/bb/c2958a30139/page.htm",
       "source_type": "official_admissions_aptitude_test_outline",
       "verification": "official_page_web_search",
-      "paper_status": "download_attempted",
+      "paper_status": "exam_outline_not_original_exam_paper",
       "rights_status": "unknown",
       "commercial_sale_authorized": false,
-      "file_sha256": null,
-      "publication_year": null
+      "file_sha256": "e58563b21dfe191be4eac1bb5c95020f04bec0ad3555f3022dbea64b99b2f0bc",
+      "publication_year": null,
+      "file_bytes": 4901943,
+      "file_pages": 23,
+      "file_status": "private_download_verified",
+      "file_type": "official_exam_outline_not_paper",
+      "verified_sha256": true
     }
   ],
-  "note": "These seven records are verified public-source leads, not seven downloaded originals. Actual downloads and SHA are only in private hour5-manifest.json. No OCR or resale authorization."
+  "note": "These seven records are verified public-source leads, not seven downloaded originals. Actual downloads and SHA are only in private hour5-manifest.json. No OCR or resale authorization.",
+  "summary": {
+    "actual_downloaded_original_attachments": 2,
+    "actual_bytes": 6074698,
+    "sha_verified": 2,
+    "exam_papers": 0,
+    "ocr_done": 0,
+    "commercially_authorized": 0,
+    "available_for_sale": 0,
+    "blocked_attachment_links": 3,
+    "other_source_links": 5
+  }
 }
