@@ -15,9 +15,12 @@
     "searchQueriesTested": [
       "2026武汉六年级数学试卷",
       "2026湖北省考真题",
-      "2025华杯赛六年级真题"
+      "2025华杯赛六年级真题",
+      "2025希望杯六年级数学真题",
+      "2026武汉中考数学试卷原卷",
+      "2026湖北省考行测真题原卷答案"
     ],
-    "verifiedNoteShareLinks": 2,
+    "verifiedNoteShareLinks": 5,
     "actualOriginalPapersDownloaded": 0,
     "ocrPerformed": false,
     "notes": "Public XHS search via normal deep link; no private chats, contacts, credentials or app database accessed."
@@ -130,7 +133,10 @@
       "originalPaperDownloaded": false,
       "ocrState": "not_attempted",
       "commercialSaleAllowed": false,
-      "notes": "4张帖图不等于卷面完整页数；待确认原件、答案、页序与版权"
+      "notes": "4张帖图不等于卷面完整页数；待确认原件、答案、页序与版权",
+      "possibleRelatedThirdPartyIndex": [
+        "https://www.wh111.com/xiaoxue/liunianji/2026-02-10/84617.html"
+      ]
     },
     {
       "id": "china-xhs-wuhan-wuchang-g6-math-a-2026-002",
@@ -170,6 +176,84 @@
       "ocrState": "not_attempted",
       "commercialSaleAllowed": false,
       "notes": "帖标题含2026，但首图写2020—2025年，不得记为2026真题；短链尚未确认"
+    },
+    {
+      "id": "china-xhs-hope-cup-g6-2025-004",
+      "platform": "xiaohongshu",
+      "domain": "math-competition",
+      "url": "https://www.xiaohongshu.com/discovery/item/680870c8000000001c0347d8",
+      "shareUrl": "https://xhslink.cn/o/2EswY6apiWF",
+      "topic": "2025希望杯六年级数学竞赛真题（帖内标2025 HQ-6中文卷）",
+      "authorDisplayed": "数学小学弟",
+      "sourceClass": "social_user_post_image_exam",
+      "claimedExamYear": 2025,
+      "observedImages": 5,
+      "linkResolutionVerified": true,
+      "officialPublisherVerified": false,
+      "sourceClaimVerified": false,
+      "originalPaperDownloaded": false,
+      "ocrState": "not_attempted",
+      "commercialSaleAllowed": false,
+      "notes": "首页有Hope Math World类似标志，标2025 HQ-6 中文卷；不能单凭标志确定官方来源或是否完整",
+      "limitedPrivateEvidence": {
+        "evidenceKind": "single_visible_app_screen_provenance_only",
+        "fileName": "xhs_hope_2025_first_visible_frame.png",
+        "sha256": "dffceb9da47f4db19c5c2735c725a9af0edc469f36a63bc725f652b79cc835ef",
+        "sizeBytes": 530003,
+        "capturedAt": "2026-10-31T08:33:24+00:00",
+        "isOriginalExamFile": false,
+        "ocrStatus": "not_attempted",
+        "commercialSaleAllowed": false
+      }
+    },
+    {
+      "id": "china-xhs-wuhan-zhongkao-math-2026-005",
+      "platform": "xiaohongshu",
+      "domain": "school",
+      "url": "https://www.xiaohongshu.com/discovery/item/6a82e0990000000005029d9d",
+      "shareUrl": "https://xhslink.cn/o/94L9UqqVv8G",
+      "topic": "2026武汉市中考数学试卷附手写答案",
+      "authorDisplayed": "南风老师",
+      "sourceClass": "social_user_post_image_exam_with_annotated_answers",
+      "claimedExamYear": 2026,
+      "observedImages": 12,
+      "linkResolutionVerified": true,
+      "officialPublisherVerified": false,
+      "sourceClaimVerified": false,
+      "originalPaperDownloaded": false,
+      "ocrState": "not_attempted",
+      "commercialSaleAllowed": false,
+      "notes": "首图可见2026武汉市初中学业水平考试数学试卷；12张是图片数非页数；手写答案需逐页对照，不视为官方答案",
+      "limitedPrivateEvidence": {
+        "evidenceKind": "single_visible_app_screen_provenance_only",
+        "fileName": "xhs_wuhan_zhongkao_2026_first_visible_frame.png",
+        "sha256": "f90b1861627c3f7af6a36e1b30612dd2619392bc04d697c422abf8a01c33f134",
+        "sizeBytes": 598159,
+        "capturedAt": "2026-10-31T08:33:29+00:00",
+        "isOriginalExamFile": false,
+        "ocrStatus": "not_attempted",
+        "commercialSaleAllowed": false
+      }
+    },
+    {
+      "id": "china-xhs-hubei-civil-service-2026-006",
+      "platform": "xiaohongshu",
+      "domain": "professional",
+      "url": "https://www.xiaohongshu.com/discovery/item/69b4e916000000001d01a812",
+      "shareUrl": "https://xhslink.cn/o/9tMwYOlVe5X",
+      "topic": "2026湖北省考行测题目+答案（3月14日题解图）",
+      "authorDisplayed": "肖老师考公",
+      "sourceClass": "social_user_post_question_answer_images",
+      "claimedExamYear": 2026,
+      "observedImages": 8,
+      "linkResolutionVerified": true,
+      "officialPublisherVerified": false,
+      "sourceClaimVerified": false,
+      "originalPaperDownloaded": false,
+      "ocrState": "not_attempted",
+      "commercialSaleAllowed": false,
+      "notes": "首页为314湖北省考笔试完整答案，帖称完整题目+答案；需验证是否只是部分题和回忆版，不能冒充官方原卷"
     }
-  ]
+  ],
+  "lastRealS22AppInspection": "2026-10-31"
 }
