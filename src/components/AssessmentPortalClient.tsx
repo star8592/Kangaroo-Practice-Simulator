@@ -29,7 +29,7 @@ const COPY={
 export default function AssessmentPortalClient({initialQuery=""}:{initialQuery?:string}){
   const lang=useSiteLanguage(),ui=COPY[lang];
   return <div>
-    <div className={styles.shell}>
+    <div data-site-shell="content" className={styles.shell}>
       <section className={styles.hero}>
         <span className={styles.eyebrow}>{ui.eyebrow}</span>
         <h1>{ui.title}</h1>
