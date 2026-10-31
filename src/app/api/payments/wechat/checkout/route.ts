@@ -6,6 +6,7 @@ import {isExamBundleTrainingReady,loadTrainingExamBundle} from "@/lib/training-q
 import {nativeCheckoutAllowed,nativeServerContext} from "@/lib/wechat-native-server";
 import {createVerifiedWechatNativeCheckout} from "@/lib/wechat-native-transport";
 import {DIGITAL_SALES_POLICY_VERSION,validDigitalSalesPolicyConsent} from "@/lib/digital-sales-policy";
+import {NATIVE_ORDER_WINDOW_SECONDS,checkoutQrTtlSeconds} from "@/lib/native-qr-expiry";
 
 export const runtime="nodejs";
 export const dynamic="force-dynamic";
@@ -77,13 +78,22 @@ export async function POST(req:NextRequest) {
       policyVersion:DIGITAL_SALES_POLICY_VERSION,acceptedAt:new Date(),
     });
     orderCreated=true;
+    const orderExpiresAtSeconds=context.nowSeconds+NATIVE_ORDER_WINDOW_SECONDS;
     const payment=await createVerifiedWechatNativeCheckout(context,{
       orderId:order.id,description:"SOCTHINK "+p.id,
       amountMinor:order.priceMinor,currency:"CNY",
-      timeExpireSeconds:context.nowSeconds+30*60,
+      timeExpireSeconds:orderExpiresAtSeconds,
     });
+    // The checkout API and the UI must share the same deadline; otherwise a
+    // stale QR can invite payment after the official time_expire window.
+    const qrTtlSeconds=checkoutQrTtlSeconds(
+      orderExpiresAtSeconds,Math.floor(Date.now()/1000));
+    if(qrTtlSeconds<=0)
+      return reply({error:"二维码已超过支付截止时间，请查询原订单状态",
+        code:"QR_EXPIRED",orderId:payment.orderId,orderCreated:true},503);
     const qrDataUrl=await QRCode.toDataURL(payment.codeUrl,{margin:1,width:256,errorCorrectionLevel:"M"});
     return reply({orderId:payment.orderId,qrDataUrl,priceMinor:order.priceMinor,currency:"CNY",
+      qrTtlSeconds:checkoutQrTtlSeconds(orderExpiresAtSeconds,Math.floor(Date.now()/1000)),
       status:"pending",note:"请以微信支付结果和服务端权益到账为准"},200);
   } catch(error) {
     if(error instanceof BillingConflictError &&

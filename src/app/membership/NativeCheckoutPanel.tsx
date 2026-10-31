@@ -7,6 +7,7 @@ import {useSiteLanguage} from "@/lib/site-language";
 import styles from "./MembershipPage.module.css";
 import {DIGITAL_SALES_POLICY_VERSION,DIGITAL_SALES_POLICY_SHORT_ZH,
   DIGITAL_SALES_POLICY_SHORT_EN} from "@/lib/digital-sales-policy";
+import {remainingQrSeconds,validServerQrTtl} from "@/lib/native-qr-expiry";
 
 export type PublishedMembershipOffer=Readonly<
   {kind:"subscription";id:string;tier:"plus"|"pro";period:"month"|"year";priceMinor:number;currency:"CNY"}
@@ -16,8 +17,13 @@ export type PublishedMembershipOffer=Readonly<
 
 type CheckoutReply={
   orderId?:string;qrDataUrl?:string;code?:string;error?:string;
-  status?:string;priceMinor?:number;currency?:string;
+  status?:string;priceMinor?:number;currency?:string;qrTtlSeconds?:number;
 };
+
+/** Called only after a browser checkout event, never while rendering React. */
+function qrDeadlineFromAcceptedResponse(ttl:number):number {
+  return performance.now()+ttl*1000;
+}
 
 export default function NativeCheckoutPanel({offers,accountLoggedIn}:{
   offers:readonly PublishedMembershipOffer[];accountLoggedIn:boolean;
@@ -25,6 +31,8 @@ export default function NativeCheckoutPanel({offers,accountLoggedIn}:{
   const en=useSiteLanguage()==="en";
   const [pendingId,setPendingId]=useState<string|null>(null);
   const [qrDataUrl,setQrDataUrl]=useState<string|null>(null);
+  const [qrDeadlineMonoMs,setQrDeadlineMonoMs]=useState<number|null>(null);
+  const [qrRemainingSeconds,setQrRemainingSeconds]=useState(0);
   const [loading,setLoading]=useState(false);
   const [state,setState]=useState<"idle"|"pending"|"paid"|"failed">("idle");
   const [message,setMessage]=useState<string>("");
@@ -48,10 +56,20 @@ export default function NativeCheckoutPanel({offers,accountLoggedIn}:{
         }
       } catch { /* Network faults do not imply a successful payment. */ }
     };
+    const tick=()=>setQrRemainingSeconds(
+      remainingQrSeconds(qrDeadlineMonoMs,performance.now()));
+    tick();
     void check();
-    const timer=setInterval(()=>{void check()},3000);
-    return ()=>{closed=true;clearInterval(timer)};
-  },[pendingId,state]);
+    const timer=setInterval(()=>{tick();void check()},3000);
+    const onFocus=()=>tick();
+    window.addEventListener("focus",onFocus);
+    document.addEventListener("visibilitychange",onFocus);
+    return ()=>{
+      closed=true;clearInterval(timer);
+      window.removeEventListener("focus",onFocus);
+      document.removeEventListener("visibilitychange",onFocus);
+    };
+  },[pendingId,state,qrDeadlineMonoMs]);
 
   async function purchase(productId:string) {
     if (loading || state==="pending" || !policyAcknowledgements[productId]) return;
@@ -69,7 +87,14 @@ export default function NativeCheckoutPanel({offers,accountLoggedIn}:{
       if(!response.ok || !data.orderId || !data.qrDataUrl){
         setState("failed");setMessage(data.error||(en?"Checkout temporarily unavailable":"微信支付暂时不可用"));return;
       }
-      setPendingId(data.orderId);setQrDataUrl(data.qrDataUrl);setState("pending");
+      // Treat malformed/missing server TTL as expired, never show an
+      // unbounded QR while the order remains pending at WeChat.
+      const ttl=validServerQrTtl(data.qrTtlSeconds)?data.qrTtlSeconds:0;
+      setPendingId(data.orderId);
+      setQrDeadlineMonoMs(qrDeadlineFromAcceptedResponse(ttl));
+      setQrRemainingSeconds(ttl);
+      setQrDataUrl(ttl>0?data.qrDataUrl:null);
+      setState("pending");
       setPolicyAcknowledgements(prev=>({...prev,[productId]:false}));
     } catch {
       setState("failed");setMessage(en?"Network unavailable; no payment confirmed":"网络暂不可用，未确认支付成功");
@@ -111,12 +136,18 @@ export default function NativeCheckoutPanel({offers,accountLoggedIn}:{
         </button>
       </div>)}
     </div>
-    {state==="pending"&&qrDataUrl&&<div className={styles.checkoutQr} role="status">
+    {state==="pending"&&qrDataUrl&&qrRemainingSeconds>0&&<div className={styles.checkoutQr} role="status">
       <strong>{en?"Scan the official WeChat Pay QR code":"请使用微信扫码支付"}</strong>
       <Image src={qrDataUrl} width={256} height={256} alt={en?"WeChat Pay QR code":"微信支付二维码"} unoptimized/>
-      <span>{en?"Payment status is checked automatically. Payment window: 30 minutes.":"系统正在核对微信官方支付状态。本订单可支付时间为30分钟；超时后须等待微信官方确认关单再重新购买。"}</span>
+      <span>{en
+        ?`QR available for ${Math.ceil(qrRemainingSeconds/60)} more min. Official payment status is checked automatically.`
+        :`二维码剩余约 ${Math.ceil(qrRemainingSeconds/60)} 分钟，系统正在核对微信官方支付状态。到期停止展示二维码，待官方确认关单后才能重新购买。`}</span>
     </div>}
-    {state==="paid"&&<p role="status">{en?"Verified payment recorded. Your membership rights can now be viewed in your account.":"已确认微信付款并完成权益记账，请在账号中心查看会员权益。"}</p>}
+    {state==="pending"&&(!qrDataUrl||qrRemainingSeconds===0)&&
+      <p role="status">{en
+        ?"The payment QR has expired or could not be safely displayed. We will continue checking the original order with WeChat; do not create another payment until its final status is confirmed."
+        :"本订单二维码已过期或无法安全展示，正在继续核对原订单的微信官方支付状态。确认关单之前请勿重复付款。"}</p>}
+    {state==="paid"&&<p role="status">{en?"Verified payment recorded. View your purchased access in My account.":"已确认微信付款并完成权益记账，请在我的账号中使用已购内容。"}</p>}
     {state==="failed"&&<p role="alert">{message||(en?"Order closed or refunded":"订单已关闭或退款")}</p>}
   </section>;
 }
