@@ -10,6 +10,7 @@ use std::collections::HashSet;
 use std::error::Error;
 use std::fs;
 use std::path::Path;
+use std::sync::{Arc, RwLock};
 
 use axum::{
     Json, Router,
@@ -17,7 +18,6 @@ use axum::{
     routing::get,
 };
 use serde::{Deserialize, Serialize};
-use std::sync::Arc;
 
 #[derive(Clone, Debug, Deserialize, Serialize, PartialEq, Eq)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
@@ -103,7 +103,10 @@ impl CatalogIndex {
         if snapshot.version != 1 {
             return Err("unsupported catalog snapshot version".into());
         }
-        if snapshot.generated_at.is_empty() || snapshot.rows.len() > 200_000 {
+        if snapshot.generated_at.is_empty()
+            || snapshot.rows.is_empty()
+            || snapshot.rows.len() > 200_000
+        {
             return Err("catalog timestamp missing or capacity exceeded".into());
         }
         let mut seen = HashSet::new();
@@ -201,11 +204,51 @@ impl CatalogIndex {
     }
 }
 
+/// One in-process catalog reader. Every request snapshots one Arc; successful
+/// refresh swaps the entire validated index, never partial data. No polling.
+#[derive(Clone)]
+pub struct CatalogHandle {
+    current: Arc<RwLock<Arc<CatalogIndex>>>,
+}
+
+impl CatalogHandle {
+    pub fn new(index: CatalogIndex) -> Self {
+        Self {
+            current: Arc::new(RwLock::new(Arc::new(index))),
+        }
+    }
+
+    pub fn search(&self, params: &SearchQuery) -> SearchResult {
+        let index = self.current.read().expect("catalog lock poisoned").clone();
+        index.search(params)
+    }
+
+    pub fn len(&self) -> usize {
+        self.current.read().expect("catalog lock poisoned").len()
+    }
+
+    pub fn is_empty(&self) -> bool {
+        self.current
+            .read()
+            .expect("catalog lock poisoned")
+            .is_empty()
+    }
+
+    pub fn reload(&self, path: impl AsRef<Path>) -> Result<usize, String> {
+        // Parse/validate *before* the exclusive lock. Bad/missing snapshots
+        // cannot remove the last valid searchable directory.
+        let next = CatalogIndex::load(path).map_err(|e| e.to_string())?;
+        let len = next.len();
+        *self.current.write().map_err(|_| "catalog lock poisoned")? = Arc::new(next);
+        Ok(len)
+    }
+}
+
 async fn list_resources(
-    State(index): State<Arc<CatalogIndex>>,
+    State(handle): State<CatalogHandle>,
     Query(params): Query<SearchQuery>,
 ) -> Json<SearchResult> {
-    Json(index.search(&params))
+    Json(handle.search(&params))
 }
 
 async fn health() -> &'static str {
@@ -213,10 +256,14 @@ async fn health() -> &'static str {
 }
 
 pub fn router(index: CatalogIndex) -> Router {
+    router_with_handle(CatalogHandle::new(index))
+}
+
+pub fn router_with_handle(handle: CatalogHandle) -> Router {
     Router::new()
         .route("/healthz", get(health))
         .route("/v1/catalog/resources", get(list_resources))
-        .with_state(Arc::new(index))
+        .with_state(handle)
 }
 
 #[cfg(test)]
@@ -308,6 +355,40 @@ mod tests {
         assert_eq!(r.total, 2);
         assert_eq!(r.items.len(), 1);
         assert!(!r.has_more);
+    }
+
+    #[test]
+    fn failed_refresh_preserves_last_good_snapshot() {
+        let handle = CatalogHandle::new(fixture());
+        let empty_query = SearchQuery::default();
+        assert_eq!(handle.search(&empty_query).total, 2);
+
+        let temporary = std::env::temp_dir().join(format!(
+            "socthink-invalid-catalog-{}-{}.json",
+            std::process::id(),
+            std::thread::current().name().unwrap_or("unnamed")
+        ));
+        std::fs::write(
+            &temporary,
+            r#"{"version":99,"generatedAt":"today","rows":[]}"#,
+        )
+        .expect("write invalid test snapshot");
+        assert!(handle.reload(&temporary).is_err());
+        assert_eq!(handle.search(&empty_query).total, 2);
+
+        std::fs::write(
+            &temporary,
+            r#"{"version":1,"generatedAt":"2026-10-31","rows":[]}"#,
+        )
+        .expect("write empty catalog");
+        assert!(handle.reload(&temporary).is_err());
+        assert_eq!(handle.search(&empty_query).total, 2);
+
+        std::fs::write(&temporary, include_str!("../tests/fixtures/catalog.json"))
+            .expect("write valid test snapshot");
+        assert_eq!(handle.reload(&temporary).unwrap(), 2);
+        assert_eq!(handle.search(&empty_query).total, 2);
+        std::fs::remove_file(temporary).expect("remove test snapshot");
     }
 
     #[test]

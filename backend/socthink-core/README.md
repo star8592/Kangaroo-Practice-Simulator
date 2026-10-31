@@ -1,6 +1,6 @@
 # SOCTHINK Rust Business Core · R1 Resource Catalog
 
-**Status: engineering candidate only. NOT deployed.**
+**Status: R2 engineering candidate only. NOT routed to production.**
 
 The existing Next.js production catalog and training-readiness gate remain authoritative.
 This read-only Rust Axum module is a *migration target* for catalog search, not a
@@ -62,3 +62,47 @@ SOCTHINK_CATALOG_SNAPSHOT=/secure/catalog.json   SOCTHINK_RUST_CATALOG_TEST_URL=
 
 This proves parity for the tested inventory, not a guarantee of production
 performance, commercial rights, up-to-date source legitimacy or authorization.
+
+## R2 event-driven atomic reload (code implemented, production cutover pending)
+
+The Rust process now holds exactly one shared searchable index. On `SIGHUP`,
+it parses and validates the new file **before** swapping a single `Arc` under
+a short write lock. Concurrent GET responses see either the old complete
+snapshot or the new complete snapshot. An invalid, missing or **empty** catalog
+is rejected; the old index remains available. There is no background polling,
+no duplicate question store and no write endpoint.
+
+The new exporter `scripts/publish_training_resource_snapshot.ts` invokes the
+existing TS training-readiness gate and atomically publishes *only* allowlisted
+metadata. It requires an absolute `SOCTHINK_CATALOG_SNAPSHOT` output path,
+writes a same-directory temporary file with mode 0600, fsyncs the data and
+directory, and renames it into place. The console receipt includes a SHA-256
+of the published metadata snapshot, not any user or payment information.
+
+On a configured **internal** Rust service, the content-promotion event does:
+
+```bash
+# Illustration: run in the authorized server application directory, with
+# an absolute private snapshot location and the project tsx tool installed.
+SOCTHINK_CATALOG_SNAPSHOT=/private/socthink/catalog.json   npx tsx scripts/publish_training_resource_snapshot.ts
+# Only after successful publishing, notify the existing Rust service manager:
+systemctl kill --signal=HUP --kill-who=main socthink-catalog.service
+```
+
+The service name above is a *planned* activation contract; **R2 has NOT
+installed or enabled a systemd unit**, and Next.js continues serving the
+production catalog. Integrate this event with the existing authorized data
+promotion transaction at actual cutover, rather than scheduling new polling
+or maintaining two independent production search systems.
+
+Regression tests:
+- `cargo test --locked`: schema, query, validation and last-good retention.
+- `cargo clippy --locked --all-targets -- -D warnings`.
+- `npx tsx scripts/test_catalog_snapshot_atomic.ts`: 0600, atomicity,
+  duplicate/empty rejection, cleanup.
+- `cargo build --locked` and
+  `python3 scripts/test_rust_catalog_hot_reload.py`: live HTTP 2→3,
+  SIGHUP signal, two invalid updates rejected without downtime.
+
+Only an approved single-path migration with exact production/rollback
+receipts may switch the Next.js resource page to Rust.
