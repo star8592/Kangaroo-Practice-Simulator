@@ -55,6 +55,7 @@ export default function MembershipClient({
     {href:"/resources",name:copy.resource,description:copy.resourceDesc,number:"02"},
     {href:"/arithmetic",name:copy.training,description:copy.trainingDesc,number:"03"},
     {href:"/account",name:copy.reports,description:copy.reportsDesc,number:"04"},
+    {href:"/shop",name:en?"Digital resource shop":"原创资料商城",description:en?"Browse verified original PDFs and direct product links.":"按价格与真实交付文件浏览原创资料，进入商品购买页。",number:"05"},
   ];
   return <div data-site-shell="content" className={styles.page}>
     <nav className={styles.breadcrumb} aria-label={en?"Breadcrumb":"当前位置"}>
