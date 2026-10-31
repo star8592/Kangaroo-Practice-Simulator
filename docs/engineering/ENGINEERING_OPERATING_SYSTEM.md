@@ -15,7 +15,7 @@ Delivery First · Evidence-based Done · Small Batch · Fail Closed。完成以�
 3. **施工 Build**：小步提交、单一问题单一 PR、接口契约优先；删除与迁移使用 expand→migrate→switch→contract；强制保护账号权限、考卷答案、家长隐私和支付资金。
 4. **验证 Verify**：单元+负面用例、集成+权限隔离、真实 Web 桌面/移动端点击、微信 Taro 构建，适用时需 DevTools+安卓实机；失败/断网/重试/重放/幂等均需验证。
 5. **审查 Approve**：PR 模板记 Why、Scope、风险级别、正负测试、数据安全、回滚、影响双端、验收证据。若证据缺失须写 NOT VERIFIED，不能声称已完成。
-6. **发布 Release**：只有四项 CI 检查均过才能 merge；main CI → 生产拉取 CI-green 提交 → candidate smoke → 不可变原子切换 → public SHA 与 Production Receipt 一致 → 线上真实 UAT。旧 SHA 保留供回滚。
+6. **发布 Release**：Web 必须通过三项独立检查（quality、Web browser click E2E、billing-ledger）；微信小程序构建在独立 Miniapp CI 中记录真实结果，不阻断无关 Web 改动；main CI → 生产拉取 CI-green 提交 → candidate smoke → 不可变原子切换 → public SHA 与 Production Receipt 一致 → 线上真实 UAT。旧 SHA 保留供回滚。
 7. **运营 Operate**：监控用户关键操作、各 API 错误/延迟、磁盘、数据备份/恢复、worker 健康、官网采集健康、支付/微信异常；告警形成可行动工单。
 8. **复盘 Improve**：先恢复业务、保留证据，再做根因、时间线、侦测缺口、回归用例、预防复发。仅重跑成功不算根因整改。
 
@@ -28,11 +28,11 @@ Delivery First · Evidence-based Done · Small Batch · Fail Closed。完成以�
 | L2 高 | 登录、考试会话、计费 UI、定时任务、持久化状态 | L1 + 身份越权/重放/幂等/恢复、Web/小程序 parity、回滚与运行时核验 |
 | L3 关键 | 真钱、数据库迁移、密钥、角色授权、发布和回滚器 | L2 + 隔离环境故障注入、数据快照和恢复演练、独立技术审核或项目所有者明确批准 |
 
-2026-10-10 实际 GitHub branch protection 已要求 4 项 CI，但 required approving review count = 0；**不可谎称 GitHub 已强制独立批准**。单人项目须在高风险 PR 中单独保留审阅/授权证据；有第二审阅人后才适合开启强制批准与 CODEOWNERS，不能擅自锁死主线。
+2026-10-31 之前 GitHub branch protection 要求 4 项 CI（包括小程序）；架构解耦后 Web 目标为 3 项必需检查，具体生效以 GitHub 规则实时回读为准。历史记录：2026-10-10 实际 GitHub branch protection 已要求 4 项 CI，但 required approving review count = 0；**不可谎称 GitHub 已强制独立批准**。单人项目须在高风险 PR 中单独保留审阅/授权证据；有第二审阅人后才适合开启强制批准与 CODEOWNERS，不能擅自锁死主线。
 
 ## 3. 标准发布链与门禁
 
-Issue → 风险分类/可选 ADR → 隔离 worktree → 单测/集成/安全/前后端真实 E2E → PR → 四组必需检查 (quality、Web browser click E2E、Miniapp build and API contracts、billing-ledger) → main CI → 服务器自动部署 → 候选真实烟测 → 原子切换 → 公网发布 SHA → 生产验收 → 定期运维。
+Issue → 风险分类/可选 ADR → 隔离 worktree → 单测/集成/安全/前后端真实 E2E → PR → Web 三组必需检查 (quality、Web browser click E2E、billing-ledger)；Miniapp CI 独立报真结果 → main CI → 服务器自动部署 → 候选真实烟测 → 原子切换 → 公网发布 SHA → 生产验收 → 定期运维。
 
 微信小程序：正式 upload 还需干净 checkout、精确 remote/main SHA、同 SHA 的微信开发者工具/安卓实机 QA 回执、微信平台审核和已发布证据。只有 Taro 编译通过不能声称已在微信上线。全球赛事：历史学校名单/官网变更先入审核队列；复核当届、地区、受众和有效期后才可以作为日期提醒。关注≠已报名，站内提示≠微信订阅推送。
 

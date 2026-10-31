@@ -9,6 +9,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 FILES = {
     "ci": ".github/workflows/ci.yml",
+    "minici": ".github/workflows/miniapp-ci.yml",
     "quality": "ops/automation/quality_gate.sh",
     "diagnostics": "ops/automation/extended_diagnostics.sh",
     "package": "package.json",
@@ -77,8 +78,13 @@ def evaluate(root=ROOT, replacements=None):
             errors.append(f"{file}: forbidden {label}")
 
     needs("ci", "pull_request:", "branches:", "- main", "quality:", "billing-ledger:",
-          "miniapp-build-and-contract:", "web-browser-click-e2e:", "npm ci",
-          "npm run verify:public", "npm run test:e2e:smoke", "npm run verify:miniapp")
+          "web-browser-click-e2e:", "npm ci",
+          "npm run verify:public", "npm run test:e2e:smoke")
+    no_pattern("ci", r"^  miniapp-build-and-contract:", "miniapp inside Web deploy CI")
+    needs("minici", "name: Miniapp CI", "pull_request:", "push:", "- main",
+          "miniapp-build-and-contract:", "npm run test:miniapp-parity",
+          "npm run verify:miniapp", "workflow_dispatch:")
+    no_pattern("minici", r"^\s*pull_request_target\s*:", "privileged miniapp PR workflow")
     needs("ci", "permissions:", "contents: read")
     no_pattern("ci", r"^\s*pull_request_target\s*:", "privileged pull_request_target workflow")
     needs("quality", "npm run lint -- --max-warnings=0", "npx tsc --noEmit",

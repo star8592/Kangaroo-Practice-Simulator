@@ -12,7 +12,8 @@ assert total>=14 and automated>=8
 scenarios = [
  ("ci","pull_request:","PR trigger"),
  ("ci","billing-ledger:","payment regression"),
- ("ci","miniapp-build-and-contract:","native CI"),
+ ("ci","web-browser-click-e2e:","browser regression"),
+ ("minici","miniapp-build-and-contract:","independent native CI"),
  ("quality","npm run test:exam-access","guest authorization"),
  ("diagnostics","step \"engineering operating controls\" npm run test:engineering-controls","deep diagnostics policy"),
  ("deploy","CI_NOT_GREEN","production CI gate"),
@@ -55,4 +56,7 @@ for file,needle,reason in scenarios:
 ci=(ROOT/FILES["ci"]).read_text(encoding="utf-8")
 failures,*_=evaluate(replacements={"ci":ci+"\non: \n  pull_request_target: \n"})
 assert failures,"ENGINEERING_CONTROL_MUTATION_MISSED privileged pull_request_target"
+mini= (ROOT/FILES["minici"]).read_text(encoding="utf-8")
+failures,*_=evaluate(replacements={"minici":mini+"\non: \n  pull_request_target: \n"})
+assert failures,"ENGINEERING_CONTROL_MUTATION_MISSED privileged miniapp pull_request_target"
 print(f"ENGINEERING_CONTROL_MUTATIONS=PASS cases={len(scenarios)+1}")

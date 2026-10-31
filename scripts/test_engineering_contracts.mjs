@@ -36,13 +36,16 @@ test("release wiring includes candidate, active, public receipt and daily watchd
   assert.match(gate,/test:exam-access-live-contract/);
   assert.match(gate,/test:exam-access/);
 });
-test("main CI independently checks browser clicks and native miniapp build",()=>{
-  const workflow=read(".github/workflows/ci.yml");
-  assert.match(workflow,/name: Web browser click E2E/);
-  assert.match(workflow,/test:e2e:smoke/);
-  assert.match(workflow,/E2E_ALLOW_SYNTHETIC_FIXTURE/);
-  assert.match(workflow,/name: Miniapp build and API contracts/);
-  assert.match(workflow,/verify:miniapp/);
+test("Web deploy CI and independent miniapp CI keep real browser and native contracts",()=>{
+  const web=read(".github/workflows/ci.yml");
+  const miniapp=read(".github/workflows/miniapp-ci.yml");
+  assert.match(web,/name: Web browser click E2E/);
+  assert.match(web,/test:e2e:smoke/);
+  assert.match(web,/E2E_ALLOW_SYNTHETIC_FIXTURE/);
+  assert.doesNotMatch(web,/miniapp-build-and-contract:/,"WeChat compilation must not hold Web deploy CI");
+  assert.match(miniapp,/name: Miniapp build and API contracts/);
+  assert.match(miniapp,/verify:miniapp/);
+  assert.match(miniapp,/test:miniapp-parity/);
 });
 
 test("public exam audio directory is traversable before atomic promotion",()=>{
