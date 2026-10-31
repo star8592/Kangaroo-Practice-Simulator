@@ -6,6 +6,10 @@ on:
       - 'backend/socthink-core/**'
       - 'scripts/export_training_resource_catalog.ts'
       - 'scripts/test_rust_catalog_snapshot.ts'
+      - 'scripts/lib/catalog-snapshot-atomic.ts'
+      - 'scripts/publish_training_resource_snapshot.ts'
+      - 'scripts/test_catalog_snapshot_atomic.ts'
+      - 'scripts/test_rust_catalog_hot_reload.py'
       - '.github/workflows/rust-catalog-r1.yml'
   push:
     branches: [main]
@@ -13,6 +17,10 @@ on:
       - 'backend/socthink-core/**'
       - 'scripts/export_training_resource_catalog.ts'
       - 'scripts/test_rust_catalog_snapshot.ts'
+      - 'scripts/lib/catalog-snapshot-atomic.ts'
+      - 'scripts/publish_training_resource_snapshot.ts'
+      - 'scripts/test_catalog_snapshot_atomic.ts'
+      - 'scripts/test_rust_catalog_hot_reload.py'
       - '.github/workflows/rust-catalog-r1.yml'
 
 permissions:
@@ -38,3 +46,9 @@ jobs:
         run: npm ci --ignore-scripts --no-audit --no-fund
       - name: Same metadata schema in TypeScript and Rust
         run: npx tsx scripts/test_rust_catalog_snapshot.ts
+      - name: Atomic metadata publication contract
+        run: npx tsx scripts/test_catalog_snapshot_atomic.ts
+      - name: Compile Rust service and verify event-triggered zero-downtime reload
+        run: |
+          cargo build --locked --manifest-path backend/socthink-core/Cargo.toml
+          python3 scripts/test_rust_catalog_hot_reload.py

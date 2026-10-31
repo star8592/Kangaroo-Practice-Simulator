@@ -14,6 +14,7 @@
     "test:exam-directory": "tsx scripts/test_exam_directory.ts",
     "test:resource-catalog": "tsx scripts/test_resource_catalog.ts",
     "test:rust-catalog-contract": "tsx scripts/test_rust_catalog_snapshot.ts",
+    "test:rust-catalog-atomic": "tsx scripts/test_catalog_snapshot_atomic.ts",
     "admin:create": "tsx scripts/create_admin.ts",
     "test:smoke": "python3 scripts/smoke_test.py",
     "test:brand": "python3 scripts/brand_audit.py",
