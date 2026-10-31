@@ -49,7 +49,7 @@ const TEXT={
   }
 } as const;
 
-const domainNames=new Map(ASSESSMENT_DOMAINS.map(domain=>[domain.id,domain]));
+const domainNames=new Map<string,(typeof ASSESSMENT_DOMAINS)[number]>(ASSESSMENT_DOMAINS.map(domain=>[domain.id,domain]));
 
 function dateDistance(iso:string):number{
   const now=new Date();
