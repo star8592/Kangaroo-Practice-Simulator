@@ -28,10 +28,15 @@ test("release wiring includes candidate, active, public receipt and daily watchd
   assert.match(receipt,/uses: actions\/checkout@v4[\s\S]*ref: \$\{\{ github\.event\.workflow_run\.head_sha \}\}/,
     "production receipt MUST check out exact CI commit before executing smoke");
   const watchdog=read(".github/workflows/miniapp-production-smoke.yml");
-  assert.match(watchdog,/test:exam-access-live/);
-  assert.match(watchdog,/git checkout --detach "\$DEPLOYED_SHA"/,
-    "daily miniapp smoke must match the deployed SHA, not future main");
-  assert.match(watchdog,/EXPECTED_SHA:/,"production smoke must verify SHA stability");
+  assert.match(watchdog,/test_miniapp_production_smoke_consistency\.py/);
+  assert.match(watchdog,/run_miniapp_production_smoke\.sh/);
+  const stable=read("scripts/run_miniapp_production_smoke.sh");
+  assert.match(stable,/git -c advice\.detachedHead=false checkout --detach "\$START_SHA"/,
+    "live miniapp checks must use the actual deployed SHA, not future main");
+  assert.match(stable,/EXPECTED_SHA="\$START_SHA"/);
+  assert.match(stable,/if \[\[ "\$START_SHA" != "\$END_SHA" \]\]/);
+  assert.match(stable,/MINIAPP_PROD_SMOKE=INCONCLUSIVE/,
+    "mid-check deployment race must not masquerade as an auth failure");
   const gate=read("ops/automation/quality_gate.sh");
   assert.match(gate,/test:exam-access-live-contract/);
   assert.match(gate,/test:exam-access/);
