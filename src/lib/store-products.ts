@@ -18,7 +18,7 @@ type ProductRow={
   size_bytes:string;resource_id:string;sha256:string;mime_type:string;
 };
 
-export async function listStoreProducts():Promise<StoreProduct[]> {
+async function queryStoreProducts(targetId?:string):Promise<StoreProduct[]> {
   if(!billingConfigured())return [];
   try{
     const result=await billingPool().query<ProductRow>(
@@ -30,7 +30,10 @@ export async function listStoreProducts():Promise<StoreProduct[]> {
       " AND p.amount_minor>0 AND p.access_restricted=true"+
       " AND p.rights_approved=true AND p.delivery_verified=true"+
       " AND a.rights_approved=true AND a.delivery_verified=true"+
-      " AND p.title_zh IS NOT NULL ORDER BY p.created_at DESC,p.id DESC LIMIT 240"
+      " AND p.title_zh IS NOT NULL"+
+      (targetId?" AND p.id=$1":"")+
+      " ORDER BY p.created_at DESC,p.id DESC LIMIT "+(targetId?"1":"240"),
+      targetId?[targetId]:[]
     );
     const products:StoreProduct[]=[];
     for(const row of result.rows){
@@ -50,7 +53,11 @@ export async function listStoreProducts():Promise<StoreProduct[]> {
   }catch{return [];}
 }
 
+export async function listStoreProducts():Promise<StoreProduct[]>{
+  return queryStoreProducts();
+}
+
 export async function findStoreProduct(id:string):Promise<StoreProduct|null>{
   if(!/^[A-Za-z0-9_.-]{4,120}$/.test(id))return null;
-  return (await listStoreProducts()).find(p=>p.id===id)??null;
+  return (await queryStoreProducts(id))[0]??null;
 }
