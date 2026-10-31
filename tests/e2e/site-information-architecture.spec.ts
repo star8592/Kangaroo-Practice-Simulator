@@ -12,7 +12,8 @@ test("desktop navigation separates five tasks and all seven exam categories",asy
   const taxonomy=page.getByRole("navigation",{name:"考试分类"});
   await expect(tasks.getByRole("link",{name:"全部考试"})).toBeVisible();
   await expect(tasks.getByRole("link",{name:"真题资料"})).toBeVisible();
-  await expect(tasks.getByRole("link",{name:"数学赛事"})).toBeVisible();
+  await expect(tasks.getByRole("link",{name:"考试管理"})).toBeVisible();
+  await expect(tasks.getByRole("link",{name:"数学赛事"})).toHaveCount(0);
   await expect(taxonomy.getByRole("link")).toHaveCount(7);
   for(const id of domains)await expect(taxonomy.locator(`a[href="/assessments#domain-${id}"]`)).toBeVisible();
 
@@ -38,6 +39,7 @@ test("mobile menu exposes all categories without hidden horizontal strips",async
   await expect(nav).toBeVisible();
   await expect(nav.getByRole("link",{name:/真题资料/})).toBeVisible();
   await expect(nav.getByRole("link",{name:/计算与数学训练/})).toBeVisible();
+  await expect(nav.getByRole("link",{name:"考试管理"})).toBeVisible();
   await expect(nav.locator('a[href^="/assessments#domain-"]')).toHaveCount(7);
   await nav.locator('a[href="/assessments#domain-professional"]').click();
   await expect(page).toHaveURL(/\/assessments#domain-professional$/);
