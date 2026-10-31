@@ -1,0 +1,19 @@
+[Unit]
+Description=SOC THINK public SEO crawl monitor (read-only daily report)
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/opt/socthink-releases/current
+User=1000
+Group=1000
+Environment=SOCTHINK_USER_DATA_DIR=/opt/socthink-math/private/users
+ExecStart=/usr/bin/node /opt/socthink-releases/current/scripts/seo_monitor_daily.mjs
+TimeoutStartSec=160
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectHome=yes
+ProtectSystem=strict
+ReadWritePaths=/opt/socthink-math/private/users
+UMask=0077
