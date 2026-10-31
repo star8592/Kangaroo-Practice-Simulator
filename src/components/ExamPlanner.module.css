@@ -1,0 +1,52 @@
+.page{width:100%;max-width:var(--layout-wide);margin:0 auto;padding:24px var(--page-gutter) 85px;color:var(--portal-text)}
+.hero{padding:36px 42px;background:linear-gradient(115deg,var(--portal-navy),#164d91 85%);border-radius:19px;color:#fff}
+.eyebrow{display:block;color:#c5ddff;font-size:13px;letter-spacing:.08em;font-weight:800}
+.hero h1{margin:13px 0;font-size:clamp(32px,3.5vw,46px);line-height:1.2}
+.hero p{color:#e2eafa;font-size:17px;line-height:1.7;max-width:900px;margin:0 0 12px}
+.heroDetail{font-size:14px;color:#bed5f3}
+.grid{display:grid;grid-template-columns:minmax(320px,420px) minmax(0,1fr);align-items:start;gap:22px;margin-top:24px}
+.formPanel,.listPanel{min-width:0;border:1px solid var(--portal-border);border-radius:16px;background:#fff;padding:27px}
+.formPanel h2,.listPanel h2{font-size:24px;margin:0 0 8px;color:var(--portal-navy)}
+.formPanel>p,.listHead p{font-size:15px;line-height:1.65;color:var(--portal-muted);margin:0 0 20px}
+.form{display:grid;gap:15px}
+.form label{display:grid;gap:8px;font-size:15px;font-weight:720;color:#344e6e;min-width:0}
+.form input,.form select,.form textarea{width:100%;min-width:0;min-height:45px;background:#f9fbff;border:1px solid #cbd9e9;border-radius:9px;font-size:16px;color:var(--portal-text);padding:9px 11px}
+.form textarea{resize:vertical;line-height:1.55}
+.form input:focus-visible,.form select:focus-visible,.form textarea:focus-visible{outline:3px solid #bbd8fb;outline-offset:1px}
+.dateRow{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.primary,.export{min-height:47px;border:0;border-radius:10px;padding:12px 18px;font-size:16px;font-weight:750;cursor:pointer}
+.primary{color:#fff;background:var(--portal-blue)}.primary:hover{background:var(--portal-blue-strong)}
+.export{background:#edf5ff;border:1px solid #c7ddf7;color:var(--portal-blue);margin:6px 0 10px}
+.export:hover:not(:disabled){background:#e2efff}
+.export:disabled{cursor:default;opacity:.55}
+.disclosure{font-size:14px!important;color:var(--portal-muted);line-height:1.7;margin-top:17px!important}
+.error{margin:0;color:#ac3025;font-size:14px;line-height:1.5}
+.listHead{display:flex;justify-content:space-between;align-items:start;gap:20px}
+.count{display:grid;place-items:center;min-width:45px;min-height:45px;background:var(--portal-blue-soft);color:var(--portal-blue);border-radius:12px;font-size:22px}
+.entries{display:grid;gap:12px;margin-top:22px}
+.entry{border:1px solid #dee8f4;border-radius:12px;padding:20px;background:#fafdff;min-width:0}
+.entryTop{display:flex;flex-wrap:wrap;gap:8px;color:var(--portal-blue);font-size:13px;font-weight:760}
+.entryTop span{padding:5px 9px;border-radius:7px;background:#edf5ff}
+.entry h3{font-size:19px;line-height:1.4;margin:11px 0;color:var(--portal-navy);overflow-wrap:anywhere}
+.entryDate{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.entryDate time{font-size:16px;font-weight:700}
+.entryDate strong{font-size:14px;color:var(--portal-blue)}
+.entry p{margin:10px 0 0;font-size:14px;color:var(--portal-muted);line-height:1.65;overflow-wrap:anywhere}
+.remove{margin-top:16px;padding:7px 10px;min-height:39px;background:transparent;border:1px solid #d7e0eb;border-radius:8px;color:#6c7481;font-size:14px}
+.remove:hover{border-color:#ad5252;color:#a12b2b}
+.empty{padding:42px 20px;text-align:center;border:1px dashed #c8d7e9;border-radius:12px;font-size:16px;line-height:1.7;color:var(--portal-muted)}
+.mathLink{margin-top:26px;display:flex;align-items:center;justify-content:space-between;gap:20px;padding:23px 27px;background:#eaf2ff;border-radius:14px;border:1px solid #d3e3f7}
+.mathLink h2{margin:0 0 6px;font-size:20px}
+.mathLink p{font-size:15px;line-height:1.6;margin:0;color:var(--portal-muted)}
+.mathLink a{flex-shrink:0;font-weight:800;color:var(--portal-blue);font-size:15px}
+@media(max-width:1000px){.grid{grid-template-columns:1fr}}
+@media(max-width:760px){
+ .page{padding:14px var(--page-gutter-mobile) 60px}
+ .hero{padding:25px 21px;border-radius:14px}
+ .hero p{font-size:16px}
+ .formPanel,.listPanel{padding:20px}
+ .grid{gap:14px;margin-top:15px}
+ .mathLink{display:block;padding:20px}
+ .mathLink a{display:inline-block;margin-top:13px}
+}
+@media(max-width:420px){.dateRow{grid-template-columns:1fr}}

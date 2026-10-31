@@ -70,8 +70,12 @@ export default function ExamDirectory({initialQuery=""}:{initialQuery?:string}){
         <span className={styles.sideTitle}>{t.all}</span>
         {EXAM_DIRECTORY.map((group,i)=>{
           const domain=DOMAIN_BY_ID.get(group.domainId)!;
-          return <a key={group.domainId} href={`#domain-${group.domainId}`}
-            onClick={()=>setQuery("")}>
+          return <a key={group.domainId} href={`/assessments#domain-${group.domainId}`}
+            onClick={()=>{
+              if(!query)return;
+              setQuery("");
+              requestAnimationFrame(()=>document.getElementById(`domain-${group.domainId}`)?.scrollIntoView({block:"start"}));
+            }}>
             <span>{String(i+1).padStart(2,"0")}</span>
             <strong>{domain.name[lang]}</strong><em>{group.topics.length}</em>
           </a>;
