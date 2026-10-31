@@ -18,6 +18,7 @@ export type PublishedMembershipOffer=Readonly<
 type CheckoutReply={
   orderId?:string;qrDataUrl?:string;code?:string;error?:string;
   status?:string;priceMinor?:number;currency?:string;qrTtlSeconds?:number;
+  orderCreated?:boolean;
 };
 
 /** Called only after a browser checkout event, never while rendering React. */
@@ -85,6 +86,20 @@ export default function NativeCheckoutPanel({offers,accountLoggedIn}:{
       });
       const data:CheckoutReply=await response.json();
       if(!response.ok || !data.orderId || !data.qrDataUrl){
+        // The local order may have been created before a network/provider failure.
+        // Keep polling exactly this order; never silently offer a second QR.
+        if(data.orderCreated===true && typeof data.orderId==="string" &&
+           /^ord_[a-zA-Z0-9_-]{6,28}$/.test(data.orderId)){
+          setPendingId(data.orderId);
+          setQrDeadlineMonoMs(null);
+          setQrRemainingSeconds(0);
+          setQrDataUrl(null);
+          setState("pending");
+          setMessage(en
+            ?"Payment initiation is uncertain. We are checking the original order; view its status in My account. Do not pay again."
+            :"微信下单响应尚未确认，系统会继续核对这笔原订单；请在「我的账号」查看状态，不要重复付款。");
+          return;
+        }
         setState("failed");setMessage(data.error||(en?"Checkout temporarily unavailable":"微信支付暂时不可用"));return;
       }
       // Treat malformed/missing server TTL as expired, never show an
@@ -144,9 +159,9 @@ export default function NativeCheckoutPanel({offers,accountLoggedIn}:{
         :`二维码剩余约 ${Math.ceil(qrRemainingSeconds/60)} 分钟，系统正在核对微信官方支付状态。到期停止展示二维码，待官方确认关单后才能重新购买。`}</span>
     </div>}
     {state==="pending"&&(!qrDataUrl||qrRemainingSeconds===0)&&
-      <p role="status">{en
+      <p role="status">{message || (en
         ?"The payment QR has expired or could not be safely displayed. We will continue checking the original order with WeChat; do not create another payment until its final status is confirmed."
-        :"本订单二维码已过期或无法安全展示，正在继续核对原订单的微信官方支付状态。确认关单之前请勿重复付款。"}</p>}
+        :"本订单二维码已过期或无法安全展示，正在继续核对原订单的微信官方支付状态。确认关单之前请勿重复付款。")}</p>}
     {state==="paid"&&<p role="status">{en?"Verified payment recorded. View your purchased access in My account.":"已确认微信付款并完成权益记账，请在我的账号中使用已购内容。"}</p>}
     {state==="failed"&&<p role="alert">{message||(en?"Order closed or refunded":"订单已关闭或退款")}</p>}
   </section>;
