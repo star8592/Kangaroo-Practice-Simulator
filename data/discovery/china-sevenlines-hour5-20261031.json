@@ -1,0 +1,92 @@
+{
+  "batch": "2026-10-31-hour5",
+  "market": "CN",
+  "priority": "domestic_100pct",
+  "discovery_records": [
+    {
+      "lane": "school",
+      "exam_year": 2026,
+      "source_page": "https://www.wuhan.gov.cn/zwgk/tzgg/202601/t20260105_2706609.shtml",
+      "source_type": "official_exam_registration_notice",
+      "verification": "official_page_web_search",
+      "paper_status": "no_paper",
+      "rights_status": "unknown",
+      "commercial_sale_authorized": false,
+      "file_sha256": null,
+      "publication_year": null
+    },
+    {
+      "lane": "math-competition",
+      "exam_year": 2026,
+      "source_page": "https://www.cms.org.cn/competition.html",
+      "source_type": "official_competition_calendar",
+      "verification": "official_page_web_search",
+      "paper_status": "no_paper",
+      "rights_status": "unknown",
+      "commercial_sale_authorized": false,
+      "file_sha256": null,
+      "publication_year": null
+    },
+    {
+      "lane": "language",
+      "exam_year": 2026,
+      "source_page": "https://www.neea.edu.cn/html1/report/2512/46-1.htm",
+      "source_type": "official_PETS_notice",
+      "verification": "official_page_web_search",
+      "paper_status": "no_paper",
+      "rights_status": "unknown",
+      "commercial_sale_authorized": false,
+      "file_sha256": null,
+      "publication_year": null
+    },
+    {
+      "lane": "university",
+      "exam_year": 2026,
+      "source_page": "https://mks.yangtzeu.edu.cn/info/1039/5958.htm",
+      "source_type": "official_exam_outline_attachments",
+      "verification": "official_page_web_search",
+      "paper_status": "download_attempted",
+      "rights_status": "unknown",
+      "commercial_sale_authorized": false,
+      "file_sha256": null,
+      "publication_year": null
+    },
+    {
+      "lane": "career",
+      "exam_year": 2026,
+      "source_page": "https://www.tsvc.edu.cn/shengwuxi/info/1055/3219.htm",
+      "source_type": "official_skills_exam_attachment",
+      "verification": "official_page_web_search",
+      "paper_status": "captcha_attachment",
+      "rights_status": "unknown",
+      "commercial_sale_authorized": false,
+      "file_sha256": null,
+      "publication_year": null
+    },
+    {
+      "lane": "professional",
+      "exam_year": 2025,
+      "source_page": "https://chrm.mohrss.gov.cn/announcement/2025%E5%B9%B4%E9%87%8D%E5%BA%86%E5%B8%82%E6%8B%9B%E5%8B%9F%E4%B8%89%E6%94%AF%E4%B8%80%E6%89%B6%E8%AE%A1%E5%88%92%E4%BA%BA%E5%91%98%E7%AE%80%E7%AB%A0/",
+      "source_type": "official_exam_outline_notice",
+      "verification": "official_page_web_search",
+      "paper_status": "no_paper",
+      "rights_status": "unknown",
+      "commercial_sale_authorized": false,
+      "file_sha256": null,
+      "publication_year": null
+    },
+    {
+      "lane": "interest",
+      "exam_year": 2026,
+      "source_page": "https://www.scst.edu.cn/ygzs/75/bb/c2958a30139/page.htm",
+      "source_type": "official_admissions_aptitude_test_outline",
+      "verification": "official_page_web_search",
+      "paper_status": "download_attempted",
+      "rights_status": "unknown",
+      "commercial_sale_authorized": false,
+      "file_sha256": null,
+      "publication_year": null
+    }
+  ],
+  "note": "These seven records are verified public-source leads, not seven downloaded originals. Actual downloads and SHA are only in private hour5-manifest.json. No OCR or resale authorization."
+}
