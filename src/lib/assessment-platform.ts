@@ -27,7 +27,7 @@ export type AssessmentDomain = {
 };
 export const ASSESSMENT_DOMAINS: readonly AssessmentDomain[] = [
   {
-    id:"school",name:{zh:"K12 学业与能力",en:"School learning"},
+    id:"school",name:{zh:"中小学与升学",en:"School learning & admissions"},
     summary:{zh:"基础数学、逐题复盘与长期能力诊断；逐步拓展学科。",en:"Math fluency, review and learning diagnostics, expanding across subjects."},
     audience:{zh:"小学—高中学生与家长",en:"Students and families"},
     readiness:"live",formats:["single-choice","numeric","symbolic"],
@@ -56,7 +56,7 @@ export const ASSESSMENT_DOMAINS: readonly AssessmentDomain[] = [
     liveRoutes:[],nextProof:{zh:"先验证合法来源与口语/写作评分，再开放真实样卷。",en:"Prove source rights and speaking/writing rubrics before launch."},
   },
   {
-    id:"university",name:{zh:"大学与研究生考试",en:"University & postgraduate"},
+    id:"university",name:{zh:"大学与考研",en:"University & postgraduate"},
     summary:{zh:"课程、研究生升学、学术技能与专业入门能力测评。",en:"Coursework, postgraduate exams and academic readiness."},
     audience:{zh:"大学生与考研学生",en:"Undergraduates and postgraduate candidates"},
     readiness:"planned",formats:["single-choice","short-answer","essay","numeric"],
@@ -77,7 +77,7 @@ export const ASSESSMENT_DOMAINS: readonly AssessmentDomain[] = [
     liveRoutes:[],nextProof:{zh:"按最新官方考纲、题源权利和地区建立考试蓝图。",en:"Verify official syllabi, regional relevance and publication rights."},
   },
   {
-    id:"interest",name:{zh:"职业兴趣与综合能力",en:"Interests & aptitude"},
+    id:"interest",name:{zh:"兴趣与能力测评",en:"Interests & aptitude"},
     summary:{zh:"有适用性说明的兴趣与能力自我探索，不作临床诊断。",en:"Evidence-informed self-reflection, not clinical diagnosis."},
     audience:{zh:"学生、求职者与成长探索者",en:"Learners and career explorers"},
     readiness:"planned",formats:["scale","short-answer"],
