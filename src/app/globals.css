@@ -350,3 +350,16 @@
 .home-shell>.hero-card .primary-button{background:#fff;color:var(--portal-blue)}
 .home-shell>.hero-card .primary-button:hover{background:#eaf2ff;color:var(--portal-blue)}
 .home-shell>.hero-card .secondary-button{background:#ffffff17;color:#fff}
+
+/* Layout contract: all public portal shells share the header/footer content
+ * alignment. Special-purpose exam and print internals keep their own grids. */
+@media (min-width:761px) and (max-width:900px){
+  .home-shell,.report-shell,.review-shell,.admin-shell,.student-shell,.verification-shell,.exam-shell,.legal-page{
+    padding-left:var(--page-gutter);padding-right:var(--page-gutter);
+  }
+}
+@media(max-width:760px){
+  .home-shell,.report-shell,.review-shell,.admin-shell,.student-shell,.verification-shell,.exam-shell,.legal-page{
+    padding-left:var(--page-gutter-mobile);padding-right:var(--page-gutter-mobile);
+  }
+}
