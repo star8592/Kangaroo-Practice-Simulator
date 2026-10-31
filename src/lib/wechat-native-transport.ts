@@ -31,6 +31,20 @@ export type WechatNativeApiContext = Readonly<{
 }>;
 
 function randomNonce() { return randomBytes(16).toString("hex"); }
+
+/**
+ * All outgoing WeChat API v3 requests must declare which WeChat Pay public
+ * key will verify the signed response, including the close-order POST.
+ * The serial in Authorization is the MERCHANT certificate, not this key.
+ */
+function publicKeyResponseHeaders(
+  headers: Record<string,string>,
+  publicKeyId: string,
+):Record<string,string> {
+  if (!/^PUB_KEY_ID_[0-9]{1,64}$/.test(publicKeyId))
+    throw new WechatPaymentProtocolError("INVALID_WECHAT_PUBLIC_KEY_ID");
+  return {...headers,"Wechatpay-Serial":publicKeyId};
+}
 function safeObject(json: string): Record<string, unknown> {
   try {
     const obj: unknown = JSON.parse(json);
@@ -50,12 +64,9 @@ async function signedProviderExchange(
   // select the corresponding public-key signature on the API RESPONSE.
   // It is NOT the merchant API certificate serial in Authorization.
   // Never silently fall back to unverified platform-certificate responses.
-  if (!/^PUB_KEY_ID_[0-9]{1,64}$/.test(context.wechatPayPublicKeyId))
-    throw new WechatPaymentProtocolError("INVALID_WECHAT_PUBLIC_KEY_ID");
-  const requestHeaders = {
-    ...request.headers,
-    "Wechatpay-Serial": context.wechatPayPublicKeyId,
-  };
+  const requestHeaders=publicKeyResponseHeaders(
+    request.headers,context.wechatPayPublicKeyId,
+  );
   let response: Response;
   try {
     response = await (context.transport ?? fetch)(request.url, {
@@ -129,10 +140,13 @@ export async function closeVerifiedWechatNativePayment(
 ):Promise<void>{
   const req=prepareWechatNativeClose(context.merchant,orderId,context.nowSeconds,
     context.nonce??randomNonce());
+  const requestHeaders=publicKeyResponseHeaders(
+    req.headers,context.wechatPayPublicKeyId,
+  );
   let response:Response;
   try{
     response=await (context.transport??fetch)(req.url,{
-      method:req.method,headers:req.headers,body:req.bodyText,
+      method:req.method,headers:requestHeaders,body:req.bodyText,
       redirect:"error",signal:AbortSignal.timeout(10000),cache:"no-store",
     });
   }catch{throw new WechatPaymentProtocolError("WECHAT_CLOSE_NETWORK_FAILURE");}

@@ -129,9 +129,21 @@ const close:WechatNativeTransport=async(url,init)=>{
   assert.equal(url,"https://api.mch.weixin.qq.com/v3/pay/transactions/out-trade-no/"+
     order.orderId+"/close");
   assert.equal(init.method,"POST");
+  assert.equal(
+    (init.headers as Record<string,string>)["Wechatpay-Serial"],
+    context.wechatPayPublicKeyId,
+    "The signed close-order API must request a public-key-signed response",
+  );
   assert.deepEqual(JSON.parse(init.body as string),{mchid:merchantConfig.merchantId});
   return verified204();
 };
+await assert.rejects(
+  ()=>closeVerifiedWechatNativePayment({
+    ...context,wechatPayPublicKeyId:"NOT_A_WECHAT_PUBLIC_KEY_ID",transport:close,
+  },order.orderId),
+  (error:unknown)=>error instanceof WechatPaymentProtocolError &&
+    error.code==="INVALID_WECHAT_PUBLIC_KEY_ID",
+);
 await closeVerifiedWechatNativePayment({...context,transport:close},order.orderId);
 await assert.rejects(()=>closeVerifiedWechatNativePayment({
   ...context,transport:async()=>verified204(true)},order.orderId),
