@@ -430,18 +430,18 @@
 .unifiedIntro h1{font-size:clamp(32px,4.2vw,54px);font-weight:850;line-height:1.18;letter-spacing:-.035em;color:#152d20;margin:0}
 .unifiedIntro p{font-size:17px;line-height:1.85;color:#536258;max-width:510px;margin:0}
 .unifiedSteps{display:flex;flex-wrap:wrap;gap:9px;margin:5px 0 16px}
-.unifiedSteps span{padding:9px 12px;border-radius:50px;background:#f0f5ed;border:1px solid #e0e8dd;color:#375340;font-size:12px}
+.unifiedSteps span{padding:9px 12px;border-radius:50px;background:#f0f5ed;border:1px solid #e0e8dd;color:#375340;font-size:14px}
 .unifiedLoginBox{background:white;border:1px solid #dfe7e1;border-radius:24px;box-shadow:0 22px 58px rgba(23,58,38,.10);padding:30px;display:grid;gap:14px}
 .unifiedLoginBox h2{font-size:26px;margin:0;color:#1c3526}
-.unifiedLoginBox>p{line-height:1.65;color:#617266;font-size:14px;margin:0}
+.unifiedLoginBox>p{line-height:1.65;color:#617266;font-size:15px;margin:0}
 .unifiedQr{display:grid;justify-items:center;gap:12px;padding:12px 0}
 .unifiedQr img{border:8px solid #f2f7f3;border-radius:16px;width:260px;max-width:100%;height:auto}
 .unifiedOfficialQr{min-height:400px;width:min(300px,100%);max-width:100%;display:flex;justify-content:center;overflow:hidden;border-radius:16px}
 .unifiedOfficialQr iframe{display:block;border:0;max-width:100%;}
-.unifiedQr p{font-size:13px;color:#60766a;text-align:center}
+.unifiedQr p{font-size:14px;color:#60766a;text-align:center}
 .unifiedLoading{padding:90px 20px;background:#f6f9f5;text-align:center;border-radius:16px;color:#3a5b48}
-.unifiedHelp{color:#708074!important;font-size:12px!important}
-.unifiedOther{border-top:1px solid #e7eee7;padding-top:16px;color:#597263;font-size:13px}
+.unifiedHelp{color:#708074!important;font-size:14px!important}
+.unifiedOther{border-top:1px solid #e7eee7;padding-top:16px;color:#597263;font-size:14px}
 .unifiedOther summary{cursor:pointer;padding:9px 0;font-weight:600}
 .unifiedOther form{margin:14px 0}
 .unifiedOther p{line-height:1.8}
@@ -449,9 +449,9 @@
 
 .unifiedMobileHint {display:grid;gap:8px;padding:14px 16px;background:#f0f6ef;border:1px solid #dce9d9;border-radius:14px;color:#2b5837;}
 .unifiedMobileHint strong {font-size:14px;}
-.unifiedMobileHint p {margin:0;font-size:12px;line-height:1.75;color:#536957;}
+.unifiedMobileHint p {margin:0;font-size:14px;line-height:1.75;color:#536957;}
 .unifiedMobileHint button {width:100%;min-height:44px;}
-.unifiedMobileHint small {font-size:12px;color:#365f44;line-height:1.6;}
+.unifiedMobileHint small {font-size:13px;color:#365f44;line-height:1.6;}
 @media (max-width:790px) {
   .unifiedMobileHint {order:0;}
   .unifiedLoginBox {gap:13px;}
