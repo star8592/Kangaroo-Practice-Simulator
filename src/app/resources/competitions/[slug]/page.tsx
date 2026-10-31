@@ -45,6 +45,16 @@ export default async function CompetitionResourceHub({ params }: Props) {
   if (!page) notFound();
 
   const { hub, rows } = page;
+  const breadcrumbs = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "首页", "item": "https://socthink.cn/" },
+      { "@type": "ListItem", "position": 2, "name": "试卷资料", "item": "https://socthink.cn/resources" },
+      { "@type": "ListItem", "position": 3, "name": hub.name, "item": "https://socthink.cn/resources/competitions/" + hub.id },
+    ],
+  };
+
   const latestYears = Array.from(new Set(rows.map((item) => item.year).filter((year): year is number => year !== null)))
     .sort((a, b) => b - a).slice(0, 3);
   const recent = rows.filter((row) => row.year !== null && latestYears.includes(row.year));
@@ -52,6 +62,9 @@ export default async function CompetitionResourceHub({ params }: Props) {
 
   return (
     <div data-site-shell="content" className={styles.page}>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{
+        __html: JSON.stringify(breadcrumbs).replace(/</g, "\\u003c"),
+      }} />
       <nav aria-label="面包屑" className={styles.breadcrumbs}>
         <Link href="/">首页</Link><span aria-hidden="true"> / </span>
         <Link href="/resources">试卷资料</Link><span aria-hidden="true"> / </span>

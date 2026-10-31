@@ -1,3 +1,11 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "用户协议 | SOC THINK",
+  description: "阅读 SOC THINK 考试测评、数字资料、在线学习服务的用户使用条款。",
+  alternates: { canonical: "/terms" },
+};
+
 import Link from "next/link";
 export default function TermsPage(){
   return <div className="legal-page">
