@@ -2,6 +2,8 @@
 
 > **2026-10 当前工程入口**：GitHub 仓库 star8592/Kangaroo-Practice-Simulator，Web 生产站点 https://socthink.cn，生产目录 /opt/socthink-math。旧章节部分仍记录早期本地 3027 端口及历史路径，不代表当前生产环境。统一工程规则见 docs/engineering/ENGINEERING_OPERATING_SYSTEM.md，运行/发布/故障处理见 ops/release/SOCTHINK_DEPLOYMENT.md 与 docs/engineering/INCIDENT_RESPONSE_RUNBOOK.md。
 
+**搜索增长正式方案（2026-10-31）**：已采纳 [SOCTHINK 全站 SEO + GEO 搜索增长工程](docs/architecture/SOCTHINK_SEO_GEO_SEARCH_GROWTH_20261031.md)。中国市场优先；Next.js 唯一事实源、公开只读投影、百度/Google/Bing/ChatGPT 等平台的抓取与 AI 引用监测，按 P0 真实审计→P1 技术基础→P2 高价值页面→P3 GEO 增长推进。文档采纳不等于功能已部署。
+
 **当前架构决策（2026-10-31）**：综合考试平台采用模块化单体、唯一数据权威、解耦发布与独立诊断。见 [SOCTHINK 模块化单体与减法式工程治理](docs/architecture/SOCTHINK_MODULAR_MONOLITH_20261031.md)。日常发布只执行核心合同和自动回滚，深度来源/备份/灾备诊断由各模块独立运行。
 
 本地优先的数学竞赛训练、仿真考试与学生学习画像系统。目前正式支持 **袋鼠数学（Math Kangaroo）**、**澳洲 AMC（Australian Mathematics Competition / AMT）** 与 **美国 AMC（MAA American Mathematics Competitions）**。不同竞赛、赛区、年级和样题使用独立赛制模板，题量、时间、计分、答题方式和智能组卷不会跨模板混用。
