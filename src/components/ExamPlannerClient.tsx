@@ -66,13 +66,18 @@ export default function ExamPlannerClient(){
   const [error,setError]=useState("");
 
   useEffect(()=>{
-    try{
-      const saved=window.localStorage.getItem(EXAM_PLANNER_STORAGE_KEY);
-      if(saved)setItems(normalizeExamEntries(JSON.parse(saved),ASSESSMENT_DOMAINS.map(x=>x.id)));
-    }catch{
-      setError(TEXT.zh.saveError);
-    }
-    setLoaded(true);
+    // Hydrate browser-only storage after the first client paint. No server state
+    // or synchronous effect-to-state cascade, and strict-mode cleanup is safe.
+    const frame=window.requestAnimationFrame(()=>{
+      try{
+        const saved=window.localStorage.getItem(EXAM_PLANNER_STORAGE_KEY);
+        if(saved)setItems(normalizeExamEntries(JSON.parse(saved),ASSESSMENT_DOMAINS.map(x=>x.id)));
+      }catch{
+        setError(TEXT.zh.saveError);
+      }
+      setLoaded(true);
+    });
+    return()=>window.cancelAnimationFrame(frame);
   },[]);
 
   const sorted=useMemo(()=>[...items].sort((a,b)=>
