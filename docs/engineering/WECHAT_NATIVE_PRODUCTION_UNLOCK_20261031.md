@@ -6,7 +6,7 @@
 
 - 新站公网响应 ledgerConfigured=false；新服务器 PostgreSQL 16 运行，但专用 socthink_billing_prod 数据库和 socthink_billing 角色不存在，收费连接配置文件不存在。
 - 新站 checkout HTTP 503 是自身安全返回 WEB_NATIVE_DISABLED：正式代码在发微信下单请求之前，先检查 nativeCheckoutAllowed 和 billingConfigured。
-- 旧 ThinkAI 的 provider-status 返回 configured=true、mock_mode=false，只说明**旧商户配置**；不能推出新机器有商户私钥，也不能推出新网站的商品经营场景已获准。
+- 旧 ThinkAI 的 provider-status 返回 configured=true、mock_mode=false。进一步读取旧站正在运行的 systemd 服务定义及 /proc/<服务PID>/environ，核实旧版实际加载的配置是 /opt/thinkai/.env（不是 /opt/thinkai/current/.env），两条密钥文件都存在、0600 级权限符合新 Node safePem 要求，OpenSSL 可解析，公钥 ID、API 证书序列号格式合规。**这证明旧服务当前确有可迁接的密钥材料**，但不代表新机器已安装，也不代表新网站经营场景获得微信批准。以上只输出状态布尔值，不泄露密钥原文、路径或订单。
 - 生产账本的只读 preflight 七项全部满足。此前远程创建数据库被执行安全策略拦截，不能绕过该限制。未初始化的数据库不是程序自动猜测或自动部署能修复的。
 - 旧诊断脚本错误检查一个正式代码不使用的 SOCTHINK_WEB_NATIVE_SETTLEMENT_ENABLED；正确的是 SOCTHINK_WECHAT_NATIVE_RECONCILIATION_ENABLED。已修复。
 - 静态公开套餐比较目录一直 checkoutAvailable=false，仅表示套餐计划预览；是否有实际可售商品由 /membership 的真实数据库商品查询决定，不能拿静态预览标记当支付硬条件。已修复错误诊断。
