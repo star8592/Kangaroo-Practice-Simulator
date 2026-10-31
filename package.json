@@ -114,7 +114,8 @@
     "test:wechat-native-recovery": "tsx scripts/test_wechat_native_recovery.ts",
     "payment:reconcile-native": "tsx scripts/reconcile_wechat_native_orders.ts",
     "test:single-wechat-buyer": "tsx scripts/test_single_wechat_buyer.ts",
-    "test:measurement-center": "tsx scripts/test_measurement_center.ts"
+    "test:measurement-center": "tsx scripts/test_measurement_center.ts",
+    "test:career-demand": "tsx scripts/test_career_demand.ts"
   },
   "dependencies": {
     "next": "16.4.3",
