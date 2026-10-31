@@ -106,3 +106,24 @@ Regression tests:
 
 Only an approved single-path migration with exact production/rollback
 receipts may switch the Next.js resource page to Rust.
+
+## R3 compatibility build artifact (not production activation)
+
+The existing Rust-only GitHub Actions workflow now uses the explicit
+`ubuntu-24.04` runner (glibc 2.39 ABI generation), compiles a **release**
+`socthink-catalog-api` candidate, then checks its x86-64 ELF header,
+required GLIBC symbol versions (must be <=2.39), dynamic loader and linked
+libraries. It publishes the checked binary with an SHA-256 digest and source
+Git commit as a short-retention CI artifact.
+
+This avoids copying Z890's glibc 2.43 dynamic binary onto the production
+server, which runs glibc 2.39. It does not install Rust/Cargo on production,
+change Web routing, start a second long-running daemon, or alter the existing
+immutable Next.js auto-deploy and rollback process.
+
+The artifact is **only a candidate**. A subsequent R3 step must run the
+exact artifact inside an isolated loopback production-host test against a
+public-metadata-only snapshot, verify compatibility and real query parity,
+then integrate one Rust Core service with the existing atomic release and
+rollback transaction. No production Rust traffic should be claimed until
+that actual promotion receives an exact-SHA public receipt.

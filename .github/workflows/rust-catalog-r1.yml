@@ -10,6 +10,7 @@ on:
       - 'scripts/publish_training_resource_snapshot.ts'
       - 'scripts/test_catalog_snapshot_atomic.ts'
       - 'scripts/test_rust_catalog_hot_reload.py'
+      - 'scripts/check_rust_binary_abi.py'
       - '.github/workflows/rust-catalog-r1.yml'
   push:
     branches: [main]
@@ -21,6 +22,7 @@ on:
       - 'scripts/publish_training_resource_snapshot.ts'
       - 'scripts/test_catalog_snapshot_atomic.ts'
       - 'scripts/test_rust_catalog_hot_reload.py'
+      - 'scripts/check_rust_binary_abi.py'
       - '.github/workflows/rust-catalog-r1.yml'
 
 permissions:
@@ -32,8 +34,8 @@ concurrency:
 
 jobs:
   unit-and-api-contract:
-    runs-on: ubuntu-latest
-    timeout-minutes: 12
+    runs-on: ubuntu-24.04
+    timeout-minutes: 18
     steps:
       - uses: actions/checkout@v4
       - name: Rust stable toolchain
@@ -52,3 +54,22 @@ jobs:
         run: |
           cargo build --locked --manifest-path backend/socthink-core/Cargo.toml
           python3 scripts/test_rust_catalog_hot_reload.py
+
+      - name: Build an x86-64 production-compatible Rust release candidate
+        run: |
+          # Ubuntu 24.04 provides the same glibc ABI ceiling as production.
+          # Build only in the existing Rust-specific CI job, never on the
+          # low-memory production server.
+          cargo build --locked --release --manifest-path backend/socthink-core/Cargo.toml
+          python3 scripts/check_rust_binary_abi.py backend/socthink-core/target/release/socthink-catalog-api
+          mkdir -p dist
+          cp backend/socthink-core/target/release/socthink-catalog-api dist/
+          (cd dist && sha256sum socthink-catalog-api > sha256sum.txt)
+          printf '%s\n' "$GITHUB_SHA" > dist/source_sha.txt
+          printf 'RUST_PORTABLE_CANDIDATE=PASS source=%s\n' "$GITHUB_SHA"
+      - name: Archive verified candidate binary for isolated runtime acceptance
+        uses: actions/upload-artifact@v4
+        with:
+          name: socthink-catalog-linux-x86_64
+          path: dist/
+          retention-days: 14
