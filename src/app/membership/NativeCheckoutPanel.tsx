@@ -113,7 +113,7 @@ export default function NativeCheckoutPanel({offers,accountLoggedIn}:{
     </div>
     {!accountLoggedIn && <p>{en?"Sign in with WeChat to purchase.":"请先微信登录，再购买考试或资料。"} <Link href="/login?next=%2Fmembership">{en?"WeChat sign in":"微信登录"}</Link></p>}
     <div className={styles.checkoutOffers}>
-      {offers.map(offer=><div key={offer.id} className={styles.checkoutOffer}>
+      {offers.map(offer=><div id={"buy-"+offer.id} key={offer.id} className={styles.checkoutOffer}>
         <b>{offer.kind==="item"
           ? (offer.contentKind==="exam"?(en?"Individual exam":"单张试卷"):(en?"Digital resource":"数字资料"))+" · "+offer.titleZh
           : offer.tier.toUpperCase()+" · "+(offer.period==="month"?(en?"Monthly":"月度"):(en?"Yearly":"年度"))}</b>
