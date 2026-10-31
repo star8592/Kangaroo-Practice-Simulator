@@ -15,7 +15,7 @@ WorkingDirectory=/opt/socthink-releases/current
 Environment=NODE_ENV=production
 EnvironmentFile=/etc/socthink-math-billing.env
 EnvironmentFile=/etc/socthink-math-payment.env
-ExecStart=/usr/bin/npm run --silent payment:reconcile-native
+ExecStart=/usr/bin/node /opt/socthink-releases/current/scripts/reconcile_wechat_native_orders.cjs
 TimeoutStartSec=300
 NoNewPrivileges=true
 PrivateTmp=true
