@@ -39,6 +39,7 @@ export async function POST(req:NextRequest) {
     return reply({error:"请先主动确认数字内容交付及无理由退款规则",
       code:"PURCHASE_POLICY_CONFIRMATION_REQUIRED"},409);
   let orderCreated=false;
+  let createdOrderId:string|undefined;
   try {
     const context=nativeServerContext();
     const recent=await billingPool().query<{count:string}>(
@@ -78,6 +79,7 @@ export async function POST(req:NextRequest) {
       policyVersion:DIGITAL_SALES_POLICY_VERSION,acceptedAt:new Date(),
     });
     orderCreated=true;
+    createdOrderId=order.id;
     const orderExpiresAtSeconds=context.nowSeconds+NATIVE_ORDER_WINDOW_SECONDS;
     const payment=await createVerifiedWechatNativeCheckout(context,{
       orderId:order.id,description:"SOCTHINK "+p.id,
@@ -102,6 +104,9 @@ export async function POST(req:NextRequest) {
         code:"ITEM_PAYMENT_PENDING"},409);
     if(error instanceof BillingConflictError && error.message==="Item already owned")
       return reply({error:"已购买该商品，请在我的账号中使用",code:"ALREADY_OWNED"},409);
-    return reply({error:"微信支付暂时不可用",code:"CHECKOUT_UNAVAILABLE",orderCreated},503);
+    // If the provider reply was lost, this order may exist remotely.
+    // Return its ID only to this authenticated buyer; never create a replacement.
+    return reply({error:"微信支付暂时不可用",code:"CHECKOUT_UNAVAILABLE",
+      orderCreated,orderId:createdOrderId},503);
   }
 }
