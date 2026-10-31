@@ -137,3 +137,9 @@
   .heroAside{grid-template-columns:repeat(3,1fr)}.sectionTop{align-items:start}
 }
 @media(prefers-reduced-motion:reduce){.portal *{transition:none!important}}
+
+/* Public SEO guide: keep practice launch one click away, without replacing it. */
+.practiceGuideLink{margin:16px 0 0;text-align:right;font-size:14px;font-weight:750}
+.practiceGuideLink a{color:var(--portal-blue);text-decoration:underline;text-underline-offset:4px}
+.practiceGuideLink a:hover{color:var(--portal-blue-strong)}
+@media(max-width:760px){.practiceGuideLink{text-align:left;line-height:1.8}}
