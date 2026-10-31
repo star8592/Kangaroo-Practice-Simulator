@@ -157,6 +157,7 @@ export default function PublicHome(){
           <span className={styles.quickNumber}>{s.number}</span><div><strong>{t[s.key]}</strong><p>{t[s.description]}</p></div>
           <span className={styles.quickArrow} aria-hidden="true">↗</span>
         </Link>)}</div>
+      <p className={styles.practiceGuideLink}><Link href="/math-practice">{lang==="zh"?"查看 G1–G12 数学计算训练内容与方法 →":"Explore the Grade 1–12 math practice guide →"}</Link></p>
     </section>
 
     <section className={styles.directory} id="portal-directory" aria-labelledby="directory-heading">
