@@ -13,6 +13,9 @@ on:
       - 'src/app/api/miniapp/**'
       - 'src/app/api/auth/miniapp/**'
       - 'scripts/smoke_miniapp_live.ts'
+      - 'scripts/smoke_exam_access_live.mjs'
+      - 'scripts/run_miniapp_production_smoke.sh'
+      - 'scripts/test_miniapp_production_smoke_consistency.py'
       - '.github/workflows/miniapp-production-smoke.yml'
 
 permissions:
@@ -31,36 +34,18 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
-      - name: Pin smoke contract to the deployed immutable version
-        id: deployed
-        shell: bash
-        run: |
-          set -Eeuo pipefail
-          DEPLOYED_SHA="$(curl --fail --silent --show-error --max-time 15 https://socthink.cn/api/release |
-            python3 -c 'import json,sys; x=json.load(sys.stdin); assert x.get("ok") is True and x.get("deployedSha")==x.get("gitSha"); print(x["deployedSha"])')"
-          [[ "$DEPLOYED_SHA" =~ ^[0-9a-f]{40}$ ]] || {
-            echo "MINIAPP_PROD_SMOKE=BLOCKED reason=invalid_live_sha" >&2
-            exit 1
-          }
-          # Never compare future main's contracts against the still-live old
-          # code during a rolling deployment. The separate Production Receipt
-          # checks the candidate SHA once it is fully promoted.
-          git fetch --depth=1 origin "$DEPLOYED_SHA"
-          git checkout --detach "$DEPLOYED_SHA"
-          echo "deployed_sha=$DEPLOYED_SHA" >> "$GITHUB_OUTPUT"
-          echo "MINIAPP_PROD_SMOKE_SOURCE_SHA=$DEPLOYED_SHA"
       - uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
-      - name: Install locked dependencies
-        run: npm ci
-      - name: Verify live guest, catalogue, analytics and arithmetic start
-        run: npm run test:miniapp-live
-      - name: Deny signed Web and miniapp guests from complete exams
-        env:
-          BASE_URL: https://socthink.cn
-          EXPECTED_SHA: ${{ steps.deployed.outputs.deployed_sha }}
-        run: npm run test:exam-access-live
+      - name: Verify deployment transition handling with synthetic SHA changes
+        run: python3 scripts/test_miniapp_production_smoke_consistency.py
+      - name: Run live miniapp API and exam denial checks against one stable release
+        shell: bash
+        run: |
+          # The checkout inside the runner can replace/delete scripts; keep
+          # the controlling shell stable for this entire retry sequence.
+          cp scripts/run_miniapp_production_smoke.sh "$RUNNER_TEMP/miniapp-production-smoke.sh"
+          bash "$RUNNER_TEMP/miniapp-production-smoke.sh"
       - name: Clarify evidence boundary
         run: echo 'API smoke does NOT prove that WeChat buttons or wx.request work on a real phone.'
