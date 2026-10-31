@@ -7,6 +7,7 @@ export const dynamic = "force-dynamic";
 export const metadata = {
   title: "试卷资料检索与在线练习 | SOCTHINK",
   description: "按竞赛、年份与年级查找已核查的数学练习试卷；直接进入在线练习。未开放未经授权的商业下载或付费。",
+  alternates: { canonical: "/resources" },
 };
 
 export default function ResourceLibraryPage() {

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import {DIGITAL_SALES_POLICY_VERSION,DIGITAL_SALES_POLICY_SHORT_ZH} from "@/lib/digital-sales-policy";
 
-export const metadata={title:"数字商品购买与售后规则 · SOCTHINK"};
+export const metadata={title:"数字商品购买与售后规则 · SOCTHINK",alternates:{canonical:"/digital-purchase-policy"}};
 
 export default function DigitalPurchasePolicyPage(){
   return <div className="legal-page">
