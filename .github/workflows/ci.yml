@@ -42,6 +42,9 @@ jobs:
       - name: Consistent portal commerce and account surface
         run: npm run test:portal-commerce
 
+      - name: WeChat payment readiness uses real runtime flags
+        run: python3 scripts/test_payment_readiness.py
+
       - name: Public quality gate
         run: npm run verify:public
 

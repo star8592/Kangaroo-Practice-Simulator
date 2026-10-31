@@ -22,17 +22,24 @@ ENV_FILES = [
     Path("/etc/socthink-math-payments.env"),
     Path("/etc/socthink-math-wechatpay.env"),
 ]
-PAYMENT_KEYS = [
-    "SOCTHINK_BILLING_DATABASE_URL",
-    "SOCTHINK_WEB_NATIVE_PAYMENTS_ENABLED",
-    "SOCTHINK_WEB_NATIVE_SETTLEMENT_ENABLED",
-    "WECHAT_PAY_APPID",
-    "WECHAT_PAY_MCHID",
-    "WECHAT_PAY_PRIVATE_KEY_PATH",
-    "WECHAT_PAY_PUBLIC_KEY_PATH",
-    "WECHAT_PAY_PUBLIC_KEY_ID",
-    "WECHAT_PAY_API_V3_KEY",
-]
+# Check the exact flags in src/lib/wechat-native-flags.ts.
+EXPECTED_VALUES = {
+    "SOCTHINK_WECHAT_NATIVE_PRODUCT_APPROVED": "1",
+    "SOCTHINK_WECHAT_NATIVE_RECONCILIATION_ENABLED": "1",
+    "SOCTHINK_WEB_NATIVE_PAYMENTS_ENABLED": "1",
+    "PAYMENT_PROVIDER": "wechat_native",
+    "SOCTHINK_PAYMENT_SURFACE": "web-native",
+}
+MERCHANT_REQUIRED = (
+    "WECHAT_PAY_APPID", "WECHAT_PAY_MCHID", "WECHAT_PAY_SERIAL_NO",
+    "WECHAT_PAY_PRIVATE_KEY_PATH", "WECHAT_PAY_PUBLIC_KEY_PATH",
+    "WECHAT_PAY_PUBLIC_KEY_ID", "WECHAT_PAY_API_V3_KEY",
+    "WECHAT_PAY_NOTIFY_URL", "SOCTHINK_PUBLIC_ORIGIN",
+)
+PAYMENT_KEYS = tuple({
+    "SOCTHINK_BILLING_DATABASE_URL", *EXPECTED_VALUES, *MERCHANT_REQUIRED,
+})
+
 
 
 def quiet_run(args: list[str]) -> str | None:
@@ -76,14 +83,42 @@ def configured_payment_flags() -> dict[str, bool]:
                     if key not in results:
                         continue
                     clean = value.strip().strip('"').strip("'")
-                    if key in ("SOCTHINK_WEB_NATIVE_PAYMENTS_ENABLED",
-                               "SOCTHINK_WEB_NATIVE_SETTLEMENT_ENABLED"):
-                        results[key] = clean == "1"
+                    if key in EXPECTED_VALUES:
+                        results[key] = clean == EXPECTED_VALUES[key]
                     else:
                         results[key] = bool(clean)
         except (OSError, UnicodeError):
             continue
     return results
+
+
+def evaluate_readiness(
+    state: dict[str, bool], db_exists: bool | None, role_exists: bool | None
+) -> dict[str, Any]:
+    """Only the payment runtime flags. The marketing plan catalog is a preview."""
+    blockers: list[str] = []
+    for condition, name in (
+        (db_exists is False, "PRODUCTION_BILLING_DATABASE_MISSING"),
+        (role_exists is False, "PRODUCTION_BILLING_ROLE_MISSING"),
+        (not state.get("SOCTHINK_BILLING_DATABASE_URL"), "BILLING_CONNECTION_NOT_CONFIGURED"),
+        (not state.get("SOCTHINK_WECHAT_NATIVE_PRODUCT_APPROVED"), "NATIVE_PRODUCT_APPROVAL_NOT_ATTESTED"),
+        (not state.get("PAYMENT_PROVIDER"), "PAYMENT_PROVIDER_NOT_NATIVE"),
+        (not state.get("SOCTHINK_PAYMENT_SURFACE"), "PAYMENT_SURFACE_NOT_WEB_NATIVE"),
+        (not state.get("SOCTHINK_WECHAT_NATIVE_RECONCILIATION_ENABLED"), "NATIVE_RECONCILIATION_DISABLED"),
+        (not all(state.get(x,False) for x in MERCHANT_REQUIRED), "CURRENT_SITE_MERCHANT_CONFIG_INCOMPLETE"),
+        (not state.get("SOCTHINK_WEB_NATIVE_PAYMENTS_ENABLED"), "NEW_CHARGES_DISABLED"),
+    ):
+        if condition:
+            blockers.append(name)
+    return {
+        "blockers": blockers,
+        "merchant_fields_present": all(state.get(x,False) for x in MERCHANT_REQUIRED),
+        "native_reconciliation_flag": state.get("SOCTHINK_WECHAT_NATIVE_RECONCILIATION_ENABLED",False),
+        "native_checkout_flag": state.get("SOCTHINK_WEB_NATIVE_PAYMENTS_ENABLED",False),
+        "product_approval_attested": state.get("SOCTHINK_WECHAT_NATIVE_PRODUCT_APPROVED",False),
+        "payment_provider_matches": state.get("PAYMENT_PROVIDER",False),
+        "payment_surface_matches": state.get("SOCTHINK_PAYMENT_SURFACE",False),
+    }
 
 
 def main() -> None:
@@ -124,24 +159,7 @@ def main() -> None:
         except OSError:
             pass
 
-    blockers = []
-    if db_exists is False:
-        blockers.append("PRODUCTION_BILLING_DATABASE_MISSING")
-    if not state["SOCTHINK_BILLING_DATABASE_URL"]:
-        blockers.append("BILLING_CONNECTION_NOT_CONFIGURED")
-    if not state["SOCTHINK_WEB_NATIVE_SETTLEMENT_ENABLED"]:
-        blockers.append("NATIVE_SETTLEMENT_DISABLED")
-    merchant_required = [
-        "WECHAT_PAY_APPID", "WECHAT_PAY_MCHID", "WECHAT_PAY_PRIVATE_KEY_PATH",
-        "WECHAT_PAY_PUBLIC_KEY_PATH", "WECHAT_PAY_PUBLIC_KEY_ID",
-        "WECHAT_PAY_API_V3_KEY",
-    ]
-    if any(not state[x] for x in merchant_required):
-        blockers.append("CURRENT_SITE_MERCHANT_CONFIG_INCOMPLETE")
-    if not state["SOCTHINK_WEB_NATIVE_PAYMENTS_ENABLED"]:
-        blockers.append("NEW_CHARGES_DISABLED")
-    if catalog is not None and catalog.get("checkoutAvailable") is False:
-        blockers.append("PUBLIC_CATALOG_CHECKOUT_NOT_AVAILABLE")
+    readiness = evaluate_readiness(state, db_exists, role_exists)
 
     report = {
         "schema": "socthink_payment_readiness_v1",
@@ -152,13 +170,18 @@ def main() -> None:
         "production_billing_database_exists": db_exists,
         "production_billing_role_exists": role_exists,
         "production_billing_environment_exists": ENV_FILES[0].is_file(),
-        "merchant_configured_for_this_site": all(state[k] for k in merchant_required),
-        "native_settlement_enabled": state["SOCTHINK_WEB_NATIVE_SETTLEMENT_ENABLED"],
-        "native_checkout_enabled": state["SOCTHINK_WEB_NATIVE_PAYMENTS_ENABLED"],
+        "merchant_configured_for_this_site": readiness["merchant_fields_present"],
+        "native_settlement_enabled": readiness["native_reconciliation_flag"],
+        "native_checkout_enabled": readiness["native_checkout_flag"],
+        "native_product_approval_attested": readiness["product_approval_attested"],
+        "payment_provider_matches": readiness["payment_provider_matches"],
+        "payment_surface_matches": readiness["payment_surface_matches"],
         "public_checkout_available": catalog.get("checkoutAvailable") if catalog else None,
+        "public_catalog_is_static_plan_preview": True,
+        "actual_saleable_sku_verified": None,
         "legacy_merchant_configured": bool(old and old.get("configured") is True),
         "legacy_merchant_real_mode": bool(old and old.get("mock_mode") is False),
-        "blockers": blockers,
+        "blockers": readiness["blockers"],
     }
     if args.json:
         print(json.dumps(report, ensure_ascii=False, sort_keys=True))
