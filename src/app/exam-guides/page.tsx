@@ -1,7 +1,7 @@
 import type {Metadata} from "next";
 import Link from "next/link";
 import {ASSESSMENT_DOMAINS} from "@/lib/assessment-platform";
-import {EXAM_GUIDES} from "@/lib/exam-guide-catalog";
+import {EXAM_GUIDES,OFFICIAL_STUDY_SOURCES} from "@/lib/exam-guide-catalog";
 import styles from "./ExamGuides.module.css";
 
 export const metadata:Metadata={
@@ -34,6 +34,14 @@ export default function ExamGuides(){
           <h3>时间、分值与注意事项</h3>
           <ul>{guide.timeAndScoring.map(item=><li key={item}>{item}</li>)}</ul>
           <p>{guide.scopeNote}</p>
+          {OFFICIAL_STUDY_SOURCES.some(source=>source.topicId===guide.topicId)&&<>
+            <h3>已找到的官方样题与考试系统</h3>
+            <ul>{OFFICIAL_STUDY_SOURCES.filter(source=>source.topicId===guide.topicId).map(source=>
+              <li key={source.url}><a href={source.url} target="_blank" rel="noopener noreferrer">{source.title} ↗</a>
+                <span>（{source.cycle}；仅跳转官方原站）</span>
+              </li>
+            )}</ul>
+          </>}
           <div className={styles.footer}>
             <span>来源：{guide.issuer} · 核对日期 {guide.checkedAt} · 仅规则指南</span>
             <a href={guide.sourceUrl} target="_blank" rel="noopener noreferrer">查阅主办方或政府原始公告 ↗</a>
