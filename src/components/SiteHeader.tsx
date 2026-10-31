@@ -2,48 +2,76 @@
 
 import Link from "next/link";
 import {usePathname} from "next/navigation";
-import {useState} from "react";
+import {useEffect,useRef,useState} from "react";
 import GlobalLanguageSwitch from "@/components/GlobalLanguageSwitch";
 import SessionNav from "@/components/SessionNav";
+import {ASSESSMENT_DOMAINS} from "@/lib/assessment-platform";
+import {EXAM_DIRECTORY} from "@/lib/exam-directory";
 import {SITE_BRAND} from "@/lib/site-brand";
 import {useSiteLanguage} from "@/lib/site-language";
 import styles from "./SiteHeader.module.css";
 
-const NAV_ITEMS=[
-  {href:"/assessments",zh:"考试大全",en:"All exams"},
-  {href:"/resources",zh:"资料中心",en:"Resources"},
-  {href:"/arithmetic",zh:"数学训练",en:"Math practice"},
-  {href:"/competitions",zh:"竞赛模拟",en:"Competition practice"},
-  {href:"/events",zh:"赛事管家",en:"Competition calendar"},
-  {href:"/membership",zh:"购买与权益",en:"Purchases"},
-  {href:"/account",zh:"我的账号",en:"My account"},
+/* Task navigation is not a copy of the exam taxonomy. Domain navigation below
+ * is derived from the one authoritative assessment + directory registry. */
+const TASK_LINKS=[
+  {href:"/assessments",zh:"全部考试",en:"All exams"},
+  {href:"/resources",zh:"真题资料",en:"Practice papers"},
+  {href:"/exam-planner",zh:"考试管理",en:"Exam planner"},
+  {href:"/membership",zh:"购买与权益",en:"Purchases & access"},
 ] as const;
-const FEATURED=[
-  {href:"/assessments#domain-school",zh:"小升初与学业考试",en:"School exams"},
-  {href:"/assessments#domain-language",zh:"语言考试",en:"Language exams"},
-  {href:"/assessments#domain-professional",zh:"职业资格与公考",en:"Professional exams"},
-  {href:"/assessments#domain-career",zh:"岗位技能",en:"Career skills"},
+const PRACTICE_LINKS=[
+  {href:"/arithmetic",zh:"计算与数学训练",en:"Math practice",helpZh:"小学到高中 · 直接开练",helpEn:"School to high school · Start now"},
+  {href:"/competitions",zh:"国际数学竞赛模拟",en:"Competition mocks",helpZh:"按现有赛制选择试卷",helpEn:"Select a real available exam"},
+  {href:"/review",zh:"错题复盘",en:"Review mistakes",helpZh:"复查已经完成的练习",helpEn:"Review previous attempts"},
 ] as const;
+const DOMAIN_MAP=new Map(ASSESSMENT_DOMAINS.map(domain=>[domain.id,domain]));
 
 function MenuIcon({open}:{open:boolean}){
-  return open?<svg viewBox="0 0 24 24" aria-hidden="true">
-    <path d="M6 6l12 12M18 6L6 18"/></svg>:
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>;
+  return <svg viewBox="0 0 24 24" aria-hidden="true">
+    {open?<path d="M6 6l12 12M18 6L6 18"/>:<path d="M4 7h16M4 12h16M4 17h16"/>}
+  </svg>;
 }
 
 export default function SiteHeader(){
-  const lang=useSiteLanguage(),pathname=usePathname();
+  const lang=useSiteLanguage();
+  const pathname=usePathname();
   const [mobileOpen,setMobileOpen]=useState(false);
-  const isActive=(href:string)=>pathname===href||pathname.startsWith(href+"/");
+  const [practiceOpen,setPracticeOpen]=useState(false);
+  const practiceRef=useRef<HTMLDivElement>(null);
+  const practiceButtonRef=useRef<HTMLButtonElement>(null);
+  const active=(href:string)=>pathname===href||pathname.startsWith(href+"/");
+  const practiceActive=PRACTICE_LINKS.some(link=>active(link.href));
+  const dismiss=()=>{setMobileOpen(false);setPracticeOpen(false);};
+
+  useEffect(()=>{
+    if(!mobileOpen&&!practiceOpen)return;
+    const onPointer=(event:PointerEvent)=>{
+      if(practiceOpen&&!practiceRef.current?.contains(event.target as Node))
+        setPracticeOpen(false);
+    };
+    const onKey=(event:KeyboardEvent)=>{
+      if(event.key!=="Escape")return;
+      if(practiceOpen)practiceButtonRef.current?.focus();
+      setMobileOpen(false);
+      setPracticeOpen(false);
+    };
+    document.addEventListener("pointerdown",onPointer);
+    document.addEventListener("keydown",onKey);
+    return()=>{
+      document.removeEventListener("pointerdown",onPointer);
+      document.removeEventListener("keydown",onKey);
+    };
+  },[mobileOpen,practiceOpen]);
+
   return <header className={styles.header}>
     <div className={styles.utility}>
       <div className={styles.utilityInner}>
         <span>SOCTHINK / {lang==="zh"?"综合考试与学习资源平台":"Exams & Learning Resources"}</span>
-        <span>{lang==="zh"?"发现考试 · 查找资料 · 在线练习":"Find exams · Browse papers · Practise online"}</span>
+        <span>{lang==="zh"?"按考试找方向 · 按需求找服务":"Browse exams · Find the right service"}</span>
       </div>
     </div>
     <div className={styles.inner}>
-      <Link href="/" className={styles.brand} aria-label={lang==="zh"?"返回首页":"Home"}>
+      <Link href="/" className={styles.brand} aria-label={lang==="zh"?"返回首页":"Home"} onClick={dismiss}>
         <span className={styles.brandMark}>{SITE_BRAND.mark}</span>
         <span className={styles.brandCopy}>
           <strong>{lang==="zh"?SITE_BRAND.nameZh:SITE_BRAND.nameEn}</strong>
@@ -51,36 +79,74 @@ export default function SiteHeader(){
         </span>
       </Link>
       <nav className={styles.primaryNav} aria-label={lang==="zh"?"主要导航":"Primary navigation"}>
-        {NAV_ITEMS.map(item=><Link key={item.href} href={item.href}
-          className={isActive(item.href)?styles.activeNav:undefined}
-          aria-current={isActive(item.href)?"page":undefined}>
-          {item[lang]}</Link>)}
+        {TASK_LINKS.slice(0,2).map(item=><Link key={item.href} href={item.href}
+          className={active(item.href)?styles.activeNav:undefined}
+          aria-current={active(item.href)?"page":undefined}
+          onClick={()=>setPracticeOpen(false)}>{item[lang]}</Link>)}
+        <div className={styles.practiceRoot} ref={practiceRef}>
+          <button ref={practiceButtonRef} type="button"
+            className={practiceActive?styles.activeNav:undefined}
+            aria-expanded={practiceOpen} aria-controls="header-practice-menu"
+            onClick={()=>setPracticeOpen(open=>!open)}>
+            {lang==="zh"?"在线练习":"Practice"} <span aria-hidden="true" className={styles.chevron}>⌄</span>
+          </button>
+          {practiceOpen&&<div className={styles.practiceMenu} id="header-practice-menu">
+            <strong>{lang==="zh"?"选择已开放的练习":"Available practice"}</strong>
+            {PRACTICE_LINKS.map(item=><Link href={item.href} key={item.href}
+              onClick={()=>setPracticeOpen(false)}>
+              <b>{item[lang]}</b><small>{lang==="zh"?item.helpZh:item.helpEn}</small>
+            </Link>)}
+          </div>}
+        </div>
+        {TASK_LINKS.slice(2).map(item=><Link key={item.href} href={item.href}
+          className={active(item.href)?styles.activeNav:undefined}
+          aria-current={active(item.href)?"page":undefined}
+          onClick={()=>setPracticeOpen(false)}>{item[lang]}</Link>)}
       </nav>
       <div className={styles.actions}>
         <div className={styles.languageDesktop}><GlobalLanguageSwitch/></div>
         <SessionNav/>
         <button type="button" className={styles.menuButton}
-          aria-label={lang==="zh"?"打开导航菜单":"Open navigation menu"}
-          aria-expanded={mobileOpen} onClick={()=>setMobileOpen(v=>!v)}>
+          aria-label={mobileOpen?(lang==="zh"?"关闭导航菜单":"Close navigation menu"):(lang==="zh"?"打开导航菜单":"Open navigation menu")}
+          aria-expanded={mobileOpen} aria-controls="site-mobile-navigation"
+          onClick={()=>{setMobileOpen(open=>!open);setPracticeOpen(false);}}>
           <MenuIcon open={mobileOpen}/>
         </button>
       </div>
     </div>
-    <div className={styles.featuredBar}>
-      <nav className={styles.featuredInner} aria-label={lang==="zh"?"热门考试方向":"Featured exam directions"}>
-        <span>{lang==="zh"?"热门方向":"Explore"}</span>
-        {FEATURED.map(item=><Link href={item.href} key={item.href}>{item[lang]}</Link>)}
-        <Link href="/assessments">{lang==="zh"?"全部分类 →":"All categories →"}</Link>
+    <div className={styles.categoryBar}>
+      <nav className={styles.categoryInner} aria-label={lang==="zh"?"考试分类":"Exam categories"}>
+        <span className={styles.categoryLabel}>{lang==="zh"?"按考试类别找":"By exam type"}</span>
+        {EXAM_DIRECTORY.map(group=>{
+          const domain=DOMAIN_MAP.get(group.domainId)!;
+          return <Link href={`/assessments#domain-${group.domainId}`} key={group.domainId}
+            onClick={()=>setPracticeOpen(false)}>{domain.name[lang]}</Link>;
+        })}
       </nav>
     </div>
-    <div className={`${styles.mobilePanel} ${mobileOpen?styles.mobilePanelOpen:""}`}>
+    <div id="site-mobile-navigation" className={`${styles.mobilePanel} ${mobileOpen?styles.mobilePanelOpen:""}`}>
       <nav aria-label={lang==="zh"?"移动端导航":"Mobile navigation"}>
-        {NAV_ITEMS.map(item=><Link href={item.href} key={item.href}
-          className={isActive(item.href)?styles.mobileActive:undefined}
-          aria-current={isActive(item.href)?"page":undefined}
-          onClick={()=>setMobileOpen(false)}>
-          <span>{item[lang]}</span><span aria-hidden="true">›</span>
+        <p className={styles.mobileGroupTitle}>{lang==="zh"?"找考试 · 找服务":"Exams & services"}</p>
+        {TASK_LINKS.slice(0,2).map(item=><Link href={item.href} key={item.href}
+          className={active(item.href)?styles.mobileActive:undefined} onClick={dismiss}>
+          {item[lang]} <span aria-hidden="true">›</span>
         </Link>)}
+        <span className={styles.mobileSubTitle}>{lang==="zh"?"在线练习（已开放）":"Available practice"}</span>
+        {PRACTICE_LINKS.map(item=><Link href={item.href} key={item.href} onClick={dismiss}>
+          {item[lang]} <span aria-hidden="true">›</span>
+        </Link>)}
+        {TASK_LINKS.slice(2).map(item=><Link href={item.href} key={item.href}
+          className={active(item.href)?styles.mobileActive:undefined} onClick={dismiss}>
+          {item[lang]} <span aria-hidden="true">›</span>
+        </Link>)}
+        <p className={styles.mobileGroupTitle}>{lang==="zh"?"按考试类别找":"Browse exam categories"}</p>
+        {EXAM_DIRECTORY.map(group=>{
+          const domain=DOMAIN_MAP.get(group.domainId)!;
+          return <Link href={`/assessments#domain-${group.domainId}`}
+            key={group.domainId} onClick={dismiss}>
+            {domain.name[lang]} <span aria-hidden="true">›</span>
+          </Link>;
+        })}
       </nav>
       <div className={styles.mobileLanguage}>
         <span>{lang==="zh"?"界面语言":"Language"}</span><GlobalLanguageSwitch/>
