@@ -1,0 +1,49 @@
+.page{width:100%;max-width:var(--layout-wide);margin:0 auto;padding:24px var(--page-gutter) 80px;color:var(--portal-text)}
+.crumbs{display:flex;align-items:center;flex-wrap:wrap;gap:9px;margin:0 0 19px;color:var(--portal-muted);font-size:14px}
+.crumbs a{color:var(--portal-blue);text-decoration:underline;text-underline-offset:3px}
+.hero{border-radius:22px;padding:clamp(28px,5vw,64px);background:radial-gradient(circle at 88% 15%,#2354a6 0,transparent 40%),linear-gradient(125deg,#10284b,#123867);color:#fff}
+.eyebrow{font-size:12px;letter-spacing:.12em;font-weight:800;color:#c2d9ff}
+.hero h1{font-size:clamp(30px,3.8vw,52px);max-width:940px;line-height:1.2;letter-spacing:-.025em;margin:19px 0}
+.hero>p{font-size:16px;line-height:1.9;max-width:860px;color:#d7e5f7}
+.actions{display:flex;flex-wrap:wrap;gap:12px;margin:25px 0 0}
+.primary,.secondary,.outline{min-height:46px;display:inline-flex;align-items:center;justify-content:center;padding:11px 20px;border-radius:10px;text-align:center;font-size:15px;font-weight:800}
+.primary{color:#fff;background:#1454a8;border:1px solid #89b9f7}
+.primary:hover{background:#256ac1}
+.secondary{color:#fff;background:#ffffff12;border:1px solid #ffffff6b}
+.secondary:hover{background:#ffffff24}
+.outline{background:#fff;color:var(--portal-blue);border:1px solid #bbd1ed}
+.outline:hover{background:#eff5ff}
+.hero .accessNote{font-size:13px;color:#c5d6eb;max-width:750px;margin:22px 0 0}
+.section{margin-top:42px}
+.sectionHead{max-width:850px}
+.sectionEyebrow{font-size:12px;font-weight:850;letter-spacing:.13em;color:var(--portal-blue)}
+.sectionHead h2{font-size:clamp(24px,2.7vw,32px);line-height:1.35;margin:8px 0 12px}
+.sectionHead p,.stageIntro p{font-size:15px;line-height:1.9;color:var(--portal-muted);margin:0}
+.methodGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:22px}
+.methodCard{background:#fff;border:1px solid var(--portal-border);border-radius:15px;padding:24px}
+.methodCard>span{font-weight:850;color:var(--portal-blue);font-size:13px}
+.methodCard h3{font-size:20px;line-height:1.4;margin:13px 0 7px}
+.methodCard p{font-size:15px;line-height:1.8;color:var(--portal-muted);margin:0}
+.stage{margin-top:32px}
+.stageIntro{border-left:4px solid var(--portal-blue);padding-left:17px;margin-bottom:17px}
+.stageIntro h3{font-size:23px;margin:0 0 7px}
+.gradeGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.gradeCard{min-width:0;background:#fff;border:1px solid var(--portal-border);border-radius:15px;padding:21px 23px;display:flex;flex-direction:column}
+.gradeTop{display:flex;align-items:center;gap:11px}
+.gradeTop>span{border-radius:8px;background:#e9f2ff;padding:6px 9px;font-weight:850;font-size:14px;color:var(--portal-blue)}
+.gradeTop>strong{font-size:15px}
+.gradeCard h4{font-size:19px;line-height:1.45;margin:15px 0 10px}
+.gradeCard>p{font-size:14px;line-height:1.85;color:var(--portal-muted);margin:0}
+.skillBlock{margin:16px 0 0;padding:15px;border-radius:11px;background:#f4f7fb}
+.skillBlock>span{font-size:12px;color:#415d82;font-weight:800}
+.skillBlock ul{margin:10px 0 0;padding-left:18px;display:grid;gap:6px}
+.skillBlock li{font-size:14px;line-height:1.65}
+.gradeCard>.watch{margin-top:17px;font-size:13px}
+.gradeCard>.watch strong{color:var(--portal-text)}
+.steps{margin-top:42px;background:#eaf1fc;border:1px solid #d7e4f7;border-radius:19px;padding:30px}
+.steps h2{font-size:27px;line-height:1.35;margin:0 0 12px}
+.steps ol{margin:0;padding-left:22px;display:grid;gap:10px;font-size:15px;line-height:1.8}
+.steps .note{font-size:13px;color:var(--portal-muted);margin:22px 0 0;line-height:1.75}
+.page a:focus-visible{outline:3px solid #6094eb;outline-offset:3px}
+@media(max-width:1050px){.gradeGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.methodGrid{grid-template-columns:1fr}}
+@media(max-width:720px){.page{padding:14px var(--page-gutter-mobile) 58px}.hero{padding:27px 20px;border-radius:16px}.hero h1{font-size:31px}.hero>p{font-size:15px}.actions{flex-direction:column}.primary,.secondary,.outline{width:100%}.section{margin-top:32px}.gradeGrid{grid-template-columns:1fr}.gradeCard{padding:20px}.steps{padding:23px 18px}.steps h2{font-size:23px}}

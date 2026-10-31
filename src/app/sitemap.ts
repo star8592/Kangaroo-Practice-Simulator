@@ -14,6 +14,7 @@ const publicPaths = [
   "/competitions",
   "/events",
   "/resources",
+  "/math-practice",
   "/exam-planner",
   "/privacy",
   "/terms",
