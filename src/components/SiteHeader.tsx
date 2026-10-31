@@ -16,7 +16,7 @@ import styles from "./SiteHeader.module.css";
 const TASK_LINKS=[
   {href:"/assessments",zh:"全部考试",en:"All exams"},
   {href:"/resources",zh:"真题资料",en:"Practice papers"},
-  {href:"/events",zh:"数学赛事",en:"Math events"},
+  {href:"/exam-planner",zh:"考试管理",en:"Exam planner"},
   {href:"/membership",zh:"购买与权益",en:"Purchases & access"},
 ] as const;
 const PRACTICE_LINKS=[
