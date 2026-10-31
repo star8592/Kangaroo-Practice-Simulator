@@ -107,7 +107,7 @@ export default function SiteHeader(){
         <div className={styles.languageDesktop}><GlobalLanguageSwitch/></div>
         <SessionNav/>
         <button type="button" className={styles.menuButton}
-          aria-label={lang==="zh"?"打开导航菜单":"Open navigation menu"}
+          aria-label={mobileOpen?(lang==="zh"?"关闭导航菜单":"Close navigation menu"):(lang==="zh"?"打开导航菜单":"Open navigation menu")}
           aria-expanded={mobileOpen} aria-controls="site-mobile-navigation"
           onClick={()=>{setMobileOpen(open=>!open);setPracticeOpen(false);}}>
           <MenuIcon open={mobileOpen}/>
