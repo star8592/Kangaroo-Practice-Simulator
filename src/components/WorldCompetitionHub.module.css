@@ -1,6 +1,6 @@
 .hub { margin: 34px 0 42px; scroll-margin-top: 96px; }
 .filters { display: flex; flex-wrap: wrap; gap: 9px; margin-bottom: 20px; }
-.filter, .filterSelected { border: 1px solid var(--portal-border); padding: 9px 14px; border-radius: 99px; cursor: pointer; background: transparent; color: inherit; font: inherit; }
+.filter, .filterSelected { border: 1px solid var(--portal-border); padding: 10px 14px; border-radius: 99px; cursor: pointer; background: transparent; color: inherit; font: inherit; font-size:15px; min-height:44px; }
 .filterSelected { background: var(--portal-blue); border-color: var(--portal-blue); color: white; }
 .card, .selected { transition: border-color .15s ease; min-width: 0; }
 .selected { border: 2px solid var(--portal-blue) !important; }
@@ -8,7 +8,7 @@
 .detail { border: 1px solid var(--border, #cbd5e1); border-radius: 18px; padding: clamp(16px, 3vw, 28px); margin-top: 22px; }
 .detailHead { display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
 .detailHead h3 { font-size: clamp(20px, 2.5vw, 28px); margin: 6px 0 10px; }
-.disclaimer { font-size: 13px; opacity: .78; }
+.disclaimer { font-size: 14px; opacity: .85; }
 .actions { display: flex; flex-wrap: wrap; gap: 10px; }
 @media (max-width: 640px) { .actions { width: 100%; } .actions > * { flex: 1; text-align: center; } }
 
@@ -16,10 +16,10 @@
 
 .followSummary { display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; margin:14px 0; font-weight:600; }
 .followSummary a { text-decoration:underline; }
-.followMark { display:inline-block; border:1px solid var(--portal-blue); padding:3px 8px; border-radius:9px; font-size:12px; font-weight:700; }
+.followMark { display:inline-block; border:1px solid var(--portal-blue); padding:3px 8px; border-radius:9px; font-size:13px; font-weight:700; }
 
 .searchRow { display:flex; flex-wrap:wrap; align-items:center; gap:12px; margin:16px 0; }
 .searchRow label { font-weight:600; }
 .searchRow input { min-width:180px; max-width:420px; flex:1; padding:10px 12px; border:1px solid var(--portal-border); border-radius:10px; color:inherit; background:transparent; font:inherit; }
 .searchRow input:focus-visible { outline:3px solid #95b8e9; outline-offset:2px; }
-.resultCount { font-size:14px; margin:12px 0; }
+.resultCount { font-size:15px; margin:12px 0; }
