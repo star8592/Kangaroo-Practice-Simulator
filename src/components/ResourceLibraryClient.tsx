@@ -30,7 +30,7 @@ const COPY = {
   en: {
     eyebrow: "SOCTHINK / RESOURCE FINDER",
     heading: "Find a paper you can actually practise",
-    intro: "Search the training-ready paper inventory by competition, year and grade. Every listed paper uses the existing examination workflow.",
+    intro: "Available papers currently focus on international math competitions. Filter by contest, year and grade; check All exams for other areas, which only open once genuine content is ready.",
     search: "Search competition, year or title",
     competition: "All competitions", grade: "All grades", type: "All types",
     all: "All", total: "Training-ready papers", matched: "Matching", questions: "questions",
