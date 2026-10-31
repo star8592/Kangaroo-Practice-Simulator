@@ -5,12 +5,22 @@
   "mobileStatus": {
     "checkedAt": "2026-10-31",
     "host": "Z890",
-    "usbDevice": "Samsung S8 SM-G950U",
+    "connectedModel": "Samsung S22 Ultra SM-S908U1",
+    "adbConnected": true,
+    "xiaohongshuInstalled": true,
     "wechatInstalled": true,
-    "xiaohongshuInstalled": false,
-    "s22AdbConnected": false,
-    "appAccountAccess": "not_checked",
-    "screenshotsCaptured": false
+    "douyinInstalled": true,
+    "bilibiliInstalled": true,
+    "xiaohongshuInAppPublicSearchConfirmed": true,
+    "searchQueriesTested": [
+      "2026武汉六年级数学试卷",
+      "2026湖北省考真题",
+      "2025华杯赛六年级真题"
+    ],
+    "verifiedNoteShareLinks": 2,
+    "actualOriginalPapersDownloaded": 0,
+    "ocrPerformed": false,
+    "notes": "Public XHS search via normal deep link; no private chats, contacts, credentials or app database accessed."
   },
   "entries": [
     {
@@ -102,6 +112,64 @@
       "commercialRights": "not_verified",
       "saleAllowed": false,
       "needsOfficialSourceTrace": true
+    },
+    {
+      "id": "china-xhs-wuhan-donghu-g6-2025-26-001",
+      "platform": "xiaohongshu",
+      "url": "https://www.xiaohongshu.com/discovery/item/697834b6000000000903aa58",
+      "shareUrl": "https://xhslink.cn/o/52rWkYwyiH1",
+      "domain": "school",
+      "topic": "东湖高新区2025—2026学年六年级上学期数学试卷",
+      "authorDisplayed": "小江的升学…",
+      "sourceClass": "social_user_post_image_paper",
+      "claimedExamYear": 2026,
+      "observedImages": 4,
+      "sourceClaimVerified": false,
+      "officialPublisherVerified": false,
+      "linkResolutionVerified": true,
+      "originalPaperDownloaded": false,
+      "ocrState": "not_attempted",
+      "commercialSaleAllowed": false,
+      "notes": "4张帖图不等于卷面完整页数；待确认原件、答案、页序与版权"
+    },
+    {
+      "id": "china-xhs-wuhan-wuchang-g6-math-a-2026-002",
+      "platform": "xiaohongshu",
+      "url": "https://www.xiaohongshu.com/discovery/item/6978ac93000000001a01f0f9",
+      "shareUrl": "https://xhslink.cn/o/7HE4WbhjgGK",
+      "domain": "school",
+      "topic": "武昌区2025—2026学年六上期末数学A卷（笔记称2026元调）",
+      "authorDisplayed": "学居社",
+      "sourceClass": "social_user_post_image_paper",
+      "claimedExamYear": 2026,
+      "observedImages": 9,
+      "sourceClaimVerified": false,
+      "officialPublisherVerified": false,
+      "linkResolutionVerified": true,
+      "originalPaperDownloaded": false,
+      "ocrState": "not_attempted",
+      "commercialSaleAllowed": false,
+      "notes": "9张帖图，画面写2025—2026学年第一学期期末考试，是否官方元调尚待核验"
+    },
+    {
+      "id": "china-xhs-hubei-civil-exam-historical-compilation-2026-003",
+      "platform": "xiaohongshu",
+      "url": null,
+      "searchQuery": "2026湖北省考真题",
+      "domain": "professional",
+      "topic": "2026湖北省考笔试真题汇集（图片实际为2020—2025年真题汇总）",
+      "authorDisplayed": "国企职场竞聘",
+      "sourceClass": "social_user_post_historical_compilation",
+      "claimedExamYear": 2026,
+      "observedHistoricYears": "2020—2025",
+      "observedImages": 5,
+      "sourceClaimVerified": false,
+      "officialPublisherVerified": false,
+      "linkResolutionVerified": false,
+      "originalPaperDownloaded": false,
+      "ocrState": "not_attempted",
+      "commercialSaleAllowed": false,
+      "notes": "帖标题含2026，但首图写2020—2025年，不得记为2026真题；短链尚未确认"
     }
   ]
 }
