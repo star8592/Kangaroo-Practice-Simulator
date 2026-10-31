@@ -46,7 +46,7 @@ test("mobile menu exposes all categories without hidden horizontal strips",async
 });
 
 test("primary text is readable at desktop and phone widths",async({page})=>{
-  for(const width of [390,768,1440]){
+  for(const width of [390,768,1280,1440]){
     await page.setViewportSize({width,height:880});
     await page.goto("/");
     const metrics=await page.evaluate(()=>{
