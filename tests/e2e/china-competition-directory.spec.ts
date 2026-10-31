@@ -76,7 +76,9 @@ test("public nationwide homepage excludes China contests from training while the
   const mobile=(page.viewportSize()?.width??1280)<=760;
   if(mobile)await page.getByRole("button",{name:"打开导航菜单"}).click();
   const menu=page.getByRole("navigation",{name:mobile?"移动端导航":"主要导航"});
-  await menu.getByRole("link",{name:"赛事管家"}).click();
+  await menu.getByRole("link",{name:"考试管理"}).click();
+  await expect(page).toHaveURL(/\/exam-planner$/);
+  await page.getByRole("link",{name:/打开数学赛事管家/}).click();
   await expect(page).toHaveURL(/\/events$/);
   const hub=page.getByRole("region",{name:"全球数学赛事管家"});
   await hub.getByLabel("搜索赛事").fill("华杯赛");

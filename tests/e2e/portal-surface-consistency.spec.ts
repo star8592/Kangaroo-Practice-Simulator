@@ -1,7 +1,7 @@
 import {expect,test} from "@playwright/test";
 
 const corePages=[
-  "/","/assessments","/resources","/membership","/login",
+  "/","/assessments","/resources","/exam-planner","/membership","/login",
   "/competitions","/events","/terms","/digital-purchase-policy",
 ] as const;
 

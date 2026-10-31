@@ -9,6 +9,7 @@ const publicRoutes=[
   "/",
   "/assessments",
   "/resources",
+  "/exam-planner",
   "/membership",
   "/competitions",
   "/events",

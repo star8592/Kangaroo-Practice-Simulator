@@ -5,7 +5,7 @@
 .heroText{flex:1;min-width:0}
 .hero small{font-size:11px;color:#bed8ff;font-weight:850;letter-spacing:.11em}
 .hero h1{font-size:clamp(28px,3.5vw,46px);line-height:1.22;letter-spacing:-.03em;margin:15px 0 14px;max-width:820px;color:#fff}
-.hero p{max-width:800px;font-size:15px;line-height:1.8;color:#dae6f8;margin:0}
+.hero p{max-width:800px;font-size:16px;line-height:1.8;color:#dae6f8;margin:0}
 .heroAside{min-width:174px;max-width:190px;border-left:1px solid #ffffff3b;align-self:stretch;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:4px;color:#c6dcff;text-align:center}
 .heroAside span{font-size:10px;letter-spacing:.08em;font-weight:800}
 .heroAside strong{font-size:80px;line-height:1.15;letter-spacing:-.06em;color:#fff}
@@ -16,23 +16,23 @@
 .sectionHeading{display:flex;justify-content:space-between;align-items:end;gap:18px;margin:0 0 17px}
 .sectionHeading small{color:var(--portal-blue);font-size:10px;letter-spacing:.11em;font-weight:850}
 .sectionHeading h2{margin:7px 0 8px;font-size:clamp(22px,2.3vw,30px);letter-spacing:-.02em;color:var(--portal-navy)}
-.sectionHeading p{margin:0;color:var(--portal-muted);font-size:13px;line-height:1.75}
+.sectionHeading p{margin:0;color:var(--portal-muted);font-size:15px;line-height:1.75}
 .serviceGrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px}
 .serviceCard{display:flex;flex-direction:column;gap:9px;border:1px solid var(--portal-border);background:#fff;border-radius:14px;padding:21px;text-decoration:none;min-width:0;box-shadow:0 4px 14px #15305b09;transition:border .15s ease,transform .15s ease,box-shadow .15s ease}
 .serviceCard:hover,.serviceCard:focus-visible{border-color:#8fb5e6;transform:translateY(-2px);box-shadow:0 10px 26px #15305b16;outline:0}
 .serviceNumber{font-size:12px;color:var(--portal-blue);font-weight:850}
 .serviceCard h3{font-size:18px;margin:8px 0 0;color:var(--portal-navy)}
-.serviceCard p{flex:1;font-size:13px;line-height:1.7;color:var(--portal-muted);margin:0}
-.serviceAction{margin-top:10px;color:var(--portal-blue);font-weight:800;font-size:13px}
+.serviceCard p{flex:1;font-size:15px;line-height:1.7;color:var(--portal-muted);margin:0}
+.serviceAction{margin-top:10px;color:var(--portal-blue);font-weight:800;font-size:15px}
 .purchaseArea{border-top:1px solid var(--portal-border);padding-top:28px}
 .purchasePolicyNotice{margin-top:19px;padding:16px 19px;border:1px solid #efd8ae;background:#fffbf3;border-radius:12px}
 .purchasePolicyNotice strong{font-size:14px;color:#714919}
-.purchasePolicyNotice p{font-size:13px;line-height:1.8;color:#684b2c;margin:8px 0 0}
+.purchasePolicyNotice p{font-size:15px;line-height:1.8;color:#684b2c;margin:8px 0 0}
 .purchasePolicyNotice a,.note a{color:var(--portal-blue);font-weight:750;text-decoration:underline;text-underline-offset:2px}
-.note{font-size:13px;line-height:1.8;color:var(--portal-muted);margin:18px 0 0}
+.note{font-size:15px;line-height:1.8;color:var(--portal-muted);margin:18px 0 0}
 .checkout{margin:20px 0;padding:24px;border:1px solid #c9daec;background:#f4f8ff;border-radius:14px}
 .checkout h2{font-size:23px;margin:0 0 10px;color:var(--portal-navy)}
-.checkout p{font-size:13px;line-height:1.7;color:var(--portal-muted)}
+.checkout p{font-size:15px;line-height:1.7;color:var(--portal-muted)}
 .checkoutOffers{display:grid;grid-template-columns:repeat(auto-fit,minmax(218px,1fr));gap:12px;margin-top:20px}
 .checkoutOffer{background:white;border:1px solid #ccdcf0;border-radius:12px;padding:18px;display:grid;gap:12px}
 .checkoutOffer b{font-size:14px;color:var(--portal-navy)}
@@ -42,9 +42,9 @@
 .checkoutOffer button:disabled{opacity:.55;cursor:not-allowed}
 .checkoutQr{display:flex;flex-direction:column;align-items:center;gap:12px;padding:20px;margin-top:20px;background:white;border-radius:14px}
 .checkoutQr strong{color:var(--portal-navy)}.checkoutQr span{font-size:12px;color:var(--portal-muted);text-align:center}
-.purchasePolicyCheckbox{display:flex;gap:9px;align-items:flex-start;font-size:12px;line-height:1.6;color:#344055;cursor:pointer}
+.purchasePolicyCheckbox{display:flex;gap:9px;align-items:flex-start;font-size:14px;line-height:1.6;color:#344055;cursor:pointer}
 .purchasePolicyCheckbox input{width:17px;height:17px;flex:0 0 auto;margin-top:2px;accent-color:var(--portal-blue)}
 @media(max-width:1000px){.serviceGrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:760px){.page{width:100%;padding:14px var(--page-gutter-mobile) 58px}.hero{padding:25px 20px;display:block}.hero h1{font-size:30px}.hero p{font-size:14px}.heroAside{display:none}.status{align-items:start}.status span{width:100%}.sectionHeading h2{font-size:23px}.serviceGrid{gap:10px}.serviceCard{padding:17px}.serviceCard h3{font-size:16px}.checkout{padding:16px}.checkoutOffers{grid-template-columns:1fr}}
+@media(max-width:760px){.page{width:100%;padding:14px var(--page-gutter-mobile) 58px}.hero{padding:25px 20px;display:block}.hero h1{font-size:30px}.hero p{font-size:15px}.heroAside{display:none}.status{align-items:start}.status span{width:100%}.sectionHeading h2{font-size:23px}.serviceGrid{gap:10px}.serviceCard{padding:17px}.serviceCard h3{font-size:16px}.checkout{padding:16px}.checkoutOffers{grid-template-columns:1fr}}
 @media(max-width:420px){.serviceGrid{grid-template-columns:1fr}}
 @media(prefers-reduced-motion:reduce){.serviceCard{transition:none}.serviceCard:hover{transform:none}}
