@@ -9,7 +9,7 @@ test.describe("SOC THINK unified public navigation", () => {
     const mobile=(page.viewportSize()?.width??1280)<=760;
     if(mobile)await page.getByRole("button",{name:"打开导航菜单"}).click();
     await page.getByRole("navigation",{name:mobile?"移动端导航":"主要导航"})
-      .getByRole("link",{name:"赛事管家"}).click();
+      .getByRole("link",{name:"数学赛事"}).click();
     await expect(page).toHaveURL(/\/events$/);
     await expect(page.getByRole("heading", { name: "全球数学赛事管家" })).toBeVisible();
   });
