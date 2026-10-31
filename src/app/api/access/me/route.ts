@@ -24,17 +24,13 @@ export const dynamic = "force-dynamic";
 
 export async function GET(req: NextRequest) {
   const student = userFromRequest(req);
-  const parent = parentFromSessionToken(req.cookies.get(PARENT_SESSION_COOKIE)?.value);
-  const preferParent = req.nextUrl.searchParams.get("identity") === "parent";
-  const useParent = Boolean(parent && (preferParent || !student || classifyStudentIdentity(student) === "guest"));
-
-  const identity: AccessContext = useParent && parent
-    ? { kind: "parent", accountId: parent.id }
-    : student
-      ? { kind: classifyStudentIdentity(student), accountId: student.id }
-      : parent
-        ? { kind: "parent", accountId: parent.id }
-        : { kind: "anonymous" };
+  const buyer = parentFromSessionToken(req.cookies.get(PARENT_SESSION_COOKIE)?.value);
+  // The public entitlement holder is the signed-in WeChat account. Existing
+  // legacy student sessions continue to work for historical records only.
+  const identity:AccessContext=buyer?.active&&(buyer.wechatId||buyer.wechatOpenId)
+    ? {kind:"parent",accountId:buyer.id}
+    : student ? {kind:classifyStudentIdentity(student),accountId:student.id}
+    : {kind:"anonymous"};
 
   // Billing database errors must not silently misrepresent a paying family
   // as free. Existing public learning APIs do not call this endpoint.
@@ -58,7 +54,7 @@ export async function GET(req: NextRequest) {
       ledgerConfigured: billingConfigured(),
       identity: context.kind,
       plan: effectivePlan(context),
-      maxFamilyStudents: context.kind === "parent" ? (effectivePlan(context) === "pro" ? 5 : effectivePlan(context) === "plus" ? 3 : 1) : null,
+      accountModel: "single-wechat-buyer",
       capabilities,
     },
     { headers: { "Cache-Control": "private, no-store, max-age=0", "Vary": "Cookie, Authorization" } },

@@ -30,6 +30,18 @@ jobs:
       - name: Install locked dependencies
         run: npm ci
 
+      - name: Production receipt concurrency contract
+        run: node scripts/test_production_receipt_policy.mjs
+
+      - name: Private digital delivery file safety
+        run: npm run test:digital-resource-file
+
+      - name: Digital sales policy explicit consent
+        run: npm run test:digital-sales-policy
+
+      - name: Consistent portal commerce and account surface
+        run: npm run test:portal-commerce
+
       - name: Public quality gate
         run: npm run verify:public
 

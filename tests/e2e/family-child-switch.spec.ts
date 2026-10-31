@@ -2,78 +2,47 @@ import {test,expect} from "@playwright/test";
 import fs from "node:fs";
 import path from "node:path";
 import {authenticateOrCreateWechatParent,createParentSessionToken,PARENT_SESSION_COOKIE} from "../../src/lib/parent-auth";
-import {createStudent,SESSION_COOKIE,userFromSessionToken} from "../../src/lib/auth";
-import {addStudentToFamily} from "../../src/lib/family-store";
 
-const root=path.join(process.cwd(),"private","users");
-const files=[path.join(root,"parents.json"),path.join(root,"users.json"),path.join(root,"families.json"),path.join(process.cwd(),"private","arithmetic","sessions.jsonl")];
-const snapshot=new Map<string,Buffer|null>();
-let parentSession="";
-let children:{id:string;name:string}[]=[];
-
+const parentFile=path.join(process.cwd(),"private/users/parents.json");
+let backup:Buffer|null=null;
+let a="",b="";
 test.beforeAll(()=>{
-  for(const file of files)snapshot.set(file,fs.existsSync(file)?fs.readFileSync(file):null);
-  const seed=String(process.pid);
-  const parent=authenticateOrCreateWechatParent({wechatId:"browser-child-switch-"+seed,openId:"browser-open-"+seed,name:"两娃之家"});
-  const first=createStudent({username:"family_child_a_"+seed,candidateNo:"SWITCHA"+seed,name:"可乐",grade:2,pin:"123456"});
-  const second=createStudent({username:"family_child_b_"+seed,candidateNo:"SWITCHB"+seed,name:"豆豆",grade:5,pin:"654321"});
-  addStudentToFamily(parent.id,first.id);addStudentToFamily(parent.id,second.id);
-  parentSession=createParentSessionToken(parent.id);
-  children=[{id:first.id,name:first.name},{id:second.id,name:second.name}];
+ backup=fs.existsSync(parentFile)?fs.readFileSync(parentFile):null;
+ const first=authenticateOrCreateWechatParent({wechatId:"e2e-one-account-A-"+process.pid,name:"买家 A"});
+ const other=authenticateOrCreateWechatParent({wechatId:"e2e-one-account-B-"+process.pid,name:"买家 B"});
+ a=createParentSessionToken(first.id);b=createParentSessionToken(other.id);
 });
 test.afterAll(()=>{
-  for(const [file,value] of snapshot){
-    if(value){fs.mkdirSync(path.dirname(file),{recursive:true});fs.writeFileSync(file,value);}
-    else if(fs.existsSync(file))fs.rmSync(file);
-  }
+ if(backup){fs.mkdirSync(path.dirname(parentFile),{recursive:true});fs.writeFileSync(parentFile,backup);}
+ else if(fs.existsSync(parentFile))fs.rmSync(parentFile);
 });
-test.beforeEach(async({context})=>{
-  await context.addCookies([{name:PARENT_SESSION_COOKIE,value:parentSession,
-    domain:"127.0.0.1",path:"/",httpOnly:true,sameSite:"Strict"}]);
+const setBuyer=async (context:import("@playwright/test").BrowserContext,token:string)=>{
+ await context.addCookies([{name:PARENT_SESSION_COOKIE,value:token,
+   domain:"127.0.0.1",path:"/",httpOnly:true,sameSite:"Strict"}]);
+};
+test("one WeChat buyer has only one account and no family-child chooser",async({page,context})=>{
+ await setBuyer(context,a);
+ await page.goto("/parent");
+ await expect(page).toHaveURL(/\/account$/);
+ await expect(page.getByRole("heading",{name:"考试与资料"})).toBeVisible();
+ await expect(page.getByRole("heading",{name:"买家 A",exact:true})).toBeVisible();
+ await expect(page.getByText("添加孩子")).toHaveCount(0);
+ await expect(page.getByText("切换孩子")).toHaveCount(0);
+ const first=await (await page.request.get("/api/auth/me")).json();
+ expect(first.user?.id).toMatch(/^guest_family_[0-9a-f]{32}$/);
+ await setBuyer(context,b);
+ await page.reload();
+ const second=await (await page.request.get("/api/auth/me")).json();
+ expect(second.user?.id).toMatch(/^guest_family_[0-9a-f]{32}$/);
+ expect(second.user.id).not.toBe(first.user.id);
+ await expect(page.getByRole("heading",{name:"买家 B",exact:true})).toBeVisible();
 });
-
-test("parent chooses two children, and basic practice histories remain separate",async({page,context})=>{
-  await page.goto("/parent");
-  await expect(page.getByRole("heading",{name:"今天，谁来学数学？"})).toBeVisible();
-  await expect(page.getByRole("button",{name:"为可乐开始学习"})).toBeVisible();
-  await expect(page.getByRole("button",{name:"为豆豆开始学习"})).toBeVisible();
-  await expect(page.locator("#choose-child")).toContainText("2 位孩子");
-  await page.getByRole("button",{name:"为可乐开始学习"}).click();
-  await expect(page).toHaveURL(/\/arithmetic(?:\?|$)/,{timeout:15000});
-  await expect(page.getByText("可乐 ·")).toBeVisible({timeout:12000});
-  const firstToken=(await context.cookies()).find(x=>x.name===SESSION_COOKIE)?.value;
-  expect(userFromSessionToken(firstToken)?.id).toBe(children[0].id);
-  const firstAttempt="child-A-"+process.pid;
-  expect((await page.request.post("/api/arithmetic/sessions",{data:{id:firstAttempt,studentId:"guest_fake",grade:2,mode:"diagnostic",startedAt:Date.now(),finishedAt:Date.now(),attempts:[]}})).status()).toBe(200);
-  const firstSessions=await (await page.request.get("/api/arithmetic/sessions")).json();
-  expect(firstSessions.sessions.some((s:{id:string;studentId:string})=>s.id===firstAttempt&&s.studentId===children[0].id)).toBe(true);
-  await page.locator('header button[aria-haspopup="menu"]').click();
-  await page.getByRole("menuitem",{name:/切换孩子/}).click();
-  await expect(page).toHaveURL(/\/parent#choose-child/);
-  await page.getByRole("button",{name:"为豆豆开始学习"}).click();
-  await expect(page).toHaveURL(/\/arithmetic(?:\?|$)/,{timeout:15000});
-  const secondToken=(await context.cookies()).find(x=>x.name===SESSION_COOKIE)?.value;
-  expect(userFromSessionToken(secondToken)?.id).toBe(children[1].id);
-  const secondSessions=await (await page.request.get("/api/arithmetic/sessions")).json();
-  expect(secondSessions.sessions.some((s:{id:string})=>s.id===firstAttempt)).toBe(false);
-  const secondAttempt="child-B-"+process.pid;
-  expect((await page.request.post("/api/arithmetic/sessions",{data:{id:secondAttempt,studentId:"guest_fake",grade:5,mode:"diagnostic",startedAt:Date.now(),finishedAt:Date.now(),attempts:[]}})).status()).toBe(200);
-  await page.goto("/parent");
-  await page.getByRole("button",{name:"为可乐开始学习"}).click();
-  await expect(page).toHaveURL(/\/arithmetic(?:\?|$)/,{timeout:15000});
-  const back=await (await page.request.get("/api/arithmetic/sessions")).json();
-  expect(back.sessions.some((s:{id:string})=>s.id===firstAttempt)).toBe(true);
-  expect(back.sessions.some((s:{id:string})=>s.id===secondAttempt)).toBe(false);
-});
-
-test("household logout clears a parent-delegated child session",async({page,context})=>{
-  await page.goto("/parent");
-  await page.getByRole("button",{name:"为可乐开始学习"}).click();
-  await expect(page).toHaveURL(/\/arithmetic(?:\?|$)/);
-  await page.goto("/parent");
-  await page.getByRole("button",{name:"退出家长账号"}).click();
-  await expect(page).toHaveURL(/\/parent\/login(?:\?|$)/,{timeout:15000});
-  const cookies=await context.cookies();
-  expect(cookies.some(c=>c.name===SESSION_COOKIE)).toBe(false);
-  expect(cookies.some(c=>c.name===PARENT_SESSION_COOKIE)).toBe(false);
+test("one WeChat account logout clears its own buyer session",async({page,context})=>{
+ await setBuyer(context,a);
+ await page.goto("/account");
+ await page.getByRole("button",{name:"退出登录"}).first().click();
+ await expect(page).toHaveURL(/\/login(?:\?|$)/,{timeout:15000});
+ expect((await context.cookies()).some(c=>c.name===PARENT_SESSION_COOKIE)).toBe(false);
+ await page.goto("/account");
+ await expect(page).toHaveURL(/\/login\?next=/);
 });

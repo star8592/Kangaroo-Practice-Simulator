@@ -10,7 +10,10 @@
     "test:arithmetic": "tsx scripts/test_arithmetic_strategy_tree.ts && tsx scripts/test_arithmetic_symbolic.ts && tsx scripts/test_arithmetic_input.ts && tsx scripts/test_arithmetic_display.ts",
     "test:arithmetic-print": "tsx scripts/test_arithmetic_print.ts",
     "test:math-answer-input": "tsx scripts/test_math_answer_input_parity.ts",
-    "test:platform": "tsx scripts/test_assessment_platform.ts",
+    "test:platform": "tsx scripts/test_assessment_platform.ts && tsx scripts/test_resource_catalog.ts && tsx scripts/test_exam_directory.ts",
+    "test:exam-directory": "tsx scripts/test_exam_directory.ts",
+    "test:resource-catalog": "tsx scripts/test_resource_catalog.ts",
+    "test:rust-catalog-contract": "tsx scripts/test_rust_catalog_snapshot.ts",
     "admin:create": "tsx scripts/create_admin.ts",
     "test:smoke": "python3 scripts/smoke_test.py",
     "test:brand": "python3 scripts/brand_audit.py",
@@ -49,6 +52,9 @@
     "test:parent-auth": "tsx scripts/test_parent_auth.ts",
     "test:admin-ops": "tsx scripts/test_admin_operations.ts",
     "test:billing-ledger": "tsx scripts/test_billing_ledger.ts",
+    "test:digital-resource-file": "tsx scripts/test_digital_resource_file.ts",
+    "test:digital-sales-policy": "tsx scripts/test_digital_sales_policy.ts",
+    "test:portal-commerce": "node scripts/test_portal_commerce_contract.mjs",
     "test:rights": "python3 scripts/validate_competition_source_registry.py",
     "data:collection-plan": "python3 scripts/build_competition_collection_plan.py",
     "data:rights-review": "python3 scripts/build_rights_review_queue.py",
@@ -104,7 +110,8 @@
     "test:wechat-native-transport": "tsx scripts/test_wechat_native_transport.ts",
     "test:wechat-native-flags": "tsx scripts/test_wechat_native_checkout_flags.ts",
     "test:wechat-native-recovery": "tsx scripts/test_wechat_native_recovery.ts",
-    "payment:reconcile-native": "tsx scripts/reconcile_wechat_native_orders.ts"
+    "payment:reconcile-native": "tsx scripts/reconcile_wechat_native_orders.ts",
+    "test:single-wechat-buyer": "tsx scripts/test_single_wechat_buyer.ts"
   },
   "dependencies": {
     "next": "16.4.3",

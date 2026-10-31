@@ -47,6 +47,22 @@ async function run() {
   const notPaid = { ...deps, query: async () => ({ status: "NOT_PAID" as const }) };
   assert.equal(await reconcileOneNativeOrder(order,notPaid),"NOT_PAID");
   assert.equal(settled.length,0);
+  const closes:Array<{orderId:string;payloadSha256:string}>=[];
+  const officialClosed={status:"VERIFIED_CLOSED" as const,verifiedBodySha256:hash};
+  const closeDeps={...deps,query:async()=>officialClosed,
+    close:async(proof:{orderId:string;payloadSha256:string;
+      verifiedAt:Date;signatureVerified:true;providerClosedConfirmed:true})=>{
+      assert.equal(proof.signatureVerified,true);
+      assert.equal(proof.providerClosedConfirmed,true);
+      closes.push({orderId:proof.orderId,payloadSha256:proof.payloadSha256});
+    }};
+  assert.equal(await reconcileOneNativeOrder(order,closeDeps),"CLOSED");
+  assert.deepEqual(closes,[{orderId:order.id,payloadSha256:hash}]);
+  await assert.rejects(()=>reconcileOneNativeOrder(order,{
+    ...deps,query:async()=>officialClosed}),/UNVERIFIED_PROVIDER_CLOSE/);
+  await assert.rejects(()=>reconcileOneNativeOrder(order,{
+    ...closeDeps,query:async()=>({...officialClosed,verifiedBodySha256:"broken"})}),
+    /UNVERIFIED_PROVIDER_CLOSE/);
   for (const invalid of [
     { ...paid, transactionId: undefined },
     { ...paid, verifiedBodySha256: undefined },

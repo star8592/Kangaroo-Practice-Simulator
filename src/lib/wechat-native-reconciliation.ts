@@ -1,6 +1,6 @@
-import { billingPool, settleVerifiedOrder } from "./billing-ledger";
+import { billingPool, settleVerifiedOrder, closeVerifiedNativeOrder } from "./billing-ledger";
 import { nativeSettlementAllowed, nativeServerContext } from "./wechat-native-credentials";
-import { queryVerifiedWechatNativePayment } from "./wechat-native-transport";
+import { queryVerifiedWechatNativePayment, closeVerifiedWechatNativePayment } from "./wechat-native-transport";
 import {
   reconcileOneNativeOrder,
   type PendingNativeOrder,
@@ -10,6 +10,7 @@ type DBOrder = {
   id: string;
   price_minor: string;
   currency: string;
+  created_at:Date;
 };
 
 /**
@@ -27,7 +28,7 @@ export async function reconcilePendingNativeOrders(maxOrders = 25) {
   try {
     await client.query("BEGIN");
     const batch = await client.query<DBOrder>(
-      `SELECT id,price_minor,currency
+      `SELECT id,price_minor,currency,created_at
        FROM billing_orders
        WHERE provider='wechat_native' AND state='pending'
          AND (reconcile_checked_at IS NULL OR reconcile_checked_at < now()-interval '2 minutes')
@@ -47,7 +48,7 @@ export async function reconcilePendingNativeOrders(maxOrders = 25) {
   } finally {
     client.release();
   }
-  const result = { scanned: 0, settled: 0, notPaid: 0, failed: 0 };
+  const result = { scanned: 0, settled: 0, closed: 0, notPaid: 0, failed: 0 };
   for (const row of rows) {
     result.scanned++;
     try {
@@ -57,13 +58,29 @@ export async function reconcilePendingNativeOrders(maxOrders = 25) {
         currency: row.currency as "CNY",
       };
       const r = await reconcileOneNativeOrder(snapshot, {
-        query: order => queryVerifiedWechatNativePayment(
-          { ...ctx, nowSeconds: Math.floor(Date.now() / 1000) },
-          { orderId: order.id, amountMinor: order.amountMinor, currency: "CNY", description: "query-only" }),
+        query: async order => {
+          const official=()=>queryVerifiedWechatNativePayment(
+            {...ctx,nowSeconds:Math.floor(Date.now()/1000)},
+            {orderId:order.id,amountMinor:order.amountMinor,
+              currency:"CNY",description:"query-only"});
+          const first=await official();
+          // Do not expire an unconfirmed provider order locally. The
+          // 30min time_expire is followed by a 5min safety margin before
+          // invoking the official signed close API.
+          if(first.status!=="NOT_PAID" ||
+             Date.now()-new Date(row.created_at).getTime()<35*60*1000)
+            return first;
+          await closeVerifiedWechatNativePayment({
+            ...ctx,nowSeconds:Math.floor(Date.now()/1000),
+          },order.id);
+          return official(); // only a separately signed CLOSED query unlocks DB
+        },
         settle: settleVerifiedOrder,
+        close: closeVerifiedNativeOrder,
         now: () => new Date(),
       });
       if (r === "SETTLED") result.settled++;
+      else if(r==="CLOSED")result.closed++;
       else result.notPaid++;
     } catch {
       // Bounded retry via reconcile_checked_at, without logging order or keys.

@@ -1,0 +1,42 @@
+.page{width:min(var(--layout-wide),calc(100% - 56px));margin:auto;padding:22px 0 88px;color:var(--portal-text)}
+.breadcrumb{display:flex;align-items:center;gap:10px;margin-bottom:17px;font-size:12px;color:var(--portal-muted)}
+.breadcrumb a{color:var(--portal-blue);font-weight:750}
+.hero{border-radius:19px;background:linear-gradient(115deg,var(--portal-navy),#164d91 85%);color:#fff;padding:clamp(27px,4vw,43px);display:flex;align-items:flex-start;justify-content:space-between;gap:25px}
+.hero>div:first-child{min-width:0}.hero small{font-size:11px;letter-spacing:.11em;font-weight:850;color:#bdd6ff}
+.hero h1{font-size:clamp(29px,3.5vw,46px);letter-spacing:-.03em;line-height:1.2;margin:14px 0 11px;color:#fff}
+.hero p{font-size:15px;line-height:1.8;color:#d9e6f8;margin:0;max-width:740px}
+.heroStatus{margin-top:24px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.heroStatus strong{color:var(--portal-navy);background:#f6faff;border-radius:8px;padding:8px 13px;font-size:12px}
+.heroStatus span{font-size:12px;color:#d9e8fa}
+.logout{flex-shrink:0}
+.section,.orders{margin-top:34px}
+.sectionHeading small{font-size:11px;color:var(--portal-blue);letter-spacing:.1em;font-weight:850}
+.sectionHeading h2{font-size:clamp(23px,2.4vw,30px);color:var(--portal-navy);margin:9px 0 7px}
+.sectionHeading p{font-size:13px;color:var(--portal-muted);line-height:1.7;margin:0 0 19px}
+.serviceGrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px}
+.service{display:flex;flex-direction:column;gap:9px;padding:20px;border-radius:13px;border:1px solid var(--portal-border);background:#fff;text-decoration:none;box-shadow:0 4px 14px #15305b09}
+.service:focus-visible,.service:hover{outline:0;border-color:#95b9e8;box-shadow:0 12px 26px #15305b16}
+.service strong{font-size:17px;color:var(--portal-navy)}
+.service span{font-size:12px;color:var(--portal-muted);line-height:1.7;flex:1}
+.service em{font-size:12px;font-weight:800;color:var(--portal-blue);font-style:normal;margin-top:5px}
+.orders{padding-top:27px;border-top:1px solid var(--portal-border)}
+.empty{padding:25px 27px;background:#f4f8fe;border:1px solid #cfdeef;border-radius:13px}
+.empty strong{font-size:17px;color:var(--portal-navy)}
+.empty p{font-size:13px;line-height:1.75;color:var(--portal-muted);margin:9px 0}
+.empty a,.ordersActions a,.order a{color:var(--portal-blue);font-weight:750;text-decoration:none}
+.empty a:hover,.ordersActions a:hover,.order a:hover{text-decoration:underline;text-underline-offset:3px}
+.orderList{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+.order{background:#fff;border:1px solid var(--portal-border);border-radius:13px;padding:21px}
+.orderTop{display:flex;justify-content:space-between;gap:14px;align-items:start;flex-wrap:wrap}
+.orderTop strong{font-size:16px;color:var(--portal-navy)}
+.orderStatus{font-size:12px;font-weight:800;color:var(--portal-blue);background:#eaf2ff;border-radius:7px;padding:6px 10px}
+.orderStatus[data-status="paid"]{color:#17634f;background:#e5f4ed}
+.orderStatus[data-status="refunded"],.orderStatus[data-status="closed"]{color:#76536c;background:#f4edf3}
+.order p{font-size:12px;line-height:1.7;color:var(--portal-muted);margin:8px 0}
+.orderAction{display:inline-flex;margin-top:7px}
+.ordersActions{display:flex;flex-wrap:wrap;align-items:center;gap:17px;margin-top:20px;font-size:13px}
+@media(max-width:1050px){.serviceGrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:760px){.page{width:calc(100% - 28px);padding:15px 0 60px}.hero{padding:24px 20px;display:block}.hero h1{font-size:30px}.hero p{font-size:14px}.logout{margin-top:14px}.serviceGrid{gap:10px}.service{padding:17px}.orders{margin-top:26px}.empty{padding:19px}}
+@media(max-width:440px){.serviceGrid{grid-template-columns:1fr}}
+
+.accountName{font-size:clamp(18px,2vw,24px);font-weight:800;color:#fff;margin:0 0 9px}

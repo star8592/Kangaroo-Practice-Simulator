@@ -1,5 +1,5 @@
 import crypto from "node:crypto";
-import {activeParentSessionVersion} from "./parent-auth";
+import {activeParentSessionVersion,parentFromSessionToken,PARENT_SESSION_COOKIE} from "./parent-auth";
 import { DEFAULT_STUDENT_AVATAR, isStudentAvatarKey } from "./student-avatar";
 import { hashScryptSecret, readSignedJsonToken, signJsonToken, verifyScryptSecret } from "./auth-crypto";
 import { atomicWriteJson, readJsonArray, readOrCreateSecret, userDataPath } from "./user-data-store";
@@ -28,11 +28,24 @@ export function publicUserById(id:string){const u=loadUsers().find(x=>x.id===id&
 export function createSessionToken(uid:string,ttl=604800){const u=loadUsers().find(x=>x.id===uid&&x.active);if(!u)throw new Error("用户不存在或已停用");return signJsonToken({uid,ver:u.sessionVersion||1,exp:Math.floor(Date.now()/1000)+ttl},secret())}
 /** Stable but deliberately guest-scoped record for a signed-in family.
  * No child owns it until the family explicitly associates a learner.
- * In particular its guest_ prefix preserves the full-exam access gate.
+ * In particular the unverified legacy practice token stays guest-scoped.
+ * Only an independently verified WeChat buyer session upgrades the scope.
  */
 function familyPracticeId(parentId:string){
  return "guest_family_"+crypto.createHmac("sha256",secret()).update("family-practice:"+parentId).digest("hex").slice(0,32);
 }
+/** The ONE signed-in WeChat buyer uses the same stable study ID formerly
+ * used for "family practice". Keeping this ID preserves existing attempts.
+ * No child account, family seat or second learner login is required.
+ * Only construct it from an authenticated WeChat account, never client input.
+ */
+export function wechatBuyerStudyUser(parentId:string):PublicStudent {
+ const id=familyPracticeId(parentId);
+ return {id,username:"wechat",candidateNo:"WECHAT",name:"我的学习记录",
+  grade:6,avatarKey:DEFAULT_STUDENT_AVATAR,onboardingCompleted:true,
+  createdAt:0,active:true,role:"student",sessionVersion:1};
+}
+
 export function createFamilyPracticeSessionToken(parentId:string,ttl=604800){
  const version=activeParentSessionVersion(parentId);
  if(version===null)throw new Error("家长账号无效");
@@ -106,7 +119,15 @@ export function sessionTokenFromRequest(req:SessionRequestLike){
  if(/^Bearer\s+/i.test(auth))return auth.replace(/^Bearer\s+/i,"").trim();
  return req.cookies?.get(SESSION_COOKIE)?.value;
 }
-export function userFromRequest(req:SessionRequestLike){return userFromSessionToken(sessionTokenFromRequest(req))}
+export function userFromRequest(req:SessionRequestLike){
+ const token=sessionTokenFromRequest(req);
+ const existing=userFromSessionToken(token);
+ // Bearer identities (miniapp) and admin sessions remain strictly isolated.
+ if(/^Bearer\s+/i.test(req.headers.get("authorization")||"") || existing?.role==="admin")return existing;
+ const buyer=parentFromSessionToken(req.cookies?.get(PARENT_SESSION_COOKIE)?.value);
+ if(buyer?.active && (buyer.wechatId||buyer.wechatOpenId))return wechatBuyerStudyUser(buyer.id);
+ return existing;
+}
 export const isAdmin=(u:PublicStudent|null|undefined)=>u?.role==="admin";
 export function createStudent(input:{username:string;candidateNo:string;name:string;grade:number;school?:string;pin:string}){const users=loadUsers(),username=input.username.trim(),candidateNo=input.candidateNo.trim(),name=input.name.trim();if(!username||!candidateNo||!name||input.pin.length<4)throw new Error("学生信息或 PIN 不完整");if(users.some(x=>x.username.toLowerCase()===username.toLowerCase()))throw new Error("用户名已存在");if(users.some(x=>x.candidateNo.toLowerCase()===candidateNo.toLowerCase()))throw new Error("准考证号已存在");const u:StudentUser={id:`stu_${crypto.randomBytes(8).toString("hex")}`,username,candidateNo,name,grade:input.grade,school:input.school?.trim()||undefined,avatarKey:DEFAULT_STUDENT_AVATAR,onboardingCompleted:false,pinHash:hashPin(input.pin),createdAt:Date.now(),active:true,role:"student",sessionVersion:1};users.push(u);saveUsers(users);return pub(u)}
 export function createAdmin(input:{username:string;name:string;pin:string}){const users=loadUsers(),username=input.username.trim(),name=input.name.trim(),candidateNo=`ADMIN-${username}`;if(!username||!name||input.pin.length<6)throw new Error("管理员信息不完整或 PIN 少于 6 位");if(users.some(x=>x.username.toLowerCase()===username.toLowerCase()))throw new Error("用户名已存在");if(users.some(x=>x.candidateNo.toLowerCase()===candidateNo.toLowerCase()))throw new Error("管理员编号已存在");const u:StudentUser={id:`adm_${crypto.randomBytes(8).toString("hex")}`,username,candidateNo,name,grade:0,pinHash:hashPin(input.pin),createdAt:Date.now(),active:true,role:"admin",sessionVersion:1};users.push(u);saveUsers(users);return pub(u)}

@@ -45,11 +45,13 @@ step "worldwide mathematics competition source and identity contract" npx tsx sc
 step "verified competition intelligence" npm run test:competition-intelligence
 step "official source watch and review queue" npm run test:competition-source-watch
 step "public membership benefits catalog" npx tsx scripts/test_access_catalog.ts
+step "single WeChat account and exam rights" npm run test:single-wechat-buyer
 step "web Native and miniapp virtual-payment preflight separation" npm run test:wechat-pay-scopes
 step "WeChat Native cryptographic protocol contract (synthetic keys)" npm run test:wechat-native-boundary
 step "WeChat Native signed server transport and official query contract" npm run test:wechat-native-transport
 step "WeChat Native checkout pause vs payment settlement separation" npm run test:wechat-native-flags
 step "WeChat Native missed callback recovery" npm run test:wechat-native-recovery
+step "WeChat fast durable callback architectural contract" python3 scripts/test_wechat_native_fast_callback_contract.py
 step "local CI deploy contract" bash ops/release/test_local_ci_deploy_contract.sh
 step "auth email SMTP contract" bash ops/release/test_auth_email_smtp_contract.sh
 step "parent auth regression" npm run test:parent-auth

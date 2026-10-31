@@ -8,13 +8,15 @@ on:
 permissions:
   contents: read
 
+# Scope cancellation to the *upstream CI branch*. A pull-request CI
+# completion must never cancel the main branch's production receipt.
 concurrency:
-  group: production-receipt
+  group: production-receipt-${{ github.event.workflow_run.head_branch }}
   cancel-in-progress: true
 
 jobs:
   verify:
-    if: ${{ github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main' }}
+    if: ${{ github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push' && github.event.workflow_run.head_branch == 'main' }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:

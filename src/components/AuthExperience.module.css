@@ -457,3 +457,11 @@
   .unifiedLoginBox {gap:13px;}
   .unifiedQr img {width:min(260px, 75vw);height:auto;}
 }
+
+/* All public account surfaces share the same SOCTHINK portal navy/blue
+ * palette. The earlier competition-only dark green layout is retired.
+ */
+.frame{border-color:var(--portal-border);box-shadow:0 22px 65px #10284b1c,0 2px 9px #10284b0b}
+.brandPanel{background:radial-gradient(circle at 12% 8%,#3273ca5e,transparent 29%),radial-gradient(circle at 88% 93%,#e3a26822,transparent 36%),linear-gradient(150deg,var(--portal-navy),#164b91 92%)}
+.brandEyebrow{color:#bad5ff}
+.brandPanel h1 span{color:#d2e4ff}

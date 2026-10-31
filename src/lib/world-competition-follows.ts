@@ -10,9 +10,11 @@ export type WorldCompetitionFollow = {
 const FILE = userDataPath("world-competition-follows.json");
 const known = new Set(WORLD_COMPETITIONS.map(x => x.id));
 
-export function canFollowWorldCompetitions(user: {id:string;role:string}|null|undefined) {
+export function canFollowWorldCompetitions(user: {id:string;role:string;candidateNo?:string}|null|undefined) {
   // Guest sessions look like student users internally; never persist their temporary IDs.
-  return !!user && user.role === "student" && !user.id.startsWith("guest_");
+  return !!user && user.role === "student" &&
+    (!user.id.startsWith("guest_") ||
+      (user.candidateNo==="WECHAT" && /^guest_family_[0-9a-f]{32}$/.test(user.id)));
 }
 export function getWorldCompetitionFollows(userId: string): WorldCompetitionFollow[] {
   return readJsonArray<WorldCompetitionFollow>(FILE)

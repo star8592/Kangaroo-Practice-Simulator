@@ -4,7 +4,7 @@
   gap:2px;
   flex:0 0 auto;
   padding:2px;
-  border:1px solid #dfe5df;
+  border:1px solid var(--portal-border);
   border-radius:9px;
   background:#fff;
   white-space:nowrap;
@@ -15,7 +15,7 @@
   border:0;
   border-radius:7px;
   background:transparent;
-  color:#7b867f;
+  color:var(--portal-muted);
   font-size:9px;
   font-weight:900;
   line-height:1;
@@ -23,9 +23,9 @@
   cursor:pointer;
 }
 .switcher button.active{
-  background:#eef3ef;
-  color:#24352c;
+  background:var(--portal-blue-soft);
+  color:var(--portal-blue);
 }
 .switcher button:hover:not(.active){
-  color:#26372e;
+  color:var(--portal-blue);
 }

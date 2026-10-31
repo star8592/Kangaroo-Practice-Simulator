@@ -1,0 +1,16 @@
+[package]
+name = "socthink-rust-core"
+version = "0.1.0"
+edition = "2024"
+description = "SOCTHINK Rust business-core migration: read-only training resource catalog R1"
+publish = false
+
+[[bin]]
+name = "socthink-catalog-api"
+path = "src/main.rs"
+
+[dependencies]
+axum = { version = "0.8.9", features = ["json", "query", "http1", "tokio"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+tokio = { version = "1.53", features = ["macros", "rt-multi-thread", "net"] }

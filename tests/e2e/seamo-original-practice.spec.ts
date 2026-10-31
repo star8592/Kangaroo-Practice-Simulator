@@ -1,15 +1,19 @@
 import { test, expect } from '@playwright/test';
 import fs from 'node:fs';
 import path from 'node:path';
-import crypto from 'node:crypto';
-import { createStudent, updateStudent } from '../../src/lib/auth';
+import {
+ authenticateOrCreateWechatParent,createParentSessionToken,PARENT_SESSION_COOKIE,
+} from '../../src/lib/parent-auth';
+import {wechatBuyerStudyUser} from '../../src/lib/auth';
 
 const root = process.cwd();
 const usersDir = path.join(root, 'private', 'users');
 const userFile = path.join(usersDir, 'users.json');
 const sessionsFile = path.join(usersDir, 'exam-sessions.json');
 const attemptsFile = path.join(usersDir, 'exam-attempts.jsonl');
-let account: {id:string; username:string; pin:string} | null = null;
+let account: {id:string; token:string; studyId:string} | null = null;
+const parentsFile=path.join(usersDir,'parents.json');
+let parentsBackup:Buffer|null=null;
 
 function readArray(file:string): Array<Record<string,unknown>> {
   if (!fs.existsSync(file)) return [];
@@ -22,16 +26,20 @@ test.beforeAll(() => {
   if (process.env.E2E_ALLOW_SYNTHETIC_FIXTURE !== '1' || (!root.includes('KPS-SEAMO-2026') && !process.env.CI)) {
     throw new Error('SEAMO browser smoke may run only in the explicitly authorized isolated worktree');
   }
-  const username = 'seamoe2e' + crypto.randomBytes(5).toString('hex');
-  const pin = String(crypto.randomInt(100000,999999));
-  const student = createStudent({username,candidateNo:username,name:'SEAMO E2E 学生',grade:2,pin});
-  updateStudent(student.id,{onboardingCompleted:true});
-  account = {id:student.id,username,pin};
+  parentsBackup=fs.existsSync(parentsFile)?fs.readFileSync(parentsFile):null;
+  const buyer=authenticateOrCreateWechatParent({
+    wechatId:'e2e-seamo-wechat-'+process.pid,
+    name:'SEAMO 测试买家',
+  });
+  account={id:buyer.id,token:createParentSessionToken(buyer.id),
+    studyId:wechatBuyerStudyUser(buyer.id).id};
 });
 
 test.afterAll(() => {
   if (!account) return;
-  const id = account.id;
+  const id = account.studyId;
+  if(parentsBackup){fs.writeFileSync(parentsFile,parentsBackup);}
+  else if(fs.existsSync(parentsFile))fs.rmSync(parentsFile);
   for (const file of [userFile,sessionsFile]) {
     if (fs.existsSync(file)) fs.writeFileSync(file,JSON.stringify(readArray(file).filter(row => row.id !== id && row.userId !== id)));
   }
@@ -42,11 +50,9 @@ test.afterAll(() => {
 });
 
 async function login(page:import('@playwright/test').Page) {
-  if (!account) throw new Error('Synthetic student missing');
-  await page.getByText('其他登录方式（已有账号）').click();
-  await page.getByLabel('已有学生账号 / 准考证号').fill(account.username);
-  await page.getByLabel('学生 PIN').fill(account.pin);
-  await page.getByRole('button',{name:'使用已有学生账号'}).click();
+  if(!account)throw new Error('Synthetic WeChat buyer missing');
+  await page.context().addCookies([{name:PARENT_SESSION_COOKIE,value:account.token,
+    domain:'127.0.0.1',path:'/',httpOnly:true,sameSite:'Strict'}]);
 }
 
 async function startGrade(page:import('@playwright/test').Page,grade:1|2) {
@@ -59,6 +65,7 @@ async function startGrade(page:import('@playwright/test').Page,grade:1|2) {
   await card.getByRole('button',{name:'开始训练'}).click();
   await expect(page).toHaveURL(/\/login\?next=/);
   await login(page);
+  await page.goto(`/exam/seamo-original-g${grade}-revised-1`);
   await expect(page).toHaveURL(new RegExp(`/exam/seamo-original-g${grade}-revised-1$`),{timeout:15000});
   await expect(page.getByText(/本站独立编写的 SEAMO 基础专项练习/)).toBeVisible();
   await page.getByRole('button',{name:'确认信息并开始考试'}).click();
