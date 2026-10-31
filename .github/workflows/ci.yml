@@ -11,7 +11,7 @@ permissions:
 
 concurrency:
   group: ci-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   quality:
@@ -49,6 +49,7 @@ jobs:
         run: npm run verify:public
 
   web-browser-click-e2e:
+    if: github.event_name == 'pull_request'
     name: Web browser click E2E (desktop + mobile)
     runs-on: ubuntu-latest
     timeout-minutes: 20
