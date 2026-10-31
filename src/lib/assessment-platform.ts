@@ -77,11 +77,12 @@ export const ASSESSMENT_DOMAINS: readonly AssessmentDomain[] = [
     liveRoutes:[],nextProof:{zh:"按最新官方考纲、题源权利和地区建立考试蓝图。",en:"Verify official syllabi, regional relevance and publication rights."},
   },
   {
-    id:"interest",name:{zh:"兴趣与能力测评",en:"Interests & aptitude"},
-    summary:{zh:"有适用性说明的兴趣与能力自我探索，不作临床诊断。",en:"Evidence-informed self-reflection, not clinical diagnosis."},
-    audience:{zh:"学生、求职者与成长探索者",en:"Learners and career explorers"},
-    readiness:"planned",formats:["scale","short-answer"],
-    liveRoutes:[],nextProof:{zh:"确认量表的授权、信度、效度和适用年龄后开放。",en:"Verify licensing, reliability, validity and suitable ages."},
+    id:"interest",name:{zh:"人格、职业兴趣与能力探索",en:"Personality & career exploration"},
+    summary:{zh:"免费研究试测已开放。中文量表信效度与常模尚未验证，暂不提供标准化结论。",en:"Free research previews are live; Chinese norms and validation are pending."},
+    audience:{zh:"18岁及以上成人（当前研究试测）",en:"Adults 18+ (research previews)"},
+    readiness:"live",formats:["scale","short-answer"],
+    liveRoutes:[{href:"/assessment-center",title:{zh:"进入智量测评中心（研究预览）",en:"Explore research-preview assessments"}}],
+    nextProof:{zh:"完成中文翻译核验、测量学研究与常模验证后再开放正式收费报告。",en:"Validate local translation, psychometrics and norms before any standardized paid report."},
   },
 ] as const;
 
