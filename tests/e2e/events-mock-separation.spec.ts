@@ -1,14 +1,17 @@
 import { test, expect } from "@playwright/test";
 
-test("top navigation separates events companion from mock exams", async ({ page }, testInfo) => {
+test("top navigation is task-based and nests math events beneath exam management", async ({ page }, testInfo) => {
   test.skip(testInfo.project.name.startsWith("mobile"), "Desktop-only nav; mobile menu has a separate test");
   await page.goto("/");
   const header = page.getByRole("navigation", { name: "主要导航" });
-  await expect(header.getByRole("link", { name: "竞赛模拟" })).toHaveAttribute("href", "/competitions");
-  await expect(header.getByRole("link", { name: "赛事管家" })).toHaveAttribute("href", "/events");
+  await expect(header.getByRole("button", { name: /在线练习/ })).toBeVisible();
+  await expect(header.getByRole("link", { name: "考试管理" })).toHaveAttribute("href", "/exam-planner");
+  await expect(header.getByRole("link",{name:"赛事管家"})).toHaveCount(0);
   await expect(page.locator("main")).not.toContainText("华杯赛");
   await expect(page.locator("main")).not.toContainText("希望杯");
-  await header.getByRole("link",{name:"赛事管家"}).click();
+  await header.getByRole("link",{name:"考试管理"}).click();
+  await expect(page).toHaveURL(/\/exam-planner$/);
+  await page.getByRole("link",{name:/打开数学赛事管家/}).click();
   await expect(page).toHaveURL(/\/events$/);
   await expect(page.getByRole("region",{name:"全球数学赛事管家"})).toBeVisible();
 });
@@ -45,7 +48,9 @@ test("mobile header can open the events manager", async ({ page }, testInfo) => 
   test.skip(!testInfo.project.name.startsWith("mobile"), "Mobile-only navigation");
   await page.goto("/");
   await page.getByRole("button", { name: "打开导航菜单" }).click();
-  await page.getByRole("navigation", { name: "移动端导航" }).getByRole("link", { name: "赛事管家" }).click();
+  await page.getByRole("navigation", { name: "移动端导航" }).getByRole("link", { name: "考试管理" }).click();
+  await expect(page).toHaveURL(/\/exam-planner$/);
+  await page.getByRole("link",{name:/打开数学赛事管家/}).click();
   await expect(page).toHaveURL(/\/events$/);
   await expect(page.getByRole("region", { name: "全球数学赛事管家" })).toBeVisible();
 });
