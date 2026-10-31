@@ -1,3 +1,4 @@
+import {getCareerSupplyCandidates,careerSupplyCoverage} from "../src/lib/career-product-mapper";
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
@@ -44,8 +45,25 @@ for (const group of groups) {
   assert(group.signals.every(x=>x.evidenceLevel==="job"||x.skills.length===0),
     "do not invent skills from role category pages");
 }
+const coverage=careerSupplyCoverage();
+assert(coverage.groupsWithJobEvidence>=4);
+assert(coverage.groupsWithCandidates>=4);
+assert(coverage.candidates>=10);
+assert.equal(getCareerSupplyCandidates("sales").length,0,"category listings do not justify exam SKUs");
+assert.equal(getCareerSupplyCandidates("software").length,0,"category listings do not imply exam SKUs");
+assert(getCareerSupplyCandidates("procurement").some(x=>x.skillCode==="supplier_selection"));
+assert(getCareerSupplyCandidates("data").some(x=>x.skillCode==="sql"));
+assert(getCareerSupplyCandidates("ai").some(x=>x.skillCode==="rag"));
+for(const group of groups){
+  for(const candidate of getCareerSupplyCandidates(group.id)){
+    assert.equal(candidate.readiness,"proposal");
+    assert(candidate.evidenceCount>0);
+    assert(candidate.sourceUrls.every(url=>url.startsWith("https://")));
+  }
+}
 const page=fs.readFileSync(path.join(process.cwd(),"src/app/career/page.tsx"),"utf8");
 assert(page.includes("searchCareerDemand"));
+assert(page.includes("getCareerSupplyCandidates"));
 assert(page.includes("规划中 · 非企业官方考题"));
 assert(!page.includes('href="/shop"'),"no unverified checkout link");
 const portal=fs.readFileSync(path.join(process.cwd(),"src/components/AssessmentPortalClient.tsx"),"utf8");
