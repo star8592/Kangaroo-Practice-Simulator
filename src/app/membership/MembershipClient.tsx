@@ -56,7 +56,7 @@ export default function MembershipClient({
     {href:"/arithmetic",name:copy.training,description:copy.trainingDesc,number:"03"},
     {href:"/account",name:copy.reports,description:copy.reportsDesc,number:"04"},
   ];
-  return <div className={styles.page}>
+  return <div data-site-shell="content" className={styles.page}>
     <nav className={styles.breadcrumb} aria-label={en?"Breadcrumb":"当前位置"}>
       <Link href="/assessments">{en?"All exams":"考试大全"}</Link>
       <span aria-hidden="true">/</span><span>{en?"Purchases & access":"购买与权益"}</span>

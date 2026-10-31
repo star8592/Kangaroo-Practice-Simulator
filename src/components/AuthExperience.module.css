@@ -465,3 +465,18 @@
 .brandPanel{background:radial-gradient(circle at 12% 8%,#3273ca5e,transparent 29%),radial-gradient(circle at 88% 93%,#e3a26822,transparent 36%),linear-gradient(150deg,var(--portal-navy),#164b91 92%)}
 .brandEyebrow{color:#bad5ff}
 .brandPanel h1 span{color:#d2e4ff}
+
+/* The single-account sign-in follows the public portal palette; the narrower
+ * credential panel is intentional for readability and QR scanning. */
+.unifiedIntro .mark{background:var(--portal-blue);color:#fff}
+.unifiedIntro h1{color:var(--portal-text)}
+.unifiedIntro p,.unifiedLoginBox>p{color:var(--portal-muted)}
+.unifiedSteps span{background:var(--portal-blue-soft);border-color:#d7e5f7;color:var(--portal-blue)}
+.unifiedLoginBox{border-color:var(--portal-border);box-shadow:0 20px 54px #10284b18}
+.unifiedLoginBox h2{color:var(--portal-text)}
+.unifiedQr img{border-color:#eef4fd}
+.unifiedLoading{background:#f3f7fd;color:var(--portal-blue)}
+.unifiedOther{border-color:var(--portal-border);color:var(--portal-muted)}
+.unifiedMobileHint{background:#eef5ff;border-color:#d4e4f9;color:var(--portal-text)}
+.unifiedMobileHint p,.unifiedMobileHint small{color:var(--portal-muted)}
+@media(max-width:760px){.unifiedShell{width:100%;padding:30px var(--page-gutter-mobile) 60px}}
