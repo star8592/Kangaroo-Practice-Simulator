@@ -1,0 +1,18 @@
+.page{max-width:1160px;margin:0 auto;padding:44px 24px 80px;color:var(--foreground,#142638)}
+.eyebrow{font-size:.76rem;letter-spacing:.16em;font-weight:700;color:#32767e}
+.page h1{font-size:clamp(2rem,5vw,3.4rem);line-height:1.12;margin:14px 0 18px;letter-spacing:-.045em}
+.intro{max-width:850px;color:#586a72;line-height:1.85;font-size:1.06rem}
+.notice{border-left:3px solid #4e9ca1;padding:12px 18px;background:#eff7f6;color:#315c5d;font-size:.94rem;line-height:1.7}
+.nav{display:flex;flex-wrap:wrap;gap:18px;margin:24px 0 38px}
+.nav a{color:#167a83;text-decoration:underline;text-underline-offset:3px}
+.section{padding:12px 0 30px}.section h2{font-size:1.48rem;margin:12px 0 18px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(265px,1fr));gap:16px}
+.card{border:1px solid #dae5e6;border-radius:16px;background:#fff;padding:20px;display:flex;flex-direction:column;min-height:255px}
+.tags{display:flex;gap:8px;flex-wrap:wrap;color:#2d7680;font-size:.77rem}
+.tags span{background:#edf6f6;border-radius:7px;padding:5px 9px}
+.card h3{font-size:1.12rem;line-height:1.45;margin:15px 0 10px;color:#183638}
+.owner{color:#4c6268;font-size:.84rem;margin:0 0 8px}
+.note{color:#66777a;font-size:.87rem;line-height:1.65;margin:0 0 18px;flex:1}
+.card a{font-size:.93rem;color:#08747d;font-weight:600;text-decoration:underline;text-underline-offset:3px}
+.footer{margin-top:25px;border-top:1px solid #d8e1e0;padding-top:22px;color:#627578;font-size:.91rem;line-height:1.8}
+@media(max-width:600px){.page{padding:28px 16px 55px}.grid{grid-template-columns:1fr}.card{min-height:0}}

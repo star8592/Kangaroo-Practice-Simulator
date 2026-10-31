@@ -1,0 +1,46 @@
+{
+  "version": 1,
+  "stagedAt": "2026-10-31",
+  "notes": "原创文件只保留在本地私有目录；未上生产存储、未入正式收费库存、未完成支付交付验收。",
+  "products": [
+    {
+      "id": "math-g34-original-12-v1",
+      "title": "小学3–4年级数学思维原创训练12题（含逐题解析）",
+      "grade": "3–4年级",
+      "priceFen": 100,
+      "fileName": "math-g34-original-12-v1.txt",
+      "sha256": "b112fe9976342fede4953b39b723b6ec5e1f0d13000f0afda470bf2728c7ef6c",
+      "sizeBytes": 2167,
+      "mimeType": "text/plain",
+      "rights": "original_owned",
+      "publicationState": "local_draft",
+      "purchaseEnabled": false
+    },
+    {
+      "id": "math-g56-original-12-v1",
+      "title": "小学5–6年级数学思维原创训练12题（含逐题解析）",
+      "grade": "5–6年级",
+      "priceFen": 300,
+      "fileName": "math-g56-original-12-v1.txt",
+      "sha256": "36bedc45c0889f792b3982a9cf04c051b2a4858640cc5157e7229ccfabdef291",
+      "sizeBytes": 2015,
+      "mimeType": "text/plain",
+      "rights": "original_owned",
+      "publicationState": "local_draft",
+      "purchaseEnabled": false
+    },
+    {
+      "id": "sql-basic-original-12-v1",
+      "title": "SQL数据分析原创实操12题（SQLite示例数据与答案）",
+      "grade": "初学者与岗位技能",
+      "priceFen": 300,
+      "fileName": "sql-basic-original-12-v1.txt",
+      "sha256": "881f4bdc3cf2de29a1fea91c64ae3ab6cf26ba96752412733664651721d9849f",
+      "sizeBytes": 3251,
+      "mimeType": "text/plain",
+      "rights": "original_owned",
+      "publicationState": "local_draft",
+      "purchaseEnabled": false
+    }
+  ]
+}

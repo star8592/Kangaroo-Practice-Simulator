@@ -25,7 +25,7 @@ const COPY = {
     empty: "没有找到匹配的试卷。试试换一个年级或清除搜索条件。",
     reset: "清除条件",
     legal: "训练可用不代表具备商业转载或销售授权；本站目前不会将这些试卷擅自作为付费下载商品。考试访问权限仍由原有服务端规则决定。",
-    back: "返回全部测评",
+    back: "返回全部测评", sources: "查看最新三年官方资料来源",
   },
   en: {
     eyebrow: "SOCTHINK / RESOURCE FINDER",
@@ -38,7 +38,7 @@ const COPY = {
     empty: "No matching papers. Try another grade or clear your filters.",
     reset: "Clear filters",
     legal: "Training readiness is not a commercial-use or redistribution license. These papers are not offered for unauthorized paid downloads. Existing server-side access rules still apply.",
-    back: "Back to assessments",
+    back: "Back to assessments", sources: "Browse recent official sources",
   },
 } as const;
 
@@ -121,6 +121,7 @@ export default function ResourceLibraryClient({ resources }: { resources: Resour
     </div>}
     <footer className={styles.footer}>
       <p>{t.legal}</p>
+      <Link href="/resources/sources">{t.sources}</Link>
       <Link href="/assessments">{t.back}</Link>
     </footer>
   </div>;
