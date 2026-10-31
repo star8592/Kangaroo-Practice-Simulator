@@ -106,6 +106,10 @@ export default async function AccountPage(){
           </div>
           <p>{order.currency==="CNY"?"¥"+(Number(order.price_minor)/100).toFixed(2):order.currency}{" · "}
             {new Date(order.created_at).toLocaleDateString("zh-CN")}</p>
+          {order.state==="pending"&&<p role="status">
+            订单编号：<code>{order.id}</code>。支付状态尚未得到微信官方确认，请勿为同一份资料重复付款；
+            后台会继续核对这笔原订单，刷新页面可查看结果。
+          </p>}
           {order.sales_policy_version&&order.sales_policy_accepted_at&&<p>
             购买前已确认数字商品售后规则 · {new Date(order.sales_policy_accepted_at).toLocaleString("zh-CN")}
             {" · "}<Link href={order.sales_policy_version===PREVIOUS_DIGITAL_SALES_POLICY_VERSION
