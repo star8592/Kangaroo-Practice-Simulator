@@ -374,7 +374,7 @@
 }
 
 @media (max-width: 760px) {
-  .page { padding: 36px var(--page-gutter-tablet) 72px; }
+  .page { padding: 36px var(--page-gutter-mobile) 72px; }
 }
 
 @media (max-width: 600px) {
