@@ -142,7 +142,7 @@ export default function PublicHome(){
               </span>
             </span>
             <strong>{domain.name[lang]}</strong>
-            <span className={styles.categoryExamples}>{group.topics.slice(0,3).map(topic=>topic.title[lang]).join(" · ")}</span>
+            <span className={styles.categoryExamples}>{domain.summary[lang]}</span>
             <span className={styles.categoryLink}>{t.categoryAction} →</span>
           </Link>;
         })}
