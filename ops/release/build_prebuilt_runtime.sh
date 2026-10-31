@@ -47,6 +47,8 @@ printf '%s\n' "$VERSION" > "$OUT/runtime/.release/deployed_version"
 date -Iseconds > "$OUT/runtime/.release/deployed_at"
 printf '%s\n' "$VERSION" > "$OUT/runtime/VERSION"
 cp scripts/smoke_test.py "$OUT/runtime/scripts/"
+# Independent SEO monitoring probe: read-only public URLs; daily history stored outside releases.
+cp scripts/seo_monitor_daily.mjs "$OUT/runtime/scripts/"
 cp scripts/smoke_exam_access_live.mjs "$OUT/runtime/scripts/"
 cp scripts/test_pre_a_grade1_ready.py "$OUT/runtime/scripts/"
 cp scripts/render_arithmetic_pdf_runtime.mjs "$OUT/runtime/scripts/"
