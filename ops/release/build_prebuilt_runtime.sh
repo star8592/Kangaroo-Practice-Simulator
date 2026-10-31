@@ -52,6 +52,17 @@ cp scripts/test_pre_a_grade1_ready.py "$OUT/runtime/scripts/"
 cp scripts/render_arithmetic_pdf_runtime.mjs "$OUT/runtime/scripts/"
 cp scripts/render_diagnostic_pdf_runtime.mjs "$OUT/runtime/scripts/"
 
+# Payment reconciliation runs outside Next.js. Bundle its TypeScript source
+# into the same immutable runtime; the standalone file tracer does not include
+# command-line tsx, so running the source directly would fail in production.
+# Third-party "pg" is already provided by the traced Next server runtime.
+./node_modules/.bin/esbuild scripts/reconcile_wechat_native_orders.ts \
+  --bundle --platform=node --format=cjs --target=node20 \
+  --packages=external --alias:@=./src \
+  --outfile="$OUT/runtime/scripts/reconcile_wechat_native_orders.cjs" \
+  --log-level=warning
+node --check "$OUT/runtime/scripts/reconcile_wechat_native_orders.cjs"
+
 # No private/runtime user data may be embedded in a release artifact.
 if [ -e "$OUT/runtime/private" ]; then
   die "private data leaked into prebuilt runtime"
