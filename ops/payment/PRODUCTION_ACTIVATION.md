@@ -31,7 +31,7 @@ sudo python3 ops/payment/provision_billing_postgres.py --apply --confirm INITIAL
 - 旧站商户使用的商户 API 私钥、商户证书序列、微信支付公钥及对应公钥 ID、商户号/绑定 AppID 和 APIv3 Key 由受权运维人员**在真实宿主机或专用 secrets 管理工具内**核实并安全迁移。严禁传给聊天、放在 GitHub、通过网页二维码第三方或 `curl` URL 参数传递。
 - 新站采用与原登录配置分开的 `/etc/socthink-math-payment.env`（600）+ 专用受保护密钥目录（仅服务身份读），并新建独立 systemd drop-in，保留旧站运行中的收款服务。
 - 当前 Node Native 模块要求 `WECHAT_PAY_MCHID`、`WECHAT_PAY_APPID`、`WECHAT_PAY_SERIAL_NO`、`WECHAT_PAY_PRIVATE_KEY_PATH`、`WECHAT_PAY_PUBLIC_KEY_PATH`、`WECHAT_PAY_PUBLIC_KEY_ID`、`WECHAT_PAY_API_V3_KEY`、`WECHAT_PAY_NOTIFY_URL`、`SOCTHINK_PUBLIC_ORIGIN`；注意微信支付平台**公钥**与商户签名**私钥**是两种不同材料。
-- 证书和签名必须与微信支付商户平台真实 AppID/商户号相符；校验 SDK/官方签名、有效期与退款权限。旧站曾付费成功是历史依据，不代表当前新域名经营场景已获批准。
+- 证书和签名必须与微信支付商户平台真实 AppID/商户号相符；校验 SDK/官方签名和证书有效期；普通购买不以退款 API 权限为前置条件。旧站曾付费成功是历史依据，不代表当前新域名经营场景已获批准。
 
 ## 3. 三个互不混淆的生产状态
 
@@ -41,11 +41,11 @@ sudo python3 ops/payment/provision_billing_postgres.py --apply --confirm INITIAL
 | `SOCTHINK_WECHAT_NATIVE_RECONCILIATION_ENABLED=1` | 允许旧/新已付款订单回调签名验证、主动查单、账本权益结算 | 生产账本已备份、可恢复，密钥、微信回调与查单真实可达 |
 | `SOCTHINK_WEB_NATIVE_PAYMENTS_ENABLED=1` | 允许当前网站创建新的真正付款订单 | 上两项有效 + 已验证真实交付商品/价格/售后 + 受控真单验收 |
 
-**顺序必须是账本→密钥→验签/查单→结算→受控新订单→真实付款→权益→退款→全量开放**。停止新收费只关闭最后一个开关；已经收款的交易继续履约。
+**顺序必须是账本→密钥→验签/查单→结算→受控新订单→真实付款→权益／交付／对账→全量开放**。**不要求普通自助退款系统或测试退款作为正常收费上线门槛**；法定异常另由人工售后处理。停止新收费只关闭最后一个开关；已经收款的交易继续履约。
 
 ## 4. 实际商品和付款验收
 
-当前新站 `src/lib/access-catalog.ts` 仍声明 `previewOnly:true`、`checkoutAvailable:false`；`billing_products` schema 只支持 PLUS/PRO 月/年，且 `enabled` 默认为 false。因此**不能先设置虚构价格或直接开放 PLUS/PRO 套餐**。先确认向用户出售的具体功能已经真实可用、有授权内容、明确交付和退款规则，并在网站显示真实定价。
+当前新站 `src/lib/access-catalog.ts` 仍声明 `previewOnly:true`、`checkoutAvailable:false`；`billing_products` schema 只支持 PLUS/PRO 月/年，且 `enabled` 默认为 false。因此**不能先设置虚构价格或直接开放 PLUS/PRO 套餐**。先确认向用户出售的具体功能已经真实可用、有授权内容、明确交付与不支持无理由退款的适用条件，并在网站显示真实定价。
 
 经批准后，用受控实际买家账号完成如下步骤并保存**脱敏**正式证据：
 
@@ -54,14 +54,14 @@ sudo python3 ops/payment/provision_billing_postgres.py --apply --confirm INITIAL
 3. 生产 `notify_url` 经公网 HTTPS 获得微信回调，原始报文公钥验签和 AES-GCM 解密成功；在同一真实账本上**持久保存通知证据后快速返回 204**，超时/数据库异常不假装成功。
 4. 已经实际运行的唯一官方查单补偿 worker 独立签名调用微信官方查单，金额、币种、商户、AppID、平台交易 ID 与本地订单完全一致。
 5. **同一 PostgreSQL 事务**使订单从 `pending` 到 `paid`，发放权益；重复推送/断网重试不重复授权；买家重新登录仍可使用购买的服务。
-6. 正式发起微信官方退款并核验退款成功，对应权益冲正和流水对账一致；异常可安全暂停新订单但保留已付订单结算。
+6. 检查已付订单真实交付凭证和财务对账，并确认用户无自助退款入口；异常可安全暂停新订单但继续处理已付订单。仅当实际发生法定应退、重复扣款或平台强制处理等特殊案例时，由人工受权并以微信官方最终资金状态确认后更新账本。
 
-**必须有这六步原始回执才能将此项目状态标记为 `LIVE_PAYMENT_E2E_VERIFIED`**。CI、mock、配置自检、旧站历史成功和网站出现二维码都不是收款成功证据。
+**必须有这六步原始回执才能将此项目状态标记为 `LIVE_PAYMENT_E2E_VERIFIED`；这里的第六步是交付和对账，不是制造一笔常规退款**。CI、mock、配置自检、旧站历史成功和网站出现二维码都不是收款成功证据。
 
 ## 5. 当前待办/边界
 
 - 受限渠道目前无法代替正式运维权限写生产账本或复制商户密钥，因此不得声称“已经开放收款”。
-- 尚需独立完成正式微信退款 API 适配、唯一账本退款和权益冲正、产品上线审核与全链路真单 E2E。
+- 仍需产品上线审核与真实单次支付／交付／对账 E2E。**不另建自助退款申请、普通用户退款 API 或自动退款任务**；法定例外通过人工复核后依法处理，保留账本对已发生的官方最终资金状态的核对和冲正能力。
 - 有多种付费方式时，PC Native 与小程序虚拟支付、H5、JSAPI 分别按真实产品授权操作，不跨场景借用。
 - 不要为了获得交易回执绕过微信认证、跳到其它独立网站收钱而不匹配订单、或让客户支付未交付的产品。
 
@@ -113,7 +113,7 @@ GitHub、`public/` 或临时容器层内。
 官方签名关单接口、验证 204 应答签名，再独立 GET 官方 `CLOSED`，
 最后才在 DB 记录正式关单证据、释放唯一待付槽位。
 详情见 `docs/engineering/WECHAT_NATIVE_PROVIDER_CLOSED_20261031.md`。
-正式商户真实关单、实付、退款和机房运行证据仍须独立验收，不可把
+正式商户真实关单、实付、交付／对账和机房运行证据仍须独立验收，不可把
 单元测试或 CI 结果标为 `LIVE_PAYMENT_E2E_VERIFIED`。
 
 ## 2026-10-31 数字产品无理由退款告知与订单确认
@@ -123,6 +123,19 @@ GitHub、`public/` 或临时容器层内。
 新网站订单均需购买前主动确认数字内容开通/交付后不适用无理由退款的条款，
 并在唯一账本留存固定规则版本与服务器时间；未经确认不能创建 Native 二维码。
 法律规定的未履约、严重不符与质量救济依法处理，不能仅凭“售出不退”
-拒绝一切售后。详见 `docs/legal/DIGITAL_SALES_POLICY_V1_20261031.md`
-及 `docs/engineering/DIGITAL_SALES_POLICY_ACCEPTANCE_20261031.md`。
+拒绝一切售后。今后的新订单适用 `docs/legal/DIGITAL_SALES_POLICY_V2_20261031.md`；历史 V1
+订单仍遵从未被改写的 `docs/legal/DIGITAL_SALES_POLICY_V1_20261031.md`。
+见 `docs/engineering/DIGITAL_SALES_POLICY_ACCEPTANCE_20261031.md`。
 该变更不等于真实生产商户、退款通道或结算账本已获得授权。
+
+
+## 2026-10-31 退款产品决策（取代本文件上方旧的退款验收门槛）
+
+本项目**售出已交付数字内容后不支持无理由退款、不做普通退款业务**。
+没有用户退款按钮、不会自动发起或自动批准退款。
+上文涉及“必须退款后才能收费”或“先开发退款适配器”的**旧规划已废止**。
+生产收费验收关注真实到账、唯一账本、权益可用、实际交付和对账。
+依法必须解决的未交付、预付未履行、严重违约或重复扣款由人工复核；
+如果最后发生实际官方退款，保留账本验证官方最终结果的受控能力即可。
+见 `docs/legal/DIGITAL_SALES_POLICY_V2_20261031.md`，不能把不退款声明
+理解为免除依法应承担的责任。
