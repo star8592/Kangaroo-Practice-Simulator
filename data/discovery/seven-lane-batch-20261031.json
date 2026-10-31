@@ -1,0 +1,490 @@
+{
+  "schemaVersion": 1,
+  "batchId": "socthink-seven-lanes-20261031-v1",
+  "curatedAt": "2026-10-31",
+  "baseline": "Seven headings and 53 topics from src/lib/assessment-platform.ts and src/lib/exam-directory.ts",
+  "rightsNotice": "Official/public pages are source references only, not files licensed for reproduction/sale. All referenced documents are not redistributed.",
+  "lanes": [
+    {
+      "laneId": "01-school",
+      "domainId": "school",
+      "domainZh": "中小学与升学",
+      "topicCount": 10,
+      "firstProductTitle": "六年级数学应用与几何题",
+      "proposedPriceFen": 100,
+      "ruleVersionNote": "地方招生按各省市公布的2026/2027官方文件核对；首批仅做通用数学能力",
+      "sourceReferences": [
+        {
+          "title": "2026年课程与学段审查入口",
+          "url": "https://www.moe.gov.cn/",
+          "owner": "教育部",
+          "comment": "地方中小学试卷继续查省市主管部门",
+          "commercialRedistributionVerified": false,
+          "distribution": "external_link_only",
+          "examYear": null,
+          "publicationYear": null,
+          "sourceStatus": "candidate_not_individually_verified",
+          "verifiedAt": null
+        },
+        {
+          "title": "2026普通高校招生通知",
+          "url": "https://www.moe.gov.cn/srcsite/A15/moe_776/s3258/202601/t20260121_1427110.html",
+          "owner": "教育部",
+          "comment": "2026高考政策",
+          "commercialRedistributionVerified": false,
+          "distribution": "external_link_only",
+          "examYear": null,
+          "publicationYear": null,
+          "sourceStatus": "candidate_not_individually_verified",
+          "verifiedAt": null
+        }
+      ],
+      "product": {
+        "id": "soc7-school-20261031-v1",
+        "title": "六年级数学应用与几何题（原创8题/8问，含解析或答题指引）",
+        "audience": "中小学与升学",
+        "priceFen": 100,
+        "rights": "original_content",
+        "status": "local_draft",
+        "purchaseEnabled": false,
+        "fileName": "soc7-school-20261031-v1.txt",
+        "questions": 8,
+        "sha256": "965b5b1c79c304ef8bac69d5370620160e2e9b07217669ec0ba7cf20d66ae6ea",
+        "sizeBytes": 2024,
+        "mimeType": "text/plain",
+        "privateStorage": "external_private_asset",
+        "preview": "SOC THINK｜原创数字资料 v1\n栏目：中小学与升学\n名称：六年级数学应用与几何题\n创建日期：2026-10-31\n建议价格：人民币1元（尚未上架）\n资料性质：独立原创，不是任何主办方官方真题或官方模拟卷。\n适用说明：地方招生按各省市公布的2026/2027官方文件核对；首批仅做通用数学能力\n使用方法：先独立完成下列8题/8问，再查看解析或填写反思；请勿将此练习宣传为官方考试原卷。\n\n",
+        "examYear": null,
+        "targetStudyYear": 2027,
+        "paperYear": null,
+        "publicationYear": 2026,
+        "yearClaim": "原创训练；2027新资料待官方核对，采用2026现行已知规则"
+      },
+      "yearPriority": [
+        2027,
+        2026
+      ],
+      "yearSelectionStatus": "2027_OFFICIAL_MATERIAL_NOT_YET_CONFIRMED_2026_FALLBACK"
+    },
+    {
+      "laneId": "02-math-competition",
+      "domainId": "math-competition",
+      "domainZh": "全球数学竞赛",
+      "topicCount": 7,
+      "firstProductTitle": "竞赛预备逻辑与计数训练",
+      "proposedPriceFen": 200,
+      "ruleVersionNote": "按2026–2027 MAA / Math Kangaroo / CEMC 各官方赛事规则分别核对，不使用未经授权真题",
+      "sourceReferences": [
+        {
+          "title": "CEMC官方历年比赛资源",
+          "url": "https://cemc.uwaterloo.ca/resources/past-contests",
+          "owner": "University of Waterloo CEMC",
+          "comment": "历年真题只做来源索引",
+          "commercialRedistributionVerified": false,
+          "distribution": "external_link_only",
+          "examYear": null,
+          "publicationYear": null,
+          "sourceStatus": "candidate_not_individually_verified",
+          "verifiedAt": null
+        },
+        {
+          "title": "MAA美国数学竞赛官方说明",
+          "url": "https://maa.org/student-programs/amc/",
+          "owner": "MAA",
+          "comment": "2026–2027赛制与时间",
+          "commercialRedistributionVerified": false,
+          "distribution": "external_link_only",
+          "examYear": null,
+          "publicationYear": null,
+          "sourceStatus": "candidate_not_individually_verified",
+          "verifiedAt": null
+        },
+        {
+          "title": "Math Kangaroo官方样题",
+          "url": "https://mathkangaroo.org/mks/practice/free-question-samples/",
+          "owner": "Math Kangaroo USA",
+          "comment": "2024–2026样题",
+          "commercialRedistributionVerified": false,
+          "distribution": "external_link_only",
+          "examYear": null,
+          "publicationYear": null,
+          "sourceStatus": "candidate_not_individually_verified",
+          "verifiedAt": null
+        }
+      ],
+      "product": {
+        "id": "soc7-math-competition-20261031-v1",
+        "title": "竞赛预备逻辑与计数训练（原创8题/8问，含解析或答题指引）",
+        "audience": "全球数学竞赛",
+        "priceFen": 200,
+        "rights": "original_content",
+        "status": "local_draft",
+        "purchaseEnabled": false,
+        "fileName": "soc7-math-competition-20261031-v1.txt",
+        "questions": 8,
+        "sha256": "2000fd02ddd48309ee60ba01cee3ec714fb9a7b865ef230f2108387cdf0fc773",
+        "sizeBytes": 2200,
+        "mimeType": "text/plain",
+        "privateStorage": "external_private_asset",
+        "preview": "SOC THINK｜原创数字资料 v1\n栏目：全球数学竞赛\n名称：竞赛预备逻辑与计数训练\n创建日期：2026-10-31\n建议价格：人民币2元（尚未上架）\n资料性质：独立原创，不是任何主办方官方真题或官方模拟卷。\n适用说明：按2026–2027 MAA / Math Kangaroo / CEMC 各官方赛事规则分别核对，不使用未经授权真题\n使用方法：先独立完成下列8题/8问，再查看解析或填写反思；请勿将此练习宣传为官方考试原卷。\n\n",
+        "examYear": null,
+        "targetStudyYear": 2027,
+        "paperYear": null,
+        "publicationYear": 2026,
+        "yearClaim": "原创训练；2027新资料待官方核对，采用2026现行已知规则"
+      },
+      "yearPriority": [
+        2027,
+        2026
+      ],
+      "yearSelectionStatus": "2027_OFFICIAL_MATERIAL_NOT_YET_CONFIRMED_2026_FALLBACK"
+    },
+    {
+      "laneId": "03-language",
+      "domainId": "language",
+      "domainZh": "语言与国际考试",
+      "topicCount": 8,
+      "firstProductTitle": "英语日常阅读理解与邮件沟通原创训练",
+      "proposedPriceFen": 200,
+      "ruleVersionNote": "TOEFL iBT 自2026-01-21调整，IELTS/KET/PET按官方最新版本；本品不是官方模拟卷",
+      "sourceReferences": [
+        {
+          "title": "2026托福iBT新题型说明",
+          "url": "https://www.ets.org/toefl/test-takers/ibt/about/content.html",
+          "owner": "ETS",
+          "comment": "2026新版题型/评分",
+          "commercialRedistributionVerified": false,
+          "distribution": "external_link_only",
+          "examYear": null,
+          "publicationYear": null,
+          "sourceStatus": "candidate_not_individually_verified",
+          "verifiedAt": null
+        },
+        {
+          "title": "剑桥B1 Preliminary备考与样题",
+          "url": "https://www.cambridgeenglish.org/exams-and-tests/qualifications/preliminary/preparation/",
+          "owner": "Cambridge English",
+          "comment": "PET题型及样例",
+          "commercialRedistributionVerified": false,
+          "distribution": "external_link_only",
+          "examYear": null,
+          "publicationYear": null,
+          "sourceStatus": "candidate_not_individually_verified",
+          "verifiedAt": null
+        }
+      ],
+      "product": {
+        "id": "soc7-language-20261031-v1",
+        "title": "英语日常阅读理解与邮件沟通原创训练（原创8题/8问，含解析或答题指引）",
+        "audience": "语言与国际考试",
+        "priceFen": 200,
+        "rights": "original_content",
+        "status": "local_draft",
+        "purchaseEnabled": false,
+        "fileName": "soc7-language-20261031-v1.txt",
+        "questions": 8,
+        "sha256": "da2368b4c3ffe70c2fcb555f1c145ed0db4c889f46b55fa3cac82bcc2a8c42f5",
+        "sizeBytes": 2552,
+        "mimeType": "text/plain",
+        "privateStorage": "external_private_asset",
+        "preview": "SOC THINK｜原创数字资料 v1\n栏目：语言与国际考试\n名称：英语日常阅读理解与邮件沟通原创训练\n创建日期：2026-10-31\n建议价格：人民币2元（尚未上架）\n资料性质：独立原创，不是任何主办方官方真题或官方模拟卷。\n适用说明：TOEFL iBT 自2026-01-21调整，IELTS/KET/PET按官方最新版本；本品不是官方模拟卷\nRead the following ORIGINAL notice: 'The science museum will close at 4 p.m. on Friday for a private event. Visitors who have ",
+        "examYear": null,
+        "targetStudyYear": 2027,
+        "paperYear": null,
+        "publicationYear": 2026,
+        "yearClaim": "原创训练；2027新资料待官方核对，采用2026现行已知规则"
+      },
+      "yearPriority": [
+        2027,
+        2026
+      ],
+      "yearSelectionStatus": "2027_OFFICIAL_MATERIAL_NOT_YET_CONFIRMED_2026_FALLBACK"
+    },
+    {
+      "laneId": "04-university",
+      "domainId": "university",
+      "domainZh": "大学与考研",
+      "topicCount": 7,
+      "firstProductTitle": "考研数学基础计算与微积分8练",
+      "proposedPriceFen": 300,
+      "ruleVersionNote": "以2027年研究生招生工作管理规定为当前版本；2024–2026材料按历史原卷标识",
+      "sourceReferences": [
+        {
+          "title": "2027年全国硕士研究生招生工作管理规定（教育部原文）",
+          "url": "https://www.moe.gov.cn/srcsite/A15/moe_778/s3261/202609/t20260923_1451734.html",
+          "owner": "中华人民共和国教育部",
+          "comment": "2027招生工作管理规定；2026-09-21签发",
+          "commercialRedistributionVerified": false,
+          "distribution": "external_link_only",
+          "examYear": 2027,
+          "publicationYear": 2026,
+          "sourceStatus": "official_reference",
+          "verifiedAt": "2026-10-31"
+        },
+        {
+          "title": "2026年研究生招生工作管理规定",
+          "url": "https://yz.chsi.com.cn/kyzx/jybzc/202509/20250924/2293432108.html",
+          "owner": "教育部/研招网",
+          "comment": "2026历史对照",
+          "commercialRedistributionVerified": false,
+          "distribution": "external_link_only",
+          "examYear": null,
+          "publicationYear": null,
+          "sourceStatus": "candidate_not_individually_verified",
+          "verifiedAt": null
+        },
+        {
+          "title": "2027年全国硕士研究生招生工作管理规定",
+          "url": "https://yz.chsi.com.cn/kyzx/jybzc/202609/20260924/2293971511.html",
+          "owner": "教育部/研招网",
+          "comment": "2027最新",
+          "commercialRedistributionVerified": false,
+          "distribution": "external_link_only",
+          "examYear": null,
+          "publicationYear": null,
+          "sourceStatus": "candidate_not_individually_verified",
+          "verifiedAt": null
+        }
+      ],
+      "product": {
+        "id": "soc7-university-20261031-v1",
+        "title": "考研数学基础计算与微积分8练（原创8题/8问，含解析或答题指引）",
+        "audience": "大学与考研",
+        "priceFen": 300,
+        "rights": "original_content",
+        "status": "local_draft",
+        "purchaseEnabled": false,
+        "fileName": "soc7-university-20261031-v1.txt",
+        "questions": 8,
+        "sha256": "c0b8dfdbeccacfc6c0d9942dde9821c4590d6e03d39825b9769377a4f1b36631",
+        "sizeBytes": 1907,
+        "mimeType": "text/plain",
+        "privateStorage": "external_private_asset",
+        "preview": "SOC THINK｜原创数字资料 v1\n栏目：大学与考研\n名称：考研数学基础计算与微积分8练\n创建日期：2026-10-31\n建议价格：人民币3元（尚未上架）\n资料性质：独立原创，不是任何主办方官方真题或官方模拟卷。\n适用说明：以2027年研究生招生工作管理规定为当前版本；2024–2026材料按历史原卷标识\n使用方法：先独立完成下列8题/8问，再查看解析或填写反思；请勿将此练习宣传为官方考试原卷。\n\n",
+        "examYear": 2027,
+        "targetStudyYear": 2027,
+        "paperYear": null,
+        "publicationYear": 2026,
+        "yearClaim": "2027备考原创训练（非2027真题）"
+      },
+      "yearPriority": [
+        2027,
+        2026
+      ],
+      "yearSelectionStatus": "2027_OFFICIAL_RULES_FOUND"
+    },
+    {
+      "laneId": "05-career",
+      "domainId": "career",
+      "domainZh": "职业技能与岗位实操",
+      "topicCount": 7,
+      "firstProductTitle": "Python数据清洗与运营订单核对8练",
+      "proposedPriceFen": 300,
+      "ruleVersionNote": "Python 3与可复现原始合成订单数据；测试代码不涉及真实客户",
+      "sourceReferences": [
+        {
+          "title": "Microsoft Learn Python入门",
+          "url": "https://learn.microsoft.com/en-us/training/paths/get-started-with-python-fundamentals/",
+          "owner": "Microsoft Learn",
+          "comment": "技能教学参考，不转载教材",
+          "commercialRedistributionVerified": false,
+          "distribution": "external_link_only",
+          "examYear": null,
+          "publicationYear": null,
+          "sourceStatus": "candidate_not_individually_verified",
+          "verifiedAt": null
+        },
+        {
+          "title": "Python官方教程",
+          "url": "https://docs.python.org/3/tutorial/",
+          "owner": "Python Software Foundation",
+          "comment": "Python 3标准语法",
+          "commercialRedistributionVerified": false,
+          "distribution": "external_link_only",
+          "examYear": null,
+          "publicationYear": null,
+          "sourceStatus": "candidate_not_individually_verified",
+          "verifiedAt": null
+        }
+      ],
+      "product": {
+        "id": "soc7-career-20261031-v1",
+        "title": "Python数据清洗与运营订单核对8练（原创8题/8问，含解析或答题指引）",
+        "audience": "职业技能与岗位实操",
+        "priceFen": 300,
+        "rights": "original_content",
+        "status": "local_draft",
+        "purchaseEnabled": false,
+        "fileName": "soc7-career-20261031-v1.txt",
+        "questions": 8,
+        "sha256": "1e1f35aca347709d24fc8f75ff78ece34ed4cc0be3c9b0d81f94a9198e777ff4",
+        "sizeBytes": 2507,
+        "mimeType": "text/plain",
+        "privateStorage": "external_private_asset",
+        "preview": "SOC THINK｜原创数字资料 v1\n栏目：职业技能与岗位实操\n名称：Python数据清洗与运营订单核对8练\n创建日期：2026-10-31\n建议价格：人民币3元（尚未上架）\n资料性质：独立原创，不是任何主办方官方真题或官方模拟卷。\n适用说明：Python 3与可复现原始合成订单数据；测试代码不涉及真实客户\nUse this synthetic dataset (not real customer data): records=[{'id':1,'city':'Wuhan','amount':'100','status':'paid'},{'id':2,'city':' Wuhan ','a",
+        "examYear": null,
+        "targetStudyYear": 2027,
+        "paperYear": null,
+        "publicationYear": 2026,
+        "yearClaim": "2027适用原创技能/兴趣练习（无官方考年）"
+      },
+      "yearPriority": [
+        2027,
+        2026
+      ],
+      "yearSelectionStatus": "EVERGREEN_ORIGINAL_2027_TARGETED"
+    },
+    {
+      "laneId": "06-professional",
+      "domainId": "professional",
+      "domainZh": "职业资格与公职考试",
+      "topicCount": 9,
+      "firstProductTitle": "2027国考数量关系原创计算8练",
+      "proposedPriceFen": 200,
+      "ruleVersionNote": "2027年度国考公告已发布；不得使用2026旧报名安排或冒称官方真题",
+      "sourceReferences": [
+        {
+          "title": "2027年度中央机关及其直属机构公务员招录公告",
+          "url": "https://shanghai.chinatax.gov.cn/xxgk/rsxx/202610/t481763.html",
+          "owner": "国家税务总局上海市税务局（转发官方公告）",
+          "comment": "2027国考考试说明",
+          "commercialRedistributionVerified": false,
+          "distribution": "external_link_only",
+          "examYear": 2027,
+          "publicationYear": 2026,
+          "sourceStatus": "official_reference",
+          "verifiedAt": "2026-10-31"
+        },
+        {
+          "title": "2027国考报考指南",
+          "url": "https://shanghai.chinatax.gov.cn/tax/xxgk/rsxx/202610/t481764.html",
+          "owner": "国家税务总局上海市税务局（转发官方指南）",
+          "comment": "2027报名与考试说明",
+          "commercialRedistributionVerified": false,
+          "distribution": "external_link_only",
+          "examYear": null,
+          "publicationYear": null,
+          "sourceStatus": "candidate_not_individually_verified",
+          "verifiedAt": null
+        },
+        {
+          "title": "2027年度国考公告",
+          "url": "https://shanghai.chinatax.gov.cn/tax/xxgk/rsxx/202610/t481763.html",
+          "owner": "国家税务总局上海市税务局（转发官方公告）",
+          "comment": "2027考试安排",
+          "commercialRedistributionVerified": false,
+          "distribution": "external_link_only",
+          "examYear": null,
+          "publicationYear": null,
+          "sourceStatus": "candidate_not_individually_verified",
+          "verifiedAt": null
+        }
+      ],
+      "product": {
+        "id": "soc7-professional-20261031-v1",
+        "title": "2027国考数量关系原创计算8练（原创8题/8问，含解析或答题指引）",
+        "audience": "职业资格与公职考试",
+        "priceFen": 200,
+        "rights": "original_content",
+        "status": "local_draft",
+        "purchaseEnabled": false,
+        "fileName": "soc7-professional-20261031-v1.txt",
+        "questions": 8,
+        "sha256": "e7d5ce1500dafda0f3ede6b23d954086130ae61a5cf6cf42e41d94cd21d6993e",
+        "sizeBytes": 2006,
+        "mimeType": "text/plain",
+        "privateStorage": "external_private_asset",
+        "preview": "SOC THINK｜原创数字资料 v1\n栏目：职业资格与公职考试\n名称：2027国考数量关系原创计算8练\n创建日期：2026-10-31\n建议价格：人民币2元（尚未上架）\n资料性质：独立原创，不是任何主办方官方真题或官方模拟卷。\n适用说明：2027年度国考公告已发布；不得使用2026旧报名安排或冒称官方真题\n使用方法：先独立完成下列8题/8问，再查看解析或填写反思；请勿将此练习宣传为官方考试原卷。\n\n",
+        "examYear": 2027,
+        "targetStudyYear": 2027,
+        "paperYear": null,
+        "publicationYear": 2026,
+        "yearClaim": "2027备考原创训练（非2027真题）"
+      },
+      "yearPriority": [
+        2027,
+        2026
+      ],
+      "yearSelectionStatus": "2027_OFFICIAL_RULES_FOUND"
+    },
+    {
+      "laneId": "07-interest",
+      "domainId": "interest",
+      "domainZh": "兴趣与能力测评",
+      "topicCount": 5,
+      "firstProductTitle": "职业兴趣与学习策略自我探索8问",
+      "proposedPriceFen": 100,
+      "ruleVersionNote": "仅原创反思练习；O*NET量表使用需另核许可/有效性，不能冒充有标准化信效度的心理测验",
+      "sourceReferences": [
+        {
+          "title": "O*NET工具许可",
+          "url": "https://www.onetcenter.org/license_tools.html",
+          "owner": "O*NET Resource Center",
+          "comment": "未经进一步许可不得擅自商业修改量表",
+          "commercialRedistributionVerified": false,
+          "distribution": "external_link_only",
+          "examYear": null,
+          "publicationYear": null,
+          "sourceStatus": "candidate_not_individually_verified",
+          "verifiedAt": null
+        },
+        {
+          "title": "O*NET职业兴趣工具",
+          "url": "https://services.onetcenter.org/ip",
+          "owner": "美国劳工部O*NET",
+          "comment": "官方免费入口及API",
+          "commercialRedistributionVerified": false,
+          "distribution": "external_link_only",
+          "examYear": null,
+          "publicationYear": null,
+          "sourceStatus": "candidate_not_individually_verified",
+          "verifiedAt": null
+        }
+      ],
+      "product": {
+        "id": "soc7-interest-20261031-v1",
+        "title": "职业兴趣与学习策略自我探索8问（原创8题/8问，含解析或答题指引）",
+        "audience": "兴趣与能力测评",
+        "priceFen": 100,
+        "rights": "original_content",
+        "status": "local_draft",
+        "purchaseEnabled": false,
+        "fileName": "soc7-interest-20261031-v1.txt",
+        "questions": 8,
+        "sha256": "2a227e6c601dc1de644f16eb8dad3bd9dc7b53eebb6078121fe89712f2649761",
+        "sizeBytes": 2678,
+        "mimeType": "text/plain",
+        "privateStorage": "external_private_asset",
+        "preview": "SOC THINK｜原创数字资料 v1\n栏目：兴趣与能力测评\n名称：职业兴趣与学习策略自我探索8问\n创建日期：2026-10-31\n建议价格：人民币1元（尚未上架）\n资料性质：独立原创，不是任何主办方官方真题或官方模拟卷。\n适用说明：仅原创反思练习；O*NET量表使用需另核许可/有效性，不能冒充有标准化信效度的心理测验\n此产品是原创自我探索工作表，非标准化人格测试、临床诊断或职业能力预测；每题都是开放式问题，没有标准答案或总分。\n使用方法：先独立完成下列8题/8问，再查看解析或填写反思；请勿将此练习宣传为官方考试原卷。\n\n",
+        "examYear": null,
+        "targetStudyYear": 2027,
+        "paperYear": null,
+        "publicationYear": 2026,
+        "yearClaim": "2027适用原创技能/兴趣练习（无官方考年）"
+      },
+      "yearPriority": [
+        2027,
+        2026
+      ],
+      "yearSelectionStatus": "EVERGREEN_ORIGINAL_2027_TARGETED"
+    }
+  ],
+  "yearPriorityPolicy": {
+    "asOf": "2026-10-31",
+    "priority": [
+      2027,
+      2026
+    ],
+    "olderPolicy": "2025 and older: no routine collection; explicit demand or historical comparison only",
+    "availabilityRule": "2027 published official rules/data first; otherwise label 2026 as current fallback and 2027 publication as pending",
+    "distinguish": [
+      "examYear",
+      "paperYear",
+      "publicationYear",
+      "ruleVersion",
+      "verifiedAt",
+      "sourceStatus"
+    ],
+    "marketingRule": "2027 rules and original 2027-targeted practice are not 2027 real past papers"
+  }
+}
