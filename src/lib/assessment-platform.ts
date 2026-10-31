@@ -44,7 +44,7 @@ export const ASSESSMENT_DOMAINS: readonly AssessmentDomain[] = [
     readiness:"live",formats:["single-choice","multiple-choice","numeric"],
     liveRoutes:[
       {href:"/competitions",title:{zh:"进入国际数学竞赛",en:"Explore math competitions"}},
-      {href:"/events",title:{zh:"查看赛事与报名信息",en:"View competition calendar"}},
+      {href:"/events",title:{zh:"查看数学赛事与报名信息",en:"View math competition calendar"}},
     ],
     nextProof:{zh:"将已有试卷评分与解析无损接入统一测评协议。",en:"Validate parity against the shared assessment contracts."},
   },
