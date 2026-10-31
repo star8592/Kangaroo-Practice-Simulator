@@ -1,12 +1,12 @@
 # 智量测评中心 / SOCTHINK Measurement Center
 
-> 版本：工程首版 2026-10-31。状态：研究预览代码与基础评分器；不代表正式心理测量学认证、已部署生产环境或可收费产品。
+> 版本：v2（2026-11-01）；对应 v1 研究预览与 v2 原创任务练习。部署结果以 `https://socthink.cn/api/release` 的实际 SHA 和公网页面验收为准；任何工程测试都不代表正式心理测量学认证或测评收费已获批准。
 
 ## 产品边界
 
 - 正式入口：`/assessment-center`；现有 `/assessments` 保留为考试平台总目录。
 - 六个业务方向：人格、认知推理、职业兴趣、岗位胜任、学习能力、心理状态与生活发展。
-- 当前允许公开试测的产品：`career-interest-exploration-30`、`ipip-big-five-50-cn-preview`。
+- 人格与职业兴趣的免费研究试测：`career-interest-exploration-30`、`ipip-big-five-50-cn-preview`；认知与技能的非标准化练习：`reasoning-practice-20`、`sql-lab`。
 - 不创建第二套登录、用户档案、订单、支付或题库数据库。未验证量表不可售卖，也不允许冒充 IQ 测验、心理疾病诊断或企业招聘淘汰工具。
 
 ## 数据模型与单一路径
@@ -67,3 +67,39 @@ npm run build
 - `NORM_VALIDATED`：已审查本土验证资料及适用范围，不能由代码测试代替。
 
 生产发布必须遵守 `ops/release/SOCTHINK_DEPLOYMENT.md`，只以 GitHub main 为源，验收失败自动回滚，绝不清理私有用户数据。独立开发工作区不得替换原来 Z890 中的脏工作目录。
+
+
+## v2 · 2026-11-01：原创认知任务与真实 SQLite 实训
+
+现有同一个测评中心增加两套独立的任务产品：
+
+| 页面 | 类型 | 真实评分 | 限制 |
+| --- | --- | --- | --- |
+| `/assessment-center/reasoning-practice-20` | 20题原创数量、逻辑、空间方位与信息判断任务，四类各5题 | 题目答案与解析逐题确定性评分、四组原始正确数 | **非 IQ、非智力常模、非招聘筛选** |
+| `/assessment-center/sql-lab` | 4项虚构电商业务岗位 SQL 实训 | 使用 SQL.js / SQLite WebAssembly，在 **两套不同数据库**执行相同查询并对比指定列和结果排序 | **训练表现，非岗位资格认证** |
+
+新增 `src/lib/reasoning-practice.ts`（20题与评分报告）、`src/lib/sql-practice.ts`（任务蓝图、两套虚构数据和共用确定性评分器）、`src/workers/sql-practice.worker.ts`（浏览器内存沙箱与独立执行）、`src/components/ReasoningPracticeClient.tsx`、`src/components/SqlPracticeClient.tsx`；不修改已有性格、职业兴趣计分器及登录/账本。
+
+### SQL 执行边界
+
+1. SQLite 原始代码来自 `sql.js` v1.15.2（MIT License），WASM 位于 `public/assessment-center/sql-wasm.wasm`，版权许可文件 `public/assessment-center/sqljs-LICENSE.txt`；题目数据/需求为原创。
+2. 每次提交生成浏览器 Worker 和全新内存数据库；仅允许单条 SELECT 或 WITH 查询、最多1500字符；执行前启用 SQLite `PRAGMA query_only=ON`，拒绝 DML、多语句与 SQL 注释。
+3. Worker 执行超时12秒即终止，不阻塞主页面。UI 限制查询结果最多150行；每次执行使用独立新库，不连接生产数据库、支付账本或外部接口。
+4. 所有答案与题库确切 SQL 在浏览器包内，因此仅适用于学习和自评，不用于具有反作弊要求的正式认证或聘用。
+5. 结果按列名/列顺序、行值/行顺序比对；确实执行两套不同的原始数据，防止只对展示数据硬编码通过。**不生成百分位、职业评级或成功率**。
+6. 所有题目/答案保留在本页面状态中，无服务端存储；关闭或刷新即失效。两套新产品当前研究阶段暂限18岁及以上。
+
+### 发布回归
+
+```bash
+npm run test:assessment-skills
+npm run test:platform
+npx tsc --noEmit --incremental false
+NEXT_TELEMETRY_DISABLED=1 npx next build
+E2E_BASE_URL=http://127.0.0.1:3478 E2E_EXTERNAL_SERVER=1 \
+  npx playwright test tests/e2e/assessment-skills.spec.ts tests/e2e/measurement-center.spec.ts
+```
+
+同时自动验证真实 SQL 的全任务成功、缺少状态过滤、硬编码订单、越权写入/多语句、未知任务/表名、反作弊宣传边界等条件。端到端桌面+移动测试必须对真实 WASM 运行、Worker 调用、任务进度和结果报告逐项通过。
+
+后续方向：在充分用户体验与真实岗位研究基础上，扩展数据清洗、Excel、Python 与口头表达评估；必须有可靠评分与版权证据后才标记开放。正式 IQ 测试与科学的职业能力量表要求规范化施测、专业资质、适龄常模和信效度证据，不能靠增加题数自动获得。
