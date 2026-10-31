@@ -6,6 +6,7 @@ import {attachVerifiedBilling} from "@/lib/access-context-server";
 import {effectivePlan} from "@/lib/access-policy";
 import {billingConfigured,billingPool} from "@/lib/billing-ledger";
 import ParentLogoutButton from "@/components/ParentLogoutButton";
+import {PREVIOUS_DIGITAL_SALES_POLICY_VERSION} from "@/lib/digital-sales-policy";
 import styles from "./AccountPage.module.css";
 
 export const dynamic="force-dynamic";
@@ -107,7 +108,8 @@ export default async function AccountPage(){
             {new Date(order.created_at).toLocaleDateString("zh-CN")}</p>
           {order.sales_policy_version&&order.sales_policy_accepted_at&&<p>
             购买前已确认数字商品售后规则 · {new Date(order.sales_policy_accepted_at).toLocaleString("zh-CN")}
-            {" · "}<Link href="/digital-purchase-policy">查看规则</Link>
+            {" · "}<Link href={order.sales_policy_version===PREVIOUS_DIGITAL_SALES_POLICY_VERSION
+              ?"/digital-purchase-policy/v1":"/digital-purchase-policy"}>查看当时确认的规则</Link>
           </p>}
           {order.state==="paid"&&order.content_kind==="exam"&&order.content_id&&
             <Link className={styles.orderAction} href={"/exam/"+encodeURIComponent(order.content_id)}>
