@@ -64,3 +64,16 @@ test("primary text is readable at desktop and phone widths",async({page})=>{
     expect(metrics.overflow,`no horizontal overflow at ${width}px`).toBeLessThanOrEqual(2);
   }
 });
+
+test("switching categories after search clears stale filters and reaches the chosen section",async({page})=>{
+  await page.goto("/assessments");
+  const directory=page.getByRole("region",{name:"全部考试，一站查找"});
+  const groups=directory.locator("article");
+  await directory.getByRole("searchbox").fill("SQL");
+  await expect(groups).toHaveCount(1);
+  await directory.getByRole("navigation",{name:"考试分类"})
+    .locator('a[href="/assessments#domain-language"]').click();
+  await expect(groups).toHaveCount(7);
+  await expect(page).toHaveURL(/#domain-language$/);
+  await expect(directory.getByRole("heading",{name:"语言与国际考试"})).toBeVisible();
+});
