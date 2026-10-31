@@ -1,0 +1,292 @@
+{
+  "schema": "socthink-career-demand-v1",
+  "observedAt": "2026-11-01",
+  "status": "source-led-sample-only",
+  "interpretation": "Nonrandom official site evidence. category means employer lists this role family, not that vacancies or specific tests are confirmed. job means an observed job description; skills are paraphrased from it, not exam questions.",
+  "signals": [
+    {
+      "id": "ali-rnd",
+      "company": "阿里巴巴",
+      "roleTitle": "2027届校招：研发及算法",
+      "roleFamily": "software",
+      "evidenceLevel": "category",
+      "sourceUrl": "https://campus-talent.alibaba.com/campus/index",
+      "skills": [],
+      "observedAt": "2026-11-01"
+    },
+    {
+      "id": "ali-product",
+      "company": "阿里巴巴",
+      "roleTitle": "2027届校招：产品",
+      "roleFamily": "product",
+      "evidenceLevel": "category",
+      "sourceUrl": "https://campus-talent.alibaba.com/campus/index",
+      "skills": [],
+      "observedAt": "2026-11-01"
+    },
+    {
+      "id": "ali-games",
+      "company": "阿里巴巴",
+      "roleTitle": "2027届校招：游戏",
+      "roleFamily": "games",
+      "evidenceLevel": "category",
+      "sourceUrl": "https://campus-talent.alibaba.com/campus/index",
+      "skills": [],
+      "observedAt": "2026-11-01"
+    },
+    {
+      "id": "ali-ops",
+      "company": "阿里巴巴",
+      "roleTitle": "2027届校招：运营",
+      "roleFamily": "operations",
+      "evidenceLevel": "category",
+      "sourceUrl": "https://campus-talent.alibaba.com/campus/index",
+      "skills": [],
+      "observedAt": "2026-11-01"
+    },
+    {
+      "id": "ali-biz",
+      "company": "阿里巴巴",
+      "roleTitle": "2027届校招：商务拓展",
+      "roleFamily": "sales",
+      "evidenceLevel": "category",
+      "sourceUrl": "https://campus-talent.alibaba.com/campus/index",
+      "skills": [],
+      "observedAt": "2026-11-01"
+    },
+    {
+      "id": "huawei-sales",
+      "company": "华为",
+      "roleTitle": "招聘岗位分类：销售",
+      "roleFamily": "sales",
+      "evidenceLevel": "category",
+      "sourceUrl": "https://career.huawei.com/cn",
+      "skills": [],
+      "observedAt": "2026-11-01"
+    },
+    {
+      "id": "huawei-supply",
+      "company": "华为",
+      "roleTitle": "招聘岗位分类：供应链",
+      "roleFamily": "supply",
+      "evidenceLevel": "category",
+      "sourceUrl": "https://career.huawei.com/cn",
+      "skills": [],
+      "observedAt": "2026-11-01"
+    },
+    {
+      "id": "huawei-procurement",
+      "company": "华为",
+      "roleTitle": "招聘岗位分类：采购",
+      "roleFamily": "procurement",
+      "evidenceLevel": "category",
+      "sourceUrl": "https://career.huawei.com/cn",
+      "skills": [],
+      "observedAt": "2026-11-01"
+    },
+    {
+      "id": "huawei-finance",
+      "company": "华为",
+      "roleTitle": "招聘岗位分类：财经",
+      "roleFamily": "finance",
+      "evidenceLevel": "category",
+      "sourceUrl": "https://career.huawei.com/cn",
+      "skills": [],
+      "observedAt": "2026-11-01"
+    },
+    {
+      "id": "huawei-service",
+      "company": "华为",
+      "roleTitle": "招聘岗位分类：服务",
+      "roleFamily": "customer_service",
+      "evidenceLevel": "category",
+      "sourceUrl": "https://career.huawei.com/cn",
+      "skills": [],
+      "observedAt": "2026-11-01"
+    },
+    {
+      "id": "meituan-ops",
+      "company": "美团",
+      "roleTitle": "商品运营岗（应届）",
+      "roleFamily": "operations",
+      "evidenceLevel": "job",
+      "sourceUrl": "https://zhaopin.meituan.com/web/position/detail?highlightType=campus&jobUnionId=4694862636",
+      "skills": [
+        "category_management",
+        "price_strategy",
+        "retail_metrics",
+        "inventory_planning",
+        "roi"
+      ],
+      "observedAt": "2026-11-01"
+    },
+    {
+      "id": "meituan-procurement",
+      "company": "美团",
+      "roleTitle": "休食采购开发（社招）",
+      "roleFamily": "procurement",
+      "evidenceLevel": "job",
+      "sourceUrl": "https://zhaopin.meituan.com/web/position/detail?highlightType=social&jobUnionId=4781234064",
+      "skills": [
+        "supplier_selection",
+        "cost_negotiation",
+        "market_research",
+        "product_lifecycle"
+      ],
+      "observedAt": "2026-11-01"
+    },
+    {
+      "id": "meituan-supply",
+      "company": "美团",
+      "roleTitle": "供应链计划产品实施（社招）",
+      "roleFamily": "supply",
+      "evidenceLevel": "job",
+      "sourceUrl": "https://zhaopin.meituan.com/web/position/detail?jobUnionId=4439415825",
+      "skills": [
+        "inventory_planning",
+        "process_design",
+        "sql",
+        "project_management"
+      ],
+      "observedAt": "2026-11-01"
+    },
+    {
+      "id": "meituan-bizops",
+      "company": "美团",
+      "roleTitle": "IT赋能业务产品运营（社招）",
+      "roleFamily": "operations",
+      "evidenceLevel": "job",
+      "sourceUrl": "https://zhaopin.meituan.com/web/position/detail?jobUnionId=4580434257",
+      "skills": [
+        "business_model",
+        "saas_metrics",
+        "market_research"
+      ],
+      "observedAt": "2026-11-01"
+    },
+    {
+      "id": "meituan-designer",
+      "company": "美团",
+      "roleTitle": "餐饮类客户美工设计（日常实习）",
+      "roleFamily": "design",
+      "evidenceLevel": "job",
+      "sourceUrl": "https://zhaopin.meituan.com/web/campus?staffSsoId=20197827",
+      "skills": [
+        "visual_design",
+        "brief_interpretation"
+      ],
+      "observedAt": "2026-11-01"
+    },
+    {
+      "id": "meituan-analysis",
+      "company": "美团",
+      "roleTitle": "商业分析实习生",
+      "roleFamily": "data",
+      "evidenceLevel": "job",
+      "sourceUrl": "https://zhaopin.meituan.com/web/campus?staffSsoId=20197827",
+      "skills": [
+        "data_analysis",
+        "user_segmentation",
+        "statistics"
+      ],
+      "observedAt": "2026-11-01"
+    },
+    {
+      "id": "meituan-tech",
+      "company": "美团",
+      "roleTitle": "AI应用开发工程师（应届）",
+      "roleFamily": "ai",
+      "evidenceLevel": "job",
+      "sourceUrl": "https://zhaopin.meituan.com/web/position/detail?highlightType=campus&jobShareType=1&jobUnionId=4694862735",
+      "skills": [
+        "python",
+        "api",
+        "rag",
+        "agent",
+        "mcp"
+      ],
+      "observedAt": "2026-11-01"
+    },
+    {
+      "id": "jd-data",
+      "company": "京东",
+      "roleTitle": "数据科学家",
+      "roleFamily": "data",
+      "evidenceLevel": "job",
+      "sourceUrl": "https://zhaopin.jd.com/web/job-info-detail?requementId=224411",
+      "skills": [
+        "sql",
+        "python",
+        "ab_testing",
+        "causal_inference"
+      ],
+      "observedAt": "2026-11-01"
+    },
+    {
+      "id": "tencent-design",
+      "company": "腾讯",
+      "roleTitle": "2027海外校招：设计岗位类别",
+      "roleFamily": "design",
+      "evidenceLevel": "category",
+      "sourceUrl": "https://careers.tencent.com/m/zh-cn/faqdetail.html",
+      "skills": [],
+      "observedAt": "2026-11-01"
+    },
+    {
+      "id": "tencent-product",
+      "company": "腾讯",
+      "roleTitle": "2027海外校招：产品岗位类别",
+      "roleFamily": "product",
+      "evidenceLevel": "category",
+      "sourceUrl": "https://careers.tencent.com/m/zh-cn/faqdetail.html",
+      "skills": [],
+      "observedAt": "2026-11-01"
+    },
+    {
+      "id": "meituan-hr",
+      "company": "美团",
+      "roleTitle": "职位分类：人力资源",
+      "roleFamily": "hr",
+      "evidenceLevel": "category",
+      "sourceUrl": "https://zhaopin.meituan.com/web/about/ourTeam?bg=BG005&staffSsoId=xdzFglA",
+      "skills": [],
+      "observedAt": "2026-11-01"
+    },
+    {
+      "id": "meituan-legal",
+      "company": "美团",
+      "roleTitle": "职位分类：公司事务",
+      "roleFamily": "legal",
+      "evidenceLevel": "category",
+      "sourceUrl": "https://zhaopin.meituan.com/web/about/ourTeam?bg=BG005&staffSsoId=xdzFglA",
+      "skills": [],
+      "observedAt": "2026-11-01"
+    },
+    {
+      "id": "meituan-marketing",
+      "company": "美团",
+      "roleTitle": "职位分类：市场营销",
+      "roleFamily": "marketing",
+      "evidenceLevel": "category",
+      "sourceUrl": "https://zhaopin.meituan.com/web/about/ourTeam?bg=BG005&staffSsoId=xdzFglA",
+      "skills": [],
+      "observedAt": "2026-11-01"
+    },
+    {
+      "id": "meituan-logistics",
+      "company": "美团",
+      "roleTitle": "职位分类：物流",
+      "roleFamily": "logistics",
+      "evidenceLevel": "category",
+      "sourceUrl": "https://zhaopin.meituan.com/web/about/ourTeam?bg=BG005&staffSsoId=xdzFglA",
+      "skills": [],
+      "observedAt": "2026-11-01"
+    }
+  ],
+  "limitations": [
+    "A source can become stale; revalidate before calling a role open for applications.",
+    "Category pages do not substantiate individual skill requirements or interview format.",
+    "Inferred training offerings are not the hiring company's exams, hiring endorsements or guarantees.",
+    "This data is a checked example batch; no automated scraping, no job-volume statistics."
+  ]
+}
