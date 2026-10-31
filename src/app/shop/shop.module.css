@@ -1,0 +1,27 @@
+.page{max-width:1160px;margin:0 auto;padding:28px 22px 84px;color:var(--text-primary,#1b334a)}
+.breadcrumb{font-size:13px;margin:0 0 22px;color:#697f91;display:flex;gap:10px}
+.breadcrumb a{color:inherit;text-decoration:none}
+.hero{padding:34px 38px;border-radius:22px;background:linear-gradient(125deg,#11344e,#126985);color:#fff;display:flex;flex-wrap:wrap;justify-content:space-between;gap:20px;align-items:center}
+.hero h1{font-size:clamp(26px,4vw,40px);line-height:1.25;margin:10px 0}
+.hero p{max-width:700px;color:#dbeef6;font-size:15px;line-height:1.8}
+.kicker{font-size:12px;letter-spacing:2px;color:#aee4f5;font-weight:700}
+.count{font-size:32px;font-weight:800;white-space:nowrap}
+.note{margin:26px 0 20px;color:#5b7083;font-size:14px;line-height:1.8}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(268px,1fr));gap:17px}
+.card{background:#fff;border:1px solid #e1ebf0;border-radius:17px;padding:21px;display:flex;flex-direction:column;gap:10px;box-shadow:0 4px 19px rgba(15,64,90,.045)}
+.card h2{font-size:17px;line-height:1.55;margin:0;color:#153b53}
+.card p{color:#65798a;font-size:13px;line-height:1.65;margin:0}
+.price{color:#ad4b14;font-weight:800;font-size:24px}
+.price small{font-size:12px;color:#7c8c99;font-weight:400;margin-left:6px}
+.action{margin-top:auto;display:inline-block;background:#0c6789;color:white;text-decoration:none;text-align:center;padding:11px 15px;border-radius:10px;font-weight:700;font-size:14px}
+.action:hover{background:#095778}
+.disabled{background:#e5edf2;color:#687d8e}
+.empty{padding:30px 20px;background:#f5f9fb;border:1px solid #e2edf2;border-radius:15px;color:#566e83}
+.detail{max-width:740px;margin:24px auto;background:#fff;border:1px solid #dfebf0;border-radius:20px;padding:32px;box-shadow:0 8px 24px rgba(20,64,80,.05)}
+.detail h1{font-size:clamp(24px,4vw,34px);line-height:1.5;color:#153b53}
+.detail h2{font-size:16px;color:#1c4b64;margin-top:30px}
+.detail ul{line-height:2;color:#465f73}
+.detail p{line-height:1.8;color:#576d7f}
+.terms{margin-top:28px;border-top:1px solid #e5edf2;padding-top:18px;font-size:13px}
+.terms a{color:#116e93}
+@media(max-width:640px){.page{padding:16px 12px 60px}.hero{padding:26px 21px}.grid{grid-template-columns:1fr}.detail{padding:22px 18px}}
