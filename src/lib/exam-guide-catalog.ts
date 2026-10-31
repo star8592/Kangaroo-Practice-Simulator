@@ -1,0 +1,135 @@
+import type {AssessmentDomainId} from "./assessment-platform";
+
+/**
+ * Read-only editorial summaries of checked primary-source exam rules.
+ * This registry is NOT an exam bank, a product catalog, a licensed source file
+ * archive, or proof that we have permission to sell third-party questions.
+ *
+ * Exact year/cycle is part of identity: a 2026 exam cannot be promoted as a
+ * confirmed 2027 examination. Source URLs lead to the publisher's document.
+ */
+export type ExamGuide = Readonly<{
+  id:string;
+  topicId:string;
+  domainId:AssessmentDomainId;
+  title:string;
+  cycle:string;
+  checkedAt:string;
+  revision:number;
+  summary:string;
+  structure:readonly string[];
+  timeAndScoring:readonly string[];
+  scopeNote:string;
+  sourceTitle:string;
+  sourceUrl:string;
+  issuer:string;
+  sourceCategory:"official-organizer"|"official-government-republication";
+  itemAvailability:"rules-only";
+  paperWindow:"2024-2026";
+}>;
+
+export const EXAM_GUIDES:readonly ExamGuide[]=[
+  {
+    id:"toefl-ibt-2026",topicId:"toefl",domainId:"language",
+    title:"托福 TOEFL iBT（2026 年新版）",cycle:"2026-01-21 起",
+    checkedAt:"2026-10-31",revision:1,
+    summary:"2026 年改版后的 TOEFL iBT 仍覆盖阅读、听力、写作、口语，阅读与听力按新版多阶段自适应机制组织；不能用旧版题型和旧分制伪装新版考试。",
+    structure:[
+      "阅读：Complete the Words、Read in Daily Life、Read an Academic Passage。",
+      "听力：简短应答、会话、公告、学术讲座。",
+      "写作：Build a Sentence、Write an Email、Write for an Academic Discussion。",
+      "口语：Listen and Repeat、Take an Interview。"
+    ],
+    timeAndScoring:[
+      "官方说明考试总时长约 2 小时；自适应题量和实际耗时可能变化。",
+      "2026 年 1 月 21 日起采用 1–6 分段分数和总分；过渡期仍报告可比的 0–120 总分。"
+    ],
+    scopeNote:"本页是规则解读，不是 ETS 官方真题、报名入口或已上线的仿真托福试卷。",
+    sourceTitle:"ETS — TOEFL iBT Test Content and Structure",
+    sourceUrl:"https://www.ets.org/toefl/test-takers/ibt/about/content.html",
+    issuer:"ETS",sourceCategory:"official-organizer",
+    itemAvailability:"rules-only",paperWindow:"2024-2026"
+  },
+  {
+    id:"ielts-academic-2026",topicId:"ielts",domainId:"language",
+    title:"雅思 IELTS Academic",cycle:"截至 2026-10-31 官方现行说明",
+    checkedAt:"2026-10-31",revision:1,
+    summary:"雅思学术类考试包括听、读、写、说四个部分，需区分 Academic 与 General Training；听力和口语相同，但阅读、写作的任务不同。",
+    structure:[
+      "听力：约 30 分钟。",
+      "学术类阅读：60 分钟。",
+      "学术类写作：60 分钟。",
+      "口语：11–14 分钟。"
+    ],
+    timeAndScoring:["官方总时长约 2 小时 45 分钟；各场次与地区的具体安排以主办方通知为准。"],
+    scopeNote:"当前只有格式指南；无商业转载授权的官方样题不会作为本站付费数字试卷售卖。",
+    sourceTitle:"IELTS — IELTS Academic test format and sections",
+    sourceUrl:"https://www.ielts.org/take-a-test/test-types/ielts-academic-test",
+    issuer:"IELTS",sourceCategory:"official-organizer",
+    itemAvailability:"rules-only",paperWindow:"2024-2026"
+  },
+  {
+    id:"postgraduate-2027",topicId:"postgraduate-math",domainId:"university",
+    title:"2027 年全国硕士研究生招生考试",cycle:"2027 招生年度（2026 年初试）",
+    checkedAt:"2026-10-31",revision:1,
+    summary:"硕士研究生招生分初试和复试，不同学科和专业学位考试科目数量、满分不同。选择模板前必须进一步确认报考专业、统考科目和招生单位要求。",
+    structure:[
+      "常见初试为四个科目单元：思想政治、外国语、业务课（一）、业务课（二），通常满分 100、100、150、150。",
+      "部分学科及专业学位使用三单元：100、100、300；部分管理类专业学位使用两单元：200、100。",
+      "复试由招生单位组织，可包含笔试、面试或实践考核；不能将全国统考模板代替具体院校自命题。"
+    ],
+    timeAndScoring:[
+      "教育部公布的 2027 年研考初试日期为 2026 年 12 月 19—20 日。",
+      "2026 年 10 月 15—24 日为网上报名时段；报名窗口现已结束，不应显示为可报名。"
+    ],
+    scopeNote:"公开招生管理规定可供规则研究；具体专业目录、自命题试卷和复试安排须核对招生单位原始公告。",
+    sourceTitle:"教育部 — 2027 年全国硕士研究生招生工作管理规定",
+    sourceUrl:"https://www.moe.gov.cn/srcsite/A15/moe_778/s3261/202609/t20260923_1451734.html",
+    issuer:"中华人民共和国教育部",sourceCategory:"official-organizer",
+    itemAvailability:"rules-only",paperWindow:"2024-2026"
+  },
+  {
+    id:"legal-profession-2026",topicId:"law-exam",domainId:"professional",
+    title:"2026 年国家统一法律职业资格考试",cycle:"2026 考试年度",
+    checkedAt:"2026-10-31",revision:1,
+    summary:"法考分客观题考试和主观题考试两个阶段；客观题为机考、两张试卷，不可与主观题的独立机考答题规则混用。",
+    structure:[
+      "客观题试卷一、试卷二各 100 题，每卷 150 分；每卷单选题 50 题，每题 1 分，另外 50 题为多选和不定项选择，每题 2 分。",
+      "客观题两卷总分 300 分，闭卷机考，考试按批次组织。",
+      "主观题考试以案例分析、法律文书等综合作答方式为主；须另配主观题评分规程，不能用选择题自动判分冒充。"
+    ],
+    timeAndScoring:[
+      "2026 年客观题批次日期是 9 月 12—13 日，每卷 180 分钟。",
+      "2026 年主观题考试于 10 月 18 日举行，考试 240 分钟；本年度上述场次均已结束。"
+    ],
+    scopeNote:"具体客观题考试报名地、考区和主观题要求以司法部、当地司法行政机关正式公告为准；不提供官方题卷复制品。",
+    sourceTitle:"司法部 — 2026 年国家统一法律职业资格考试公告",
+    sourceUrl:"https://www.moj.gov.cn/jgsz/jgszzsdw/zsdwgjsfkszx/gjsfkszxdt/202606/t20260611_536383.html",
+    issuer:"中华人民共和国司法部",sourceCategory:"official-organizer",
+    itemAvailability:"rules-only",paperWindow:"2024-2026"
+  },
+  {
+    id:"civil-service-2026",topicId:"guokao",domainId:"professional",
+    title:"2026 年度国家公务员考试",cycle:"2026 招录年度（2025 年笔试）",
+    checkedAt:"2026-10-31",revision:1,
+    summary:"国考公共笔试为行政职业能力测验与申论，题型分别偏客观和主观。不同职位类别使用不同类型试卷，特定岗位还需专业科目或外语水平考试。",
+    structure:[
+      "行政职业能力测验：客观题，满分 100 分。",
+      "申论：主观题，满分 100 分。",
+      "公共科目笔试分中央及省级综合管理、市县及以下综合管理、行政执法三类卷；部分岗位另有专业考试和面试。"
+    ],
+    timeAndScoring:[
+      "本公告所涉 2026 招录年度公共科目笔试已于 2025 年 11 月 30 日进行。",
+      "报考岗位的专业科目、资格审查及面试以招录机关后续公告为准，不可从上一届推断下一届考试日期。"
+    ],
+    scopeNote:"此处是 2026 招录年度官方公告的历史规则摘要；不是 2027 年国考报名或考试日期公告。",
+    sourceTitle:"中央机关及其直属机构 2026 年度考试录用公务员公告（北京市政府转载）",
+    sourceUrl:"https://www.beijing.gov.cn/fuwu/bmfw/sy/jrts/202510/t20251014_4222416.html",
+    issuer:"中央公务员主管部门（北京市政府转载）",sourceCategory:"official-government-republication",
+    itemAvailability:"rules-only",paperWindow:"2024-2026"
+  }
+];
+
+export function examGuideById(id:string):ExamGuide|undefined{
+  return EXAM_GUIDES.find(item=>item.id===id);
+}
