@@ -89,7 +89,7 @@ export default function PublicHome(){
     [t.step3,t.step3d],[t.step4,t.step4d],
   ] as const;
 
-  return <div className={styles.portal}>
+  return <div data-site-shell="content" className={styles.portal}>
     <section className={styles.hero}>
       <div className={styles.heroMain}>
         <div className={styles.heroEyebrow}><span className={styles.eyebrowDot}/> {t.eyebrow}</div>

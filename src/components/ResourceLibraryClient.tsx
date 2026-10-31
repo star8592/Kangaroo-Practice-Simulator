@@ -63,7 +63,7 @@ export default function ResourceLibraryClient({ resources }: { resources: Resour
   const reset = () => {
     setQuery(""); setCompetition(""); setGradeBand(""); setPaperType(""); setLimit(PAGE_SIZE);
   };
-  return <div className={styles.page}>
+  return <div data-site-shell="content" className={styles.page}>
     <header className={styles.hero}>
       <div className={styles.eyebrow}>{t.eyebrow}</div>
       <h1>{t.heading}</h1>

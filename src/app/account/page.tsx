@@ -49,7 +49,7 @@ export default async function AccountPage(){
     {href:"/arithmetic",title:"数学训练",desc:"直接进入计算与巧算训练"},
     {href:"/student",title:"学习报告",desc:"查看同一账号累积的练习记录"},
   ];
-  return <div className={styles.page}>
+  return <div data-site-shell="content" className={styles.page}>
     <nav className={styles.breadcrumb} aria-label="当前位置">
       <Link href="/assessments">考试大全</Link><span>/</span><span>我的账号</span>
     </nav>

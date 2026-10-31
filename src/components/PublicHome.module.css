@@ -1,6 +1,9 @@
 /* SOCTHINK v2 public portal: one coherent, scoped design language. */
 .portal{
   --portal-width:var(--layout-wide);
+  width:100%;
+  max-width:var(--layout-wide);
+  margin-inline:auto;
   background:var(--portal-canvas);
   color:var(--portal-text);
   min-height:100vh;

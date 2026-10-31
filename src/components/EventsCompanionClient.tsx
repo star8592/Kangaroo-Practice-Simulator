@@ -14,7 +14,7 @@ export default function EventsCompanionClient({
 }) {
   const lang = useSiteLanguage();
   const router = useRouter();
-  return <div className="home-shell">
+  return <div data-site-shell="content" className="home-shell">
     <WorldCompetitionHub
       lang={lang}
       today={today}
