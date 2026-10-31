@@ -133,3 +133,23 @@ export const EXAM_GUIDES:readonly ExamGuide[]=[
 export function examGuideById(id:string):ExamGuide|undefined{
   return EXAM_GUIDES.find(item=>item.id===id);
 }
+
+/** Verified official discovery links; they remain on the source website.
+ * No copying, mirroring, sale or conversion of third-party questions here. */
+export const OFFICIAL_STUDY_SOURCES:readonly Readonly<{
+  topicId:string; title:string; url:string; cycle:string; form:"interactive-offsite"|"sample-questions"|"preparation";
+  rights:"external-reference-only";checkedAt:string;
+}>[]=[
+  {topicId:"ielts",title:"IELTS Academic 官方样题与答案（原站使用）",
+    url:"https://www.ielts.org/take-a-test/preparation-resources/sample-test-questions/academic-test",
+    cycle:"官方现行样题",form:"sample-questions",rights:"external-reference-only",checkedAt:"2026-10-31"},
+  {topicId:"toefl",title:"ETS TOEFL iBT 官方备考资源与免费样题",
+    url:"https://www.ets.org/toefl/test-takers/ibt/prepare.htm.html",
+    cycle:"2026 新版备考入口",form:"preparation",rights:"external-reference-only",checkedAt:"2026-10-31"},
+  {topicId:"law-exam",title:"司法部 2026 客观题官方机考模拟系统公告",
+    url:"https://legalinfo.moj.gov.cn/zhfxfzzx/fzzxyw/202608/t20260820_538736.html",
+    cycle:"2026",form:"interactive-offsite",rights:"external-reference-only",checkedAt:"2026-10-31"},
+  {topicId:"law-exam",title:"司法部 2026 主观题官方机考模拟系统公告",
+    url:"https://legalinfo.moj.gov.cn/zhfxfzzx/fzzxyw/202609/t20260920_539941.html",
+    cycle:"2026",form:"interactive-offsite",rights:"external-reference-only",checkedAt:"2026-10-31"},
+];
