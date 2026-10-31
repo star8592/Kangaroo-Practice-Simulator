@@ -6,6 +6,7 @@ import { useSiteLanguage } from "@/lib/site-language";
 import {
   filterTrainingResources, type ResourceListing,
 } from "@/lib/resource-catalog";
+import { availableResourceHubs, resourceHubPath } from "@/lib/seo-resource-hubs";
 import styles from "@/app/resources/resources.module.css";
 
 const PAGE_SIZE = 18;
@@ -45,6 +46,7 @@ const COPY = {
 export default function ResourceLibraryClient({ resources }: { resources: ResourceListing[] }) {
   const lang = useSiteLanguage();
   const t = COPY[lang];
+  const hubs = useMemo(() => availableResourceHubs(resources), [resources]);
   const [query, setQuery] = useState("");
   const [competition, setCompetition] = useState("");
   const [gradeBand, setGradeBand] = useState("");
@@ -73,6 +75,12 @@ export default function ResourceLibraryClient({ resources }: { resources: Resour
         <span><strong aria-live="polite">{filtered.length}</strong> {t.matched}</span>
       </div>
     </header>
+    {hubs.length > 0 && <nav className={styles.hubNav} aria-label={lang === "zh" ? "按竞赛浏览试卷专题" : "Competition resource guides"}>
+      <div className={styles.hubNavTitle}>{lang === "zh" ? "按竞赛体系查看资料专题" : "Browse competition guides"}</div>
+      <div className={styles.hubLinks}>{hubs.map(hub =>
+        <Link href={resourceHubPath(hub)} key={hub.id}>{hub.name}</Link>
+      )}</div>
+    </nav>}
     <section aria-label={lang === "zh" ? "试卷搜索筛选" : "Paper search filters"}
       className={styles.searchPanel}>
       <label className={styles.query}>
