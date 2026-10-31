@@ -10,6 +10,7 @@ ROOT = Path(__file__).resolve().parents[1]
 FILES = {
     "ci": ".github/workflows/ci.yml",
     "quality": "ops/automation/quality_gate.sh",
+    "diagnostics": "ops/automation/extended_diagnostics.sh",
     "package": "package.json",
     "deploy": "ops/release/auto_deploy_server.sh",
     "receipt": ".github/workflows/production-receipt.yml",
@@ -81,8 +82,13 @@ def evaluate(root=ROOT, replacements=None):
     needs("ci", "permissions:", "contents: read")
     no_pattern("ci", r"^\s*pull_request_target\s*:", "privileged pull_request_target workflow")
     needs("quality", "npm run lint -- --max-warnings=0", "npx tsc --noEmit",
-          "step \"enforce end-to-end release wiring\"", "npm run test:exam-access",
-          "npm run test:exam-submit-recovery", "npm run audit:security",
+          "npm run test:engineering-contract", "npm run test:exam-access",
+          "npm run test:exam-submit-recovery", "npm run test:platform",
+          "npm run test:wechat-native-transport")
+    # Diagnostics must remain available and verifiable, but must not block
+    # unrelated page releases or data-independent runtime deployments.
+    needs("quality", "extended_diagnostics.sh")
+    needs("diagnostics", "npm run audit:security",
           "step \"engineering operating controls\" npm run test:engineering-controls")
     needs("package", '"test:engineering-controls"', "scripts/test_engineering_controls.py")
     needs("deploy", "flock -n", "CI_NOT_GREEN", "AUTO_DEPLOY_CANDIDATE=PASS",
@@ -110,8 +116,8 @@ def evaluate(root=ROOT, replacements=None):
     needs("backup_timer", "OnCalendar=", "Persistent=true")
     needs("backup_install", "deployed_sha_mismatch", "systemctl enable --now")
     needs("backup_health", "LOCAL_ENCRYPTED_BACKUP=PASS", "ISOLATED_RESTORE_DRILL=PASS")
-    needs("quality", "scripts/test_verified_backup_restore.py")
-    needs("quality", "scripts/test_offsite_replica.py")
+    needs("diagnostics", "scripts/test_verified_backup_restore.py")
+    needs("diagnostics", "scripts/test_offsite_replica.py")
     needs("offsite_pull", "StrictHostKeyChecking=yes", "SOCTHINK_OFFSITE_DIR",
           "verify_offsite_replica.py", "OFFSITE_PULL=PASS", "flock -n",
           "OFFSITE_PULL=BLOCKED", "mv -- \"$STAGING/$RECEIPT\"")
@@ -120,7 +126,7 @@ def evaluate(root=ROOT, replacements=None):
     needs("offsite_timer", "OnCalendar=", "Persistent=true")
     needs("offsite_install", "not_clean_exact_main", "systemctl --user enable --now")
     needs("offsite_health", "OFFSITE_ENCRYPTED_BACKUP=PASS", "OFFSITE_RECOVERY_KEY_ESCROW=NOT_VERIFIED")
-    needs("quality", "scripts/test_tpm_offsite_recovery.py")
+    needs("diagnostics", "scripts/test_tpm_offsite_recovery.py")
     needs("tpm_seal", "StrictHostKeyChecking=yes", "--with-key=tpm2",
           "systemd-creds decrypt", "production_secret_rotated_existing_credential_preserved",
           "plaintext_persisted=NO", "independent_offline_key=NO")

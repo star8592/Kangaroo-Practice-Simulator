@@ -1,0 +1,101 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
+MODE="${1:-full}"
+ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
+cd "$ROOT"
+
+case "$MODE" in
+  public|full) ;;
+  *) echo "usage: $0 [public|full]" >&2; exit 2 ;;
+esac
+
+step() {
+  printf '\n==> %s\n' "$1"
+  shift
+  "$@"
+}
+
+if [[ "${INSTALL_DEPS:-0}" == "1" ]]; then
+  step "install locked dependencies" npm ci
+fi
+
+step "dependency security audit" npm run audit:security
+step "arithmetic regression" npm run test:arithmetic
+step "shared Web/miniapp symbol-input parity" npm run test:math-answer-input
+step "arithmetic milestones" npx tsx scripts/test_arithmetic_milestones.ts
+step "persistent arithmetic honors" npx tsx scripts/test_arithmetic_honors.ts
+step "A4 personalization regression" npm run test:arithmetic-print
+step "Chinese-default UI audit" python3 scripts/audit_chinese_ui.py
+step "global bilingual navigation audit" python3 scripts/audit_global_language.py
+step "unified assessment platform catalog and rights contract" npm run test:platform
+step "design system audit" python3 scripts/audit_design_system.py
+step "grade-one narration bundle" python3 scripts/test_grade1_narration_bundle.py
+step "grade-one verified solution bundle" python3 scripts/test_grade1_solution_bundle.py
+step "grade-one solution store" npx tsx scripts/test_grade1_solution_store.ts
+step "math cardbook progression" npx tsx scripts/test_math_cardbook.ts
+step "auto-deploy contract" bash ops/release/test_auto_deploy_contract.sh
+step "automatic release reads freshly fetched head" python3 scripts/test_git_fetch_head_precedence.py
+step "manual recovery delegates to canonical CI-gated deploy" python3 scripts/test_manual_deploy_contract.py
+step "miniapp backend contract" npm run test:miniapp-contract
+step "miniapp web parity" npm run test:miniapp-parity
+step "miniapp global event to exam deep-link contract" npx tsx scripts/test_miniapp_event_training.ts
+step "miniapp bilingual exam answer sheet and submission UX" npx tsx scripts/test_miniapp_exam_ux.ts
+step "worldwide mathematics competition source and identity contract" npx tsx scripts/test_world_catalog_integrity.ts
+step "verified competition intelligence" npm run test:competition-intelligence
+step "official source watch and review queue" npm run test:competition-source-watch
+step "public membership benefits catalog" npx tsx scripts/test_access_catalog.ts
+step "single WeChat account and exam rights" npm run test:single-wechat-buyer
+step "web Native and miniapp virtual-payment preflight separation" npm run test:wechat-pay-scopes
+step "WeChat Native cryptographic protocol contract (synthetic keys)" npm run test:wechat-native-boundary
+step "WeChat Native signed server transport and official query contract" npm run test:wechat-native-transport
+step "WeChat Native QR expiry is never displayed past the official order deadline" npm run test:native-qr-expiry
+step "WeChat Native checkout pause vs payment settlement separation" npm run test:wechat-native-flags
+step "WeChat Native missed callback recovery" npm run test:wechat-native-recovery
+step "WeChat fast durable callback architectural contract" python3 scripts/test_wechat_native_fast_callback_contract.py
+step "local CI deploy contract" bash ops/release/test_local_ci_deploy_contract.sh
+step "auth email SMTP contract" bash ops/release/test_auth_email_smtp_contract.sh
+step "parent auth regression" npm run test:parent-auth
+step "admin operations first-login, rollup and PII contract" npm run test:admin-ops
+step "guest bootstrap reverse-proxy regression" npx tsx scripts/test_guest_bootstrap.ts
+step "guest/full-exam authorization regression" npm run test:exam-access
+step "miniapp arithmetic grading idempotency and UI recovery" npm run test:miniapp-arithmetic-idempotency
+step "exam submit lost-response recovery and exactly-once grading" npm run test:exam-submit-recovery
+step "live access smoke gate positive and mutation negative tests" npm run test:exam-access-live-contract
+step "enforce end-to-end release wiring" npm run test:engineering-contract
+step "engineering operating controls" npm run test:engineering-controls
+step "encrypted production backup and isolated restore negative tests" python3 scripts/test_verified_backup_restore.py
+step "offhost encrypted backup replica mutation and transport contract" python3 scripts/test_offsite_replica.py
+step "TPM offline disaster recovery negative tests" python3 scripts/test_tpm_offsite_recovery.py
+step "public release acceptance negative tests" python3 scripts/test_production_public_smoke.py
+step "real-exam inventory preservation mutation tests" python3 scripts/test_release_inventory_guard.py
+step "wechat auth regression" npm run test:wechat-auth
+step "miniapp auth install contract" bash ops/release/test_wechat_miniapp_auth_contract.sh
+step "repository hygiene" python3 scripts/audit_repository_hygiene.py
+step "CEMC scoring regression" npx tsx scripts/test_cemc_scoring.ts
+step "competition ingestion regression" python3 scripts/test_import_pipeline.py
+step "SEAMO original practice integrity" npm run test:seamo
+step "eslint" npm run lint -- --max-warnings=0
+# Next-generated route validators can retain deleted/renamed routes until the next build.
+# Remove only generated type outputs before standalone tsc; the production build below
+# regenerates and validates the current route tree.
+step "clear stale Next route types" rm -rf .next/types .next/dev/types
+step "typescript" npx tsc --noEmit
+if [[ -d private/solutions ]]; then
+  step "solution experience V2 tagged contract" python3 scripts/validate_solution_standard_v2.py --enforce-tagged --show 0
+fi
+if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+  step "diff whitespace" git diff --check
+else
+  echo "==> diff whitespace: skipped (immutable archive has no .git)"
+fi
+
+if [[ "$MODE" == "full" ]]; then
+  step "private-data gates" npm run test:private-gates
+  step "full production build" npx next build
+else
+  step "public production build" npx next build
+fi
+
+SHA="$(git rev-parse HEAD 2>/dev/null || cat .release/deployed_sha 2>/dev/null || printf unknown)"
+printf '\nQUALITY_GATE=PASS mode=%s sha=%s\n' "$MODE" "$SHA"
