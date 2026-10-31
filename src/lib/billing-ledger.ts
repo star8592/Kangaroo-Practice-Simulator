@@ -225,6 +225,11 @@ export async function settleVerifiedOrder(r:VerifiedPaymentReceipt){
     return {orderId:o.id,grantId:id,tier:o.tier,created:true};
   });
 }
+/** Exceptional OFFICIAL payment outcome only: never expose as a customer
+ * self-service refund API. No normal order/payment flow calls this function.
+ * Do not revoke an entitlement until an authorized, independently verified
+ * final refund is recorded (e.g. mandatory legal/platform resolution).
+ */
 export async function refundVerifiedOrder(r:VerifiedPaymentReceipt){
   validateReceipt(r);
   return transaction(async c=>{
