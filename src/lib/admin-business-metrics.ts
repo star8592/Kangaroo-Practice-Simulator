@@ -20,6 +20,7 @@ export type AdminRevenueDay = Readonly<{
   paidMinor: number;
   paidOrders: number;
 }>;
+export type AdminTopProduct = Readonly<{ productId: string; title: string; currency: string; paidOrders: number; paidMinor: number }>;
 export type AdminProductStatus = Readonly<{
   kind: string;
   total: number;
@@ -27,9 +28,9 @@ export type AdminProductStatus = Readonly<{
   configuredForDelivery: number;
 }>;
 export type AdminRevenueSnapshot =
-  | Readonly<{ status: "not_configured" | "unavailable"; asOf: string; periodDays: number; currencies: []; daily: []; products: [] }>
+  | Readonly<{ status: "not_configured" | "unavailable"; asOf: string; periodDays: number; currencies: []; daily: []; products: []; topProducts: [] }>
   | Readonly<{ status: "available"; asOf: string; periodDays: number;
-    currencies: AdminMoneyMetric[]; daily: AdminRevenueDay[]; products: AdminProductStatus[] }>;
+    currencies: AdminMoneyMetric[]; daily: AdminRevenueDay[]; products: AdminProductStatus[]; topProducts: AdminTopProduct[] }>;
 
 const PERIODS = [7, 30, 90] as const;
 export type AdminPeriod = typeof PERIODS[number];
@@ -50,6 +51,7 @@ type MoneyRow = {
 };
 type DayRow = { day: string; currency: string; paid_minor: string; paid_orders: string };
 type ProductRow = { kind: string; total: string; enabled: string; configured_for_delivery: string };
+type TopRow = { product_id: string; title: string | null; currency: string; paid_orders: string; paid_minor: string };
 
 function asNonnegativeInteger(value: string): number {
   const n = Number(value);
@@ -66,7 +68,7 @@ export async function readAdminRevenue(periodDays: AdminPeriod, now = new Date()
   }
   const since = new Date(now.getTime() - periodDays * 86_400_000);
   try {
-    const [money, daily, products] = await Promise.all([
+    const [money, daily, products, topProducts] = await Promise.all([
       billingPool().query<MoneyRow>(
         `SELECT currency,
           COUNT(*) FILTER (WHERE state='paid' AND paid_at >= $1)::text AS paid_orders,
@@ -92,6 +94,11 @@ export async function readAdminRevenue(periodDays: AdminPeriod, now = new Date()
              OR (product_kind='item' AND rights_approved=true AND delivery_verified=true
                AND access_restricted=true)))::text AS configured_for_delivery
         FROM billing_products GROUP BY product_kind ORDER BY product_kind`),
+      billingPool().query<TopRow>(
+        `SELECT product_id, MAX(title_snapshot) AS title, currency,
+          COUNT(*)::text AS paid_orders, COALESCE(SUM(price_minor),0)::text AS paid_minor
+        FROM billing_orders WHERE state='paid' AND paid_at >= $1 AND paid_at <= $2
+        GROUP BY product_id,currency ORDER BY SUM(price_minor) DESC LIMIT 8`, [since, now]),
     ]);
     return {
       status: "available", asOf, periodDays,
@@ -114,6 +121,11 @@ export async function readAdminRevenue(periodDays: AdminPeriod, now = new Date()
         kind: row.kind, total: asNonnegativeInteger(row.total),
         enabled: asNonnegativeInteger(row.enabled),
         configuredForDelivery: asNonnegativeInteger(row.configured_for_delivery),
+      })),
+      topProducts: topProducts.rows.map(row => ({
+        productId: row.product_id, title: row.title?.trim() || row.product_id,
+        currency: row.currency, paidOrders: asNonnegativeInteger(row.paid_orders),
+        paidMinor: asNonnegativeInteger(row.paid_minor),
       })),
     };
   } catch {
