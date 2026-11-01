@@ -1,0 +1,126 @@
+{
+  "schema": "socthink-market-source-progress-v1",
+  "observedAt": "2026-11-01",
+  "sources": [
+    {
+      "market": "HKEX",
+      "label": "港交所官方证券名单",
+      "url": "https://www.hkex.com.hk/eng/services/trading/securities/securitieslists/ListOfSecurities.xlsx",
+      "retrieval": "downloaded_private",
+      "sourceAsOf": "2026-11-02",
+      "note": "As-of label is one day later than collection date; do not present as confirmed recruitment status.",
+      "sourceSha256": "5cbaa3fd218d153e8313319cedbbb07ff7f4e10134ea4b42400ca19dc748d18b",
+      "snapshotSha256": "5fbeff29a5ebf7e68ddbddf5b504160541661d6fd9bebf6ab7b2f7627a3926ea",
+      "rawPrivatePath": "private/career/market-sources/hkex/2026-11-01/ListOfSecurities.xlsx",
+      "candidatePrivatePath": "private/career/market-sources/hkex/2026-11-01/issuer_candidates.json",
+      "statistics": {
+        "mainBoardEquity": 2476,
+        "gemEquity": 312,
+        "issuerSecurityCandidates": 2788,
+        "linkedToVerifiedChinaEntities": 8,
+        "unclassified": 2780
+      },
+      "distributionStatus": "private_research_only_rights_review_required",
+      "jobDataStatus": "not_attached_to_security_rows"
+    },
+    {
+      "market": "SSE",
+      "label": "上交所股票列表",
+      "url": "https://www.sse.com.cn/assortment/stock/list/share/",
+      "retrieval": "public_entry_verified",
+      "distributionStatus": "bulk_export_not_yet_ingested"
+    },
+    {
+      "market": "SZSE",
+      "label": "深交所上市公司列表",
+      "url": "https://www.szse.cn/",
+      "retrieval": "source_discovery",
+      "distributionStatus": "official_listing_export_pending"
+    },
+    {
+      "market": "BSE",
+      "label": "北交所上市公司列表",
+      "url": "https://www.bse.cn/",
+      "retrieval": "source_discovery",
+      "distributionStatus": "official_listing_export_pending"
+    },
+    {
+      "market": "US-SEC",
+      "label": "SEC ticker/exchange mapping",
+      "url": "https://www.sec.gov/search-filings/edgar-search-assistance/accessing-edgar-data",
+      "retrieval": "source_verified_automated_fetch_blocked",
+      "note": "One bulk data probe returned HTTP 403; do not bypass access control. Official SEC CSV/JSON can be imported from a lawfully obtained local export after checking the fair access policy.",
+      "distributionStatus": "not_ingested"
+    },
+    {
+      "market": "CNINFO-CROSS",
+      "label": "巨潮资讯公开证券基础信息（沪深北跨市场候选）",
+      "url": "https://www.cninfo.com.cn/new/data/szse_stock.json",
+      "retrieval": "downloaded_private",
+      "sourceFileSha256": "59454a3e572f46159c6c741e7f3b34c43fc4a4c5be00ef26a47738bd359e0960",
+      "observedAt": "2026-11-01",
+      "note": "The filename suggests SZSE, but source contains SSE/SZSE/BSE securities, including historical/delisted records. No publication of bulk issuer names; do not treat 6262 rows as active employers.",
+      "privatePath": "private/career/market-sources/cninfo/2026-11-01",
+      "statistics": {
+        "rawSecurities": 6262,
+        "uniqueCodes": 6262,
+        "aShares": 6184,
+        "bShares": 77,
+        "cdr": 1,
+        "sseCandidates": 2513,
+        "szseCandidates": 3140,
+        "bseCandidates": 608,
+        "unclassified": 1,
+        "nameContainsDelistedCharacter": 162,
+        "potentialSameDisclosureOrgMultiSecurityGroups": 329,
+        "activeEmployersConfirmed": 0
+      },
+      "distributionStatus": "private_research_only_rights_review_required",
+      "jobDataStatus": "not_attached_to_security_rows"
+    },
+    {
+      "market": "SSE-OFFICIAL",
+      "label": "上交所股票列表（公开网页调用的证券清单）",
+      "url": "https://query.sse.com.cn/security/stock/getStockListData2.do?isPagination=true&stockType=10&pageHelp.pageSize=2500&pageHelp.pageNo=1",
+      "sourceOverviewUrl": "https://www.sse.com.cn/assortment/stock/list/share/",
+      "retrieval": "downloaded_private_and_crosschecked",
+      "observedAt": "2026-11-01",
+      "sourceFileSha256": "400bccaa48154274c5f6257537f94284b0f14a00226f8b9d2de6ee4dc56c5a9b",
+      "rawPrivatePath": "private/career/market-sources/sse/2026-11-01/sse_stocktype10_source.json",
+      "normalizedPrivatePath": "private/career/market-sources/sse/2026-11-01/normalized",
+      "statistics": {
+        "issuerListRows": 2335,
+        "expandedSecurities": 2374,
+        "aShares": 2332,
+        "bShares": 42,
+        "companyRowsWithBothShareClasses": 39,
+        "futureDatedRows": 0,
+        "matchedCninfoSseSecurities": 2372,
+        "sseOnlySecurities": 2,
+        "cninfoOnlySseCandidates": 141,
+        "activeEmployersConfirmed": 0
+      },
+      "note": "Official SSE public stock-list API was queried with stockType=10. Duplicate pageNo URL probes yielded identical 500-row results, so a single pageSize=2500 response validated pageHelp.total=2335. SSE market overview as of 2026-10-15 reported 2323 listed companies and 2361 securities; do not equate these counts without time and listing-status reconciliation. No job vacancy evidence implied.",
+      "distributionStatus": "private_research_only_rights_review_required",
+      "jobDataStatus": "not_attached_to_security_rows"
+    }
+  ],
+  "principles": [
+    "Listed securities are not the number of distinct Chinese hiring enterprises.",
+    "Many HKEX equity listings are non-mainland issuers, and multi-listed groups must be deduplicated.",
+    "Foreign subsidiaries and joint ventures are separate hiring entities from their listed shareholders.",
+    "Only specific official China-located job descriptions may provide job skill evidence; no training sale based on listing alone.",
+    "Raw exchange data stays private pending redistribution rights review.",
+    "SSE official stock-list rows combine A+B shares in some company rows; count securities and company-row candidates separately; do not equate either with verified hiring employers."
+  ],
+  "codePaths": [
+    "scripts/normalize_hkex_list.py",
+    "scripts/import_career_market_snapshot.ts",
+    "src/lib/career-market-import.ts",
+    "src/lib/career-enterprise-universe.ts",
+    "scripts/normalize_cninfo_stock.py",
+    "scripts/test_cninfo_market_normalize.py",
+    "scripts/normalize_sse_stocklist.py",
+    "scripts/test_sse_stocklist_normalize.py"
+  ]
+}

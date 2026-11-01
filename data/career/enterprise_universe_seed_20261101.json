@@ -1,0 +1,418 @@
+{
+  "schema": "socthink-enterprise-universe-seed-v1",
+  "asOf": "2026-11-01",
+  "scope": "Evidence-backed entity examples; not an exhaustive exchange universe; no claim of live vacancy without job-post evidence.",
+  "companies": [
+    {
+      "id": "cn-hk-alibaba",
+      "displayName": "阿里巴巴",
+      "entityKind": "china_listed",
+      "listings": [
+        {
+          "exchange": "HKEX",
+          "ticker": "09988",
+          "proofUrl": "https://www.hkex.com.hk/Join-Our-Market/IPO/Listing-with-HKEX?sc_lang=zh-cn",
+          "status": "verified_reference"
+        }
+      ],
+      "recruitmentSources": [
+        {
+          "url": "https://campus-talent.alibaba.com/campus/index",
+          "review": "source_discovered",
+          "chinaVacancies": "verify_per_job"
+        }
+      ],
+      "entityProofUrl": null,
+      "parentGroupNames": [],
+      "chinaRelevance": "china_business_reference",
+      "observedAt": "2026-11-01"
+    },
+    {
+      "id": "cn-hk-meituan",
+      "displayName": "美团",
+      "entityKind": "china_listed",
+      "listings": [
+        {
+          "exchange": "HKEX",
+          "ticker": "03690",
+          "proofUrl": "https://www.hkex.com.hk/Join-Our-Market/IPO/Listing-with-HKEX?sc_lang=zh-cn",
+          "status": "verified_reference"
+        }
+      ],
+      "recruitmentSources": [
+        {
+          "url": "https://zhaopin.meituan.com/web/campus",
+          "review": "source_discovered",
+          "chinaVacancies": "verify_per_job"
+        }
+      ],
+      "entityProofUrl": null,
+      "parentGroupNames": [],
+      "chinaRelevance": "china_business_reference",
+      "observedAt": "2026-11-01"
+    },
+    {
+      "id": "cn-hk-tencent",
+      "displayName": "腾讯",
+      "entityKind": "china_listed",
+      "listings": [
+        {
+          "exchange": "HKEX",
+          "ticker": "00700",
+          "proofUrl": "https://www.tencent.com/zh-cn/investors/",
+          "status": "verified_reference"
+        }
+      ],
+      "recruitmentSources": [
+        {
+          "url": "https://jobs.tencent.com/jobopportunity.html",
+          "review": "source_discovered",
+          "chinaVacancies": "verify_per_job"
+        }
+      ],
+      "entityProofUrl": null,
+      "parentGroupNames": [],
+      "chinaRelevance": "china_business_reference",
+      "observedAt": "2026-11-01"
+    },
+    {
+      "id": "cn-hk-xiaomi",
+      "displayName": "小米集团",
+      "entityKind": "china_listed",
+      "listings": [
+        {
+          "exchange": "HKEX",
+          "ticker": "01810",
+          "proofUrl": "https://www.hkex.com.hk/Join-Our-Market/IPO/Listing-with-HKEX?sc_lang=zh-cn",
+          "status": "verified_reference"
+        }
+      ],
+      "recruitmentSources": [
+        {
+          "url": "https://xiaomi.jobs.f.mioffice.cn/campus/",
+          "review": "source_discovered",
+          "chinaVacancies": "verify_per_job"
+        }
+      ],
+      "entityProofUrl": null,
+      "parentGroupNames": [],
+      "chinaRelevance": "china_business_reference",
+      "observedAt": "2026-11-01"
+    },
+    {
+      "id": "cn-multi-baidu",
+      "displayName": "百度",
+      "entityKind": "china_listed",
+      "listings": [
+        {
+          "exchange": "HKEX",
+          "ticker": "09888",
+          "proofUrl": "https://ir.baidu.com/news-releases/news-release-details/baidu-announces-dual-primary-listing-main-board-stock-exchange",
+          "status": "verified_reference"
+        },
+        {
+          "exchange": "NASDAQ",
+          "ticker": "BIDU",
+          "proofUrl": "https://ir.baidu.com/news-releases/news-release-details/baidu-announces-dual-primary-listing-main-board-stock-exchange",
+          "status": "verified_reference"
+        }
+      ],
+      "recruitmentSources": [
+        {
+          "url": "https://talent.baidu.com/jobs/list?recommendCode=ISK4BS",
+          "review": "source_discovered",
+          "chinaVacancies": "verify_per_job"
+        }
+      ],
+      "entityProofUrl": null,
+      "parentGroupNames": [],
+      "chinaRelevance": "china_business_reference",
+      "observedAt": "2026-11-01"
+    },
+    {
+      "id": "cn-multi-jd",
+      "displayName": "京东",
+      "entityKind": "china_listed",
+      "listings": [
+        {
+          "exchange": "HKEX",
+          "ticker": "09618",
+          "proofUrl": "https://ir.jd.com/news-releases/news-release-details/jdcom-files-its-annual-report-form-20-f-1",
+          "status": "verified_reference"
+        },
+        {
+          "exchange": "NASDAQ",
+          "ticker": "JD",
+          "proofUrl": "https://ir.jd.com/news-releases/news-release-details/jdcom-files-its-annual-report-form-20-f-1",
+          "status": "verified_reference"
+        }
+      ],
+      "recruitmentSources": [
+        {
+          "url": "https://zhaopin.jd.com/home?cooperationId=2",
+          "review": "source_discovered",
+          "chinaVacancies": "verify_per_job"
+        }
+      ],
+      "entityProofUrl": null,
+      "parentGroupNames": [],
+      "chinaRelevance": "china_business_reference",
+      "observedAt": "2026-11-01"
+    },
+    {
+      "id": "cn-multi-netease",
+      "displayName": "网易",
+      "entityKind": "china_listed",
+      "listings": [
+        {
+          "exchange": "HKEX",
+          "ticker": "09999",
+          "proofUrl": "https://ir.netease.com/shareholder-services/investor-faqs",
+          "status": "verified_reference"
+        },
+        {
+          "exchange": "NASDAQ",
+          "ticker": "NTES",
+          "proofUrl": "https://ir.netease.com/shareholder-services/investor-faqs",
+          "status": "verified_reference"
+        }
+      ],
+      "recruitmentSources": [],
+      "entityProofUrl": null,
+      "parentGroupNames": [],
+      "chinaRelevance": "china_business_reference",
+      "observedAt": "2026-11-01"
+    },
+    {
+      "id": "cn-multi-trip",
+      "displayName": "携程集团",
+      "entityKind": "china_listed",
+      "listings": [
+        {
+          "exchange": "HKEX",
+          "ticker": "09961",
+          "proofUrl": "https://investors.trip.com/zh-hans/shareholder-services/investor-faqs",
+          "status": "verified_reference"
+        },
+        {
+          "exchange": "NASDAQ",
+          "ticker": "TCOM",
+          "proofUrl": "https://investors.trip.com/zh-hans/shareholder-services/investor-faqs",
+          "status": "verified_reference"
+        }
+      ],
+      "recruitmentSources": [],
+      "entityProofUrl": null,
+      "parentGroupNames": [],
+      "chinaRelevance": "china_business_reference",
+      "observedAt": "2026-11-01"
+    },
+    {
+      "id": "cn-sse-minsheng",
+      "displayName": "民生银行",
+      "entityKind": "china_listed",
+      "listings": [
+        {
+          "exchange": "SSE",
+          "ticker": "600016",
+          "proofUrl": "https://www.sse.com.cn/assortment/stock/areatrade/area/detail.shtml?AREANAME=110000",
+          "status": "verified_reference"
+        }
+      ],
+      "recruitmentSources": [],
+      "entityProofUrl": null,
+      "parentGroupNames": [],
+      "chinaRelevance": "china_business_reference",
+      "observedAt": "2026-11-01"
+    },
+    {
+      "id": "cn-sse-sany",
+      "displayName": "三一重工",
+      "entityKind": "china_listed",
+      "listings": [
+        {
+          "exchange": "SSE",
+          "ticker": "600031",
+          "proofUrl": "https://www.sse.com.cn/assortment/stock/areatrade/area/detail.shtml?AREANAME=110000",
+          "status": "verified_reference"
+        }
+      ],
+      "recruitmentSources": [],
+      "entityProofUrl": null,
+      "parentGroupNames": [],
+      "chinaRelevance": "china_business_reference",
+      "observedAt": "2026-11-01"
+    },
+    {
+      "id": "cn-sse-sinopec",
+      "displayName": "中国石化",
+      "entityKind": "china_listed",
+      "listings": [
+        {
+          "exchange": "SSE",
+          "ticker": "600028",
+          "proofUrl": "https://www.sse.com.cn/assortment/stock/areatrade/area/detail.shtml?AREANAME=110000",
+          "status": "verified_reference"
+        }
+      ],
+      "recruitmentSources": [],
+      "entityProofUrl": null,
+      "parentGroupNames": [],
+      "chinaRelevance": "china_business_reference",
+      "observedAt": "2026-11-01"
+    },
+    {
+      "id": "cn-sse-unicom",
+      "displayName": "中国联通",
+      "entityKind": "china_listed",
+      "listings": [
+        {
+          "exchange": "SSE",
+          "ticker": "600050",
+          "proofUrl": "https://www.sse.com.cn/assortment/stock/areatrade/area/detail.shtml?AREANAME=110000",
+          "status": "verified_reference"
+        }
+      ],
+      "recruitmentSources": [],
+      "entityProofUrl": null,
+      "parentGroupNames": [],
+      "chinaRelevance": "china_business_reference",
+      "observedAt": "2026-11-01"
+    },
+    {
+      "id": "cn-unlisted-bytedance",
+      "displayName": "字节跳动",
+      "entityKind": "china_unlisted_key_employer",
+      "listings": [],
+      "recruitmentSources": [
+        {
+          "url": "https://seed.bytedance.com/zh/seedearlycareer",
+          "review": "source_discovered",
+          "chinaVacancies": "verify_per_job"
+        }
+      ],
+      "entityProofUrl": null,
+      "parentGroupNames": [],
+      "chinaRelevance": "china_business_reference",
+      "observedAt": "2026-11-01"
+    },
+    {
+      "id": "cn-unlisted-huawei",
+      "displayName": "华为",
+      "entityKind": "china_unlisted_key_employer",
+      "listings": [],
+      "recruitmentSources": [
+        {
+          "url": "https://career.huawei.com/cn",
+          "review": "source_discovered",
+          "chinaVacancies": "verify_per_job"
+        }
+      ],
+      "entityProofUrl": null,
+      "parentGroupNames": [],
+      "chinaRelevance": "china_business_reference",
+      "observedAt": "2026-11-01"
+    },
+    {
+      "id": "cn-us-pdd",
+      "displayName": "拼多多控股公司",
+      "entityKind": "china_related_us_listed",
+      "listings": [
+        {
+          "exchange": "NASDAQ",
+          "ticker": "PDD",
+          "proofUrl": "https://investor.pddholdings.com/information-investors",
+          "status": "verified_reference"
+        }
+      ],
+      "recruitmentSources": [],
+      "entityProofUrl": null,
+      "parentGroupNames": [],
+      "chinaRelevance": "china_business_reference",
+      "observedAt": "2026-11-01"
+    },
+    {
+      "id": "fie-pg-cn",
+      "displayName": "宝洁大中华区",
+      "entityKind": "foreign_china_operation",
+      "listings": [],
+      "recruitmentSources": [
+        {
+          "url": "https://www.pgcareers.com/global/en/greater-china",
+          "review": "source_discovered",
+          "chinaVacancies": "verify_per_job"
+        }
+      ],
+      "entityProofUrl": null,
+      "parentGroupNames": [],
+      "chinaRelevance": "operations_confirmed",
+      "observedAt": "2026-11-01"
+    },
+    {
+      "id": "fie-schneider-cn",
+      "displayName": "施耐德电气中国",
+      "entityKind": "foreign_china_operation",
+      "listings": [],
+      "recruitmentSources": [
+        {
+          "url": "https://careers.se.com/jobs/133160?lang=zh-cn",
+          "review": "source_discovered",
+          "chinaVacancies": "verify_per_job"
+        },
+        {
+          "url": "https://careers.se.com/jobs/122317?lang=zh-cn",
+          "review": "source_discovered",
+          "chinaVacancies": "verify_per_job"
+        }
+      ],
+      "entityProofUrl": null,
+      "parentGroupNames": [],
+      "chinaRelevance": "operations_confirmed",
+      "observedAt": "2026-11-01"
+    },
+    {
+      "id": "fie-siemens-cn",
+      "displayName": "西门子中国",
+      "entityKind": "foreign_china_operation",
+      "listings": [],
+      "recruitmentSources": [
+        {
+          "url": "https://jobs.siemens.com/en_US/externaljobs/SearchJobs/trainee/?folderOffset=24&folderRecordsPerPage=6&listFilterMode=1",
+          "review": "source_discovered",
+          "chinaVacancies": "verify_per_job"
+        }
+      ],
+      "entityProofUrl": null,
+      "parentGroupNames": [],
+      "chinaRelevance": "operations_confirmed",
+      "observedAt": "2026-11-01"
+    },
+    {
+      "id": "jv-bmw-brilliance",
+      "displayName": "华晨宝马",
+      "entityKind": "joint_venture_china",
+      "listings": [],
+      "recruitmentSources": [
+        {
+          "url": "https://www.bmw-brilliance.cn/cn/zh/career/future-talent-program/index.html",
+          "review": "source_discovered",
+          "chinaVacancies": "verify_per_job"
+        }
+      ],
+      "entityProofUrl": "https://www.bmw-brilliance.cn/cn/zh",
+      "parentGroupNames": [
+        "BMW集团",
+        "华晨集团"
+      ],
+      "chinaRelevance": "operations_confirmed",
+      "observedAt": "2026-11-01"
+    }
+  ],
+  "methodology": {
+    "identity": "One business group can have several stock listings. A JV or subsidiary can be a distinct hiring entity. Do not count multiple markets as multiple employers.",
+    "sourceTier": "Primary investor relations, exchange registries, or the operating company's official career site.",
+    "vacancyRule": "A listing reference or generic hiring entry DOES NOT prove any current position is open. Query specific job IDs and visible requirements separately.",
+    "region": "PRC mainland demand first; Hong Kong operating location kept separate. Foreign companies hiring in China qualify.",
+    "futureIngestion": "Official SSE/SZSE/BSE issuer lists, HKEX full securities list and SEC EDGAR ticker mappings are source discovery inputs, not China-issuer verified data until reconciled."
+  }
+}

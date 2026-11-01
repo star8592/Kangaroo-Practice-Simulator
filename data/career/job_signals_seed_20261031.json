@@ -1,0 +1,279 @@
+{
+  "schema_version": "career-job-signals-v1",
+  "observed_at": "2026-10-31",
+  "scope": "Official publicly accessible recruitment pages, non-random illustrative sample; no claim about number of open positions, actual examination content, or permission to redistribute job descriptions.",
+  "market": "China",
+  "sources": [
+    {
+      "id": "MT-AI-APP",
+      "company": "美团",
+      "title": "AI应用开发工程师（应届）",
+      "role_family": "engineering",
+      "source_url": "https://zhaopin.meituan.com/web/position/detail?highlightType=campus&jobShareType=1&jobUnionId=4694862735",
+      "source_tier": "official_public",
+      "skill_tags": [
+        "python",
+        "go",
+        "java",
+        "typescript",
+        "backend",
+        "database",
+        "api",
+        "rag",
+        "function_calling",
+        "agent",
+        "mcp"
+      ],
+      "extraction": "paraphrased_from_public_role_or_process_page",
+      "posting_current_status": "not_verified_for_purchase_time"
+    },
+    {
+      "id": "MT-BA",
+      "company": "美团",
+      "title": "商业分析师 BA/DS（应届）",
+      "role_family": "data",
+      "source_url": "https://zhaopin.meituan.com/web/position/detail?highlightType=campus&jobUnionId=4697298860",
+      "source_tier": "official_public",
+      "skill_tags": [
+        "business_analysis",
+        "experiment_design",
+        "business_metrics",
+        "llm_analytics",
+        "text_to_sql"
+      ],
+      "extraction": "paraphrased_from_public_role_or_process_page",
+      "posting_current_status": "not_verified_for_purchase_time"
+    },
+    {
+      "id": "MT-PM",
+      "company": "美团",
+      "title": "产品经理（应届）",
+      "role_family": "product",
+      "source_url": "https://zhaopin.meituan.com/web/position/detail?jobUnionId=4697314739",
+      "source_tier": "official_public",
+      "skill_tags": [
+        "product_design",
+        "logical_reasoning",
+        "data_literacy",
+        "business_case"
+      ],
+      "extraction": "paraphrased_from_public_role_or_process_page",
+      "posting_current_status": "not_verified_for_purchase_time"
+    },
+    {
+      "id": "JD-DS",
+      "company": "京东",
+      "title": "数据科学家",
+      "role_family": "data",
+      "source_url": "https://zhaopin.jd.com/web/job-info-detail?requementId=224411",
+      "source_tier": "official_public",
+      "skill_tags": [
+        "sql",
+        "python",
+        "r",
+        "ab_testing",
+        "causal_inference",
+        "business_metrics",
+        "agent"
+      ],
+      "extraction": "paraphrased_from_public_role_or_process_page",
+      "posting_current_status": "not_verified_for_purchase_time"
+    },
+    {
+      "id": "JD-BA",
+      "company": "京东",
+      "title": "商业分析岗",
+      "role_family": "business",
+      "source_url": "https://zhaopin.jd.com/web/job-info-detail?requementId=223848",
+      "source_tier": "official_public",
+      "skill_tags": [
+        "sql",
+        "business_analysis",
+        "metrics_design",
+        "strategic_analysis"
+      ],
+      "extraction": "paraphrased_from_public_role_or_process_page",
+      "posting_current_status": "not_verified_for_purchase_time"
+    },
+    {
+      "id": "MI-BIGDATA",
+      "company": "小米",
+      "title": "大数据研发工程师（2027届）",
+      "role_family": "data",
+      "source_url": "https://xiaomi.jobs.f.mioffice.cn/campus/?current=14&limit=10",
+      "source_tier": "official_public",
+      "skill_tags": [
+        "data_warehouse",
+        "etl",
+        "data_quality",
+        "data_modeling",
+        "bi"
+      ],
+      "extraction": "paraphrased_from_public_role_or_process_page",
+      "posting_current_status": "not_verified_for_purchase_time"
+    },
+    {
+      "id": "MI-AGENT-INFRA",
+      "company": "小米",
+      "title": "基础架构研发工程师（2027届）",
+      "role_family": "engineering",
+      "source_url": "https://xiaomi.jobs.f.mioffice.cn/campus/?current=14&limit=10",
+      "source_tier": "official_public",
+      "skill_tags": [
+        "agent_runtime",
+        "sandbox_security",
+        "tracing",
+        "mcp",
+        "resource_monitoring"
+      ],
+      "extraction": "paraphrased_from_public_role_or_process_page",
+      "posting_current_status": "not_verified_for_purchase_time"
+    },
+    {
+      "id": "MI-SUPPLY",
+      "company": "小米",
+      "title": "资源开发工程师（2027届）",
+      "role_family": "supply_chain",
+      "source_url": "https://xiaomi.jobs.f.mioffice.cn/campus/m/position/list",
+      "source_tier": "official_public",
+      "skill_tags": [
+        "supplier_management",
+        "supply_chain_metrics",
+        "data_analysis"
+      ],
+      "extraction": "paraphrased_from_public_role_or_process_page",
+      "posting_current_status": "not_verified_for_purchase_time"
+    },
+    {
+      "id": "MI-DISPLAY",
+      "company": "小米",
+      "title": "显示算法工程师（2027届）",
+      "role_family": "hardware_algorithm",
+      "source_url": "https://xiaomi.jobs.f.mioffice.cn/campus/position/7671293856755943716/detail",
+      "source_tier": "official_public",
+      "skill_tags": [
+        "cpp",
+        "python",
+        "image_processing",
+        "color_science"
+      ],
+      "extraction": "paraphrased_from_public_role_or_process_page",
+      "posting_current_status": "not_verified_for_purchase_time"
+    },
+    {
+      "id": "BD-BE",
+      "company": "百度",
+      "title": "后端开发工程师（2027届）",
+      "role_family": "engineering",
+      "source_url": "https://talent.baidu.com/jobs/list?recommendCode=ISK4BS",
+      "source_tier": "official_public",
+      "skill_tags": [
+        "backend",
+        "system_architecture",
+        "llm_integration",
+        "performance_debugging"
+      ],
+      "extraction": "paraphrased_from_public_role_or_process_page",
+      "posting_current_status": "not_verified_for_purchase_time"
+    },
+    {
+      "id": "BD-NET",
+      "company": "百度",
+      "title": "网络研发工程师（2027届）",
+      "role_family": "engineering",
+      "source_url": "https://talent.baidu.com/jobs/list?recommendCode=ISK4BS",
+      "source_tier": "official_public",
+      "skill_tags": [
+        "cdn",
+        "dns",
+        "network_protocols",
+        "traffic_scheduling"
+      ],
+      "extraction": "paraphrased_from_public_role_or_process_page",
+      "posting_current_status": "not_verified_for_purchase_time"
+    },
+    {
+      "id": "BYTE-SEED",
+      "company": "字节跳动Seed",
+      "title": "2027大模型人才校招",
+      "role_family": "ai_research",
+      "source_url": "https://seed.bytedance.com/zh/seedearlycareer",
+      "source_tier": "official_public",
+      "skill_tags": [
+        "foundation_models",
+        "machine_learning_systems",
+        "multimodal",
+        "research_evaluation"
+      ],
+      "extraction": "paraphrased_from_public_role_or_process_page",
+      "posting_current_status": "not_verified_for_purchase_time"
+    },
+    {
+      "id": "ALI-CAMPUS",
+      "company": "阿里巴巴",
+      "title": "2027届校园招聘岗位类别",
+      "role_family": "multi_role",
+      "source_url": "https://campus-talent.alibaba.com/campus/index",
+      "source_tier": "official_public",
+      "skill_tags": [
+        "algorithm",
+        "engineering",
+        "chip",
+        "product",
+        "operations",
+        "business_development"
+      ],
+      "extraction": "paraphrased_from_public_role_or_process_page",
+      "posting_current_status": "not_verified_for_purchase_time"
+    },
+    {
+      "id": "HUAWEI-FLOW",
+      "company": "华为",
+      "title": "研发/非研发校园招聘流程",
+      "role_family": "assessment_process",
+      "source_url": "https://career.huawei.com/reccampportal/portal5/faq.html",
+      "source_tier": "official_public",
+      "skill_tags": [
+        "coding_assessment",
+        "general_assessment",
+        "technical_interview",
+        "manager_interview"
+      ],
+      "extraction": "paraphrased_from_public_role_or_process_page",
+      "posting_current_status": "not_verified_for_purchase_time"
+    },
+    {
+      "id": "TENCENT-FLOW",
+      "company": "腾讯",
+      "title": "社会招聘流程",
+      "role_family": "assessment_process",
+      "source_url": "https://careers.tencent.com/jobopportunity.html",
+      "source_tier": "official_public",
+      "skill_tags": [
+        "technical_interview",
+        "hr_interview"
+      ],
+      "extraction": "paraphrased_from_public_role_or_process_page",
+      "posting_current_status": "not_verified_for_purchase_time"
+    }
+  ],
+  "skill_to_proposed_sku": {
+    "sql": "CAREER-SQL-01",
+    "python": "CAREER-DATA-02",
+    "agent": "CAREER-AGENT-03",
+    "rag": "CAREER-AGENT-03",
+    "backend": "CAREER-BACKEND-04",
+    "business_analysis": "CAREER-BA-05",
+    "data_warehouse": "CAREER-DW-07",
+    "testing": "CAREER-QA-08",
+    "product_design": "CAREER-PM-09",
+    "supplier_management": "CAREER-SUPPLY-10"
+  },
+  "publication_status": "research_seed_only_not_live",
+  "notes": [
+    "Skill tags are a first-pass paraphrased classification, not a full verified skill taxonomy.",
+    "A job post does not prove which questions the employer asks. Products must be original and clearly marked unofficial.",
+    "Do not ingest candidate personal data or bypass platform access controls.",
+    "No source content hash is claimed; raw snapshots were not downloaded."
+  ]
+}
