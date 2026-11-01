@@ -19,23 +19,23 @@ for(const spec of [
   test(spec.name+" completes consent -> all responses -> report -> reset",async({page})=>{
     await page.goto("/assessment-center/"+spec.id);
     await expect(page.getByRole("heading",{name:spec.heading})).toBeVisible();
-    const start=page.getByRole("button",{name:"同意并开始"});
+    const start=page.getByRole("button",{name:"开始测评"});
     await expect(start).toBeDisabled();
-    await expect(page.getByText(/不向本站提交或持久化答卷/)).toBeVisible();
+    await expect(page.getByText(/作答阶段只在当前页面内计算/)).toBeVisible();
     await page.getByRole("checkbox",{name:/我已年满18岁/}).check();
     await start.click();
     await expect(page.getByRole("button",{name:"下一题"})).toBeDisabled();
     for(let i=0;i<spec.count;i++){
-      await expect(page.getByText("第 "+(i+1)+" / "+spec.count+" 题")).toBeVisible();
+      await expect(page.getByText("第 "+(i+1)+" 题 / 共 "+spec.count+" 题")).toBeVisible();
       await page.locator('input[type="radio"][value="4"]').check();
-      await page.getByRole("button",{name:i===spec.count-1?"查看我的结果":"下一题"}).click();
+      await page.getByRole("button",{name:i===spec.count-1?"提交并查看结果":"下一题"}).click();
     }
     await expect(page.getByRole("heading",{name:"你的免费简要结果"})).toBeVisible();
     await expect(page.getByText(/中国同龄人的水平/)).toBeVisible();
     await expect(page.getByText(/评分版本/)).toBeVisible();
     await page.getByRole("button",{name:"重新试测"}).click();
     await expect(start).toBeDisabled();
-    await expect(page.getByRole("heading",{name:"开始前请了解"})).toBeVisible();
+    await expect(page.getByRole("heading",{name:"测评说明"})).toBeVisible();
   });
 }
 
