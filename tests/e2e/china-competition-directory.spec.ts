@@ -70,7 +70,7 @@ test("worldwide public directory is read-only to anonymous visitors", async ({ r
 test("public nationwide homepage excludes China contests from training while the events companion remains discoverable", async ({page}) => {
   await page.goto("/");
   const main=page.locator("main");
-  await expect(main).toContainText("全球数学竞赛");
+  await expect(main.locator('a[href="/assessments#domain-math-competition"]')).toContainText("数学竞赛");
   await expect(main).not.toContainText("华罗庚金杯");
   await expect(main).not.toContainText("希望杯");
   const mobile=(page.viewportSize()?.width??1280)<=760;
