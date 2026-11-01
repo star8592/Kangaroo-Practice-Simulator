@@ -2,7 +2,7 @@
   "schema": "socthink-career-demand-v1",
   "observedAt": "2026-11-01",
   "status": "source-led-sample-only",
-  "interpretation": "Nonrandom official site evidence. category means employer lists this role family, not that vacancies or specific tests are confirmed. job means an observed job description; skills are paraphrased from it, not exam questions.",
+  "interpretation": "Nonrandom official site evidence. category means employer lists this role family, not that vacancies or specific tests are confirmed. job means an observed job description; skills are paraphrased from it, not exam questions. Some job pages are indexed by official sites but may block direct fetch or disappear; job evidence is an observed snapshot, not current vacancy status. For foreign and JV hiring entities use companyId.",
   "signals": [
     {
       "id": "ali-rnd",
@@ -12,7 +12,8 @@
       "evidenceLevel": "category",
       "sourceUrl": "https://campus-talent.alibaba.com/campus/index",
       "skills": [],
-      "observedAt": "2026-11-01"
+      "observedAt": "2026-11-01",
+      "companyId": "cn-hk-alibaba"
     },
     {
       "id": "ali-product",
@@ -22,7 +23,8 @@
       "evidenceLevel": "category",
       "sourceUrl": "https://campus-talent.alibaba.com/campus/index",
       "skills": [],
-      "observedAt": "2026-11-01"
+      "observedAt": "2026-11-01",
+      "companyId": "cn-hk-alibaba"
     },
     {
       "id": "ali-games",
@@ -32,7 +34,8 @@
       "evidenceLevel": "category",
       "sourceUrl": "https://campus-talent.alibaba.com/campus/index",
       "skills": [],
-      "observedAt": "2026-11-01"
+      "observedAt": "2026-11-01",
+      "companyId": "cn-hk-alibaba"
     },
     {
       "id": "ali-ops",
@@ -42,7 +45,8 @@
       "evidenceLevel": "category",
       "sourceUrl": "https://campus-talent.alibaba.com/campus/index",
       "skills": [],
-      "observedAt": "2026-11-01"
+      "observedAt": "2026-11-01",
+      "companyId": "cn-hk-alibaba"
     },
     {
       "id": "ali-biz",
@@ -52,7 +56,8 @@
       "evidenceLevel": "category",
       "sourceUrl": "https://campus-talent.alibaba.com/campus/index",
       "skills": [],
-      "observedAt": "2026-11-01"
+      "observedAt": "2026-11-01",
+      "companyId": "cn-hk-alibaba"
     },
     {
       "id": "huawei-sales",
@@ -62,7 +67,8 @@
       "evidenceLevel": "category",
       "sourceUrl": "https://career.huawei.com/cn",
       "skills": [],
-      "observedAt": "2026-11-01"
+      "observedAt": "2026-11-01",
+      "companyId": "cn-unlisted-huawei"
     },
     {
       "id": "huawei-supply",
@@ -72,7 +78,8 @@
       "evidenceLevel": "category",
       "sourceUrl": "https://career.huawei.com/cn",
       "skills": [],
-      "observedAt": "2026-11-01"
+      "observedAt": "2026-11-01",
+      "companyId": "cn-unlisted-huawei"
     },
     {
       "id": "huawei-procurement",
@@ -82,7 +89,8 @@
       "evidenceLevel": "category",
       "sourceUrl": "https://career.huawei.com/cn",
       "skills": [],
-      "observedAt": "2026-11-01"
+      "observedAt": "2026-11-01",
+      "companyId": "cn-unlisted-huawei"
     },
     {
       "id": "huawei-finance",
@@ -92,7 +100,8 @@
       "evidenceLevel": "category",
       "sourceUrl": "https://career.huawei.com/cn",
       "skills": [],
-      "observedAt": "2026-11-01"
+      "observedAt": "2026-11-01",
+      "companyId": "cn-unlisted-huawei"
     },
     {
       "id": "huawei-service",
@@ -102,7 +111,8 @@
       "evidenceLevel": "category",
       "sourceUrl": "https://career.huawei.com/cn",
       "skills": [],
-      "observedAt": "2026-11-01"
+      "observedAt": "2026-11-01",
+      "companyId": "cn-unlisted-huawei"
     },
     {
       "id": "meituan-ops",
@@ -118,7 +128,8 @@
         "inventory_planning",
         "roi"
       ],
-      "observedAt": "2026-11-01"
+      "observedAt": "2026-11-01",
+      "companyId": "cn-hk-meituan"
     },
     {
       "id": "meituan-procurement",
@@ -133,7 +144,8 @@
         "market_research",
         "product_lifecycle"
       ],
-      "observedAt": "2026-11-01"
+      "observedAt": "2026-11-01",
+      "companyId": "cn-hk-meituan"
     },
     {
       "id": "meituan-supply",
@@ -148,7 +160,8 @@
         "sql",
         "project_management"
       ],
-      "observedAt": "2026-11-01"
+      "observedAt": "2026-11-01",
+      "companyId": "cn-hk-meituan"
     },
     {
       "id": "meituan-bizops",
@@ -162,7 +175,8 @@
         "saas_metrics",
         "market_research"
       ],
-      "observedAt": "2026-11-01"
+      "observedAt": "2026-11-01",
+      "companyId": "cn-hk-meituan"
     },
     {
       "id": "meituan-designer",
@@ -175,7 +189,8 @@
         "visual_design",
         "brief_interpretation"
       ],
-      "observedAt": "2026-11-01"
+      "observedAt": "2026-11-01",
+      "companyId": "cn-hk-meituan"
     },
     {
       "id": "meituan-analysis",
@@ -189,7 +204,8 @@
         "user_segmentation",
         "statistics"
       ],
-      "observedAt": "2026-11-01"
+      "observedAt": "2026-11-01",
+      "companyId": "cn-hk-meituan"
     },
     {
       "id": "meituan-tech",
@@ -205,7 +221,8 @@
         "agent",
         "mcp"
       ],
-      "observedAt": "2026-11-01"
+      "observedAt": "2026-11-01",
+      "companyId": "cn-hk-meituan"
     },
     {
       "id": "jd-data",
@@ -220,7 +237,8 @@
         "ab_testing",
         "causal_inference"
       ],
-      "observedAt": "2026-11-01"
+      "observedAt": "2026-11-01",
+      "companyId": "cn-multi-jd"
     },
     {
       "id": "tencent-design",
@@ -230,7 +248,8 @@
       "evidenceLevel": "category",
       "sourceUrl": "https://careers.tencent.com/m/zh-cn/faqdetail.html",
       "skills": [],
-      "observedAt": "2026-11-01"
+      "observedAt": "2026-11-01",
+      "companyId": "cn-hk-tencent"
     },
     {
       "id": "tencent-product",
@@ -240,7 +259,8 @@
       "evidenceLevel": "category",
       "sourceUrl": "https://careers.tencent.com/m/zh-cn/faqdetail.html",
       "skills": [],
-      "observedAt": "2026-11-01"
+      "observedAt": "2026-11-01",
+      "companyId": "cn-hk-tencent"
     },
     {
       "id": "meituan-hr",
@@ -250,7 +270,8 @@
       "evidenceLevel": "category",
       "sourceUrl": "https://zhaopin.meituan.com/web/about/ourTeam?bg=BG005&staffSsoId=xdzFglA",
       "skills": [],
-      "observedAt": "2026-11-01"
+      "observedAt": "2026-11-01",
+      "companyId": "cn-hk-meituan"
     },
     {
       "id": "meituan-legal",
@@ -260,7 +281,8 @@
       "evidenceLevel": "category",
       "sourceUrl": "https://zhaopin.meituan.com/web/about/ourTeam?bg=BG005&staffSsoId=xdzFglA",
       "skills": [],
-      "observedAt": "2026-11-01"
+      "observedAt": "2026-11-01",
+      "companyId": "cn-hk-meituan"
     },
     {
       "id": "meituan-marketing",
@@ -270,7 +292,8 @@
       "evidenceLevel": "category",
       "sourceUrl": "https://zhaopin.meituan.com/web/about/ourTeam?bg=BG005&staffSsoId=xdzFglA",
       "skills": [],
-      "observedAt": "2026-11-01"
+      "observedAt": "2026-11-01",
+      "companyId": "cn-hk-meituan"
     },
     {
       "id": "meituan-logistics",
@@ -279,6 +302,180 @@
       "roleFamily": "logistics",
       "evidenceLevel": "category",
       "sourceUrl": "https://zhaopin.meituan.com/web/about/ourTeam?bg=BG005&staffSsoId=xdzFglA",
+      "skills": [],
+      "observedAt": "2026-11-01",
+      "companyId": "cn-hk-meituan"
+    },
+    {
+      "id": "siemens-smart-grid-sales",
+      "company": "西门子中国",
+      "companyId": "fie-siemens-cn",
+      "roleTitle": "智慧配电销售（深圳）",
+      "roleFamily": "sales",
+      "evidenceLevel": "job",
+      "sourceUrl": "https://jobs.siemens.com/zh_TW/externaljobs/JobDetail/497878",
+      "skills": [
+        "technical_sales",
+        "energy_systems",
+        "solution_design"
+      ],
+      "observedAt": "2026-11-01"
+    },
+    {
+      "id": "siemens-wuhan-sales",
+      "company": "西门子中国",
+      "companyId": "fie-siemens-cn",
+      "roleTitle": "数字化工业销售工程师培训生（武汉）",
+      "roleFamily": "sales",
+      "evidenceLevel": "category",
+      "sourceUrl": "https://jobs.siemens.com/en_US/externaljobs/SearchJobs/trainee/?folderOffset=24&folderRecordsPerPage=6&listFilterMode=1",
+      "skills": [],
+      "observedAt": "2026-11-01"
+    },
+    {
+      "id": "schneider-marketing",
+      "company": "施耐德电气中国",
+      "companyId": "fie-schneider-cn",
+      "roleTitle": "Marketing Analyst（上海/北京）",
+      "roleFamily": "marketing",
+      "evidenceLevel": "job",
+      "sourceUrl": "https://careers.se.com/jobs/133160?lang=zh-cn",
+      "skills": [
+        "business_analysis",
+        "pipeline_management",
+        "marketing_kpi",
+        "data_governance"
+      ],
+      "observedAt": "2026-11-01"
+    },
+    {
+      "id": "schneider-customs",
+      "company": "施耐德电气中国",
+      "companyId": "fie-schneider-cn",
+      "roleTitle": "Transportation & Customs Operation Specialist（上海）",
+      "roleFamily": "logistics",
+      "evidenceLevel": "job",
+      "sourceUrl": "https://careers.se.com/jobs/122317?lang=zh-cn",
+      "skills": [
+        "customs_compliance",
+        "export_documentation",
+        "logistics_network",
+        "cross_cultural"
+      ],
+      "observedAt": "2026-11-01"
+    },
+    {
+      "id": "schneider-quality",
+      "company": "施耐德电气中国",
+      "companyId": "fie-schneider-cn",
+      "roleTitle": "Senior Engineer Industrialization Quality（上海）",
+      "roleFamily": "supply",
+      "evidenceLevel": "job",
+      "sourceUrl": "https://careers.se.com/jobs/125225?lang=zh-cn",
+      "skills": [
+        "apqp",
+        "quality_risk",
+        "fmea"
+      ],
+      "observedAt": "2026-11-01"
+    },
+    {
+      "id": "schneider-systems-test",
+      "company": "施耐德电气中国",
+      "companyId": "fie-schneider-cn",
+      "roleTitle": "Systems and Solution Test Engineer（上海）",
+      "roleFamily": "software",
+      "evidenceLevel": "job",
+      "sourceUrl": "https://careers.se.com/jobs/140006?lang=zh-cn",
+      "skills": [
+        "integration_testing",
+        "test_automation",
+        "requirements_analysis",
+        "fmea"
+      ],
+      "observedAt": "2026-11-01"
+    },
+    {
+      "id": "schneider-supply-it",
+      "company": "施耐德电气中国",
+      "companyId": "fie-schneider-cn",
+      "roleTitle": "Supply Chain Full-Stack Application Engineer（上海）",
+      "roleFamily": "software",
+      "evidenceLevel": "job",
+      "sourceUrl": "https://careers.se.com/jobs/138810?lang=zh-cn",
+      "skills": [
+        "java",
+        "mysql",
+        "inventory_planning",
+        "supply_chain_digitalization"
+      ],
+      "observedAt": "2026-11-01"
+    },
+    {
+      "id": "schneider-ai-lead",
+      "company": "施耐德电气中国",
+      "companyId": "fie-schneider-cn",
+      "roleTitle": "AI Technical Lead（上海）",
+      "roleFamily": "ai",
+      "evidenceLevel": "job",
+      "sourceUrl": "https://careers.se.com/jobs/122988?lang=zh-cn",
+      "skills": [
+        "agent",
+        "mlops",
+        "supply_chain_digitalization",
+        "technical_english"
+      ],
+      "observedAt": "2026-11-01"
+    },
+    {
+      "id": "schneider-dc-bd",
+      "company": "施耐德电气中国",
+      "companyId": "fie-schneider-cn",
+      "roleTitle": "数据中心业务拓展（上海）",
+      "roleFamily": "sales",
+      "evidenceLevel": "job",
+      "sourceUrl": "https://careers.se.com/jobs/138266?lang=zh-cn",
+      "skills": [
+        "b2b_sales",
+        "solution_design",
+        "energy_systems"
+      ],
+      "observedAt": "2026-11-01"
+    },
+    {
+      "id": "schneider-smart-ops",
+      "company": "施耐德电气中国",
+      "companyId": "fie-schneider-cn",
+      "roleTitle": "Smart Operation Expert（上海）",
+      "roleFamily": "operations",
+      "evidenceLevel": "job",
+      "sourceUrl": "https://careers.se.com/jobs/136461?lang=zh-cn",
+      "skills": [
+        "operations_digitalization",
+        "stakeholder_management",
+        "data_analysis"
+      ],
+      "observedAt": "2026-11-01"
+    },
+    {
+      "id": "bmw-talent-process",
+      "company": "华晨宝马",
+      "companyId": "jv-bmw-brilliance",
+      "roleTitle": "2026精英硕士工程师培养项目（含英文测评与评估中心）",
+      "roleFamily": "software",
+      "evidenceLevel": "process",
+      "sourceUrl": "https://www.bmw-brilliance.cn/cn/zh/career/future-talent-program/index.html",
+      "skills": [],
+      "observedAt": "2026-11-01"
+    },
+    {
+      "id": "pg-greater-china",
+      "company": "宝洁大中华区",
+      "companyId": "fie-pg-cn",
+      "roleTitle": "大中华区官方招聘入口",
+      "roleFamily": "operations",
+      "evidenceLevel": "category",
+      "sourceUrl": "https://www.pgcareers.com/global/en/greater-china",
       "skills": [],
       "observedAt": "2026-11-01"
     }
