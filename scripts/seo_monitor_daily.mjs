@@ -120,7 +120,7 @@ export function readHistory(file = storePath()) {
     return Array.isArray(doc) ? doc.filter(isSnapshot).slice(-HISTORY_LIMIT) : [];
   } catch (error) {
     if (error.code === "ENOENT") return [];
-    throw new Error("SEO_MONITOR_HISTORY_READ_FAILED");
+    throw new Error("SEO_MONITOR_HISTORY_READ_FAILED", { cause: error });
   }
 }
 
