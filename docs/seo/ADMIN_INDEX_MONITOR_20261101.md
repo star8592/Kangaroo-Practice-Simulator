@@ -26,7 +26,7 @@
 
 - `/admin/seo`：Next.js 服务端管理员权限（现有 `SESSION_COOKIE` / `isAdmin`）；禁索引，不允许游客看监测数据。
 - `src/lib/seo-monitor-store.ts`：读取真实采样历史；Google、百度、Bing 当前状态 `not_connected`，所有索引/点击/展示数为 `null`。禁止“空值归零”。
-- `scripts/seo_monitor_daily.mjs`：**只读**抓取本站实时 Sitemap、robots 和最多 500 个已发布的规范 URL；对异常保存路径和原因，不抓取私有试卷/答案/用户数据。
+- `scripts/seo_monitor_daily.mjs`：**只读**抓取本站实时 Sitemap、robots 和最多解析 100,000 个 Sitemap URL，并抽取最多 200 个代表性规范 URL 做技术检查；对异常保存路径和原因，不抓取私有试卷/答案/用户数据。
 - 历史在 `SOCTHINK_USER_DATA_DIR/seo-monitor-snapshots.json`，随已有持久数据挂载保留，按 UTC 日期归并，最多 365 天，原子写入、权限 `0600`。
 - `ops/seo/socthink-seo-monitor.service` + `ops/seo/socthink-seo-monitor.timer`：**每天一次、独立失败隔离**；它不调用其他业务任务，不阻止网站发布，不另建数据库，错误只影响监测自身。
 - 不依赖 Chrome 调试端口，不绕过任何浏览器授权；不自动登入百度/Google/Bing 用户后台。
@@ -39,7 +39,7 @@
 3. 在生产安装 **唯一** `ops/seo/socthink-seo-monitor.service` 与 `.timer`，`systemctl daemon-reload` 并启用 timer。不会改现有站点、收费或赛事采集 timers。
 4. 手动运行监测一次（生产真实网页采样），核对日志、json 快照、数据文件拥有者、模式与时区；故障情况下不把空结果当正常。
 5. 用匿名用户访问 `/admin/seo` 必须不能看到后台，管理员能看到实测结果。不得通过公共 URL 或 Sitemap 泄露监测文件。
-6. 正式生产日报记录 15 个（或以后 Sitemap 当前数量）公开 URL 与可抓取通过数；搜索引擎真实收录必须显示「— 尚未接入」，直到有官方授权回执。
+6. 正式生产日报记录全部 Sitemap 公开 URL 总量、实际抽检样本数和抽检通过数；搜索引擎真实收录必须显示「— 尚未接入」，直到有官方授权回执。
 
 ## 接入各站长平台时的明确边界
 
@@ -48,3 +48,7 @@
 - 百度：以官方「索引量」及数据日期为准，可在获得可靠的官方导出/授权通道后导入。
 - Bing：经过验证的官方站长 REST / 报告接口，不再调用退役的 SOAP/POX。
 - 各平台数据记录 `source / measuredAt / updatedAt / scope`，过期标记，流量与收入对账不得编造。
+
+## 面向未来大量 K12 页面
+
+Sitemap URL 总数与抓取技术抽样是两个独立指标：可完整计数最多 100,000 个 URL，但单轮最多检查 200 个公开页面（固定保留首页前部、尾部新页面与全局分布样本）。页面数超过抽样上限后，后台必须明确显示「抽检样本 N」和「抽检通过 M」，**不能将 M/N 解释为整站全部页面的正常比例，也不能解释为实际收录率**。正式搜索引擎索引量必须来自对应平台的已授权官方报表。
