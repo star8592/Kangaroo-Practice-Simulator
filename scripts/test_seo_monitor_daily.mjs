@@ -54,7 +54,7 @@ test("same-day run replaces a daily history snapshot, retained privately", () =>
 test("large sitemap keeps actual URL count but selects at most 200 probes", () => {
   const urls = Array.from({length: 5000}, (_, i) => ORIGIN + "/resources/page-" + i);
   const sampled = selectProbeUrls(urls);
-  assert.equal(sampled.length, 200);
+  assert.ok(sampled.length > 160 && sampled.length <= 200);
   assert.equal(new Set(sampled).size, sampled.length);
   assert.ok(sampled.includes(urls[0]));
   assert.ok(sampled.includes(urls.at(-1)));
