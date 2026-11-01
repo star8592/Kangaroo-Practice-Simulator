@@ -122,8 +122,9 @@
     "test:career-demand": "tsx scripts/test_career_demand.ts",
     "test:career-universe": "tsx scripts/test_career_enterprise_universe.ts",
     "test:career-practice": "tsx scripts/test_career_practice.ts",
-    "test:career-research": "npm run test:career-demand && npm run test:career-universe && python3 scripts/test_cninfo_market_normalize.py && python3 scripts/test_sse_stocklist_normalize.py && npm run test:career-practice && npm run test:career-account",
-    "test:career-account": "tsx scripts/test_career_account_history.ts"
+    "test:career-research": "npm run test:career-demand && npm run test:career-universe && python3 scripts/test_cninfo_market_normalize.py && python3 scripts/test_sse_stocklist_normalize.py && npm run test:career-practice && npm run test:career-account && npm run test:career-storefront",
+    "test:career-account": "tsx scripts/test_career_account_history.ts",
+    "test:career-storefront": "tsx scripts/test_career_storefront.ts"
   },
   "dependencies": {
     "next": "16.4.3",
