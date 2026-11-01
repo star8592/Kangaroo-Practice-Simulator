@@ -1,7 +1,7 @@
 import {test,expect} from "@playwright/test";
 test("reading center offers a real task and public technical evidence",async({page})=>{
  await page.goto("/assessment-center");
- await expect(page.getByText("免费任务练习",{exact:true})).toHaveCount(2);
+ await expect(page.getByText("免费训练",{exact:true})).toHaveCount(3);
  await expect(page.getByText("建设中",{exact:true})).toHaveCount(1);
  await expect(page.locator('a[href="/assessment-center/reading-practice-16"]')).toBeVisible();
  await page.getByText("测评依据与适用范围",{exact:true}).click();
