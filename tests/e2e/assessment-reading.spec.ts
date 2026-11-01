@@ -4,6 +4,7 @@ test("reading center offers a real task and public technical evidence",async({pa
  await expect(page.getByText("免费任务练习",{exact:true})).toHaveCount(2);
  await expect(page.getByText("建设中",{exact:true})).toHaveCount(1);
  await expect(page.locator('a[href="/assessment-center/reading-practice-16"]')).toBeVisible();
+ await page.getByText("测评依据与适用范围",{exact:true}).click();
  await page.getByRole("link",{name:/查看全部测评技术档案/}).click();
  await expect(page.getByRole("heading",{name:"每项结果，都应当能追溯依据。"})).toBeVisible();
  await expect(page.locator("article")).toHaveCount(4);

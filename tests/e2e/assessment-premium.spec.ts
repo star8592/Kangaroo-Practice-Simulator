@@ -14,7 +14,7 @@ test("SQL is a separate skills business with only a compatibility redirect",asyn
 });
 test("professional report sample shows deliverables and honest scientific bounds",async({page})=>{
  await page.goto("/assessment-center");
- await page.getByRole("link",{name:/查看虚构样稿/}).click();
+ await page.getByRole("link",{name:/查看报告样例/}).click();
  await expect(page.getByRole("heading",{name:"购买前，先看清楚报告是什么。"})).toBeVisible();
  await expect(page.getByText("示例数据",{exact:true})).toBeVisible();
  await expect(page.getByText(/实际购买后，每项证据都来自本人/)).toBeVisible();
