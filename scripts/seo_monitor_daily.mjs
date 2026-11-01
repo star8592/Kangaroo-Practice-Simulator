@@ -6,6 +6,7 @@
  */
 import fs from "node:fs";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 
 export const ORIGIN = "https://socthink.cn";
 const MAX_URLS = 100000;
@@ -161,7 +162,18 @@ async function main() {
   if (!snap.robotsOk || snap.healthyCount !== snap.checkedCount) process.exitCode = 2;
 }
 
-if (process.argv[1] && import.meta.url === new URL("file://" + path.resolve(process.argv[1])).href) {
+export function isDirectExecution(scriptArg = process.argv[1], moduleUrl = import.meta.url) {
+  if (!scriptArg) return false;
+  try {
+    // Production runs via /opt/socthink-releases/current (symlink) while Node
+    // resolves import.meta.url to the immutable SHA directory. Compare realpaths.
+    return fs.realpathSync(path.resolve(scriptArg)) === fs.realpathSync(fileURLToPath(moduleUrl));
+  } catch {
+    return false;
+  }
+}
+
+if (isDirectExecution()) {
   main().catch((err) => {
     console.error("SEO_MONITOR_ERROR=" + String(err?.message || err).slice(0, 200));
     process.exitCode = 2;
