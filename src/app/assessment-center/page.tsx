@@ -2,8 +2,8 @@ import Link from "next/link";
 import {CENTER_SECTIONS,getInstrument} from "@/lib/measurement-center";
 import styles from "./measurement.module.css";
 export const metadata={
-  title:"智量测评中心｜人格、职业兴趣、认知推理与学习能力｜SOCTHINK",
-  description:"科学测评与认知任务：大五人格、职业兴趣、认知推理与原创阅读理解练习。独立公开题项来源、评分方式、验证进度与报告交付内容。",
+  title:"智量测评中心｜招聘通用能力、逻辑推理、职业兴趣与人格｜SOCTHINK",
+  description:"职业与科学测评：原创40题招聘通用能力模拟、逻辑推理、大五人格、职业兴趣与阅读理解。明确题项来源、评分与研究验证边界。",
   alternates:{canonical:"/assessment-center"},
 };
 export default function MeasurementCenterPage(){
@@ -22,10 +22,10 @@ export default function MeasurementCenterPage(){
         const route="route" in section?section.route:instrument?"/assessment-center/"+instrument.id:undefined;
         const detail="detail" in section?section.detail:instrument?`${instrument.items.length}题 · ${instrument.duration} · ${instrument.audience}`:"待完成题库与验证后开放";
         return <article className={styles.tile} key={section.icon}>
-          <div className={styles.tileTop}><span className={styles.tileNumber}>{section.icon}</span><span className={route?styles.previewBadge:styles.plannedBadge}>{instrument?"免费研究预览":route?"免费任务练习":"建设中"}</span></div>
+          <div className={styles.tileTop}><span className={styles.tileNumber}>{section.icon}</span><span className={route?styles.previewBadge:styles.plannedBadge}>{instrument?"免费研究预览":route?"免费训练":"建设中"}</span></div>
           <h3>{section.title}</h3><p>{section.summary}</p>
           <div className={route?styles.tileInfo:styles.tileMuted}>{detail}</div>
-          {route&&<Link className={styles.tileLink} href={route}>开始测评 <span aria-hidden="true">→</span></Link>}
+          {route&&<Link className={styles.tileLink} href={route}>{instrument?"开始测评":"开始练习"} <span aria-hidden="true">→</span></Link>}
         </article>;
       })}
     </div>

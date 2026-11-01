@@ -7,7 +7,8 @@ import {
 
 assert.deepEqual(validateMeasurementRegistry(),[],"instrument provenance, item keys and dimension counts");
 assert.equal(INSTRUMENTS.length,2);
-assert.equal(CENTER_SECTIONS.length,5);
+assert.equal(CENTER_SECTIONS.length,6);
+assert(CENTER_SECTIONS.some(s=>"route" in s && s.route==="/assessment-center/career-aptitude-40"));
 assert.equal(CENTER_SECTIONS.filter(x=>"instrumentId" in x).length,2);
 const career=getInstrument("career-interest-exploration-30")!;
 const bigFive=getInstrument("ipip-big-five-50-cn-preview")!;
@@ -59,4 +60,4 @@ assert(!/localStorage|sessionStorage|sendBeacon|fetch\(|XMLHttpRequest/.test(run
 assert(runner.includes("未验证中国常模")||runner.includes("中国常模"));
 const catalog=fs.readFileSync("src/lib/assessment-platform.ts","utf-8");
 assert(catalog.includes('href:"/assessment-center"'));
-console.log("MEASUREMENT_CENTER=PASS sections=5 pilots=2 items=80 scoring=PASS reverse_key=PASS privacy=MEMORY_ONLY payment=OFF norms=UNVALIDATED");
+console.log("MEASUREMENT_CENTER=PASS sections=6 pilots=2 items=80 scoring=PASS reverse_key=PASS privacy=MEMORY_ONLY payment=OFF norms=UNVALIDATED");

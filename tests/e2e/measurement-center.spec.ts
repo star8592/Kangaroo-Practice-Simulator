@@ -4,10 +4,10 @@ test("scientific measurement center shows six categories and two honest research
   const response=await page.goto("/assessment-center");
   expect(response?.status()).toBe(200);
   await expect(page.getByRole("heading",{level:1,name:"科学测评"})).toBeVisible();
-  await expect(page.locator("article")).toHaveCount(5);
+  await expect(page.locator("article")).toHaveCount(6);
   await expect(page.getByText("免费研究预览")).toHaveCount(2);
   await expect(page.getByText("建设中",{exact:true})).toHaveCount(1);
-  await expect(page.getByText("免费任务练习",{exact:true})).toHaveCount(2);
+  await expect(page.getByText("免费训练",{exact:true})).toHaveCount(3);
   await expect(page.locator('a[href="/assessment-center/career-interest-exploration-30"]')).toBeVisible();
   await expect(page.locator('a[href="/assessment-center/ipip-big-five-50-cn-preview"]')).toBeVisible();
 });
