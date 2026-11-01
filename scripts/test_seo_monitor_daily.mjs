@@ -3,8 +3,9 @@ import { test } from "node:test";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
+import { pathToFileURL } from "node:url";
 import {
-  ORIGIN, parseSitemap, selectProbeUrls, inspectHtml, readHistory, saveSnapshot,
+  ORIGIN, parseSitemap, selectProbeUrls, inspectHtml, readHistory, saveSnapshot, isDirectExecution,
 } from "./seo_monitor_daily.mjs";
 
 const canonical = (url) => '<html><head><link rel="canonical" href="' + url +
@@ -58,4 +59,18 @@ test("large sitemap keeps actual URL count but selects at most 200 probes", () =
   assert.equal(new Set(sampled).size, sampled.length);
   assert.ok(sampled.includes(urls[0]));
   assert.ok(sampled.includes(urls.at(-1)));
+});
+
+test("standalone CLI enters main when invoked through immutable current symlink", () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "socthink-seo-symlink-"));
+  const actual = path.resolve("scripts/seo_monitor_daily.mjs");
+  const symlink = path.join(dir, "current.mjs");
+  try {
+    fs.symlinkSync(actual, symlink);
+    assert.equal(isDirectExecution(symlink, pathToFileURL(actual).href), true);
+    assert.equal(isDirectExecution(path.resolve("scripts/test_seo_monitor_daily.mjs"), pathToFileURL(actual).href), false);
+    assert.equal(isDirectExecution(path.join(dir, "missing.mjs"), pathToFileURL(actual).href), false);
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
 });
