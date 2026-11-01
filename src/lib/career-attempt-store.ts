@@ -140,7 +140,7 @@ export function recordCareerAttempt(params:{
   }catch(e){
     if((e as NodeJS.ErrnoException).code!=="EEXIST")throw e;
     const winner=readCareerAttempt(ownerId,attemptId);
-    if(!winner)throw Error("CAREER_ATTEMPT_UNAVAILABLE");
+    if(!winner)throw new Error("CAREER_ATTEMPT_UNAVAILABLE",{cause:e});
     if(winner.fingerprint!==fingerprint||winner.summary.caseId!==caseId||
       winner.summary.revision!==revision)throw new CareerAttemptConflictError();
     return {record:winner,alreadySaved:true};
