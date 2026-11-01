@@ -87,20 +87,28 @@ export default function CareerPracticeRunner({practice}:{practice:CareerPractice
     {!grade?<>
       <section className={styles.workspace}>
         <div className={styles.sectionHead}>
-          <div><span className={styles.overline}>采购决策工作台 / PROCUREMENT CASE</span>
-            <h2>业务背景与供应商报价</h2></div>
+          <div><span className={styles.overline}>岗位训练工作台 / CAREER PRACTICE</span>
+            <h2>业务场景与案例数据</h2></div>
           <span className={styles.counter}>原创免费试练 · {practice.durationMinutes}分钟参考</span>
         </div>
         <p className={styles.context}>{practice.context}</p>
         <div className={styles.tableScroll}>
-          <table className={styles.supplierTable}>
-            <thead><tr><th>供应商</th><th>货价/件</th><th>运费/件</th><th>不良率</th><th>交期</th><th>最多订货</th></tr></thead>
-            <tbody>{practice.suppliers.map(s=><tr key={s.id}>
-              <th scope="row">{s.name} {s.id}</th><td>{s.unitPrice}元</td>
-              <td>{s.freightPerUnit}元</td><td>{s.defectPercent}%</td><td>{s.leadDays}天</td>
-              <td>{s.maxUnits}件</td>
-            </tr>)}</tbody>
-          </table>
+          {practice.dataTable?
+            <table className={styles.supplierTable}>
+              <thead><tr>{practice.dataTable.headers.map(h=><th key={h} scope="col">{h}</th>)}</tr></thead>
+              <tbody>{practice.dataTable.rows.map((row,i)=><tr key={i}>
+                {row.map((value,j)=>j===0?
+                  <th key={j} scope="row">{value}</th>:<td key={j}>{value}</td>)}
+              </tr>)}</tbody>
+            </table>:
+            <table className={styles.supplierTable}>
+              <thead><tr><th>供应商</th><th>货价/件</th><th>运费/件</th><th>不良率</th><th>交期</th><th>最多订货</th></tr></thead>
+              <tbody>{practice.suppliers.map(s=><tr key={s.id}>
+                <th scope="row">{s.name} {s.id}</th><td>{s.unitPrice}元</td>
+                <td>{s.freightPerUnit}元</td><td>{s.defectPercent}%</td><td>{s.leadDays}天</td>
+                <td>{s.maxUnits}件</td>
+              </tr>)}</tbody>
+            </table>}
         </div>
         <details className={styles.assumptions}>
           <summary>查看计算口径与案例约束</summary>
@@ -158,9 +166,9 @@ export default function CareerPracticeRunner({practice}:{practice:CareerPractice
         {error&&<p role="alert" className={styles.error}>{error}</p>}
       </section>
     </>:
-    <section className={styles.report} aria-label="采购案例成绩报告">
+    <section className={styles.report} aria-label="职业案例成绩报告">
       <div className={styles.overline}>SOCTHINK / ORIGINAL CAREER ASSESSMENT</div>
-      <h2>你的采购决策训练报告</h2>
+      <h2>你的岗位实操训练报告</h2>
       <div className={styles.scoreRow}><strong>{grade.score}<small> / {grade.maxPoints} 分</small></strong>
         <div><span>本次已回答 {grade.completed}/{grade.totalQuestions} 题</span>
           <p>确定性计算与决策判分 · 规则版本 {grade.revision}</p></div>
@@ -180,7 +188,7 @@ export default function CareerPracticeRunner({practice}:{practice:CareerPractice
       <div className={styles.advice}><h3>下一步怎么练</h3>
         <ul>{grade.advice.map((text,i)=><li key={i}>{text}</li>)}</ul>
       </div>
-      <p className={styles.note}>本报告衡量的是这一套原创采购案例中的表现，不等于企业真实笔试成绩、职业资质或录用预测。数据按题目给出的简化假设计算。</p>
+      <p className={styles.note}>本报告衡量的是这一套原创职业案例中的表现，不等于企业真实笔试成绩、职业资质或录用预测。数据按题目给出的简化假设计算。</p>
       <div className={styles.reportActions}>
         <button type="button" className={styles.primary} onClick={reset}>重新挑战本案例</button>
         <Link href="/career">返回职业岗位目录</Link>
