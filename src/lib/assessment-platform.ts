@@ -67,7 +67,7 @@ export const ASSESSMENT_DOMAINS: readonly AssessmentDomain[] = [
     summary:{zh:"Python、SQL、数据分析、AI 实操与模拟面试，强调能完成真实任务。",en:"Python, SQL, data and AI skills, job simulations and interviews."},
     audience:{zh:"大学毕业生、求职者和企业",en:"Graduates, applicants and employers"},
     readiness:"live",formats:["code","sql","sandbox","interview","short-answer","single-choice","multiple-choice","numeric"],
-    liveRoutes:[{href:"/career/practice/supplier-selection-001",title:{zh:"免费完成采购决策实操与评分",en:"Try a free procurement decision case"}}],
+    liveRoutes:[{href:"/career",title:{zh:"查看企业岗位需求并免费体验采购实操",en:"Explore employer demand and try a free procurement case"}}],
     nextProof:{zh:"首个采购原创实操已经提供真实客观评分；其他岗位类型、持续成绩、付费权益仍在建设。",en:"One original procurement case now has deterministic grading; broader careers, persistent records, and paid access remain in development."},
   },
   {
