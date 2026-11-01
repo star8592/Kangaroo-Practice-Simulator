@@ -7,19 +7,23 @@ import type {Instrument} from "@/lib/measurement-center";
 import {scoreInstrument} from "@/lib/measurement-center";
 import styles from "@/app/assessment-center/measurement.module.css";
 
-type Stage="intro"|"questions"|"report";
+type Stage="intro"|"questions"|"review"|"report";
 
 export default function MeasurementRunner({instrument}:{instrument:Instrument}){
   const [stage,setStage]=useState<Stage>("intro");
   const [adult,setAdult]=useState(false);
   const [answers,setAnswers]=useState<Record<string,number>>({});
+  const [flagged,setFlagged]=useState<Record<string,boolean>>({});
   const [index,setIndex]=useState(0);
   const item=instrument.items[index];
   const total=instrument.items.length;
   const done=instrument.items.filter(x=>answers[x.id]!==undefined).length;
+  const marked=instrument.items.filter(x=>Boolean(flagged[x.id])).length;
+  const firstOpen=instrument.items.findIndex(x=>answers[x.id]===undefined);
   const report=stage==="report"?scoreInstrument(instrument,answers):null;
   const restart=()=>{
     setAnswers({});
+    setFlagged({});
     setIndex(0);
     setStage("intro");
     setAdult(false);
@@ -72,12 +76,20 @@ export default function MeasurementRunner({instrument}:{instrument:Instrument}){
     {stage==="questions"&&<section className={styles.panel} aria-label="正式测评作答">
       <div className={styles.progressRow}>
         <strong>第 {index+1} 题 / 共 {total} 题</strong>
-        <span aria-live="polite">已答 {done} / {total}</span>
+        <span aria-live="polite">已答 {done}/{total} · 待复查 {marked}</span>
+        <button type="button" className={styles.reviewLink} onClick={()=>setStage("review")}>答题总览</button>
       </div>
       <div className={styles.progress} role="progressbar" aria-label="已完成题量" aria-valuemin={0} aria-valuemax={total} aria-valuenow={done}>
         <span style={{width:(done/total*100)+"%"}}/>
       </div>
-      <p className={styles.prompt}>{instrument.prompt}</p>
+      <div className={styles.questionHeading}>
+        <p className={styles.prompt}>{instrument.prompt}</p>
+        <button type="button" className={flagged[item.id]?styles.flagActive:styles.flagButton}
+          aria-pressed={Boolean(flagged[item.id])}
+          onClick={()=>setFlagged(prev=>({...prev,[item.id]:!prev[item.id]}))}>
+          {flagged[item.id]?"★ 已标记待复查":"☆ 标记待复查"}
+        </button>
+      </div>
       <fieldset className={styles.question}>
         <legend>{item.text}</legend>
         <div className={styles.choices}>{instrument.options.map((label,i)=>{
@@ -96,22 +108,48 @@ export default function MeasurementRunner({instrument}:{instrument:Instrument}){
         <div className={styles.answerGrid} role="group" aria-label="选择题号">
           {instrument.items.map((q,i)=><button key={q.id} type="button" onClick={()=>setIndex(i)}
             aria-current={index===i?"step":undefined}
-            aria-label={"第"+(i+1)+"题"+(answers[q.id]!==undefined?"，已答":"，未答")}
-            className={(answers[q.id]!==undefined?styles.answered:"")+(index===i?" "+styles.current:"")}>
+            aria-label={"第"+(i+1)+"题"+(answers[q.id]!==undefined?"，已答":"，未答")+(flagged[q.id]?"，已标记":"")}
+            className={(answers[q.id]!==undefined?styles.answered:"")+(flagged[q.id]?" "+styles.marked:"")+(index===i?" "+styles.current:"")}>
             {i+1}
           </button>)}
         </div>
-        <p className={styles.answerHint}>深色为当前题，浅蓝为已答题。可以跳转和修改，不会自动提交。</p>
+        <p className={styles.answerHint}>深蓝：当前题 · 浅蓝：已答 · 黄点：待复查。可以跳题，不会自动交卷。</p>
       </details>
       <div className={styles.controls}>
         <button type="button" className={styles.secondaryButton} disabled={index===0} onClick={()=>setIndex(x=>x-1)}>上一题</button>
         {index<total-1
-          ?<button type="button" className={styles.primaryButton} disabled={answers[item.id]===undefined}
-              onClick={()=>setIndex(x=>x+1)}>下一题</button>
-          :<button type="button" className={styles.primaryButton} disabled={done!==total}
-              onClick={()=>setStage("report")}>提交并查看结果</button>}
+          ?<button type="button" className={styles.primaryButton} onClick={()=>setIndex(x=>x+1)}>下一题</button>
+          :<button type="button" className={styles.primaryButton}
+              onClick={()=>setStage("review")}>检查答卷</button>}
       </div>
-      {index===total-1&&done<total&&<p className={styles.smallNote}>还有 {total-done} 题未完成。打开答题卡可跳转补答。</p>}
+      {index===total-1&&done<total&&<p className={styles.smallNote}>仍有 {total-done} 题未完成，检查答卷后可跳转补答。</p>}
+    </section>}
+
+    {stage==="review"&&<section className={styles.panel} aria-label="交卷检查">
+      <div className={styles.examReviewHeading}><span className={styles.eyebrowDark}>ANSWER REVIEW</span><h2>交卷检查</h2>
+        <p>核对作答状态。黄色标记只用于提醒自己复查，不影响评分。</p></div>
+      <div className={styles.examReviewStats} aria-label="答卷状态">
+        <div><strong>{done}</strong><span>已答</span></div>
+        <div><strong>{total-done}</strong><span>未答</span></div>
+        <div><strong>{marked}</strong><span>待复查</span></div>
+      </div>
+      <div className={styles.answerGrid} role="group" aria-label="全部题目答题状态">
+        {instrument.items.map((q,i)=><button key={q.id} type="button"
+          onClick={()=>{setIndex(i);setStage("questions");}}
+          className={(answers[q.id]!==undefined?styles.answered:"")+(flagged[q.id]?" "+styles.marked:"")}
+          aria-label={"返回第"+(i+1)+"题"+(answers[q.id]!==undefined?"，已答":"，未答")+(flagged[q.id]?"，待复查":"")}>{i+1}</button>)}
+      </div>
+      {done<total&&<p role="status" className={styles.examReviewWarning}>尚有 {total-done} 道题未作答；请补完后再提交测评。</p>}
+      {done===total&&marked>0&&<p className={styles.examReviewWarning}>有 {marked} 道题被标记为待复查。可以返回检查，或确认保留当前答案并提交。</p>}
+      {done===total&&marked===0&&<p className={styles.examReviewReady}>全部题目已完成，可以提交并查看免费简要结果。</p>}
+      <div className={styles.controls}>
+        <button type="button" className={styles.secondaryButton}
+          onClick={()=>{setIndex(firstOpen>=0?firstOpen:Math.min(index,total-1));setStage("questions");}}>
+          {firstOpen>=0?"返回未答题":"返回检查"}
+        </button>
+        <button type="button" className={styles.primaryButton} disabled={done!==total}
+          onClick={()=>setStage("report")}>确认提交并查看结果</button>
+      </div>
     </section>}
 
     {stage==="report"&&report&&<section className={styles.panel}>

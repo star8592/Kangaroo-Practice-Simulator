@@ -47,6 +47,7 @@ export default function CareerFormalExamRunner({paper}:{paper:CareerPracticeCase
   const [now,setNow]=useState(()=>Date.now());
   const [agreed,setAgreed]=useState(false);
   const [review,setReview]=useState(false);
+  const [answerCardExpanded,setAnswerCardExpanded]=useState(false);
   const [grade,setGrade]=useState<CareerPracticeGrade|null>(null);
   const [loading,setLoading]=useState(false);
   const [starting,setStarting]=useState(false);
@@ -311,7 +312,11 @@ export default function CareerFormalExamRunner({paper}:{paper:CareerPracticeCase
             {index===questions.length-1?"检查并交卷":"下一题"}</button>
         </div>
       </section>
-      <aside className={styles.answerCard}>
+      <aside className={styles.answerCard+(answerCardExpanded?" "+styles.answerCardExpanded:"")}>
+        <button type="button" className={styles.answerCardToggle} aria-expanded={answerCardExpanded}
+          onClick={()=>setAnswerCardExpanded(open=>!open)}>
+          题号导航 · 已答 {answered}/{questions.length} · 待复查 {marked.length}
+        </button>
         <h2>本场答题卡</h2>
         <p>选题可跳转；浅色未答，深色已答，边框标记待检查。</p>
         <div className={styles.numberGrid}>

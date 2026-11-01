@@ -105,3 +105,21 @@ test("retired six-question pages and APIs are no longer reachable",async({page})
   }
   expect((await page.request.get("/api/career/practice/history")).status()).toBe(404);
 });
+
+test("mobile career exam keeps question map compact and supports jump to last item",async({page})=>{
+  await page.setViewportSize({width:390,height:844});
+  await page.goto("/career/exams/procurement-paper-2026q4-v1");
+  await page.getByRole("checkbox",{name:/我已阅读入场规则/}).check();
+  await page.getByRole("button",{name:"确认入场 · 开始模拟笔试"}).click();
+  const navigator=page.getByRole("button",{name:/题号导航 · 已答/});
+  await expect(navigator).toBeVisible();
+  await expect(navigator).toHaveAttribute("aria-expanded","false");
+  await navigator.click();
+  await expect(navigator).toHaveAttribute("aria-expanded","true");
+  await page.getByRole("button",{name:"跳转第24题"}).click();
+  await expect(page.getByText("第 24 / 24 题")).toBeVisible();
+  await page.getByRole("button",{name:"检查答卷 / 提前交卷"}).click();
+  await expect(page.getByRole("heading",{name:"交卷前确认"})).toBeVisible();
+  const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth);
+  expect(overflow).toBeLessThanOrEqual(2);
+});

@@ -91,6 +91,8 @@ test('SEAMO Grade 1: competition card, login, bilingual voice controls, answers 
 test('SEAMO Grade 2: question 21 integer input retains both narration languages',async({page})=>{
   await startGrade(page,2);
   await expect(page.locator('.choice-list button')).toHaveCount(5);
+  const navigation=page.getByRole('button',{name:/题号导航|Question navigation/});
+  if(await navigation.isVisible())await navigation.click();
   await page.locator('.number-grid button').nth(20).click();
   await expect(page.locator('.integer-answer-box input')).toBeVisible();
   await page.locator('.integer-answer-box input').fill('12');
