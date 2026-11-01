@@ -10,7 +10,7 @@ WorkingDirectory=/opt/socthink-releases/current
 # no passwd entry for that UID on this server. Drop credentials numerically.
 Environment=SOCTHINK_USER_DATA_DIR=/opt/socthink-math/private/users
 ExecStart=/usr/bin/setpriv --reuid=1000 --regid=1000 --clear-groups /usr/bin/node /opt/socthink-releases/current/scripts/seo_monitor_daily.mjs
-TimeoutStartSec=160
+TimeoutStartSec=480
 NoNewPrivileges=yes
 PrivateTmp=yes
 ProtectHome=yes
