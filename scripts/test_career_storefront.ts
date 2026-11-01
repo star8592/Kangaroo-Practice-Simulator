@@ -45,7 +45,7 @@ for(const guide of CAREER_ORIGINAL_GUIDES){
 }
 const home=fs.readFileSync("src/app/career/page.tsx","utf8");
 for(const s of ['id="market-heat"','id="digital-materials"','id="digital-services"',
-  "CAREER_ORIGINAL_GUIDES.map","CAREER_PRACTICE_CASES.filter","getCareerMarketGrowth",
+  "CAREER_ORIGINAL_GUIDES.map","CAREER_FORMAL_PAPERS.map","getCareerMarketGrowth",
   "暂无可比数据","className={styles.familyHeat}"]){
   assert(home.includes(s),"homepage missing "+s);
 }
