@@ -50,10 +50,10 @@ test("career home puts real goods and exams first, then navigates 13 industries 
   await expect(page).toHaveURL(/\/career\/roles\/industry-02-01$/);
   await expect(page.getByRole("heading",{level:1,name:"质量工程师"})).toBeVisible();
   await expect(page.getByRole("link",{name:"免费阅读并下载"})).toBeVisible();
-  await expect(page.getByRole("link",{name:"免费进入模拟考试"})).toBeVisible();
+  await expect(page.getByRole("link",{name:"进入45分钟标准笔试"})).toBeVisible();
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
 
-  await page.getByRole("link",{name:"免费进入模拟考试"}).click();
-  await expect(page).toHaveURL(/\/career\/practice\/manufacturing-quality-001$/);
-  await expect(page.getByRole("button",{name:"提交答卷并查看报告"})).toBeVisible();
+  await page.getByRole("link",{name:"进入45分钟标准笔试"}).click();
+  await expect(page).toHaveURL(/\/career\/exams\/quality-paper-2026q4-v1$/);
+  await expect(page.getByRole("button",{name:"确认入场 · 开始模拟笔试"})).toBeVisible();
 });
