@@ -51,6 +51,32 @@
       "retrieval": "source_verified_automated_fetch_blocked",
       "note": "One bulk data probe returned HTTP 403; do not bypass access control. Official SEC CSV/JSON can be imported from a lawfully obtained local export after checking the fair access policy.",
       "distributionStatus": "not_ingested"
+    },
+    {
+      "market": "CNINFO-CROSS",
+      "label": "巨潮资讯公开证券基础信息（沪深北跨市场候选）",
+      "url": "https://www.cninfo.com.cn/new/data/szse_stock.json",
+      "retrieval": "downloaded_private",
+      "sourceFileSha256": "59454a3e572f46159c6c741e7f3b34c43fc4a4c5be00ef26a47738bd359e0960",
+      "observedAt": "2026-11-01",
+      "note": "The filename suggests SZSE, but source contains SSE/SZSE/BSE securities, including historical/delisted records. No publication of bulk issuer names; do not treat 6262 rows as active employers.",
+      "privatePath": "private/career/market-sources/cninfo/2026-11-01",
+      "statistics": {
+        "rawSecurities": 6262,
+        "uniqueCodes": 6262,
+        "aShares": 6184,
+        "bShares": 77,
+        "cdr": 1,
+        "sseCandidates": 2513,
+        "szseCandidates": 3140,
+        "bseCandidates": 608,
+        "unclassified": 1,
+        "nameContainsDelistedCharacter": 162,
+        "potentialSameDisclosureOrgMultiSecurityGroups": 329,
+        "activeEmployersConfirmed": 0
+      },
+      "distributionStatus": "private_research_only_rights_review_required",
+      "jobDataStatus": "not_attached_to_security_rows"
     }
   ],
   "principles": [
@@ -64,6 +90,8 @@
     "scripts/normalize_hkex_list.py",
     "scripts/import_career_market_snapshot.ts",
     "src/lib/career-market-import.ts",
-    "src/lib/career-enterprise-universe.ts"
+    "src/lib/career-enterprise-universe.ts",
+    "scripts/normalize_cninfo_stock.py",
+    "scripts/test_cninfo_market_normalize.py"
   ]
 }
