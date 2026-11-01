@@ -75,6 +75,11 @@ export default function ResourceLibraryClient({ resources }: { resources: Resour
         <span><strong aria-live="polite">{filtered.length}</strong> {t.matched}</span>
       </div>
     </header>
+    <aside className={styles.shopCrosslink} aria-label={lang==="zh"?"原创资料商城":"Original resource shop"}>
+      <div><strong>{lang==="zh"?"需要可以下载的原创 PDF？":"Looking for downloadable original PDFs?"}</strong>
+      <p>{lang==="zh"?"这里以在线练习为主。完整原创数字资料请到独立商城查看真实文件、价格和当前付款状态。":"This page focuses on online practice. The separate shop shows actual original files, prices and live checkout status."}</p></div>
+      <Link href="/shop">{lang==="zh"?"进入原创资料商城":"Open digital resource shop"} <span aria-hidden="true">→</span></Link>
+    </aside>
     {hubs.length > 0 && <nav className={styles.hubNav} aria-label={lang === "zh" ? "按竞赛浏览试卷专题" : "Competition resource guides"}>
       <div className={styles.hubNavTitle}>{lang === "zh" ? "按竞赛体系查看资料专题" : "Browse competition guides"}</div>
       <div className={styles.hubLinks}>{hubs.map(hub =>
