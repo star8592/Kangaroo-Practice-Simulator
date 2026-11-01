@@ -1,0 +1,12 @@
+[Unit]
+Description=Daily SOC THINK search discovery and public crawling snapshot
+
+[Timer]
+OnCalendar=*-*-* 08:20:00
+RandomizedDelaySec=15m
+Persistent=true
+AccuracySec=1m
+Unit=socthink-seo-monitor.service
+
+[Install]
+WantedBy=timers.target
