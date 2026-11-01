@@ -45,7 +45,7 @@ export default async function ShopPage(){
           <p>PDF 电子文档 · 付款确认后按账号交付</p>
           <p>文件：{p.fileName}</p>
           <div className={styles.price}>¥{(p.priceMinor/100).toFixed(2)}<small>一次购买</small></div>
-          <Link href={"/shop/"+encodeURIComponent(p.id)} className={styles.action}>查看详情</Link>
+          <Link href={"/shop/"+encodeURIComponent(p.id)} className={styles.action}>查看文件和商品详情</Link>
         </article>)}
       </div>
       :<p className={styles.empty}>资料正在整理上架，暂时没有可展示的已审核交付文件。</p>}
