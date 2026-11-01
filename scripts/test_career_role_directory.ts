@@ -19,7 +19,7 @@ assert(searchCareerRoles("数据").length>=10);
 assert(searchCareerRoles("质量工程师").some(x=>x.title==="质量工程师"));
 assert(searchCareerRoles("不存在的职业名称").length===0);
 assert(searchCareerRoles("运营","product-ops").length>=4);
-assert(searchCareerRoles("运营","construction").length===0);
+assert(searchCareerRoles("量化","construction").length===0);
 assert.equal(CAREER_ORIGINAL_GUIDES.length,3);
 assert.equal(CAREER_PRACTICE_CASES.length,3);
 const rolePage=fs.readFileSync("src/app/career/roles/[id]/page.tsx","utf8");
