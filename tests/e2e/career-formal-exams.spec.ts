@@ -13,7 +13,7 @@ test("24-question career test has a real admission room, timed paper, marked car
   const direct=await page.request.post("/api/career/practice/"+id+"/grade",{
     data:{answers:{"P01":"500"}},
   });
-  expect(direct.status()).toBe(403,"must not accept score without signed exam admission");
+  expect(direct.status()).toBe(403);
   await page.getByRole("checkbox").check();
   await enter.click();
   const exam=page.getByLabel("岗位正式模拟笔试考场");
