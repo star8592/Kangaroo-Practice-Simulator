@@ -20,6 +20,7 @@ export default function CareerRoleExplorer(){
     }).filter((g):g is NonNullable<typeof g>=>g!==null);
   },[category,query]);
   const count=visible.reduce((n,group)=>n+group.segments.reduce((a,s)=>a+s.roles.length,0),0);
+  const overview=category==="all"&&!query;
   return <section id="career-directory" className={styles.catalogSection} aria-label="按行业分类搜索职业岗位">
     <div className={styles.sectionHeading}>
       <div>
@@ -52,10 +53,25 @@ export default function CareerRoleExplorer(){
         {group.title} <span>{group.roleCount}</span>
       </button>)}
     </div>
-    <div className={styles.resultMeta} aria-live="polite">当前显示 <strong>{count}</strong> 个岗位名称
-      <span>这是职业导航目录，不等于实时招聘数；有对应产品的岗位才会出现可用商品入口。</span>
+    <div className={styles.resultMeta} aria-live="polite">
+      {overview?<>目录覆盖 <strong>{CAREER_ROLES.length}</strong> 个岗位，选择一个行业查看完整清单</>:
+        <>筛选匹配 <strong>{count}</strong> 个岗位</>}
+      <span>岗位分类不等于实时在招；只有经过验收的资料与服务才显示实际领取入口。</span>
     </div>
-    {visible.length===0?<div className={styles.emptyRoles}>未找到匹配岗位，可换一个词或清除行业筛选。</div>:
+    {overview?<div className={styles.overviewGrid}>
+      {CAREER_ROLE_GROUPS.map(group=><article className={styles.overviewCard} key={group.id}>
+        <div className={styles.overviewCardHead}>
+          <h3>{group.title}</h3><span>{group.roleCount} 个岗位</span>
+        </div>
+        <div className={styles.overviewExamples}>
+          {group.segments.flatMap(segment=>segment.roles).slice(0,4)
+            .map(role=><Link key={role.id} href={"/career/roles/"+role.id}>{role.title}</Link>)}
+        </div>
+        <button type="button" onClick={()=>setCategory(group.id)}>
+          查看这一行业全部 {group.roleCount} 个岗位 <span aria-hidden="true">→</span>
+        </button>
+      </article>)}
+    </div>:visible.length===0?<div className={styles.emptyRoles}>未找到匹配岗位，可换一个词或清除行业筛选。</div>:
       <div className={styles.roleGroups}>
         {visible.map(group=><article key={group.id} className={styles.roleGroup}>
           <div className={styles.roleGroupHeader}>
