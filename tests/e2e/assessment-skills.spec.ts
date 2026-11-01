@@ -5,8 +5,8 @@ test("center exposes two real skills tasks while preserving honest labels",async
  expect(response?.status()).toBe(200);
  await expect(page.locator("article")).toHaveCount(6);
  await expect(page.getByText("免费研究预览",{exact:true})).toHaveCount(2);
- await expect(page.getByText("免费任务练习",{exact:true})).toHaveCount(2);
- await expect(page.getByText("建设中",{exact:true})).toHaveCount(2);
+ await expect(page.getByText("免费任务练习",{exact:true})).toHaveCount(3);
+ await expect(page.getByText("建设中",{exact:true})).toHaveCount(1);
  await expect(page.locator('a[href="/assessment-center/reasoning-practice-20"]')).toBeVisible();
  await expect(page.locator('a[href="/assessment-center/sql-lab"]')).toBeVisible();
 });
