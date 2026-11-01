@@ -3,7 +3,7 @@ import Image from "next/image";
 import {cookies} from "next/headers";
 import {notFound} from "next/navigation";
 import {findStoreProduct} from "@/lib/store-products";
-import {nativeCheckoutAllowed} from "@/lib/wechat-native-flags";
+import {nativeCheckoutAllowedForBuyer} from "@/lib/wechat-native-flags";
 import {billingConfigured,hasVerifiedItemEntitlement} from "@/lib/billing-ledger";
 import {parentFromSessionToken,PARENT_SESSION_COOKIE} from "@/lib/parent-auth";
 import NativeCheckoutPanel,{type PublishedMembershipOffer} from "@/app/membership/NativeCheckoutPanel";
@@ -24,10 +24,10 @@ export default async function StoreProductPage({params}:{
   const p=await findStoreProduct(productId);
   if(!p)notFound();
   const count=p.title.match(/(\d+)题/);
-  const checkoutReady=nativeCheckoutAllowed();
   const jar=await cookies();
   const buyer=parentFromSessionToken(jar.get(PARENT_SESSION_COOKIE)?.value);
   const accountLoggedIn=Boolean(buyer?.active&&(buyer.wechatId||buyer.wechatOpenId));
+  const checkoutReady=nativeCheckoutAllowedForBuyer(accountLoggedIn?buyer?.id:null,p.id);
   let purchased=false;
   if(accountLoggedIn&&buyer&&billingConfigured()){
     try {purchased=await hasVerifiedItemEntitlement(buyer.id,"resource",p.resourceId);}
