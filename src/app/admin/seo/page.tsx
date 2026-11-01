@@ -4,6 +4,7 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { isAdmin, SESSION_COOKIE, userFromSessionToken } from "@/lib/auth";
 import { getSeoMonitorDashboard } from "@/lib/seo-monitor-store";
+import AdminOperationsNav from "@/components/AdminOperationsNav";
 import styles from "./seo.module.css";
 
 export const dynamic = "force-dynamic";
@@ -43,6 +44,7 @@ export default async function AdminSeoDashboard() {
           <Link href="/sitemap.xml" target="_blank">查看 Sitemap</Link>
         </nav>
       </header>
+      <AdminOperationsNav />
 
       <section aria-labelledby="site-health" className={styles.section}>
         <div className={styles.sectionHead}>
