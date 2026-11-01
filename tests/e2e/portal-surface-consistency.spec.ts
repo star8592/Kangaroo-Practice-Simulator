@@ -2,7 +2,7 @@ import {expect,test} from "@playwright/test";
 
 const corePages=[
   "/","/assessments","/resources","/exam-planner","/membership","/login",
-  "/competitions","/events","/terms","/digital-purchase-policy",
+  "/shop","/competitions","/events","/terms","/digital-purchase-policy",
 ] as const;
 
 test("public exam, resource, commerce and login pages share one coherent accessible portal",async({page})=>{
@@ -42,4 +42,12 @@ test("old parent routes and account entry lead to one unified WeChat sign-in",as
     await page.goto(route,{waitUntil:"domcontentloaded"});
     await expect(page).toHaveURL(/\/login\?next=/);
   }
+});
+
+test("resource finder links directly to the separate real-PDF shop",async({page})=>{
+  await page.goto("/resources",{waitUntil:"domcontentloaded"});
+  await page.getByRole("link",{name:/进入原创资料商城/}).click();
+  await expect(page).toHaveURL(/\/shop$/);
+  await expect(page.getByRole("heading",{level:1,name:"原创数学资料商城"})).toBeVisible();
+  await expect(page.locator("main")).toHaveCount(1);
 });

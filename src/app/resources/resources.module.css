@@ -41,3 +41,12 @@
 .sectionIntro{line-height:1.7;color:var(--portal-muted);font-size:15px;margin:0 0 12px}
 .hubFooter{padding:18px 0;font-weight:700}
 @media(max-width:760px){.hubNav{padding:15px}.hubLinks a{font-size:13px}.explainer{padding:18px}.breadcrumbs{margin-bottom:14px}}
+
+/* Clear bridge from free online practice to the independent original PDF shop. */
+.shopCrosslink{display:flex;justify-content:space-between;align-items:center;gap:20px;margin-top:18px;padding:20px 23px;border-radius:var(--radius-card);background:#fff;border:1px solid var(--portal-border)}
+.shopCrosslink strong{color:var(--portal-navy);font-size:17px}
+.shopCrosslink p{font-size:14px;color:var(--portal-muted);line-height:1.7;margin:6px 0 0}
+.shopCrosslink>a{min-height:44px;display:inline-flex;align-items:center;justify-content:center;gap:6px;white-space:nowrap;background:var(--portal-blue);color:#fff;padding:10px 18px;border-radius:var(--radius-control);font-size:14px;font-weight:800;text-decoration:none}
+.shopCrosslink>a:hover{background:var(--portal-blue-strong)}
+.shopCrosslink>a:focus-visible{outline:3px solid #9ec4f4;outline-offset:2px}
+@media(max-width:760px){.shopCrosslink{display:grid;padding:18px;gap:13px}.shopCrosslink>a{width:100%}}

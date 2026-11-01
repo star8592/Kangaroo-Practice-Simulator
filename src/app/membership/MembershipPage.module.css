@@ -48,3 +48,20 @@
 @media(max-width:760px){.page{width:100%;padding:14px var(--page-gutter-mobile) 58px}.hero{padding:25px 20px;display:block}.hero h1{font-size:30px}.hero p{font-size:15px}.heroAside{display:none}.status{align-items:start}.status span{width:100%}.sectionHeading h2{font-size:23px}.serviceGrid{gap:10px}.serviceCard{padding:17px}.serviceCard h3{font-size:16px}.checkout{padding:16px}.checkoutOffers{grid-template-columns:1fr}}
 @media(max-width:420px){.serviceGrid{grid-template-columns:1fr}}
 @media(prefers-reduced-motion:reduce){.serviceCard{transition:none}.serviceCard:hover{transform:none}}
+
+/* Embedded one-product checkout uses the exact same payment state machine and
+ * signed POST /api/payments/wechat/checkout as the membership page. */
+.checkoutCompact{margin:22px 0 0;padding:0;border:0;background:transparent;border-radius:0}
+.checkoutCompact .checkoutOffers{display:block;margin:0}
+.checkoutCompact .checkoutOffer{display:grid;gap:14px;border:0;border-radius:0;padding:0;box-shadow:none;background:transparent}
+.checkoutCompact .checkoutOffer>b,.checkoutCompact .checkoutOffer>small,
+.checkoutCompact .checkoutOffer>span{display:none}
+.checkoutCompact .checkoutOffer button{min-height:50px;font-size:15px;border-radius:var(--radius-control)}
+.checkoutCompact .purchasePolicyCheckbox{font-size:12px;line-height:1.65;color:var(--portal-muted)}
+.checkoutCompact .purchasePolicyCheckbox input{min-width:17px}
+.checkoutCompact .checkoutQr{padding:14px 0;margin-top:15px;border:1px solid var(--portal-border)}
+.checkoutCompact .checkoutQr img{max-width:100%;height:auto}
+.checkoutPaid{margin-top:16px;background:var(--portal-blue-soft);border:1px solid #bcd6f5;padding:14px;border-radius:12px;color:var(--portal-navy)}
+.checkoutPaid p{margin:0 0 9px}
+.checkoutPaid a{font-weight:850;color:var(--portal-blue);text-decoration:underline;text-underline-offset:2px}
+.checkoutCompact p[role=status],.checkoutCompact p[role=alert]{overflow-wrap:anywhere;font-size:13px;line-height:1.65}
