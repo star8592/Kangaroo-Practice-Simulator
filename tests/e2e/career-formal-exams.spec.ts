@@ -10,7 +10,7 @@ test("24-question career test has a real admission room, timed paper, marked car
   await expect(page.locator("main").last()).toContainText("45");
   const enter=page.getByRole("button",{name:"确认入场 · 开始模拟笔试"});
   await expect(enter).toBeDisabled();
-  const direct=await page.request.post("/api/career/practice/"+id+"/grade",{
+  const direct=await page.request.post("/api/career/exam/"+id+"/grade",{
     data:{answers:{"P01":"500"}},
   });
   expect(direct.status()).toBe(403);
