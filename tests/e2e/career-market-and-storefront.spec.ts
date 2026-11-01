@@ -22,7 +22,7 @@ test("market growth, original materials and online service are real user journey
   await expect(goods.getByRole("article")).toHaveCount(3);
   await expect(services.getByRole("article")).toHaveCount(3);
   await expect(goods).toContainText("免费完整领取");
-  await expect(services).toContainText("免费开始");
+  await expect(services).toContainText("免费完整体验");
   await expect(page.locator("main").last()).toContainText("暂无可比数据");
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
 
