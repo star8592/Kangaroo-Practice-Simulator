@@ -1,6 +1,6 @@
 "use client";
 
-import {useEffect,useState} from "react";
+import {useEffect,useState,useSyncExternalStore} from "react";
 import {
  APTITUDE_VERSION,APTITUDE_DURATION_MINUTES,APTITUDE_ITEMS,APTITUDE_DOMAINS,
  scoreAptitude,type AptitudeReport,
@@ -18,36 +18,36 @@ const TOTAL=APTITUDE_ITEMS.length;
 const INITIAL_TIME=APTITUDE_DURATION_MINUTES*60;
 function remainingText(s:number){return String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0")}
 
+const noNotifications=()=>()=>{};
+const clientReady=()=>true;
+const serverNotReady=()=>false;
+function readAttempt():Saved|null{
+ if(typeof window==="undefined")return null;
+ try{
+  const raw=sessionStorage.getItem(KEY);
+  if(!raw)return null;
+  const saved=JSON.parse(raw) as Saved;
+  const validAnswers=Object.entries(saved.answers||{}).every(([id,v])=>
+    APTITUDE_ITEMS.some(q=>q.id===id)&&Number.isInteger(v)&&v>=0&&v<=3);
+  const validStage=["questions","review","report"].includes(saved.stage);
+  if(saved.version!==APTITUDE_VERSION||!validAnswers||!validStage
+    ||!Number.isInteger(saved.index)||saved.index<0||saved.index>=TOTAL
+    ||!Number.isFinite(saved.deadline)||saved.deadline<=0)return null;
+  const expired=saved.deadline<=Date.now()&&saved.stage!=="report";
+  return expired?{...saved,stage:"report",timedOut:true}:saved;
+ }catch{return null;}
+}
 export default function CareerAptitudeRunner(){
- const[hydrated,setHydrated]=useState(false);
- const[stage,setStage]=useState<Stage>("intro");
+ const hydrated=useSyncExternalStore(noNotifications,clientReady,serverNotReady);
+ const [initial]=useState<Saved|null>(readAttempt);
+ const[stage,setStage]=useState<Stage>(initial?.stage??"intro");
  const[accepted,setAccepted]=useState(false);
- const[answers,setAnswers]=useState<Record<string,number>>({});
- const[flagged,setFlagged]=useState<Record<string,boolean>>({});
- const[index,setIndex]=useState(0);
- const[deadline,setDeadline]=useState(0);
+ const[answers,setAnswers]=useState<Record<string,number>>(initial?.answers??{});
+ const[flagged,setFlagged]=useState<Record<string,boolean>>(initial?.flagged??{});
+ const[index,setIndex]=useState(initial?.index??0);
+ const[deadline,setDeadline]=useState(initial?.deadline??0);
  const[seconds,setSeconds]=useState(INITIAL_TIME);
- const[timedOut,setTimedOut]=useState(false);
- useEffect(()=>{
-  try{
-   const raw=sessionStorage.getItem(KEY);
-   if(raw){
-    const saved=JSON.parse(raw) as Saved;
-    const validAnswers=Object.entries(saved.answers||{}).every(([id,v])=>
-     APTITUDE_ITEMS.some(q=>q.id===id)&&Number.isInteger(v)&&v>=0&&v<=3);
-    const validStage=["questions","review","report"].includes(saved.stage);
-    if(saved.version===APTITUDE_VERSION&&validAnswers&&validStage
-      &&Number.isInteger(saved.index)&&saved.index>=0&&saved.index<TOTAL
-      &&Number.isFinite(saved.deadline)&&saved.deadline>0){
-     setAnswers(saved.answers);setFlagged(saved.flagged||{});setIndex(saved.index);
-     setDeadline(saved.deadline);
-     if(saved.deadline<=Date.now()&&saved.stage!=="report"){setTimedOut(true);setStage("report");}
-     else{setTimedOut(Boolean(saved.timedOut));setStage(saved.stage);}
-    }
-   }
-  }catch{/* corrupt or disabled storage: start clean, never block training */}
-  setHydrated(true);
- },[]);
+ const[timedOut,setTimedOut]=useState(Boolean(initial?.timedOut));
  useEffect(()=>{
   if(!hydrated)return;
   if(stage==="intro"){try{sessionStorage.removeItem(KEY)}catch{};return;}
@@ -61,7 +61,7 @@ export default function CareerAptitudeRunner(){
    setSeconds(remaining);
    if(remaining===0){setTimedOut(true);setStage("report");}
   };
-  tick();const timer=setInterval(tick,1000);return()=>clearInterval(timer);
+  const timer=setInterval(tick,1000);return()=>clearInterval(timer);
  },[hydrated,stage,deadline]);
  const item=APTITUDE_ITEMS[index];
  const answered=APTITUDE_ITEMS.filter(q=>answers[q.id]!==undefined).length;
