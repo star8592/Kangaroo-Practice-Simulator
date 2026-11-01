@@ -1,5 +1,5 @@
 import {listCareerDemandFamilies,type CareerFamilyId} from "./career-demand";
-import {CAREER_PRACTICE_CASES} from "./career-practice";
+import {CAREER_FORMAL_PAPERS} from "./career-formal-bank";
 
 export type CareerOfferFormat = "tutorial"|"exam"|"lab"|"case"|"interview";
 export type CareerSupplyCandidate = Readonly<{
@@ -11,7 +11,7 @@ export type CareerSupplyCandidate = Readonly<{
   employerCount:number;
   sourceSignalIds:readonly string[];
   sourceUrls:readonly string[];
-  readiness:"proposal"|"free-practice";
+  readiness:"proposal"|"free-exam";
   liveHref?:string;
 }>;
 
@@ -92,7 +92,7 @@ export function getCareerSupplyCandidates(familyId:CareerFamilyId):CareerSupplyC
     }
   }
   return [...bySkill.entries()].map(([skillCode,a])=>{
-    const practice=CAREER_PRACTICE_CASES.find(p=>
+    const exam=CAREER_FORMAL_PAPERS.find(p=>
       p.family===familyId&&p.deliveryState==="free-live-preview"&&
       p.evidenceSkillCodes.includes(skillCode)&&a.signalIds.has(p.evidenceSignalId));
     return {
@@ -104,8 +104,8 @@ export function getCareerSupplyCandidates(familyId:CareerFamilyId):CareerSupplyC
       employerCount:a.employers.size,
       sourceSignalIds:[...a.signalIds].sort(),
       sourceUrls:[...a.urls].sort(),
-      readiness:practice?"free-practice" as const:"proposal" as const,
-      ...(practice?{liveHref:"/career/practice/"+practice.id}:{}),
+      readiness:exam?"free-exam" as const:"proposal" as const,
+      ...(exam?{liveHref:"/career/exams/"+exam.id}:{}),
     };
   }).sort((a,b)=>b.employerCount-a.employerCount||
     b.evidenceCount-a.evidenceCount||a.title.localeCompare(b.title,"zh"));

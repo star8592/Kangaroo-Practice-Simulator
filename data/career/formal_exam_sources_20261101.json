@@ -1,0 +1,180 @@
+{
+  "bankRevision": 1,
+  "observedAt": "2026-11-01",
+  "lastSourceReviewAt": "2026-11-01",
+  "publicationClaim": "与部分2025–2026招聘/笔经公开线索核对出题方向；所有已交付标准模拟题由SOCTHINK原创，未称为企业真题。",
+  "refreshPolicy": "追加新来源与新题时保留不可变试卷版本；不得以定时任务执行次数冒充实际发现数。每条必须有原URL、发布时间（未知填null）、采集日期、版权使用状态。",
+  "sources": [
+    {
+      "id": "nx2026-guide",
+      "url": "https://www.nowcoder.com/discuss/851107351640731648",
+      "title": "牛客官方《2026大厂校招笔试指南》",
+      "platform": "牛客",
+      "sourceKind": "published-guide",
+      "publisher": "牛客运营",
+      "publishedAt": null,
+      "observedAt": "2026-11-01",
+      "reportedExamDate": null,
+      "rights": "reference-topics-only",
+      "verifiedLevel": "platform-published",
+      "focus": [
+        "笔试60–120分钟",
+        "技术岗15道选择+3编程、纯编程、数据岗混合组卷"
+      ]
+    },
+    {
+      "id": "nx-ops-interview",
+      "url": "https://www.nowcoder.com/ta/review-product",
+      "title": "牛客产品与运营面试专题题单",
+      "platform": "牛客",
+      "sourceKind": "public-topic-index",
+      "publisher": "牛客",
+      "publishedAt": null,
+      "observedAt": "2026-11-01",
+      "reportedExamDate": null,
+      "rights": "reference-topics-only",
+      "verifiedLevel": "public-topic-list",
+      "focus": [
+        "运营基础",
+        "用户增长",
+        "产品商业化",
+        "行业认知"
+      ]
+    },
+    {
+      "id": "zhihu-supplier-topics",
+      "url": "https://www.zhihu.com/en/answer/3410076566",
+      "title": "供应商管理与SQE常见面试问题（社区答主）",
+      "platform": "知乎",
+      "sourceKind": "community-topic-summary",
+      "publisher": "知乎社区作者",
+      "publishedAt": null,
+      "observedAt": "2026-11-01",
+      "reportedExamDate": null,
+      "rights": "reference-topics-only",
+      "verifiedLevel": "user-post-unverified",
+      "focus": [
+        "供应商导入",
+        "供应商绩效",
+        "质量风险",
+        "来料异议"
+      ]
+    },
+    {
+      "id": "zhihu-quality-topics",
+      "url": "https://zhuanlan.zhihu.com/p/260203158",
+      "title": "优思学院：质量岗位常见面试问题",
+      "platform": "知乎",
+      "sourceKind": "institution-guide",
+      "publisher": "优思学院",
+      "publishedAt": null,
+      "observedAt": "2026-11-01",
+      "reportedExamDate": null,
+      "rights": "reference-topics-only",
+      "verifiedLevel": "institution-authored-not-employer-exam",
+      "focus": [
+        "FMEA",
+        "MSA",
+        "SPC",
+        "8D",
+        "供应商质量"
+      ]
+    },
+    {
+      "id": "zhihu-sqe-recollection",
+      "url": "https://www.zhihu.com/en/answer/3410076566",
+      "title": "SQE岗位提问经验分享（非企业官方考试）",
+      "platform": "知乎",
+      "sourceKind": "community-topic-summary",
+      "publisher": "社区用户",
+      "publishedAt": null,
+      "observedAt": "2026-11-01",
+      "reportedExamDate": null,
+      "rights": "reference-topics-only",
+      "verifiedLevel": "user-post-unverified",
+      "focus": [
+        "SQE",
+        "供应商审核",
+        "FMEA",
+        "GR&R"
+      ]
+    },
+    {
+      "id": "nx-2025-tester-recall",
+      "url": "https://www.nowcoder.com/discuss/785900443426623488",
+      "title": "4399测试开发笔试记录（考生回忆）",
+      "platform": "牛客",
+      "sourceKind": "candidate-recollection",
+      "publisher": "考生自述",
+      "publishedAt": "2025-08-15",
+      "observedAt": "2026-11-01",
+      "reportedExamDate": null,
+      "rights": "recollection-metadata-only",
+      "verifiedLevel": "single-candidate-unverified",
+      "focus": [
+        "20选择",
+        "3问答",
+        "3编程",
+        "2主观"
+      ],
+      "notes": "原帖明确标为笔试记录，但未披露可独立核实的考试日；不得宣称所记载题量代表4399所有场次。"
+    },
+    {
+      "id": "nx-2026-jd-rewritten",
+      "url": "https://www.nowcoder.com/discuss/868056344274685952",
+      "title": "京东2026-03-28改编真题帖（第三方作者）",
+      "platform": "牛客",
+      "sourceKind": "third-party-rewritten",
+      "publisher": "第三方考生/作者",
+      "publishedAt": "2026-03-30",
+      "observedAt": "2026-11-01",
+      "reportedExamDate": "2026-03-28",
+      "rights": "reference-topics-only",
+      "verifiedLevel": "third-party-unverified",
+      "focus": [
+        "算法",
+        "题目重新包装",
+        "回忆版与改编版不同"
+      ],
+      "notes": "网页自述改编真题，无法据此证实京东官方试题或获得完整原文商用许可。"
+    },
+    {
+      "id": "aon-assessment",
+      "url": "https://www.aon.com/en/capabilities/talent-and-rewards/prepare-for-your-online-assessment",
+      "title": "Aon线上测评官方说明",
+      "platform": "Aon",
+      "sourceKind": "assessment-provider-official",
+      "publisher": "Aon",
+      "publishedAt": null,
+      "observedAt": "2026-11-01",
+      "reportedExamDate": null,
+      "rights": "methodology-reference",
+      "verifiedLevel": "official-provider",
+      "focus": [
+        "入场导览",
+        "示例练习",
+        "考试规则",
+        "开始后计时",
+        "到时结束"
+      ]
+    },
+    {
+      "id": "shl-verify-18min",
+      "url": "https://www.shl.hu/en/tests-tools/ability-tests/numerical-tests/numerical-reasoning-interactive",
+      "title": "SHL Verify Interactive Numerical Reasoning",
+      "platform": "SHL",
+      "sourceKind": "assessment-provider-official",
+      "publisher": "SHL",
+      "publishedAt": null,
+      "observedAt": "2026-11-01",
+      "reportedExamDate": null,
+      "rights": "format-reference-only",
+      "verifiedLevel": "official-provider",
+      "focus": [
+        "数字推理",
+        "18分钟",
+        "移动端测评"
+      ]
+    }
+  ]
+}

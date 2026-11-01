@@ -1,6 +1,6 @@
 import {NextRequest,NextResponse} from "next/server";
 import {userFromRequest} from "@/lib/auth";
-import {getCareerPractice} from "@/lib/career-practice";
+import {CAREER_FORMAL_PAPERS,isCareerFormalPaper} from "@/lib/career-formal-bank";
 import {
   isValidCareerAttemptId,isVerifiedCareerStudyIdentity,
   listCareerAttemptSummaries,readCareerAttempt,
@@ -30,23 +30,28 @@ export async function GET(req:NextRequest){
         return NextResponse.json({error:"成绩编号无效",code:"INVALID_ATTEMPT_ID"},
           {status:400,headers:PRIVATE});
       const record=readCareerAttempt(user.id,attemptId);
-      if(!record)
+      if(!record||!isCareerFormalPaper(record.summary.caseId))
         return NextResponse.json({error:"成绩不存在",code:"ATTEMPT_NOT_FOUND"},
           {status:404,headers:PRIVATE});
       return NextResponse.json({summary:record.summary,grade:record.grade},
         {status:200,headers:PRIVATE});
     }
     const caseId=query.get("caseId");
-    if(caseId!==null&&!getCareerPractice(caseId))
-      return NextResponse.json({error:"训练项目不存在",code:"CASE_NOT_FOUND"},
+    if(caseId!==null&&!isCareerFormalPaper(caseId))
+      return NextResponse.json({error:"标准模拟笔试不存在",code:"CASE_NOT_FOUND"},
         {status:404,headers:PRIVATE});
     const limitRaw=query.get("limit")||"20";
     if(!/^\d{1,2}$/.test(limitRaw)||Number(limitRaw)<1||Number(limitRaw)>50)
       return NextResponse.json({error:"查询条数应为1至50",code:"INVALID_LIMIT"},
         {status:400,headers:PRIVATE});
-    const attempts=listCareerAttemptSummaries(user.id,{
-      caseId:caseId??undefined,limit:Number(limitRaw),
-    });
+    // Old six-item exercises are permanently retired: do not include their
+    // saved reports in the active standard-exam history. Stored snapshots remain
+    // untouched so account data is never silently destroyed during deployment.
+    const attempts=caseId?
+      listCareerAttemptSummaries(user.id,{caseId,limit:Number(limitRaw)}):
+      CAREER_FORMAL_PAPERS.flatMap(p=>
+        listCareerAttemptSummaries(user.id,{caseId:p.id,limit:50}))
+        .sort((a,b)=>b.submittedAt-a.submittedAt).slice(0,Number(limitRaw));
     return NextResponse.json({attempts,persistence:"account" as const},
       {status:200,headers:PRIVATE});
   }catch{

@@ -1,8 +1,9 @@
 import crypto from "node:crypto";
 import {NextRequest,NextResponse} from "next/server";
 import {userFromRequest} from "@/lib/auth";
-import {getCareerPractice} from "@/lib/career-practice";
+import {getCareerFormalPaper} from "@/lib/career-formal-bank";
 import {gradeCareerPractice} from "@/lib/career-practice-grade";
+import {verifyCareerExamSession} from "@/lib/career-exam-session";
 import {
   CareerAttemptConflictError,isValidCareerAttemptId,
   isVerifiedCareerStudyIdentity,recordCareerAttempt,
@@ -19,9 +20,9 @@ type RouteContext={params:Promise<{id:string}>};
  */
 export async function POST(req:NextRequest,{params}:RouteContext){
   const {id}=await params;
-  const practice=getCareerPractice(id);
-  if(!practice||practice.deliveryState!=="free-live-preview")
-    return NextResponse.json({error:"未找到已开放的职业实操案例",code:"CASE_NOT_FOUND"},
+  const paper=getCareerFormalPaper(id);
+  if(!paper||paper.deliveryState!=="free-live-preview")
+    return NextResponse.json({error:"未找到已开放的标准模拟笔试",code:"EXAM_NOT_FOUND"},
       {status:404,headers:PRIVATE});
   const type=req.headers.get("content-type")||"";
   if(!type.toLowerCase().startsWith("application/json"))
@@ -36,11 +37,19 @@ export async function POST(req:NextRequest,{params}:RouteContext){
     if(Buffer.byteLength(text,"utf8")>8192)
       return NextResponse.json({error:"答案内容超过限制",code:"ANSWERS_TOO_LARGE"},
         {status:413,headers:PRIVATE});
-    const value=JSON.parse(text) as {answers?:unknown;attemptId?:unknown};
+    const value=JSON.parse(text) as {answers?:unknown;attemptId?:unknown;sessionToken?:unknown};
     if(!value||typeof value!=="object"||Array.isArray(value))
       throw Error("INVALID_BODY");
+    {
+      const verdict=verifyCareerExamSession(id,value.sessionToken);
+      if(verdict!=="valid")return NextResponse.json({
+        error:verdict==="expired"?"本场模拟笔试的交卷时间已结束，请重新进入考试":
+          "尚未完成入场确认，请先进入正式模拟笔试",
+        code:verdict==="expired"?"EXAM_TIME_EXPIRED":"EXAM_SESSION_REQUIRED",
+      },{status:verdict==="expired"?410:403,headers:PRIVATE});
+    }
     const grade=gradeCareerPractice(id,value.answers);
-    if(!grade)return NextResponse.json({error:"案例不存在"},{status:404,headers:PRIVATE});
+    if(!grade)return NextResponse.json({error:"试卷不存在"},{status:404,headers:PRIVATE});
 
     const user=userFromRequest(req);
     if(!isVerifiedCareerStudyIdentity(user)){
@@ -57,8 +66,8 @@ export async function POST(req:NextRequest,{params}:RouteContext){
         ownerId:user.id,
         attemptId:attemptId as string,
         caseId:id,
-        title:practice.title,
-        revision:practice.revision,
+        title:paper.title,
+        revision:paper.revision,
         answers:value.answers as Record<string,string|string[]>,
         grade,
       });

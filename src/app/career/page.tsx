@@ -4,7 +4,7 @@ import {CAREER_DEMAND_OBSERVED_AT,CAREER_FAMILIES,countCareerEvidence,
 import {getCareerSupplyCandidates} from "@/lib/career-product-mapper";
 import {CAREER_MARKET_GROWTH,getCareerMarketGrowth} from "@/lib/career-market-growth";
 import {CAREER_ORIGINAL_GUIDES,guideForFamily} from "@/lib/career-original-guides";
-import {CAREER_PRACTICE_CASES} from "@/lib/career-practice";
+import {CAREER_FORMAL_PAPERS} from "@/lib/career-formal-bank";
 import CareerRoleExplorer from "@/components/CareerRoleExplorer";
 import commerce from "./career-commerce.module.css";
 import styles from "./career.module.css";
@@ -60,7 +60,7 @@ export default async function CareerDemandPage({searchParams}:{searchParams:Sear
         <article className={commerce.heroOffer+" "+commerce.heroOfferService}>
           <span className={commerce.offerKind}>02 · 在线考试</span>
           <h2>模拟考试与自动评分</h2>
-          <p>{CAREER_PRACTICE_CASES.filter(x=>x.deliveryState==="free-live-preview").length} 套在线实操 · 自动评分</p>
+          <p>{CAREER_FORMAL_PAPERS.length} 套标准岗位笔试 · 每套24题 / 45分钟</p>
           <Link className={commerce.bigAction+" "+commerce.bigActionService}
             href="#digital-services">做模拟考试 · 立即开始 <span aria-hidden="true">→</span></Link>
         </article>
@@ -87,23 +87,25 @@ export default async function CareerDemandPage({searchParams}:{searchParams:Sear
     </section>
     <section className={styles.commerceSection} id="digital-services" aria-labelledby="services-title">
       <div className={styles.commerceHeading}>
-        <div><span className={styles.commerceNumber}>02 / DIGITAL SERVICES</span>
-          <h2 id="services-title">数字服务 · 在线模拟考试</h2>
-          </div>
-        <span className={styles.commerceCount}>{CAREER_PRACTICE_CASES.length} 套已开放在线练习</span>
+        <div><span className={styles.commerceNumber}>02 / DIGITAL EXAMS</span>
+          <h2 id="services-title">标准岗位模拟笔试 · 24题 / 45分钟</h2>
+          <p>入场计时、答题卡、交卷复核、自动评分及逐题解析。</p></div>
+        <span className={styles.commerceCount}>{CAREER_FORMAL_PAPERS.length} 套完整模拟卷 · {CAREER_FORMAL_PAPERS.reduce((n,p)=>n+p.questions.length,0)}道原创题</span>
       </div>
       <div className={styles.offerGrid}>
-        {CAREER_PRACTICE_CASES.filter(x=>x.deliveryState==="free-live-preview").map(x=><article className={styles.offerCard} key={x.id}>
-          <div className={styles.offerTop}><span>原创模拟考试 / 在线服务</span><strong>免费开始</strong></div>
-          <h3>{x.title}</h3><p>{x.context}</p>
-          <div className={styles.offerSpecs}><span>{x.questions.length} 道题</span>
-            <span>{x.maxPoints} 分</span><span>参考 {x.durationMinutes} 分钟</span></div>
+        {CAREER_FORMAL_PAPERS.map(paper=><article className={styles.offerCard} key={paper.id}>
+          <div className={styles.offerTop}><span>标准模拟笔试 / 限时考场</span><strong>免费完整体验</strong></div>
+          <h3>{paper.title}</h3>
+          <p>{paper.context}</p>
+          <div className={styles.offerSpecs}><span>{paper.questions.length} 道题</span>
+            <span>{paper.maxPoints} 分</span><span>{paper.durationMinutes} 分钟限时</span><span>2026 Q4 · 原创v{paper.revision}</span></div>
           <div className={styles.offerActions}>
-            <Link href={"/career/practice/"+x.id}>立即开始考试</Link>
-            <Link href={"/career/guides/"+(guideForFamily(x.family)?.id??"")}>配套复习资料</Link>
+            <Link href={"/career/exams/"+paper.id}>进入考场 · 确认入场</Link>
+            <Link href={"/career/guides/"+guideForFamily(paper.family)!.id}>考前复习资料</Link>
           </div>
         </article>)}
       </div>
+
     </section>
     <CareerRoleExplorer/>
 
@@ -157,7 +159,7 @@ export default async function CareerDemandPage({searchParams}:{searchParams:Sear
       {results.map(group=>{
         const candidates=getCareerSupplyCandidates(group.id);
         const guide=guideForFamily(group.id);
-        const available=CAREER_PRACTICE_CASES.filter(x=>x.family===group.id&&x.deliveryState==="free-live-preview");
+        const available=CAREER_FORMAL_PAPERS.filter(x=>x.family===group.id&&x.deliveryState==="free-live-preview");
         const metric=getCareerMarketGrowth(group.id);
         const jobCount=group.signals.filter(s=>s.evidenceLevel==="job").length;
         return <article key={group.id} className={styles.card}>
@@ -182,8 +184,8 @@ export default async function CareerDemandPage({searchParams}:{searchParams:Sear
           <div className={styles.cardProducts}>
             <strong>本岗位可用内容</strong>
             {guide&&<Link href={"/career/guides/"+guide.id}> <span>资料</span> {guide.title} · 阅读/下载</Link>}
-            {available.map(x=><Link key={x.id} href={"/career/practice/"+x.id}>
-              <span>考试</span> {x.title} · 在线评分</Link>)}
+            {available.map(x=><Link key={x.id} href={"/career/exams/"+x.id}>
+              <span>考试</span> {x.title} · 正式笔试</Link>)}
             {!guide&&available.length===0&&<p>暂无完成验收的资料或考试服务；不展示虚构购买入口。</p>}
           </div>
           {group.skillCodes.length>0&&<div className={styles.skills}>
@@ -201,7 +203,7 @@ export default async function CareerDemandPage({searchParams}:{searchParams:Sear
             <div className={styles.proposal}>
               <div className={styles.proposalTop}><strong>能力方向与供应进度</strong><span>已开放或规划中 · 非企业官方考题</span></div>
               {candidates.length>0?<ul>{candidates.map(c=><li key={c.id}>{c.title}
-                <small> · {c.evidenceCount}条具体岗位证据 · {c.readiness==="free-practice"?"已有免费实操":"尚在规划"}</small>
+                <small> · {c.evidenceCount}条具体岗位证据 · {c.readiness==="free-exam"?"已有标准模拟笔试":"尚在规划"}</small>
               </li>)}</ul>:<p className={styles.noSupply}>仅有岗位类别样本，缺少具体技能要求；暂不制造考试商品。</p>}
             </div>
           </details>

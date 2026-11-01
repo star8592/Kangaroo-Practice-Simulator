@@ -7,7 +7,7 @@ import {CAREER_FAMILIES,listCareerDemandFamilies}
   from "../src/lib/career-demand";
 import {CAREER_ORIGINAL_GUIDES,getCareerGuide,guideForFamily,
   careerGuideToMarkdown,validateCareerGuides} from "../src/lib/career-original-guides";
-import {CAREER_PRACTICE_CASES,getCareerPractice} from "../src/lib/career-practice";
+import {CAREER_FORMAL_PAPERS,getCareerFormalPaper} from "../src/lib/career-formal-bank";
 import {GET} from "../src/app/career/guides/[id]/download/route";
 
 assert.deepEqual(validateCareerMarketGrowth(),[]);
@@ -28,24 +28,24 @@ assert(groups.length>=12);
 assert(groups.every(g=>g.signals.every(s=>s.roleFamily===g.id)));
 assert.deepEqual(validateCareerGuides(),[]);
 assert.equal(CAREER_ORIGINAL_GUIDES.length,3);
-assert.equal(CAREER_PRACTICE_CASES.filter(x=>x.deliveryState==="free-live-preview").length,3);
+assert.equal(CAREER_FORMAL_PAPERS.filter(x=>x.deliveryState==="free-live-preview").length,3);
 for(const guide of CAREER_ORIGINAL_GUIDES){
   assert(getCareerGuide(guide.id)===guide);
   assert(guideForFamily(guide.family)===guide);
   assert.equal(guide.deliveryState,"free-original-material");
-  const practice=getCareerPractice(guide.caseId);
+  const practice=getCareerFormalPaper(guide.caseId);
   assert(practice&&practice.family===guide.family);
   assert(guide.sections.length>=4);
   const markdown=careerGuideToMarkdown(guide);
   assert(markdown.length>1400,guide.id+" must contain an actual substantial lesson");
   assert(markdown.includes(guide.title));
   assert(markdown.includes("参考答案："));
-  assert(markdown.includes("https://socthink.cn/career/practice/"+guide.caseId));
+  assert(markdown.includes("https://socthink.cn/career/exams/"+guide.caseId));
   assert(!markdown.includes("TODO")&&!markdown.includes("敬请期待"));
 }
 const home=fs.readFileSync("src/app/career/page.tsx","utf8");
 for(const s of ['id="market-heat"','id="digital-materials"','id="digital-services"',
-  "CAREER_ORIGINAL_GUIDES.map","CAREER_PRACTICE_CASES.filter","getCareerMarketGrowth",
+  "CAREER_ORIGINAL_GUIDES.map","CAREER_FORMAL_PAPERS.map","getCareerMarketGrowth",
   "暂无可比数据","className={styles.familyHeat}"]){
   assert(home.includes(s),"homepage missing "+s);
 }
@@ -56,7 +56,7 @@ assert(home.indexOf('id="digital-materials"')<home.indexOf("researchDetails"),
   "Real product inventory must remain above collapsed employer evidence listings");
 const page=fs.readFileSync("src/app/career/guides/[id]/page.tsx","utf8");
 assert(page.includes("guide.sections.map"));
-assert(page.includes('"/career/practice/"+guide.caseId'));
+assert(page.includes('"/career/exams/"+guide.caseId'));
 async function verifyDownload(){
   for(const guide of CAREER_ORIGINAL_GUIDES){
     const response=await GET(

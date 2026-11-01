@@ -1,0 +1,398 @@
+{
+  "id": "procurement-paper-2026q4-v1",
+  "revision": 1,
+  "category": "procurement",
+  "title": "采购与供应商管理｜标准模拟笔试 A卷",
+  "role": "采购专员 / 采购工程师 / 供应商管理",
+  "durationMinutes": 45,
+  "authoredAt": "2026-11-01",
+  "observedAt": "2026-11-01",
+  "origin": "socthink-original",
+  "form": "original-mock-not-employer-paper",
+  "referenceIds": [
+    "nx2026-guide",
+    "zhihu-supplier-topics"
+  ],
+  "context": "采购岗位书面测评。覆盖报价、到货成本、供应商准入、产能、交期、来料质量、合同与合规。所有情境与数值由SOCTHINK独立拟定，不含企业真实报价。",
+  "assumptions": [
+    "数字均为虚构业务数据，逐题已写清计算口径；未说明的税费与其他条件不自行补充。",
+    "部分题为管理判断题，请按题目给出的硬约束和制度原则作答；此卷并非任何企业官方试卷。"
+  ],
+  "questions": [
+    {
+      "kind": "integer",
+      "skill": "合格率与订货量",
+      "prompt": "某零部件需要490件预计合格品，按2%的预计不良率测算，最低订货量应为多少件？",
+      "options": [],
+      "correct": "500",
+      "explanation": "ceil(490÷0.98)=500件。这只是期望模型，实际验收还须检验。",
+      "id": "P01",
+      "points": 5,
+      "authoredAt": "2026-11-01",
+      "sourceKind": "original",
+      "topicSourceId": "nx2026-guide"
+    },
+    {
+      "kind": "integer",
+      "skill": "到货总成本",
+      "prompt": "承上题，500件的每件采购价48元、单件运输费2元，预计到货总金额多少元？",
+      "options": [],
+      "correct": "25000",
+      "explanation": "500×(48+2)=25,000元。",
+      "id": "P02",
+      "points": 5,
+      "authoredAt": "2026-11-01",
+      "sourceKind": "original",
+      "topicSourceId": "nx2026-guide"
+    },
+    {
+      "kind": "integer",
+      "skill": "缺陷率与计划",
+      "prompt": "某批次需要700件预计合格品，不良率按5%估计，至少订货多少件？",
+      "options": [],
+      "correct": "737",
+      "explanation": "ceil(700÷0.95)=737件；不可以向下取整。",
+      "id": "P03",
+      "points": 5,
+      "authoredAt": "2026-11-01",
+      "sourceKind": "original",
+      "topicSourceId": "nx2026-guide"
+    },
+    {
+      "kind": "single",
+      "skill": "报价比较",
+      "prompt": "两家供应商均满足质量、产能、交期。甲报价49元/件、运输4元/件；乙报价50元/件、运输5元/件。仅按到货单价，应选哪家？",
+      "options": [
+        "甲：53元/件",
+        "乙：55元/件",
+        "两家一样",
+        "报价不足以计算单件到货价"
+      ],
+      "correct": "A",
+      "explanation": "49+4=53元，50+5=55元。约束一致才可直接比较。",
+      "id": "P04",
+      "points": 5,
+      "authoredAt": "2026-11-01",
+      "sourceKind": "original",
+      "topicSourceId": "nx2026-guide"
+    },
+    {
+      "kind": "single",
+      "skill": "交期约束",
+      "prompt": "采购需求7天内到货，某供应商承诺11天，哪种处置最合理？",
+      "options": [
+        "直接中标，因为报价最低",
+        "明确交期不满足，重新评估或谈判",
+        "把交期栏改成7天",
+        "先付款再讨论"
+      ],
+      "correct": "B",
+      "explanation": "交期是明确的硬约束，不应被低价抵消。",
+      "id": "P05",
+      "points": 4,
+      "authoredAt": "2026-11-01",
+      "sourceKind": "original",
+      "topicSourceId": "nx2026-guide"
+    },
+    {
+      "kind": "single",
+      "skill": "安全关键采购",
+      "prompt": "某安全关键元件只有最低价供应商，却无法提供必要的检验记录。应如何处理？",
+      "options": [
+        "直接下单",
+        "删除检验要求",
+        "先暂停准入并补充质量证据",
+        "把缺失记录当成已经合格"
+      ],
+      "correct": "C",
+      "explanation": "安全关键元件必须核对技术标准、记录与风险，不得以低价替代验收。",
+      "id": "P06",
+      "points": 4,
+      "authoredAt": "2026-11-01",
+      "sourceKind": "original",
+      "topicSourceId": "nx2026-guide"
+    },
+    {
+      "kind": "integer",
+      "skill": "最小订货量",
+      "prompt": "实际需求460件，供方最低起订量MOQ=500件，且不能分批采购。至少应下单多少件？",
+      "options": [],
+      "correct": "500",
+      "explanation": "必须满足MOQ≥500件；余下40件将产生库存风险。",
+      "id": "P07",
+      "points": 4,
+      "authoredAt": "2026-11-01",
+      "sourceKind": "original",
+      "topicSourceId": "nx2026-guide"
+    },
+    {
+      "kind": "integer",
+      "skill": "成本构成",
+      "prompt": "货价20元/件、单件运费2元、单件入厂检验费1元，按题设三项计入成本的到厂单价是多少元？",
+      "options": [],
+      "correct": "23",
+      "explanation": "20+2+1=23元/件；题设未给税费不额外假设。",
+      "id": "P08",
+      "points": 4,
+      "authoredAt": "2026-11-01",
+      "sourceKind": "original",
+      "topicSourceId": "nx2026-guide"
+    },
+    {
+      "kind": "integer",
+      "skill": "采购折扣",
+      "prompt": "某订单货值20,000元，符合全额货值5%的折扣，不计运费税费。折扣后货款多少元？",
+      "options": [],
+      "correct": "19000",
+      "explanation": "20,000×(1-0.05)=19,000元。",
+      "id": "P09",
+      "points": 4,
+      "authoredAt": "2026-11-01",
+      "sourceKind": "original",
+      "topicSourceId": "nx2026-guide"
+    },
+    {
+      "kind": "single",
+      "skill": "采购现金流",
+      "prompt": "在质量、报价和风险一致的前提下，供应商将付款账期从30天延长到60天，一般更直接改善的是哪项？",
+      "options": [
+        "采购件数",
+        "短期经营现金占用",
+        "产品生产良率",
+        "订单交付周期"
+      ],
+      "correct": "B",
+      "explanation": "更长的信用账期可推迟现金流出，但仍应核对合同条件和信用风险。",
+      "id": "P10",
+      "points": 4,
+      "authoredAt": "2026-11-01",
+      "sourceKind": "original",
+      "topicSourceId": "nx2026-guide"
+    },
+    {
+      "kind": "integer",
+      "skill": "加权采购单价",
+      "prompt": "两批同质商品：20件采购价40元，80件采购价50元。按数量加权的平均采购单价是多少元？",
+      "options": [],
+      "correct": "48",
+      "explanation": "(20×40+80×50)÷100=48元。",
+      "id": "P11",
+      "points": 4,
+      "authoredAt": "2026-11-01",
+      "sourceKind": "original",
+      "topicSourceId": "nx2026-guide"
+    },
+    {
+      "kind": "integer",
+      "skill": "来料不良率",
+      "prompt": "实收300件，其中15件经检验不合格。以全部实收件数为分母，不良率是多少百分数？只填整数。",
+      "options": [],
+      "correct": "5",
+      "explanation": "15÷300×100%=5%。",
+      "id": "P12",
+      "points": 4,
+      "authoredAt": "2026-11-01",
+      "sourceKind": "original",
+      "topicSourceId": "nx2026-guide"
+    },
+    {
+      "kind": "integer",
+      "skill": "合格交付率",
+      "prompt": "本月交付1000件，验收发现40件不合格。一次验收合格率是多少百分数？只填整数。",
+      "options": [],
+      "correct": "96",
+      "explanation": "(1000-40)÷1000×100%=96%。",
+      "id": "P13",
+      "points": 4,
+      "authoredAt": "2026-11-01",
+      "sourceKind": "original",
+      "topicSourceId": "nx2026-guide"
+    },
+    {
+      "kind": "single",
+      "skill": "单一来源风险",
+      "prompt": "某关键原材料长期只有一家合格供应商，降低供应中断风险最直接的方案是什么？",
+      "options": [
+        "忽略风险",
+        "在满足资格要求前提下培育备选供方",
+        "取消验收",
+        "只增加该供方采购量"
+      ],
+      "correct": "B",
+      "explanation": "建立合格备选供应商可缓解单点故障，不能直接让未审查供方进入。",
+      "id": "P14",
+      "points": 4,
+      "authoredAt": "2026-11-01",
+      "sourceKind": "original",
+      "topicSourceId": "nx2026-guide"
+    },
+    {
+      "kind": "integer",
+      "skill": "供应商准时交付",
+      "prompt": "某供应商当月100笔应交订单中有92笔按合同约定及时交货。准时交付率是多少百分数？",
+      "options": [],
+      "correct": "92",
+      "explanation": "92÷100×100%=92%。需确保合同日期和统计样本同口径。",
+      "id": "P15",
+      "points": 4,
+      "authoredAt": "2026-11-01",
+      "sourceKind": "original",
+      "topicSourceId": "zhihu-supplier-topics"
+    },
+    {
+      "kind": "single",
+      "skill": "运输成本与比价",
+      "prompt": "采购100件，甲每件50元、固定运费300元；乙每件46元、固定运费900元。仅比较题设总成本，应选？",
+      "options": [
+        "甲总成本较低",
+        "乙总成本较低",
+        "两家相等",
+        "不可计算"
+      ],
+      "correct": "A",
+      "explanation": "甲=100×50+300=5300元；乙=100×46+900=5500元。",
+      "id": "P16",
+      "points": 4,
+      "authoredAt": "2026-11-01",
+      "sourceKind": "original",
+      "topicSourceId": "zhihu-supplier-topics"
+    },
+    {
+      "kind": "multiple",
+      "skill": "批次可追溯",
+      "prompt": "发生来料质量问题后，哪些记录有助于定位受影响批次？（多选）",
+      "options": [
+        "供应商批号",
+        "来料检验记录",
+        "供应商未经证实的广告口号",
+        "对应采购订单号"
+      ],
+      "correct": [
+        "A",
+        "B",
+        "D"
+      ],
+      "explanation": "订单号、批号、检验记录构成追溯证据链。广告口号不能替代追溯数据。",
+      "id": "P17",
+      "points": 4,
+      "authoredAt": "2026-11-01",
+      "sourceKind": "original",
+      "topicSourceId": "zhihu-supplier-topics"
+    },
+    {
+      "kind": "integer",
+      "skill": "质量损耗与订货",
+      "prompt": "预计需要960件合格品，按4%不良率测算，最低订货多少件？",
+      "options": [],
+      "correct": "1000",
+      "explanation": "ceil(960÷0.96)=1000件。",
+      "id": "P18",
+      "points": 4,
+      "authoredAt": "2026-11-01",
+      "sourceKind": "original",
+      "topicSourceId": "zhihu-supplier-topics"
+    },
+    {
+      "kind": "multiple",
+      "skill": "供应商综合评估",
+      "prompt": "对于新供应商，哪些属于可核验的基础评价维度？（多选）",
+      "options": [
+        "样件检验与稳定性",
+        "有效交付产能",
+        "合同价格及综合成本",
+        "仅凭销售口头承诺"
+      ],
+      "correct": [
+        "A",
+        "B",
+        "C"
+      ],
+      "explanation": "质量、产能、成本需要可复核材料，口头承诺不能单独确认供货能力。",
+      "id": "P19",
+      "points": 4,
+      "authoredAt": "2026-11-01",
+      "sourceKind": "original",
+      "topicSourceId": "zhihu-supplier-topics"
+    },
+    {
+      "kind": "single",
+      "skill": "采购合规",
+      "prompt": "供应商提出给采购经办人个人返现以换取优先中标，应如何处理？",
+      "options": [
+        "收下但不记账",
+        "要求提高个人返现",
+        "按利益冲突及反舞弊制度拒绝并报告",
+        "删除采购评审记录"
+      ],
+      "correct": "C",
+      "explanation": "应维护公平竞争与廉洁，按公司制度留痕。",
+      "id": "P20",
+      "points": 4,
+      "authoredAt": "2026-11-01",
+      "sourceKind": "original",
+      "topicSourceId": "zhihu-supplier-topics"
+    },
+    {
+      "kind": "single",
+      "skill": "合同核对",
+      "prompt": "采购合同上的交货地点与实际仓库地址不一致，最稳妥的下一步是？",
+      "options": [
+        "先发货再说",
+        "核对并在授权流程中修订合同或订单",
+        "让物流自行猜测",
+        "忽略地址"
+      ],
+      "correct": "B",
+      "explanation": "交货地点是履约条件，应在发运前取得一致书面确认。",
+      "id": "P21",
+      "points": 4,
+      "authoredAt": "2026-11-01",
+      "sourceKind": "original",
+      "topicSourceId": "zhihu-supplier-topics"
+    },
+    {
+      "kind": "integer",
+      "skill": "交货提前期",
+      "prompt": "题设以自然日差值计算：11月3日下单、11月9日到货，提前期是多少天？",
+      "options": [],
+      "correct": "6",
+      "explanation": "按日期差值计算为6天；真实业务仍须明确起止点和工作日规则。",
+      "id": "P22",
+      "points": 4,
+      "authoredAt": "2026-11-01",
+      "sourceKind": "original",
+      "topicSourceId": "zhihu-supplier-topics"
+    },
+    {
+      "kind": "integer",
+      "skill": "汇率换算",
+      "prompt": "假设报价100美元，按题设汇率1美元=7元人民币，不计任何其他费用，人民币货值是多少元？",
+      "options": [],
+      "correct": "700",
+      "explanation": "100×7=700元，题设汇率是假设值，不代表实际市场汇率。",
+      "id": "P23",
+      "points": 4,
+      "authoredAt": "2026-11-01",
+      "sourceKind": "original",
+      "topicSourceId": "zhihu-supplier-topics"
+    },
+    {
+      "kind": "single",
+      "skill": "采购决策记录",
+      "prompt": "有四家供方报价，其中两家不满足硬交期约束。正确的决策顺序是？",
+      "options": [
+        "所有报价从低到高直接选第1",
+        "筛除不合格方案，再比较合格方案的综合成本和风险",
+        "随机选择",
+        "仅看企业规模"
+      ],
+      "correct": "B",
+      "explanation": "先核查交期、技术、产能、质量等硬约束，再对合格选项做TCO与风险比较。",
+      "id": "P24",
+      "points": 4,
+      "authoredAt": "2026-11-01",
+      "sourceKind": "original",
+      "topicSourceId": "zhihu-supplier-topics"
+    }
+  ]
+}

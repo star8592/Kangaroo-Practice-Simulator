@@ -4,99 +4,90 @@ import path from "node:path";
 import {authenticateOrCreateWechatParent,createParentSessionToken,PARENT_SESSION_COOKIE}
   from "../../src/lib/parent-auth";
 
-/**
- * Requires a dedicated /tmp fixture root shared by this process and its local
- * Next process. This test intentionally never runs against production URLs.
- * Do not use live credentials, customer records, or the release data root.
+/** Account history E2E must never run against production user records.
+ * Only the CI-owned isolated fixture directory is permitted.
+ * This test covers the 24-item formal exam exclusively; six-item exercise
+ * data and legacy application routes are absent by design.
  */
 const base=process.env.E2E_BASE_URL??"http://127.0.0.1:4318";
 const fixtureRoot=process.env.SOCTHINK_USER_DATA_DIR??"";
-const approved=process.env.E2E_ALLOW_SYNTHETIC_FIXTURE==="1" &&
-  ["127.0.0.1","localhost"].includes(new URL(base).hostname) &&
-  new URL(base).protocol==="http:" &&
-  fixtureRoot.startsWith("/tmp/socthink-career-history-") &&
+const approved=process.env.E2E_ALLOW_SYNTHETIC_FIXTURE==="1"&&
+  ["127.0.0.1","localhost"].includes(new URL(base).hostname)&&
+  new URL(base).protocol==="http:"&&
+  fixtureRoot.startsWith("/tmp/socthink-career-history-")&&
   path.resolve(fixtureRoot)===fixtureRoot;
-test.skip(!approved,"Runs only with a specifically isolated local user-data fixture");
+test.skip(!approved,"Runs only in an explicitly isolated local user-data fixture");
 test.setTimeout(90_000);
+const EXAM="/career/exams/procurement-paper-2026q4-v1";
+const HISTORY="/api/career/exam/history";
 
-test("verified WeChat buyer sees saved grading, cross-browser history, and strict ownership",async({page,browser})=>{
+test("signed-in WeChat user can recover full formal exam report across browsers without exposing other accounts",async({page,browser})=>{
   const unique=crypto.randomUUID();
-  const parentA=authenticateOrCreateWechatParent({
-    wechatId:"career-e2e-"+unique+"-a",name:"Synthetic Career A",
+  const a=authenticateOrCreateWechatParent({
+    wechatId:"career-formal-e2e-"+unique+"-a",name:"Synthetic Formal A",
   });
-  const parentB=authenticateOrCreateWechatParent({
-    wechatId:"career-e2e-"+unique+"-b",name:"Synthetic Career B",
+  const b=authenticateOrCreateWechatParent({
+    wechatId:"career-formal-e2e-"+unique+"-b",name:"Synthetic Formal B",
   });
-  const cookieA=createParentSessionToken(parentA.id);
-  const cookieB=createParentSessionToken(parentB.id);
+  const tokenA=createParentSessionToken(a.id);
+  const tokenB=createParentSessionToken(b.id);
   await page.context().addCookies([{
-    name:PARENT_SESSION_COOKIE,value:cookieA,url:base,httpOnly:true,sameSite:"Lax",
+    name:PARENT_SESSION_COOKIE,value:tokenA,url:base,httpOnly:true,sameSite:"Lax",
   }]);
-  expect((await page.goto("/career/practice/supplier-selection-001"))?.status()).toBe(200);
-  const history=page.getByText("我的微信账号练习记录（0 次）");
-  await expect(history).toBeVisible();
-  await page.getByRole("checkbox",{name:/甲厂 A/}).check();
-  await page.getByRole("checkbox",{name:/丙厂 C/}).check();
-  await page.getByRole("button",{name:"下一题"}).click();
-  await page.locator('input[inputmode="numeric"]').fill("657");
-  await page.getByRole("button",{name:"下一题"}).click();
-  await page.locator('input[inputmode="numeric"]').fill("34821");
-  await page.getByRole("button",{name:"下一题"}).click();
-  await page.getByRole("radio",{name:/丙厂 C/}).check();
-  await page.getByRole("button",{name:"下一题"}).click();
-  await page.locator('input[inputmode="numeric"]').fill("71");
-  await page.getByRole("button",{name:"下一题"}).click();
-  await page.getByRole("radio",{name:/没有一家满足/}).check();
-  await page.getByRole("button",{name:"提交答卷并查看报告"}).click();
-  const report=page.locator('section[aria-label="职业案例成绩报告"]');
-  await expect(report).toContainText(/100\s*\/\s*100/);
-  await expect(page.getByText(/本次成绩已保存到微信账号/)).toBeVisible();
-  await expect(page.getByText("我的微信账号练习记录（1 次）")).toBeVisible();
-  await page.reload();
-  await expect(page.getByText("我的微信账号练习记录（1 次）")).toBeVisible();
-  await page.getByText("我的微信账号练习记录（1 次）").click();
-  await page.getByRole("button",{name:"查看完整报告"}).click();
-  await expect(report).toContainText(/100\s*\/\s*100/);
-
-  const savedList=await (await page.request.get("/api/career/practice/history")).json() as {
-    attempts:{attemptId:string;score:number}[];
+  expect((await page.goto(EXAM))?.status()).toBe(200);
+  await expect(page.getByText("我的微信账号笔试成绩（0 次）")).toBeVisible();
+  await page.getByRole("checkbox",{name:/我已阅读入场规则/}).check();
+  await page.getByRole("button",{name:"确认入场 · 开始模拟笔试"}).click();
+  await expect(page.getByLabel("岗位正式模拟笔试考场")).toBeVisible();
+  await page.getByRole("textbox",{name:/某零部件需要490件预计合格品/}).fill("500");
+  await page.getByRole("button",{name:"检查答卷 / 提前交卷"}).click();
+  await page.getByRole("button",{name:"确认交卷 · 查看成绩"}).click();
+  await expect(page.getByRole("heading",{level:2,name:"逐题解析"})).toBeVisible();
+  await expect(page.getByText("我的微信账号笔试成绩（1 次）")).toBeVisible();
+  await expect(page.locator("main").last()).toContainText("已作答 1/24 题");
+  const saved=await (await page.request.get(HISTORY)).json() as {
+    attempts:{attemptId:string;score:number;caseId:string}[];
   };
-  expect(savedList.attempts).toHaveLength(1);
-  expect(savedList.attempts[0].score).toBe(100);
-  const savedId=savedList.attempts[0].attemptId;
+  expect(saved.attempts).toHaveLength(1);
+  expect(saved.attempts[0].score).toBe(5);
+  expect(saved.attempts[0].caseId).toBe("procurement-paper-2026q4-v1");
+  const savedId=saved.attempts[0].attemptId;
 
-  // New clean browser context (not sharing localStorage) with the same
-  // independently verified account must recover the server-held record.
-  const clean=await browser.newContext({baseURL:base});
+  // After closing the result/reloading there must still be a history entry
+  // on the admission screen. That is the user-visible cross-device path.
+  await page.reload();
+  await expect(page.getByText("我的微信账号笔试成绩（1 次）")).toBeVisible();
+  await page.getByText("我的微信账号笔试成绩（1 次）").click();
+  await page.getByRole("button",{name:"查看完整报告"}).click();
+  await expect(page.getByRole("heading",{level:2,name:"逐题解析"})).toBeVisible();
+  await expect(page.locator("main").last()).toContainText("已作答 1/24 题");
+
+  const another=await browser.newContext({baseURL:base});
   try{
-    await clean.addCookies([{
-      name:PARENT_SESSION_COOKIE,value:cookieA,url:base,httpOnly:true,sameSite:"Lax",
+    await another.addCookies([{
+      name:PARENT_SESSION_COOKIE,value:tokenA,url:base,httpOnly:true,sameSite:"Lax",
     }]);
-    const second=await clean.newPage();
-    await second.goto("/career/practice/supplier-selection-001");
-    await expect(second.getByText("我的微信账号练习记录（1 次）")).toBeVisible();
-    await second.getByText("我的微信账号练习记录（1 次）").click();
+    const second=await another.newPage();
+    await second.goto(EXAM);
+    await expect(second.getByText("我的微信账号笔试成绩（1 次）")).toBeVisible();
+    await second.getByText("我的微信账号笔试成绩（1 次）").click();
     await second.getByRole("button",{name:"查看完整报告"}).click();
-    await expect(second.locator('section[aria-label="职业案例成绩报告"]'))
-      .toContainText(/100\s*\/\s*100/);
-  }finally{await clean.close();}
+    await expect(second.getByRole("heading",{level:2,name:"逐题解析"})).toBeVisible();
+  }finally{await another.close();}
 
-  // Distinct WeChat buyer must see an empty history and cannot fetch
-  // another buyer's full report by guessing or copying the attempt ID.
-  const foreign=await browser.newContext({baseURL:base});
+  const otherContext=await browser.newContext({baseURL:base});
   try{
-    await foreign.addCookies([{
-      name:PARENT_SESSION_COOKIE,value:cookieB,url:base,httpOnly:true,sameSite:"Lax",
+    await otherContext.addCookies([{
+      name:PARENT_SESSION_COOKIE,value:tokenB,url:base,httpOnly:true,sameSite:"Lax",
     }]);
-    const other=await foreign.newPage();
-    await other.goto("/career/practice/supplier-selection-001");
-    await expect(other.getByText("我的微信账号练习记录（0 次）")).toBeVisible();
-    const response=await other.request.get("/api/career/practice/history?attemptId="+savedId);
-    expect(response.status()).toBe(404);
-    const list=await (await other.request.get("/api/career/practice/history")).json() as {
+    const other=await otherContext.newPage();
+    await other.goto(EXAM);
+    await expect(other.getByText("我的微信账号笔试成绩（0 次）")).toBeVisible();
+    expect((await other.request.get(HISTORY+"?attemptId="+savedId)).status()).toBe(404);
+    const otherHistory=await (await other.request.get(HISTORY)).json() as {
       attempts:unknown[];
     };
-    expect(list.attempts).toEqual([]);
-  }finally{await foreign.close();}
+    expect(otherHistory.attempts).toHaveLength(0);
+  }finally{await otherContext.close();}
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
 });
