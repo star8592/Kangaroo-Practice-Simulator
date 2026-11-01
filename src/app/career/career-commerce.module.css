@@ -1,0 +1,91 @@
+
+/* Commerce-first career storefront. Readable CTAs and real inventory dominate.
+   Evidence / analytics are visually subordinate, never the lead product. */
+.commercialHero{background:linear-gradient(130deg,#eef5f8 0%,#f8fbfc 58%,#fdfdfa 100%);border:1px solid #d7e4ea;border-radius:22px;padding:clamp(24px,3vw,42px);margin-bottom:35px;color:#1a3547}
+.heroLead{margin:0 0 25px}
+.overline{display:block;font-size:13px;letter-spacing:.075em;font-weight:800;color:#1b6685;margin:0 0 9px}
+.heroLead h1{font-size:clamp(32px,4vw,49px);font-weight:850;letter-spacing:-.04em;line-height:1.2;margin:0 0 12px;color:#122d43}
+.heroLead p{font-size:17px;line-height:1.65;color:#4e687b;max-width:780px;margin:0}
+.heroOffers{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.heroOffer{background:#fff;border:1px solid #d3e2e8;border-radius:17px;padding:clamp(21px,2.6vw,31px);box-shadow:0 14px 30px #20465b12;display:flex;flex-direction:column;min-width:0}
+.heroOfferService{border-color:#b4d4d8;background:linear-gradient(140deg,#f4fbfa,#fff 55%)}
+.offerKind{font-size:14px;letter-spacing:.04em;font-weight:850;color:#2d6a84}
+.heroOffer h2{font-size:clamp(25px,2.7vw,34px);line-height:1.35;color:#183b50;margin:12px 0 8px;font-weight:850;letter-spacing:-.025em}
+.heroOffer p{font-size:16px;line-height:1.7;color:#526f7f;margin:0 0 21px}
+.bigAction{display:flex;align-items:center;justify-content:space-between;gap:15px;border-radius:12px;background:#146282;color:#fff!important;font-size:19px;font-weight:850;text-decoration:none!important;padding:16px 20px;min-height:59px;box-shadow:0 7px 16px #11648a20;transition:transform .15s,background .15s}
+.bigActionService{background:#0f765f}
+.bigAction:hover,.bigAction:focus-visible{transform:translateY(-1px);background:#084d71}
+.bigActionService:hover,.bigActionService:focus-visible{background:#075d4b}
+.bigAction span{font-size:24px;line-height:1}
+.quickList{border-top:1px solid #e5edf0;padding-top:14px;margin-top:19px;display:grid;gap:9px}
+.quickList strong{font-size:13px;color:#6e8390;font-weight:700}
+.quickList a{color:#235e77;text-decoration:none;font-size:15px;line-height:1.65;display:flex;gap:7px;align-items:center;font-weight:700}
+.quickList a:hover{text-decoration:underline;text-underline-offset:4px}
+.quickList a:before{content:"";display:inline-block;width:6px;height:6px;border-radius:100%;background:#3395a5;flex:0 0 auto}
+.heroFoot{font-size:13px;line-height:1.7;color:#5f798a;margin:17px 0 0}
+.catalogSection{margin:40px 0 46px;scroll-margin-top:85px}
+.sectionHeading{display:flex;justify-content:space-between;align-items:end;gap:24px;margin:0 0 19px}
+.sectionHeading h2{font-size:clamp(27px,3vw,37px);line-height:1.25;letter-spacing:-.025em;color:#153449;margin:0 0 11px}
+.sectionHeading p{font-size:16px;color:#506b80;line-height:1.65;margin:0;max-width:850px}
+.roleCount{min-width:114px;border:1px solid #cadddf;background:#eef7f7;border-radius:13px;padding:13px 18px;display:flex;flex-direction:column;text-align:center}
+.roleCount strong{font-size:35px;font-weight:850;color:#146a79;font-variant-numeric:tabular-nums;line-height:1.2}
+.roleCount span{font-size:13px;color:#527280}
+.directoryControls{display:flex;gap:12px;align-items:end;margin-bottom:19px}
+.directorySearch{flex:1;max-width:830px;display:block}
+.directorySearch>span{display:block;color:#35576d;font-size:15px;font-weight:800;margin-bottom:9px}
+.directorySearch input{display:block;width:100%;height:57px;border-radius:12px;border:2px solid #accbd5;font-size:17px;color:#213d50;padding:0 18px;background:#fff;outline:0;transition:border-color .15s}
+.directorySearch input:focus{border-color:#1b758d;box-shadow:0 0 0 3px #1b758d16}
+.resetButton{min-height:57px;padding:0 18px;font-size:15px;font-weight:700;background:#eff5f8;border:1px solid #c5d9e2;color:#255f7b;border-radius:11px;cursor:pointer}
+.categoryTabs{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.categoryTab,.activeTab{font:inherit;font-size:15px;line-height:1.3;font-weight:750;padding:11px 14px;min-height:48px;border-radius:10px;border:1px solid #ccdee7;background:#fff;color:#365c72;cursor:pointer;display:inline-flex;align-items:center;gap:8px}
+.categoryTab:hover{background:#f2f8fa;border-color:#91bdca}
+.activeTab{background:#1b627e;color:#fff;border-color:#1b627e}
+.categoryTab span,.activeTab span{font-size:12px;font-variant-numeric:tabular-nums;font-weight:700;opacity:.7}
+.resultMeta{display:flex;gap:12px;flex-wrap:wrap;align-items:center;font-size:15px;color:#355a6f;margin:20px 0 15px}
+.resultMeta strong{font-weight:850;color:#14677e}
+.resultMeta span{font-size:13px;color:#718496}
+.roleGroups{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.roleGroup{padding:24px;border-radius:16px;background:#fff;border:1px solid #d7e4eb;box-shadow:0 6px 20px #1d43500c;min-width:0}
+.roleGroupHeader{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px;padding-bottom:13px;border-bottom:1px solid #e4ecef}
+.roleGroupHeader h3{font-size:22px;letter-spacing:-.01em;color:#183f55;line-height:1.4;margin:0}
+.roleGroupHeader span{font-size:13px;color:#638394;white-space:nowrap}
+.roleSegment{margin-bottom:22px}
+.roleSegment:last-child{margin-bottom:0}
+.roleSegment h4{font-size:15px;color:#657b8c;line-height:1.5;margin:0 0 10px}
+.roleLinks{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.roleLinks a{display:flex;justify-content:space-between;align-items:center;gap:7px;min-width:0;padding:10px 12px;background:#f4f8fa;border:1px solid transparent;border-radius:8px;color:#254e69;text-decoration:none;font-size:15px;font-weight:650;line-height:1.45}
+.roleLinks a span{font-size:22px;line-height:1;color:#6098ac}
+.roleLinks a:hover,.roleLinks a:focus-visible{border-color:#8fbdce;background:#eaf4f8;text-decoration:underline}
+.directoryFoot{font-size:13px;line-height:1.7;color:#718595;margin:18px 0}
+.directoryFoot a{color:#266986;margin-left:8px;text-decoration:underline}
+.emptyRoles{padding:30px;border:1px dashed #b4cbd5;border-radius:12px;font-size:16px;color:#5d7b8e}
+.researchDetails{margin:40px 0 16px;border-top:1px solid #dfe8ee;padding-top:23px}
+.researchDetails>summary{font-size:18px;font-weight:800;line-height:1.7;color:#315e77;cursor:pointer}
+.researchDetails[open]>summary{margin-bottom:20px}
+.researchDetails .researchDisclaimer{font-size:14px;line-height:1.7;color:#6b8191;margin:7px 0}
+.roleDetail{width:min(1120px,calc(100% - 36px));margin:0 auto;padding:28px 0 85px;color:#1e3748}
+.roleBreadcrumb{font-size:14px;color:#658092;display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:0 0 22px}
+.roleBreadcrumb a{color:#236e88;text-decoration:none}
+.roleDetailHero{border-radius:20px;background:linear-gradient(120deg,#eaf5f8,#f8fcfd);border:1px solid #d5e7eb;padding:clamp(24px,4vw,45px)}
+.roleDetailHero>p:first-child{font-size:14px;color:#36748a;font-weight:800;margin:0 0 15px}
+.roleDetailHero h1{font-size:clamp(32px,4vw,48px);line-height:1.25;margin:0 0 13px}
+.roleDetailHero>p{font-size:16px;line-height:1.8;color:#4e697b;max-width:850px}
+.roleDetailActions{display:flex;gap:12px;flex-wrap:wrap;margin-top:23px}
+.roleDetailActions a{background:#17627e;color:#fff;padding:14px 19px;border-radius:10px;font-size:17px;font-weight:750;text-decoration:none}
+.roleDetailActions a:nth-child(2){background:#14755f}
+.roleDetailProducts{margin:40px 0}
+.roleDetailProducts h2,.relatedRoles h2{font-size:26px;color:#173a4c;margin:0 0 19px}
+.roleDetailGrid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.roleDetailGrid article,.roleNoProduct{border:1px solid #d7e4e9;border-radius:14px;padding:25px;background:#fff}
+.roleDetailGrid article>span{color:#25768a;font-weight:750;font-size:14px}
+.roleDetailGrid h3,.roleNoProduct h3{font-size:23px;margin:10px 0;color:#16425a}
+.roleDetailGrid p,.roleNoProduct p{font-size:16px;line-height:1.8;color:#597585}
+.roleDetailGrid a,.roleNoProduct a{display:inline-block;margin:11px 12px 0 0;padding:12px 15px;background:#166785;color:#fff;border-radius:9px;text-decoration:none;font-size:16px;font-weight:750}
+.roleNoProduct{background:#f6f9fa}
+.relatedRoles{margin:34px 0}
+.relatedRoles>div{display:flex;gap:11px;flex-wrap:wrap}
+.relatedRoles a{display:inline-block;padding:12px 14px;border:1px solid #cbdce5;color:#216482;text-decoration:none;border-radius:8px;font-size:15px;background:#fff}
+.relatedRoles a:hover{background:#f1f8fb}
+@media(max-width:920px){.heroOffers,.roleGroups,.roleDetailGrid{grid-template-columns:1fr}.roleLinks{grid-template-columns:repeat(3,minmax(0,1fr))}.commercialHero{padding:24px}.heroOffer h2{font-size:28px}}
+@media(max-width:620px){.commercialHero{border-radius:16px;padding:18px 14px;margin-bottom:25px}.heroLead{margin-bottom:17px}.heroLead h1{font-size:30px}.heroLead p{font-size:15px}.heroOffers{gap:12px}.heroOffer{padding:19px;border-radius:13px}.heroOffer h2{font-size:25px}.heroOffer p{font-size:15px;margin-bottom:14px}.bigAction{font-size:18px;padding:13px 16px;min-height:55px}.quickList{margin-top:13px;padding-top:11px}.quickList a{font-size:15px}.sectionHeading{align-items:start;gap:14px}.sectionHeading h2{font-size:26px}.sectionHeading p{font-size:15px}.roleCount{min-width:81px;padding:9px}.roleCount strong{font-size:27px}.roleCount span{font-size:11px}.directorySearch input{font-size:16px;height:54px}.categoryTabs{flex-wrap:nowrap;overflow-x:auto;scroll-snap-type:x proximity;gap:8px;padding:0 1px 11px;margin-right:-14px}.categoryTab,.activeTab{white-space:nowrap;scroll-snap-align:start;min-height:44px;font-size:14px;padding:10px}.roleGroup{padding:18px}.roleGroupHeader h3{font-size:20px}.roleLinks{grid-template-columns:repeat(2,minmax(0,1fr))}.roleLinks a{font-size:14px;padding:11px 9px}.resultMeta{font-size:14px}.roleDetail{padding-top:18px}.roleDetailHero{padding:24px 18px}.roleDetailHero h1{font-size:32px}.roleDetailActions a{font-size:16px;width:100%;text-align:center}.roleDetailProducts h2{font-size:23px}.roleDetailGrid h3{font-size:21px}}
+@media(prefers-reduced-motion:reduce){.bigAction{transition:none}}
