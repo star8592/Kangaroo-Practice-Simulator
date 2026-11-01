@@ -20,17 +20,17 @@ export default async function ShopPage(){
     </nav>
     <section className={styles.hero}>
       <div>
-        <span className={styles.kicker}>SOCTHINK / DIGITAL RESOURCE SHOP</span>
+        <span className={styles.kicker}>数字资料</span>
         <h1>原创数学资料商城</h1>
-        <p>价格、文件名和交付内容清楚列明。微信支付核实后，使用同一个账号查看订单并下载完整 PDF。</p>
+        <p>查看真实文件、价格和内容，购买后下载。</p>
       </div>
       <div className={styles.count}>{products.length}<small> 款在架资料</small></div>
     </section>
     <p className={styles.note}>
       {checkoutReady
-        ?"以下商品已完成内容与交付校验，可进入商品详情并使用微信扫码付款。"
-        :"资料已上架展示，微信收款通道仍在最终核验，暂不接受付款；请勿向任何私人账号转账。"}
-      {" "}所有商品均为原创模拟训练资料，并非官方竞赛真题。
+        ?"查看商品详情并使用微信支付。"
+        :"暂不支持付款。"}
+      {" "}本商城的原创训练资料并非任何官方竞赛真题。
     </p>
     {products.length
       ?<div className={styles.grid}>

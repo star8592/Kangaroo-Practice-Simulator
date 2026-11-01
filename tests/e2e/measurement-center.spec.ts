@@ -3,7 +3,7 @@ import {test,expect} from "@playwright/test";
 test("scientific measurement center shows six categories and two honest research previews",async({page})=>{
   const response=await page.goto("/assessment-center");
   expect(response?.status()).toBe(200);
-  await expect(page.getByRole("heading",{name:"认识自己，从可信的测量开始。"})).toBeVisible();
+  await expect(page.getByRole("heading",{level:1,name:"科学测评"})).toBeVisible();
   await expect(page.locator("article")).toHaveCount(5);
   await expect(page.getByText("免费研究预览")).toHaveCount(2);
   await expect(page.getByText("建设中",{exact:true})).toHaveCount(1);

@@ -3,12 +3,12 @@
 .header{position:sticky;top:0;z-index:80;background:#fff;border-bottom:1px solid #dce5f0;box-shadow:0 3px 16px #0c2b4f0a;color:var(--portal-text)}
 .utility{background:var(--portal-navy);color:#dbe8fc}
 .utilityInner{max-width:var(--layout-wide);margin:0 auto;min-height:31px;padding:0 var(--page-gutter);display:flex;align-items:center;justify-content:space-between;gap:20px;font-size:12px;letter-spacing:.012em}
-.inner{width:100%;max-width:var(--layout-wide);margin:0 auto;padding:0 var(--page-gutter);min-height:var(--header-height);display:grid;grid-template-columns:minmax(195px,1fr) auto minmax(190px,1fr);align-items:center;gap:16px}
+.inner{width:100%;max-width:var(--layout-wide);margin:0 auto;padding:0 var(--page-gutter);min-height:68px;display:grid;grid-template-columns:minmax(195px,1fr) auto minmax(190px,1fr);align-items:center;gap:16px}
 .brand{min-width:0;display:inline-flex;align-items:center;gap:11px;justify-self:start}
 .brandMark{width:43px;height:43px;flex:0 0 43px;display:grid;place-items:center;background:var(--portal-blue);color:#fff;border-radius:11px;font-size:19px;font-weight:900;box-shadow:0 4px 16px #1454a82c}
 .brandCopy{min-width:0;display:grid;gap:3px}
 .brandCopy strong{color:var(--portal-navy);overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font-size:20px;font-weight:850;letter-spacing:-.03em}
-.brandCopy small{color:#64768f;font-size:11px;font-weight:700;letter-spacing:.01em;white-space:nowrap}
+.brandCopy small{color:#64768f;font-size:12px;font-weight:700;letter-spacing:.01em;white-space:nowrap}
 .primaryNav{display:flex;align-items:center;justify-content:center;gap:2px}
 .primaryNav>a,.practiceRoot>button{display:inline-flex;justify-content:center;align-items:center;gap:5px;min-height:46px;white-space:nowrap;padding:0 13px;border:0;border-radius:9px;background:transparent;font-size:15px;font-weight:750;color:#344d6b;cursor:pointer}
 .primaryNav>a:hover,.practiceRoot>button:hover{background:#f0f5fd;color:var(--portal-blue)}

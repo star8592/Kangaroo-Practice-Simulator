@@ -88,7 +88,7 @@ test("homepage competition CTA opens independent mock exams",async({page})=>{
 });
 test("homepage leads to only one WeChat login and no student PIN",async({page})=>{
   await page.goto("/");
-  await page.getByRole("link",{name:/微信登录 \/ 注册|Sign in \/ Join with WeChat/}).first().click();
+  await page.getByRole("link",{name:/微信登录|Sign in/}).first().click();
   await expect(page).toHaveURL(/\/login(?:\?|$)/);
   await expect(page.getByRole("heading",{name:"一个微信账号，直接使用"})).toBeVisible();
   await expect(page.getByLabel("学生 PIN")).toHaveCount(0);

@@ -9,15 +9,15 @@ import styles from "./PublicHome.module.css";
 
 const TEXT={
   zh:{
-    eyebrow:"SOCTHINK · 考试与学习资源平台",title:"找考试，查资料，立即开练。",subtitle:"从小升初到职业资格，一站找到考试、真题资料与学习训练。",
+    eyebrow:"SOCTHINK · 考试与学习资源平台",title:"考试 · 资料 · 训练",subtitle:"搜索考试与试卷，找到就能开始。",
     description:"七大考试领域统一分类。可用内容直接开练，尚在建设的项目清晰标记，不让你在空白页面里反复寻找。",
     search:"搜索考试名称、学科或关键词，例如 AMC、雅思、考研、SQL",
     searchLabel:"搜索考试",searchTitle:"从一项考试开始",popular:"大家常找",found:"搜索结果",
     categories:"考试大类",directions:"考试方向",liveServices:"已开放的领域",enter:"立即使用",
-    jump:"查看全部考试",papers:"检索试卷资料",signIn:"微信登录 / 注册",tools:"直达可用服务",
-    topics:"分类详情与可用服务",partial:"部分服务开放",pending:"内容准备中",ready:"已可使用",
+    jump:"搜索",papers:"检索试卷资料",signIn:"微信登录",tools:"立即开始",
+    topics:"考试详情",partial:"部分服务开放",pending:"内容准备中",ready:"已可使用",
     source:"仅链接真实可用内容，未验收服务不会显示考试或购买入口。",
-    browseByType:"按考试类别找",browseHint:"先选所属考试领域，再查看该领域有哪些具体考试。",categoryAction:"查看全部方向",countSuffix:"个方向",
+    browseByType:"按考试类别找",browseHint:"",categoryAction:"查看考试",countSuffix:"个方向",
     noResults:"没有找到对应分类，请换一个关键词试试。",clear:"清空搜索",viewAll:"查看所有方向",
     liveMath:"开始计算训练",liveMathDesc:"小学到高中，直接进入现有在线数学训练。",
     liveCompetition:"参加竞赛模拟",liveCompetitionDesc:"按赛制选择比赛，进入现有模拟与练习。",
@@ -30,8 +30,8 @@ const TEXT={
     guidance:"分类目录不是可购买库存；所有试卷仍需分别核验内容来源、使用授权和服务可用性。",
   },
   en:{
-    eyebrow:"SOCTHINK · Exams and Learning Resources",title:"Find the exam. Start learning.",
-    subtitle:"From school exams to professional qualifications, explore papers and practice in one place.",
+    eyebrow:"SOCTHINK · Exams and Learning Resources",title:"Exams · Papers · Practice",
+    subtitle:"Search an exam or paper and start practising.",
     description:"Seven exam domains under one coherent directory. Available content opens directly; unfinished products never lead to dead-end checkout pages.",
     search:"Search exam, subject or keyword: AMC, IELTS, postgraduate, SQL",
     searchLabel:"Search exams",searchTitle:"Start with one exam",popular:"Popular searches",found:"Search results",
@@ -65,7 +65,6 @@ const QUICK_SERVICES=[
   {href:"/competitions",key:"liveCompetition",description:"liveCompetitionDesc",number:"02"},
   {href:"/resources",key:"livePaper",description:"livePaperDesc",number:"03"},
 ] as const;
-const DIR_TOTAL=EXAM_DIRECTORY.reduce((a,x)=>a+x.topics.length,0);
 const DOMAINS=new Map(ASSESSMENT_DOMAINS.map(x=>[x.id,x]));
 
 export default function PublicHome(){
@@ -85,21 +84,12 @@ export default function PublicHome(){
         [topic.id,topic.title.zh,topic.title.en].some(s=>s.toLocaleLowerCase().includes(query))):group.topics};
     });
   },[active,query]);
-  const liveDomains=ASSESSMENT_DOMAINS.filter(x=>x.readiness==="live").length;
-  const steps=[
-    [t.step1,t.step1d],[t.step2,t.step2d],
-    [t.step3,t.step3d],[t.step4,t.step4d],
-  ] as const;
 
   return <div data-site-shell="content" className={styles.portal}>
     <section className={styles.hero}>
       <div className={styles.heroMain}>
-        <div className={styles.heroEyebrow}><span className={styles.eyebrowDot}/> {t.eyebrow}</div>
-        <h1>{lang==="zh"?<>找考试，查资料，<span>立即开练。</span></>:t.title}</h1>
-        <p className={styles.heroLead}>{t.subtitle}</p>
-        <p className={styles.heroBody}>{t.description}</p>
+        <h1>{t.title}</h1>
         <div className={styles.searchPanel}>
-          <label htmlFor="portal-search">{t.searchTitle}</label>
           <form className={styles.searchField} action="/assessments" method="get" role="search">
             <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="7"/><path d="m16 16 5 5"/></svg>
             <input id="portal-search" type="search" name="q" maxLength={160} value={search} placeholder={t.search}
@@ -111,22 +101,22 @@ export default function PublicHome(){
           </div>
         </div>
       </div>
-      <aside className={styles.heroAside} aria-label={t.categories}>
-        <div className={styles.overline}>EXAM INDEX / 学习导航</div>
-        <div className={styles.heroMeasure}><strong>{EXAM_DIRECTORY.length}</strong><span>{t.categories}</span></div>
-        <div className={styles.heroDivider}/>
-        <div className={styles.heroMeasure}><strong>{DIR_TOTAL}</strong><span>{t.directions}</span></div>
-        <div className={styles.heroDivider}/>
-        <div className={styles.heroMeasure}><strong>{liveDomains}</strong><span>{t.liveServices}</span></div>
-        <p>{t.guidance}</p>
-      </aside>
+    </section>
+
+    <section className={styles.quickSection} aria-labelledby="quick-services-heading">
+      <div className={styles.sectionTop}><h2 id="quick-services-heading">{t.tools}</h2>
+        <Link href="/login">{t.signIn} <span aria-hidden="true">→</span></Link></div>
+      <div className={styles.quickGrid}>{QUICK_SERVICES.map(s=>
+        <Link key={s.href} href={s.href} className={styles.quickItem}>
+<div><strong>{t[s.key]}</strong></div>
+          <span className={styles.quickArrow} aria-hidden="true">↗</span>
+        </Link>)}</div>
+      <p className={styles.practiceGuideLink}><Link href="/math-practice">{lang==="zh"?"查看 G1–G12 数学计算训练内容与方法 →":"Explore the Grade 1–12 math practice guide →"}</Link></p>
     </section>
 
     <section className={styles.categoryOverview} aria-labelledby="exam-category-overview">
       <div className={styles.sectionTop}>
-        <div><span className={styles.micro}>EXAM CATEGORIES / 7 DOMAINS</span>
-          <h2 id="exam-category-overview">{t.browseByType}</h2>
-          <p className={styles.categoryIntro}>{t.browseHint}</p>
+        <div><h2 id="exam-category-overview">{t.browseByType}</h2>
         </div>
         <Link href="/assessments">{t.viewAll} →</Link>
       </div>
@@ -136,31 +126,19 @@ export default function PublicHome(){
           const available=group.topics.filter(topic=>topic.status==="live").length;
           return <Link key={group.domainId} href={`/assessments#domain-${group.domainId}`}
             className={styles.categoryCard}>
-            <span className={styles.categoryCardMeta}>{group.topics.length} {t.countSuffix}
-              <span className={available?styles.categoryLive:styles.categoryPending}>
-                {available?t.partial:t.pending}
-              </span>
-            </span>
             <strong>{domain.name[lang]}</strong>
-            <span className={styles.categoryExamples}>{domain.summary[lang]}</span>
+            <span className={styles.categoryCardMeta}>
+              <span className={available?styles.categoryLive:styles.categoryPending}>{available?t.partial:t.pending}</span>
+            </span>
             <span className={styles.categoryLink}>{t.categoryAction} →</span>
           </Link>;
         })}
       </div>
     </section>
 
-    <section className={styles.quickSection} aria-labelledby="quick-services-heading">
-      <div className={styles.sectionTop}><h2 id="quick-services-heading">{t.tools}</h2>
-        <Link href="/login">{t.signIn} <span aria-hidden="true">→</span></Link></div>
-      <div className={styles.quickGrid}>{QUICK_SERVICES.map(s=>
-        <Link key={s.href} href={s.href} className={styles.quickItem}>
-          <span className={styles.quickNumber}>{s.number}</span><div><strong>{t[s.key]}</strong><p>{t[s.description]}</p></div>
-          <span className={styles.quickArrow} aria-hidden="true">↗</span>
-        </Link>)}</div>
-      <p className={styles.practiceGuideLink}><Link href="/math-practice">{lang==="zh"?"查看 G1–G12 数学计算训练内容与方法 →":"Explore the Grade 1–12 math practice guide →"}</Link></p>
-    </section>
-
     <section className={styles.directory} id="portal-directory" aria-labelledby="directory-heading">
+      <details className={styles.directoryDetails}>
+        <summary>{lang==="zh"?"查看完整考试详情":"View all exam details"}</summary>
       <div className={styles.sectionTop}><div><span className={styles.micro}>EXPLORE / DIRECTORY</span>
           <h2 id="directory-heading">{query?t.found:t.topics}</h2></div>
         <Link href="/assessments">{t.viewAll} →</Link></div>
@@ -198,14 +176,8 @@ export default function PublicHome(){
           </section>)}
         </div>
       </div>
+      </details>
     </section>
 
-    <section className={styles.journey}>
-      <div className={styles.journeyHead}><span className={styles.micro}>LEARN / PROGRESS</span>
-        <h2>{t.stages}</h2><p>{t.stageDesc}</p></div>
-      <div className={styles.steps}>{steps.map(([title,description],i)=>
-        <div key={title} className={styles.step}><span>{String(i+1).padStart(2,"0")}</span>
-          <h3>{title}</h3><p>{description}</p></div>)}</div>
-    </section>
   </div>;
 }

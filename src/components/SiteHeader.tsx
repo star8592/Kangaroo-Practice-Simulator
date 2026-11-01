@@ -65,18 +65,12 @@ export default function SiteHeader(){
   },[mobileOpen,practiceOpen]);
 
   return <header className={styles.header}>
-    <div className={styles.utility}>
-      <div className={styles.utilityInner}>
-        <span>SOCTHINK / {lang==="zh"?"综合考试与学习资源平台":"Exams & Learning Resources"}</span>
-        <span>{lang==="zh"?"按考试找方向 · 按需求找服务":"Browse exams · Find the right service"}</span>
-      </div>
-    </div>
     <div className={styles.inner}>
       <Link href="/" className={styles.brand} aria-label={lang==="zh"?"返回首页":"Home"} onClick={dismiss}>
         <span className={styles.brandMark}>{SITE_BRAND.mark}</span>
         <span className={styles.brandCopy}>
           <strong>{lang==="zh"?SITE_BRAND.nameZh:SITE_BRAND.nameEn}</strong>
-          <small>{lang==="zh"?"综合考试与学习平台":"EXAMS · RESOURCES · PRACTICE"}</small>
+          <small>{lang==="zh"?"考试 · 资料 · 训练":"EXAMS · RESOURCES · PRACTICE"}</small>
         </span>
       </Link>
       <nav className={styles.primaryNav} aria-label={lang==="zh"?"主要导航":"Primary navigation"}>
@@ -114,16 +108,6 @@ export default function SiteHeader(){
           <MenuIcon open={mobileOpen}/>
         </button>
       </div>
-    </div>
-    <div className={styles.categoryBar}>
-      <nav className={styles.categoryInner} aria-label={lang==="zh"?"考试分类":"Exam categories"}>
-        <span className={styles.categoryLabel}>{lang==="zh"?"按考试类别找":"By exam type"}</span>
-        {EXAM_DIRECTORY.map(group=>{
-          const domain=DOMAIN_MAP.get(group.domainId)!;
-          return <Link href={`/assessments#domain-${group.domainId}`} key={group.domainId}
-            onClick={()=>setPracticeOpen(false)}>{domain.name[lang]}</Link>;
-        })}
-      </nav>
     </div>
     <div id="site-mobile-navigation" className={`${styles.mobilePanel} ${mobileOpen?styles.mobilePanelOpen:""}`}>
       <nav aria-label={lang==="zh"?"移动端导航":"Mobile navigation"}>

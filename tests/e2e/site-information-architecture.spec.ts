@@ -5,18 +5,19 @@ const domains=[
   "career","professional","interest",
 ] as const;
 
-test("desktop navigation separates five tasks and all seven exam categories",async({page})=>{
+test("desktop uses one concise task navigation and seven reachable categories",async({page})=>{
   await page.setViewportSize({width:1440,height:900});
   await page.goto("/");
   const tasks=page.getByRole("navigation",{name:"主要导航"});
-  const taxonomy=page.getByRole("navigation",{name:"考试分类"});
+  const categories=page.locator('[aria-labelledby="exam-category-overview"]');
   await expect(tasks.getByRole("link",{name:"全部考试"})).toBeVisible();
   await expect(tasks.getByRole("link",{name:"真题资料"})).toBeVisible();
   await expect(tasks.getByRole("link",{name:"考试管理"})).toBeVisible();
-  await expect(tasks.getByRole("link",{name:"数学赛事"})).toHaveCount(0);
-  await expect(taxonomy.getByRole("link")).toHaveCount(7);
-  for(const id of domains)await expect(taxonomy.locator(`a[href="/assessments#domain-${id}"]`)).toBeVisible();
-
+  // A second sticky taxonomy strip would repeat the same navigation.
+  await expect(page.locator("header nav[aria-label='考试分类']")).toHaveCount(0);
+  await expect(categories.locator('a[href^="/assessments#domain-"]')).toHaveCount(7);
+  for(const id of domains)
+    await expect(categories.locator('a[href="/assessments#domain-'+id+'"]')).toBeVisible();
   const practice=tasks.getByRole("button",{name:/在线练习/});
   await expect(practice).toHaveAttribute("aria-expanded","false");
   await practice.click();
@@ -25,13 +26,12 @@ test("desktop navigation separates five tasks and all seven exam categories",asy
   await expect(tasks.getByRole("link",{name:/国际数学竞赛模拟/})).toBeVisible();
   await page.keyboard.press("Escape");
   await expect(practice).toHaveAttribute("aria-expanded","false");
-
-  await taxonomy.locator('a[href="/assessments#domain-language"]').click();
+  await categories.locator('a[href="/assessments#domain-language"]').click();
   await expect(page).toHaveURL(/\/assessments#domain-language$/);
-  await expect(page.getByRole("heading",{name:"语言与国际考试",exact:true}).first()).toBeVisible();
+  await expect(page.locator('#domain-language').getByRole("heading",{name:"语言与国际考试"})).toBeVisible();
 });
 
-test("mobile menu exposes all categories without hidden horizontal strips",async({page})=>{
+test("mobile menu reaches even not-yet-live domains without a hidden strip",async({page})=>{
   await page.setViewportSize({width:390,height:844});
   await page.goto("/");
   await page.getByRole("button",{name:"打开导航菜单"}).click();
@@ -44,32 +44,34 @@ test("mobile menu exposes all categories without hidden horizontal strips",async
   await nav.locator('a[href="/assessments#domain-professional"]').click();
   await expect(page).toHaveURL(/\/assessments#domain-professional$/);
   await expect(page.getByRole("button",{name:"打开导航菜单"})).toHaveAttribute("aria-expanded","false");
-  await expect(page.getByRole("heading",{name:"职业资格与公职考试",exact:true}).first()).toBeVisible();
+  await expect(page.locator('#domain-professional').getByRole("heading",{name:"职业资格与公职考试"})).toBeVisible();
 });
 
-test("primary text is readable at desktop and phone widths",async({page})=>{
+test("customer-facing headings, primary actions and search stay legible",async({page})=>{
   for(const width of [390,768,1280,1440]){
     await page.setViewportSize({width,height:880});
     await page.goto("/");
     const metrics=await page.evaluate(()=>{
-      const css=(selector:string)=>parseFloat(getComputedStyle(document.querySelector(selector)!).fontSize);
+      const font=(selector:string)=>parseFloat(getComputedStyle(document.querySelector(selector)!).fontSize);
       return {
-        heroBody:css("main p"),
-        categoryTitle:css("main [class*='categoryCard'] strong"),
-        searchInput:css('main input[name="q"]'),
+        heroTitle:font("main h1"),
+        primaryAction:font("main [class*='quickItem'] strong"),
+        categoryTitle:font("main [class*='categoryCard'] strong"),
+        searchInput:font('main input[name="q"]'),
         overflow:document.documentElement.scrollWidth-window.innerWidth,
       };
     });
-    expect(metrics.heroBody,`hero supporting text at ${width}px`).toBeGreaterThanOrEqual(15);
-    expect(metrics.categoryTitle,`category heading at ${width}px`).toBeGreaterThanOrEqual(18);
-    expect(metrics.searchInput,`search font on touch devices at ${width}px`).toBeGreaterThanOrEqual(16);
+    expect(metrics.heroTitle,`hero at ${width}px`).toBeGreaterThanOrEqual(28);
+    expect(metrics.primaryAction,`user action at ${width}px`).toBeGreaterThanOrEqual(18);
+    expect(metrics.categoryTitle,`category title at ${width}px`).toBeGreaterThanOrEqual(18);
+    expect(metrics.searchInput,`search on touch devices at ${width}px`).toBeGreaterThanOrEqual(16);
     expect(metrics.overflow,`no horizontal overflow at ${width}px`).toBeLessThanOrEqual(2);
   }
 });
 
-test("switching categories after search clears stale filters and reaches the chosen section",async({page})=>{
+test("switching a category after search clears filters and reveals that domain",async({page})=>{
   await page.goto("/assessments");
-  const directory=page.getByRole("region",{name:"全部考试，一站查找"});
+  const directory=page.getByRole("region",{name:"考试目录"});
   const groups=directory.locator("article");
   await directory.getByRole("searchbox").fill("SQL");
   await expect(groups).toHaveCount(1);
@@ -77,5 +79,5 @@ test("switching categories after search clears stale filters and reaches the cho
     .locator('a[href="/assessments#domain-language"]').click();
   await expect(groups).toHaveCount(7);
   await expect(page).toHaveURL(/#domain-language$/);
-  await expect(directory.getByRole("heading",{name:"语言与国际考试"})).toBeVisible();
+  await expect(directory.locator("#domain-language").getByRole("heading",{name:"语言与国际考试"})).toBeVisible();
 });

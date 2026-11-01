@@ -43,9 +43,8 @@ export default async function CareerDemandPage({searchParams}:{searchParams:Sear
       <div className={commerce.heroLead}>
         <span className={commerce.overline}>职业资料与模拟考试中心</span>
         <h1>要复习资料？还是要模拟考试？</h1>
-        <p>选对岗位，立即找到能读、能下载、能做题的内容。先免费体验，再决定是否购买后续进阶服务。</p>
       </div>
-      <div className={commerce.mobileQuickActions} aria-label="立即选择资料或考试服务">
+      <div className={commerce.mobileQuickActions} aria-label="资料或模拟考试">
         <a href="#digital-materials">找复习资料 <span aria-hidden="true">→</span></a>
         <a href="#digital-services">做模拟考试 <span aria-hidden="true">→</span></a>
       </div>
@@ -53,39 +52,25 @@ export default async function CareerDemandPage({searchParams}:{searchParams:Sear
         <article className={commerce.heroOffer}>
           <span className={commerce.offerKind}>01 · 数字资料</span>
           <h2>职业教程与复习资料</h2>
-          <p>已经完成 {CAREER_ORIGINAL_GUIDES.length} 份原创职业教程，含计算示例、练习与答案。完整阅读、直接下载。</p>
+          <p>{CAREER_ORIGINAL_GUIDES.length} 份完整教程 · 免费阅读与下载</p>
           <Link className={commerce.bigAction} href="#digital-materials">
             找资料 · 免费领取 <span aria-hidden="true">→</span>
           </Link>
-          <div className={commerce.quickList}>
-            <strong>直接进入已完成的教程</strong>
-            {CAREER_ORIGINAL_GUIDES.map(guide=><Link key={guide.id}
-              href={"/career/guides/"+guide.id}>{guide.title}</Link>)}
-          </div>
         </article>
         <article className={commerce.heroOffer+" "+commerce.heroOfferService}>
           <span className={commerce.offerKind}>02 · 在线考试</span>
           <h2>模拟考试与自动评分</h2>
-          <p>已经开放 {CAREER_PRACTICE_CASES.filter(x=>x.deliveryState==="free-live-preview").length} 套岗位实操。
-            真正交卷、自动评分、逐题解析；微信账号可查练习记录。</p>
+          <p>{CAREER_PRACTICE_CASES.filter(x=>x.deliveryState==="free-live-preview").length} 套在线实操 · 自动评分</p>
           <Link className={commerce.bigAction+" "+commerce.bigActionService}
             href="#digital-services">做模拟考试 · 立即开始 <span aria-hidden="true">→</span></Link>
-          <div className={commerce.quickList}>
-            <strong>直接开始已开放的考试</strong>
-            {CAREER_PRACTICE_CASES.filter(x=>x.deliveryState==="free-live-preview")
-              .map(practice=><Link key={practice.id}
-                href={"/career/practice/"+practice.id}>{practice.title}</Link>)}
-          </div>
         </article>
       </div>
-      <p className={commerce.heroFoot}>目前这里展示的完整教程与岗位实操均可免费使用；尚未完成实际交付的收费资料或考试不展示虚假购买按钮。</p>
     </section>
-    <CareerRoleExplorer/>
     <section className={styles.commerceSection} id="digital-materials" aria-labelledby="materials-title">
       <div className={styles.commerceHeading}>
         <div><span className={styles.commerceNumber}>01 / DIGITAL GOODS</span>
           <h2 id="materials-title">数字资料 · 教程与复习包</h2>
-          <p>有正文、有计算示范、有自检清单，用户可以完整阅读，也能直接下载真实的 Markdown 电子文件。</p></div>
+          </div>
         <span className={styles.commerceCount}>{CAREER_ORIGINAL_GUIDES.length} 份已完成原创资料</span>
       </div>
       <div className={styles.offerGrid}>
@@ -104,7 +89,7 @@ export default async function CareerDemandPage({searchParams}:{searchParams:Sear
       <div className={styles.commerceHeading}>
         <div><span className={styles.commerceNumber}>02 / DIGITAL SERVICES</span>
           <h2 id="services-title">数字服务 · 在线模拟考试</h2>
-          <p>真实操作型练习，不是 PDF 占位图：作答、服务端判分、逐题解析、复练；微信账号还可以查看保存的成绩。</p></div>
+          </div>
         <span className={styles.commerceCount}>{CAREER_PRACTICE_CASES.length} 套已开放在线练习</span>
       </div>
       <div className={styles.offerGrid}>
@@ -120,7 +105,7 @@ export default async function CareerDemandPage({searchParams}:{searchParams:Sear
         </article>)}
       </div>
     </section>
-    <div className={styles.offerBoundary}>当前 3 份完整资料和 3 项在线训练服务均免费；正式收费教程、复习卷、深度报告需要经过内容审核、商品定价、权益发放和真实支付交付验收后才会出现购买按钮。不接受虚构商品或无法交付的付款链接。</div>
+    <CareerRoleExplorer/>
 
     <section className={styles.marketStage} id="market-heat">
       <div className={styles.sectionTitle}>
@@ -149,7 +134,7 @@ export default async function CareerDemandPage({searchParams}:{searchParams:Sear
     <details className={commerce.researchDetails} id="career-evidence">
       <summary>招聘研究资料与来源验证（专业研究区 · 点击展开）</summary>
       <p className={commerce.researchDisclaimer}>这里提供已核对的企业招聘来源、样本能力要求与规划中的训练方向。它们不是正在售卖的商品，也不代表当前真实岗位数量。</p>
-    <section className={styles.intro} id="career-evidence">
+    <section className={styles.intro}>
       <div><span className={styles.kicker}>CAREER DIRECTORY</span><h2>按岗位找到证据与学习产品</h2></div>
       <p>先看已证实的招聘增长和本库资料覆盖，再进入对应教程或在线练习。具体企业招聘出处可以展开核对，避免大段来源抢占第一屏。</p>
     </section>
