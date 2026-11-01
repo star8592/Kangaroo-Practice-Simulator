@@ -11,7 +11,7 @@ export type IssuerCandidate=Readonly<{
 }>;
 
 function cleanName(value:string):string{
-  return value.replace(/[\u0000-\u001f]/g," ").replace(/\s+/g," ").trim().slice(0,250);
+  return Array.from(value,ch=>ch.charCodeAt(0)<32?" ":ch).join("").replace(/\s+/g," ").trim().slice(0,250);
 }
 
 /** RFC4180 basic CSV reader, used only for standardized CSV exported from official lists. */
@@ -83,7 +83,7 @@ export function importSecTickerExchangeJson(raw:string):IssuerCandidate[]{
     if(!exchange)continue;
     const ticker=String(record[iTicker]||"").trim().toUpperCase();
     const issuerName=cleanName(String(record[iName]||""));
-    if(!/^[0-9A-Z.\-]{1,16}$/.test(ticker)||!issuerName)continue;
+    if(!/^[0-9A-Z.-]{1,16}$/.test(ticker)||!issuerName)continue;
     const key=exchange+":"+ticker;
     if(!byKey.has(key))byKey.set(key,{
       exchange,ticker,issuerName,
