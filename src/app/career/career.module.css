@@ -206,3 +206,14 @@
 .quickPracticeDetails a{display:inline-flex;padding:12px 15px;background:#fff;border:1px solid #cbdce5;color:#225f7a;border-radius:9px;min-height:48px;font-size:15px;font-weight:750;text-decoration:none;align-items:center}
 .quickPracticeDetails a:hover{background:#e6f3f7}
 @media(max-width:620px){.quickPracticeDetails{padding:14px 15px}.quickPracticeDetails>div{display:grid;grid-template-columns:1fr}.quickPracticeDetails a{font-size:15px}}
+
+
+/* Live work-related assessments: compact direct entry, no placeholder products. */
+.quickTestRow{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:0 0 19px}
+.quickTestItem{display:flex;align-items:center;flex-wrap:wrap;gap:8px 14px;min-width:0;padding:15px 19px;background:#fff;border:1px solid var(--portal-border);border-radius:var(--radius-soft)}
+.quickTestItem strong{font-size:15px;color:var(--portal-text)}
+.quickTestItem span{font-size:13px;color:var(--portal-muted)}
+.quickTestItem a{margin-left:auto;min-height:44px;display:inline-flex;align-items:center;color:var(--portal-blue);font-size:14px;font-weight:800;white-space:nowrap}
+.quickTestItem a:hover{text-decoration:underline;text-underline-offset:3px}
+@media(max-width:900px){.quickTestRow{grid-template-columns:1fr}}
+@media(max-width:470px){.quickTestItem{padding:14px}.quickTestItem a{margin-left:0;width:100%}}

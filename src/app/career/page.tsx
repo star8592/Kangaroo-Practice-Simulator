@@ -11,7 +11,7 @@ import styles from "./career.module.css";
 
 export const metadata={
   title:"职业考试与复习资料｜270个分类岗位｜SOCTHINK",
-  description:"查询有真实来源的岗位招聘增长数据，免费阅读与下载原创职业教程，立即参加采购、运营和工业质量在线考试服务。明确区分实际商品、资料样本与待开发方向。",
+  description:"免费参与原创40题招聘通用能力模拟、采购/运营/质量24题岗位笔试及SQL工程实训；查询来源明确的岗位资料与原创职业教程。",
   alternates:{canonical:"/career"},
 };
 const SKILL_ZH:Record<string,string>={
@@ -91,6 +91,16 @@ export default async function CareerDemandPage({searchParams}:{searchParams:Sear
           <h2 id="services-title">标准岗位模拟笔试 · 24题 / 45分钟</h2>
           <p>入场计时、答题卡、交卷复核、自动评分及逐题解析。</p></div>
         <span className={styles.commerceCount}>{CAREER_FORMAL_PAPERS.length} 套完整模拟卷 · {CAREER_FORMAL_PAPERS.reduce((n,p)=>n+p.questions.length,0)}道原创题</span>
+      </div>
+      <div className={styles.quickTestRow} aria-label="通用能力与技术实操">
+        <div className={styles.quickTestItem}>
+          <strong>招聘通用能力</strong><span>40题 · 45分钟</span>
+          <Link href="/assessment-center/career-aptitude-40">开始模拟</Link>
+        </div>
+        <div className={styles.quickTestItem}>
+          <strong>数据工程师 · SQL实操</strong><span>4项真实SQL任务</span>
+          <Link href="/skill-labs/sql-lab">进入实操</Link>
+        </div>
       </div>
       <div className={styles.offerGrid}>
         {CAREER_FORMAL_PAPERS.map(paper=><article className={styles.offerCard} key={paper.id}>
