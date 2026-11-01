@@ -85,3 +85,14 @@
 
 .financeDetails{display:flex;flex-wrap:wrap;align-items:center;gap:10px 19px;margin-top:10px;font-size:11px;color:#657e99}
 .financeDetails>span{display:inline-flex;align-items:center;min-height:24px}
+
+.cohortSection{margin:18px 0 0;border:1px solid var(--portal-border);border-radius:16px;background:#fff;padding:20px}
+.cohortSection .panelTitle{margin-bottom:14px}
+.cohortTiles{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:9px}
+.cohortTiles>div{min-width:0;padding:14px 12px;background:#f6f8fc;border-radius:11px;display:flex;flex-direction:column;gap:10px}
+.cohortTiles span{font-size:11px;line-height:1.55;color:#627690}
+.cohortTiles strong{font-variant-numeric:tabular-nums;font-weight:850;font-size:clamp(19px,2vw,25px);white-space:nowrap;letter-spacing:-.03em}
+.cohortFoot{display:flex;flex-wrap:wrap;gap:9px 18px;margin-top:15px;font-size:11px;color:#4c6683}
+.cohortFoot span{padding:5px 0}
+@media(max-width:1050px){.cohortTiles{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:550px){.cohortSection{padding:15px}.cohortTiles{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.cohortTiles>div{padding:12px}.cohortFoot{display:grid;gap:5px}.cohortFoot span{padding:2px 0}}
