@@ -12,6 +12,10 @@
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
 .card{display:flex;flex-direction:column;gap:12px;background:#fff;border:1px solid var(--portal-border);border-radius:var(--radius-card);padding:23px;min-width:0;box-shadow:var(--shadow-soft);transition:border-color .16s ease,box-shadow .16s ease}
 .card:hover{border-color:#a9c6ea;box-shadow:0 14px 35px #193c6612}
+.cardPreviewLink{position:relative;display:block;overflow:hidden;border:1px solid #e5ebf5;border-radius:12px;background:#fff;min-height:158px}
+.cardPreviewLink img{display:block;width:100%;height:188px;object-fit:cover;object-position:top center;background:#fff}
+.cardPreviewLink span{position:absolute;bottom:0;left:0;right:0;padding:8px 12px;background:linear-gradient(0deg,#10284bed,#10284baa);color:#fff;font-size:12px;font-weight:750}
+.cardPreviewLink:hover{border-color:#8fb2de}
 .card h2{font-size:18px;line-height:1.45;margin:0;color:var(--portal-navy);letter-spacing:-.01em}
 .card h2 a:hover{text-decoration:underline;text-underline-offset:3px}
 .card p{font-size:14px;line-height:1.65;color:var(--portal-muted);margin:0;overflow-wrap:anywhere}
