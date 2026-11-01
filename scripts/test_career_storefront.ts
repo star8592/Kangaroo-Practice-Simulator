@@ -50,8 +50,10 @@ for(const s of ['id="market-heat"','id="digital-materials"','id="digital-service
   assert(home.includes(s),"homepage missing "+s);
 }
 assert(!home.includes('href="/shop"'),"Never link fake unverified paid goods");
-assert(home.indexOf('id="digital-materials"')<home.indexOf('id="career-directory"'),
-  "Real product inventory must be visible before employer evidence listings");
+assert(home.indexOf("commercialHero")<home.indexOf("CareerRoleExplorer"),
+  "Primary goods and services controls must appear before the role directory");
+assert(home.indexOf('id="digital-materials"')<home.indexOf("researchDetails"),
+  "Real product inventory must remain above collapsed employer evidence listings");
 const page=fs.readFileSync("src/app/career/guides/[id]/page.tsx","utf8");
 assert(page.includes("guide.sections.map"));
 assert(page.includes('"/career/practice/"+guide.caseId'));
