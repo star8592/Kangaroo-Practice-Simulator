@@ -71,6 +71,7 @@ jobs:
         run: npm run test:e2e:smoke
       - name: Cross-browser career WeChat-account history, isolated storage
         env:
+          E2E_ALLOW_SYNTHETIC_FIXTURE: "1"
           SOCTHINK_USER_DATA_DIR: /tmp/socthink-career-history-ci-${{ github.run_id }}
         run: npx playwright test tests/e2e/career-account-history.spec.ts --project=desktop-chromium --project=mobile-chromium
 
