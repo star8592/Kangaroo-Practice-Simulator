@@ -4,7 +4,7 @@ import Link from "next/link";
 import {useCallback,useEffect,useRef,useState,useSyncExternalStore} from "react";
 import type {CareerPracticeCase,CareerPracticeQuestion} from "@/lib/career-practice";
 import type {CareerPracticeGrade} from "@/lib/career-practice-grade";
-import CareerPracticeHistory from "@/components/CareerPracticeHistory";
+import CareerExamHistory from "@/components/CareerExamHistory";
 import styles from "@/app/career/exams/career-formal-exam.module.css";
 
 type Answers=Record<string,string|string[]>;
@@ -105,7 +105,7 @@ export default function CareerFormalExamRunner({paper}:{paper:CareerPracticeCase
     if(submitInFlight.current||!admission||grade)return;
     submitInFlight.current=true;setLoading(true);setError("");setWarning("");
     try{
-      const res=await fetch("/api/career/practice/"+encodeURIComponent(paper.id)+"/grade",{
+      const res=await fetch("/api/career/exam/"+encodeURIComponent(paper.id)+"/grade",{
         method:"POST",headers:{"Content-Type":"application/json"},cache:"no-store",
         body:JSON.stringify({answers,sessionToken:admission.token,attemptId:admission.attemptId}),
       });
@@ -204,7 +204,7 @@ export default function CareerFormalExamRunner({paper}:{paper:CareerPracticeCase
       <button type="button" onClick={reset}>重新入场考一次</button>
       <Link href="/career#digital-services">选择其他岗位笔试</Link>
     </div>
-    <CareerPracticeHistory caseId={paper.id} revision={paper.revision}
+    <CareerExamHistory caseId={paper.id} revision={paper.revision}
       refreshKey={historyRefresh} onOpen={setGrade}/>
     <h2 className={styles.reviewTitle}>逐题解析</h2>
     <div className={styles.resultList}>
