@@ -65,3 +65,116 @@
 .practiceLive{background:#e9f5f4;border:1px solid #bcded9;border-radius:11px;padding:14px 17px;margin-top:18px;display:flex;flex-direction:column;gap:8px}
 .practiceLive strong{font-size:12px;color:#185f58}
 .practiceLive a{font-size:14px;font-weight:800;color:#115d69;text-decoration:underline;text-underline-offset:2px;line-height:1.55}
+
+
+/* Evidence-backed occupation heat and two real digital-product aisles. */
+.heroActions{display:flex;gap:10px;flex-wrap:wrap;margin:0 0 25px}
+.heroActions a{border:1px solid #ffffff80;background:#ffffff13;color:#fff;text-decoration:none;font-size:13px;font-weight:750;border-radius:100px;padding:10px 16px}
+.heroActions a:hover,.heroActions a:focus-visible{background:#ffffff29}
+.marketStage{margin:38px 0 48px;scroll-margin-top:70px}
+.sectionTitle{display:flex;justify-content:space-between;gap:28px;align-items:end;margin-bottom:20px}
+.sectionTitle h2,.commerceIntro h2{font-size:clamp(24px,3vw,32px);margin:9px 0;line-height:1.35}
+.sectionTitle>p{max-width:510px;font-size:13px;line-height:1.8;color:#5a7084;margin:0}
+.heatGrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px}
+.heatCard{min-width:0;padding:20px 19px;border-radius:14px;border:1px solid #d7e3eb;background:#fff}
+.heatOccupation{font-size:13px;font-weight:800;color:#38546a}
+.heatRate{font-size:clamp(34px,3.9vw,47px);font-weight:850;letter-spacing:-.05em;font-variant-numeric:tabular-nums;color:#146c83;margin:10px 0}
+.heatRate span{font-size:24px;margin-left:2px}
+.heatTrack,.familySampleTrack{height:8px;background:#e7eef3;border-radius:100px;overflow:hidden}
+.heatTrack span,.familySampleTrack span{display:block;height:100%;background:linear-gradient(90deg,#297794,#68b5b3);border-radius:inherit}
+.heatCard p{font-size:12px;color:#6b8091;line-height:1.6;margin:11px 0 8px}
+.heatCard a{font-size:12px;color:#236b8b;text-decoration:underline;text-underline-offset:3px}
+.heatFoot{font-size:12px;line-height:1.85;color:#657a8b;margin:15px 0 0}
+.commerceIntro{margin:42px 0 25px}
+.commerceIntro p{color:#536f82;line-height:1.8;max-width:870px;font-size:14px}
+.commerceSection{margin:0 0 26px;scroll-margin-top:65px}
+.commerceHeading{display:flex;justify-content:space-between;align-items:end;gap:15px;flex-wrap:wrap;margin:0 0 16px}
+.commerceHeading h2{font-size:clamp(23px,2.9vw,30px);margin:5px 0 7px;color:#1b3549}
+.commerceHeading p{margin:0;color:#5b7182;font-size:13px;line-height:1.75;max-width:810px}
+.commerceNumber{font-size:11px;letter-spacing:.1em;font-weight:800;color:#2d798f}
+.commerceCount{display:inline-block;border-radius:100px;border:1px solid #d6e3e9;background:#edf5f7;padding:9px 12px;color:#386075;font-size:12px;white-space:nowrap}
+.offerGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}
+.offerCard{min-width:0;display:flex;flex-direction:column;gap:11px;border:1px solid #d9e4ea;border-radius:15px;background:#fff;padding:23px;box-shadow:0 5px 18px #122e4810}
+.offerTop{display:flex;align-items:center;justify-content:space-between;gap:9px;flex-wrap:wrap}
+.offerTop span{font-size:11px;font-weight:750;color:#6d8292}
+.offerTop strong{font-size:11px;font-weight:780;border-radius:100px;background:#eaf4f2;padding:5px 10px;color:#1d7163}
+.offerCard h3{font-size:19px;line-height:1.45;color:#183348;margin:8px 0 0}
+.offerCard p{font-size:13px;color:#586d7e;line-height:1.75;margin:0;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.offerSpecs{display:flex;gap:7px;flex-wrap:wrap;margin-top:auto;padding-top:6px}
+.offerSpecs span{font-size:11px;padding:6px 8px;background:#f0f5f8;border-radius:6px;color:#47677c}
+.offerActions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:8px}
+.offerActions a{padding:10px 12px;border-radius:8px;font-size:13px;font-weight:750;color:#20637e;border:1px solid #cbdfe8;text-decoration:none}
+.offerActions a:first-child{background:#175d7c;color:#fff;border-color:#175d7c}
+.offerActions a:hover{filter:brightness(.94)}
+.offerBoundary{padding:13px 17px;border-left:3px solid #a1bac8;background:#f4f7f9;color:#5e7485;border-radius:0 9px 9px 0;font-size:12px;line-height:1.8;margin:12px 0 55px}
+.familyHeat{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:20px 0}
+.familyHeat>div{min-width:0;background:#f5f8fa;border:1px solid #e2eaf0;border-radius:11px;padding:13px}
+.heatCaption{display:block;color:#60798b;font-size:11px;line-height:1.6;min-height:34px}
+.familyHeat strong{display:block;font-variant-numeric:tabular-nums;font-size:27px;letter-spacing:-.025em;color:#216c84;margin:7px 0}
+.familyHeat strong small{font-weight:500;color:#697f8e;font-size:11px}
+.familyHeat .heatUnknown{font-size:16px;color:#667d8d;padding-top:8px}
+.familyHeat small{display:block;font-size:11px;line-height:1.65;color:#6c8191}
+.familyHeat small a{color:#236a88}
+.familySampleTrack{height:6px;margin:10px 0 7px}
+.cardProducts{padding:16px;border:1px solid #d2e4e4;border-radius:11px;background:#f0f8f6;display:flex;flex-direction:column;gap:9px;margin-bottom:16px}
+.cardProducts>strong{font-size:12px;color:#225d56;margin-bottom:2px}
+.cardProducts a{display:block;font-size:13px;color:#185c6b;line-height:1.6;font-weight:750;text-decoration:underline;text-underline-offset:2px}
+.cardProducts a span{display:inline-block;border:1px solid #a2ceca;background:white;padding:1px 5px;border-radius:4px;font-weight:800;font-size:11px;margin-right:6px;color:#316f67}
+.cardProducts p{font-size:12px;color:#637c86;line-height:1.7;margin:0}
+.evidenceDetails{border-top:1px solid #e4ebef;margin-top:18px;padding-top:13px}
+.evidenceDetails summary{font-size:12px;font-weight:750;color:#38677c;cursor:pointer;line-height:1.8}
+.evidenceDetails[open] summary{margin-bottom:12px}
+.evidenceDetails .proposal{margin-top:14px}
+.guideHero{padding:clamp(26px,4vw,50px);background:#eef5f8;border:1px solid #dbe8ee;border-radius:20px}
+.guideHero h1{font-size:clamp(29px,3.4vw,43px);line-height:1.35;margin:10px 0 18px;letter-spacing:-.02em}
+.guideHero>p{color:#526d80;line-height:1.8;max-width:850px}
+.guideMeta{display:flex;flex-wrap:wrap;gap:8px;margin:17px 0}
+.guideMeta span{font-size:12px;background:#fff;border-radius:6px;padding:7px 9px;color:#46677b}
+.guideActions{display:flex;gap:11px;align-items:center;flex-wrap:wrap;margin-top:23px}
+.guideActions a{font-size:14px;font-weight:780;padding:12px 17px;border:1px solid #bdd3df;border-radius:9px;text-decoration:none;color:#22617e;background:#fff}
+.guideActions a:first-child{color:#fff;background:#205d7a;border-color:#205d7a}
+.guideReading{max-width:930px;margin:29px auto}
+.guideNotice{border:1px solid #d6e3ea;background:#f4f8fa;border-radius:12px;padding:16px 20px;font-size:13px;line-height:1.8;color:#536e81}
+.guideChapter{padding:24px 0;border-bottom:1px solid #e0e9ee}
+.guideChapter h2{font-size:clamp(22px,2.5vw,28px);color:#1d3c52;line-height:1.5;margin:9px 0 19px}
+.guideChapter>p{font-size:15px;line-height:2.05;color:#364f62;margin:0 0 17px}
+.guideChecklist{padding:19px 23px;border-radius:12px;background:#f2f7f9;margin-top:19px}
+.guideChecklist strong{color:#255e73}
+.guideChecklist ul{padding-left:21px;color:#456477;line-height:1.9;font-size:13px}
+.guideBottom{max-width:930px;margin:33px auto 0;padding:25px;border-radius:14px;border:1px solid #d3e5e8;background:#eef7f5}
+.guideBottom h2{margin:0 0 9px}
+.guideBottom p{font-size:14px;line-height:1.8;color:#526c76}
+@media(max-width:1000px){.heatGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.offerGrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:650px){.sectionTitle{display:block}.sectionTitle>p{margin-top:9px}.offerGrid{grid-template-columns:1fr}.heatGrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.heatCard{padding:15px 13px}.heatRate{font-size:34px}.heatRate span{font-size:18px}.commerceHeading{align-items:start}.offerCard{padding:20px}.offerBoundary{margin-bottom:37px}.familyHeat{gap:8px}.familyHeat>div{padding:10px}.familyHeat strong{font-size:23px}.heroActions a{font-size:12px}.guideHero{padding:23px 18px}.guideActions a{width:100%;text-align:center}.guideChapter>p{font-size:14px}.guideReading{margin:24px 0}}
+
+
+.guideActions button{font:inherit;font-size:14px;font-weight:780;padding:12px 17px;border:1px solid #bdd3df;border-radius:9px;color:#22617e;background:#fff;cursor:pointer}
+.guideActions button:hover{background:#edf6f9}
+@media(max-width:650px){.guideActions button{width:100%;text-align:center}}
+@media print{
+  .shell{width:100%;padding:0;margin:0;color:#111}
+  .breadcrumb,.guideActions,.guideBottom{display:none!important}
+  .guideHero{background:#fff;border:0;padding:0;border-radius:0}
+  .guideHero h1{font-size:25pt;color:#111}
+  .guideHero>p,.guideMeta span{color:#333}
+  .guideMeta span{border:1px solid #ccc}
+  .guideReading{margin:15mm 0 0;max-width:none}
+  .guideNotice{background:#fff;border:1px solid #aaa;color:#333}
+  .guideChapter{break-inside:avoid;page-break-inside:avoid}
+  .guideChapter h2{color:#111;font-size:17pt}
+  .guideChapter>p{color:#222;font-size:11pt;line-height:1.6}
+  .guideChecklist{background:#fff;border:1px solid #bbb}
+}
+
+
+/* Product-first compact first viewport. Detailed research counters follow heat. */
+.hero{padding:30px clamp(20px,4vw,45px)}
+.hero h1{font-size:clamp(29px,3.2vw,43px);max-width:980px}
+.hero .lead{margin:15px 0 20px;font-size:14px;line-height:1.7;max-width:940px}
+.heroActions{margin-bottom:0}
+.marketStage .stats{margin:19px 0 0;gap:10px}
+.marketStage .stats>div{border:1px solid #d8e4eb;background:#f4f8fa;padding:13px 16px}
+.marketStage .stats strong{color:#214d67;font-size:24px}
+.marketStage .stats span{color:#60778a;font-size:11px}
+.marketStage .sampleNote{color:#657a8a;margin-top:10px}
+@media(max-width:650px){.hero{padding:25px 19px}.hero h1{font-size:29px}.hero .lead{font-size:13px;line-height:1.75}.marketStage .stats{grid-template-columns:repeat(2,minmax(0,1fr))}}

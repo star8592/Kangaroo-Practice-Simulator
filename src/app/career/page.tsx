@@ -1,16 +1,17 @@
 import Link from "next/link";
-import {CAREER_DEMAND_OBSERVED_AT, CAREER_FAMILIES, countCareerEvidence,
+import {CAREER_DEMAND_OBSERVED_AT,CAREER_FAMILIES,countCareerEvidence,
   searchCareerDemand} from "@/lib/career-demand";
 import {getCareerSupplyCandidates} from "@/lib/career-product-mapper";
-
+import {CAREER_MARKET_GROWTH,getCareerMarketGrowth} from "@/lib/career-market-growth";
+import {CAREER_ORIGINAL_GUIDES,guideForFamily} from "@/lib/career-original-guides";
+import {CAREER_PRACTICE_CASES} from "@/lib/career-practice";
 import styles from "./career.module.css";
 
 export const metadata={
-  title:"企业招聘需求与职业训练方向 | SOCTHINK",
-  description:"从企业公开岗位需求倒推职业能力，覆盖研发、运营、销售、供应链、财务、市场、设计等岗位。明确区分已核对的企业岗位和本站计划研发的原创训练。",
+  title:"岗位热度、求职复习资料与在线考试｜SOCTHINK",
+  description:"查询有真实来源的岗位招聘增长数据，免费阅读与下载原创职业教程，立即参加采购、运营和工业质量在线考试服务。明确区分实际商品、资料样本与待开发方向。",
   alternates:{canonical:"/career"},
 };
-
 const SKILL_ZH:Record<string,string>={
   python:"Python",sql:"SQL",rag:"RAG",agent:"Agent工程",mcp:"MCP",api:"API开发",
   roi:"ROI分析",category_management:"类目管理",price_strategy:"定价策略",
@@ -23,38 +24,107 @@ const SKILL_ZH:Record<string,string>={
   data_analysis:"数据分析",user_segmentation:"用户分层",statistics:"统计分析",
   ab_testing:"A/B测试",causal_inference:"因果推断",
 };
-
 type SearchParams=Promise<{q?:string|string[];family?:string|string[]}>;
 export default async function CareerDemandPage({searchParams}:{searchParams:SearchParams}){
   const params=await searchParams;
   const q=typeof params.q==="string"?params.q.trim().slice(0,100):"";
-  const family=typeof params.family==="string" ? params.family:"";
+  const family=typeof params.family==="string"?params.family:"";
   const results=searchCareerDemand(q,family);
   const stats=countCareerEvidence();
+  const largestSample=Math.max(1,...CAREER_FAMILIES.map(x=>
+    searchCareerDemand("",x.id).reduce((n,g)=>n+g.signals.length,0)));
   return <main className={styles.shell}>
     <nav className={styles.breadcrumb} aria-label="位置">
-      <Link href="/assessments">综合考试</Link><span>/</span><span>职业与招聘需求</span>
+      <Link href="/assessments">综合考试</Link><span>/</span><span>职业岗位与产品</span>
     </nav>
     <section className={styles.hero}>
-      <p className={styles.eyebrow}>SOCTHINK · EMPLOYER DEMAND INTELLIGENCE</p>
-      <h1>从企业真正需要什么，决定我们教什么、考什么。</h1>
-      <p className={styles.lead}>先研究公开招聘要求，再组织职业技能训练、岗位案例、模拟面试和可执行实验。不是先囤教程再想办法销售，也不把自编训练冒充大厂官方真题。</p>
-      <Link href="/career/companies" style={{display:"inline-block",color:"#ffffff",textDecoration:"underline",fontWeight:700,marginBottom:12}}>查看沪深北、港美上市企业及在华外企、合资企业库 →</Link>
-      <div className={styles.stats} aria-label="首轮非随机招聘资料样本">
-        <div><strong>{stats.employers}</strong><span>家企业的公开来源</span></div>
-        <div><strong>{stats.families}</strong><span>个岗位领域有样本</span></div>
-        <div><strong>{stats.signals}</strong><span>条岗位/类别证据</span></div>
-        <div><strong>{stats.detailedJobs}</strong><span>份具体岗位示例</span></div>
+      <p className={styles.eyebrow}>SOCTHINK / CAREER MARKET & PRACTICE</p>
+      <h1>看岗位热度。领复习资料。直接做考试。</h1>
+      <p className={styles.lead}>根据公开招聘证据组织技能训练：了解哪些具体职业需求在增长，领取原创教程，再通过真实在线评分检验自己掌握了多少。</p>
+      <div className={styles.heroActions}>
+        <a href="#market-heat">查看招聘热度</a>
+        <a href="#digital-materials">数字资料与教程</a>
+        <a href="#digital-services">在线考试服务</a>
       </div>
-      <p className={styles.sampleNote}>这是首轮非随机公开资料样本，不代表实际招聘岗位总量、市场占比或在招状态。最近汇总：{CAREER_DEMAND_OBSERVED_AT}。</p>
+
     </section>
-    <section className={styles.intro}>
-      <div><span className={styles.kicker}>DEMAND → TRAINING</span><h2>按真实岗位领域组织内容</h2></div>
-      <p>以下「官方证据」仅说明招聘页面公开了哪些岗位或职责。「本站规划」是我们据此推导的原创教学与评测方向，尚未开放购买。</p>
+    <section className={styles.marketStage} id="market-heat">
+      <div className={styles.sectionTitle}>
+        <div><span className={styles.kicker}>MARKET SIGNALS</span><h2>招聘热度：有数据才显示增速</h2></div>
+        <p>以下是真实报告中<strong>具体职位面向应届生的同比招聘增长</strong>，不是整个职业领域的热度，也不是当前在招人数。其他岗位暂不乱填“热度分”。</p>
+      </div>
+      <div className={styles.heatGrid}>
+        {CAREER_MARKET_GROWTH.map(m=><article key={m.family} className={styles.heatCard}>
+          <span className={styles.heatOccupation}>{m.occupation}</span>
+          <div className={styles.heatRate}>+{m.growthPercent.toFixed(1)}<span>%</span></div>
+          <div className={styles.heatTrack}><span style={{width:Math.max(0,Math.min(100,m.growthPercent/60*100))+"%"}}/></div>
+          <p>2026年第三季度 · 应届职位数同比</p>
+          <a href={m.sourceUrl} target="_blank" rel="noopener noreferrer">查看智联招聘研究数据来源</a>
+        </article>)}
+      </div>
+      <p className={styles.heatFoot}>指标来自智联研究院2026年三季度报告，经2026-10-16媒体转述。图条统一按0–60%刻度展示，仅用于比较<strong>同一口径的四个具体职位</strong>；无法据此推导薪资、录取概率或其他12类岗位的冷热。</p>
+      <div className={styles.stats} aria-label="首轮非随机招聘研究资料覆盖">
+        <div><strong>{stats.employers}</strong><span>家有来源的样本企业</span></div>
+        <div><strong>{stats.families}</strong><span>个岗位领域</span></div>
+        <div><strong>{stats.detailedJobs}</strong><span>份具体职位描述</span></div>
+        <div><strong>{stats.signals}</strong><span>条招聘或类别样本</span></div>
+      </div>
+      <p className={styles.sampleNote}>企业研究样本并非全网实时招聘量；不把股票代码数、网页分类数当成在招岗位数。资料采集汇总于 {CAREER_DEMAND_OBSERVED_AT}。</p>
+    </section>
+
+    <div className={styles.commerceIntro}>
+      <span className={styles.kicker}>TWO TYPES OF DIGITAL OFFERINGS</span>
+      <h2>我们提供两种产品：资料与考试服务</h2>
+      <p>不是只有岗位展示。现在有3份真正写完、可以下载的原创学习教程，以及3套能作答、提交、自动评分和查看历史报告的在线训练服务。它们目前<strong>免费开放</strong>，尚未冒充收费商品。</p>
+    </div>
+    <section className={styles.commerceSection} id="digital-materials" aria-labelledby="materials-title">
+      <div className={styles.commerceHeading}>
+        <div><span className={styles.commerceNumber}>01 / DIGITAL GOODS</span>
+          <h2 id="materials-title">数字资料 · 教程与复习包</h2>
+          <p>有正文、有计算示范、有自检清单，用户可以完整阅读，也能直接下载真实的 Markdown 电子文件。</p></div>
+        <span className={styles.commerceCount}>{CAREER_ORIGINAL_GUIDES.length} 份已完成原创资料</span>
+      </div>
+      <div className={styles.offerGrid}>
+        {CAREER_ORIGINAL_GUIDES.map(g=><article key={g.id} className={styles.offerCard}>
+          <div className={styles.offerTop}><span>原创教程 / 数字文件</span><strong>免费完整领取</strong></div>
+          <h3>{g.title}</h3><p>{g.summary}</p>
+          <div className={styles.offerSpecs}><span>{g.sections.length} 个章节</span><span>Markdown 文件</span><span>可在线阅读</span></div>
+          <div className={styles.offerActions}>
+            <Link href={"/career/guides/"+g.id}>阅读完整教程</Link>
+            <a href={"/career/guides/"+g.id+"/download"}>下载资料</a>
+          </div>
+        </article>)}
+      </div>
+    </section>
+    <section className={styles.commerceSection} id="digital-services" aria-labelledby="services-title">
+      <div className={styles.commerceHeading}>
+        <div><span className={styles.commerceNumber}>02 / DIGITAL SERVICES</span>
+          <h2 id="services-title">数字服务 · 在线模拟考试</h2>
+          <p>真实操作型练习，不是 PDF 占位图：作答、服务端判分、逐题解析、复练；微信账号还可以查看保存的成绩。</p></div>
+        <span className={styles.commerceCount}>{CAREER_PRACTICE_CASES.length} 套已开放在线练习</span>
+      </div>
+      <div className={styles.offerGrid}>
+        {CAREER_PRACTICE_CASES.filter(x=>x.deliveryState==="free-live-preview").map(x=><article className={styles.offerCard} key={x.id}>
+          <div className={styles.offerTop}><span>原创模拟考试 / 在线服务</span><strong>免费开始</strong></div>
+          <h3>{x.title}</h3><p>{x.context}</p>
+          <div className={styles.offerSpecs}><span>{x.questions.length} 道题</span>
+            <span>{x.maxPoints} 分</span><span>参考 {x.durationMinutes} 分钟</span></div>
+          <div className={styles.offerActions}>
+            <Link href={"/career/practice/"+x.id}>立即开始考试</Link>
+            <Link href={"/career/guides/"+(guideForFamily(x.family)?.id??"")}>配套复习资料</Link>
+          </div>
+        </article>)}
+      </div>
+    </section>
+    <div className={styles.offerBoundary}>当前 3 份完整资料和 3 项在线训练服务均免费；正式收费教程、复习卷、深度报告需要经过内容审核、商品定价、权益发放和真实支付交付验收后才会出现购买按钮。不接受虚构商品或无法交付的付款链接。</div>
+
+    <section className={styles.intro} id="career-directory">
+      <div><span className={styles.kicker}>CAREER DIRECTORY</span><h2>按岗位找到证据与学习产品</h2></div>
+      <p>先看已证实的招聘增长和本库资料覆盖，再进入对应教程或在线练习。具体企业招聘出处可以展开核对，避免大段来源抢占第一屏。</p>
     </section>
     <form className={styles.filters} method="GET" action="/career" role="search">
       <label className={styles.searchLabel}>搜索公司、岗位或能力
-        <input name="q" defaultValue={q} maxLength={100} placeholder="例如：美团、采购、Agent、产品" type="search"/>
+        <input name="q" defaultValue={q} maxLength={100} placeholder="例如：美团、采购、AI、产品" type="search"/>
       </label>
       <label className={styles.familyLabel}>岗位领域
         <select name="family" defaultValue={family}>
@@ -62,50 +132,70 @@ export default async function CareerDemandPage({searchParams}:{searchParams:Sear
           {CAREER_FAMILIES.map(x=><option key={x.id} value={x.id}>{x.name}</option>)}
         </select>
       </label>
-      <button type="submit">筛选需求</button>
-      {(q||family)&&<Link className={styles.clear} href="/career">清除筛选</Link>}
+      <button type="submit">筛选岗位</button>
+      {(q||family)&&<Link className={styles.clear} href="/career#career-directory">清除筛选</Link>}
     </form>
     <p className={styles.resultCount}>符合条件的岗位领域：{results.length}</p>
-    {results.length===0?<div className={styles.empty}>目前样本中没有对应记录。请换一个关键词；这不代表企业没有这类需求。</div>:
+    {results.length===0?<div className={styles.empty}>当前研究样本没有对应记录。这不代表该岗位需求为零。</div>:
     <div className={styles.grid}>
-      {results.map(group=>{const candidates=getCareerSupplyCandidates(group.id);
-      const available=candidates.filter(x=>x.readiness==="free-practice"&&x.liveHref);
-      return <article className={styles.card} key={group.id}>
-        <div className={styles.cardHeading}>
-          <div><span className={styles.idTag}>{group.id.toUpperCase()}</span><h3>{group.name}</h3></div>
-          <span className={styles.evidenceCount}>{group.signals.length} 条公开样本</span>
-        </div>
-        <p className={styles.summary}>{group.summary}</p>
-        <p className={styles.employers}>样本企业：{group.employers.join("、")}</p>
-        <div className={styles.subheading}>官方招聘证据</div>
-        <ul className={styles.sourceList}>
-          {group.signals.map(s=><li key={s.id}>
-            <a href={s.sourceUrl} target="_blank" rel="noopener noreferrer">{s.company} · {s.roleTitle}</a>
-            <span>{s.evidenceLevel==="job"?"具体岗位说明":"岗位类别证据"} · {s.observedAt}</span>
-          </li>)}
-        </ul>
-        {group.skillCodes.length>0&&<>
-          <div className={styles.subheading}>具体岗位中明确体现的能力</div>
-          <div className={styles.skills}>{group.skillCodes.map(s=><span key={s}>{SKILL_ZH[s]??s.replaceAll("_"," ")}</span>)}</div>
-        </>}
-        <div className={styles.proposal}>
-          <div className={styles.proposalTop}><strong>本站原创训练供应</strong><span>已开放或规划中 · 非企业官方考题</span></div>
-          {candidates.length>0?<ul>{candidates.map(candidate=><li key={candidate.id}>
-            {candidate.title}<small> · {candidate.evidenceCount} 条具体岗位证据 · {candidate.readiness==="free-practice"?"免费实操已开放":"尚在规划"}</small>
-          </li>)}</ul>:<p className={styles.noSupply}>目前只有岗位类别证据，没有足够具体的岗位能力要求；暂不自动生成培训商品。</p>}
-        </div>
-        {available.length>0&&<div className={styles.practiceLive}>
-          <strong>现在可以免费完成的原创实操</strong>
-          {available.map(x=><Link key={x.id} href={x.liveHref!}>
-            {x.title} · 免费在线作答与评分 →
-          </Link>)}
-        </div>}
-      </article>;})}
+      {results.map(group=>{
+        const candidates=getCareerSupplyCandidates(group.id);
+        const guide=guideForFamily(group.id);
+        const available=CAREER_PRACTICE_CASES.filter(x=>x.family===group.id&&x.deliveryState==="free-live-preview");
+        const metric=getCareerMarketGrowth(group.id);
+        const jobCount=group.signals.filter(s=>s.evidenceLevel==="job").length;
+        return <article key={group.id} className={styles.card}>
+          <div className={styles.cardHeading}>
+            <div><span className={styles.idTag}>{group.id.toUpperCase()}</span><h3>{group.name}</h3></div>
+            <span className={styles.evidenceCount}>{group.signals.length} 条公开样本</span>
+          </div>
+          <p className={styles.summary}>{group.summary}</p>
+          <div className={styles.familyHeat}>
+            {metric?<div><span className={styles.heatCaption}>可比招聘增长 · {metric.occupation}</span>
+              <strong>+{metric.growthPercent.toFixed(1)}%</strong>
+              <small>2026年Q3应届职位数同比 · <a href={metric.sourceUrl} target="_blank" rel="noopener noreferrer">来源</a></small>
+            </div>:<div><span className={styles.heatCaption}>市场岗位增长数据</span>
+              <strong className={styles.heatUnknown}>暂无可比数据</strong>
+              <small>暂不判定冷门或热门</small></div>}
+            <div><span className={styles.heatCaption}>本站招聘证据覆盖（非市场热度）</span>
+              <strong>{jobCount} <small>份职位级样本</small></strong>
+              <div className={styles.familySampleTrack}><span style={{width:(group.signals.length/largestSample*100)+"%"}}/></div>
+              <small>共{group.signals.length}条公开记录 · {group.employers.length}家样本企业</small>
+            </div>
+          </div>
+          <div className={styles.cardProducts}>
+            <strong>本岗位可用内容</strong>
+            {guide&&<Link href={"/career/guides/"+guide.id}> <span>资料</span> {guide.title} · 阅读/下载</Link>}
+            {available.map(x=><Link key={x.id} href={"/career/practice/"+x.id}>
+              <span>考试</span> {x.title} · 在线评分</Link>)}
+            {!guide&&available.length===0&&<p>暂无完成验收的资料或考试服务；不展示虚构购买入口。</p>}
+          </div>
+          {group.skillCodes.length>0&&<div className={styles.skills}>
+            {group.skillCodes.slice(0,7).map(skill=><span key={skill}>{SKILL_ZH[skill]??skill.replaceAll("_"," ")}</span>)}
+          </div>}
+          <details className={styles.evidenceDetails}>
+            <summary>查看 {group.employers.length} 家企业的招聘证据及技能产品规划</summary>
+            <p className={styles.employers}>样本企业：{group.employers.join("、")}</p>
+            <ul className={styles.sourceList}>
+              {group.signals.map(s=><li key={s.id}>
+                <a href={s.sourceUrl} target="_blank" rel="noopener noreferrer">{s.company} · {s.roleTitle}</a>
+                <span>{s.evidenceLevel==="job"?"具体职位说明":"岗位类别线索"} · 采集 {s.observedAt}</span>
+              </li>)}
+            </ul>
+            <div className={styles.proposal}>
+              <div className={styles.proposalTop}><strong>能力方向与供应进度</strong><span>已开放或规划中 · 非企业官方考题</span></div>
+              {candidates.length>0?<ul>{candidates.map(c=><li key={c.id}>{c.title}
+                <small> · {c.evidenceCount}条具体岗位证据 · {c.readiness==="free-practice"?"已有免费实操":"尚在规划"}</small>
+              </li>)}</ul>:<p className={styles.noSupply}>仅有岗位类别样本，缺少具体技能要求；暂不制造考试商品。</p>}
+            </div>
+          </details>
+        </article>;
+      })}
     </div>}
     <section className={styles.disclosure}>
-      <h2>依据和产品分开，才能真正专业</h2>
-      <p>企业岗位类别不证明一定存在对应笔试；只有具体岗位描述才支持相应能力要求，具体考试流程必须以当届官方通知为准。本站训练方向是基于岗位需求的原创设计，不涉及未授权真题、内部题库或录用保证。</p>
-      <p>后续接入岗位需求增量采集、跨企业技能映射、真实课程/考卷交付状态和训练数据后，页面将由版本化需求数据自动更新，不需要手工维护一堆公司的硬编码展示页。</p>
+      <h2>岗位热度不等于录用概率，培训也不等于企业官方考试</h2>
+      <p>市场增长指标来自第三方2026年季度招聘研究，明确限定到所报道的具体职位、应届生群体和统计期间。本站企业资料是非随机来源样本；没有足够可比指标的岗位不会补造指数。资料和考试皆为本站原创，与目标企业无合作、招聘或合格保证。</p>
+      <Link href="/career/companies">查看上市企业、外企及合资企业研究库</Link>
       <Link href="/assessments">返回综合考试中心</Link>
     </section>
   </main>;

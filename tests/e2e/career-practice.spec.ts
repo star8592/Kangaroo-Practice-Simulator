@@ -8,7 +8,7 @@ const PATH="/career/practice/supplier-selection-001";
 test("free procurement career case is usable end to end",async({page})=>{
   const catalog=await page.goto("/career");
   expect(catalog?.status()).toBe(200);
-  const live=page.getByRole("link",{name:/供应商寻源与评分模拟.*免费在线作答/});
+  const live=page.locator('#digital-services').getByRole("link",{name:"立即开始考试"}).first();
   await expect(live).toBeVisible();
   await live.click();
   await expect(page).toHaveURL(new RegExp(PATH+"$"));
