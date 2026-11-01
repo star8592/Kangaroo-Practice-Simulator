@@ -1,4 +1,5 @@
 import {listCareerDemandFamilies,type CareerFamilyId} from "./career-demand";
+import {CAREER_PRACTICE_CASES} from "./career-practice";
 
 export type CareerOfferFormat = "tutorial"|"exam"|"lab"|"case"|"interview";
 export type CareerSupplyCandidate = Readonly<{
@@ -10,7 +11,8 @@ export type CareerSupplyCandidate = Readonly<{
   employerCount:number;
   sourceSignalIds:readonly string[];
   sourceUrls:readonly string[];
-  readiness:"proposal";
+  readiness:"proposal"|"free-practice";
+  liveHref?:string;
 }>;
 
 /**
@@ -89,17 +91,23 @@ export function getCareerSupplyCandidates(familyId:CareerFamilyId):CareerSupplyC
       bySkill.set(skill,agg);
     }
   }
-  return [...bySkill.entries()].map(([skillCode,a])=>({
-    id:"career-"+familyId+"-"+skillCode,
-    skillCode,
-    title:TRAINING_TEMPLATES[skillCode].title,
-    format:TRAINING_TEMPLATES[skillCode].format,
-    evidenceCount:a.signalIds.size,
-    employerCount:a.employers.size,
-    sourceSignalIds:[...a.signalIds].sort(),
-    sourceUrls:[...a.urls].sort(),
-    readiness:"proposal" as const,
-  })).sort((a,b)=>b.employerCount-a.employerCount||
+  return [...bySkill.entries()].map(([skillCode,a])=>{
+    const practice=CAREER_PRACTICE_CASES.find(p=>
+      p.family===familyId&&p.deliveryState==="free-live-preview"&&
+      p.evidenceSkillCodes.includes(skillCode)&&a.signalIds.has(p.evidenceSignalId));
+    return {
+      id:"career-"+familyId+"-"+skillCode,
+      skillCode,
+      title:TRAINING_TEMPLATES[skillCode].title,
+      format:TRAINING_TEMPLATES[skillCode].format,
+      evidenceCount:a.signalIds.size,
+      employerCount:a.employers.size,
+      sourceSignalIds:[...a.signalIds].sort(),
+      sourceUrls:[...a.urls].sort(),
+      readiness:practice?"free-practice" as const:"proposal" as const,
+      ...(practice?{liveHref:"/career/practice/"+practice.id}:{}),
+    };
+  }).sort((a,b)=>b.employerCount-a.employerCount||
     b.evidenceCount-a.evidenceCount||a.title.localeCompare(b.title,"zh"));
 }
 
