@@ -26,8 +26,8 @@ function qrDeadlineFromAcceptedResponse(ttl:number):number {
   return performance.now()+ttl*1000;
 }
 
-export default function NativeCheckoutPanel({offers,accountLoggedIn}:{
-  offers:readonly PublishedMembershipOffer[];accountLoggedIn:boolean;
+export default function NativeCheckoutPanel({offers,accountLoggedIn,compact=false}:{
+  offers:readonly PublishedMembershipOffer[];accountLoggedIn:boolean;compact?:boolean;
 }) {
   const en=useSiteLanguage()==="en";
   const [pendingId,setPendingId]=useState<string|null>(null);
@@ -117,15 +117,15 @@ export default function NativeCheckoutPanel({offers,accountLoggedIn}:{
   }
 
   if (!offers.length) return null;
-  return <section className={styles.checkout} aria-label={en?"WeChat Native checkout":"微信扫码购买"}>
-    <h2>{en?"WeChat QR payment":"微信扫码购买"}</h2>
-    <p>{en?"Only active offers from the live billing catalogue are shown. Confirm pricing before you pay.":"以下仅展示当前交易账本正式启用的套餐，支付前请确认价格与交付内容。"}</p>
+  return <section className={styles.checkout+" "+(compact?styles.checkoutCompact:"")} aria-label={en?"WeChat Native checkout":"微信扫码购买"}>
+    {!compact&&<><h2>{en?"WeChat QR payment":"微信扫码购买"}</h2>
+    <p>{en?"Only active offers from the live billing catalogue are shown. Confirm pricing before you pay.":"以下仅展示当前交易账本真实启用的商品，支付前请确认价格与交付内容。"}</p>
     <div className={styles.purchasePolicyNotice} role="note">
       <strong>{en?"Important: digital purchase terms":"重要提醒：数字内容不支持无理由退款"}</strong>
       <p>{en?DIGITAL_SALES_POLICY_SHORT_EN:DIGITAL_SALES_POLICY_SHORT_ZH}{" "}
         <Link href="/digital-purchase-policy">{en?"Read the full policy":"查看完整购买与售后规则"}</Link>
       </p>
-    </div>
+    </div></>}
     {!accountLoggedIn && <p>{en?"Sign in with WeChat to purchase.":"请先微信登录，再购买考试或资料。"} <Link href="/login?next=%2Fmembership">{en?"WeChat sign in":"微信登录"}</Link></p>}
     <div className={styles.checkoutOffers}>
       {offers.map(offer=><div id={"buy-"+offer.id} key={offer.id} className={styles.checkoutOffer}>
@@ -162,7 +162,7 @@ export default function NativeCheckoutPanel({offers,accountLoggedIn}:{
       <p role="status">{message || (en
         ?"The payment QR has expired or could not be safely displayed. We will continue checking the original order with WeChat; do not create another payment until its final status is confirmed."
         :"本订单二维码已过期或无法安全展示，正在继续核对原订单的微信官方支付状态。确认关单之前请勿重复付款。")}</p>}
-    {state==="paid"&&<p role="status">{en?"Verified payment recorded. View your purchased access in My account.":"已确认微信付款并完成权益记账，请在我的账号中使用已购内容。"}</p>}
+    {state==="paid"&&<div role="status" className={styles.checkoutPaid}><p>{en?"Verified payment recorded.":"已确认微信付款并完成权益记账。"}</p><Link href="/account">{en?"Open My orders and downloads":"前往我的订单下载资料"} →</Link></div>}
     {state==="failed"&&<p role="alert">{message||(en?"Order closed or refunded":"订单已关闭或退款")}</p>}
   </section>;
 }
