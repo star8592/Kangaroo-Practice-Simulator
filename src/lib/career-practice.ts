@@ -42,7 +42,7 @@ export const CAREER_PRACTICE_CASES:readonly CareerPracticeCase[]=[
     id:"supplier-selection-001",revision:1,domain:"career",family:"procurement",
     title:"采购岗位实操｜供应商选择与到货成本",
     evidenceSignalId:"meituan-procurement",
-    evidenceSkillCodes:["supplier_selection","cost_negotiation","market_research"],
+    evidenceSkillCodes:["supplier_selection"],
     sourceRights:"original",deliveryState:"free-live-preview",
     durationMinutes:15,maxPoints:100,
     context:"一家虚构零售企业要在 7 天内采购到预计 650 件合格商品，含商品单价与单件运费的采购总预算不超过 35,000 元。三家供应商报价如下，请以数据作出采购决策。",
