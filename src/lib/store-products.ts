@@ -18,7 +18,7 @@ type ProductRow={
   size_bytes:string;resource_id:string;sha256:string;mime_type:string;
 };
 
-async function queryStoreProducts(targetId?:string):Promise<StoreProduct[]> {
+async function queryStoreProducts(targetId?:string, strict=false):Promise<StoreProduct[]> {
   if(!billingConfigured())return [];
   try{
     const result=await billingPool().query<ProductRow>(
@@ -50,7 +50,26 @@ async function queryStoreProducts(targetId?:string):Promise<StoreProduct[]> {
         priceMinor,fileName:row.file_name,sizeBytes,resourceId:row.resource_id});
     }
     return products;
-  }catch{return [];}
+  }catch(error){
+    // The public shop stays safely empty on failure; the admin dashboard must
+    // report source unavailability instead of presenting a fabricated zero.
+    if(strict)throw new Error("Store product catalogue unavailable",{cause:error});
+    return [];
+  }
+}
+
+export type StorefrontAvailability = Readonly<{
+  status:"available"|"not_configured"|"unavailable";
+  visibleItems:number|null;
+}>;
+export async function readStorefrontAvailability():Promise<StorefrontAvailability> {
+  if(!billingConfigured())return {status:"not_configured",visibleItems:null};
+  try {
+    const items=await queryStoreProducts(undefined,true);
+    return {status:"available",visibleItems:items.length};
+  } catch {
+    return {status:"unavailable",visibleItems:null};
+  }
 }
 
 export async function listStoreProducts():Promise<StoreProduct[]>{
