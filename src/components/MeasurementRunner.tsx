@@ -1,64 +1,119 @@
 "use client";
+
 import {useState} from "react";
 import Link from "next/link";
 import ReportPremiumPanel from "@/components/ReportPremiumPanel";
 import type {Instrument} from "@/lib/measurement-center";
 import {scoreInstrument} from "@/lib/measurement-center";
 import styles from "@/app/assessment-center/measurement.module.css";
+
 type Stage="intro"|"questions"|"report";
+
 export default function MeasurementRunner({instrument}:{instrument:Instrument}){
   const [stage,setStage]=useState<Stage>("intro");
   const [adult,setAdult]=useState(false);
   const [answers,setAnswers]=useState<Record<string,number>>({});
   const [index,setIndex]=useState(0);
   const item=instrument.items[index];
+  const total=instrument.items.length;
   const done=instrument.items.filter(x=>answers[x.id]!==undefined).length;
   const report=stage==="report"?scoreInstrument(instrument,answers):null;
-  const restart=()=>{setAnswers({});setIndex(0);setStage("intro");setAdult(false);};
+  const restart=()=>{
+    setAnswers({});
+    setIndex(0);
+    setStage("intro");
+    setAdult(false);
+  };
+
   return <div className={styles.runner}>
-    <header className={styles.runnerHeader}>
-      <span className={styles.eyebrowDark}>RESEARCH PREVIEW · {instrument.version}</span>
-      <h1>{instrument.title}</h1><p>{instrument.subtitle}</p>
-      <div className={styles.labels}><span>免费完成 · 简要结果</span><span>详细报告单独付费</span><span>未验证中国常模</span><span>{instrument.items.length} 题</span><span>{instrument.duration}</span></div>
+    <header className={styles.runnerHeader+(stage==="intro"?"":" "+styles.compactHeader)}>
+      <span className={styles.eyebrowDark}>SOCTHINK · 测评中心 / {instrument.version}</span>
+      <h1>{instrument.title}</h1>
+      <p>{instrument.subtitle}</p>
+      {stage==="intro"&&<div className={styles.labels}>
+        <span>{total} 题</span><span>预计 {instrument.duration.replace(/^约\s*/,"")}</span>
+        <span>免费简要结果 · 完整报告可选付费</span><span>未验证中国常模</span>
+      </div>}
     </header>
-    {stage==="intro"&&<section className={styles.panel}>
-      <h2>开始前请了解</h2>
+
+    {stage==="intro"&&<section className={styles.panel} aria-label="测评开始说明">
+      <h2>测评说明</h2>
       <p className={styles.lead}>{instrument.methodology}</p>
-      <p className={styles.smallNote}>每套量表有自己的题项来源和使用许可：<a href={instrument.sourceUrl} target="_blank" rel="noopener noreferrer">{instrument.source}</a>。问卷中含 {instrument.items.filter(q=>q.reverse).length} 道反向计分题。</p>
-      <p className={styles.privacy}><strong>先答题，后决定是否购买：</strong>完成全部题目可免费查看简要结果；详细个人报告在真实商品正式上架后按页面公示价格单独购买，未授权付款时不开放付费按钮。完整报告包括维度解释、真实题项证据、生活实验与科学限制。</p>
-      <p><Link href="/assessment-center/methodology">查看完整来源、计分规则及验证证据</Link></p>
-      <dl className={styles.details}><div><dt>测评来源</dt><dd>{instrument.source}</dd></div>
-        <div><dt>题项许可</dt><dd>{instrument.license}</dd></div>
-        <div><dt>建议年龄</dt><dd>{instrument.audience}</dd></div>
-        <div><dt>适用边界</dt><dd>仅供自我探索，不是标准化中国常模测评；不可用于医疗诊断、求职筛选、录取或能力定级。</dd></div>
-      </dl>
-      <p className={styles.privacy}>本试测在当前浏览器页面中计算结果，不向本站提交或持久化答卷；刷新后结果将消失。请勿输入姓名或其他个人敏感信息。</p>
-      <label className={styles.consent}><input type="checkbox" checked={adult} onChange={e=>setAdult(e.target.checked)}/> 我已年满18岁，理解本测评属于未经中文本土验证的研究预览。</label>
-      <div className={styles.controls}><button type="button" className={styles.primaryButton} disabled={!adult} onClick={()=>setStage("questions")}>同意并开始</button></div>
-      <p className={styles.sourceLink}><a href={instrument.sourceUrl} target="_blank" rel="noopener noreferrer">查看原始来源与技术资料 ↗</a></p>
+      <div className={styles.examInstructions}>
+        <span>逐题选择最符合自身的回答</span><span aria-hidden="true">·</span>
+        <span>全部完成后显示结果</span><span aria-hidden="true">·</span><span>可返回修改</span>
+      </div>
+      <div className={styles.details}>
+        <div><dt>测评类型</dt><dd>人格与职业兴趣自评 · 研究预览</dd></div>
+        <div><dt>适用年龄</dt><dd>{instrument.audience}</dd></div>
+        <div><dt>预计用时</dt><dd>{instrument.duration}，不设倒计时</dd></div>
+      </div>
+      <p className={styles.privacy}>作答阶段只在当前页面内计算；如主动购买详细报告，将按购买流程处理必要的答卷数据与权益。测评不能作为心理诊断、招聘筛选或人群排名。</p>
+      <p className={styles.smallNote}>全部作答后可免费查看简要结果。完整报告内容及价格须以实际开放的商品页面为准。</p>
+      <details className={styles.evidenceToggle}>
+        <summary>查看题项出处、许可与测量局限</summary>
+        <dl className={styles.details}>
+          <div><dt>来源</dt><dd>{instrument.source}</dd></div>
+          <div><dt>题项许可</dt><dd>{instrument.license}</dd></div>
+          <div><dt>评分与验证</dt><dd>按题项方向计算各维度均分；中文本土信效度和常模尚未验证。</dd></div>
+          <div><dt>使用边界</dt><dd>仅供个人探索，不用于医疗诊断、录取、雇佣或能力定级。</dd></div>
+        </dl>
+        <p className={styles.sourceLink}><a href={instrument.sourceUrl} target="_blank" rel="noopener noreferrer">查看原始来源 ↗</a> · <Link href="/assessment-center/methodology">测评技术档案</Link></p>
+      </details>
+      <label className={styles.consent}>
+        <input type="checkbox" checked={adult} onChange={e=>setAdult(e.target.checked)}/>
+        <span>我已年满18岁，理解这是未经中文本土验证的研究试测。</span>
+      </label>
+      <div className={styles.controls}>
+        <button type="button" className={styles.primaryButton} disabled={!adult} onClick={()=>setStage("questions")}>开始测评</button>
+      </div>
     </section>}
-    {stage==="questions"&&<section className={styles.panel}>
-      <div className={styles.progressRow}><strong>第 {index+1} / {instrument.items.length} 题</strong><span>已回答 {done} 题</span></div>
-      <div className={styles.progress} role="progressbar" aria-label="作答进度" aria-valuemin={0} aria-valuemax={instrument.items.length} aria-valuenow={done}><span style={{width:(done/instrument.items.length*100)+"%"}}/></div>
+
+    {stage==="questions"&&<section className={styles.panel} aria-label="正式测评作答">
+      <div className={styles.progressRow}>
+        <strong>第 {index+1} 题 / 共 {total} 题</strong>
+        <span aria-live="polite">已答 {done} / {total}</span>
+      </div>
+      <div className={styles.progress} role="progressbar" aria-label="已完成题量" aria-valuemin={0} aria-valuemax={total} aria-valuenow={done}>
+        <span style={{width:(done/total*100)+"%"}}/>
+      </div>
       <p className={styles.prompt}>{instrument.prompt}</p>
-      <fieldset className={styles.question}><legend>{item.text}</legend>
+      <fieldset className={styles.question}>
+        <legend>{item.text}</legend>
         <div className={styles.choices}>{instrument.options.map((label,i)=>{
           const value=i+1;
           return <label key={value} className={answers[item.id]===value?styles.choiceActive:styles.choice}>
-            <input type="radio" name={"answer-"+item.id} value={value} checked={answers[item.id]===value}
+            <input type="radio" name={"answer-"+item.id} value={value}
+              checked={answers[item.id]===value}
               onChange={()=>setAnswers(prev=>({...prev,[item.id]:value}))}/>
-            <span className={styles.choiceNum}>{value}</span><span>{label}</span>
+            <span className={styles.choiceNum}>{String.fromCharCode(65+i)}</span>
+            <span>{label}</span>
           </label>;
         })}</div>
       </fieldset>
+      <details className={styles.answerNav}>
+        <summary>答题卡 · 已答 {done}/{total} · 点击跳转题目</summary>
+        <div className={styles.answerGrid} role="group" aria-label="选择题号">
+          {instrument.items.map((q,i)=><button key={q.id} type="button" onClick={()=>setIndex(i)}
+            aria-current={index===i?"step":undefined}
+            aria-label={"第"+(i+1)+"题"+(answers[q.id]!==undefined?"，已答":"，未答")}
+            className={(answers[q.id]!==undefined?styles.answered:"")+(index===i?" "+styles.current:"")}>
+            {i+1}
+          </button>)}
+        </div>
+        <p className={styles.answerHint}>深色为当前题，浅蓝为已答题。可以跳转和修改，不会自动提交。</p>
+      </details>
       <div className={styles.controls}>
         <button type="button" className={styles.secondaryButton} disabled={index===0} onClick={()=>setIndex(x=>x-1)}>上一题</button>
-        {index<instrument.items.length-1?
-          <button type="button" className={styles.primaryButton} disabled={answers[item.id]===undefined} onClick={()=>setIndex(x=>x+1)}>下一题</button>:
-          <button type="button" className={styles.primaryButton} disabled={done!==instrument.items.length} onClick={()=>setStage("report")}>查看我的结果</button>}
+        {index<total-1
+          ?<button type="button" className={styles.primaryButton} disabled={answers[item.id]===undefined}
+              onClick={()=>setIndex(x=>x+1)}>下一题</button>
+          :<button type="button" className={styles.primaryButton} disabled={done!==total}
+              onClick={()=>setStage("report")}>提交并查看结果</button>}
       </div>
-      <p className={styles.smallNote}>可以返回修改选择。所有题目完成后才会计分，不使用 AI 猜测漏答项。</p>
+      {index===total-1&&done<total&&<p className={styles.smallNote}>还有 {total-done} 题未完成。打开答题卡可跳转补答。</p>}
     </section>}
+
     {stage==="report"&&report&&<section className={styles.panel}>
       <div className={styles.reportTitle}><div><span className={styles.eyebrowDark}>SOCTHINK · FREE SUMMARY</span><h2>你的免费简要结果</h2></div><span className={styles.previewBadge}>无标准化常模</span></div>
       <p className={styles.lead}>你的 {instrument.items.length} 道回答均已纳入评分。以下是本次问卷中<strong>相对较常赞同或感兴趣的两类描述</strong>，按既定反向计分规则计算。它们并不代表优势排名、智商或中国同龄人的水平。</p>

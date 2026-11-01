@@ -29,10 +29,10 @@ for(const config of [
   await expect(page.getByRole("heading",{name:config.heading})).toBeVisible();
   await expect(page.getByText(/简要结果/).first()).toBeVisible();
   await page.getByRole("checkbox",{name:/我已年满18岁/}).check();
-  await page.getByRole("button",{name:"同意并开始"}).click();
+  await page.getByRole("button",{name:"开始测评"}).click();
   for(let n=0;n<config.count;n++){
    await page.locator('input[type="radio"][value="4"]').check();
-   await page.getByRole("button",{name:n===config.count-1?"查看我的结果":"下一题"}).click();
+   await page.getByRole("button",{name:n===config.count-1?"提交并查看结果":"下一题"}).click();
   }
   await expect(page.getByRole("heading",{name:"你的免费简要结果"})).toBeVisible();
   await expect(page.getByText(/解读不止一个分数/)).toBeVisible();
