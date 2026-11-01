@@ -9,32 +9,32 @@ import styles from "./ExamDirectory.module.css";
 const LABEL={
   zh:{
     eyebrow:"EXAM INDEX / 全国考试导航",
-    title:"全部考试，一站查找",
-    description:"按考试领域、学科和方向查找。可以使用的服务直接打开，建设中的方向不显示虚假考试和购买入口。",
+    title:"考试目录",
+    description:"",
     search:"搜索考试名称、考试方向或关键词",submit:"搜索",all:"考试分类",topics:"考试方向",
     ready:"立即使用",soon:"内容准备中",available:"部分内容已开放",
     empty:"没有找到相关考试方向，请调整搜索条件。",reset:"清空",
-    count:"考试方向",categories:"考试大类",more:"查看可用练习卷",
+    count:"考试方向",categories:"考试大类",more:"查看可用练习卷",show:"查看筹备中的考试",hide:"收起筹备中的考试",
     browse:"真实试卷资料",calendar:"全球赛事管家",
   },
   en:{
     eyebrow:"EXAM INDEX / ALL CATEGORIES",
-    title:"Find any exam in one place",
-    description:"Browse exam areas, subjects and topics. Open real practice immediately; planned exams never lead to fictional checkouts.",
+    title:"Exam directory",
+    description:"",
     search:"Search exam, subject or keyword",submit:"Search",all:"Categories",topics:"Exam directions",
     ready:"Open practice",soon:"Coming later",available:"Some services available",
     empty:"No matching exams. Try another keyword.",reset:"Clear",
-    count:"directions",categories:"exam categories",more:"Find available practice papers",
+    count:"directions",categories:"exam categories",more:"Find available practice papers",show:"Show upcoming exams",hide:"Hide upcoming exams",
     browse:"Available papers",calendar:"Competition calendar",
   },
 } as const;
 
 const DOMAIN_BY_ID=new Map(ASSESSMENT_DOMAINS.map(d=>[d.id,d]));
-const TOTAL=EXAM_DIRECTORY.reduce((sum,group)=>sum+group.topics.length,0);
 
 export default function ExamDirectory({initialQuery=""}:{initialQuery?:string}){
   const lang=useSiteLanguage(),t=LABEL[lang];
   const [query,setQuery]=useState(initialQuery);
+  const [showPlanned,setShowPlanned]=useState(false);
   const matched=useMemo(()=>{
     const term=query.trim().toLocaleLowerCase();
     return EXAM_DIRECTORY.map(group=>{
@@ -46,13 +46,12 @@ export default function ExamDirectory({initialQuery=""}:{initialQuery?:string}){
       return {domain,topics};
     }).filter(group=>group.topics.length>0);
   },[query]);
+  const visible=matched.filter(group=>showPlanned||query.trim()||group.topics.some(topic=>Boolean(topic.href)));
   return <section className={styles.section} aria-label={t.title} id="exam-directory">
     <header className={styles.heading}>
-      <div className={styles.eyebrow}>{t.eyebrow}</div>
       <div className={styles.headingRow}>
-        <div><h2>{t.title}</h2><p>{t.description}</p></div>
-        <div className={styles.metrics}><span><strong>{ASSESSMENT_DOMAINS.length}</strong>{t.categories}</span>
-          <span><strong>{TOTAL}</strong>{t.count}</span></div>
+        <div><h2>{t.title}</h2></div>
+        <button type="button" className={styles.plannedToggle} aria-expanded={showPlanned} onClick={()=>setShowPlanned(v=>!v)}>{showPlanned?t.hide:t.show}</button>
       </div>
       <div className={styles.searchBar}>
         <label htmlFor="exam-directory-search">{t.search}</label>
@@ -72,7 +71,7 @@ export default function ExamDirectory({initialQuery=""}:{initialQuery?:string}){
           const domain=DOMAIN_BY_ID.get(group.domainId)!;
           return <a key={group.domainId} href={`/assessments#domain-${group.domainId}`}
             onClick={()=>{
-              if(!query)return;
+              setShowPlanned(true);
               setQuery("");
               requestAnimationFrame(()=>document.getElementById(`domain-${group.domainId}`)?.scrollIntoView({block:"start"}));
             }}>
@@ -83,10 +82,10 @@ export default function ExamDirectory({initialQuery=""}:{initialQuery?:string}){
       </nav>
       <div className={styles.groups} aria-live="polite">
         {!matched.length&&<div className={styles.empty}>{t.empty}</div>}
-        {matched.map(({domain,topics})=><article className={styles.group}
+        {visible.map(({domain,topics})=><article className={styles.group}
           id={`domain-${domain.id}`} key={domain.id}>
           <div className={styles.groupTop}>
-            <div><h3>{domain.name[lang]}</h3><p>{domain.summary[lang]}</p></div>
+            <div><h3>{domain.name[lang]}</h3></div>
             <span className={domain.readiness==="live"?styles.live:styles.pending}>
               {domain.readiness==="live"?t.available:t.soon}
             </span>

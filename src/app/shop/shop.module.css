@@ -119,3 +119,9 @@
  .purchaseCard{padding:22px 19px}
 }
 @media(prefers-reduced-motion:reduce){.card,.action{transition:none}}
+
+/* Customer information hierarchy */
+.card h2{font-size:20px}
+.card p{font-size:15px}
+.price{font-size:32px}
+.action{font-size:16px}
