@@ -134,3 +134,7 @@
 .breadcrumb{display:flex;gap:8px;flex-wrap:wrap;font-size:13px;color:#6b7f8f;margin-bottom:20px}
 .breadcrumb a{color:#2a6488;text-decoration:none}
 @media(max-width:650px){.shell{width:calc(100% - 26px);padding:14px 0 58px}}
+
+/* Saved reports stay reachable from the admission desk on another device. */
+.historyDock{margin-top:20px}
+.historyDock .historyBar{font-size:14px}
