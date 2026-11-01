@@ -64,7 +64,7 @@ export async function readAdminRevenue(periodDays: AdminPeriod, now = new Date()
   if (!PERIODS.includes(periodDays) || !Number.isFinite(now.getTime())) throw new Error("Invalid revenue report time");
   const asOf = now.toISOString();
   if (!billingConfigured()) {
-    return { status: "not_configured", asOf, periodDays, currencies: [], daily: [], products: [] };
+    return { status: "not_configured", asOf, periodDays, currencies: [], daily: [], products: [], topProducts: [] };
   }
   const since = new Date(now.getTime() - periodDays * 86_400_000);
   try {
@@ -130,7 +130,7 @@ export async function readAdminRevenue(periodDays: AdminPeriod, now = new Date()
     };
   } catch {
     // Never turn DB errors into fabricated zero-revenue KPIs.
-    return { status: "unavailable", asOf, periodDays, currencies: [], daily: [], products: [] };
+    return { status: "unavailable", asOf, periodDays, currencies: [], daily: [], products: [], topProducts: [] };
   }
 }
 
