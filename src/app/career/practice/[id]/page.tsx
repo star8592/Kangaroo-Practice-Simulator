@@ -6,8 +6,8 @@ import {listCareerDemandFamilies} from "@/lib/career-demand";
 import styles from "../career-practice.module.css";
 
 export const metadata={
-  title:"采购岗位供应商决策免费实操｜职业能力训练｜SOCTHINK",
-  description:"原创供应商选择业务案例，实际进行订货量、到货成本和采购风险测算。免费作答、服务端评分、报告与重测，非企业官方真题。",
+  title:"原创职业岗位实操与免费评分｜SOCTHINK",
+  description:"依据企业公开岗位能力方向设计的原创训练。在线答题、服务端评分、逐题反馈和重新挑战；非企业官方真题。",
 };
 export function generateStaticParams(){
   return CAREER_PRACTICE_CASES.map(x=>({id:x.id}));
