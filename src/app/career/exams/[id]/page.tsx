@@ -2,7 +2,7 @@ import Link from "next/link";
 import {notFound} from "next/navigation";
 import CareerFormalExamRunner from "@/components/CareerFormalExamRunner";
 import {CAREER_FORMAL_PAPERS,getCareerFormalPaper} from "@/lib/career-formal-bank";
-import styles from "../../practice/career-practice.module.css";
+import styles from "../career-formal-exam.module.css";
 
 export function generateStaticParams(){
   return CAREER_FORMAL_PAPERS.map(p=>({id:p.id}));
