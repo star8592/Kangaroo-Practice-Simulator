@@ -39,7 +39,7 @@ export function buildCareerAssessmentContract(caseId:string){
     source:{sourceId:"socthink-original-"+exercise.id,rights:"original",
       originalHash:hash,retrievedAt:"2026-11-01T00:00:00.000Z",publisher:"SOCTHINK原创"},
     quality:"publishable",answerEvidenceId:"career-rubric-"+exercise.id+"-"+q.id,
-    scoringRubricVersion:"procurement-expected-yield-v1",
+    scoringRubricVersion:exercise.id==="supplier-selection-001"?"procurement-expected-yield-v1":"career-deterministic-original-v1",
   }));
   const blueprint:AssessmentBlueprintContract={
     id:"career-"+exercise.id,
@@ -65,8 +65,67 @@ function feasible(s:CareerPracticeCase["suppliers"][number],demand:number){
   return s.leadDays<=7&&units<=s.maxUnits&&cost<=35000;
 }
 
+/**
+ * Case-specific, server-only objective rubrics. The scoring/feedback pipeline is
+ * generic across occupations. These keys must never be serialized to page props.
+ */
+const RUBRICS:Readonly<Record<string,Readonly<Record<string,{
+  value:string|readonly string[];explanation:string
+}>>>>={
+  "campaign-performance-001":{
+    "eligible":{value:["search","community"],explanation:"站内搜索退款率8%，社群推荐5%，均低于10%；短视频20%不符合。"},
+    "net-revenue":{value:"33120",explanation:"站内搜索退款后净收入＝36,000×(1－8%)＝33,120元。"},
+    "contribution":{value:"12100",explanation:"社群推荐净收入18,000×95%＝17,100元；扣除5,000元广告费，净贡献12,100元。"},
+    "best-roi":{value:"community",explanation:"社群ROI＝12,100÷5,000＝242%，高于搜索的176%与短视频的152%。ROI最高不等于绝对贡献最高。"},
+    "largest-contribution":{value:"21120",explanation:"搜索净贡献33,120－12,000＝21,120元，超过短视频12,160与社群12,100元。"},
+    "roi-threshold":{value:"community",explanation:"社群退款率5%且ROI为242%，同时满足门槛；其他渠道ROI未达到200%或退款率超标。"},
+  },
+  "manufacturing-quality-001":{
+    "temperature-rpn":{value:"240",explanation:"温度传感器漂移的简化RPN＝8×5×6＝240。"},
+    "largest-rpn":{value:"temperature",explanation:"接头216、划痕42、传感器240、标签60，传感器RPN最高。但实际FMEA不能仅凭RPN判定最终行动优先级。"},
+    "high-rpn":{value:["connector","temperature"],explanation:"电源接头RPN＝9×3×8＝216，温度传感器＝240，均达到练习复核阈值200。"},
+    "improved-rpn":{value:"120",explanation:"温度传感器D从6改善到3，新的简化RPN＝8×5×3＝120。"},
+    "rpn-reduction":{value:"120",explanation:"简化RPN由240降到120，差额为120；还须评估改进方案是否真正有效。"},
+    "professional-judgement":{value:"review-severity",explanation:"真正的失效分析应考虑严重度、风险后果、预防检测控制和AIAG-VDA行动优先级，不能只比较RPN。"},
+  },
+};
+export function validateCareerPracticeRubrics():string[]{
+  const errors:string[]=[];
+  for(const exercise of [
+    "campaign-performance-001","manufacturing-quality-001",
+  ]){
+    const c=getCareerPractice(exercise);
+    if(!c){errors.push("case-missing:"+exercise);continue;}
+    const rubric=RUBRICS[exercise];
+    if(!rubric){errors.push("rubric-missing:"+exercise);continue;}
+    for(const q of c.questions){
+      const expected=rubric[q.id];
+      if(!expected){errors.push("missing-answer:"+exercise+":"+q.id);continue;}
+      if(q.kind==="multiple"){
+        if(!Array.isArray(expected.value)||!expected.value.every(x=>
+          q.options?.some(o=>o.id===x)))errors.push("bad-multiselect:"+exercise+":"+q.id);
+      }else if(typeof expected.value!=="string"||
+        q.kind==="integer"&&!/^-?\\d+$/.test(expected.value)||
+        q.kind==="single"&&!q.options?.some(x=>x.id===expected.value)){
+        errors.push("bad-answer:"+exercise+":"+q.id);
+      }
+    }
+    for(const key of Object.keys(rubric)){
+      if(!c.questions.some(q=>q.id===key))errors.push("orphan-answer:"+exercise+":"+key);
+    }
+  }
+  return errors;
+}
+
 function expectedAnswer(exercise:CareerPracticeCase,id:string):
   {value:string|readonly string[],explanation:string}{
+  if(RUBRICS[exercise.id]){
+    const answer=RUBRICS[exercise.id][id];
+    if(!answer)throw Error("NO_RUBRIC_FOR_ITEM:"+exercise.id+":"+id);
+    return answer;
+  }
+  if(exercise.id!=="supplier-selection-001")
+    throw Error("UNSUPPORTED_SCORING_CASE:"+exercise.id);
   const [a,b,c]=exercise.suppliers;
   if(!a||!b||!c)throw Error("CASE_SUPPLIERS_INVALID");
   const eligible=exercise.suppliers.filter(s=>feasible(s,650));
