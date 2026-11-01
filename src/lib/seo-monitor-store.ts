@@ -6,6 +6,7 @@ export type SeoDailySnapshot = Readonly<{
   date: string;
   observedAt: string;
   sitemapCount: number;
+  checkedCount: number;
   healthyCount: number;
   robotsOk: boolean;
   failures: SeoCrawlFailure[];
@@ -20,8 +21,10 @@ export function validSeoSnapshot(x: unknown): x is SeoDailySnapshot {
   return typeof v.date === "string" && /^\d{4}-\d{2}-\d{2}$/.test(v.date) &&
     typeof v.observedAt === "string" && !Number.isNaN(Date.parse(v.observedAt)) &&
     Number.isInteger(v.sitemapCount) && (v.sitemapCount as number) >= 0 &&
+    Number.isInteger(v.checkedCount) && (v.checkedCount as number) >= 0 &&
+    (v.checkedCount as number) <= (v.sitemapCount as number) &&
     Number.isInteger(v.healthyCount) && (v.healthyCount as number) >= 0 &&
-    (v.healthyCount as number) <= (v.sitemapCount as number) &&
+    (v.healthyCount as number) <= (v.checkedCount as number) &&
     typeof v.robotsOk === "boolean" && Array.isArray(v.failures) && v.failures.length <= 500 &&
     v.failures.every((f: unknown) => !!f && typeof f === "object" &&
       typeof (f as SeoCrawlFailure).path === "string" &&
@@ -82,6 +85,6 @@ export function getSeoMonitorDashboard() {
     : null;
   const siteStatus = !latest ? "not_measured" :
     ageHours === null || ageHours > 36 ? "stale" :
-    latest.robotsOk && latest.healthyCount === latest.sitemapCount ? "healthy" : "issues";
+    latest.robotsOk && latest.healthyCount === latest.checkedCount ? "healthy" : "issues";
   return { latest, history: history.slice(-30), ageHours, siteStatus, providers: PROVIDERS };
 }
