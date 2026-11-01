@@ -24,7 +24,7 @@ async function main(){
       import("../src/lib/career-exam-session"),
       import("../src/lib/career-formal-bank"),
     ]);
-    const paper=getCareerFormalPaper("procurement-paper-2026q4-v1");
+    const paper=getCareerFormalPaper("procurement-paper-2026q4-v1")!;
     assert(paper&&paper.questions.length===24);
     assert.equal(CAREER_FORMAL_PAPERS.length,3);
     const ID="11111111-1111-4111-8111-111111111111";
