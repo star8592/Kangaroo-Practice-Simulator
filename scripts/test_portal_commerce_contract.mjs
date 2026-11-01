@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import {readFileSync} from "node:fs";
+import {readFileSync,readdirSync} from "node:fs";
 const read=p=>readFileSync(p,"utf8");
 const header=read("src/components/SiteHeader.tsx");
 const accountNav=read("src/components/SessionNav.tsx");
@@ -81,7 +81,17 @@ assert.match(checkoutCss,/\.checkoutCompact/,
   "INLINE_CHECKOUT_MUST_HAVE_EXPLICIT_LAYOUT");
 assert.match(shopIndex,/查看文件和商品详情/,
   "SHOP_GRID_LINK_MUST_BE_TRUTHFUL_WHILE_CHECKOUT_IS_OFF");
-assert.match(shopDetail,/已入库文件的真实信息，并非冒充内页的样张/,
-  "NO_FAKE_CONTENT_PREVIEW");
+assert.match(shopDetail,/本样张直接渲染自已核验 PDF 的第一页/,
+  "SHOP_PREVIEW_MUST_BE_ACTUAL_PRODUCT_PDF");
+assert.match(shopDetail,/shop\/previews\//,
+  "PRODUCT_DETAIL_MUST_LINK_TO_AUTHENTIC_PDF_PREVIEW");
+assert.match(shopIndex,/cardPreviewLink/,
+  "SHOP_CATALOG_MUST_SHOW_ACTUAL_FIRST_PAGE");
+const pdfPreviewFiles=readdirSync("public/shop/previews").filter(name=>name.endsWith(".png"));
+assert.ok(pdfPreviewFiles.length>=13,"ALL_INITIAL_VERIFIED_PRODUCTS_NEED_PREVIEW");
+for(const name of pdfPreviewFiles){
+  assert.equal(readFileSync("public/shop/previews/"+name).subarray(0,8).toString("hex"),
+    "89504e470d0a1a0a","PREVIEW_NOT_A_REAL_PNG_"+name);
+}
 
 console.log("PORTAL_COMMERCE_CONTRACT=PASS consistent_nav real_service_entries shared_theme policy_and_payment_fail_closed");
