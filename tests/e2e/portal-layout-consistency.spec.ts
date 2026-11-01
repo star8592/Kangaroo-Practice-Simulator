@@ -11,6 +11,7 @@ const publicRoutes=[
   "/resources",
   "/exam-planner",
   "/membership",
+  "/shop",
   "/competitions",
   "/events",
 ] as const;
