@@ -8,7 +8,8 @@ import fs from "node:fs";
 import path from "node:path";
 
 export const ORIGIN = "https://socthink.cn";
-const MAX_URLS = 500;
+const MAX_URLS = 100000;
+const PROBE_LIMIT = 200;
 const TIMEOUT_MS = 9000;
 const HISTORY_LIMIT = 365;
 const STORE_FILE = "seo-monitor-snapshots.json";
@@ -47,6 +48,18 @@ export function parseSitemap(xml) {
     urls.push(value);
   }
   return urls;
+}
+
+export function selectProbeUrls(urls) {
+  if (urls.length <= PROBE_LIMIT) return urls;
+  // Keep main navigation pages, latest appended pages, and a deterministic
+  // evenly distributed sample. Never label this sample as a full-site audit.
+  const selected = new Set([...urls.slice(0, 20), ...urls.slice(-30)]);
+  const slots = PROBE_LIMIT - selected.size;
+  for (let i = 0; i < slots; i++) {
+    selected.add(urls[Math.floor((i * (urls.length - 1)) / Math.max(1, slots - 1))]);
+  }
+  return [...selected].slice(0, PROBE_LIMIT);
 }
 
 export function inspectHtml(url, html, finalUrl, status, contentType) {
@@ -94,11 +107,13 @@ export async function captureSeoSnapshot() {
   const robotsResponse = await requestFor(ORIGIN + "/robots.txt");
   const robots = robotsResponse.ok ? await robotsResponse.text() : "";
   const robotsOk = robotsResponse.ok && robots.includes("Sitemap: " + ORIGIN + "/sitemap.xml");
-  const pages = await limitedMap(urls, checkOne);
+  const checkedUrls = selectProbeUrls(urls);
+  const pages = await limitedMap(checkedUrls, checkOne);
   return {
     date: started.toISOString().slice(0, 10),
     observedAt: new Date().toISOString(),
     sitemapCount: urls.length,
+    checkedCount: checkedUrls.length,
     healthyCount: pages.filter((page) => page.ok).length,
     robotsOk,
     failures: pages.filter((page) => !page.ok).slice(0, 60),
@@ -109,8 +124,9 @@ export async function captureSeoSnapshot() {
 function isSnapshot(x) {
   return !!x && typeof x.date === "string" && /^\d{4}-\d{2}-\d{2}$/.test(x.date) &&
     typeof x.observedAt === "string" && Number.isInteger(x.sitemapCount) && x.sitemapCount >= 0 &&
+    Number.isInteger(x.checkedCount) && x.checkedCount >= 0 && x.checkedCount <= x.sitemapCount &&
     Number.isInteger(x.healthyCount) && x.healthyCount >= 0 &&
-    x.healthyCount <= x.sitemapCount && typeof x.robotsOk === "boolean" &&
+    x.healthyCount <= x.checkedCount && typeof x.robotsOk === "boolean" &&
     Array.isArray(x.failures) && x.failures.length <= MAX_URLS;
 }
 
@@ -142,7 +158,7 @@ async function main() {
   const days = saveSnapshot(snap);
   console.log("SEO_PUBLIC_DISCOVERY_SNAPSHOT=" + JSON.stringify({ ...snap, storedDays: days }));
   // A public failure is reported in logs and dashboard, without blocking website deployment.
-  if (!snap.robotsOk || snap.healthyCount !== snap.sitemapCount) process.exitCode = 2;
+  if (!snap.robotsOk || snap.healthyCount !== snap.checkedCount) process.exitCode = 2;
 }
 
 if (process.argv[1] && import.meta.url === new URL("file://" + path.resolve(process.argv[1])).href) {
