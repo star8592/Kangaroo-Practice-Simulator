@@ -50,6 +50,23 @@
 
 实际本地浏览器人工脚本：在 1440px 与390px 宽度中，从 `/career` 进入案例、填入6道正确答案、调用真实评分接口、读到100分报告、点击重测、提交白卷取得0分；无页面横向溢出。专用可重复测试 `tests/e2e/career-practice.spec.ts` 加入Playwright正式测试集。
 
+### 真实浏览器 E2E 回执与移动端根因处理
+
+可重复端到端用例为 `tests/e2e/career-practice.spec.ts`，测试经由真实前台接口完成：
+`/career` → 采购供应商训练 → 答题 → 刷新恢复本地草稿 → 100 分服务端评分及报告 → 重新挑战 → 白卷 0 分。
+
+首轮 Playwright 的桌面用例通过，Pixel 7 移动端出现按钮触摸被页面其他元素拦截。追查到桌面宽度 640px 的报价表把手机外层 CSS Grid 的最小内容宽度撑大，从而导致触摸坐标错位；**没有使用 force click 绕过**。最终将 `.runner` 改为 `grid-template-columns:minmax(0,1fr)`，并明确其子元素 `min-width:0`，把 `.tableScroll` 限制在父容器内滚动。
+
+修复后执行：
+
+```bash
+E2E_BASE_URL=http://127.0.0.1:31287 E2E_EXTERNAL_SERVER=1 \
+  npx playwright test tests/e2e/career-practice.spec.ts \
+    --project=desktop-chromium --project=mobile-chromium --reporter=line
+```
+
+**原始回执：`2 passed (3.3s)`、`CAREER_BROWSER_E2E=PASS`。** Playwright 的手机设备配置使用 Pixel 7 触摸模式，与仅修改桌面浏览器视口宽度的模拟不同。本地 Next 服务器是独立工作区端口，绝非正式公网发布。
+
 ## 五、仍未完成
 
 - 尚未合并 PR #217、发布到正式 socthink.cn；当前本地成功不等于所有访问者可用。
