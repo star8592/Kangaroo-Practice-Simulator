@@ -95,7 +95,7 @@ export default async function AdminPage({ searchParams }: Params) {
         </div>
       </div>
       <div className={styles.heroBottom}>
-        <div className={styles.liveMarker}><span aria-hidden="true" className={styles.marker}/> 来源可核验 · 北京时间 {shanghaiDate(Date.now())}</div>
+        <div className={styles.liveMarker}><span aria-hidden="true" className={styles.marker}/> 来源可核验 · 北京时间 {shanghaiDate(revenue.asOf)}</div>
         <nav aria-label="经营统计周期" className={styles.periods}>
           {([7, 30, 90] as const).map(d => <Link key={d} href={`/admin?days=${d}`}
             aria-current={period === d ? "page" : undefined}
