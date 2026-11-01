@@ -31,7 +31,9 @@ for(const slug of ["/assessments","/resources","/arithmetic","/account"]){
 }
 assert.match(member,/NativeCheckoutPanel offers={offers}/);
 assert.match(member,/DIGITAL_SALES_POLICY_SHORT_ZH/);
-assert.match(checkout,/!nativeCheckoutAllowed\(\) \|\| !billingConfigured\(\)/);
+assert.match(checkout,/nativeCheckoutAllowedForBuyer\(parent.id,productId\)/);
+assert.match(checkout,/nativeServerContext\(process.env,Math.floor\(Date.now\(\)\/1000\),"checkout",parent.id,productId\)/);
+assert.match(checkout,/!billingConfigured\(\)/);
 assert.match(checkout,/validDigitalSalesPolicyConsent/);
 for(const css of [memberCss,accountCss,authCss]){
   assert.match(css,/--portal-navy/);
@@ -65,7 +67,7 @@ assert.doesNotMatch(shopCss,/\.detail\s*\{\s*max-width:\s*740px/,
   "DO_NOT_REINTRODUCE_NARROW_CENTERED_PRODUCT_CARD");
 assert.match(shopDetail,/NativeCheckoutPanel offers=\{\[offer\]\} accountLoggedIn compact/,
   "PRODUCT_PAYMENT_MUST_REUSE_EXISTING_BILLING_CHECKOUT");
-assert.match(shopDetail,/nativeCheckoutAllowed\(\)/,
+assert.match(shopDetail,/nativeCheckoutAllowedForBuyer\(accountLoggedIn\?buyer\?\.id:null,p.id\)/,
   "PRODUCT_CANNOT_ADVERTISE_LIVE_CHARGES_WHEN_DISABLED");
 assert.match(shopDetail,/hasVerifiedItemEntitlement/,
   "PAID_CUSTOMER_MUST_HAVE_DOWNLOAD_SHORTCUT");
