@@ -3,14 +3,15 @@ import fs from "node:fs";
 import {NextRequest} from "next/server";
 import {POST} from "../src/app/api/career/practice/[id]/grade/route";
 import {getCareerPractice,CAREER_PRACTICE_CASES} from "../src/lib/career-practice";
-import {gradeCareerPractice,buildCareerAssessmentContract}
+import {gradeCareerPractice,buildCareerAssessmentContract,validateCareerPracticeRubrics}
   from "../src/lib/career-practice-grade";
 import {listCareerDemandFamilies} from "../src/lib/career-demand";
 
 const CASE="supplier-selection-001";
 const practice=getCareerPractice(CASE);
 assert(practice,"one original case must be delivered");
-assert.equal(CAREER_PRACTICE_CASES.length,1);
+assert.equal(CAREER_PRACTICE_CASES.length,3);
+assert.deepEqual(validateCareerPracticeRubrics(),[]);
 assert.equal(practice.domain,"career");
 assert.equal(practice.family,"procurement");
 assert.equal(practice.sourceRights,"original");
@@ -64,6 +65,46 @@ assert.throws(()=>gradeCareerPractice(CASE,{eligibility:["X"]}),/MULTIPLE_CHOICE
 assert.throws(()=>gradeCareerPractice(CASE,{quantity:"a".repeat(500)}),/ANSWER_INVALID/);
 assert.equal(gradeCareerPractice("unknown-case",{}),null);
 
+const extraCases=[
+  {
+    id:"campaign-performance-001",
+    evidence:"meituan-ops",
+    answers:{eligible:["search","community"],"net-revenue":"33120",
+      contribution:"12100","best-roi":"community","largest-contribution":"21120",
+      "roi-threshold":"community"},
+    wrong:{eligible:["video"],"net-revenue":"0",contribution:"1",
+      "best-roi":"video","largest-contribution":"0","roi-threshold":"none"}
+  },
+  {
+    id:"manufacturing-quality-001",
+    evidence:"schneider-quality",
+    answers:{"temperature-rpn":"240","largest-rpn":"temperature",
+      "high-rpn":["connector","temperature"],"improved-rpn":"120",
+      "rpn-reduction":"120","professional-judgement":"review-severity"},
+    wrong:{"temperature-rpn":"216","largest-rpn":"scratch",
+      "high-rpn":["scratch"],"improved-rpn":"240",
+      "rpn-reduction":"0","professional-judgement":"rpn-only"},
+  }
+];
+for(const c of extraCases){
+  const exercise=getCareerPractice(c.id);
+  assert(exercise&&exercise.evidenceSignalId===c.evidence);
+  assert(exercise.dataTable?.headers.length===exercise.dataTable?.rows[0].length);
+  assert(exercise.dataTable.rows.every(r=>r.length===exercise.dataTable?.headers.length));
+  assert.equal(exercise.questions.length,6);
+  assert.equal(exercise.questions.reduce((n,q)=>n+q.weight,0),100);
+  assert(buildCareerAssessmentContract(c.id)?.valid);
+  const success=gradeCareerPractice(c.id,c.answers);
+  assert.equal(success?.score,100,c.id+" full correct");
+  assert.equal(success?.completed,6,c.id+" all answered");
+  assert.equal(gradeCareerPractice(c.id,{})?.score,0,c.id+" blank");
+  assert.equal(gradeCareerPractice(c.id,c.wrong)?.score,0,c.id+" wrong");
+  assert(gradeCareerPractice(c.id,c.wrong)?.advice.length===6);
+  const ref=listCareerDemandFamilies().flatMap(f=>f.signals).find(x=>x.id===c.evidence);
+  assert(ref&&ref.evidenceLevel==="job");
+  assert(exercise.evidenceSkillCodes.every(skill=>ref.skills.includes(skill)));
+}
+
 const publicFile=fs.readFileSync("src/lib/career-practice.ts","utf8");
 assert(!publicFile.includes('"34821"'),"do not publish grading key with public challenge");
 assert(!publicFile.includes('"657"'),"do not publish grading key with public challenge");
@@ -91,8 +132,13 @@ async function verifyApi(){
   assert.equal(missing.status,404);
   const wrongMime=await request(CASE,{},{"content-type":"text/plain"});
   assert.equal(wrongMime.status,415);
+  for(const c of extraCases){
+    const response=await request(c.id,c.answers);
+    assert.equal(response.status,200);
+    assert.equal((await response.json()).grade.score,100);
+  }
   const oversized=await request(CASE,{quantity:"x".repeat(9000)});
   assert.equal(oversized.status,413);
-  console.log("CAREER_PRACTICE_E2E_CONTRACT=PASS case=1 questions=6 max=100 grade_api=PASS");
+  console.log("CAREER_PRACTICE_E2E_CONTRACT=PASS cases=3 each_questions=6 max=100 grade_api=PASS");
 }
 verifyApi().catch(e=>{console.error(e);process.exitCode=1;});
