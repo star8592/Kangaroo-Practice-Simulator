@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "checkedAt": "2026-11-01",
+  "scope": "Hubei Wuhan K12 public exam article normal HTML inspection; source leads, not acquired documents",
+  "statusDefinitions": {
+    "article_available": "HTTP200 source title and body available",
+    "direct_file_download": "Not confirmed from publicly visible raw article links; interactive site control present",
+    "paper_archived": "False until actual original bytes and SHA verified"
+  },
+  "pages": [
+    {
+      "subject": "数学",
+      "examHint": "2026湖北省中考",
+      "url": "https://www.hbjyzy.com/jiuxia/zkzt/2026-06-30/71241.html",
+      "httpStatus": 200,
+      "pageClaimsFree": true,
+      "downloadButtonHrefObserved": "javascript:void(0)",
+      "membershipResponseLogicObserved": true,
+      "downloadFileResolved": false,
+      "paperArchived": false
+    },
+    {
+      "subject": "语文",
+      "examHint": "2026湖北省中考",
+      "url": "https://www.hbjyzy.com/jiuxia/zkzt/2026-06-24/71234.html",
+      "httpStatus": 200,
+      "pageClaimsFree": true,
+      "downloadButtonHrefObserved": "javascript:void(0)",
+      "membershipResponseLogicObserved": true,
+      "downloadFileResolved": false,
+      "paperArchived": false
+    },
+    {
+      "subject": "化学",
+      "examHint": "2026武汉光谷实验学校10月九年级试卷",
+      "url": "https://www.wh111.com/lihuasheng/jingxuanshiti/chuzhonghuaxue/jiushanghuaxueyuekao/2026-10-29/88549.html",
+      "httpStatus": 200,
+      "pageClaimsFree": false,
+      "downloadButtonHrefObserved": "javascript:void(0)",
+      "membershipResponseLogicObserved": true,
+      "downloadFileResolved": false,
+      "paperArchived": false
+    },
+    {
+      "subject": "历史",
+      "examHint": "2025-2026学年八上江岸区期中（网页2026年10月发布，需核验考试真实年份）",
+      "url": "https://www.wh111.com/zhengshidi/jingxuanshiti/chuzhongzhengshi/bashangzhengshi/2026-10-27/88498.html",
+      "httpStatus": 200,
+      "pageClaimsFree": false,
+      "downloadButtonHrefObserved": "javascript:void(0)",
+      "membershipResponseLogicObserved": true,
+      "downloadFileResolved": false,
+      "paperArchived": false
+    }
+  ],
+  "articlePagesReachable": 4,
+  "actualPapersDownloaded": 0,
+  "sourceAuthenticityVerified": 0,
+  "nextAction": "Look for original education bureau or school open attachment, or authorized ordinary in-site download; do not bypass login/payment/anti-automation and do not treat 'free' label as evidence of direct original file",
+  "commercialRehostingAllowed": false
+}
