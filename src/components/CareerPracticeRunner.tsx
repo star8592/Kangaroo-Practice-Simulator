@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import {useEffect,useState,useSyncExternalStore} from "react";
+import {useEffect,useRef,useState,useSyncExternalStore} from "react";
 import type {CareerPracticeAnswers,CareerPracticeCase,CareerPracticeQuestion} from "@/lib/career-practice";
 import type {CareerPracticeGrade} from "@/lib/career-practice-grade";
+import CareerPracticeHistory from "@/components/CareerPracticeHistory";
 import styles from "@/app/career/practice/career-practice.module.css";
 
 type Answers=Record<string,string|string[]>;
@@ -55,6 +56,9 @@ export default function CareerPracticeRunner({practice}:{practice:CareerPractice
   const [grade,setGrade]=useState<CareerPracticeGrade|null>(null);
   const [loading,setLoading]=useState(false);
   const [error,setError]=useState("");
+  const [saveWarning,setSaveWarning]=useState("");
+  const [historyRefresh,setHistoryRefresh]=useState(0);
+  const attemptIdRef=useRef<string|null>(null);
   useEffect(()=>{
     if(!hydrated)return;
     try{window.localStorage.setItem(storageKey,JSON.stringify(answers));}
@@ -64,9 +68,9 @@ export default function CareerPracticeRunner({practice}:{practice:CareerPractice
 
   const question=practice.questions[current];
   const progress=practice.questions.filter(q=>answered(q,visibleAnswers)).length;
-  const setSingle=(id:string,value:string)=>{setError("");setAnswers(prev=>({...prev,[id]:value}));};
+  const setSingle=(id:string,value:string)=>{attemptIdRef.current=null;setError("");setAnswers(prev=>({...prev,[id]:value}));};
   const toggleMultiple=(id:string,value:string,checked:boolean)=>{
-    setError("");
+    attemptIdRef.current=null;setError("");
     setAnswers(prev=>{
       const old=Array.isArray(prev[id])?prev[id] as string[]:[];
       return {...prev,[id]:checked?[...new Set([...old,value])]:old.filter(x=>x!==value)};
@@ -74,26 +78,37 @@ export default function CareerPracticeRunner({practice}:{practice:CareerPractice
   };
   async function submit(){
     if(loading)return;
-    setLoading(true);setError("");
+    setLoading(true);setError("");setSaveWarning("");
+    if(!attemptIdRef.current)attemptIdRef.current=window.crypto?.randomUUID?.()??null;
     try{
       const response=await fetch("/api/career/practice/"+encodeURIComponent(practice.id)+"/grade",{
         method:"POST",
         headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({answers:answers as CareerPracticeAnswers}),
+        body:JSON.stringify({answers:answers as CareerPracticeAnswers,
+          ...(attemptIdRef.current?{attemptId:attemptIdRef.current}:{})}),
         cache:"no-store",
       });
-      const payload=await response.json() as {grade?:CareerPracticeGrade;error?:string};
-      if(!response.ok||!payload.grade)throw Error(payload.error||"评分失败，请稍后重试。");
+      const payload=await response.json() as {grade?:CareerPracticeGrade;error?:string;
+        warning?:string;saveStatus?:"browser-only"|"saved"|"failed"};
+      if(!response.ok||!payload.grade){
+        if(response.status===409)attemptIdRef.current=null;
+        throw Error(payload.error||"评分失败，请稍后重试。");
+      }
       setGrade(payload.grade);
+      setSaveWarning(payload.saveStatus==="failed"?(payload.warning||"账号成绩保存失败"):"");
+      if(payload.saveStatus==="saved")setHistoryRefresh(n=>n+1);
     }catch(e){setError(e instanceof Error?e.message:"网络异常，请重试提交。");}
     finally{setLoading(false);}
   }
   function reset(){
-    setGrade(null);setAnswers({});setCurrent(0);setError("");
+    attemptIdRef.current=null;
+    setGrade(null);setAnswers({});setCurrent(0);setError("");setSaveWarning("");
     try{window.localStorage.removeItem(storageKey);}catch{/* Ignore denied storage. */}
   }
 
   return <div className={styles.runner}>
+    <CareerPracticeHistory caseId={practice.id} revision={practice.revision}
+      refreshKey={historyRefresh} onOpen={record=>{setSaveWarning("");setGrade(record);}}/>
     {!grade?<>
       <section className={styles.workspace}>
         <div className={styles.sectionHead}>
@@ -168,7 +183,7 @@ export default function CareerPracticeRunner({practice}:{practice:CareerPractice
             disabled={current===practice.questions.length-1}>下一题</button>
         </div>
         <div className={styles.submitRow}>
-          <p>允许留空提交，未答题计 0 分。答卷仅保留在本浏览器，不同步到微信账号。</p>
+          <p>允许留空提交，未答题计 0 分。微信账号自动保存成绩；未登录也能免费评分，但成绩不上传。</p>
           <button type="button" className={styles.primary} onClick={submit} disabled={loading||!hydrated}>
             {loading?"评分中…":"提交答卷并查看报告"}
           </button>
@@ -199,6 +214,12 @@ export default function CareerPracticeRunner({practice}:{practice:CareerPractice
         <ul>{grade.advice.map((text,i)=><li key={i}>{text}</li>)}</ul>
       </div>
       <p className={styles.note}>本报告衡量的是这一套原创职业案例中的表现，不等于企业真实笔试成绩、职业资质或录用预测。数据按题目给出的简化假设计算。</p>
+      {grade.attemptPersistence==="account"?
+        <p className={styles.saveOk}>本次成绩已保存到微信账号，可在上方“我的微信账号练习记录”跨设备查看和打开报告。</p>:
+        saveWarning?<div className={styles.saveError} role="alert">
+          <p>{saveWarning}</p><button className={styles.secondary} type="button" disabled={loading} onClick={()=>void submit()}>重试保存本次成绩</button>
+        </div>:
+        <p className={styles.note}>本次为免费未登录练习：报告暂未保存到账号。使用微信登录后，再次交卷即可自动存档。</p>}
       <div className={styles.reportActions}>
         <button type="button" className={styles.primary} onClick={reset}>重新挑战本案例</button>
         <Link href="/career">返回职业岗位目录</Link>

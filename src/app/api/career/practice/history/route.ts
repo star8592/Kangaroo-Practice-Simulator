@@ -1,0 +1,56 @@
+import {NextRequest,NextResponse} from "next/server";
+import {userFromRequest} from "@/lib/auth";
+import {getCareerPractice} from "@/lib/career-practice";
+import {
+  isValidCareerAttemptId,isVerifiedCareerStudyIdentity,
+  listCareerAttemptSummaries,readCareerAttempt,
+} from "@/lib/career-attempt-store";
+
+export const runtime="nodejs";
+export const dynamic="force-dynamic";
+const PRIVATE={"Cache-Control":"private, no-store","Vary":"Cookie, Authorization"};
+
+/** Read only the history owned by the server-authenticated WeChat learning ID.
+ * Anonymous users can still grade freely; no historical record is created.
+ * Never accept userId, parentId, buyerId or a score from query parameters.
+ */
+export async function GET(req:NextRequest){
+  const user=userFromRequest(req);
+  if(!isVerifiedCareerStudyIdentity(user)){
+    return NextResponse.json({
+      error:"请先使用微信账号登录后查看跨设备成绩",
+      code:"WECHAT_LOGIN_REQUIRED",
+    },{status:401,headers:PRIVATE});
+  }
+  const query=req.nextUrl.searchParams;
+  const attemptId=query.get("attemptId");
+  try{
+    if(attemptId!==null){
+      if(!isValidCareerAttemptId(attemptId))
+        return NextResponse.json({error:"成绩编号无效",code:"INVALID_ATTEMPT_ID"},
+          {status:400,headers:PRIVATE});
+      const record=readCareerAttempt(user.id,attemptId);
+      if(!record)
+        return NextResponse.json({error:"成绩不存在",code:"ATTEMPT_NOT_FOUND"},
+          {status:404,headers:PRIVATE});
+      return NextResponse.json({summary:record.summary,grade:record.grade},
+        {status:200,headers:PRIVATE});
+    }
+    const caseId=query.get("caseId");
+    if(caseId!==null&&!getCareerPractice(caseId))
+      return NextResponse.json({error:"训练项目不存在",code:"CASE_NOT_FOUND"},
+        {status:404,headers:PRIVATE});
+    const limitRaw=query.get("limit")||"20";
+    if(!/^\d{1,2}$/.test(limitRaw)||Number(limitRaw)<1||Number(limitRaw)>50)
+      return NextResponse.json({error:"查询条数应为1至50",code:"INVALID_LIMIT"},
+        {status:400,headers:PRIVATE});
+    const attempts=listCareerAttemptSummaries(user.id,{
+      caseId:caseId??undefined,limit:Number(limitRaw),
+    });
+    return NextResponse.json({attempts,persistence:"account" as const},
+      {status:200,headers:PRIVATE});
+  }catch{
+    return NextResponse.json({error:"读取成绩失败，请稍后重试",code:"HISTORY_UNAVAILABLE"},
+      {status:503,headers:PRIVATE});
+  }
+}

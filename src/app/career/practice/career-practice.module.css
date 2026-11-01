@@ -76,3 +76,23 @@
 .reportActions{display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin-top:22px}
 .reportActions a{color:#2a617d;font-size:14px;text-decoration:underline}
 @media(max-width:650px){.shell{width:calc(100% - 26px);padding:14px 0 58px}.hero{border-radius:15px}.hero h1{font-size:29px}.provenance{padding:18px}.workspace,.questionCard,.report{padding:20px 15px}.context{font-size:14px}.questionCard h2{font-size:21px}.choice,.choiceSelected{padding:12px;font-size:14px}.submitRow{align-items:stretch;flex-direction:column;gap:8px}.submitRow .primary{width:100%;white-space:normal}.scoreRow{gap:14px}.scoreRow>strong{font-size:48px}}
+
+
+/* Account-specific history stays secondary to the active practice workspace. */
+.historyBar{display:flex;align-items:center;gap:12px;justify-content:space-between;flex-wrap:wrap;background:#f3f8fa;border:1px solid #d9e9ef;border-radius:12px;padding:13px 18px;font-size:13px;line-height:1.65;color:#405d70}
+.historyBar a{font-weight:800;color:#1e6887;text-decoration:underline;text-underline-offset:2px}
+.historyDetails{width:100%;min-width:0}
+.historyDetails summary{font-weight:800;color:#245e77;cursor:pointer;list-style-position:inside}
+.historyDetails>p{color:#668092;font-size:12px;line-height:1.65;margin:12px 0 0}
+.historyList{list-style:none;padding:0;margin:13px 0 0;display:grid;gap:8px}
+.historyList li{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;padding:11px 0;border-top:1px solid #dce8ed}
+.historyList li>span{color:#344f61}
+.historyList strong{color:#185d7a;font-variant-numeric:tabular-nums}
+.historyList button{background:#fff;border:1px solid #aacbd9;color:#1b607b;border-radius:8px;min-height:36px;padding:6px 12px;cursor:pointer;font-size:12px;font-weight:750}
+.historyList button:hover{background:#e8f4f9}
+.historyList button:disabled{opacity:.5;cursor:default}
+.saveOk,.saveError{font-size:13px;line-height:1.7;padding:14px 17px;border-radius:11px}
+.saveOk{background:#e9f6f1;color:#23645b;border:1px solid #cae6dc}
+.saveError{background:#fff5ed;color:#884e24;border:1px solid #efcfad}
+.saveError p{margin:0 0 12px}
+@media(max-width:650px){.historyBar{padding:12px 14px}.historyList li{align-items:flex-start;flex-direction:column;gap:7px}.historyList button{align-self:flex-start}}

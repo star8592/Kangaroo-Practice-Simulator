@@ -22,7 +22,7 @@ export type CareerPracticeGrade=Readonly<{
   totalQuestions:number;
   items:readonly CareerPracticeGradeItem[];
   advice:readonly string[];
-  attemptPersistence:"browser-only";
+  attemptPersistence:"browser-only"|"account";
 }>;
 
 /** Case data is wholly original; source hash fingerprints its authored revision. */
