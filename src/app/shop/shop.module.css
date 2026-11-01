@@ -64,11 +64,12 @@
 .benefits{display:grid;gap:14px;padding:0;margin:16px 0 0;list-style:none}
 .benefits li{position:relative;padding-left:27px;color:#344b66;line-height:1.75;font-size:15px}
 .benefits li:before{content:"✓";position:absolute;left:0;top:0;color:var(--portal-success);font-weight:850}
-.fileOverview{display:grid;grid-template-columns:140px minmax(0,1fr);gap:25px;align-items:center}
-.pdfMark{min-height:180px;border:1px solid #dbe5f2;border-radius:12px;background:linear-gradient(160deg,#f4f8ff,#e7f0fd);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center;color:var(--portal-navy)}
-.pdfMark span{background:#b04c37;color:#fff;border-radius:6px;padding:6px 12px;letter-spacing:.05em;font-size:13px;font-weight:850}
-.pdfMark strong{font-size:23px}
-.pdfMark small{font-size:11px;color:var(--portal-muted)}
+.fileOverview{display:grid;grid-template-columns:minmax(240px,360px) minmax(0,1fr);gap:25px;align-items:start}
+.previewFigure{margin:0;min-width:0;display:grid;gap:9px}
+.previewFigure>a{display:block;min-width:0;border:1px solid var(--portal-border);background:#fff;border-radius:11px;overflow:hidden;box-shadow:0 8px 26px #15365a13}
+.previewFigure img{display:block;width:100%;height:auto;max-height:480px;object-fit:contain;object-position:top center;background:white}
+.previewFigure figcaption{font-size:12px;color:var(--portal-muted);line-height:1.65}
+.previewFigure a:hover{border-color:#86addb}
 .fileSpecs{margin:0;display:grid}
 .fileSpecs>div{display:grid;grid-template-columns:88px minmax(0,1fr);gap:13px;border-bottom:1px solid #edf1f7;padding:11px 0}
 .fileSpecs>div:first-child{padding-top:0}
@@ -87,8 +88,7 @@
  .productLayout{grid-template-columns:minmax(0,1fr) 300px;column-gap:14px}
  .purchaseCard{padding:22px}
  .productHeader{padding:28px}
- .fileOverview{grid-template-columns:112px minmax(0,1fr);gap:18px}
- .pdfMark{min-height:155px}
+ .fileOverview{grid-template-columns:minmax(170px,.85fr) minmax(0,1fr);gap:18px}
 }
 @media(max-width:780px){
  .page{padding:18px var(--page-gutter-mobile) 60px}
@@ -110,7 +110,7 @@
  .productFacts{gap:18px}
  .productFacts strong{font-size:17px}
  .fileOverview{grid-template-columns:1fr;gap:18px}
- .pdfMark{min-height:122px;flex-direction:row;gap:15px}
+ .previewFigure img{max-height:none}
  .fileSpecs>div{grid-template-columns:75px minmax(0,1fr)}
  .purchaseCard{padding:22px 19px}
 }
