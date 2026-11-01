@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import {cookies} from "next/headers";
 import {notFound} from "next/navigation";
 import {findStoreProduct} from "@/lib/store-products";
@@ -39,6 +40,7 @@ export default async function StoreProductPage({params}:{
   };
   const signInUrl="/login?next="+encodeURIComponent("/shop/"+p.id);
   const downloadUrl="/api/resources/download/"+encodeURIComponent(p.resourceId);
+  const previewUrl="/shop/previews/"+p.id+".png";
   return <div className={styles.page} data-site-shell="content">
     <nav className={styles.breadcrumb} aria-label="当前位置">
       <Link href="/">首页</Link><span aria-hidden="true">/</span>
@@ -106,7 +108,13 @@ export default async function StoreProductPage({params}:{
         <section className={styles.productSection} aria-labelledby="file-title">
           <div className={styles.sectionHeading}><span>02 / VERIFIED DELIVERY</span><h2 id="file-title">交付文件</h2></div>
           <div className={styles.fileOverview}>
-            <div className={styles.pdfMark} aria-hidden="true"><span>PDF</span><strong>文档</strong><small>数字交付</small></div>
+            <figure className={styles.previewFigure}>
+              <a href={previewUrl} target="_blank" rel="noopener noreferrer" aria-label="打开真实 PDF 首页样张">
+                <Image src={previewUrl} width={620} height={880}
+                  alt={p.title+" · 实际交付 PDF 第一页样张"} unoptimized/>
+              </a>
+              <figcaption>真实文件首页样张 · 点击放大查看</figcaption>
+            </figure>
             <dl className={styles.fileSpecs}>
               <div><dt>文件名称</dt><dd>{p.fileName}</dd></div>
               <div><dt>格式与大小</dt><dd>PDF · {(p.sizeBytes/1024).toFixed(0)} KB</dd></div>
@@ -114,7 +122,7 @@ export default async function StoreProductPage({params}:{
               <div><dt>购买类型</dt><dd>单份购买，无自动续费</dd></div>
             </dl>
           </div>
-          <p className={styles.previewNotice}>这里展示的是已入库文件的真实信息，并非冒充内页的样张。正式内容预览上线前，不会用虚构题目图片误导购买。</p>
+          <p className={styles.previewNotice}>本样张直接渲染自已核验 PDF 的第一页，非 AI 虚构示意图；付款后交付完整 PDF。</p>
         </section>
         <section className={styles.productSection} aria-labelledby="steps-title">
           <div className={styles.sectionHeading}><span>03 / PURCHASE & ACCESS</span><h2 id="steps-title">付款后如何下载</h2></div>
