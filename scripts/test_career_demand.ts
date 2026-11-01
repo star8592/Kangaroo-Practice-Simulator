@@ -53,13 +53,13 @@ assert.equal(getCareerSupplyCandidates("finance").length,0,"finance category alo
 assert.equal(getCareerSupplyCandidates("games").length,0,"games category alone does not justify exam SKUs");
 assert(getCareerSupplyCandidates("sales").length>0,"industrial sales JDs produce evidence-backed hypotheses");
 assert(getCareerSupplyCandidates("software").length>0,"industrial test JDs support specific exercises");
-assert(getCareerSupplyCandidates("procurement").some(x=>x.skillCode==="supplier_selection"&&x.readiness==="free-practice"&&x.liveHref==="/career/practice/supplier-selection-001"));
+assert(getCareerSupplyCandidates("procurement").some(x=>x.skillCode==="supplier_selection"&&x.readiness==="free-exam"&&x.liveHref==="/career/exams/procurement-paper-2026q4-v1"));
 assert(getCareerSupplyCandidates("data").some(x=>x.skillCode==="sql"));
 assert(getCareerSupplyCandidates("ai").some(x=>x.skillCode==="rag"));
 for(const group of groups){
   for(const candidate of getCareerSupplyCandidates(group.id)){
-    assert(["proposal","free-practice"].includes(candidate.readiness));
-    if(candidate.readiness==="free-practice")assert(candidate.liveHref?.startsWith("/career/practice/"));
+    assert(["proposal","free-exam"].includes(candidate.readiness));
+    if(candidate.readiness==="free-exam")assert(candidate.liveHref?.startsWith("/career/exams/"));
     else assert(!candidate.liveHref);
     assert(candidate.evidenceCount>0);
     assert(candidate.sourceUrls.every(url=>url.startsWith("https://")));
