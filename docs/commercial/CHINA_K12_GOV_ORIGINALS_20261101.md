@@ -25,3 +25,7 @@
 代码 scripts/harvest_china_official_k12_gov_pdf_20261101.py 负责限定教育政府域名下载和原始SHA，支持指定源独立重试大文件；scripts/verify_china_k12_official_gov_20261101.py 重读物理文件二次验证SHA、页数和需OCR状态；scripts/test_china_k12_official_gov_20261101.py 防止把文件数误当考试套数或把未校验状态升格为已售。公开索引分别为 data/discovery/china-k12-official-gov-downloads-20261101.json、data/discovery/china-k12-official-gov-fujian_2026_main-20261101.json 和 data/discovery/china-k12-official-gov-verified-20261101.json。
 
 这批是中国合法公开源样本，不代表完成武汉湖北主库。下一轮优先武汉湖北2026年秋季校内期中月考、2026湖北中考各科，兼顾江苏浙江北京上海广东；同卷按真实考试事件而非网页URL去重。原有唯一小时自动化，不增加重复本地定时器。
+
+## 湖北与武汉本轮阻塞实测
+
+2026湖北中考语文、数学和武汉光谷实验学校10月九年级化学、江岸区八上历史等4个指定第三方试卷详情页全部HTTP200可读，但原件下载按钮均是普通网页里非直链的javascript:void(0)，HTML存在会员/权限状态处理逻辑。网页标题里的“免费”不能被当作原文件已获取；本轮这4个页面真实下载原始PDF仍为0。避免旧采集任务误把网页、下载按钮或会员提示算作真题，记录在 data/discovery/hubei-k12-public-article-download-status-20261101.json 。下一轮优先追原始学校和教育主管部门发布的直接开放附件；已有正常授权账户可以在普通页面操作，但不得破解付费或权限。
