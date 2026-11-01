@@ -124,6 +124,11 @@ export default async function AdminPage({ searchParams }: Params) {
         <article className={styles.kpi}><span>CNY 付款账号</span><strong>{count(paidBuyers)}</strong><small>按已核验付款人去重</small></article>
         <article className={styles.kpi}><span>CNY 待支付订单</span><strong>{count(pendingOrders)}</strong><small>包含尚未完成支付的订单</small></article>
       </div>
+      <div className={styles.financeDetails}>
+        <span>退款订单：{count(refunds)}</span>
+        <span>平均 CNY 订单金额：{paidOrders && revenueTotal !== null ? formatMinorUnits(Math.round(revenueTotal / paidOrders)) : "—"}</span>
+        <span>未核验的支付请求不会计入收款</span>
+      </div>
       <div className={styles.split}>
         <article className={styles.panel}>
           <div className={styles.panelTitle}><h3>收款趋势</h3><span>人民币 · 最近 {Math.min(period, 14)} 天</span></div>
