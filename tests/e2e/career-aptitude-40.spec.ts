@@ -81,3 +81,15 @@ test("career marketplace links only to actually running aptitude and SQL examina
  await expect(page).toHaveURL(/\/assessment-center\/career-aptitude-40$/);
  await expect(page.getByRole("heading",{name:"招聘通用能力 · 40题"})).toBeVisible();
 });
+
+test("restored exam timer shows real remaining time immediately, not a reset 45 minutes",async({page})=>{
+ await page.goto("/");
+ await page.evaluate(({version})=>{
+  sessionStorage.setItem("socthink:career-aptitude:"+version,JSON.stringify({
+   version,stage:"questions",answers:{},flagged:{},index:0,deadline:Date.now()+730_000,timedOut:false
+  }));
+ },{version:APTITUDE_VERSION});
+ await page.goto(EXAM);
+ const remaining=await page.getByRole("timer").textContent();
+ expect(remaining).toMatch(/^12:/);
+});

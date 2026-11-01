@@ -21,7 +21,8 @@ function remainingText(s:number){return String(Math.floor(s/60)).padStart(2,"0")
 const noNotifications=()=>()=>{};
 const clientReady=()=>true;
 const serverNotReady=()=>false;
-function readAttempt():Saved|null{
+type Recovered=Saved&{remainingSeconds:number};
+function readAttempt():Recovered|null{
  if(typeof window==="undefined")return null;
  try{
   const raw=sessionStorage.getItem(KEY);
@@ -33,20 +34,23 @@ function readAttempt():Saved|null{
   if(saved.version!==APTITUDE_VERSION||!validAnswers||!validStage
     ||!Number.isInteger(saved.index)||saved.index<0||saved.index>=TOTAL
     ||!Number.isFinite(saved.deadline)||saved.deadline<=0)return null;
-  const expired=saved.deadline<=Date.now()&&saved.stage!=="report";
-  return expired?{...saved,stage:"report",timedOut:true}:saved;
+  const now=Date.now();
+  const expired=saved.deadline<=now&&saved.stage!=="report";
+  const remainingSeconds=Math.max(0,Math.ceil((saved.deadline-now)/1000));
+  return expired?{...saved,stage:"report",timedOut:true,remainingSeconds}:
+    {...saved,remainingSeconds};
  }catch{return null;}
 }
 export default function CareerAptitudeRunner(){
  const hydrated=useSyncExternalStore(noNotifications,clientReady,serverNotReady);
- const [initial]=useState<Saved|null>(readAttempt);
+ const [initial]=useState<Recovered|null>(readAttempt);
  const[stage,setStage]=useState<Stage>(initial?.stage??"intro");
  const[accepted,setAccepted]=useState(false);
  const[answers,setAnswers]=useState<Record<string,number>>(initial?.answers??{});
  const[flagged,setFlagged]=useState<Record<string,boolean>>(initial?.flagged??{});
  const[index,setIndex]=useState(initial?.index??0);
  const[deadline,setDeadline]=useState(initial?.deadline??0);
- const[seconds,setSeconds]=useState(INITIAL_TIME);
+ const[seconds,setSeconds]=useState(initial?.remainingSeconds??INITIAL_TIME);
  const[timedOut,setTimedOut]=useState(Boolean(initial?.timedOut));
  useEffect(()=>{
   if(!hydrated)return;
