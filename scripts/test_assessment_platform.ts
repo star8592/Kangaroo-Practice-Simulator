@@ -12,13 +12,13 @@ assert.deepEqual(validateAssessmentCatalog(),[]);
 const response = getAssessmentCatalog();
 assert.equal(response.status,200);
 const payload = await response.json();
-assert.equal(payload.liveDomains,3);
+assert.equal(payload.liveDomains,4);
 assert.equal(payload.domains.length,7);
 assert(!JSON.stringify(payload).includes("users.json"));
 assert.equal(ASSESSMENT_DOMAINS.length,7);
-assert.equal(LIVE_ASSESSMENT_DOMAINS.length,3);
-assert.equal(PLANNED_ASSESSMENT_DOMAINS.length,4);
-assert.equal(getAssessmentDomain("career")?.readiness,"planned");
+assert.equal(LIVE_ASSESSMENT_DOMAINS.length,4);
+assert.equal(PLANNED_ASSESSMENT_DOMAINS.length,3);
+assert.equal(getAssessmentDomain("career")?.readiness,"live");
 assert.equal(getAssessmentDomain("interest")?.readiness,"live");
 assert.equal(getAssessmentDomain("math-competition")?.readiness,"live");
 for(const domain of ASSESSMENT_DOMAINS){
@@ -53,7 +53,7 @@ const blueprint:AssessmentBlueprintContract={
 assert.equal(hasValidBlueprintItems(blueprint,[template]),true);
 assert.equal(hasValidBlueprintItems({...blueprint,itemRefs:[{id:template.id,revision:2}]},[template]),false);
 assert.equal(hasValidBlueprintItems({...blueprint,domain:"career"},[template]),false);
-console.log("SOCTHINK_PLATFORM_FOUNDATION=PASS domains=7 live=3 planned=4 rights_gate=PASS real_links=PASS version_gate=PASS");
+console.log("SOCTHINK_PLATFORM_FOUNDATION=PASS domains=7 live=4 planned=3 rights_gate=PASS real_links=PASS version_gate=PASS");
 
 }
 main().catch(e=>{ console.error(e); process.exitCode=1; });

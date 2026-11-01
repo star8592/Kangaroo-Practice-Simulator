@@ -10,7 +10,7 @@
     "test:arithmetic": "tsx scripts/test_arithmetic_strategy_tree.ts && tsx scripts/test_arithmetic_symbolic.ts && tsx scripts/test_arithmetic_input.ts && tsx scripts/test_arithmetic_display.ts",
     "test:arithmetic-print": "tsx scripts/test_arithmetic_print.ts",
     "test:math-answer-input": "tsx scripts/test_math_answer_input_parity.ts",
-    "test:platform": "tsx scripts/test_assessment_platform.ts && tsx scripts/test_resource_catalog.ts && tsx scripts/test_exam_directory.ts && npm run test:measurement-center && npm run test:assessment-skills && npm run test:assessment-reading && npm run test:e2e-origin && npm run test:assessment-report",
+    "test:platform": "tsx scripts/test_assessment_platform.ts && tsx scripts/test_resource_catalog.ts && tsx scripts/test_exam_directory.ts && npm run test:measurement-center && npm run test:assessment-skills && npm run test:assessment-reading && npm run test:e2e-origin && npm run test:assessment-report && npm run test:career-research",
     "test:exam-directory": "tsx scripts/test_exam_directory.ts",
     "test:resource-catalog": "tsx scripts/test_resource_catalog.ts",
     "test:rust-catalog-contract": "tsx scripts/test_rust_catalog_snapshot.ts",
@@ -118,7 +118,11 @@
     "test:assessment-skills": "tsx scripts/test_assessment_skills.ts",
     "test:assessment-reading": "tsx scripts/test_reading_practice.ts",
     "test:e2e-origin": "tsx scripts/test_playwright_origin.ts",
-    "test:assessment-report": "tsx scripts/test_assessment_report.ts"
+    "test:assessment-report": "tsx scripts/test_assessment_report.ts",
+    "test:career-demand": "tsx scripts/test_career_demand.ts",
+    "test:career-universe": "tsx scripts/test_career_enterprise_universe.ts",
+    "test:career-practice": "tsx scripts/test_career_practice.ts",
+    "test:career-research": "npm run test:career-demand && npm run test:career-universe && python3 scripts/test_cninfo_market_normalize.py && python3 scripts/test_sse_stocklist_normalize.py && npm run test:career-practice"
   },
   "dependencies": {
     "next": "16.4.3",

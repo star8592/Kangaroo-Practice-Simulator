@@ -64,10 +64,11 @@ export const ASSESSMENT_DOMAINS: readonly AssessmentDomain[] = [
   },
   {
     id:"career",name:{zh:"职业技能与岗位实操",en:"Career skills & simulations"},
-    summary:{zh:"Python、SQL、数据分析、AI 实操与模拟面试，强调能完成真实任务。",en:"Python, SQL, data and AI skills, job simulations and interviews."},
+    summary:{zh:"从中国上市企业、外企及合资企业实际招聘需求倒推岗位训练；已含采购、运营与工业质量实操。",en:"Employer-evidenced procurement, operations and industrial quality simulations."},
     audience:{zh:"大学毕业生、求职者和企业",en:"Graduates, applicants and employers"},
-    readiness:"planned",formats:["code","sql","sandbox","interview","short-answer"],
-    liveRoutes:[],nextProof:{zh:"首先做通一场 SQL／数据清洗实操的真实测试与评分。",en:"Deliver one real SQL/data-cleaning task with executable scoring."},
+    readiness:"live",formats:["code","sql","sandbox","interview","short-answer","single-choice","multiple-choice","numeric"],
+    liveRoutes:[{href:"/career",title:{zh:"企业招聘需求与3套免费职业实操",en:"Employer needs and three free career scenarios"}}],
+    nextProof:{zh:"采购、商品运营与工业质量三套原创实操已通过本地评分验证；账号成绩及付费权益仍在建设。",en:"Three original scenarios have local acceptance; account records and paid entitlements remain in development."},
   },
   {
     id:"professional",name:{zh:"职业资格与公职考试",en:"Professional qualifications"},

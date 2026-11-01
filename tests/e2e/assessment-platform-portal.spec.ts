@@ -4,7 +4,13 @@ test("all seven exam domains have a real directory without fake purchasable test
   const response=await page.request.get("/api/assessments/catalog");
   expect(response.status()).toBe(200);
   const catalog=await response.json() as {liveDomains:number;domains:{id:string;readiness:string;liveRoutes:{href:string}[]}[]};
-  expect(catalog.liveDomains).toBe(3);
+  // Live count follows the actually published domain registry; a newly
+  // available, tested career route must not be mistaken for a placeholder.
+  expect(catalog.liveDomains).toBe(catalog.domains.filter(x=>x.readiness==="live").length);
+  const career=catalog.domains.find(x=>x.id==="career");
+  expect(career).toMatchObject({readiness:"live",liveRoutes:[{href:"/career"}]});
+  const careerResponse=await page.request.get("/career");
+  expect(careerResponse.status()).toBe(200);
   expect(catalog.domains).toHaveLength(7);
   expect(catalog.domains.filter(x=>x.readiness==="planned").every(x=>x.liveRoutes.length===0)).toBe(true);
 
