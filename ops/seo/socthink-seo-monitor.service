@@ -6,10 +6,10 @@ After=network-online.target
 [Service]
 Type=oneshot
 WorkingDirectory=/opt/socthink-releases/current
-User=1000
-Group=1000
+# The runtime data directory is owned by numeric UID/GID 1000, but there is
+# no passwd entry for that UID on this server. Drop credentials numerically.
 Environment=SOCTHINK_USER_DATA_DIR=/opt/socthink-math/private/users
-ExecStart=/usr/bin/node /opt/socthink-releases/current/scripts/seo_monitor_daily.mjs
+ExecStart=/usr/bin/setpriv --reuid=1000 --regid=1000 --clear-groups /usr/bin/node /opt/socthink-releases/current/scripts/seo_monitor_daily.mjs
 TimeoutStartSec=160
 NoNewPrivileges=yes
 PrivateTmp=yes
