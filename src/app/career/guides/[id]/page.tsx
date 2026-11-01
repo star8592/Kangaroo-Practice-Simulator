@@ -1,5 +1,6 @@
 import Link from "next/link";
 import {notFound} from "next/navigation";
+import CareerGuidePrintButton from "@/components/CareerGuidePrintButton";
 import {CAREER_ORIGINAL_GUIDES,getCareerGuide} from "@/lib/career-original-guides";
 import styles from "../../career.module.css";
 
@@ -33,6 +34,7 @@ export default async function CareerGuidePage({params}:{params:Promise<{id:strin
         <a href={"/career/guides/"+guide.id+"/download"} download={guide.fileName}>
           下载完整原创教程（.md）
         </a>
+        <CareerGuidePrintButton/>
         <Link href={"/career/practice/"+guide.caseId}>进入对应在线考试服务</Link>
       </div>
     </header>
