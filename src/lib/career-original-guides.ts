@@ -1,4 +1,4 @@
-import {getCareerPractice,type CareerPracticeCase} from "./career-practice";
+import {getCareerPractice} from "./career-practice";
 import type {CareerFamilyId} from "./career-demand";
 
 type GuideSection=Readonly<{
