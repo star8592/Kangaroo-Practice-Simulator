@@ -3,6 +3,7 @@ import {hasValidBlueprintItems,type AssessmentItemContract,
   type AssessmentBlueprintContract} from "./assessment-core-contract";
 import {getCareerPractice,type CareerPracticeCase,
   type CareerPracticeQuestion} from "./career-practice";
+import {getCareerFormalAnswer,isCareerFormalPaper} from "./career-formal-bank";
 
 export type CareerPracticeGradeItem=Readonly<{
   questionId:string;
@@ -39,7 +40,7 @@ export function buildCareerAssessmentContract(caseId:string){
     source:{sourceId:"socthink-original-"+exercise.id,rights:"original",
       originalHash:hash,retrievedAt:"2026-11-01T00:00:00.000Z",publisher:"SOCTHINK原创"},
     quality:"publishable",answerEvidenceId:"career-rubric-"+exercise.id+"-"+q.id,
-    scoringRubricVersion:exercise.id==="supplier-selection-001"?"procurement-expected-yield-v1":"career-deterministic-original-v1",
+    scoringRubricVersion:isCareerFormalPaper(exercise.id)?"career-full-paper-original-v1":exercise.id==="supplier-selection-001"?"procurement-expected-yield-v1":"career-deterministic-original-v1",
   }));
   const blueprint:AssessmentBlueprintContract={
     id:"career-"+exercise.id,
@@ -121,6 +122,11 @@ function expectedAnswer(exercise:CareerPracticeCase,id:string):
   {value:string|readonly string[],explanation:string}{
   if(RUBRICS[exercise.id]){
     const answer=RUBRICS[exercise.id][id];
+    if(!answer)throw Error("NO_RUBRIC_FOR_ITEM:"+exercise.id+":"+id);
+    return answer;
+  }
+  if(isCareerFormalPaper(exercise.id)){
+    const answer=getCareerFormalAnswer(exercise.id,id);
     if(!answer)throw Error("NO_RUBRIC_FOR_ITEM:"+exercise.id+":"+id);
     return answer;
   }
