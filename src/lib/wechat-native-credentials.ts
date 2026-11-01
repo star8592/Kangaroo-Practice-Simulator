@@ -1,5 +1,5 @@
-import { nativeCheckoutAllowed, nativeSettlementAllowed } from "./wechat-native-flags";
-export { nativeCheckoutAllowed, nativeSettlementAllowed } from "./wechat-native-flags";
+import { nativeCheckoutAllowedForBuyer, nativeSettlementAllowed } from "./wechat-native-flags";
+export { nativeCheckoutAllowed, nativeCheckoutAllowedForBuyer, nativeSettlementAllowed } from "./wechat-native-flags";
 import {
   createPrivateKey, createPublicKey,
   type KeyObject,
@@ -37,8 +37,10 @@ export function nativeServerContext(
   env:NodeJS.ProcessEnv=process.env,
   nowSeconds=Math.floor(Date.now()/1000),
   purpose:"checkout"|"reconciliation"="checkout",
+  buyerId?:string,
+  productId?:string,
 ):WechatNativeApiContext {
-  if (!(purpose==="checkout"?nativeCheckoutAllowed(env):nativeSettlementAllowed(env)))
+  if (!(purpose==="checkout"?nativeCheckoutAllowedForBuyer(buyerId,productId,env):nativeSettlementAllowed(env)))
     throw new NativeCheckoutUnavailable();
   const appId=required(env,"WECHAT_PAY_APPID");
   const merchantId=required(env,"WECHAT_PAY_MCHID");

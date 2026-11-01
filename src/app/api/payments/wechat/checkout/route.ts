@@ -3,7 +3,7 @@ import QRCode from "qrcode";
 import {PARENT_SESSION_COOKIE,parentFromSessionToken} from "@/lib/parent-auth";
 import {BillingConflictError,billingConfigured,billingPool,createBillingOrder,hasVerifiedItemEntitlement} from "@/lib/billing-ledger";
 import {isExamBundleTrainingReady,loadTrainingExamBundle} from "@/lib/training-question-bank";
-import {nativeCheckoutAllowed,nativeServerContext} from "@/lib/wechat-native-server";
+import {nativeCheckoutAllowedForBuyer,nativeServerContext} from "@/lib/wechat-native-server";
 import {createVerifiedWechatNativeCheckout} from "@/lib/wechat-native-transport";
 import {DIGITAL_SALES_POLICY_VERSION,validDigitalSalesPolicyConsent} from "@/lib/digital-sales-policy";
 import {NATIVE_ORDER_WINDOW_SECONDS,checkoutQrTtlSeconds} from "@/lib/native-qr-expiry";
@@ -14,7 +14,7 @@ const NO_STORE={"Cache-Control":"private, no-store, max-age=0"};
 const reply=(payload:object,status:number)=>NextResponse.json(payload,{status,headers:NO_STORE});
 
 export async function POST(req:NextRequest) {
-  if (!nativeCheckoutAllowed() || !billingConfigured())
+  if (!billingConfigured())
     return reply({error:"网站收款尚未开放",code:"WEB_NATIVE_DISABLED"},503);
   if (req.headers.get("origin")!==process.env.SOCTHINK_PUBLIC_ORIGIN ||
       req.headers.get("sec-fetch-site")==="cross-site")
@@ -35,13 +35,18 @@ export async function POST(req:NextRequest) {
   } catch {return reply({error:"请求格式不正确"},400);}
   if (!/^[a-zA-Z0-9_.-]{4,80}$/.test(productId))
     return reply({error:"商品不可购买"},400);
+  // Both public and pilot checkout decisions are made against the verified
+  // server-side WeChat session and SKU. An unlisted buyer cannot create a
+  // Native order even if they call this endpoint directly.
+  if(!nativeCheckoutAllowedForBuyer(parent.id,productId))
+    return reply({error:"网站收款尚未开放",code:"WEB_NATIVE_DISABLED"},503);
   if(!policyAccepted)
     return reply({error:"请先主动确认数字内容交付及无理由退款规则",
       code:"PURCHASE_POLICY_CONFIRMATION_REQUIRED"},409);
   let orderCreated=false;
   let createdOrderId:string|undefined;
   try {
-    const context=nativeServerContext();
+    const context=nativeServerContext(process.env,Math.floor(Date.now()/1000),"checkout",parent.id,productId);
     const recent=await billingPool().query<{count:string}>(
       "SELECT count(*)::text AS count FROM billing_orders WHERE payer_parent_id=$1 AND provider='wechat_native' AND state='pending' AND created_at > now()-interval '30 minutes'",
       [parent.id]);

@@ -38,6 +38,7 @@ step "exactly-once exam submission" npm run test:exam-submit-recovery
 step "WeChat Native cryptographic boundary" npm run test:wechat-native-boundary
 step "WeChat Native transport" npm run test:wechat-native-transport
 step "WeChat QR expiry" npm run test:native-qr-expiry
+step "Native checkout buyer scope" npm run test:wechat-native-flags
 step "release smoke and rollback wiring" npm run test:engineering-contract
 
 step "lint" npm run lint -- --max-warnings=0
