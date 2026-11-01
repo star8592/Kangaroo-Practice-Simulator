@@ -128,3 +128,9 @@
 .saveError{background:#fff5ed;color:#884e24;border:1px solid #efcfad}
 .saveError p{margin:0 0 12px}
 @media(max-width:650px){.historyBar{padding:12px 14px}.historyList li{align-items:flex-start;flex-direction:column;gap:7px}.historyList button{align-self:flex-start}}
+
+/* Formal exams are the only active career assessment pages. */
+.shell{width:min(1140px,calc(100% - 36px));margin:0 auto;padding:22px 0 72px;color:#172d42}
+.breadcrumb{display:flex;gap:8px;flex-wrap:wrap;font-size:13px;color:#6b7f8f;margin-bottom:20px}
+.breadcrumb a{color:#2a6488;text-decoration:none}
+@media(max-width:650px){.shell{width:calc(100% - 26px);padding:14px 0 58px}}
