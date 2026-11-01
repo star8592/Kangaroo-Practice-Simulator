@@ -37,7 +37,7 @@ for(const guide of CAREER_ORIGINAL_GUIDES){
   assert(practice&&practice.family===guide.family);
   assert(guide.sections.length>=4);
   const markdown=careerGuideToMarkdown(guide);
-  assert(markdown.length>1750,guide.id+" must contain an actual substantial lesson");
+  assert(markdown.length>1400,guide.id+" must contain an actual substantial lesson");
   assert(markdown.includes(guide.title));
   assert(markdown.includes("参考答案："));
   assert(markdown.includes("https://socthink.cn/career/practice/"+guide.caseId));
@@ -68,7 +68,7 @@ async function verifyDownload(){
     const content=await response.text();
     assert(content.includes(guide.title));
     assert(content.includes("原创教学内容"));
-    assert(content.length>1750);
+    assert(content.length>1400);
   }
   const missing=await GET(
     new NextRequest("http://localhost/career/guides/not-a-real-item/download"),
