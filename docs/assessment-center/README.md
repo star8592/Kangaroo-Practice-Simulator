@@ -1,6 +1,6 @@
 # 智量测评中心 / SOCTHINK Measurement Center
 
-> 版本：v2（2026-11-01）；对应 v1 研究预览与 v2 原创任务练习。部署结果以 `https://socthink.cn/api/release` 的实际 SHA 和公网页面验收为准；任何工程测试都不代表正式心理测量学认证或测评收费已获批准。
+> 版本：v3（2026-11-01）；含 v1 研究预览、v2 原创任务练习及 v3 阅读练习与公开证据登记簿。部署结果以 `https://socthink.cn/api/release` 的实际 SHA 和公网页面验收为准；任何工程测试都不代表正式心理测量学认证或测评收费已获批准。
 
 ## 产品边界
 
@@ -103,3 +103,35 @@ E2E_BASE_URL=http://127.0.0.1:3478 E2E_EXTERNAL_SERVER=1 \
 同时自动验证真实 SQL 的全任务成功、缺少状态过滤、硬编码订单、越权写入/多语句、未知任务/表名、反作弊宣传边界等条件。端到端桌面+移动测试必须对真实 WASM 运行、Worker 调用、任务进度和结果报告逐项通过。
 
 后续方向：在充分用户体验与真实岗位研究基础上，扩展数据清洗、Excel、Python 与口头表达评估；必须有可靠评分与版权证据后才标记开放。正式 IQ 测试与科学的职业能力量表要求规范化施测、专业资质、适龄常模和信效度证据，不能靠增加题数自动获得。
+## v3 · 2026-11-01：阅读证据任务与透明技术档案
+
+### 阅读训练产品
+- `/assessment-center/reading-practice-16`：4篇 **SOCTHINK 原创模拟文本** × 每篇4题，共16题，分别测练信息定位、合理推断、数据理解、论证证据边界四个动作。
+- 题项、正确答案、对应**逐字可在原文定位的证据片段**及解释放在版本控制，答卷在浏览器内存完成；四维各4题，按当次原始答对数反馈。结果页列出每题原文证据，并只按该套题的错题建议具体练习动作。
+- 适合小学高年级及成人的**练习**；未满14岁需监护人同意进入，页面不要求身份、成绩、校名、手机号或未成年人档案，不上传选项。不得把4题的类别正确数解读成稳定阅读能力诊断、年级排名、学障判断或升学预测。
+- 源码：`src/lib/reading-practice.ts`、`src/components/ReadingPracticeClient.tsx`、`src/app/assessment-center/reading-practice-16/page.tsx`。
+
+### 公开技术档案
+- `/assessment-center/methodology`：从 `src/lib/assessment-evidence.ts` 的版本化登记簿展示当前5个免费产品的来源、许可、评分、适用人群、证据状态和禁止推断结论。
+- 不使用“国际认证”“精准测智商”等无证据宣传；5项产品全部标记**无本土常模验证**，非标准化任务训练也不冒充量表。技术测试通过并不意味着心理测量学信效度通过。
+- 正式的信效度、中文译文审查与报告证据研究继续跟踪 #213。
+
+### E2E 工具链根因修复
+- `playwright.config.ts`：区分两种模式。
+  - 缺省本机模式：仅允许 127.0.0.1/localhost 的 HTTP 和非特权显式端口，不放宽原有规则。
+  - `E2E_EXTERNAL_SERVER=1`：直接访问指定 HTTP/HTTPS 外部站点，不启动本地 WebServer，不应把 HTTPS 默认443错误判为 `INVALID_E2E_PORT`。拒绝 file:/等其他协议及含用户密码的 URL。
+- 自动化配置测试 `scripts/test_playwright_origin.ts` 覆盖8种合法/非法地址。避免增加第二套永久 Playwright 配置；生产回归直接复用正式主配置。
+- 对应 GitHub Issue #218。此修复仅影响测试配置，不变更生产路由、支付、权限、数据库或安全策略。
+
+### v3 验收命令
+```bash
+npm ci
+npm run test:assessment-reading
+npm run test:e2e-origin
+npm run test:platform
+npx tsc --noEmit --incremental false
+npm run build
+E2E_EXTERNAL_SERVER=1 E2E_BASE_URL=https://socthink.cn npx playwright test tests/e2e/assessment-reading.spec.ts
+```
+
+完成上述代码测试后仍需执行正式 CI、隔离构建、合并 main、自动回滚式生产发布与公网浏览器验收，不能以单纯提交代码代替上线回执。

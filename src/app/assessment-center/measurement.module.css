@@ -29,3 +29,17 @@
 .sqlSchema code{padding:12px;display:block;background:#eff5f8;border-radius:8px;color:#3e5d70;white-space:normal;word-break:break-word;font-size:12px;line-height:1.75}
 @media(max-width:940px){.sqlWorkspace{grid-template-columns:1fr}}
 @media print{.sqlWorkspace,.sqlEditor,.sqlHint,.sqlOutput{display:none!important}}
+.readingPassage{background:#f4f8fa;border:1px solid #d9e6ec;border-radius:15px;padding:24px 25px;margin:23px 0 27px}
+.readingPassage h2{font-size:19px;margin:0 0 16px}
+.readingPassage p{font-size:16px;line-height:2;color:#29445c;white-space:pre-wrap}
+.readingSource{font-size:12px;color:#687d8e;text-align:right;margin-top:15px}
+.readingReview{margin:35px 0}
+.readingReview h3{font-size:19px}
+.readingEvidence{margin:12px 0;padding:13px 17px;background:#eef5f9;border-left:3px solid #31809b;border-radius:5px;color:#245772;font-size:13px;line-height:1.85}
+.methodList{display:grid;gap:17px}
+.methodCard{padding:28px 32px;background:#fff;border:1px solid #dce6ed;border-radius:16px;scroll-margin-top:24px}
+.methodCard h3{font-size:24px;margin:19px 0 8px}
+.methodCard dl{margin:14px 0}
+.methodCard .tileLink{justify-content:flex-start}
+.methodCard .details div{grid-template-columns:125px 1fr}
+@media(max-width:600px){.readingPassage{padding:18px 16px;margin:15px 0 25px}.readingPassage p{font-size:15px;line-height:1.95}.methodCard{padding:23px 17px}.methodCard h3{font-size:20px}}
