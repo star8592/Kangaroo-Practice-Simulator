@@ -2,7 +2,7 @@ import Link from "next/link";
 import {CAREER_DEMAND_OBSERVED_AT, CAREER_FAMILIES, countCareerEvidence,
   searchCareerDemand} from "@/lib/career-demand";
 import {getCareerSupplyCandidates} from "@/lib/career-product-mapper";
-import {CAREER_PRACTICE_CASES} from "@/lib/career-practice";
+
 import styles from "./career.module.css";
 
 export const metadata={
@@ -69,7 +69,7 @@ export default async function CareerDemandPage({searchParams}:{searchParams:Sear
     {results.length===0?<div className={styles.empty}>目前样本中没有对应记录。请换一个关键词；这不代表企业没有这类需求。</div>:
     <div className={styles.grid}>
       {results.map(group=>{const candidates=getCareerSupplyCandidates(group.id);
-      const available=CAREER_PRACTICE_CASES.filter(x=>x.family===group.id&&x.deliveryState==="free-live-preview");
+      const available=candidates.filter(x=>x.readiness==="free-practice"&&x.liveHref);
       return <article className={styles.card} key={group.id}>
         <div className={styles.cardHeading}>
           <div><span className={styles.idTag}>{group.id.toUpperCase()}</span><h3>{group.name}</h3></div>
@@ -89,15 +89,15 @@ export default async function CareerDemandPage({searchParams}:{searchParams:Sear
           <div className={styles.skills}>{group.skillCodes.map(s=><span key={s}>{SKILL_ZH[s]??s.replaceAll("_"," ")}</span>)}</div>
         </>}
         <div className={styles.proposal}>
-          <div className={styles.proposalTop}><strong>本站训练供应方向</strong><span>规划中 · 非企业官方考题</span></div>
+          <div className={styles.proposalTop}><strong>本站原创训练供应</strong><span>已开放或规划中 · 非企业官方考题</span></div>
           {candidates.length>0?<ul>{candidates.map(candidate=><li key={candidate.id}>
-            {candidate.title}<small> · {candidate.evidenceCount} 条具体岗位证据 · 未上架</small>
+            {candidate.title}<small> · {candidate.evidenceCount} 条具体岗位证据 · {candidate.readiness==="free-practice"?"免费实操已开放":"尚在规划"}</small>
           </li>)}</ul>:<p className={styles.noSupply}>目前只有岗位类别证据，没有足够具体的岗位能力要求；暂不自动生成培训商品。</p>}
         </div>
         {available.length>0&&<div className={styles.practiceLive}>
           <strong>现在可以免费完成的原创实操</strong>
-          {available.map(x=><Link key={x.id} href={"/career/practice/"+x.id}>
-            {x.title} · {x.questions.length}题 · 真实判分与复练 →
+          {available.map(x=><Link key={x.id} href={x.liveHref!}>
+            {x.title} · 免费在线作答与评分 →
           </Link>)}
         </div>}
       </article>;})}
