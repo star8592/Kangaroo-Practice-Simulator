@@ -77,6 +77,32 @@
       },
       "distributionStatus": "private_research_only_rights_review_required",
       "jobDataStatus": "not_attached_to_security_rows"
+    },
+    {
+      "market": "SSE-OFFICIAL",
+      "label": "上交所股票列表（公开网页调用的证券清单）",
+      "url": "https://query.sse.com.cn/security/stock/getStockListData2.do?isPagination=true&stockType=10&pageHelp.pageSize=2500&pageHelp.pageNo=1",
+      "sourceOverviewUrl": "https://www.sse.com.cn/assortment/stock/list/share/",
+      "retrieval": "downloaded_private_and_crosschecked",
+      "observedAt": "2026-11-01",
+      "sourceFileSha256": "400bccaa48154274c5f6257537f94284b0f14a00226f8b9d2de6ee4dc56c5a9b",
+      "rawPrivatePath": "private/career/market-sources/sse/2026-11-01/sse_stocktype10_source.json",
+      "normalizedPrivatePath": "private/career/market-sources/sse/2026-11-01/normalized",
+      "statistics": {
+        "issuerListRows": 2335,
+        "expandedSecurities": 2374,
+        "aShares": 2332,
+        "bShares": 42,
+        "companyRowsWithBothShareClasses": 39,
+        "futureDatedRows": 0,
+        "matchedCninfoSseSecurities": 2372,
+        "sseOnlySecurities": 2,
+        "cninfoOnlySseCandidates": 141,
+        "activeEmployersConfirmed": 0
+      },
+      "note": "Official SSE public stock-list API was queried with stockType=10. Duplicate pageNo URL probes yielded identical 500-row results, so a single pageSize=2500 response validated pageHelp.total=2335. SSE market overview as of 2026-10-15 reported 2323 listed companies and 2361 securities; do not equate these counts without time and listing-status reconciliation. No job vacancy evidence implied.",
+      "distributionStatus": "private_research_only_rights_review_required",
+      "jobDataStatus": "not_attached_to_security_rows"
     }
   ],
   "principles": [
@@ -84,7 +110,8 @@
     "Many HKEX equity listings are non-mainland issuers, and multi-listed groups must be deduplicated.",
     "Foreign subsidiaries and joint ventures are separate hiring entities from their listed shareholders.",
     "Only specific official China-located job descriptions may provide job skill evidence; no training sale based on listing alone.",
-    "Raw exchange data stays private pending redistribution rights review."
+    "Raw exchange data stays private pending redistribution rights review.",
+    "SSE official stock-list rows combine A+B shares in some company rows; count securities and company-row candidates separately; do not equate either with verified hiring employers."
   ],
   "codePaths": [
     "scripts/normalize_hkex_list.py",
@@ -92,6 +119,8 @@
     "src/lib/career-market-import.ts",
     "src/lib/career-enterprise-universe.ts",
     "scripts/normalize_cninfo_stock.py",
-    "scripts/test_cninfo_market_normalize.py"
+    "scripts/test_cninfo_market_normalize.py",
+    "scripts/normalize_sse_stocklist.py",
+    "scripts/test_sse_stocklist_normalize.py"
   ]
 }
