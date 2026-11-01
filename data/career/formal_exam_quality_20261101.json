@@ -1,0 +1,423 @@
+{
+  "id": "quality-paper-2026q4-v1",
+  "revision": 1,
+  "category": "supply",
+  "title": "工业质量与FMEA｜标准模拟笔试 A卷",
+  "role": "质量工程师 / SQE / 工艺质量 / 制造质量",
+  "durationMinutes": 45,
+  "authoredAt": "2026-11-01",
+  "observedAt": "2026-11-01",
+  "origin": "socthink-original",
+  "form": "original-mock-not-employer-paper",
+  "referenceIds": [
+    "nx2026-guide",
+    "zhihu-quality-topics",
+    "zhihu-sqe-recollection"
+  ],
+  "context": "工业质量岗位书面测评。覆盖简化FMEA、SPC、MSA、8D、客户投诉、供应商质量、来料风险、检验与成本。请特别注意安全相关题目须尊重真实程序要求。",
+  "assumptions": [
+    "题内所有数据、事件和角色均为本站原创虚构，并非任何企业历史事故或正式质量审核结论。",
+    "RPN乘积只供课堂计算；AIAG-VDA FMEA优先级需按对应正式方法判断，不能直接把数字排名当成批准放行。"
+  ],
+  "questions": [
+    {
+      "kind": "integer",
+      "skill": "简化FMEA计算",
+      "prompt": "某虚构失效模式S=9、O=3、D=8，课堂用RPN=S×O×D计算，RPN是多少？",
+      "options": [],
+      "correct": "216",
+      "explanation": "9×3×8=216。实际AIAG-VDA行动优先级不应单按RPN排序。",
+      "id": "Q01",
+      "points": 5,
+      "authoredAt": "2026-11-01",
+      "sourceKind": "original",
+      "topicSourceId": "zhihu-sqe-recollection"
+    },
+    {
+      "kind": "integer",
+      "skill": "风险识别",
+      "prompt": "虚构温度传感器失效S=8、O=5、D=6，按本卷简化规则RPN是多少？",
+      "options": [],
+      "correct": "240",
+      "explanation": "8×5×6=240。",
+      "id": "Q02",
+      "points": 5,
+      "authoredAt": "2026-11-01",
+      "sourceKind": "original",
+      "topicSourceId": "zhihu-sqe-recollection"
+    },
+    {
+      "kind": "integer",
+      "skill": "改进后风险复算",
+      "prompt": "承上题，检测改进将D从6降至3，其他评分不变，新RPN是多少？",
+      "options": [],
+      "correct": "120",
+      "explanation": "8×5×3=120。",
+      "id": "Q03",
+      "points": 5,
+      "authoredAt": "2026-11-01",
+      "sourceKind": "original",
+      "topicSourceId": "zhihu-sqe-recollection"
+    },
+    {
+      "kind": "integer",
+      "skill": "风险改善量",
+      "prompt": "某模拟风险RPN由240降到120，下降多少RPN点？",
+      "options": [],
+      "correct": "120",
+      "explanation": "240-120=120点；数值降低不等于安全风险已经消除。",
+      "id": "Q04",
+      "points": 5,
+      "authoredAt": "2026-11-01",
+      "sourceKind": "original",
+      "topicSourceId": "zhihu-sqe-recollection"
+    },
+    {
+      "kind": "single",
+      "skill": "高严重度处理",
+      "prompt": "某失效模式严重度S=10，但因为发生率低而RPN较小。最合理的做法是？",
+      "options": [
+        "不用审查",
+        "只看RPN忽略严重度",
+        "根据安全后果及正式行动优先级独立评审",
+        "把S擅自改为1"
+      ],
+      "correct": "C",
+      "explanation": "安全或合规严重后果不应因RPN低而被忽略。",
+      "id": "Q05",
+      "points": 4,
+      "authoredAt": "2026-11-01",
+      "sourceKind": "original",
+      "topicSourceId": "zhihu-sqe-recollection"
+    },
+    {
+      "kind": "integer",
+      "skill": "一次检验合格数",
+      "prompt": "某批1000件零件一次检验有25件不合格，合格件数是多少？",
+      "options": [],
+      "correct": "975",
+      "explanation": "1000-25=975件。",
+      "id": "Q06",
+      "points": 4,
+      "authoredAt": "2026-11-01",
+      "sourceKind": "original",
+      "topicSourceId": "zhihu-sqe-recollection"
+    },
+    {
+      "kind": "integer",
+      "skill": "不良率",
+      "prompt": "某批抽检500件，其中15件不合格。不良率是多少百分数？仅填整数。",
+      "options": [],
+      "correct": "3",
+      "explanation": "15÷500×100%=3%。",
+      "id": "Q07",
+      "points": 4,
+      "authoredAt": "2026-11-01",
+      "sourceKind": "original",
+      "topicSourceId": "zhihu-sqe-recollection"
+    },
+    {
+      "kind": "integer",
+      "skill": "Pareto分布",
+      "prompt": "在100件缺陷记录中，尺寸缺陷40件。尺寸缺陷占比是多少百分数？",
+      "options": [],
+      "correct": "40",
+      "explanation": "40÷100×100%=40%。注意缺陷次数不等于不良品件数。",
+      "id": "Q08",
+      "points": 4,
+      "authoredAt": "2026-11-01",
+      "sourceKind": "original",
+      "topicSourceId": "zhihu-sqe-recollection"
+    },
+    {
+      "kind": "single",
+      "skill": "8D临时围堵",
+      "prompt": "客户报告某批安全关键产品存在潜在失效。在原因调查前，优先应该？",
+      "options": [
+        "继续正常发货",
+        "识别受影响批次并采取临时隔离/围堵措施",
+        "直接公布最终根因",
+        "删除投诉"
+      ],
+      "correct": "B",
+      "explanation": "先控制风险和受影响范围，再完成根因、纠正与预防。",
+      "id": "Q09",
+      "points": 4,
+      "authoredAt": "2026-11-01",
+      "sourceKind": "original",
+      "topicSourceId": "zhihu-sqe-recollection"
+    },
+    {
+      "kind": "single",
+      "skill": "鱼骨图分析",
+      "prompt": "质量团队尚未找到不良根因，鱼骨图最适合用来做什么？",
+      "options": [
+        "直接证明唯一根因",
+        "系统梳理可能的人员、设备、材料、方法等因素",
+        "强制确认供应商责任",
+        "替代试验验证"
+      ],
+      "correct": "B",
+      "explanation": "鱼骨图组织潜在原因，必须依靠实测与证据验证。",
+      "id": "Q10",
+      "points": 4,
+      "authoredAt": "2026-11-01",
+      "sourceKind": "original",
+      "topicSourceId": "zhihu-sqe-recollection"
+    },
+    {
+      "kind": "single",
+      "skill": "五个为什么",
+      "prompt": "使用5Why工具时，哪种做法更可靠？",
+      "options": [
+        "每次都归因于员工不认真",
+        "用数据和现场证据逐层检验因果假设",
+        "必须恰好问五次且不能再问",
+        "只保留想要的结论"
+      ],
+      "correct": "B",
+      "explanation": "5Why旨在追查可验证过程根因，而非简单追责。",
+      "id": "Q11",
+      "points": 4,
+      "authoredAt": "2026-11-01",
+      "sourceKind": "original",
+      "topicSourceId": "zhihu-quality-topics"
+    },
+    {
+      "kind": "multiple",
+      "skill": "测量系统分析",
+      "prompt": "评估测量系统时，哪些问题属于MSA关注范围？（多选）",
+      "options": [
+        "同一测量员重复测量的一致性",
+        "不同测量员间的差异",
+        "测量工具随时间的稳定性",
+        "产品包装颜色是否漂亮"
+      ],
+      "correct": [
+        "A",
+        "B",
+        "C"
+      ],
+      "explanation": "重复性、再现性、稳定性均为MSA典型维度。",
+      "id": "Q12",
+      "points": 4,
+      "authoredAt": "2026-11-01",
+      "sourceKind": "original",
+      "topicSourceId": "zhihu-quality-topics"
+    },
+    {
+      "kind": "single",
+      "skill": "SPC与规格区别",
+      "prompt": "过程控制图所有点在控制界限内，可以直接证明产品都满足客户规格要求吗？",
+      "options": [
+        "可以，控制限就是规格限",
+        "不能，控制稳定性与满足规格是两个概念",
+        "只要样本够少就行",
+        "任何时候都不用测量"
+      ],
+      "correct": "B",
+      "explanation": "控制界限反映过程统计行为，规格界限来自技术要求。",
+      "id": "Q13",
+      "points": 4,
+      "authoredAt": "2026-11-01",
+      "sourceKind": "original",
+      "topicSourceId": "zhihu-quality-topics"
+    },
+    {
+      "kind": "single",
+      "skill": "Cp与Cpk基础",
+      "prompt": "当过程平均值明显偏离规格中心时，哪项更能体现偏移对能力的影响？",
+      "options": [
+        "只看Cp即可忽略偏移",
+        "Cpk通常更能反映相对规格中心偏移",
+        "只看产量",
+        "只看返工工时"
+      ],
+      "correct": "B",
+      "explanation": "在适用假设下，Cpk同时考虑过程波动与中心位置；实际估计还应关注稳定性及抽样。",
+      "id": "Q14",
+      "points": 4,
+      "authoredAt": "2026-11-01",
+      "sourceKind": "original",
+      "topicSourceId": "zhihu-quality-topics"
+    },
+    {
+      "kind": "single",
+      "skill": "量具研究",
+      "prompt": "多个测量员使用同一量具测得的数据差异较大，应优先分析什么？",
+      "options": [
+        "只修改图表颜色",
+        "量具的再现性、操作方法与测量条件",
+        "直接修改规格限",
+        "不再记录测量员"
+      ],
+      "correct": "B",
+      "explanation": "再现性和测量标准化问题会影响质量判断可靠性。",
+      "id": "Q15",
+      "points": 4,
+      "authoredAt": "2026-11-01",
+      "sourceKind": "original",
+      "topicSourceId": "zhihu-quality-topics"
+    },
+    {
+      "kind": "single",
+      "skill": "异常点响应",
+      "prompt": "SPC控制图出现符合异常判异规则的点位，最稳妥行动是？",
+      "options": [
+        "立即忽略",
+        "核实测量与特殊原因并评估受影响产品",
+        "仅调整纵轴隐藏异常",
+        "全部判为偶然波动"
+      ],
+      "correct": "B",
+      "explanation": "需先确认异常原因和批次影响，不能机械忽略或假定已失控。",
+      "id": "Q16",
+      "points": 4,
+      "authoredAt": "2026-11-01",
+      "sourceKind": "original",
+      "topicSourceId": "zhihu-quality-topics"
+    },
+    {
+      "kind": "single",
+      "skill": "安全关键件检验",
+      "prompt": "按合同约定安全关键来料不得出现已发现的不合格件，本批抽样发现1件明显缺陷，应如何处理？",
+      "options": [
+        "直接放行",
+        "按不合格品控制流程隔离、评估并处置",
+        "删去抽样结果",
+        "降低检验员等级"
+      ],
+      "correct": "B",
+      "explanation": "必须依据规格、验收准则与授权流程处理，不得擅自放行。",
+      "id": "Q17",
+      "points": 4,
+      "authoredAt": "2026-11-01",
+      "sourceKind": "original",
+      "topicSourceId": "zhihu-quality-topics"
+    },
+    {
+      "kind": "multiple",
+      "skill": "供应商追溯",
+      "prompt": "发现供应商某批次原料质量异常，哪些信息有助于确认影响范围？（多选）",
+      "options": [
+        "供应商批次",
+        "进货检验记录",
+        "生产投料批次",
+        "无证据的口头“应该没问题”"
+      ],
+      "correct": [
+        "A",
+        "B",
+        "C"
+      ],
+      "explanation": "需连接来料、检验和内部生产投料记录形成追溯闭环。",
+      "id": "Q18",
+      "points": 4,
+      "authoredAt": "2026-11-01",
+      "sourceKind": "original",
+      "topicSourceId": "zhihu-quality-topics"
+    },
+    {
+      "kind": "single",
+      "skill": "客户投诉与CAPA",
+      "prompt": "客户投诉的问题已被返工解决，CAPA闭环还需要什么？",
+      "options": [
+        "无需任何后续",
+        "根因证据、纠正预防措施及有效性验证",
+        "只回复“已收到”",
+        "只改报告标题"
+      ],
+      "correct": "B",
+      "explanation": "纠正当前问题不等于预防再发生，需验证措施有效性。",
+      "id": "Q19",
+      "points": 4,
+      "authoredAt": "2026-11-01",
+      "sourceKind": "original",
+      "topicSourceId": "zhihu-quality-topics"
+    },
+    {
+      "kind": "multiple",
+      "skill": "新供应商质量审核",
+      "prompt": "新供方质量审核通常需要核验哪些证据？（多选）",
+      "options": [
+        "质量体系与流程文件",
+        "关键工序及检验能力",
+        "历史绩效或试产检验数据",
+        "仅看企业宣传海报"
+      ],
+      "correct": [
+        "A",
+        "B",
+        "C"
+      ],
+      "explanation": "审核以体系、工序能力和实测绩效为重点，广告不能替代质量证据。",
+      "id": "Q20",
+      "points": 4,
+      "authoredAt": "2026-11-01",
+      "sourceKind": "original",
+      "topicSourceId": "zhihu-quality-topics"
+    },
+    {
+      "kind": "integer",
+      "skill": "检验成本",
+      "prompt": "某批产品需要额外检验4小时，每小时检验人工成本50元，仅按人工计算，额外检验成本多少元？",
+      "options": [],
+      "correct": "200",
+      "explanation": "4×50=200元。",
+      "id": "Q21",
+      "points": 4,
+      "authoredAt": "2026-11-01",
+      "sourceKind": "original",
+      "topicSourceId": "zhihu-quality-topics"
+    },
+    {
+      "kind": "integer",
+      "skill": "返工成本",
+      "prompt": "3件不良产品每件返工费用120元，仅计题设费用，总返工成本多少元？",
+      "options": [],
+      "correct": "360",
+      "explanation": "3×120=360元。",
+      "id": "Q22",
+      "points": 4,
+      "authoredAt": "2026-11-01",
+      "sourceKind": "original",
+      "topicSourceId": "zhihu-quality-topics"
+    },
+    {
+      "kind": "single",
+      "skill": "质量与交付冲突",
+      "prompt": "生产线因安全关键缺陷被质量人员要求暂停发货，但订单即将逾期。最合理的决策是？",
+      "options": [
+        "未经批准照常发货",
+        "依不合格控制流程隔离评估，必要时升级并与客户沟通",
+        "先销毁不合格记录",
+        "把交期改为合格证明"
+      ],
+      "correct": "B",
+      "explanation": "对安全关键缺陷要按技术、法规与授权程序控制风险，协调交期而非擅自放行。",
+      "id": "Q23",
+      "points": 4,
+      "authoredAt": "2026-11-01",
+      "sourceKind": "original",
+      "topicSourceId": "zhihu-quality-topics"
+    },
+    {
+      "kind": "single",
+      "skill": "过程改进效果",
+      "prompt": "改善措施上线后本周不良率下降，能否立即认定永久解决根因？",
+      "options": [
+        "是，只观察一周即可",
+        "需要足量数据、稳定性观察和效果验证",
+        "只要主管签字就可以",
+        "只看平均值不看过程"
+      ],
+      "correct": "B",
+      "explanation": "措施实施和有效性确认是两个阶段，需要可复核的过程数据。",
+      "id": "Q24",
+      "points": 4,
+      "authoredAt": "2026-11-01",
+      "sourceKind": "original",
+      "topicSourceId": "zhihu-quality-topics"
+    }
+  ]
+}
