@@ -115,7 +115,9 @@
     "payment:reconcile-native": "tsx scripts/reconcile_wechat_native_orders.ts",
     "test:single-wechat-buyer": "tsx scripts/test_single_wechat_buyer.ts",
     "test:measurement-center": "tsx scripts/test_measurement_center.ts",
-    "test:career-demand": "tsx scripts/test_career_demand.ts"
+    "test:career-demand": "tsx scripts/test_career_demand.ts",
+    "test:career-universe": "tsx scripts/test_career_enterprise_universe.ts",
+    "test:career-research": "npm run test:career-demand && npm run test:career-universe"
   },
   "dependencies": {
     "next": "16.4.3",
