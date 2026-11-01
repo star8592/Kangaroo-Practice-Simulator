@@ -11,7 +11,7 @@ async function main(){
     const [
       {CAREER_FORMAL_PAPERS,CAREER_FORMAL_SOURCE_SUMMARY,validateCareerFormalBank,
         getCareerFormalAnswer,isCareerFormalPaper},
-      {getCareerPractice,CAREER_PRACTICE_CASES},
+      {getCareerPractice},
       {gradeCareerPractice,buildCareerAssessmentContract},
       {createCareerExamSession,verifyCareerExamSession},
       {POST:startExam},
@@ -22,7 +22,7 @@ async function main(){
       import("../src/lib/career-practice-grade"),
       import("../src/lib/career-exam-session"),
       import("../src/app/api/career/exam/[id]/session/route"),
-      import("../src/app/api/career/practice/[id]/grade/route"),
+      import("../src/app/api/career/exam/[id]/grade/route"),
     ]);
 
     assert.deepEqual(validateCareerFormalBank(),[]);
@@ -31,7 +31,7 @@ async function main(){
     assert(CAREER_FORMAL_SOURCE_SUMMARY.sources.length>=7);
     assert(CAREER_FORMAL_SOURCE_SUMMARY.sources.some(x=>x.sourceKind==="candidate-recollection"));
     assert(CAREER_FORMAL_SOURCE_SUMMARY.sources.every(x=>x.url.startsWith("https://")));
-    assert.equal(CAREER_PRACTICE_CASES.length,3,"6-question warmups remain unchanged");
+    assert.equal(getCareerPractice("supplier-selection-001"),undefined,"Retired short quizzes must not exist");
 
     let totalQuestions=0;
     for(const paper of CAREER_FORMAL_PAPERS){
@@ -80,7 +80,7 @@ async function main(){
       assert.equal(admission.durationMinutes,45);
       assert(admission.deadlineAt>admission.startedAt);
       const post=(answers:unknown,token?:string)=>
-        gradeExam(new NextRequest("http://localhost/api/career/practice/"+paper.id+"/grade",{
+        gradeExam(new NextRequest("http://localhost/api/career/exam/"+paper.id+"/grade",{
           method:"POST",headers:{"Content-Type":"application/json"},
           body:JSON.stringify({answers,sessionToken:token}),
         }),params);
