@@ -66,7 +66,7 @@ export const CAREER_FORMAL_PAPERS:readonly CareerPracticeCase[]=BANK.map(p=>({
     p.category==="operations"?["roi"]:["quality_risk"],
   sourceRights:"original",deliveryState:"free-live-preview",
   durationMinutes:p.durationMinutes,maxPoints:100,context:p.context,
-  assumptions:p.assumptions,suppliers:[],questions:p.questions.map(publicQuestion),
+  assumptions:p.assumptions,questions:p.questions.map(publicQuestion),
 }));
 
 export function getCareerFormalPaper(id:string):CareerPracticeCase|undefined{
