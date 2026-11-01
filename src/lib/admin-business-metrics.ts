@@ -138,7 +138,7 @@ export function formatMinorUnits(minor: number, currency = "CNY") {
   if (!Number.isSafeInteger(minor) || minor < 0) return "—";
   try {
     const formatter = new Intl.NumberFormat("zh-CN", { style: "currency", currency });
-    const decimals = formatter.resolvedOptions().maximumFractionDigits;
+    const decimals = formatter.resolvedOptions().maximumFractionDigits ?? 2;
     return formatter.format(minor / (10 ** decimals));
   } catch {
     return `${minor} ${currency} (minor units)`;
