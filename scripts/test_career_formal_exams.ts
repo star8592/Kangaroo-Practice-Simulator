@@ -50,7 +50,7 @@ async function main(){
           "Never serialize correct answer or rationale before submission");
         if(q.kind==="single")assert(q.options&&q.options.length===4);
       }
-      const good:Object=Object.fromEntries(paper.questions.map(q=>{
+      const good:Record<string,string|readonly string[]>=Object.fromEntries(paper.questions.map(q=>{
         const answer=getCareerFormalAnswer(paper.id,q.id);
         assert(answer&&answer.explanation.length>=15);
         return [q.id,answer.value];
