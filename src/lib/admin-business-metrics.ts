@@ -137,10 +137,10 @@ export async function readAdminRevenue(periodDays: AdminPeriod, now = new Date()
 export function formatMinorUnits(minor: number, currency = "CNY") {
   if (!Number.isSafeInteger(minor) || minor < 0) return "—";
   try {
-    return new Intl.NumberFormat("zh-CN", {
-      style: "currency", currency, maximumFractionDigits: 2,
-    }).format(minor / 100);
+    const formatter = new Intl.NumberFormat("zh-CN", { style: "currency", currency });
+    const decimals = formatter.resolvedOptions().maximumFractionDigits;
+    return formatter.format(minor / (10 ** decimals));
   } catch {
-    return `${(minor / 100).toFixed(2)} ${currency}`;
+    return `${minor} ${currency} (minor units)`;
   }
 }
