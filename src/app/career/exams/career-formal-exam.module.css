@@ -1,7 +1,7 @@
 .boot{padding:54px 24px;text-align:center;color:#536c7b;font-size:16px}
 .admission,.examRoom,.finish{color:#183549;min-width:0}
 .admission{border-radius:22px;background:#fff;border:1px solid #d7e4ec;overflow:hidden;box-shadow:0 16px 42px #18364a0a}
-.admissionTop{background:linear-gradient(115deg,#102f49,#225c75);color:#fff;padding:clamp(26px,4vw,46px)}
+.admissionTop{background:linear-gradient(115deg,var(--portal-navy),var(--portal-blue-strong));color:#fff;padding:clamp(26px,4vw,46px)}
 .admissionKicker{font-weight:800;letter-spacing:.06em;font-size:14px;color:#9ad4db}
 .admissionTop h1{font-size:clamp(27px,3.4vw,42px);margin:13px 0;line-height:1.38;font-weight:850}
 .admissionTop p{font-size:16px;line-height:1.8;color:#d9edf3;max-width:880px;margin:0}
@@ -16,7 +16,7 @@
 .admissionRules li{margin-bottom:9px}
 .checkRule{display:flex;align-items:flex-start;gap:12px;border-radius:12px;background:#f0f7f9;padding:17px 18px;cursor:pointer;font-size:16px;line-height:1.6;color:#274e66;font-weight:700}
 .checkRule input{width:21px;height:21px;accent-color:#176b86;flex-shrink:0;margin:2px 0 0}
-.enterButton{width:100%;margin-top:20px;border:0;border-radius:12px;min-height:64px;font-size:20px;font-weight:850;background:#166782;color:#fff;cursor:pointer}
+.enterButton{width:100%;margin-top:20px;border:0;border-radius:12px;min-height:64px;font-size:20px;font-weight:850;background:var(--portal-blue);color:#fff;cursor:pointer}
 .enterButton:hover:not(:disabled){background:#10536e}
 .enterButton:disabled{opacity:.45;cursor:not-allowed}
 .entryLinks{display:flex;gap:22px;justify-content:center;flex-wrap:wrap;margin-top:23px}
@@ -24,7 +24,7 @@
 .sourceDisclosure{padding:16px clamp(24px,4vw,40px) 25px;border-top:1px solid #e1ebee;color:#61788a;font-size:14px}
 .sourceDisclosure summary{cursor:pointer;color:#276580;font-weight:800}
 .sourceDisclosure p{line-height:1.8}
-.roomHeader{display:flex;justify-content:space-between;align-items:center;gap:20px;background:linear-gradient(110deg,#153b56,#1e6178);border-radius:17px;color:#fff;padding:19px 27px;position:sticky;top:0;z-index:9;box-shadow:0 9px 25px #18385020}
+.roomHeader{display:flex;justify-content:space-between;align-items:center;gap:20px;background:linear-gradient(110deg,var(--portal-navy),var(--portal-blue-strong));border-radius:17px;color:#fff;padding:19px 27px;position:sticky;top:0;z-index:9;box-shadow:0 9px 25px #18385020}
 .roomIdentity{min-width:0}.roomIdentity>span{font-size:14px;font-weight:750;color:#aadce5}
 .roomIdentity h1{font-size:23px;line-height:1.45;margin:5px 0}
 .roomIdentity p{color:#c7e7ec;font-size:13px;margin:0}
@@ -36,7 +36,7 @@
 .roomProgress{display:flex;align-items:center;flex-wrap:wrap;gap:11px 20px;color:#49697b;font-size:15px;margin:17px 0 20px;font-weight:700}
 .roomProgress strong{color:#195e7b;font-variant-numeric:tabular-nums}
 .progressTrack{flex:1;min-width:140px;height:9px;border-radius:100px;background:#e2ebf0;overflow:hidden}
-.progressTrack span{display:block;height:100%;background:#278c8c;border-radius:inherit}
+.progressTrack span{display:block;height:100%;background:var(--portal-blue);border-radius:inherit}
 .roomGrid{display:grid;grid-template-columns:minmax(0,1fr) 282px;gap:18px;align-items:start}
 .mainQuestion,.answerCard,.reviewSheet{border:1px solid #d8e4eb;border-radius:17px;background:#fff;box-shadow:0 9px 26px #25425b0b;min-width:0}
 .mainQuestion{padding:clamp(22px,3.2vw,34px)}
@@ -51,10 +51,10 @@
 .answerChoices legend{font-size:14px;font-weight:700;color:#627e91;margin-bottom:14px}
 .choice,.chosen{display:flex;align-items:center;gap:14px;margin-bottom:11px;padding:15px 17px;border:1px solid #d4e2ea;border-radius:11px;cursor:pointer;background:#fff;font-size:16px;line-height:1.5;color:#24495e}
 .choice:hover{background:#f3f9fc}
-.chosen{border-color:#438c9e;background:#eaf6f6}
+.chosen{border-color:var(--portal-blue);background:var(--portal-blue-soft)}
 .choice input,.chosen input{width:19px;height:19px;accent-color:#227993;flex-shrink:0}
 .choice strong,.chosen strong{width:30px;height:30px;border-radius:8px;display:grid;place-items:center;background:#f0f5f7;color:#376579;flex-shrink:0;font-size:14px}
-.chosen strong{background:#266e85;color:white}
+.chosen strong{background:var(--portal-blue);color:white}
 .questionProvenance{display:flex;gap:8px 16px;flex-wrap:wrap;padding:13px 0;margin-top:23px;border-top:1px solid #e5edf0;font-size:13px;color:#577b8d}
 .questionProvenance span:first-child{font-weight:800;color:#267a70}
 .questionSource{font-size:13px;color:#607b88;margin:7px 0 22px}
@@ -65,20 +65,21 @@
 .outlineButton,.markButton,.nextButton,.finishButton{font:inherit;min-height:49px;font-size:15px;font-weight:800;padding:11px 17px;border-radius:10px;cursor:pointer}
 .outlineButton{background:#fff;border:1px solid #b8d2dc;color:#285e78}
 .markButton{background:#fff9f1;color:#9b6632;border:1px solid #e5caa9}
-.nextButton,.finishButton{background:#176d89;color:#fff;border:1px solid #176d89;margin-left:auto}
-.finishButton{background:#17725e;border-color:#17725e}
+.nextButton,.finishButton{background:var(--portal-blue);color:#fff;border:1px solid #176d89;margin-left:auto}
+.finishButton{background:var(--portal-blue);border-color:var(--portal-blue)}
 .outlineButton:disabled,.nextButton:disabled,.finishButton:disabled{opacity:.45;cursor:default}
 .answerCard{padding:20px;position:sticky;top:117px}
+.answerCardToggle{display:none}
 .answerCard h2{font-size:20px;margin:0 0 12px;color:#1a465b}
 .answerCard p{font-size:13px;line-height:1.75;color:#708794;margin:0 0 18px}
 .numberGrid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:7px}
 .number,.doneNumber,.flagNumber,.currentNumber{aspect-ratio:1;min-width:0;font:inherit;font-size:14px;font-weight:850;border-radius:8px;border:1px solid #cbdce5;background:#fff;color:#36627b;cursor:pointer;font-variant-numeric:tabular-nums}
-.doneNumber{background:#ddefef;border-color:#86bec3;color:#146f78}
+.doneNumber{background:var(--portal-blue-soft);border-color:#86bec3;color:#146f78}
 .flagNumber{border:2px solid #c99550;color:#8e6324;background:#fff6eb}
-.currentNumber{background:#185f7d;border-color:#185f7d;color:#fff}
+.currentNumber{background:var(--portal-blue);border-color:var(--portal-blue);color:#fff}
 .number:hover,.doneNumber:hover,.flagNumber:hover{filter:brightness(.94)}
 .cardKey{display:flex;gap:15px;justify-content:center;margin:13px 0 19px;color:#638092;font-size:12px}
-.reviewButton{width:100%;min-height:49px;border-radius:10px;border:0;font-size:15px;font-weight:800;color:#fff;background:#186982;cursor:pointer}
+.reviewButton{width:100%;min-height:49px;border-radius:10px;border:0;font-size:15px;font-weight:800;color:#fff;background:var(--portal-blue);cursor:pointer}
 .reviewSheet{padding:clamp(22px,4vw,40px)}
 .reviewSheet h2{font-size:28px;margin:0 0 17px;color:#1d465c}
 .reviewSheet p{font-size:16px;line-height:1.85;color:#547184;margin-bottom:25px}
@@ -96,7 +97,7 @@
 .resultScore small{font-size:18px;color:#748e9b}
 .resultScore p{font-size:13px;margin:8px 0}
 .resultActions{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin:22px 0}
-.resultActions button{font:inherit;font-size:16px;font-weight:850;padding:14px 18px;color:#fff;background:#186983;border:0;border-radius:10px;cursor:pointer;min-height:51px}
+.resultActions button{font:inherit;font-size:16px;font-weight:850;padding:14px 18px;color:#fff;background:var(--portal-blue);border:0;border-radius:10px;cursor:pointer;min-height:51px}
 .resultActions a{color:#1d6682;font-size:15px;font-weight:750}
 .reviewTitle{margin:38px 0 16px;font-size:25px}
 .resultList{display:grid;gap:11px}
@@ -107,8 +108,16 @@
 .resultList .right{color:#18806f}
 .resultList .wrong{color:#aa5733}
 .resultList p{font-size:14px;line-height:1.85;color:#546f80;margin:10px 0 0}
-@media(max-width:940px){.roomGrid{grid-template-columns:minmax(0,1fr)}.answerCard{position:static;order:-1}.numberGrid{grid-template-columns:repeat(8,minmax(0,1fr))}.reviewSheet .numberGrid{grid-template-columns:repeat(8,minmax(0,1fr))}}
-@media(max-width:620px){.admission{border-radius:14px}.admissionTop{padding:24px 19px}.admissionTop h1{font-size:29px}.admissionTop p{font-size:15px}.ticketGrid{grid-template-columns:repeat(2,1fr);margin:0 15px}.ticketGrid>div{padding:14px 5px}.ticketGrid>div:nth-child(3){border-left:0}.ticketGrid>div:nth-child(n+3){border-top:1px solid #e6eef2}.ticketGrid strong{font-size:25px}.admissionRules{padding:23px 17px}.admissionRules h2{font-size:22px}.admissionRules ol{font-size:15px;padding-left:20px}.checkRule{font-size:14px;padding:14px}.enterButton{font-size:17px;min-height:58px}.roomHeader{padding:13px 14px;border-radius:10px;top:0;gap:10px}.roomIdentity h1{font-size:17px;line-height:1.35}.roomIdentity>span,.roomIdentity p{font-size:11px}.clock,.timeWarning{min-width:95px;padding:9px 8px}.clock strong,.timeWarning strong{font-size:23px}.roomProgress{font-size:14px}.mainQuestion{padding:22px 15px}.mainQuestion h2{font-size:21px}.choice,.chosen{font-size:15px;padding:14px 10px;gap:9px}.choice strong,.chosen strong{width:27px;height:27px}.questionActions{gap:8px}.outlineButton,.markButton,.nextButton{font-size:14px;padding:10px 12px;min-height:47px}.answerCard{padding:16px}.answerCard p{font-size:12px}.numberGrid{grid-template-columns:repeat(8,minmax(0,1fr));gap:6px}.number,.doneNumber,.flagNumber,.currentNumber{font-size:12px;min-height:33px}.reviewSheet{padding:22px 16px}.reviewSheet .numberGrid{grid-template-columns:repeat(6,minmax(0,1fr))}.reviewActions>*{width:100%}.finishHeading{padding:23px 18px}.resultScore{gap:17px}.resultScore>strong{font-size:47px}.resultList article{padding:15px}.resultList b{font-size:15px}}
+@media(max-width:940px){
+ .roomGrid{grid-template-columns:minmax(0,1fr)}
+ .answerCard{position:static;order:-1;padding:0 15px 16px}
+ .answerCardToggle{display:block;width:100%;min-height:48px;border:0;background:transparent;text-align:left;color:var(--portal-blue);font-size:14px;font-weight:800;cursor:pointer;padding:12px 0}
+ .answerCard:not(.answerCardExpanded) h2,.answerCard:not(.answerCardExpanded) p,
+ .answerCard:not(.answerCardExpanded) .numberGrid,.answerCard:not(.answerCardExpanded) .cardKey{display:none}
+ .numberGrid{grid-template-columns:repeat(8,minmax(0,1fr))}
+ .reviewSheet .numberGrid{grid-template-columns:repeat(8,minmax(0,1fr))}
+}
+@media(max-width:620px){.admission{border-radius:14px}.admissionTop{padding:24px 19px}.admissionTop h1{font-size:29px}.admissionTop p{font-size:15px}.ticketGrid{grid-template-columns:repeat(2,1fr);margin:0 15px}.ticketGrid>div{padding:14px 5px}.ticketGrid>div:nth-child(3){border-left:0}.ticketGrid>div:nth-child(n+3){border-top:1px solid #e6eef2}.ticketGrid strong{font-size:25px}.admissionRules{padding:23px 17px}.admissionRules h2{font-size:22px}.admissionRules ol{font-size:15px;padding-left:20px}.checkRule{font-size:14px;padding:14px}.enterButton{font-size:17px;min-height:58px}.roomHeader{padding:13px 14px;border-radius:10px;top:0;gap:10px}.roomIdentity h1{font-size:17px;line-height:1.35}.roomIdentity>span,.roomIdentity p{font-size:11px}.clock,.timeWarning{min-width:95px;padding:9px 8px}.clock strong,.timeWarning strong{font-size:23px}.roomProgress{font-size:14px}.mainQuestion{padding:22px 15px}.mainQuestion h2{font-size:21px}.choice,.chosen{font-size:15px;padding:14px 10px;gap:9px}.choice strong,.chosen strong{width:27px;height:27px}.questionActions{gap:8px}.outlineButton,.markButton,.nextButton{font-size:14px;padding:10px 12px;min-height:47px}.answerCard{padding:16px}.answerCard p{font-size:12px}.numberGrid{grid-template-columns:repeat(6,minmax(0,1fr));gap:6px}.number,.doneNumber,.flagNumber,.currentNumber{font-size:12px;min-height:44px}.reviewSheet{padding:22px 16px}.reviewSheet .numberGrid{grid-template-columns:repeat(6,minmax(0,1fr))}.reviewActions>*{width:100%}.finishHeading{padding:23px 18px}.resultScore{gap:17px}.resultScore>strong{font-size:47px}.resultList article{padding:15px}.resultList b{font-size:15px}}
 
 /* Account-specific history stays secondary to the active formal exam. */
 .historyBar{display:flex;align-items:center;gap:12px;justify-content:space-between;flex-wrap:wrap;background:#f3f8fa;border:1px solid #d9e9ef;border-radius:12px;padding:13px 18px;font-size:13px;line-height:1.65;color:#405d70}
@@ -130,10 +139,10 @@
 @media(max-width:650px){.historyBar{padding:12px 14px}.historyList li{align-items:flex-start;flex-direction:column;gap:7px}.historyList button{align-self:flex-start}}
 
 /* Formal exams are the only active career assessment pages. */
-.shell{width:min(1140px,calc(100% - 36px));margin:0 auto;padding:22px 0 72px;color:#172d42}
+.shell{width:100%;max-width:var(--layout-standard);margin:0 auto;padding:var(--page-top-compact) var(--page-gutter) var(--page-bottom);color:var(--portal-text)}
 .breadcrumb{display:flex;gap:8px;flex-wrap:wrap;font-size:13px;color:#6b7f8f;margin-bottom:20px}
 .breadcrumb a{color:#2a6488;text-decoration:none}
-@media(max-width:650px){.shell{width:calc(100% - 26px);padding:14px 0 58px}}
+@media(max-width:650px){.shell{width:100%;padding:16px var(--page-gutter-mobile) 58px}}
 
 /* Saved reports stay reachable from the admission desk on another device. */
 .historyDock{margin-top:20px}

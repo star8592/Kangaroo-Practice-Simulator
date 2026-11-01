@@ -58,6 +58,7 @@ export default function ExamClient({examId,user,initialProfile,initialQuestions}
  const[starting,setStarting]=useState(false);
  const[submitting,setSubmitting]=useState(false);
  const[showSubmit,setShowSubmit]=useState(false);
+ const[navExpanded,setNavExpanded]=useState(false);
  const[error,setError]=useState("");
  const[sectionIndex,setSectionIndex]=useState(0);
  const[sectionStartedAt,setSectionStartedAt]=useState(0);
@@ -130,9 +131,10 @@ export default function ExamClient({examId,user,initialProfile,initialQuestions}
  const activeRows=split&&section?questions.slice(sectionStart,sectionEnd+1):questions;
  const answeredInActive=activeRows.filter(x=>Boolean(answers[x.id])).length;
  const remainingInActive=activeRows.length-answeredInActive;
+ const flaggedInActive=activeRows.filter(x=>Boolean(flagged[x.id])).length;
  const totalAnswered=questions.filter(x=>Boolean(answers[x.id])).length;
  const minutes=String(Math.floor(seconds/60)).padStart(2,"0"),secs=String(seconds%60).padStart(2,"0");
- const progress=questions.length?((index+1)/questions.length)*100:0;
+ const progress=questions.length?(totalAnswered/questions.length)*100:0;
  const pointBand=useMemo(()=>q?.points===3?"easy":q?.points===4?"medium":"hard",[q]);
 
  async function beginExam(){
@@ -300,15 +302,31 @@ export default function ExamClient({examId,user,initialProfile,initialQuestions}
  const sectionLabel=split&&section?(lang==="zh"?section.labelZh:section.labelEn):"";
  const timerLabel=split&&section?`${sectionLabel} · ${ui.remaining}`:ui.remaining;
  const submitLabel=split&&section?`${ui.lockSection} · ${sectionLabel}`:ui.submit;
+ const inActiveSection=(i:number)=>!split||!section||(i>=sectionStart&&i<=sectionEnd);
+ const firstUnansweredIndex=questions.findIndex((item,i)=>inActiveSection(i)&&!answers[item.id]);
+ const firstFlaggedIndex=questions.findIndex((item,i)=>inActiveSection(i)&&Boolean(flagged[item.id]));
+ const numberButtons=<div className="number-grid">{questions.map((item,i)=>{
+  const inCurrent=inActiveSection(i);
+  const status=[i===index?"current":"",answers[item.id]?"answered":"",flagged[item.id]?"flagged":"",!inCurrent?"section-locked":""].join(" ");
+  return <button type="button" key={item.id} disabled={!inCurrent} onClick={()=>go(i)}
+    aria-current={i===index?"step":undefined}
+    aria-label={(lang==="zh"?"第":"Question ")+(i+1)+(lang==="zh"?"题":"")+" · "+(!inCurrent?(lang==="zh"?"已锁定":"Locked"):answers[item.id]?ui.answered:ui.unanswered)+(flagged[item.id]?" · "+ui.marked:"")}
+    className={status}>{i+1}</button>;
+ })}</div>;
 
  return <div className="exam-shell">
   <header className="exam-topbar"><div><div className="exam-title-brand">{examBrand}<span className="exam-kicker">{title}</span></div><strong>{user.name} · {user.candidateNo} · {grades}</strong></div>
    <div className={profile.timingMode==="untimed"?"timer":seconds<600?"timer danger":"timer"}><span>{profile.timingMode==="untimed"?(profile.paperType==="practice"?(lang==="zh"?"训练模式":"Practice mode"):(lang==="zh"?"样题模式":"Sample mode")):timerLabel}</span><strong>{profile.timingMode==="untimed"?(lang==="zh"?"不限时":"UNTIMED"):`${minutes}:${secs}`}</strong></div>
    <button className="ghost-button" onClick={()=>setShowSubmit(true)}>{submitLabel}</button>
   </header>
-  <div className="exam-progress"><span style={{width:`${progress}%`}}/></div>
-  <div className="exam-layout"><aside className="question-nav"><div className="nav-summary"><strong>{split?answeredInActive:totalAnswered}</strong><span>/ {split?activeRows.length:questions.length} {ui.answered}</span></div>
-   <div className="number-grid">{questions.map((item,i)=>{const inCurrent=!split||!section||(i>=sectionStart&&i<=sectionEnd);return <button key={item.id} disabled={!inCurrent} onClick={()=>go(i)} className={[i===index?"current":"",answers[item.id]?"answered":"",flagged[item.id]?"flagged":"",!inCurrent?"section-locked":""].join(" ")}>{i+1}</button>})}</div>
+  <div className="exam-progress" role="progressbar" aria-label={lang==="zh"?"作答完成率":"Answers completed"} aria-valuemin={0} aria-valuemax={questions.length} aria-valuenow={totalAnswered}><span style={{width:`${progress}%`}}/></div>
+  <div className="exam-layout"><aside className={"question-nav"+(navExpanded?" nav-expanded":"")}>
+   <button type="button" className="exam-nav-toggle" aria-expanded={navExpanded}
+     onClick={()=>setNavExpanded(value=>!value)}>
+     {lang==="zh"?"题号导航":"Question navigation"} · {split?answeredInActive:totalAnswered}/{split?activeRows.length:questions.length} {ui.answered} · {flaggedInActive} {ui.marked}
+   </button>
+   <div className="nav-summary"><strong>{split?answeredInActive:totalAnswered}</strong><span>/ {split?activeRows.length:questions.length} {ui.answered}</span></div>
+   {numberButtons}
    <div className="legend"><span><i className="dot answered"/>{ui.answered}</span><span><i className="dot flag"/>{ui.marked}</span>{split&&<span>🔒 {lang==="zh"?"已锁部分":"Locked part"}</span>}</div>
   </aside>
   <section className="question-card"><div className="question-meta"><div><span className="q-number">Question {index+1}</span><span className={`point-badge ${pointBand}`}>{q.points} {ui.points}</span>{sectionLabel&&<span className="section-chip">{sectionLabel}</span>}</div>
@@ -323,8 +341,12 @@ export default function ExamClient({examId,user,initialProfile,initialQuestions}
 
   {showSubmit&&<div className="modal-backdrop"><div className="submit-modal"><div className="modal-icon">✓</div>
    <h2>{split&&section?(lang==="zh"?`确认结束${section.labelZh}？`:`Finish ${section.labelEn}?`):ui.confirm}</h2>
-   <p>{ui.completed} <strong>{split?answeredInActive:totalAnswered}</strong> {ui.questionUnit}, {ui.unanswered} <strong>{split?remainingInActive:questions.length-totalAnswered}</strong>, {ui.markedCount} <strong>{Object.values(flagged).filter(Boolean).length}</strong>.</p>
+   <p>{ui.completed} <strong>{split?answeredInActive:totalAnswered}</strong> {ui.questionUnit}, {ui.unanswered} <strong>{remainingInActive}</strong>, {ui.markedCount} <strong>{flaggedInActive}</strong>.</p>
    {split?<div className="warning-box">{lang==="zh"?"锁定后不能再返回或修改本部分答案。":"After locking, you cannot return to or change answers in this part."}</div>:remainingInActive>0&&<div className="warning-box">{ui.warning}</div>}
+   {(firstUnansweredIndex>=0||firstFlaggedIndex>=0)&&<div className="exam-review-shortcuts">
+     {firstUnansweredIndex>=0&&<button type="button" onClick={()=>{setShowSubmit(false);go(firstUnansweredIndex);}}>{lang==="zh"?"检查未答题":"Review unanswered"}</button>}
+     {firstFlaggedIndex>=0&&<button type="button" onClick={()=>{setShowSubmit(false);go(firstFlaggedIndex);}}>{lang==="zh"?"检查标记题":"Review flagged"}</button>}
+   </div>}
    <div className="modal-actions"><button className="secondary-button" onClick={()=>setShowSubmit(false)}>{ui.back}</button><button className="primary-button" disabled={submitting} onClick={()=>split?void lockCurrentSection(false):void submitExam(false)}>{submitting?ui.grading:(split?(lang==="zh"?"锁定本部分":"Lock this part"):ui.confirmSubmit)}</button></div>
   </div></div>}
  </div>;
