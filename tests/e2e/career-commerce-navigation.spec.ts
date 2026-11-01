@@ -8,6 +8,19 @@ test("career home puts real goods and exams first, then navigates 13 industries 
   const primaryExam=page.getByRole("link",{name:/做模拟考试 · 立即开始/});
   await expect(primaryGoods).toBeVisible();
   await expect(primaryExam).toBeVisible();
+  if(page.viewportSize()!.width<=920){
+    const fastGoods=page.getByRole("link",{name:/^找复习资料/});
+    const fastExam=page.getByRole("link",{name:/^做模拟考试/});
+    await expect(fastGoods).toBeVisible();
+    await expect(fastExam).toBeVisible();
+    for(const action of [fastGoods,fastExam]){
+      const box=await action.boundingBox();
+      expect(box).not.toBeNull();
+      expect(box!.y).toBeLessThan(page.viewportSize()!.height-20);
+      expect(box!.height).toBeGreaterThanOrEqual(50);
+    }
+  }
+
   await expect(page.getByRole("heading",{level:2,name:"职业教程与复习资料"})).toBeVisible();
   await expect(page.getByRole("heading",{level:2,name:"模拟考试与自动评分"})).toBeVisible();
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
