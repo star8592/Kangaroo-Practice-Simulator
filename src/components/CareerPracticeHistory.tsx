@@ -49,8 +49,12 @@ export default function CareerPracticeHistory({caseId,revision,refreshKey,onOpen
       if(!response.ok)throw Error("历史报告暂时无法打开");
       const data=await response.json() as {summary?:CareerAttemptSummary;grade?:CareerPracticeGrade};
       if(!data.summary||!data.grade||data.summary.caseId!==caseId||
-        data.summary.revision!==revision||data.grade.caseId!==caseId)
-        throw Error("这份历史记录属于其他版本，请到对应案例查看");
+        data.grade.caseId!==caseId||data.grade.revision!==data.summary.revision)
+        throw Error("历史报告的案例标识或评分版本不一致");
+      // Keep earlier revisions readable after the question bank evolves.
+      // The report itself shows the original revision, not today's rubric.
+      if(data.summary.revision!==revision)
+        setMessage("这是旧版案例的成绩快照，报告按原评分规则展示，不能直接与新版分数比较。");
       onOpen(data.grade);
     }catch(e){setMessage(e instanceof Error?e.message:"读取失败，请重试");}
     finally{setOpening(null);}
