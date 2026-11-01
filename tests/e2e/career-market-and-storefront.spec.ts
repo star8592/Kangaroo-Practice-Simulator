@@ -42,7 +42,7 @@ test("market growth, original materials and online service are real user journey
 
   const training=page.getByRole("link",{name:"进入对应在线考试服务"});
   await training.click();
-  await expect(page).toHaveURL(/\/career\/practice\/supplier-selection-001$/);
-  await expect(page.getByRole("button",{name:"提交答卷并查看报告"})).toBeVisible();
+  await expect(page).toHaveURL(/\/career\/exams\/procurement-paper-2026q4-v1$/);
+  await expect(page.getByRole("button",{name:"确认入场 · 开始模拟笔试"})).toBeVisible();
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
 });
