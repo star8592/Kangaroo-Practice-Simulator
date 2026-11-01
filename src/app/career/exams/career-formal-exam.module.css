@@ -109,3 +109,22 @@
 .resultList p{font-size:14px;line-height:1.85;color:#546f80;margin:10px 0 0}
 @media(max-width:940px){.roomGrid{grid-template-columns:minmax(0,1fr)}.answerCard{position:static;order:-1}.numberGrid{grid-template-columns:repeat(8,minmax(0,1fr))}.reviewSheet .numberGrid{grid-template-columns:repeat(8,minmax(0,1fr))}}
 @media(max-width:620px){.admission{border-radius:14px}.admissionTop{padding:24px 19px}.admissionTop h1{font-size:29px}.admissionTop p{font-size:15px}.ticketGrid{grid-template-columns:repeat(2,1fr);margin:0 15px}.ticketGrid>div{padding:14px 5px}.ticketGrid>div:nth-child(3){border-left:0}.ticketGrid>div:nth-child(n+3){border-top:1px solid #e6eef2}.ticketGrid strong{font-size:25px}.admissionRules{padding:23px 17px}.admissionRules h2{font-size:22px}.admissionRules ol{font-size:15px;padding-left:20px}.checkRule{font-size:14px;padding:14px}.enterButton{font-size:17px;min-height:58px}.roomHeader{padding:13px 14px;border-radius:10px;top:0;gap:10px}.roomIdentity h1{font-size:17px;line-height:1.35}.roomIdentity>span,.roomIdentity p{font-size:11px}.clock,.timeWarning{min-width:95px;padding:9px 8px}.clock strong,.timeWarning strong{font-size:23px}.roomProgress{font-size:14px}.mainQuestion{padding:22px 15px}.mainQuestion h2{font-size:21px}.choice,.chosen{font-size:15px;padding:14px 10px;gap:9px}.choice strong,.chosen strong{width:27px;height:27px}.questionActions{gap:8px}.outlineButton,.markButton,.nextButton{font-size:14px;padding:10px 12px;min-height:47px}.answerCard{padding:16px}.answerCard p{font-size:12px}.numberGrid{grid-template-columns:repeat(8,minmax(0,1fr));gap:6px}.number,.doneNumber,.flagNumber,.currentNumber{font-size:12px;min-height:33px}.reviewSheet{padding:22px 16px}.reviewSheet .numberGrid{grid-template-columns:repeat(6,minmax(0,1fr))}.reviewActions>*{width:100%}.finishHeading{padding:23px 18px}.resultScore{gap:17px}.resultScore>strong{font-size:47px}.resultList article{padding:15px}.resultList b{font-size:15px}}
+
+/* Account-specific history stays secondary to the active formal exam. */
+.historyBar{display:flex;align-items:center;gap:12px;justify-content:space-between;flex-wrap:wrap;background:#f3f8fa;border:1px solid #d9e9ef;border-radius:12px;padding:13px 18px;font-size:13px;line-height:1.65;color:#405d70}
+.historyBar a{font-weight:800;color:#1e6887;text-decoration:underline;text-underline-offset:2px}
+.historyDetails{width:100%;min-width:0}
+.historyDetails summary{font-weight:800;color:#245e77;cursor:pointer;list-style-position:inside}
+.historyDetails>p{color:#668092;font-size:12px;line-height:1.65;margin:12px 0 0}
+.historyList{list-style:none;padding:0;margin:13px 0 0;display:grid;gap:8px}
+.historyList li{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;padding:11px 0;border-top:1px solid #dce8ed}
+.historyList li>span{color:#344f61}
+.historyList strong{color:#185d7a;font-variant-numeric:tabular-nums}
+.historyList button{background:#fff;border:1px solid #aacbd9;color:#1b607b;border-radius:8px;min-height:36px;padding:6px 12px;cursor:pointer;font-size:12px;font-weight:750}
+.historyList button:hover{background:#e8f4f9}
+.historyList button:disabled{opacity:.5;cursor:default}
+.saveOk,.saveError{font-size:13px;line-height:1.7;padding:14px 17px;border-radius:11px}
+.saveOk{background:#e9f6f1;color:#23645b;border:1px solid #cae6dc}
+.saveError{background:#fff5ed;color:#884e24;border:1px solid #efcfad}
+.saveError p{margin:0 0 12px}
+@media(max-width:650px){.historyBar{padding:12px 14px}.historyList li{align-items:flex-start;flex-direction:column;gap:7px}.historyList button{align-self:flex-start}}
