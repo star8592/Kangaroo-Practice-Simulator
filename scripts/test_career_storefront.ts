@@ -50,7 +50,7 @@ for(const s of ['id="market-heat"','id="digital-materials"','id="digital-service
   assert(home.includes(s),"homepage missing "+s);
 }
 assert(!home.includes('href="/shop"'),"Never link fake unverified paid goods");
-assert(home.indexOf("commercialHero")<home.indexOf("CareerRoleExplorer"),
+assert(home.indexOf("commercialHero")<home.indexOf("<CareerRoleExplorer/>"),
   "Primary goods and services controls must appear before the role directory");
 assert(home.indexOf('id="digital-materials"')<home.indexOf("researchDetails"),
   "Real product inventory must remain above collapsed employer evidence listings");
