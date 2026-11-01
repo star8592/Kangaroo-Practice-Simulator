@@ -35,7 +35,7 @@ export default async function CareerGuidePage({params}:{params:Promise<{id:strin
           下载完整原创教程（.md）
         </a>
         <CareerGuidePrintButton/>
-        <Link href={"/career/practice/"+guide.caseId}>进入对应在线考试服务</Link>
+        <Link href={"/career/exams/"+guide.caseId}>进入对应在线考试服务</Link>
       </div>
     </header>
     <div className={styles.guideReading}>
@@ -56,7 +56,7 @@ export default async function CareerGuidePage({params}:{params:Promise<{id:strin
       <h2>读完以后，实际做一次</h2>
       <p>教程是可阅读、可保存的数字资料；在线考试是另外一项数字服务。两种产品采用同一岗位能力依据，但交付方式不同。</p>
       <div className={styles.guideActions}>
-        <Link href={"/career/practice/"+guide.caseId}>开始在线实操与评分</Link>
+        <Link href={"/career/exams/"+guide.caseId}>进入标准模拟笔试 · 24题</Link>
         <Link href="/career">返回岗位热度与产品目录</Link>
       </div>
     </div>
