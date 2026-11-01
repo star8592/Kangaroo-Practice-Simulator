@@ -87,11 +87,11 @@ for(const example of additional){
     }
     await page.getByRole("button",{name:"提交答卷并查看报告"}).click();
     const report=page.locator('section[aria-label="职业案例成绩报告"]');
-    await expect(report).toContainText(/100\\s*\\/\\s*100/);
+    await expect(report).toContainText(/100\s*\/\s*100/);
     await expect(report).toContainText("本次已回答 6/6 题");
     await page.getByRole("button",{name:"重新挑战本案例"}).click();
     await page.getByRole("button",{name:"提交答卷并查看报告"}).click();
-    await expect(report).toContainText(/0\\s*\\/\\s*100/);
+    await expect(report).toContainText(/0\s*\/\s*100/);
     expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
   });
 }
