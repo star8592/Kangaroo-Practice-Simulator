@@ -117,7 +117,7 @@
     "test:measurement-center": "tsx scripts/test_measurement_center.ts",
     "test:career-demand": "tsx scripts/test_career_demand.ts",
     "test:career-universe": "tsx scripts/test_career_enterprise_universe.ts",
-    "test:career-research": "npm run test:career-demand && npm run test:career-universe && python3 scripts/test_cninfo_market_normalize.py"
+    "test:career-research": "npm run test:career-demand && npm run test:career-universe && python3 scripts/test_cninfo_market_normalize.py && python3 scripts/test_sse_stocklist_normalize.py"
   },
   "dependencies": {
     "next": "16.4.3",
