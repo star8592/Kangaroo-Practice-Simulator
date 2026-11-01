@@ -5,6 +5,7 @@ import {getCareerSupplyCandidates} from "@/lib/career-product-mapper";
 import {CAREER_MARKET_GROWTH,getCareerMarketGrowth} from "@/lib/career-market-growth";
 import {CAREER_ORIGINAL_GUIDES,guideForFamily} from "@/lib/career-original-guides";
 import {CAREER_PRACTICE_CASES} from "@/lib/career-practice";
+import {CAREER_FORMAL_PAPERS} from "@/lib/career-formal-bank";
 import CareerRoleExplorer from "@/components/CareerRoleExplorer";
 import commerce from "./career-commerce.module.css";
 import styles from "./career.module.css";
@@ -72,9 +73,8 @@ export default async function CareerDemandPage({searchParams}:{searchParams:Sear
             href="#digital-services">做模拟考试 · 立即开始 <span aria-hidden="true">→</span></Link>
           <div className={commerce.quickList}>
             <strong>直接开始已开放的考试</strong>
-            {CAREER_PRACTICE_CASES.filter(x=>x.deliveryState==="free-live-preview")
-              .map(practice=><Link key={practice.id}
-                href={"/career/practice/"+practice.id}>{practice.title}</Link>)}
+            {CAREER_FORMAL_PAPERS.map(paper=><Link key={paper.id}
+              href={"/career/exams/"+paper.id}>{paper.title} · 24题 / 45分钟</Link>)}
           </div>
         </article>
       </div>
@@ -102,25 +102,31 @@ export default async function CareerDemandPage({searchParams}:{searchParams:Sear
     </section>
     <section className={styles.commerceSection} id="digital-services" aria-labelledby="services-title">
       <div className={styles.commerceHeading}>
-        <div><span className={styles.commerceNumber}>02 / DIGITAL SERVICES</span>
-          <h2 id="services-title">数字服务 · 在线模拟考试</h2>
-          <p>真实操作型练习，不是 PDF 占位图：作答、服务端判分、逐题解析、复练；微信账号还可以查看保存的成绩。</p></div>
-        <span className={styles.commerceCount}>{CAREER_PRACTICE_CASES.length} 套已开放在线练习</span>
+        <div><span className={styles.commerceNumber}>02 / DIGITAL EXAMS</span>
+          <h2 id="services-title">正式岗位模拟笔试 · 24题 / 45分钟</h2>
+          <p>从入场确认开始计时；有答题卡、标记、交卷复核和逐题成绩报告。所有题目都标注原创版本与参考考点采集日期。</p></div>
+        <span className={styles.commerceCount}>{CAREER_FORMAL_PAPERS.length} 套完整模拟卷 · {CAREER_FORMAL_PAPERS.reduce((n,p)=>n+p.questions.length,0)}道原创题</span>
       </div>
       <div className={styles.offerGrid}>
-        {CAREER_PRACTICE_CASES.filter(x=>x.deliveryState==="free-live-preview").map(x=><article className={styles.offerCard} key={x.id}>
-          <div className={styles.offerTop}><span>原创模拟考试 / 在线服务</span><strong>免费开始</strong></div>
-          <h3>{x.title}</h3><p>{x.context}</p>
-          <div className={styles.offerSpecs}><span>{x.questions.length} 道题</span>
-            <span>{x.maxPoints} 分</span><span>参考 {x.durationMinutes} 分钟</span></div>
+        {CAREER_FORMAL_PAPERS.map(paper=><article className={styles.offerCard} key={paper.id}>
+          <div className={styles.offerTop}><span>标准模拟笔试 / 限时考场</span><strong>免费完整体验</strong></div>
+          <h3>{paper.title}</h3>
+          <p>{paper.context}</p>
+          <div className={styles.offerSpecs}><span>{paper.questions.length} 道题</span>
+            <span>{paper.maxPoints} 分</span><span>{paper.durationMinutes} 分钟限时</span><span>2026 Q4 · 原创v{paper.revision}</span></div>
           <div className={styles.offerActions}>
-            <Link href={"/career/practice/"+x.id}>立即开始考试</Link>
-            <Link href={"/career/guides/"+(guideForFamily(x.family)?.id??"")}>配套复习资料</Link>
+            <Link href={"/career/exams/"+paper.id}>进入考场 · 确认入场</Link>
+            <Link href={"/career/guides/"+guideForFamily(paper.family)!.id}>考前复习资料</Link>
           </div>
         </article>)}
       </div>
+      <details className={styles.quickPracticeDetails}>
+        <summary>时间不够？先做6题岗位热身练习</summary>
+        <div>{CAREER_PRACTICE_CASES.map(item=><Link key={item.id}
+          href={"/career/practice/"+item.id}>{item.title} · 6题热身</Link>)}</div>
+      </details>
     </section>
-    <div className={styles.offerBoundary}>当前 3 份完整资料和 3 项在线训练服务均免费；正式收费教程、复习卷、深度报告需要经过内容审核、商品定价、权益发放和真实支付交付验收后才会出现购买按钮。不接受虚构商品或无法交付的付款链接。</div>
+    <div className={styles.offerBoundary}>当前 3 份完整资料、3 套标准模拟笔试和 3 套6题热身均免费；正式收费教程、复习卷、深度报告需要经过内容审核、商品定价、权益发放和真实支付交付验收后才会出现购买按钮。不接受虚构商品或无法交付的付款链接。</div>
 
     <section className={styles.marketStage} id="market-heat">
       <div className={styles.sectionTitle}>
