@@ -6,10 +6,10 @@ import {getCareerPractice} from "@/lib/career-practice";
 import styles from "../../career-commerce.module.css";
 
 type Context={params:Promise<{id:string}>};
-const EXACT_PRODUCTS:Readonly<Record<string,{guideId:string;practiceId:string}>>={
-  "采购与寻源":{guideId:"supplier-decision-handbook",practiceId:"supplier-selection-001"},
-  "电商与零售运营":{guideId:"retail-campaign-roi-handbook",practiceId:"campaign-performance-001"},
-  "工业质量与可靠性":{guideId:"manufacturing-fmea-handbook",practiceId:"manufacturing-quality-001"},
+const EXACT_PRODUCTS:Readonly<Record<string,{guideId:string;practiceId:string;formalPaperId:string}>>={
+  "采购与寻源":{guideId:"supplier-decision-handbook",practiceId:"supplier-selection-001",formalPaperId:"procurement-paper-2026q4-v1"},
+  "电商与零售运营":{guideId:"retail-campaign-roi-handbook",practiceId:"campaign-performance-001",formalPaperId:"operations-paper-2026q4-v1"},
+  "工业质量与可靠性":{guideId:"manufacturing-fmea-handbook",practiceId:"manufacturing-quality-001",formalPaperId:"quality-paper-2026q4-v1"},
 };
 export async function generateMetadata({params}:Context){
   const {id}=await params;const role=getCareerRole(id);
@@ -51,8 +51,9 @@ export default async function CareerRolePage({params}:Context){
         <article>
           <span>数字服务 · 在线考试</span>
           <h3>{practice.title}</h3>
-          <p>六道实操题，真实作答、服务端评分与逐题报告；本站原创教学案例，并非企业官方试卷。</p>
-          <Link href={"/career/practice/"+practice.id}>免费进入模拟考试</Link>
+          <p>标准岗位模拟笔试：24道原创客观题、45分钟计时、入场确认、答题卡、交卷检查和逐题成绩。另有6题热身练习。</p>
+          <Link href={"/career/exams/"+pairing.formalPaperId}>进入45分钟标准笔试</Link>
+          <Link href={"/career/practice/"+practice.id}>免费进入模拟考试 · 6题热身</Link>
         </article>
       </div>:<div className={styles.roleNoProduct}>
         <h3>这个具体岗位的专项资料尚未上线</h3>
