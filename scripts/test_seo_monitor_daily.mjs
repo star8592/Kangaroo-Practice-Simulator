@@ -4,7 +4,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import {
-  ORIGIN, parseSitemap, inspectHtml, readHistory, saveSnapshot,
+  ORIGIN, parseSitemap, selectProbeUrls, inspectHtml, readHistory, saveSnapshot,
 } from "./seo_monitor_daily.mjs";
 
 const canonical = (url) => '<html><head><link rel="canonical" href="' + url +
@@ -37,7 +37,7 @@ test("same-day run replaces a daily history snapshot, retained privately", () =>
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), "socthink-seo-monitor-"));
   const file = path.join(dir, "snapshots.json");
   const base = { date: "2026-11-01", observedAt: "2026-11-01T00:00:00.000Z",
-    sitemapCount: 15, healthyCount: 15, robotsOk: true, failures: [] };
+    sitemapCount: 15, checkedCount: 15, healthyCount: 15, robotsOk: true, failures: [] };
   try {
     saveSnapshot(base, file);
     saveSnapshot({ ...base, healthyCount: 14, failures: [{ path: "/math-practice", ok: false, issue: "CANONICAL" }] }, file);
@@ -49,4 +49,13 @@ test("same-day run replaces a daily history snapshot, retained privately", () =>
   } finally {
     fs.rmSync(dir, { recursive: true, force: true });
   }
+});
+
+test("large sitemap keeps actual URL count but selects at most 200 probes", () => {
+  const urls = Array.from({length: 5000}, (_, i) => ORIGIN + "/resources/page-" + i);
+  const sampled = selectProbeUrls(urls);
+  assert.equal(sampled.length, 200);
+  assert.equal(new Set(sampled).size, sampled.length);
+  assert.ok(sampled.includes(urls[0]));
+  assert.ok(sampled.includes(urls.at(-1)));
 });
