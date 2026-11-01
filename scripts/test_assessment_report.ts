@@ -47,6 +47,7 @@ assert(ui.includes("你的免费简要结果") && ui.includes("ReportPremiumPane
 assert(!ui.includes("打印本页报告"),"old free detailed print shortcut removed");
 const premium=fs.readFileSync("src/components/ReportPremiumPanel.tsx","utf8");
 assert(premium.includes("DIGITAL_SALES_POLICY_VERSION")&&premium.includes("/api/payments/wechat/checkout"));
+assert(premium.includes("remainingQrSeconds(deadline,performance.now())"),"report checkout must hide QR according to monotonic deadline");
 assert(!premium.includes("localStorage")&&!premium.includes("sessionStorage"));
 const migrated=fs.readFileSync("ops/db/009_assessment_report_rights.sql","utf8");
 assert(migrated.includes("'report'")&&migrated.includes("BEGIN;")&&migrated.includes("COMMIT;"));

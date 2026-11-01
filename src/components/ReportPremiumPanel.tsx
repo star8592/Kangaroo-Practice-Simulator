@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import type {DetailedReport} from "@/lib/assessment-report-detail";
 import {DIGITAL_SALES_POLICY_VERSION} from "@/lib/digital-sales-policy";
-import {validServerQrTtl} from "@/lib/native-qr-expiry";
+import {remainingQrSeconds,validServerQrTtl} from "@/lib/native-qr-expiry";
 import styles from "@/app/assessment-center/measurement.module.css";
 
 type Offer={available:boolean;loggedIn:boolean;owned:boolean;productId?:string;priceMinor?:number;
@@ -149,7 +149,7 @@ export default function ReportPremiumPanel({instrumentId,answers}:{
    }catch{ /* transport failures do not imply payment success */ }
   };
   void check();
-  const timer=setInterval(()=>{void check();setRemaining(deadline?Math.max(0,Math.ceil((deadline-Date.now())/1000)):0);},3000);
+  const timer=setInterval(()=>{void check();setRemaining(remainingQrSeconds(deadline,performance.now()));},3000);
   return ()=>{alive=false;clearInterval(timer);};
  },[stage,orderId,deadline]);
  async function checkout(){
@@ -169,7 +169,7 @@ export default function ReportPremiumPanel({instrumentId,answers}:{
      setError(body.error||"微信支付暂时不可用");setStage("error");return;
    }
    setOrderId(body.orderId);setQr(body.qrDataUrl);
-   setDeadline(Date.now()+body.qrTtlSeconds*1000);setRemaining(body.qrTtlSeconds);
+   setDeadline(performance.now()+body.qrTtlSeconds*1000);setRemaining(body.qrTtlSeconds);
    setStage("pending");
   }catch{setError("网络中断；如果订单已创建请在账户里检查，勿重复付款。");setStage("error");}
  }
