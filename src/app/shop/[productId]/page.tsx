@@ -103,7 +103,7 @@ export default async function StoreProductPage({params}:{
                 <Image src={previewUrl} width={620} height={880}
                   alt={p.title+" · 实际交付 PDF 第一页样张"} unoptimized/>
               </a>
-              <figcaption>真实文件首页样张 · 点击放大查看</figcaption>
+              <figcaption>本样张直接渲染自已核验 PDF 的第一页 · 点击放大</figcaption>
             </figure>
             <dl className={styles.fileSpecs}>
               <div><dt>文件名称</dt><dd>{p.fileName}</dd></div>
