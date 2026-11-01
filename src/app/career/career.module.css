@@ -146,3 +146,22 @@
 .guideBottom p{font-size:14px;line-height:1.8;color:#526c76}
 @media(max-width:1000px){.heatGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.offerGrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:650px){.sectionTitle{display:block}.sectionTitle>p{margin-top:9px}.offerGrid{grid-template-columns:1fr}.heatGrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.heatCard{padding:15px 13px}.heatRate{font-size:34px}.heatRate span{font-size:18px}.commerceHeading{align-items:start}.offerCard{padding:20px}.offerBoundary{margin-bottom:37px}.familyHeat{gap:8px}.familyHeat>div{padding:10px}.familyHeat strong{font-size:23px}.heroActions a{font-size:12px}.guideHero{padding:23px 18px}.guideActions a{width:100%;text-align:center}.guideChapter>p{font-size:14px}.guideReading{margin:24px 0}}
+
+
+.guideActions button{font:inherit;font-size:14px;font-weight:780;padding:12px 17px;border:1px solid #bdd3df;border-radius:9px;color:#22617e;background:#fff;cursor:pointer}
+.guideActions button:hover{background:#edf6f9}
+@media(max-width:650px){.guideActions button{width:100%;text-align:center}}
+@media print{
+  .shell{width:100%;padding:0;margin:0;color:#111}
+  .breadcrumb,.guideActions,.guideBottom{display:none!important}
+  .guideHero{background:#fff;border:0;padding:0;border-radius:0}
+  .guideHero h1{font-size:25pt;color:#111}
+  .guideHero>p,.guideMeta span{color:#333}
+  .guideMeta span{border:1px solid #ccc}
+  .guideReading{margin:15mm 0 0;max-width:none}
+  .guideNotice{background:#fff;border:1px solid #aaa;color:#333}
+  .guideChapter{break-inside:avoid;page-break-inside:avoid}
+  .guideChapter h2{color:#111;font-size:17pt}
+  .guideChapter>p{color:#222;font-size:11pt;line-height:1.6}
+  .guideChecklist{background:#fff;border:1px solid #bbb}
+}
