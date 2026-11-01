@@ -89,3 +89,18 @@
 @media(max-width:920px){.heroOffers,.roleGroups,.roleDetailGrid{grid-template-columns:1fr}.roleLinks{grid-template-columns:repeat(3,minmax(0,1fr))}.commercialHero{padding:24px}.heroOffer h2{font-size:28px}}
 @media(max-width:620px){.commercialHero{border-radius:16px;padding:18px 14px;margin-bottom:25px}.heroLead{margin-bottom:17px}.heroLead h1{font-size:30px}.heroLead p{font-size:15px}.heroOffers{gap:12px}.heroOffer{padding:19px;border-radius:13px}.heroOffer h2{font-size:25px}.heroOffer p{font-size:15px;margin-bottom:14px}.bigAction{font-size:18px;padding:13px 16px;min-height:55px}.quickList{margin-top:13px;padding-top:11px}.quickList a{font-size:15px}.sectionHeading{align-items:start;gap:14px}.sectionHeading h2{font-size:26px}.sectionHeading p{font-size:15px}.roleCount{min-width:81px;padding:9px}.roleCount strong{font-size:27px}.roleCount span{font-size:11px}.directorySearch input{font-size:16px;height:54px}.categoryTabs{flex-wrap:nowrap;overflow-x:auto;scroll-snap-type:x proximity;gap:8px;padding:0 1px 11px;margin-right:-14px}.categoryTab,.activeTab{white-space:nowrap;scroll-snap-align:start;min-height:44px;font-size:14px;padding:10px}.roleGroup{padding:18px}.roleGroupHeader h3{font-size:20px}.roleLinks{grid-template-columns:repeat(2,minmax(0,1fr))}.roleLinks a{font-size:14px;padding:11px 9px}.resultMeta{font-size:14px}.roleDetail{padding-top:18px}.roleDetailHero{padding:24px 18px}.roleDetailHero h1{font-size:32px}.roleDetailActions a{font-size:16px;width:100%;text-align:center}.roleDetailProducts h2{font-size:23px}.roleDetailGrid h3{font-size:21px}}
 @media(prefers-reduced-motion:reduce){.bigAction{transition:none}}
+
+
+.overviewGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}
+.overviewCard{min-width:0;display:flex;flex-direction:column;padding:21px 22px;border-radius:14px;border:1px solid #d9e5eb;background:#fff;box-shadow:0 4px 14px #1745600a}
+.overviewCardHead{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:14px}
+.overviewCardHead h3{font-size:20px;line-height:1.35;color:#193f55;font-weight:800;margin:0}
+.overviewCardHead span{font-size:12px;white-space:nowrap;color:#748a97}
+.overviewExamples{display:flex;flex-wrap:wrap;align-content:start;gap:8px;margin:0 0 19px;min-height:67px}
+.overviewExamples a{font-size:14px;line-height:1.4;text-decoration:none;color:#315e76;background:#edf5f8;border:1px solid #e0edf2;border-radius:7px;padding:7px 9px}
+.overviewExamples a:hover{text-decoration:underline}
+.overviewCard>button{margin-top:auto;background:#f0f6f8;color:#1b637e;border:1px solid #c8dfe6;border-radius:9px;font-size:15px;line-height:1.4;font-weight:800;padding:12px;min-height:47px;cursor:pointer;text-align:left}
+.overviewCard>button:hover{background:#e1f0f5;border-color:#88b5c8}
+.overviewCard>button span{float:right;font-size:19px}
+@media(max-width:1080px){.overviewGrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:620px){.overviewGrid{grid-template-columns:1fr;gap:11px}.overviewCard{padding:18px}.overviewCardHead h3{font-size:20px}.overviewExamples{min-height:0;margin-bottom:14px}.overviewExamples a{font-size:14px}}
