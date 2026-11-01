@@ -104,3 +104,13 @@
 .overviewCard>button span{float:right;font-size:19px}
 @media(max-width:1080px){.overviewGrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:620px){.overviewGrid{grid-template-columns:1fr;gap:11px}.overviewCard{padding:18px}.overviewCardHead h3{font-size:20px}.overviewExamples{min-height:0;margin-bottom:14px}.overviewExamples a{font-size:14px}}
+
+
+.mobileQuickActions{display:none}
+@media(max-width:920px){
+  .mobileQuickActions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:0 0 16px}
+  .mobileQuickActions a{display:flex;align-items:center;justify-content:space-between;gap:7px;min-height:54px;padding:12px 14px;background:#176684;border:1px solid #176684;border-radius:10px;color:#fff;font-size:16px;font-weight:850;line-height:1.3;text-decoration:none}
+  .mobileQuickActions a:nth-child(2){background:#13765f;border-color:#13765f}
+  .mobileQuickActions a span{font-size:21px;line-height:1}
+}
+@media(max-width:430px){.mobileQuickActions{gap:8px}.mobileQuickActions a{padding:10px 11px;font-size:15px}}
