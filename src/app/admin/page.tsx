@@ -5,6 +5,9 @@ import { isAdmin, SESSION_COOKIE, userFromSessionToken } from "@/lib/auth";
 import { adminOperationsSnapshot } from "@/lib/admin-operations";
 import { readCustomerFeedbackOverview } from "@/lib/customer-feedback-admin";
 import { readAdminRevenue, parseAdminPeriod, formatMinorUnits } from "@/lib/admin-business-metrics";
+import { readAdminCheckoutCohort, aggregateCheckoutCohort, cohortPaidPercent } from "@/lib/admin-checkout-funnel";
+import { readStorefrontAvailability } from "@/lib/store-products";
+import { nativeCheckoutAllowed, nativeSettlementAllowed } from "@/lib/wechat-native-flags";
 import { getSeoMonitorDashboard } from "@/lib/seo-monitor-store";
 import { listTrainingExamProfiles } from "@/lib/training-question-bank";
 import AdminOperationsNav from "@/components/AdminOperationsNav";
@@ -44,11 +47,13 @@ export default async function AdminPage({ searchParams }: Params) {
   if (!isAdmin(user)) redirect("/");
 
   const period = parseAdminPeriod((await searchParams).days);
-  const [revenue, accounts, feedback, seo] = await Promise.all([
+  const [revenue, accounts, feedback, seo, cohort, storefront] = await Promise.all([
     readAdminRevenue(period),
     Promise.resolve().then(() => adminOperationsSnapshot()),
     Promise.resolve().then(() => readCustomerFeedbackOverview({ days: period, limit: 100 })),
     Promise.resolve().then(() => getSeoMonitorDashboard()),
+    readAdminCheckoutCohort(period),
+    readStorefrontAvailability(),
   ]);
   let trainingPapers: number | null = null;
   let smartProfiles: number | null = null;
@@ -69,11 +74,20 @@ export default async function AdminPage({ searchParams }: Params) {
   const refunds = connected ? cny?.refundOrders ?? 0 : null;
   const productTotal = connected ? revenue.products.reduce((n, x) => n + x.total, 0) : null;
   const listedProducts = connected ? revenue.products.reduce((n, x) => n + x.configuredForDelivery, 0) : null;
+  const cnyCohort = cohort.status === "available" ? aggregateCheckoutCohort(cohort.groups, "CNY") : null;
+  const cohortRate = cnyCohort ? cohortPaidPercent(cnyCohort.paid, cnyCohort.created) : "—";
+  const checkoutEnabled = nativeCheckoutAllowed();
+  const settlementEnabled = nativeSettlementAllowed();
   const seoLatest = seo.latest;
   const seoHealthy = seo.siteStatus === "healthy";
   const issues = [
     ...(revenue.status === "not_configured" ? [{ title: "收费账本尚未连接", detail: "当前无法查看真实付款订单，不能把未接入显示为零收入。", type: "warning" }] : []),
     ...(revenue.status === "unavailable" ? [{ title: "收费账本读取失败", detail: "检查 PostgreSQL 只读统计链路，暂不提供收入数字。", type: "warning" }] : []),
+    ...(cohort.status === "unavailable" ? [{ title: "订单过程统计不可用", detail: "该模块的只读账本汇总失败；收款金额统计与其他板块不受影响。", type: "warning" }] : []),
+    ...(cnyCohort && cnyCohort.stalePending > 0 ? [{ title: `${cnyCohort.stalePending} 笔人民币订单超过24小时仍待支付`, detail: "须通过正式订单和微信对账核实，不表示这些订单一定已经付款。", type: "warning" }] : []),
+    ...(!checkoutEnabled ? [{ title: "网站新付款入口当前未启用", detail: "这是收款配置开关状态，不代表已产生付款；需要核对商户授权、商品与正式支付验收。", type: "info" }] : []),
+    ...(storefront.status === "unavailable" ? [{ title: "商城真实商品目录读取失败", detail: "不能把查询失败当作没有商品，请检查正式账本或交付资源文件。", type: "warning" }] : []),
+    ...(storefront.status === "available" && storefront.visibleItems === 0 ? [{ title: "资料商城暂无可验证交付的展示商品", detail: "优先核对商品实际文件、商业使用权、价格和可下载交付，不把训练卷目录直接算为可售资料。", type: "info" }] : []),
     ...(seo.siteStatus !== "healthy" ? [{ title: "SEO 监测需要检查", detail: seo.siteStatus === "not_measured" ? "还没有真实采集记录。" : seo.siteStatus === "stale" ? "最近的采集记录已超过 36 小时。" : "本轮检测存在 URL 或 robots 异常。", type: "warning" }] : []),
     ...(feedback.highPriority ? [{ title: `${feedback.highPriority} 条高优先级客户反馈`, detail: "包含题目错误或报告争议，优先进入客户反馈处理台。", type: "warning" }] : []),
     { title: "搜索引擎真实收录量待接入", detail: "百度、Google、Bing 的官方站长资产尚未验证，Sitemap 数量不能冒充收录量。", type: "info" },
@@ -128,6 +142,23 @@ export default async function AdminPage({ searchParams }: Params) {
         <span>退款订单：{count(refunds)}</span>
         <span>平均 CNY 订单金额：{paidOrders && revenueTotal !== null ? formatMinorUnits(Math.round(revenueTotal / paidOrders)) : "—"}</span>
         <span>未核验的支付请求不会计入收款</span>
+      </div>
+      <div className={styles.cohortSection}>
+        <div className={styles.panelTitle}><h3>订单创建 → 当前付款状态</h3><span>近 {period} 天创建的 CNY 订单（同一批订单）</span></div>
+        <div className={styles.cohortTiles}>
+          <div><span>创建订单</span><strong>{count(cnyCohort?.created ?? null)}</strong></div>
+          <div><span>当前已支付</span><strong>{count(cnyCohort?.paid ?? null)}</strong></div>
+          <div><span>仍待付款</span><strong>{count(cnyCohort?.pending ?? null)}</strong></div>
+          <div><span>已关闭</span><strong>{count(cnyCohort?.closed ?? null)}</strong></div>
+          <div><span>曾付款后退款</span><strong>{count(cnyCohort?.refunded ?? null)}</strong></div>
+          <div><span>当前有效已支付占比</span><strong>{cohortRate}</strong></div>
+        </div>
+        <div className={styles.cohortFoot}>
+          <span>待付款超过24小时：{count(cnyCohort?.stalePending ?? null)}</span>
+          <span>新付款入口配置：{checkoutEnabled ? "已启用" : "未启用"}</span>
+          <span>历史订单对账配置：{settlementEnabled ? "已启用" : "未启用"}</span>
+        </div>
+        <p className={styles.caption}>本区仅统计本周期创建的服务器订单及其当前状态，且可能因后续查单/退款而变化；不是访客→付款转化率。开关状态也不等于商户支付或对账服务的真实成功率。</p>
       </div>
       <div className={styles.split}>
         <article className={styles.panel}>
@@ -213,7 +244,7 @@ export default async function AdminPage({ searchParams }: Params) {
         <article className={styles.stat}><span>可用训练卷</span><strong>{count(trainingPapers)}</strong><small>来自现有训练卷目录</small></article>
         <article className={styles.stat}><span>智能训练配置</span><strong>{count(smartProfiles)}</strong><small>不包含在训练卷数量中</small></article>
         <article className={styles.stat}><span>账本商品 SKU</span><strong>{count(productTotal)}</strong><small>含未启用的商品配置</small></article>
-        <article className={styles.stat}><span>已启用且满足配置条件</span><strong>{count(listedProducts)}</strong><small>不代表资源文件已通过现场交付校验</small></article>
+        <article className={styles.stat}><span>商城真实展示资料</span><strong>{count(storefront.visibleItems)}</strong><small>文件校验后的前台目录 · 账本配置可交付 SKU {count(listedProducts)}</small></article>
       </div>
     </section>
 
