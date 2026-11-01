@@ -12,13 +12,14 @@
 .provenance strong{font-size:14px}
 .provenance p,.note{font-size:13px;line-height:1.85;color:#51687c}
 .provenance a{color:#21658b;font-size:13px;text-decoration:underline}
-.runner{display:grid;gap:20px}
-.workspace,.questionCard,.report{border:1px solid #d8e4ec;background:#fff;border-radius:18px;padding:clamp(20px,4vw,32px);box-shadow:0 8px 28px #143d5710}
+.runner{display:grid;grid-template-columns:minmax(0,1fr);min-width:0;gap:20px}
+.runner>*{min-width:0}
+.workspace,.questionCard,.report{min-width:0;border:1px solid #d8e4ec;background:#fff;border-radius:18px;padding:clamp(20px,4vw,32px);box-shadow:0 8px 28px #143d5710}
 .sectionHead{display:flex;justify-content:space-between;align-items:start;gap:20px;flex-wrap:wrap}
 .sectionHead h2{font-size:23px;margin:8px 0}
 .counter{background:#e8f3f6;color:#216478;padding:8px 12px;border-radius:100px;font-size:12px;white-space:nowrap}
 .context{font-size:15px;line-height:1.85;color:#3f566c;max-width:980px}
-.tableScroll{overflow-x:auto;border:1px solid #e1e9ef;border-radius:12px;margin-top:18px}
+.tableScroll{display:block;min-width:0;max-width:100%;overflow-x:auto;overscroll-behavior-x:contain;border:1px solid #e1e9ef;border-radius:12px;margin-top:18px}
 .supplierTable{width:100%;min-width:640px;border-collapse:collapse;font-size:14px;text-align:left}
 .supplierTable th,.supplierTable td{padding:14px 13px;border-bottom:1px solid #e8eef2;font-variant-numeric:tabular-nums}
 .supplierTable thead{background:#f1f6f9;color:#315a74}
