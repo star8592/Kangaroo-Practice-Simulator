@@ -1,7 +1,20 @@
 import Link from "next/link";
 import {CAREER_UNIVERSE_AS_OF,CAREER_ENTERPRISE_GROUPS,
   searchCareerEnterprises,summarizeCareerEnterprises} from "@/lib/career-enterprise-universe";
+import sourceProgress from "../../../../data/career/market_source_progress_20261101.json";
 import styles from "../career.module.css";
+
+type MarketSourceRecord={market:string;url:string;statistics?:Record<string,number>};
+const PRIVATE_SOURCE_STAGES=[
+  {market:"HKEX",label:"港交所股权证券候选",metric:"issuerSecurityCandidates",note:"主板与GEM，待判定中国业务关联"},
+  {market:"CNINFO-CROSS",label:"巨潮资讯跨市场证券基础记录",metric:"rawSecurities",note:"包含沪深北及历史记录，不能当现存企业"},
+  {market:"SSE-OFFICIAL",label:"上交所官方股票列表行",metric:"issuerListRows",note:"A/B股共享主体、与巨潮来源重叠"},
+] as const;
+const sourceRecords=sourceProgress.sources as unknown as MarketSourceRecord[];
+const observedMarketStages=PRIVATE_SOURCE_STAGES.map(t=>{
+ const source=sourceRecords.find(s=>s.market===t.market);
+ return {...t,sourceUrl:source?.url??"",count:source?.statistics?.[t.metric]??null};
+});
 
 export const metadata={
   title:"中国上市公司、在华外企与合资企业｜职业需求研究｜SOCTHINK",
@@ -32,6 +45,18 @@ export default async function CareerCompaniesPage({searchParams}:Props){
         <div><strong>{totals.inChinaForeign+totals.jointVentures}</strong><span>外企及合资样本</span></div>
       </div>
       <p className={styles.sampleNote}>当前仅展示已核对的初批企业样本，不是沪深北港美全量公司库，也不代表职位招聘数。核查批次：{CAREER_UNIVERSE_AS_OF}。</p>
+    </section>
+    <section className={styles.sourceStage} aria-label="公开数据源采集进度">
+      <div><span className={styles.kicker}>SOURCE COVERAGE / SOURCE RECORDS</span>
+        <h2>交易所及证券披露来源采集进度</h2>
+        <p>以下是已经取得并处理的证券来源记录，部分记录相互重叠，不能相加为中国企业数；当前实际核实的企业身份样本仍为 {totals.knownGroups} 家。</p>
+      </div>
+      <div className={styles.sourceGrid}>{observedMarketStages.map(stage=><div key={stage.market} className={styles.sourceTile}>
+        <span>{stage.label}</span><strong>{stage.count===null?"待核验":stage.count.toLocaleString("zh-CN")}</strong>
+        <small>{stage.note}</small>
+        {stage.sourceUrl&&<a href={stage.sourceUrl} target="_blank" rel="noopener noreferrer">查看公开来源</a>}
+      </div>)}</div>
+      <p className={styles.sourceFoot}>证券候选已存入私有研究库；企业的中国经营身份、当前上市状态与具体招聘岗位，需要独立证据验证。这里不展示未经授权的完整原始名单，也不生成虚假商品。</p>
     </section>
     <section className={styles.intro}>
       <div><span className={styles.kicker}>COMPANY IDENTITY / JOB EVIDENCE</span><h2>按企业类型与股票代码查询</h2></div>
