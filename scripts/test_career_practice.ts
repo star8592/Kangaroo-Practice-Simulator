@@ -109,8 +109,8 @@ const publicFile=fs.readFileSync("src/lib/career-practice.ts","utf8");
 assert(!publicFile.includes('"34821"'),"do not publish grading key with public challenge");
 assert(!publicFile.includes('"657"'),"do not publish grading key with public challenge");
 const nextPage=fs.readFileSync("src/app/career/page.tsx","utf8");
-assert(nextPage.includes("available=candidates.filter"));
-assert(nextPage.includes("href={x.liveHref!}"));
+assert(nextPage.includes('CAREER_PRACTICE_CASES.filter'));
+assert(nextPage.includes('href={"/career/practice/"+x.id}'));
 
 async function request(id:string,answers:unknown,headers?:Record<string,string>){
   return POST(new NextRequest("http://localhost/api/career/practice/"+id+"/grade",{
