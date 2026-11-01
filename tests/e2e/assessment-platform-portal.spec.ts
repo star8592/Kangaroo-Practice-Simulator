@@ -1,23 +1,22 @@
 import {test,expect} from "@playwright/test";
 
-test("all seven exam domains have a real directory without fake purchasable tests",async({page})=>{
+test("seven real exam domains remain discoverable without fake purchasable items",async({page})=>{
   const response=await page.request.get("/api/assessments/catalog");
   expect(response.status()).toBe(200);
   const catalog=await response.json() as {liveDomains:number;domains:{id:string;readiness:string;liveRoutes:{href:string}[]}[]};
-  // Live count follows the actually published domain registry; a newly
-  // available, tested career route must not be mistaken for a placeholder.
   expect(catalog.liveDomains).toBe(catalog.domains.filter(x=>x.readiness==="live").length);
   const career=catalog.domains.find(x=>x.id==="career");
   expect(career).toMatchObject({readiness:"live",liveRoutes:[{href:"/career"}]});
-  const careerResponse=await page.request.get("/career");
-  expect(careerResponse.status()).toBe(200);
+  expect((await page.request.get("/career")).status()).toBe(200);
   expect(catalog.domains).toHaveLength(7);
   expect(catalog.domains.filter(x=>x.readiness==="planned").every(x=>x.liveRoutes.length===0)).toBe(true);
 
   await page.goto("/assessments");
-  await expect(page.getByRole("heading",{name:"考试、真题、资料与能力训练"})).toBeVisible();
-  const directory=page.getByRole("region",{name:"全部考试，一站查找"});
+  await expect(page.getByRole("heading",{level:1,name:"全部考试与训练"})).toBeVisible();
+  const directory=page.getByRole("region",{name:"考试目录"});
   const groups=directory.locator("article");
+  // Upcoming categories are optional detail, not seven giant unavailable cards at first paint.
+  await directory.getByRole("button",{name:"查看筹备中的考试"}).click();
   await expect(groups).toHaveCount(7);
   await expect(groups.filter({has:page.getByRole("heading",{name:"职业资格与公职考试"})})).toBeVisible();
   await expect(groups.filter({has:page.getByRole("heading",{name:"语言与国际考试"})})).toBeVisible();
@@ -34,26 +33,31 @@ test("all seven exam domains have a real directory without fake purchasable test
   await expect(page).toHaveURL(/\/competitions/);
 });
 
-test("new portal offers real search, seven-domain navigation and working resources on desktop and mobile",async({page})=>{
+test("home search, category links, live services and resource filters work on mobile and desktop",async({page})=>{
   await page.goto("/");
-  await expect(page.getByRole("heading",{name:/找考试，查资料，.*立即开练。/})).toBeVisible();
+  await expect(page.getByRole("heading",{level:1,name:"考试 · 资料 · 训练"})).toBeVisible();
   const search=page.getByRole("searchbox",{name:"搜索考试"});
   await expect(search).toBeVisible();
   await search.fill("SQL");
-  await expect(page.getByRole("heading",{name:"职业技能与岗位实操"})).toBeVisible();
-  await expect(page.getByText("SQL 数据库实操")).toBeVisible();
-  await search.fill("unmatched-synthetic-query-2391");
-  await expect(page.getByText(/没有找到对应分类/)).toBeVisible();
-  await page.getByRole("button",{name:"清空搜索"}).click();
-  await expect(search).toHaveValue("");
-  await expect(page.getByRole("button",{name:/全球数学竞赛/})).toBeVisible();
+  await search.press("Enter");
+  await expect(page).toHaveURL(/\/assessments\?q=SQL/);
+  const directory=page.getByRole("region",{name:"考试目录"});
+  await expect(directory.getByText("SQL 数据库实操")).toBeVisible();
+  await directory.getByRole("searchbox").fill("unmatched-synthetic-query-2391");
+  await expect(directory.getByText(/没有找到相关考试方向/)).toBeVisible();
+  await directory.getByRole("button",{name:"清空"}).click();
+  await expect(directory.getByRole("searchbox")).toHaveValue("");
+
+  await page.goto("/");
+  await expect(page.locator('[aria-labelledby="exam-category-overview"] a[href="/assessments#domain-math-competition"]')).toBeVisible();
   const mobile=(page.viewportSize()?.width??1280)<=760;
   if(mobile)await page.getByRole("button",{name:"打开导航菜单"}).click();
   await expect(page.getByRole("link",{name:"真题资料"}).first()).toBeVisible();
   if(mobile)await page.getByRole("button",{name:"关闭导航菜单"}).click();
+
   await page.getByRole("link",{name:/可用试卷资料/}).first().click();
   await expect(page).toHaveURL(/\/resources/);
-  await expect(page.getByRole("heading",{name:"找到真正能做的试卷"})).toBeVisible();
+  await expect(page.getByRole("heading",{level:1,name:"查找试卷，直接练习"})).toBeVisible();
   await expect(page.getByRole("searchbox")).toBeVisible();
   await expect(page.getByLabel("全部竞赛").first()).toBeVisible();
   await page.getByRole("searchbox").fill("unlikely-synthetic-no-results-4592");

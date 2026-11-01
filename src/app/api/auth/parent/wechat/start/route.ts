@@ -1,6 +1,6 @@
 import {NextRequest,NextResponse} from "next/server";
 import {newWechatState,wechatAuthorizeUrl,wechatConfigured,WECHAT_CALLBACK_ORIGIN,WECHAT_STATE_COOKIE} from "@/lib/wechat-parent-auth";
-export const WECHAT_NEXT_COOKIE="socthink_parent_wechat_next";
+const WECHAT_NEXT_COOKIE="socthink_parent_wechat_next";
 export async function GET(req:NextRequest){
  if(!wechatConfigured())return NextResponse.redirect(`${WECHAT_CALLBACK_ORIGIN}/login?wechat=unavailable`);
  const candidate=req.nextUrl.searchParams.get("next")||"/account";

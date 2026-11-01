@@ -16,9 +16,8 @@ const TYPE_LABELS = {
 } as const;
 const COPY = {
   zh: {
-    eyebrow: "SOCTHINK / RESOURCE FINDER",
-    heading: "找到真正能做的试卷",
-    intro: "目前已开放的是国际数学竞赛训练卷，可按竞赛、年份、年级筛选并进入在线练习。其他考试资料请先从「全部考试」查看开放状态；尚未上线的内容不会冒充可下载资料。",
+    heading: "查找试卷，直接练习",
+    intro: "按竞赛、年级、类型筛选可练习的试卷。",
     search: "搜索竞赛、年份或试卷名称",
     competition: "全部竞赛", grade: "全部年级", type: "全部类型",
     all: "全部", total: "可用训练卷", matched: "符合条件", questions: "题",
@@ -29,9 +28,8 @@ const COPY = {
     back: "返回全部测评",
   },
   en: {
-    eyebrow: "SOCTHINK / RESOURCE FINDER",
     heading: "Find a paper you can actually practise",
-    intro: "Available papers currently focus on international math competitions. Filter by contest, year and grade; check All exams for other areas, which only open once genuine content is ready.",
+    intro: "Filter available papers by contest, grade and type.",
     search: "Search competition, year or title",
     competition: "All competitions", grade: "All grades", type: "All types",
     all: "All", total: "Training-ready papers", matched: "Matching", questions: "questions",
@@ -67,7 +65,6 @@ export default function ResourceLibraryClient({ resources }: { resources: Resour
   };
   return <div data-site-shell="content" className={styles.page}>
     <header className={styles.hero}>
-      <div className={styles.eyebrow}>{t.eyebrow}</div>
       <h1>{t.heading}</h1>
       <p>{t.intro}</p>
       <div className={styles.stats}>
@@ -80,12 +77,6 @@ export default function ResourceLibraryClient({ resources }: { resources: Resour
       <p>{lang==="zh"?"这里以在线练习为主。完整原创数字资料请到独立商城查看真实文件、价格和当前付款状态。":"This page focuses on online practice. The separate shop shows actual original files, prices and live checkout status."}</p></div>
       <Link href="/shop">{lang==="zh"?"进入原创资料商城":"Open digital resource shop"} <span aria-hidden="true">→</span></Link>
     </aside>
-    {hubs.length > 0 && <nav className={styles.hubNav} aria-label={lang === "zh" ? "按竞赛浏览试卷专题" : "Competition resource guides"}>
-      <div className={styles.hubNavTitle}>{lang === "zh" ? "按竞赛体系查看资料专题" : "Browse competition guides"}</div>
-      <div className={styles.hubLinks}>{hubs.map(hub =>
-        <Link href={resourceHubPath(hub)} key={hub.id}>{hub.name}</Link>
-      )}</div>
-    </nav>}
     <section aria-label={lang === "zh" ? "试卷搜索筛选" : "Paper search filters"}
       className={styles.searchPanel}>
       <label className={styles.query}>
@@ -132,8 +123,14 @@ export default function ResourceLibraryClient({ resources }: { resources: Resour
     {filtered.length > shown.length && <div className={styles.more}>
       <button type="button" onClick={() => setLimit(current => current + PAGE_SIZE)}>{t.more}</button>
     </div>}
+    {hubs.length > 0 && <details className={styles.hubNav} aria-label={lang === "zh" ? "按竞赛浏览试卷专题" : "Competition resource guides"}>
+      <summary className={styles.hubNavTitle}>{lang === "zh" ? "更多竞赛资料专题" : "More competition guides"}</summary>
+      <div className={styles.hubLinks}>{hubs.map(hub =>
+        <Link href={resourceHubPath(hub)} key={hub.id}>{hub.name}</Link>
+      )}</div>
+    </details>}
     <footer className={styles.footer}>
-      <p>{t.legal}</p>
+      <details><summary>{lang === "zh" ? "资料与授权说明" : "Rights and usage"}</summary><p>{t.legal}</p></details>
       <Link href="/assessments">{t.back}</Link>
     </footer>
   </div>;

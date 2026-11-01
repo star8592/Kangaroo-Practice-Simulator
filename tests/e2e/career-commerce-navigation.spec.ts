@@ -4,25 +4,26 @@ test("career home puts real goods and exams first, then navigates 13 industries 
   const response=await page.goto("/career");
   expect(response?.status()).toBe(200);
   await expect(page.getByRole("heading",{level:1,name:/要复习资料？还是要模拟考试？/})).toBeVisible();
-  const primaryGoods=page.getByRole("link",{name:/找资料 · 免费领取/});
-  const primaryExam=page.getByRole("link",{name:/做模拟考试 · 立即开始/});
+  const isNarrow=page.viewportSize()!.width<=920;
+  const primaryGoods=isNarrow
+    ?page.getByRole("link",{name:/^找复习资料/})
+    :page.getByRole("link",{name:/找资料 · 免费领取/});
+  const primaryExam=isNarrow
+    ?page.getByRole("link",{name:"做模拟考试",exact:true})
+    :page.getByRole("link",{name:/做模拟考试 · 立即开始/});
   await expect(primaryGoods).toBeVisible();
   await expect(primaryExam).toBeVisible();
-  if(page.viewportSize()!.width<=920){
-    const fastGoods=page.getByRole("link",{name:/^找复习资料/});
-    const fastExam=page.getByRole("link",{name:"做模拟考试",exact:true});
-    await expect(fastGoods).toBeVisible();
-    await expect(fastExam).toBeVisible();
-    for(const action of [fastGoods,fastExam]){
+  if(isNarrow){
+    for(const action of [primaryGoods,primaryExam]){
       const box=await action.boundingBox();
       expect(box).not.toBeNull();
       expect(box!.y).toBeLessThan(page.viewportSize()!.height-20);
       expect(box!.height).toBeGreaterThanOrEqual(50);
     }
+  }else{
+    await expect(page.getByRole("heading",{level:2,name:"职业教程与复习资料"})).toBeVisible();
+    await expect(page.getByRole("heading",{level:2,name:"模拟考试与自动评分"})).toBeVisible();
   }
-
-  await expect(page.getByRole("heading",{level:2,name:"职业教程与复习资料"})).toBeVisible();
-  await expect(page.getByRole("heading",{level:2,name:"模拟考试与自动评分"})).toBeVisible();
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
 
   await primaryGoods.click();
