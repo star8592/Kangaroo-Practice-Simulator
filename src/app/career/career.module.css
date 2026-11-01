@@ -197,3 +197,12 @@
   .offerActions a{font-size:15px}
   .commerceHeading p{font-size:15px}
 }
+
+
+/* Formal timed-paper offerings outrank short diagnostic exercises. */
+.quickPracticeDetails{margin:18px 0 0;border:1px solid #cfe0e6;border-radius:12px;background:#f5f9fa;padding:15px 20px}
+.quickPracticeDetails summary{color:#285f78;font-size:16px;font-weight:800;cursor:pointer;line-height:1.6}
+.quickPracticeDetails>div{display:flex;gap:10px;flex-wrap:wrap;margin-top:15px}
+.quickPracticeDetails a{display:inline-flex;padding:12px 15px;background:#fff;border:1px solid #cbdce5;color:#225f7a;border-radius:9px;min-height:48px;font-size:15px;font-weight:750;text-decoration:none;align-items:center}
+.quickPracticeDetails a:hover{background:#e6f3f7}
+@media(max-width:620px){.quickPracticeDetails{padding:14px 15px}.quickPracticeDetails>div{display:grid;grid-template-columns:1fr}.quickPracticeDetails a{font-size:15px}}
