@@ -15,6 +15,7 @@ export async function generateMetadata({params}:Context){
   const {id}=await params;const role=getCareerRole(id);
   return {title:role?role.title+" · 岗位资料与训练｜SOCTHINK":"岗位未找到｜SOCTHINK",
     description:role?"查看"+role.title+"在职业目录中的归类和已经开放的原创职业教程及考试训练。未证实职位不会标成在招。":undefined,
+    robots:role&&EXACT_PRODUCTS[role.segment]?{index:true,follow:true}:{index:false,follow:true},
     alternates:{canonical:"/career/roles/"+id}};
 }
 export default async function CareerRolePage({params}:Context){
