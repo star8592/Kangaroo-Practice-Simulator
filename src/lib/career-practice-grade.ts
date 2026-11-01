@@ -105,7 +105,7 @@ export function validateCareerPracticeRubrics():string[]{
         if(!Array.isArray(expected.value)||!expected.value.every(x=>
           q.options?.some(o=>o.id===x)))errors.push("bad-multiselect:"+exercise+":"+q.id);
       }else if(typeof expected.value!=="string"||
-        q.kind==="integer"&&!/^-?\\d+$/.test(expected.value)||
+        q.kind==="integer"&&!/^-?\d+$/.test(expected.value)||
         q.kind==="single"&&!q.options?.some(x=>x.id===expected.value)){
         errors.push("bad-answer:"+exercise+":"+q.id);
       }
