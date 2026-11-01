@@ -58,13 +58,13 @@ export default async function AdminSeoDashboard() {
             <small>本站生成的公开网址数，不是搜索引擎收录量</small>
           </article>
           <article className={styles.card}>
-            <p>实测可抓取 URL</p>
+            <p>抽检通过 URL</p>
             <strong>{latest ? SHOW_DASH(latest.healthyCount) : "—"}</strong>
-            <small>检测实际 HTTP、Canonical、H1、robots 等条件</small>
+            <small>本轮检查 {latest ? latest.checkedCount : "—"} 个 URL 的 HTTP、Canonical 与 H1</small>
           </article>
           <article className={styles.card}>
-            <p>抓取问题 URL</p>
-            <strong>{latest ? SHOW_DASH(latest.sitemapCount - latest.healthyCount) : "—"}</strong>
+            <p>抽检异常 URL</p>
+            <strong>{latest ? SHOW_DASH(latest.checkedCount - latest.healthyCount) : "—"}</strong>
             <small>检测到异常时，下方会列明具体页面</small>
           </article>
           <article className={styles.card}>
@@ -74,7 +74,7 @@ export default async function AdminSeoDashboard() {
           </article>
         </div>
         <p className={styles.disclaimer}>
-          这里显示的是公开网址技术检查，不是百度、Google 或 Bing 的已收录数量。
+          这里显示的是公开网址技术抽检（最多 200 个 URL），不是百度、Google 或 Bing 的已收录数量。
           已测数据超过 36 小时会标记过期，采集失败不会伪装成正常或 0。
         </p>
       </section>
@@ -116,13 +116,13 @@ export default async function AdminSeoDashboard() {
         {history.length ? (
           <div className={styles.tableScroll}>
             <table className={styles.table}>
-              <thead><tr><th>日期（UTC）</th><th>Sitemap URL</th><th>实测通过</th><th>抓取异常</th><th>robots</th><th>采集时间（北京时间）</th></tr></thead>
+              <thead><tr><th>日期（UTC）</th><th>Sitemap URL</th><th>抽检样本</th><th>抽检通过</th><th>抓取异常</th><th>robots</th><th>采集时间（北京时间）</th></tr></thead>
               <tbody>{[...history].reverse().map((day) => (
                 <tr key={day.date}>
                   <td>{day.date}</td>
                   <td className={styles.number}>{day.sitemapCount}</td>
-                  <td className={styles.number}>{day.healthyCount}</td>
-                  <td className={styles.number}>{day.sitemapCount - day.healthyCount}</td>
+                  <td className={styles.number}>{day.checkedCount}</td><td className={styles.number}>{day.healthyCount}</td>
+                  <td className={styles.number}>{day.checkedCount - day.healthyCount}</td>
                   <td>{day.robotsOk ? "正常" : "异常"}</td>
                   <td>{humanTime(day.observedAt)}</td>
                 </tr>
