@@ -1,3 +1,4 @@
+import {CAREER_FORMAL_PAPERS} from "./career-formal-bank";
 /**
  * Public, versioned SOCTHINK ORIGINAL career practice materials.
  *
@@ -15,6 +16,8 @@ export type CareerPracticeQuestion = Readonly<{
   hint?:string;
   options?:readonly Readonly<{id:string;label:string}>[];
   placeholder?:string;
+  provenance?:Readonly<{sourceKind:"original";authoredAt:string;sourceObservedAt:string;
+    topicSourceId:string;topicSourcePlatform:string;topicSourceTitle:string;topicSourceUrl?:string}>;
 }>;
 export type CareerPracticeCase = Readonly<{
   id:string;
@@ -173,6 +176,6 @@ export const CAREER_PRACTICE_CASES:readonly CareerPracticeCase[]=[
 ];
 
 export function getCareerPractice(id:string):CareerPracticeCase|undefined{
-  return CAREER_PRACTICE_CASES.find(x=>x.id===id);
+  return CAREER_PRACTICE_CASES.find(x=>x.id===id)||CAREER_FORMAL_PAPERS.find(x=>x.id===id);
 }
 export type CareerPracticeAnswers=Readonly<Record<string,string|readonly string[]>>;
