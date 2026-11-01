@@ -363,3 +363,26 @@
     padding-left:var(--page-gutter-mobile);padding-right:var(--page-gutter-mobile);
   }
 }
+
+/* Customer-first CTAs: critical actions must not inherit 12px utility text.
+   Scoped to entry heroes; the shared exam answer interface is unchanged. */
+.home-shell:not(.arithmetic-home) > .hero-card .hero-actions :is(a,button),
+.arithmetic-home > .hero-card .hero-actions :is(a,button),
+.arithmetic-home .diagnostic-empty-state a.primary-button {
+  font-size:16px;
+  line-height:1.35;
+  min-height:50px;
+}
+.home-shell > .hero-card .hero-actions {
+  flex-wrap:wrap;
+  gap:10px;
+}
+.competition-intro-brand > a {
+  font-size:14px;
+  line-height:1.4;
+}
+@media (max-width:600px) {
+  .home-shell:not(.arithmetic-home) > .hero-card .hero-actions a {
+    width:100%;
+  }
+}
