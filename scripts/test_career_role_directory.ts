@@ -5,7 +5,7 @@ import {
   searchCareerRoles,getCareerRole,
 } from "../src/lib/career-role-taxonomy";
 import {CAREER_ORIGINAL_GUIDES} from "../src/lib/career-original-guides";
-import {CAREER_PRACTICE_CASES} from "../src/lib/career-practice";
+import {CAREER_FORMAL_PAPERS} from "../src/lib/career-formal-bank";
 
 assert.deepEqual(validateCareerRoleTaxonomy(),[]);
 assert.equal(CAREER_ROLE_GROUPS.length,13,"browse 13 customer-facing industries");
@@ -21,7 +21,7 @@ assert(searchCareerRoles("不存在的职业名称").length===0);
 assert(searchCareerRoles("运营","product-ops").length>=4);
 assert(searchCareerRoles("量化","construction").length===0);
 assert.equal(CAREER_ORIGINAL_GUIDES.length,3);
-assert.equal(CAREER_PRACTICE_CASES.length,3);
+assert.equal(CAREER_FORMAL_PAPERS.length,3);
 const rolePage=fs.readFileSync("src/app/career/roles/[id]/page.tsx","utf8");
 assert(rolePage.includes("notFound()")&&rolePage.includes("getCareerRole(id)"));
 assert(rolePage.includes("EXACT_PRODUCTS"),"role pages only associate content by explicitly verified training tracks");
