@@ -81,3 +81,50 @@ test("switching a category after search clears filters and reveals that domain",
   await expect(page).toHaveURL(/#domain-language$/);
   await expect(directory.locator("#domain-language").getByRole("heading",{name:"语言与国际考试"})).toBeVisible();
 });
+
+test("seven exam category navigation labels stay four characters, on one line, and aligned",async({page})=>{
+  const names=["校内升学","数学竞赛","语言考试","大学考研","职业技能","资格公考","人格测评"];
+  for(const width of [390,768,960,1440]){
+    await page.setViewportSize({width,height:860});
+    await page.goto("/assessments");
+    const nav=page.getByRole("navigation",{name:"考试分类"});
+    const links=nav.locator('a[href^="/assessments#domain-"]');
+    await expect(links).toHaveCount(7);
+    const metrics=await links.evaluateAll(nodes=>nodes.map(node=>{
+      const label=node.querySelector("strong")!;
+      const count=node.querySelector("em")!;
+      const number=node.querySelector("span")!;
+      const a=label.getBoundingClientRect();
+      return {
+        label:label.textContent?.trim(),
+        charCount:[...(label.textContent??"")].length,
+        labelHeight:a.height,
+        lineHeight:parseFloat(getComputedStyle(label).lineHeight)||parseFloat(getComputedStyle(label).fontSize)*1.5,
+        numberLeft:number.getBoundingClientRect().left,
+        countRight:count.getBoundingClientRect().right,
+        countVisible:getComputedStyle(count).display!=="none",
+        horizontalOverflow:document.documentElement.scrollWidth-innerWidth,
+      };
+    }));
+    expect(metrics.map(x=>x.label)).toEqual(names);
+    for(const m of metrics){
+      expect(m.charCount).toBe(4);
+      expect(m.labelHeight,"Navigation label does not wrap").toBeLessThanOrEqual(m.lineHeight+1);
+      expect(m.horizontalOverflow,"No viewport overflow").toBeLessThanOrEqual(2);
+      if(width>760)expect(m.countVisible).toBe(true);
+    }
+    if(width>760){
+      const first=metrics[0];
+      for(const m of metrics){
+        expect(Math.abs(m.numberLeft-first.numberLeft),"All category numbers align").toBeLessThanOrEqual(1);
+        expect(Math.abs(m.countRight-first.countRight),"All topic counts align").toBeLessThanOrEqual(1);
+      }
+    }
+  }
+  await page.goto("/");
+  await expect(page.getByRole("link",{name:/人格测评/}).first()).toBeVisible();
+  await page.goto("/assessments?q=人格测评");
+  const directory=page.getByRole("region",{name:"考试目录"});
+  await expect(directory.locator("article")).toHaveCount(1);
+  await expect(directory.locator("article").getByRole("heading",{name:"人格、职业兴趣与能力探索"})).toBeVisible();
+});

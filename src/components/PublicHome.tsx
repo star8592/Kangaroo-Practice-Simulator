@@ -75,11 +75,13 @@ export default function PublicHome(){
   const matching=useMemo(()=>{
     const groups=EXAM_DIRECTORY.filter(g=>!query||g.topics.some(topic=>
       [topic.id,topic.title.zh,topic.title.en].some(s=>s.toLocaleLowerCase().includes(query)))||
-      [DOMAINS.get(g.domainId)?.name.zh,DOMAINS.get(g.domainId)?.name.en]
+      [DOMAINS.get(g.domainId)?.name.zh,DOMAINS.get(g.domainId)?.name.en,
+       DOMAINS.get(g.domainId)?.navName.zh,DOMAINS.get(g.domainId)?.navName.en]
         .some(s=>(s||"").toLocaleLowerCase().includes(query)));
     return (query?groups:groups.filter(x=>x.domainId===active)).map(group=>{
       const domain=DOMAINS.get(group.domainId)!;
-      const whole=domain.name.zh.toLocaleLowerCase().includes(query)||domain.name.en.toLocaleLowerCase().includes(query);
+      const whole=[domain.name.zh,domain.name.en,domain.navName.zh,domain.navName.en]
+        .some(v=>v.toLocaleLowerCase().includes(query));
       return {domain,topics:query&&!whole?group.topics.filter(topic=>
         [topic.id,topic.title.zh,topic.title.en].some(s=>s.toLocaleLowerCase().includes(query))):group.topics};
     });
@@ -125,8 +127,8 @@ export default function PublicHome(){
           const domain=DOMAINS.get(group.domainId)!;
           const available=group.topics.filter(topic=>topic.status==="live").length;
           return <Link key={group.domainId} href={`/assessments#domain-${group.domainId}`}
-            className={styles.categoryCard}>
-            <strong>{domain.name[lang]}</strong>
+            className={styles.categoryCard} title={domain.name[lang]}>
+            <strong>{domain.navName[lang]}</strong>
             <span className={styles.categoryCardMeta}>
               <span className={available?styles.categoryLive:styles.categoryPending}>{available?t.partial:t.pending}</span>
             </span>
@@ -152,7 +154,7 @@ export default function PublicHome(){
               aria-pressed={!query&&active===g.domainId}
               onClick={()=>{setActive(g.domainId);setSearch("");}}>
               <span className={styles.sideNumber}>{String(i+1).padStart(2,"0")}</span>
-              <span>{domain.name[lang]}</span>
+              <span className={styles.sideLabel} title={domain.name[lang]}>{domain.navName[lang]}</span>
               <span className={styles.sideCount}>{g.topics.length}</span>
             </button>;
           })}

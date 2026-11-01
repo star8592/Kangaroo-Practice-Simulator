@@ -17,6 +17,8 @@ export type BilingualText = { zh: string; en: string };
 export type AssessmentDomain = {
   id: AssessmentDomainId;
   name: BilingualText;
+  /** Four-character Chinese labels for compact navigation only; full name stays authoritative. */
+  navName: BilingualText;
   summary: BilingualText;
   audience: BilingualText;
   readiness: DomainReadiness;
@@ -28,6 +30,7 @@ export type AssessmentDomain = {
 export const ASSESSMENT_DOMAINS: readonly AssessmentDomain[] = [
   {
     id:"school",name:{zh:"中小学与升学",en:"School learning & admissions"},
+    navName:{zh:"校内升学",en:"School & exams"},
     summary:{zh:"基础数学、逐题复盘与长期能力诊断；逐步拓展学科。",en:"Math fluency, review and learning diagnostics, expanding across subjects."},
     audience:{zh:"小学—高中学生与家长",en:"Students and families"},
     readiness:"live",formats:["single-choice","numeric","symbolic"],
@@ -39,6 +42,7 @@ export const ASSESSMENT_DOMAINS: readonly AssessmentDomain[] = [
   },
   {
     id:"math-competition",name:{zh:"全球数学竞赛",en:"Math competitions"},
+    navName:{zh:"数学竞赛",en:"Math contests"},
     summary:{zh:"国际数学赛事、样题、真题及模拟考试。",en:"International math competitions, samples, past papers and mock exams."},
     audience:{zh:"竞赛学生、家长与教师",en:"Math competitors and educators"},
     readiness:"live",formats:["single-choice","multiple-choice","numeric"],
@@ -50,6 +54,7 @@ export const ASSESSMENT_DOMAINS: readonly AssessmentDomain[] = [
   },
   {
     id:"language",name:{zh:"语言与国际考试",en:"Language & international exams"},
+    navName:{zh:"语言考试",en:"Language exams"},
     summary:{zh:"阅读、听力、口语、写作与国际标准化考试。",en:"Reading, listening, speaking, writing and standardized exams."},
     audience:{zh:"英语学习者及留学申请者",en:"Language learners and applicants"},
     readiness:"planned",formats:["single-choice","listening","speaking","essay"],
@@ -57,6 +62,7 @@ export const ASSESSMENT_DOMAINS: readonly AssessmentDomain[] = [
   },
   {
     id:"university",name:{zh:"大学与考研",en:"University & postgraduate"},
+    navName:{zh:"大学考研",en:"Higher education"},
     summary:{zh:"课程、研究生升学、学术技能与专业入门能力测评。",en:"Coursework, postgraduate exams and academic readiness."},
     audience:{zh:"大学生与考研学生",en:"Undergraduates and postgraduate candidates"},
     readiness:"planned",formats:["single-choice","short-answer","essay","numeric"],
@@ -64,6 +70,7 @@ export const ASSESSMENT_DOMAINS: readonly AssessmentDomain[] = [
   },
   {
     id:"career",name:{zh:"职业技能与岗位实操",en:"Career skills & simulations"},
+    navName:{zh:"职业技能",en:"Career skills"},
     summary:{zh:"从中国上市企业、外企及合资企业实际招聘需求倒推岗位训练；已含采购、运营与工业质量实操。",en:"Employer-evidenced procurement, operations and industrial quality simulations."},
     audience:{zh:"大学毕业生、求职者和企业",en:"Graduates, applicants and employers"},
     readiness:"live",formats:["code","sql","sandbox","interview","short-answer","single-choice","multiple-choice","numeric"],
@@ -72,6 +79,7 @@ export const ASSESSMENT_DOMAINS: readonly AssessmentDomain[] = [
   },
   {
     id:"professional",name:{zh:"职业资格与公职考试",en:"Professional qualifications"},
+    navName:{zh:"资格公考",en:"Qualifications"},
     summary:{zh:"资格考试、法规知识、专业实务与应试模拟。",en:"Qualification exams, regulatory topics and applied practice."},
     audience:{zh:"资格证考生与职业学习者",en:"Professional exam candidates"},
     readiness:"planned",formats:["single-choice","multiple-choice","short-answer"],
@@ -79,6 +87,7 @@ export const ASSESSMENT_DOMAINS: readonly AssessmentDomain[] = [
   },
   {
     id:"interest",name:{zh:"人格、职业兴趣与能力探索",en:"Personality & career exploration"},
+    navName:{zh:"人格测评",en:"Personal insight"},
     summary:{zh:"免费研究试测已开放。中文量表信效度与常模尚未验证，暂不提供标准化结论。",en:"Free research previews are live; Chinese norms and validation are pending."},
     audience:{zh:"18岁及以上成人（当前研究试测）",en:"Adults 18+ (research previews)"},
     readiness:"live",formats:["scale","short-answer"],
@@ -100,7 +109,8 @@ export function validateAssessmentCatalog(): string[] {
   for(const domain of ASSESSMENT_DOMAINS) {
     if(slugs.has(domain.id)) issues.push("duplicate domain: "+domain.id);
     slugs.add(domain.id);
-    if(!domain.name.zh||!domain.name.en||!domain.summary.zh) issues.push("missing labels: "+domain.id);
+    if(!domain.name.zh||!domain.name.en||!domain.navName.zh||!domain.navName.en||!domain.summary.zh) issues.push("missing labels: "+domain.id);
+    if([...domain.navName.zh].length!==4) issues.push("nav label must have four characters: "+domain.id);
     if(domain.readiness==="live"&&domain.liveRoutes.length===0)
       issues.push("live domain missing a real route: "+domain.id);
     if(domain.readiness==="planned"&&domain.liveRoutes.length>0)
