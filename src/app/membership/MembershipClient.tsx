@@ -80,8 +80,9 @@ export default function MembershipClient({
       <details className={styles.purchasePolicyNotice} aria-label={en?"Digital purchase terms":"数字商品售后提示"}>
         <summary><strong>{copy.policyTitle}</strong></summary>
         <p>{en?DIGITAL_SALES_POLICY_SHORT_EN:DIGITAL_SALES_POLICY_SHORT_ZH}{" "}
-          <Link href="/digital-purchase-policy">{copy.full}</Link></p>
+          </p>
       </details>
+      <p className={styles.policyLink}><Link href="/digital-purchase-policy">{copy.full}</Link></p>
       <NativeCheckoutPanel offers={offers} accountLoggedIn={accountLoggedIn}/>
     </section>
     <section className={styles.services} aria-label={copy.servicesTitle}>

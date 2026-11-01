@@ -72,3 +72,5 @@
 .checkoutOffer b{font-size:17px}
 .checkoutOffer span{font-size:28px}
 @media(max-width:760px){.serviceCard h3{font-size:16px}}
+.policyLink{margin:8px 0 0;font-size:14px;font-weight:750}
+.policyLink a{color:var(--portal-blue);text-decoration:underline;text-underline-offset:3px}
