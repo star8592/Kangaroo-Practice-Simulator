@@ -1,6 +1,5 @@
 import assert from "node:assert/strict";
 import fs from "node:fs";
-import path from "node:path";
 import {
   CAREER_ROLE_GROUPS,CAREER_ROLES,validateCareerRoleTaxonomy,
   searchCareerRoles,getCareerRole,
@@ -29,7 +28,7 @@ assert(rolePage.includes("EXACT_PRODUCTS"),"role pages only associate content by
 assert(rolePage.includes("这个具体岗位的专项资料尚未上线"),"no false products for merely listed occupations");
 const home=fs.readFileSync("src/app/career/page.tsx","utf8");
 const nav=fs.readFileSync("src/components/CareerRoleExplorer.tsx","utf8");
-assert(home.indexOf("commercialHero")<home.indexOf("CareerRoleExplorer"));
+assert(home.indexOf("commercialHero")<home.indexOf("<CareerRoleExplorer/>"));
 assert(home.indexOf("CareerRoleExplorer")<home.indexOf('id="market-heat"'));
 assert(home.indexOf('id="digital-materials"')<home.indexOf("researchDetails"));
 for(const label of ["找资料 · 免费领取","做模拟考试 · 立即开始","职业教程与复习资料","模拟考试与自动评分"]){
