@@ -49,12 +49,7 @@ export default async function StoreProductPage({params}:{
     </nav>
     <div className={styles.productLayout}>
       <header className={styles.productHeader}>
-        <span className={styles.productEyebrow}>SOCTHINK · ORIGINAL STUDY MATERIALS</span>
-        <div className={styles.productTags}>
-          <span>原创训练资料</span><span>PDF 电子版</span><span>一次购买</span>
-        </div>
         <h1>{p.title}</h1>
-        <p className={styles.productLead}>付款前了解真实交付文件与价格；付款经微信官方确认后，直接在同一个微信账号下载。</p>
         <div className={styles.productFacts} aria-label="商品概览">
           {count&&<div><strong>{count[1]} 道</strong><span>标题所示题量</span></div>}
           <div><strong>PDF</strong><span>交付格式</span></div>
@@ -97,16 +92,11 @@ export default async function StoreProductPage({params}:{
       </aside>
       <div className={styles.productBody}>
         <section className={styles.productSection} aria-labelledby="contents-title">
-          <div className={styles.sectionHeading}><span>01 / PRODUCT CONTENT</span><h2 id="contents-title">买到的具体内容</h2></div>
-          <p>交付的是这份明确标价的数学训练 PDF，非官方考试真题，也不是按月续费的会员套餐。</p>
-          <ul className={styles.benefits}>
-            <li>原创数学训练题目{count?"，商品标题标注共 "+count[1]+" 道":""}</li>
-            <li>文件包含题目、对应参考答案及解题说明，实际内容以文件为准</li>
-            <li>付款经微信官方核实后，在个人账号下载完整文件</li>
-          </ul>
+          <div className={styles.sectionHeading}><h2 id="contents-title">包含内容</h2></div>
+          <p>原创数学训练题目{count?" · "+count[1]+" 道题":""} · 参考答案与解题说明</p>
         </section>
         <section className={styles.productSection} aria-labelledby="file-title">
-          <div className={styles.sectionHeading}><span>02 / VERIFIED DELIVERY</span><h2 id="file-title">交付文件</h2></div>
+          <div className={styles.sectionHeading}><h2 id="file-title">交付文件与样张</h2></div>
           <div className={styles.fileOverview}>
             <figure className={styles.previewFigure}>
               <a href={previewUrl} target="_blank" rel="noopener noreferrer" aria-label="打开真实 PDF 首页样张">
@@ -122,21 +112,20 @@ export default async function StoreProductPage({params}:{
               <div><dt>购买类型</dt><dd>单份购买，无自动续费</dd></div>
             </dl>
           </div>
-          <p className={styles.previewNotice}>本样张直接渲染自已核验 PDF 的第一页，非 AI 虚构示意图；付款后交付完整 PDF。</p>
         </section>
-        <section className={styles.productSection} aria-labelledby="steps-title">
-          <div className={styles.sectionHeading}><span>03 / PURCHASE & ACCESS</span><h2 id="steps-title">付款后如何下载</h2></div>
+        <details className={styles.productSection} aria-label="付款与下载流程">
+          <summary id="steps-title">付款与下载流程</summary>
           <ol className={styles.steps}>
             <li><span>1</span><div><strong>确认商品与价格</strong><p>查看文件名、题量、价格和售后规则。</p></div></li>
             <li><span>2</span><div><strong>微信支付</strong><p>正式开放后，登录微信账号并扫码完成支付；以微信官方回执为准。</p></div></li>
             <li><span>3</span><div><strong>进入账号下载</strong><p>订单确认已支付后，在<Link href="/account">我的订单与权益</Link>下载原始 PDF。</p></div></li>
           </ol>
-        </section>
-        <section className={styles.productSection} aria-labelledby="policy-title">
-          <div className={styles.sectionHeading}><span>04 / TERMS</span><h2 id="policy-title">使用与售后</h2></div>
+        </details>
+        <details className={styles.productSection} aria-label="使用与售后">
+          <summary id="policy-title">使用与售后</summary>
           <p>适合自主练习和教师备课参考。本站原创模拟训练内容不属于任何考试组织的官方真题，也不承诺考试成绩或竞赛名次。</p>
           <p>数字内容交付后，在适用法律允许的范围内不支持无理由退款；未交付、严重不符或其他法定售后事项依法处理。<Link href="/digital-purchase-policy">查看完整规则</Link>。</p>
-        </section>
+        </details>
         <nav className={styles.backNav} aria-label="其他购买入口">
           <Link href="/shop">返回原创资料商城</Link>
           <Link href="/account">我的订单与下载</Link>

@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import {useMemo,useState} from "react";
+import {useEffect,useMemo,useState} from "react";
 import {ASSESSMENT_DOMAINS} from "@/lib/assessment-platform";
 import {EXAM_DIRECTORY} from "@/lib/exam-directory";
 import {useSiteLanguage} from "@/lib/site-language";
@@ -35,6 +35,20 @@ export default function ExamDirectory({initialQuery=""}:{initialQuery?:string}){
   const lang=useSiteLanguage(),t=LABEL[lang];
   const [query,setQuery]=useState(initialQuery);
   const [showPlanned,setShowPlanned]=useState(false);
+  useEffect(()=>{
+    const revealHashTarget=()=>{
+      const hash=window.location.hash.slice(1);
+      if(!EXAM_DIRECTORY.some(group=>hash===`domain-${group.domainId}`))return;
+      setShowPlanned(true);
+      // The anchor can be absent until React has rendered planned domains.
+      requestAnimationFrame(()=>requestAnimationFrame(()=>{
+        document.getElementById(hash)?.scrollIntoView({block:"start"});
+      }));
+    };
+    revealHashTarget();
+    window.addEventListener("hashchange",revealHashTarget);
+    return ()=>window.removeEventListener("hashchange",revealHashTarget);
+  },[]);
   const matched=useMemo(()=>{
     const term=query.trim().toLocaleLowerCase();
     return EXAM_DIRECTORY.map(group=>{
