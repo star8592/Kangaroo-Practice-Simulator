@@ -46,13 +46,7 @@ export default async function CareerDemandPage({searchParams}:{searchParams:Sear
         <a href="#digital-materials">数字资料与教程</a>
         <a href="#digital-services">在线考试服务</a>
       </div>
-      <div className={styles.stats} aria-label="首轮非随机招聘研究资料覆盖">
-        <div><strong>{stats.employers}</strong><span>家有来源的样本企业</span></div>
-        <div><strong>{stats.families}</strong><span>个岗位领域</span></div>
-        <div><strong>{stats.detailedJobs}</strong><span>份具体职位描述</span></div>
-        <div><strong>{stats.signals}</strong><span>条招聘或类别样本</span></div>
-      </div>
-      <p className={styles.sampleNote}>企业研究样本并非全网实时招聘量；不把股票代码数、网页分类数当成在招岗位数。资料采集汇总于 {CAREER_DEMAND_OBSERVED_AT}。</p>
+
     </section>
     <section className={styles.marketStage} id="market-heat">
       <div className={styles.sectionTitle}>
@@ -69,6 +63,13 @@ export default async function CareerDemandPage({searchParams}:{searchParams:Sear
         </article>)}
       </div>
       <p className={styles.heatFoot}>指标来自智联研究院2026年三季度报告，经2026-10-16媒体转述。图条统一按0–60%刻度展示，仅用于比较<strong>同一口径的四个具体职位</strong>；无法据此推导薪资、录取概率或其他12类岗位的冷热。</p>
+      <div className={styles.stats} aria-label="首轮非随机招聘研究资料覆盖">
+        <div><strong>{stats.employers}</strong><span>家有来源的样本企业</span></div>
+        <div><strong>{stats.families}</strong><span>个岗位领域</span></div>
+        <div><strong>{stats.detailedJobs}</strong><span>份具体职位描述</span></div>
+        <div><strong>{stats.signals}</strong><span>条招聘或类别样本</span></div>
+      </div>
+      <p className={styles.sampleNote}>企业研究样本并非全网实时招聘量；不把股票代码数、网页分类数当成在招岗位数。资料采集汇总于 {CAREER_DEMAND_OBSERVED_AT}。</p>
     </section>
 
     <div className={styles.commerceIntro}>
