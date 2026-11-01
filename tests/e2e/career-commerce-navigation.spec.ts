@@ -10,7 +10,7 @@ test("career home puts real goods and exams first, then navigates 13 industries 
   await expect(primaryExam).toBeVisible();
   if(page.viewportSize()!.width<=920){
     const fastGoods=page.getByRole("link",{name:/^找复习资料/});
-    const fastExam=page.getByRole("link",{name:/^做模拟考试/});
+    const fastExam=page.getByRole("link",{name:"做模拟考试",exact:true});
     await expect(fastGoods).toBeVisible();
     await expect(fastExam).toBeVisible();
     for(const action of [fastGoods,fastExam]){
