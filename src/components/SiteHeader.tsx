@@ -129,7 +129,7 @@ export default function SiteHeader(){
           const domain=DOMAIN_MAP.get(group.domainId)!;
           return <Link href={`/assessments#domain-${group.domainId}`}
             key={group.domainId} onClick={dismiss}>
-            {domain.name[lang]} <span aria-hidden="true">›</span>
+            {domain.navName[lang]} <span aria-hidden="true">›</span>
           </Link>;
         })}
       </nav>

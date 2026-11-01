@@ -153,3 +153,15 @@
 @media(max-width:760px){.directoryDetails .workspace{padding:0 11px 12px}.directoryDetails>summary{padding:14px 16px}}
 
 @media(max-width:760px){.popular{display:none}.searchPanel label{display:none}.hero h1{letter-spacing:-.03em}}
+
+/* Balanced taxonomy rows across all navigation surfaces. */
+@media(min-width:761px){
+  .sideItem,.sideActive{display:grid;grid-template-columns:24px minmax(0,1fr) 24px;column-gap:9px}
+  .sideLabel{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .sideNumber,.sideCount{font-variant-numeric:tabular-nums}
+  .sideCount{margin-left:0;width:24px;text-align:right}
+}
+@media(max-width:760px){
+  .sideItem,.sideActive{display:flex}
+  .sideLabel{white-space:nowrap;line-height:1.35;font-weight:750}
+}

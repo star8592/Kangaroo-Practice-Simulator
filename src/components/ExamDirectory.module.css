@@ -60,3 +60,15 @@
 .plannedToggle{border:1px solid #cad8ed;background:#f5f8ff;color:var(--portal-blue);padding:11px 15px;border-radius:9px;font-size:15px;font-weight:750;cursor:pointer;white-space:nowrap}
 .plannedToggle:hover,.plannedToggle:focus-visible{background:#e9f2ff}
 @media(max-width:760px){.headingRow{display:flex;flex-wrap:wrap;align-items:center;gap:11px}.plannedToggle{white-space:normal}}
+
+/* Balanced taxonomy rows: stable columns for number, short label and count. */
+@media(min-width:761px){
+  .side>a{display:grid;grid-template-columns:24px minmax(0,1fr) 24px;column-gap:9px}
+  .side>a>span{font-variant-numeric:tabular-nums}
+  .side>a strong{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .side>a em{width:24px;text-align:right;font-variant-numeric:tabular-nums}
+}
+@media(max-width:760px){
+  .side>a{display:flex;align-items:center;justify-content:flex-start}
+  .side strong{font-size:15px;line-height:1.35;white-space:nowrap}
+}

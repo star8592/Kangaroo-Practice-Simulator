@@ -53,7 +53,7 @@ export default function ExamDirectory({initialQuery=""}:{initialQuery?:string}){
     const term=query.trim().toLocaleLowerCase();
     return EXAM_DIRECTORY.map(group=>{
       const domain=DOMAIN_BY_ID.get(group.domainId)!;
-      const inDomain=[domain.name.zh,domain.name.en,domain.summary.zh,domain.summary.en]
+      const inDomain=[domain.name.zh,domain.name.en,domain.navName.zh,domain.navName.en,domain.summary.zh,domain.summary.en]
         .some(v=>v.toLocaleLowerCase().includes(term));
       const topics=term&&!inDomain?group.topics.filter(topic=>
         [topic.id,topic.title.zh,topic.title.en].some(v=>v.toLocaleLowerCase().includes(term))):group.topics;
@@ -83,14 +83,14 @@ export default function ExamDirectory({initialQuery=""}:{initialQuery?:string}){
         <span className={styles.sideTitle}>{t.all}</span>
         {EXAM_DIRECTORY.map((group,i)=>{
           const domain=DOMAIN_BY_ID.get(group.domainId)!;
-          return <a key={group.domainId} href={`/assessments#domain-${group.domainId}`}
+          return <a key={group.domainId} title={domain.name[lang]} href={`/assessments#domain-${group.domainId}`}
             onClick={()=>{
               setShowPlanned(true);
               setQuery("");
               requestAnimationFrame(()=>document.getElementById(`domain-${group.domainId}`)?.scrollIntoView({block:"start"}));
             }}>
             <span>{String(i+1).padStart(2,"0")}</span>
-            <strong>{domain.name[lang]}</strong><em>{group.topics.length}</em>
+            <strong>{domain.navName[lang]}</strong><em>{group.topics.length}</em>
           </a>;
         })}
       </nav>
