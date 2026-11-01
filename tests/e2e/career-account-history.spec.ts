@@ -67,7 +67,7 @@ test("verified WeChat buyer sees saved grading, cross-browser history, and stric
 
   // New clean browser context (not sharing localStorage) with the same
   // independently verified account must recover the server-held record.
-  const clean=await browser.newContext();
+  const clean=await browser.newContext({baseURL:base});
   try{
     await clean.addCookies([{
       name:PARENT_SESSION_COOKIE,value:cookieA,url:base,httpOnly:true,sameSite:"Lax",
@@ -83,7 +83,7 @@ test("verified WeChat buyer sees saved grading, cross-browser history, and stric
 
   // Distinct WeChat buyer must see an empty history and cannot fetch
   // another buyer's full report by guessing or copying the attempt ID.
-  const foreign=await browser.newContext();
+  const foreign=await browser.newContext({baseURL:base});
   try{
     await foreign.addCookies([{
       name:PARENT_SESSION_COOKIE,value:cookieB,url:base,httpOnly:true,sameSite:"Lax",
