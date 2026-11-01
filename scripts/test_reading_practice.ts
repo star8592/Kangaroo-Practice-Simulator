@@ -8,8 +8,8 @@ assert.deepEqual(validateEvidenceRegistry(),[]);
 assert.equal(READING_PASSAGES.length,4);
 assert.equal(READING_QUESTIONS.length,16);
 assert.equal(READING_SKILLS.length,4);
-assert.equal(ASSESSMENT_EVIDENCE.length,5);
-assert.equal(CENTER_SECTIONS.filter(s=>"route" in s||"instrumentId" in s).length,5);
+assert.equal(ASSESSMENT_EVIDENCE.length,4);
+assert.equal(CENTER_SECTIONS.filter(s=>"route" in s||"instrumentId" in s).length,4);
 for(const q of READING_QUESTIONS){
  const source=READING_PASSAGES.find(p=>p.id===q.passageId);
  assert(source?.text.includes(q.evidence),q.id+" quote is present verbatim");
@@ -35,7 +35,7 @@ assert.throws(()=>scoreReading({...perfect,extra:0}),/INVALID_READING_ANSWER/);
 assert.throws(()=>scoreReading({...perfect,["lr-01"]:-1}),/INVALID_READING_ANSWER/);
 for(const record of ASSESSMENT_EVIDENCE){
  assert.equal(record.normAvailable,false);
- assert.equal(record.paid,false);
+ assert(["optional-after-verification","not-offered"].includes(record.fullReportOffer));
  assert(record.limitations.length>=25);
  assert(record.path.startsWith("/assessment-center/"));
 }
@@ -44,4 +44,4 @@ for(const f of ["src/app/assessment-center/reading-practice-16/page.tsx","src/ap
 const ui=fs.readFileSync("src/components/ReadingPracticeClient.tsx","utf8");
 assert(/监护人/.test(ui));
 assert(!/fetch\(|localStorage|sessionStorage|sendBeacon|XMLHttpRequest/.test(ui),"reading answers remain in memory");
-console.log("READING_CENTER=PASS passages=4 original_items=16 evidence_quotes=16 dimensions=4 scores=DETERMINISTIC norms=NONE storage=MEMORY_ONLY products=5");
+console.log("READING_CENTER=PASS passages=4 original_items=16 evidence_quotes=16 dimensions=4 scores=DETERMINISTIC norms=NONE storage=MEMORY_ONLY products=4");

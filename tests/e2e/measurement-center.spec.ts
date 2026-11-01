@@ -4,10 +4,10 @@ test("scientific measurement center shows six categories and two honest research
   const response=await page.goto("/assessment-center");
   expect(response?.status()).toBe(200);
   await expect(page.getByRole("heading",{name:"认识自己，从可信的测量开始。"})).toBeVisible();
-  await expect(page.locator("article")).toHaveCount(6);
+  await expect(page.locator("article")).toHaveCount(5);
   await expect(page.getByText("免费研究预览")).toHaveCount(2);
   await expect(page.getByText("建设中",{exact:true})).toHaveCount(1);
-  await expect(page.getByText("免费任务练习",{exact:true})).toHaveCount(3);
+  await expect(page.getByText("免费任务练习",{exact:true})).toHaveCount(2);
   await expect(page.locator('a[href="/assessment-center/career-interest-exploration-30"]')).toBeVisible();
   await expect(page.locator('a[href="/assessment-center/ipip-big-five-50-cn-preview"]')).toBeVisible();
 });
@@ -30,8 +30,8 @@ for(const spec of [
       await page.locator('input[type="radio"][value="4"]').check();
       await page.getByRole("button",{name:i===spec.count-1?"查看我的结果":"下一题"}).click();
     }
-    await expect(page.getByRole("heading",{name:"你的探索报告"})).toBeVisible();
-    await expect(page.getByText(/不是全国百分位/)).toBeVisible();
+    await expect(page.getByRole("heading",{name:"你的免费简要结果"})).toBeVisible();
+    await expect(page.getByText(/中国同龄人的水平/)).toBeVisible();
     await expect(page.getByText(/评分版本/)).toBeVisible();
     await page.getByRole("button",{name:"重新试测"}).click();
     await expect(start).toBeDisabled();

@@ -43,3 +43,65 @@
 .methodCard .tileLink{justify-content:flex-start}
 .methodCard .details div{grid-template-columns:125px 1fr}
 @media(max-width:600px){.readingPassage{padding:18px 16px;margin:15px 0 25px}.readingPassage p{font-size:15px;line-height:1.95}.methodCard{padding:23px 17px}.methodCard h3{font-size:20px}}
+
+.premiumShell{margin-top:36px;border:1px solid #d4e3ec;border-radius:18px;overflow:hidden;background:#fbfdfe}
+.premiumOfferHeader{background:linear-gradient(120deg,#eff7fa,#f5f9fb);padding:28px 30px}
+.premiumOfferHeader h3{font-size:clamp(22px,2.3vw,28px);line-height:1.4;margin:9px 0;color:#183e5a}
+.premiumOfferHeader p{font-size:14px;color:#4d6980;line-height:1.85}
+.premiumInclusions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px 23px;margin:24px 30px}
+.premiumInclusions span{font-size:13px;line-height:1.65;color:#24546d}
+.premiumInclusions span::before{content:"✓";font-weight:850;color:#23836a;margin-right:7px}
+.premiumDisclaimer{margin:0 30px 20px;padding:14px;border:1px solid #d3e1ea;background:#f1f6f9;color:#4c6678;font-size:13px;line-height:1.85;border-radius:9px}
+.premiumAction{padding:20px 30px 30px;border-top:1px solid #e2ebef;line-height:1.75;color:#39566d}
+.premiumAction a{color:#0e6388;text-decoration:underline}
+.premiumAction p{font-size:14px}
+.premiumAction button{margin-left:0}
+.premiumAction img{display:block;max-width:100%;margin:18px auto}
+.premiumDocument{margin:22px 25px 25px;padding:34px 30px;background:white;border:1px solid #d9e5e9;border-radius:15px;box-shadow:0 15px 26px #15375212}
+.premiumDocHead{padding:24px 0 30px;border-bottom:2px solid #275b72}
+.premiumDocHead h2{font-size:clamp(28px,3vw,40px);margin:14px 0}
+.premiumDocHead p{color:#536c7e}
+.premiumDocMeta{display:flex;flex-wrap:wrap;gap:8px 22px;color:#637486;font-size:12px;margin-top:27px}
+.premiumChapter{margin-top:40px;line-height:1.9}
+.premiumChapter>h3{font-size:25px;margin:10px 0 17px;color:#163f58}
+.premiumChapter p,.premiumChapter li{font-size:14px;line-height:1.85;color:#465d6d}
+.premiumChapter a{color:#175c81;text-decoration:underline}
+.premiumScores{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
+.premiumScores>div{padding:14px 17px;border:1px solid #dbe7ed;border-radius:9px;display:grid;grid-template-columns:1fr auto;gap:6px}
+.premiumScores strong{font-size:13px}
+.premiumScores span{font-size:16px;color:#20617a;font-weight:850}
+.premiumScores small{grid-column:1/-1;color:#6b8090}
+.premiumFactor{border:1px solid #dbe5ec;border-radius:14px;padding:23px 25px;margin:18px 0;break-inside:avoid-page}
+.premiumFactorHeading{display:flex;align-items:center;gap:13px;margin:0 0 18px}
+.premiumFactorHeading span{font-weight:850;color:#829aaa;font-size:14px}
+.premiumFactorHeading h4{font-size:20px;flex:1;margin:0}
+.premiumFactorHeading strong{color:#20647e;font-size:19px;font-variant-numeric:tabular-nums}
+.premiumFactor p{margin:10px 0}
+.premiumEvidence{padding:14px 17px;background:#eff5f8;border-radius:9px;margin:16px 0}
+.premiumEvidence strong{color:#1e536b;font-size:13px}
+.premiumEvidence ul{margin:8px 0;padding-left:20px}
+.premiumEvidence li{font-size:13px;line-height:1.8}
+.premiumMethod{border-top:1px solid #e5ecf0}
+.premiumMethod div{display:grid;grid-template-columns:115px 1fr;padding:10px 0;border-bottom:1px solid #e5ecf0}
+.premiumMethod dt{font-size:13px;color:#607889}
+.premiumMethod dd{font-size:13px;margin:0;line-height:1.75}
+.premiumPrint{display:flex;justify-content:flex-end;margin-top:23px}
+.premiumFooter{font-size:11px;color:#72838e;border-top:1px solid #dce5eb;padding-top:14px}
+@media(max-width:650px){.premiumOfferHeader{padding:22px 20px}.premiumInclusions{grid-template-columns:1fr;margin:18px 20px}.premiumDisclaimer{margin:0 20px 17px}.premiumAction{padding:19px}.premiumDocument{margin:15px 10px;padding:20px 14px}.premiumScores{grid-template-columns:1fr}.premiumFactor{padding:16px 13px}.premiumChapter>h3{font-size:20px}.premiumMethod div{grid-template-columns:1fr}}
+@media print{.runnerHeader,.premiumOfferHeader,.premiumInclusions,.premiumDisclaimer,.premiumAction,.premiumPrint,.controls,.sourceLink,.breadcrumb{display:none!important}.premiumShell,.premiumDocument{border:0;margin:0;padding:0;box-shadow:none;overflow:visible}.premiumChapter{break-inside:auto}.premiumFactor{break-inside:avoid-page}.panel{border:0!important;box-shadow:none!important}.premiumDocHead{padding-top:0}}
+.premiumPreviewLink{margin:15px 30px;color:#175c81;font-size:14px;text-decoration:underline;text-underline-offset:3px}
+.premiumIntro{margin:52px 0 0;padding:32px 35px;background:#f3f8fa;border:1px solid #d6e3ea;border-radius:18px;display:grid;grid-template-columns:minmax(0,1.6fr) minmax(230px,.7fr);gap:34px;align-items:center}.premiumIntro h2{font-size:clamp(23px,2.5vw,31px);line-height:1.4;margin:12px 0}.premiumIntro p{font-size:14px;line-height:1.85;color:#4f687a}.premiumIntroAside{background:#fff;border:1px solid #dce8ef;padding:23px;border-radius:14px}.premiumIntroAside strong{font-size:17px;color:#195571}.premiumIntroAside p{font-size:13px;border-bottom:1px solid #edf1f5;padding-bottom:11px}.premiumIntroAside p:last-child{border:0;margin-bottom:0}@media(max-width:750px){.premiumIntro{grid-template-columns:1fr;padding:24px;gap:18px}}
+.premiumCareerOverview,.premiumPersonalityOverview{border-radius:13px;padding:23px 25px;border:1px solid #dce8ec}
+.premiumCareerOverview{background:#f2f8f6}
+.premiumPersonalityOverview{background:#f5f5fa}
+.premiumCareerGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.premiumCareerGrid>div{background:white;border:1px solid #dbe8e1;padding:14px;border-radius:10px;display:grid;gap:5px}
+.premiumCareerGrid strong{font-size:23px;color:#186c60}
+.premiumCareerGrid>div>span{font-size:13px;color:#425e66}
+.premiumCareerGrid small{font-size:12px;color:#657582}
+.premiumCareerGrid .scoreTrack{height:7px}
+.premiumPersonalityOverview ol{padding-left:20px;display:grid;gap:12px}
+.premiumPersonalityOverview li{line-height:1.75}
+.premiumPersonalityOverview li strong{font-size:14px;color:#354f70;display:block}
+.premiumPersonalityOverview li span{font-size:13px;color:#526b80}
+@media(max-width:600px){.premiumCareerGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.premiumCareerOverview,.premiumPersonalityOverview{padding:17px 15px}}

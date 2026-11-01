@@ -23,6 +23,7 @@ const PRACTICE_LINKS=[
   {href:"/arithmetic",zh:"计算与数学训练",en:"Math practice",helpZh:"小学到高中 · 直接开练",helpEn:"School to high school · Start now"},
   {href:"/competitions",zh:"国际数学竞赛模拟",en:"Competition mocks",helpZh:"按现有赛制选择试卷",helpEn:"Select a real available exam"},
   {href:"/review",zh:"错题复盘",en:"Review mistakes",helpZh:"复查已经完成的练习",helpEn:"Review previous attempts"},
+  {href:"/skill-labs",zh:"岗位技能实训",en:"Practical skill labs",helpZh:"真实 SQL 操作，独立于性格测评",helpEn:"Real SQL practice, separate from personality tests"},
 ] as const;
 const DOMAIN_MAP=new Map(ASSESSMENT_DOMAINS.map(domain=>[domain.id,domain]));
 

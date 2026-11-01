@@ -82,7 +82,7 @@ export const ASSESSMENT_DOMAINS: readonly AssessmentDomain[] = [
     audience:{zh:"18岁及以上成人（当前研究试测）",en:"Adults 18+ (research previews)"},
     readiness:"live",formats:["scale","short-answer"],
     liveRoutes:[{href:"/assessment-center",title:{zh:"进入智量测评中心（研究预览）",en:"Explore research-preview assessments"}}],
-    nextProof:{zh:"完成中文翻译核验、测量学研究与常模验证后再开放正式收费报告。",en:"Validate local translation, psychometrics and norms before any standardized paid report."},
+    nextProof:{zh:"中文译文、测量学和本土常模尚待验证；当前只准备非标准化个人探索详解的可选收费，不得冒充正式心理诊断。",en:"Translation, validity and norms remain unvalidated; optional paid interpretation is not a standardized diagnostic report."},
   },
 ] as const;
 

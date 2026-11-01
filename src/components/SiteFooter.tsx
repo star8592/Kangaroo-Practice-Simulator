@@ -8,6 +8,8 @@ export default function SiteFooter(){
     {href:"/assessments",zh:"考试大全",en:"All exams"},
     {href:"/resources",zh:"真题资料",en:"Practice papers"},
     {href:"/math-practice",zh:"数学计算训练",en:"Math practice guide"},
+    {href:"/assessment-center",zh:"人格与职业兴趣",en:"Personality & interests"},
+    {href:"/skill-labs",zh:"岗位技能实训",en:"Practical skills"},
     {href:"/exam-planner",zh:"考试管理",en:"Exam planner"},
     {href:"/membership",zh:"购买与权益",en:"Purchases & access"},
     {href:"/privacy",zh:"隐私政策",en:"Privacy"},

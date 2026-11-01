@@ -119,6 +119,10 @@ export default async function AccountPage(){
             <Link className={styles.orderAction} href={"/exam/"+encodeURIComponent(order.content_id)}>
               进入已购试卷 →
             </Link>}
+          {order.state==="paid"&&order.content_kind==="report"&&order.content_id&&
+            <Link className={styles.orderAction} href={"/assessment-center/"+encodeURIComponent(order.content_id)}>
+              返回已购量表，重新测评并生成详细报告 →
+            </Link>}
           {order.state==="paid"&&order.content_kind==="resource"&&order.content_id&&
             <a className={styles.orderAction} href={"/api/resources/download/"+encodeURIComponent(order.content_id)}>
               下载已购资料 →

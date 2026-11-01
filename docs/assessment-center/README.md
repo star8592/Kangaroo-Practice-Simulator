@@ -112,8 +112,8 @@ E2E_BASE_URL=http://127.0.0.1:3478 E2E_EXTERNAL_SERVER=1 \
 - 源码：`src/lib/reading-practice.ts`、`src/components/ReadingPracticeClient.tsx`、`src/app/assessment-center/reading-practice-16/page.tsx`。
 
 ### 公开技术档案
-- `/assessment-center/methodology`：从 `src/lib/assessment-evidence.ts` 的版本化登记簿展示当前5个免费产品的来源、许可、评分、适用人群、证据状态和禁止推断结论。
-- 不使用“国际认证”“精准测智商”等无证据宣传；5项产品全部标记**无本土常模验证**，非标准化任务训练也不冒充量表。技术测试通过并不意味着心理测量学信效度通过。
+- `/assessment-center/methodology`：从 `src/lib/assessment-evidence.ts` 的版本化登记簿展示当前4个测评/认知学习产品的来源、许可、评分、适用人群、证据状态和禁止推断结论。
+- 不使用“国际认证”“精准测智商”等无证据宣传；4项产品全部标记**无本土常模验证**，非标准化任务训练也不冒充量表。技术测试通过并不意味着心理测量学信效度通过。
 - 正式的信效度、中文译文审查与报告证据研究继续跟踪 #213。
 
 ### E2E 工具链根因修复
@@ -135,3 +135,7 @@ E2E_EXTERNAL_SERVER=1 E2E_BASE_URL=https://socthink.cn npx playwright test tests
 ```
 
 完成上述代码测试后仍需执行正式 CI、隔离构建、合并 main、自动回滚式生产发布与公网浏览器验收，不能以单纯提交代码代替上线回执。
+
+## v4 业务边界（2026-11-01）
+
+SQL 岗位训练属于实操技能练习，不应与人格及心理测评混合。正式目录迁至 `/skill-labs/sql-lab`，入口 `/skill-labs`；老地址 `/assessment-center/sql-lab` 永久重定向，兼容旧书签，不再在测评中心投放或作为认证量表宣传。测评中心仅保留人格、职业兴趣、认知推理与阅读任务，并对研究试测与非标准化任务做显式分区。

@@ -51,7 +51,7 @@ export async function POST(req:NextRequest) {
     // Never trust a posted amount, name or entitlement.
     const product=await billingPool().query<{
       id:string;amount_minor:string;currency:string;product_kind:"subscription"|"item";
-      content_kind:"exam"|"resource"|null;content_id:string|null;title_zh:string|null;
+      content_kind:"exam"|"resource"|"report"|null;content_id:string|null;title_zh:string|null;
       rights_approved:boolean;delivery_verified:boolean;access_restricted:boolean;
     }>(
       "SELECT id,amount_minor,currency,product_kind,content_kind,content_id,title_zh,rights_approved,delivery_verified,access_restricted FROM billing_products WHERE id=$1 AND enabled=true",[productId]);
@@ -62,8 +62,15 @@ export async function POST(req:NextRequest) {
       if(process.env.SOCTHINK_ITEM_ACCESS_ENFORCED!=="1" ||
          !p.rights_approved || !p.delivery_verified || !p.access_restricted ||
          !p.content_id || !p.title_zh ||
-         (p.content_kind!=="exam" && p.content_kind!=="resource"))
+         (p.content_kind!=="exam" && p.content_kind!=="resource" && p.content_kind!=="report"))
         return reply({error:"本商品尚未开放购买"},409);
+      if(p.content_kind==="report"){
+        // The only sellable reports are original, versioned self-exploration instruments.
+        // No clinical or employment decisions; no client-side payment flag.
+        const {getInstrument}=await import("@/lib/measurement-center");
+        if(!getInstrument(p.content_id))
+          return reply({error:"该报告尚未完成交付配置"},409);
+      }
       if(p.content_kind==="exam"){
         try{
           if(!isExamBundleTrainingReady(loadTrainingExamBundle(p.content_id)))

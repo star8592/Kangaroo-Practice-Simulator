@@ -1,12 +1,12 @@
 import {test,expect} from "@playwright/test";
 test("reading center offers a real task and public technical evidence",async({page})=>{
  await page.goto("/assessment-center");
- await expect(page.getByText("免费任务练习",{exact:true})).toHaveCount(3);
+ await expect(page.getByText("免费任务练习",{exact:true})).toHaveCount(2);
  await expect(page.getByText("建设中",{exact:true})).toHaveCount(1);
  await expect(page.locator('a[href="/assessment-center/reading-practice-16"]')).toBeVisible();
  await page.getByRole("link",{name:/查看全部测评技术档案/}).click();
  await expect(page.getByRole("heading",{name:"每项结果，都应当能追溯依据。"})).toBeVisible();
- await expect(page.locator("article")).toHaveCount(5);
+ await expect(page.locator("article")).toHaveCount(4);
  await expect(page.getByText("0项取得中国人群标准化常模验证")).toBeVisible();
 });
 test("reading tasks: guardian consent, 16 choices, evidence, corrective feedback and reset",async({page})=>{
