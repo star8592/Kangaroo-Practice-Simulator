@@ -154,7 +154,8 @@ export default function CareerFormalExamRunner({paper}:{paper:CareerPracticeCase
 
   if(!hydrated)return <div className={styles.boot}>正在读取模拟笔试会话…</div>;
 
-  if(!visibleAdmission&&!grade)return <div className={styles.admission}>
+  if(!visibleAdmission&&!grade)return <>
+    <div className={styles.admission}>
     <div className={styles.admissionTop}>
       <div className={styles.admissionKicker}>SOCTHINK · 正式模拟笔试入场</div>
       <h1>{paper.title}</h1>
@@ -191,7 +192,12 @@ export default function CareerFormalExamRunner({paper}:{paper:CareerPracticeCase
       <summary>本卷的真实性、日期与取材说明</summary>
       <p>题目为本站独立编写的模拟题，依据岗位技能和公开面经里的考点确定范围；未复制第三方的受限原题。当前版本为2026-11-01初版，不假称企业官方或真实考生原题。</p>
     </details>
-  </div>;
+  </div>
+    <div className={styles.historyDock}>
+      <CareerExamHistory caseId={paper.id} revision={paper.revision}
+        refreshKey={historyRefresh} onOpen={setGrade}/>
+    </div>
+  </>;
 
   if(grade)return <div className={styles.finish}>
     <div className={styles.finishHeading}><span>考试完成 / ORIGINAL MOCK EXAM</span>
