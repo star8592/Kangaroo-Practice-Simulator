@@ -1,7 +1,7 @@
 import {createHash} from "node:crypto";
 import {hasValidBlueprintItems,type AssessmentItemContract,
   type AssessmentBlueprintContract} from "./assessment-core-contract";
-import {getCareerPractice,type CareerPracticeAnswers,type CareerPracticeCase,
+import {getCareerPractice,type CareerPracticeCase,
   type CareerPracticeQuestion} from "./career-practice";
 
 export type CareerPracticeGradeItem=Readonly<{
