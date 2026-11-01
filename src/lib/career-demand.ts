@@ -1,3 +1,4 @@
+import {getCareerEnterprise} from "./career-enterprise-universe";
 import raw from "../../data/career/demand_signals_seed_20261101.json";
 
 /**
@@ -28,6 +29,7 @@ export type CareerFamilyId = typeof CAREER_FAMILIES[number]["id"];
 export type CareerDemandSignal = Readonly<{
   id:string;
   company:string;
+  companyId?:string|null;
   roleTitle:string;
   roleFamily:CareerFamilyId;
   evidenceLevel:"job"|"category"|"process";
@@ -60,6 +62,8 @@ export function validateCareerDemandSignals():string[]{
     ids.add(row.id);
     if(!known.has(row.roleFamily))errors.push("unknown role family "+row.id);
     if(!row.company.trim()||!row.roleTitle.trim())errors.push("blank employer or role "+row.id);
+    if(!row.companyId||!getCareerEnterprise(row.companyId))
+      errors.push("unknown enterprise identity "+row.id);
     try{
       const u=new URL(row.sourceUrl);
       if(u.protocol!=="https:") errors.push("non-https source "+row.id);
