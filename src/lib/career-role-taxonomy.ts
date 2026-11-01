@@ -313,7 +313,7 @@ export function validateCareerRoleTaxonomy():string[]{
       const norm=role.title.replaceAll(" ","");
       if(names.has(norm))errors.push("duplicate role name:"+norm);
       names.add(norm);
-      if(!role.title.trim()||role.title.length<3)errors.push("role title invalid:"+role.id);
+      if(!role.title.trim()||role.title.length<2)errors.push("role title invalid:"+role.id);
       if(!s.name.trim())errors.push("segment invalid:"+role.id);
     }
   }
