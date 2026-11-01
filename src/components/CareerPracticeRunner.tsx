@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import {useEffect,useState} from "react";
+import {useEffect,useState,useSyncExternalStore} from "react";
 import type {CareerPracticeAnswers,CareerPracticeCase,CareerPracticeQuestion} from "@/lib/career-practice";
 import type {CareerPracticeGrade} from "@/lib/career-practice-grade";
 import styles from "@/app/career/practice/career-practice.module.css";
@@ -14,46 +14,56 @@ function answered(q:CareerPracticeQuestion,answer:Answers){
     typeof value==="string"&&value.trim().length>0;
 }
 
+const noBrowserNotifications=()=>()=>{};
+const browserReady=()=>true;
+const serverNotReady=()=>false;
+
+/** Read persisted local answers only on the client. SSR always renders blank
+ * inputs, then hydration reveals the saved values without an effect-setState.
+ */
+function readBrowserDraft(storageKey:string,questions:readonly CareerPracticeQuestion[]):Answers{
+  if(typeof window==="undefined")return {};
+  try{
+    const saved=window.localStorage.getItem(storageKey);
+    if(!saved)return {};
+    const parsed:unknown=JSON.parse(saved);
+    if(!parsed||typeof parsed!=="object"||Array.isArray(parsed))return {};
+    const candidate=parsed as Record<string,unknown>;
+    const restored:Answers={};
+    for(const q of questions){
+      const v=candidate[q.id];
+      if(q.kind==="multiple"){
+        if(Array.isArray(v)&&v.length<=q.options!.length&&
+          v.every(x=>typeof x==="string"&&q.options?.some(o=>o.id===x))){
+          restored[q.id]=[...new Set(v)];
+        }
+      }else if(typeof v==="string"&&v.length<=40&&
+        (q.kind!=="single"||v===""||q.options?.some(o=>o.id===v))){
+        restored[q.id]=v;
+      }
+    }
+    return restored;
+  }catch{return {};}
+}
+
 export default function CareerPracticeRunner({practice}:{practice:CareerPracticeCase}){
-  const [answers,setAnswers]=useState<Answers>({});
+  const storageKey="socthink:career:free:"+practice.id+":v"+practice.revision;
+  const hydrated=useSyncExternalStore(noBrowserNotifications,browserReady,serverNotReady);
+  const [answers,setAnswers]=useState<Answers>(()=>
+    readBrowserDraft(storageKey,practice.questions));
   const [current,setCurrent]=useState(0);
   const [grade,setGrade]=useState<CareerPracticeGrade|null>(null);
   const [loading,setLoading]=useState(false);
   const [error,setError]=useState("");
-  const [hydrated,setHydrated]=useState(false);
-  const storageKey="socthink:career:free:"+practice.id+":v"+practice.revision;
-
-  useEffect(()=>{
-    try {
-      const saved=window.localStorage.getItem(storageKey);
-      if(saved){
-        const parsed:unknown=JSON.parse(saved);
-        if(parsed&&typeof parsed==="object"&&!Array.isArray(parsed)){
-          const candidate=parsed as Record<string,unknown>;
-          const restored:Answers={};
-          for(const q of practice.questions){
-            const v=candidate[q.id];
-            if(q.kind==="multiple"){
-              if(Array.isArray(v)&&v.every(x=>typeof x==="string"&&q.options?.some(o=>o.id===x)))
-                restored[q.id]=v;
-            }else if(typeof v==="string"&&v.length<=40){
-              restored[q.id]=v;
-            }
-          }
-          setAnswers(restored);
-        }
-      }
-    }catch{/* User may disable storage: practice still works. */}
-    setHydrated(true);
-  },[practice.questions,storageKey]);
   useEffect(()=>{
     if(!hydrated)return;
     try{window.localStorage.setItem(storageKey,JSON.stringify(answers));}
-    catch{/* In private mode we retain only the current browser session. */}
+    catch{/* Storage can be disabled; grading still works. */}
   },[answers,hydrated,storageKey]);
+  const visibleAnswers=hydrated?answers:{};
 
   const question=practice.questions[current];
-  const progress=practice.questions.filter(q=>answered(q,answers)).length;
+  const progress=practice.questions.filter(q=>answered(q,visibleAnswers)).length;
   const setSingle=(id:string,value:string)=>{setError("");setAnswers(prev=>({...prev,[id]:value}));};
   const toggleMultiple=(id:string,value:string,checked:boolean)=>{
     setError("");
@@ -130,15 +140,15 @@ export default function CareerPracticeRunner({practice}:{practice:CareerPractice
             <input type="text" inputMode="numeric" maxLength={40}
               placeholder={question.placeholder??"请输入数字"}
               aria-label={question.prompt}
-              value={typeof answers[question.id]==="string"?(answers[question.id] as string):""}
+              value={typeof visibleAnswers[question.id]==="string"?(visibleAnswers[question.id] as string):""}
               onChange={e=>setSingle(question.id,e.target.value)}/>
           </label>:
           <fieldset className={styles.choiceField}>
             <legend className={styles.choiceLegend}>{question.kind==="multiple"?"可多选":"请选择一项"}</legend>
             <div className={styles.choices}>{question.options?.map(option=>{
               const selected=question.kind==="multiple"?
-                (Array.isArray(answers[question.id])&&(answers[question.id] as string[]).includes(option.id)):
-                answers[question.id]===option.id;
+                (Array.isArray(visibleAnswers[question.id])&&(visibleAnswers[question.id] as string[]).includes(option.id)):
+                visibleAnswers[question.id]===option.id;
               return <label className={selected?styles.choiceSelected:styles.choice} key={option.id}>
                 <input type={question.kind==="multiple"?"checkbox":"radio"}
                   name={question.id} checked={selected}
