@@ -38,6 +38,7 @@ export default async function CareerDemandPage({searchParams}:{searchParams:Sear
       <p className={styles.eyebrow}>SOCTHINK · EMPLOYER DEMAND INTELLIGENCE</p>
       <h1>从企业真正需要什么，决定我们教什么、考什么。</h1>
       <p className={styles.lead}>先研究公开招聘要求，再组织职业技能训练、岗位案例、模拟面试和可执行实验。不是先囤教程再想办法销售，也不把自编训练冒充大厂官方真题。</p>
+      <Link href="/career/companies" style={{display:"inline-block",color:"#ffffff",textDecoration:"underline",fontWeight:700,marginBottom:12}}>查看沪深北、港美上市企业及在华外企、合资企业库 →</Link>
       <div className={styles.stats} aria-label="首轮非随机招聘资料样本">
         <div><strong>{stats.employers}</strong><span>家企业的公开来源</span></div>
         <div><strong>{stats.families}</strong><span>个岗位领域有样本</span></div>
