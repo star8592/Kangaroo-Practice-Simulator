@@ -29,6 +29,7 @@ assert(rolePage.includes("这个具体岗位的专项资料尚未上线"),"no fa
 const home=fs.readFileSync("src/app/career/page.tsx","utf8");
 const nav=fs.readFileSync("src/components/CareerRoleExplorer.tsx","utf8");
 assert(home.indexOf("commercialHero")<home.indexOf("<CareerRoleExplorer/>"));
+assert(home.includes("mobileQuickActions"),"mobile first screen must expose both product categories");
 assert(home.indexOf("CareerRoleExplorer")<home.indexOf('id="market-heat"'));
 assert(home.indexOf('id="digital-materials"')<home.indexOf("researchDetails"));
 for(const label of ["找资料 · 免费领取","做模拟考试 · 立即开始","职业教程与复习资料","模拟考试与自动评分"]){
