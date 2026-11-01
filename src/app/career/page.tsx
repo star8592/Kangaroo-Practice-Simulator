@@ -45,9 +45,13 @@ export default async function CareerDemandPage({searchParams}:{searchParams:Sear
         <h1>要复习资料？还是要模拟考试？</h1>
         <p>选对岗位，立即找到能读、能下载、能做题的内容。先免费体验，再决定是否购买后续进阶服务。</p>
       </div>
+      <div className={commerce.mobileQuickActions} aria-label="立即选择资料或考试服务">
+        <a href="#digital-materials">找复习资料 <span aria-hidden="true">→</span></a>
+        <a href="#digital-services">做模拟考试 <span aria-hidden="true">→</span></a>
+      </div>
       <div className={commerce.heroOffers}>
         <article className={commerce.heroOffer}>
-          <span className={commerce.offerKind}>01 · 数字资料 / DIGITAL GOODS</span>
+          <span className={commerce.offerKind}>01 · 数字资料</span>
           <h2>职业教程与复习资料</h2>
           <p>已经完成 {CAREER_ORIGINAL_GUIDES.length} 份原创职业教程，含计算示例、练习与答案。完整阅读、直接下载。</p>
           <Link className={commerce.bigAction} href="#digital-materials">
@@ -60,7 +64,7 @@ export default async function CareerDemandPage({searchParams}:{searchParams:Sear
           </div>
         </article>
         <article className={commerce.heroOffer+" "+commerce.heroOfferService}>
-          <span className={commerce.offerKind}>02 · 在线考试 / DIGITAL SERVICES</span>
+          <span className={commerce.offerKind}>02 · 在线考试</span>
           <h2>模拟考试与自动评分</h2>
           <p>已经开放 {CAREER_PRACTICE_CASES.filter(x=>x.deliveryState==="free-live-preview").length} 套岗位实操。
             真正交卷、自动评分、逐题解析；微信账号可查练习记录。</p>
