@@ -4,63 +4,229 @@ import { redirect } from "next/navigation";
 import { isAdmin, SESSION_COOKIE, userFromSessionToken } from "@/lib/auth";
 import { adminOperationsSnapshot } from "@/lib/admin-operations";
 import { readCustomerFeedbackOverview } from "@/lib/customer-feedback-admin";
+import { readAdminRevenue, parseAdminPeriod, formatMinorUnits } from "@/lib/admin-business-metrics";
+import { getSeoMonitorDashboard } from "@/lib/seo-monitor-store";
+import { listTrainingExamProfiles } from "@/lib/training-question-bank";
 import AdminOperationsNav from "@/components/AdminOperationsNav";
-import styles from "@/components/AdminOperations.module.css";
+import styles from "./executive.module.css";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "运营总览 · SOC THINK", robots: { index: false, follow: false } };
+export const metadata = {
+  title: "经营驾驶舱 · SOC THINK",
+  robots: { index: false, follow: false, noarchive: true },
+};
 
-function formatted(at: number | null) {
-  return at ? new Date(at).toLocaleString("zh-CN", { timeZone: "Asia/Shanghai", hour12: false }) : "暂无记录";
+function shanghaiDate(value: string | number) {
+  return new Date(value).toLocaleString("zh-CN", {
+    timeZone: "Asia/Shanghai", month: "2-digit", day: "2-digit",
+    hour: "2-digit", minute: "2-digit", hour12: false,
+  });
+}
+function count(value: number | null) {
+  return value === null ? "—" : value.toLocaleString("zh-CN");
+}
+function sampleSeries(daily: readonly { day: string; currency: string; paidMinor: number }[], days: number, now: Date) {
+  const length = Math.min(days, 14);
+  const values = new Map(daily.filter(x => x.currency === "CNY").map(x => [x.day, x.paidMinor]));
+  return Array.from({ length }, (_, i) => {
+    const at = new Date(now.getTime() - (length - i - 1) * 86_400_000);
+    const day = new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Shanghai", year: "numeric", month: "2-digit", day: "2-digit" }).format(at);
+    return { day, amount: values.get(day) ?? 0 };
+  });
 }
 
-export default async function AdminPage() {
-  const jar = await cookies();
-  const user = userFromSessionToken(jar.get(SESSION_COOKIE)?.value);
+type Params = { searchParams: Promise<{ days?: string | string[] }> };
+
+export default async function AdminPage({ searchParams }: Params) {
+  const session = await cookies();
+  const user = userFromSessionToken(session.get(SESSION_COOKIE)?.value);
   if (!user) redirect("/admin/login");
   if (!isAdmin(user)) redirect("/");
-  const data = adminOperationsSnapshot();
-  const feedback = readCustomerFeedbackOverview({ days: 30, limit: 100 });
-  const tiles = [
-    { label: "累计家庭账号", value: data.totalFamilies, help: "按家长账号去重，多个孩子仍算一个家庭" },
-    { label: "今日新增家庭", value: data.createdToday, help: "北京时间，自然日" },
-    { label: "近7天登录家庭", value: data.loggedInLast7Days, help: "仅计算有成功登录时间的家庭，不等于在线人数" },
-    { label: "学生档案", value: data.studentProfiles, help: `已关联学生 ${data.linkedChildren} 位` },
-  ];
 
-  return <div className={styles.shell}>
-    <header className={styles.head}>
-      <div><span className={styles.eyebrow}>SOC THINK · 管理中心</span><h1>运营总览</h1>
-        <p>关注真实家庭用户和学习情况，不用技术术语堆砌后台。</p></div>
-      <Link href="/" className="secondary-button">返回网站</Link>
+  const period = parseAdminPeriod((await searchParams).days);
+  const [revenue, accounts, feedback, seo] = await Promise.all([
+    readAdminRevenue(period),
+    Promise.resolve().then(() => adminOperationsSnapshot()),
+    Promise.resolve().then(() => readCustomerFeedbackOverview({ days: period, limit: 100 })),
+    Promise.resolve().then(() => getSeoMonitorDashboard()),
+  ]);
+  let trainingPapers: number | null = null;
+  let smartProfiles: number | null = null;
+  try {
+    const exams = listTrainingExamProfiles();
+    trainingPapers = exams.filter(p => p.paperType !== "smart").length;
+    smartProfiles = exams.length - trainingPapers;
+  } catch {
+    // Inventory source failure must be visible as unknown, not zero.
+  }
+
+  const connected = revenue.status === "available";
+  const cny = connected ? revenue.currencies.find(x => x.currency === "CNY") : undefined;
+  const revenueTotal = connected ? cny?.paidMinor ?? 0 : null;
+  const paidOrders = connected ? cny?.paidOrders ?? 0 : null;
+  const paidBuyers = connected ? cny?.paidBuyers ?? 0 : null;
+  const pendingOrders = connected ? cny?.pendingOrders ?? 0 : null;
+  const refunds = connected ? cny?.refundOrders ?? 0 : null;
+  const productTotal = connected ? revenue.products.reduce((n, x) => n + x.total, 0) : null;
+  const listedProducts = connected ? revenue.products.reduce((n, x) => n + x.configuredForDelivery, 0) : null;
+  const seoLatest = seo.latest;
+  const seoHealthy = seo.siteStatus === "healthy";
+  const issues = [
+    ...(revenue.status === "not_configured" ? [{ title: "收费账本尚未连接", detail: "当前无法查看真实付款订单，不能把未接入显示为零收入。", type: "warning" }] : []),
+    ...(revenue.status === "unavailable" ? [{ title: "收费账本读取失败", detail: "检查 PostgreSQL 只读统计链路，暂不提供收入数字。", type: "warning" }] : []),
+    ...(seo.siteStatus !== "healthy" ? [{ title: "SEO 监测需要检查", detail: seo.siteStatus === "not_measured" ? "还没有真实采集记录。" : seo.siteStatus === "stale" ? "最近的采集记录已超过 36 小时。" : "本轮检测存在 URL 或 robots 异常。", type: "warning" }] : []),
+    ...(feedback.highPriority ? [{ title: `${feedback.highPriority} 条高优先级客户反馈`, detail: "包含题目错误或报告争议，优先进入客户反馈处理台。", type: "warning" }] : []),
+    { title: "搜索引擎真实收录量待接入", detail: "百度、Google、Bing 的官方站长资产尚未验证，Sitemap 数量不能冒充收录量。", type: "info" },
+  ];
+  const chart = connected ? sampleSeries(revenue.daily, period, new Date(revenue.asOf)) : [];
+  const maxAmount = Math.max(1, ...chart.map(d => d.amount));
+
+  return <main className={styles.shell}>
+    <header className={styles.hero}>
+      <div className={styles.heroTop}>
+        <div>
+          <span className={styles.kicker}>SOC THINK / BUSINESS INTELLIGENCE</span>
+          <h1>经营驾驶舱</h1>
+          <p>从真实收款到搜索获客、用户增长与内容供给，一屏掌握业务状态。</p>
+        </div>
+        <div className={styles.heroActions}>
+          <Link href="/admin/seo">搜索专项监控</Link>
+          <Link href="/">返回网站</Link>
+        </div>
+      </div>
+      <div className={styles.heroBottom}>
+        <div className={styles.liveMarker}><span aria-hidden="true" className={styles.marker}/> 来源可核验 · 北京时间 {shanghaiDate(revenue.asOf)}</div>
+        <nav aria-label="经营统计周期" className={styles.periods}>
+          {([7, 30, 90] as const).map(d => <Link key={d} href={`/admin?days=${d}`}
+            aria-current={period === d ? "page" : undefined}
+            className={period === d ? styles.periodActive : undefined}>近 {d} 天</Link>)}
+        </nav>
+      </div>
     </header>
     <AdminOperationsNav />
-    <section className={styles.grid} aria-label="运营指标">
-      {tiles.map((tile) => <article className={styles.metric} key={tile.label}>
-        <span>{tile.label}</span><strong>{tile.value}</strong><small>{tile.help}</small>
-      </article>)}
+
+    <section aria-labelledby="income-heading" className={styles.section}>
+      <div className={styles.sectionTitle}>
+        <div><span className={styles.eyebrow}>01 / REVENUE</span><h2 id="income-heading">实际收款与订单</h2>
+          <p>仅统计单一正式账本中已核验且当前状态为 paid 的订单。金额不等于会计收入或利润。</p></div>
+        <span className={connected ? styles.sourceOkay : styles.sourceUnknown}>
+          {connected ? "PostgreSQL 账本已连接" : revenue.status === "not_configured" ? "账本未配置" : "账本暂不可用"}
+        </span>
+      </div>
+      <div className={styles.financialGrid}>
+        <article className={styles.revenuePrimary}>
+          <span>已核验付款金额 · CNY</span>
+          <strong>{revenueTotal === null ? "—" : formatMinorUnits(revenueTotal)}</strong>
+          <small>过去 {period} 天 · 当前仍为 paid 的订单 · 不含退款单</small>
+          <div className={styles.paymentMeta}><span>基于服务器账本</span><span>{connected ? shanghaiDate(revenue.asOf) + " 更新" : "等待可靠数据"}</span></div>
+        </article>
+        <article className={styles.kpi}><span>CNY 已支付订单</span><strong>{count(paidOrders)}</strong><small>官方核验后入账，不含待支付</small></article>
+        <article className={styles.kpi}><span>CNY 付款账号</span><strong>{count(paidBuyers)}</strong><small>按已核验付款人去重</small></article>
+        <article className={styles.kpi}><span>CNY 待支付订单</span><strong>{count(pendingOrders)}</strong><small>包含尚未完成支付的订单</small></article>
+      </div>
+      <div className={styles.financeDetails}>
+        <span>退款订单：{count(refunds)}</span>
+        <span>平均 CNY 订单金额：{paidOrders && revenueTotal !== null ? formatMinorUnits(Math.round(revenueTotal / paidOrders)) : "—"}</span>
+        <span>未核验的支付请求不会计入收款</span>
+      </div>
+      <div className={styles.split}>
+        <article className={styles.panel}>
+          <div className={styles.panelTitle}><h3>收款趋势</h3><span>人民币 · 最近 {Math.min(period, 14)} 天</span></div>
+          {connected ? <div className={styles.chart} aria-label="人民币已核验付款金额日趋势">
+            {chart.map(point => <div key={point.day} className={styles.barCell} title={`${point.day} · ${formatMinorUnits(point.amount)}`}>
+              <span className={styles.barValue}>{point.amount ? formatMinorUnits(point.amount) : "0"}</span>
+              <span className={styles.barTrack}><span className={styles.barFill} style={{ height: `${point.amount ? Math.max(5, point.amount / maxAmount * 100) : 0}%` }}/></span>
+              <span className={styles.barDate}>{point.day.slice(5)}</span>
+            </div>)}
+          </div> : <p className={styles.empty}>真实支付账本尚不可用，因此不生成推测曲线。</p>}
+          <p className={styles.caption}>收入折线仅反映当前仍为 paid 的付款订单，不将二维码生成、付款意向或搜索点击算作收入。</p>
+        </article>
+        <article className={styles.panel}>
+          <div className={styles.panelTitle}><h3>热销商品</h3><span>已核验支付订单</span></div>
+          {connected && revenue.topProducts.length ? <div className={styles.tableWrap}>
+            <table className={styles.table}><thead><tr><th>产品</th><th>已支付</th><th>金额</th></tr></thead>
+              <tbody>{revenue.topProducts.map(product => <tr key={product.productId + product.currency}>
+                <td><strong>{product.title}</strong><small>{product.productId}</small></td>
+                <td>{product.paidOrders}</td><td>{formatMinorUnits(product.paidMinor, product.currency)}</td>
+              </tr>)}</tbody></table>
+          </div> : <p className={styles.empty}>{connected ? "统计周期内暂无已核验的商品订单。" : "连接真实账本后显示热销商品。"}</p>}
+        </article>
+      </div>
+      {connected && revenue.currencies.some(row => row.currency !== "CNY") ? <div className={styles.currencyNote}>
+        其他币种独立统计（不进行未经验证的汇率换算）：
+        {revenue.currencies.filter(row => row.currency !== "CNY").map(row =>
+          <span key={row.currency}> {row.currency} {formatMinorUnits(row.paidMinor, row.currency)} · {row.paidOrders} 单</span>)}
+      </div> : null}
     </section>
-    <section className={styles.panel}>
-      <div className={styles.panelHead}><h2>最近登录的家长</h2><Link className={styles.textLink} href="/admin/families">查看全部家庭 →</Link></div>
-      <div className={styles.tableWrap}><table className={styles.table}>
-        <thead><tr><th>家长</th><th>登录方式</th><th>上次成功登录</th><th>关联孩子</th></tr></thead>
-        <tbody>{data.families.filter((row) => row.lastLoginAt !== null).slice(0, 8).map((row) =>
-          <tr key={row.id}><td><strong>{row.name}</strong></td><td>{row.signIn}</td>
-            <td>{formatted(row.lastLoginAt)}</td><td>{row.linkedChildren}</td></tr>)}</tbody>
-      </table></div>
-      {!data.families.some((row) => row.lastLoginAt !== null) &&
-        <p className={styles.empty}>暂无可用的成功登录时间。历史数据不会猜测或补造。</p>}
-      <p className={styles.note}>仅管理员可见。扫码新建家庭和再次登录会记录成功时间；“在线人数”需要心跳数据，本版不展示。</p>
+
+    <section aria-labelledby="growth-heading" className={styles.section}>
+      <div className={styles.sectionTitle}>
+        <div><span className={styles.eyebrow}>02 / USERS & EXPERIENCE</span><h2 id="growth-heading">用户增长与使用信号</h2>
+          <p>家长账号是账户数，登录家庭不是活跃学习人数；保留清晰的统计口径。</p></div>
+        <Link href="/admin/families" className={styles.sectionLink}>查看家庭账户 →</Link>
+      </div>
+      <div className={styles.statGrid}>
+        <article className={styles.stat}><span>累计家长账号</span><strong>{count(accounts.totalFamilies)}</strong><small>按家长账号去重</small></article>
+        <article className={styles.stat}><span>今日新增家庭</span><strong>{count(accounts.createdToday)}</strong><small>北京时间自然日</small></article>
+        <article className={styles.stat}><span>最近 7 天登录家庭</span><strong>{count(accounts.loggedInLast7Days)}</strong><small>已记录成功登录时间</small></article>
+        <article className={styles.stat}><span>学生档案</span><strong>{count(accounts.studentProfiles)}</strong><small>已关联孩子 {count(accounts.linkedChildren)} 人</small></article>
+      </div>
+      <div className={styles.signalRow}>
+        <div><strong>{feedback.total}</strong><span>近 {period} 天客户反馈</span></div>
+        <div><strong>{feedback.highPriority}</strong><span>题目／报告争议（优先处理）</span></div>
+        <Link href="/admin/feedback">进入反馈处理台 →</Link>
+      </div>
     </section>
-    <section className={styles.panel}>
-      <div className={styles.panelHead}><h2>近30天客户反馈</h2><Link className={styles.textLink} href="/admin/feedback">查看客户反馈处理台 →</Link></div>
-      <p>累计有效反馈 {feedback.total} 条；需要优先核查的题目、答案与报告争议 {feedback.highPriority} 条。只有真实客户提交的记录才会进入统计。</p>
+
+    <section aria-labelledby="search-heading" className={styles.section}>
+      <div className={styles.sectionTitle}>
+        <div><span className={styles.eyebrow}>03 / DISCOVERY</span><h2 id="search-heading">搜索获客与收录</h2>
+          <p>先确认页面能被技术抓取，再核对搜索平台官方收录与点击，不能混用。</p></div>
+        <Link href="/admin/seo" className={styles.sectionLink}>查看 SEO 详细诊断 →</Link>
+      </div>
+      <div className={styles.discoveryLayout}>
+        <div className={styles.searchMetrics}>
+          <article><span>Sitemap 公开页面</span><strong>{count(seoLatest?.sitemapCount ?? null)}</strong><small>自有 URL 总数</small></article>
+          <article><span>本轮检查 / 通过</span><strong>{seoLatest ? `${seoLatest.healthyCount} / ${seoLatest.checkedCount}` : "—"}</strong><small>抓取技术抽检，不是搜索收录</small></article>
+          <article><span>技术监测</span><strong className={styles.statusValue}>{seoHealthy ? "正常" : seo.siteStatus === "stale" ? "已过期" : seo.siteStatus === "issues" ? "异常" : "未采集"}</strong><small>{seoLatest ? shanghaiDate(seoLatest.observedAt) + " 最近采集" : "等待首份采样"}</small></article>
+        </div>
+        <div className={styles.enginePanel}>
+          <div className={styles.panelTitle}><h3>搜索引擎表现</h3><span>仅认可官方数据</span></div>
+          <table className={styles.table}><thead><tr><th>搜索引擎</th><th>收录页面</th><th>自然点击</th><th>状态</th></tr></thead>
+            <tbody>{seo.providers.map(provider => <tr key={provider.id}><td><strong>{provider.name}</strong></td>
+              <td>{provider.indexCount ?? "—"}</td><td>{provider.clicks ?? "—"}</td>
+              <td><span className={styles.missing}>{provider.sourceStatus === "not_connected" ? "尚未接入" : "已连接"}</span></td>
+            </tr>)}</tbody>
+          </table>
+          <p className={styles.caption}>IndexNow 回执、Sitemap 数量和 site: 搜索结果，都不能用于替代真实收录量。</p>
+        </div>
+      </div>
     </section>
-    <section className={styles.panel}>
-      <h2>现有管理功能</h2>
-      <p>继续使用已经开发的学生画像、学生 PIN 重置和题库检查。
-        支付、订阅和营销数据待接入真实订单流水后再显示，不提供虚假的营收数字。</p>
+
+    <section aria-labelledby="stock-heading" className={styles.section}>
+      <div className={styles.sectionTitle}>
+        <div><span className={styles.eyebrow}>04 / SUPPLY</span><h2 id="stock-heading">内容供给与商品准备</h2>
+          <p>考试训练库存和实际已上架数字商品分开统计；可训练不等于拥有商业分发授权。</p></div>
+        <Link href="/resources" className={styles.sectionLink}>打开资料目录 →</Link>
+      </div>
+      <div className={styles.statGrid}>
+        <article className={styles.stat}><span>可用训练卷</span><strong>{count(trainingPapers)}</strong><small>来自现有训练卷目录</small></article>
+        <article className={styles.stat}><span>智能训练配置</span><strong>{count(smartProfiles)}</strong><small>不包含在训练卷数量中</small></article>
+        <article className={styles.stat}><span>账本商品 SKU</span><strong>{count(productTotal)}</strong><small>含未启用的商品配置</small></article>
+        <article className={styles.stat}><span>已启用且满足配置条件</span><strong>{count(listedProducts)}</strong><small>不代表资源文件已通过现场交付校验</small></article>
+      </div>
     </section>
-    <p className={styles.note}>数据截至：{formatted(data.asOf)} · 历史未记录首次登录时间的家庭：{data.neverLoggedInCount}。</p>
-  </div>;
+
+    <section aria-labelledby="action-heading" className={styles.section}>
+      <div className={styles.sectionTitle}><div><span className={styles.eyebrow}>05 / ACTION CENTER</span><h2 id="action-heading">需要关注的事项</h2>
+        <p>只呈现来自真实记录的风险、连接缺口和下一步动作，不制造虚假告警。</p></div></div>
+      <div className={styles.actionsList}>
+        {issues.map(item => <article key={item.title} className={styles.actionItem}>
+          <span className={item.type === "warning" ? styles.warningDot : styles.infoDot}/>
+          <div><strong>{item.title}</strong><p>{item.detail}</p></div>
+        </article>)}
+      </div>
+      <p className={styles.footnote}>收款来自已核验订单，不是财务利润；搜索收录需官方站长平台；使用次数与真正付费转化率必须在数据来源和归因链路核实后展示。</p>
+    </section>
+  </main>;
 }
