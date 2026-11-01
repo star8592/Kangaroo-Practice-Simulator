@@ -1,6 +1,6 @@
 import Link from "next/link";
 import {notFound} from "next/navigation";
-import CareerPracticeRunner from "@/components/CareerPracticeRunner";
+import CareerFormalExamRunner from "@/components/CareerFormalExamRunner";
 import {CAREER_FORMAL_PAPERS,getCareerFormalPaper} from "@/lib/career-formal-bank";
 import styles from "../../practice/career-practice.module.css";
 
@@ -27,6 +27,6 @@ export default async function CareerFormalExamPage({params}:{
       <Link href="/career#digital-services">岗位模拟笔试</Link><span> / </span>
       <span>{paper.title}</span>
     </nav>
-    <CareerPracticeRunner practice={paper} mode="formal"/>
+    <CareerFormalExamRunner paper={paper}/>
   </main>;
 }
