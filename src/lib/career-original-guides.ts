@@ -20,7 +20,7 @@ export type CareerOriginalGuide=Readonly<{
  */
 export const CAREER_ORIGINAL_GUIDES:readonly CareerOriginalGuide[]=[
   {
-    id:"supplier-decision-handbook",family:"procurement",caseId:"supplier-selection-001",
+    id:"supplier-decision-handbook",family:"procurement",caseId:"procurement-paper-2026q4-v1",
     title:"供应商选择：从需求到总到货成本",
     summary:"原创采购复习教程，包含需求拆解、合格件数、报价比较、交期约束和一套完整核算范例。",
     audience:"采购助理、应届供应链求职者、需要理解采购分析的非专业学习者",
@@ -48,12 +48,12 @@ export const CAREER_ORIGINAL_GUIDES:readonly CareerOriginalGuide[]=[
       {heading:"四、自己练：面试或笔试时如何展示推理",
         paragraphs:[
           "练习题：某供方每件总到货价50元，不良率2%，预计需要490件合格产品。最低订货量是多少？预算25000元能否满足？请先自己计算再核答案。",
-          "参考答案：订货量＝向上取整490÷0.98＝500件；总到货成本500×50＝25000元，刚好等于预算。注意这个判断只证明数学模型及预算满足，仍需另行检查产能和交期。可以到本站采购在线实操中提交六道题进行自动判分。",
+          "参考答案：订货量＝向上取整490÷0.98＝500件；总到货成本500×50＝25000元，刚好等于预算。注意这个判断只证明数学模型及预算满足，仍需另行检查产能和交期。可以到本站采购在线实操中参加24题45分钟的标准模拟笔试并查看逐题评分。",
         ]},
     ],
   },
   {
-    id:"retail-campaign-roi-handbook",family:"operations",caseId:"campaign-performance-001",
+    id:"retail-campaign-roi-handbook",family:"operations",caseId:"operations-paper-2026q4-v1",
     title:"商品运营：退款后收入与广告 ROI 算清楚",
     summary:"原创运营分析教程，从GMV、退款率、净贡献到投放决策，附真实可复算的示范表格与练习。",
     audience:"商品运营、增长、市场投放岗位求职者和需要比较广告渠道的学习者",
@@ -81,12 +81,12 @@ export const CAREER_ORIGINAL_GUIDES:readonly CareerOriginalGuide[]=[
       {heading:"四、自己练：重新计算一个渠道",
         paragraphs:[
           "练习题：一个渠道花费6000元，订单成交额21000元，退款率10%。在本教程简化模型下，退款后收入、净贡献和ROI是多少？",
-          "参考答案：退款后收入21000×90%＝18900元；广告净贡献18900－6000＝12900元；ROI＝12900÷6000＝215%。可到本站商品运营实操题提交六道独立测评，学习如何兼顾收入、净贡献与退货约束。",
+          "参考答案：退款后收入21000×90%＝18900元；广告净贡献18900－6000＝12900元；ROI＝12900÷6000＝215%。可到本站商品运营实操题参加完整的24题45分钟岗位模拟笔试，学习如何兼顾收入、净贡献与退货约束。",
         ]},
     ],
   },
   {
-    id:"manufacturing-fmea-handbook",family:"supply",caseId:"manufacturing-quality-001",
+    id:"manufacturing-fmea-handbook",family:"supply",caseId:"quality-paper-2026q4-v1",
     title:"工业质量：FMEA 风险识别入门与计算",
     summary:"原创工业质量基础教程，讲清S/O/D、RPN的计算和边界，配对照表、改进复算与专业判断清单。",
     audience:"制造业质量助理、工程类应届求职者、需要理解风险分析基础的业务学习者",
@@ -114,7 +114,7 @@ export const CAREER_ORIGINAL_GUIDES:readonly CareerOriginalGuide[]=[
       {heading:"四、自己练：只给一个RPN够不够",
         paragraphs:[
           "练习题：某虚构过程失效S7、O4、D5。新增检测方法使D降低到2，其他指标不变。计算改进前后RPN及变化，并说出这是否足以证明通过正式工程审核。",
-          "参考答案：原RPN＝7×4×5＝140；新RPN＝7×4×2＝56；下降84。不能仅凭这一计算确认正式FMEA行动优先级或安全合规，应继续核对严重度、失效后果、预防和探测控制。网站工业质量实操可再练六道题并查看逐项解释。",
+          "参考答案：原RPN＝7×4×5＝140；新RPN＝7×4×2＝56；下降84。不能仅凭这一计算确认正式FMEA行动优先级或安全合规，应继续核对严重度、失效后果、预防和探测控制。网站工业质量实操有完整24题标准模拟笔试与逐题解析。",
         ]},
     ],
   },
@@ -136,7 +136,7 @@ export function careerGuideToMarkdown(guide:CareerOriginalGuide):string{
     "授权：供个人学习阅读、保存和打印。禁止冒充任何企业官方试卷或资格标准。",
     "",
     "简介："+guide.summary,"适用人群："+guide.audience,
-    "关联本站免费在线实操：https://socthink.cn/career/practice/"+practice.id,
+    "关联本站标准模拟笔试：https://socthink.cn/career/exams/"+practice.id,
     "",
     "说明：所有示例为虚构数据，仅用于训练基础分析和计算；不是企业内部资料、财务或工程专业意见。",
     "",
