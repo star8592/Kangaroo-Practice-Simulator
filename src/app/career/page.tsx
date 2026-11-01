@@ -4,7 +4,6 @@ import {CAREER_DEMAND_OBSERVED_AT,CAREER_FAMILIES,countCareerEvidence,
 import {getCareerSupplyCandidates} from "@/lib/career-product-mapper";
 import {CAREER_MARKET_GROWTH,getCareerMarketGrowth} from "@/lib/career-market-growth";
 import {CAREER_ORIGINAL_GUIDES,guideForFamily} from "@/lib/career-original-guides";
-import {CAREER_PRACTICE_CASES} from "@/lib/career-practice";
 import {CAREER_FORMAL_PAPERS} from "@/lib/career-formal-bank";
 import CareerRoleExplorer from "@/components/CareerRoleExplorer";
 import commerce from "./career-commerce.module.css";
@@ -67,8 +66,7 @@ export default async function CareerDemandPage({searchParams}:{searchParams:Sear
         <article className={commerce.heroOffer+" "+commerce.heroOfferService}>
           <span className={commerce.offerKind}>02 · 在线考试</span>
           <h2>模拟考试与自动评分</h2>
-          <p>已经开放 {CAREER_PRACTICE_CASES.filter(x=>x.deliveryState==="free-live-preview").length} 套岗位实操。
-            真正交卷、自动评分、逐题解析；微信账号可查练习记录。</p>
+          <p>已经开放 {CAREER_FORMAL_PAPERS.length} 套标准岗位模拟笔试，每套24题、45分钟。确认入场、限时作答、交卷解析与微信成绩记录。</p>
           <Link className={commerce.bigAction+" "+commerce.bigActionService}
             href="#digital-services">做模拟考试 · 立即开始 <span aria-hidden="true">→</span></Link>
           <div className={commerce.quickList}>
@@ -120,13 +118,9 @@ export default async function CareerDemandPage({searchParams}:{searchParams:Sear
           </div>
         </article>)}
       </div>
-      <details className={styles.quickPracticeDetails}>
-        <summary>时间不够？先做6题岗位热身练习</summary>
-        <div>{CAREER_PRACTICE_CASES.map(item=><Link key={item.id}
-          href={"/career/practice/"+item.id}>{item.title} · 6题热身</Link>)}</div>
-      </details>
+
     </section>
-    <div className={styles.offerBoundary}>当前 3 份完整资料、3 套标准模拟笔试和 3 套6题热身均免费；正式收费教程、复习卷、深度报告需要经过内容审核、商品定价、权益发放和真实支付交付验收后才会出现购买按钮。不接受虚构商品或无法交付的付款链接。</div>
+    <div className={styles.offerBoundary}>当前 3 份完整资料和 3 套24题标准模拟笔试均免费；正式收费教程、复习卷、深度报告需要经过内容审核、商品定价、权益发放和真实支付交付验收后才会出现购买按钮。不接受虚构商品或无法交付的付款链接。</div>
 
     <section className={styles.marketStage} id="market-heat">
       <div className={styles.sectionTitle}>
@@ -178,7 +172,7 @@ export default async function CareerDemandPage({searchParams}:{searchParams:Sear
       {results.map(group=>{
         const candidates=getCareerSupplyCandidates(group.id);
         const guide=guideForFamily(group.id);
-        const available=CAREER_PRACTICE_CASES.filter(x=>x.family===group.id&&x.deliveryState==="free-live-preview");
+        const available=CAREER_FORMAL_PAPERS.filter(x=>x.family===group.id&&x.deliveryState==="free-live-preview");
         const metric=getCareerMarketGrowth(group.id);
         const jobCount=group.signals.filter(s=>s.evidenceLevel==="job").length;
         return <article key={group.id} className={styles.card}>
@@ -203,8 +197,8 @@ export default async function CareerDemandPage({searchParams}:{searchParams:Sear
           <div className={styles.cardProducts}>
             <strong>本岗位可用内容</strong>
             {guide&&<Link href={"/career/guides/"+guide.id}> <span>资料</span> {guide.title} · 阅读/下载</Link>}
-            {available.map(x=><Link key={x.id} href={"/career/practice/"+x.id}>
-              <span>考试</span> {x.title} · 在线评分</Link>)}
+            {available.map(x=><Link key={x.id} href={"/career/exams/"+x.id}>
+              <span>考试</span> {x.title} · 正式笔试</Link>)}
             {!guide&&available.length===0&&<p>暂无完成验收的资料或考试服务；不展示虚构购买入口。</p>}
           </div>
           {group.skillCodes.length>0&&<div className={styles.skills}>
@@ -222,7 +216,7 @@ export default async function CareerDemandPage({searchParams}:{searchParams:Sear
             <div className={styles.proposal}>
               <div className={styles.proposalTop}><strong>能力方向与供应进度</strong><span>已开放或规划中 · 非企业官方考题</span></div>
               {candidates.length>0?<ul>{candidates.map(c=><li key={c.id}>{c.title}
-                <small> · {c.evidenceCount}条具体岗位证据 · {c.readiness==="free-practice"?"已有免费实操":"尚在规划"}</small>
+                <small> · {c.evidenceCount}条具体岗位证据 · {c.readiness==="free-exam"?"已有标准模拟笔试":"尚在规划"}</small>
               </li>)}</ul>:<p className={styles.noSupply}>仅有岗位类别样本，缺少具体技能要求；暂不制造考试商品。</p>}
             </div>
           </details>
