@@ -77,7 +77,7 @@ for(const item of [
   });
 }
 
-test("career storefront prominently exposes timed standard papers separately from short warmups",async({page})=>{
+test("career storefront exclusively lists full-length timed exams",async({page})=>{
   const response=await page.goto("/career");
   expect(response?.status()).toBe(200);
   const section=page.locator("#digital-services");
@@ -88,4 +88,20 @@ test("career storefront prominently exposes timed standard papers separately fro
   await first.click();
   await expect(page).toHaveURL(/\/career\/exams\/procurement-paper-2026q4-v1$/);
   await expect(page.getByRole("button",{name:"确认入场 · 开始模拟笔试"})).toBeDisabled();
+});
+
+
+test("retired six-question pages and APIs are no longer reachable",async({page})=>{
+  const response=await page.goto("/career");
+  expect(response?.status()).toBe(200);
+  await expect(page.locator("#digital-services")).not.toContainText("6题");
+  await expect(page.locator("#digital-services")).not.toContainText("热身");
+  for(const id of ["supplier-selection-001","campaign-performance-001","manufacturing-quality-001"]){
+    const oldPage=await page.request.get("/career/practice/"+id);
+    expect(oldPage.status()).toBe(404);
+    const oldScore=await page.request.post("/api/career/practice/"+id+"/grade",{
+      data:{answers:{}}});
+    expect(oldScore.status()).toBe(404);
+  }
+  expect((await page.request.get("/api/career/practice/history")).status()).toBe(404);
 });
