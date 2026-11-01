@@ -21,7 +21,7 @@ test("market growth, original materials and online service are real user journey
   await expect(services.getByRole("article")).toHaveCount(3);
   await expect(goods).toContainText("免费完整领取");
   await expect(services).toContainText("免费开始");
-  await expect(page).toContainText("暂无可比数据");
+  await expect(page.locator("main")).toContainText("暂无可比数据");
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
 
   const original=goods.getByRole("link",{name:"阅读完整教程"}).first();
@@ -29,7 +29,7 @@ test("market growth, original materials and online service are real user journey
   await expect(page).toHaveURL(/\/career\/guides\/supplier-decision-handbook$/);
   await expect(page.getByRole("heading",{level:1,name:/供应商选择/})).toBeVisible();
   await expect(page.getByRole("heading",{level:2})).toHaveCount(5);
-  await expect(page).toContainText("参考答案：");
+  await expect(page.locator("main")).toContainText("参考答案：");
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
 
   const downloadEvent=page.waitForEvent("download");
