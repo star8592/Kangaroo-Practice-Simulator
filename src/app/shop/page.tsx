@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import {listStoreProducts} from "@/lib/store-products";
 import {nativeCheckoutAllowed} from "@/lib/wechat-native-flags";
 import styles from "./shop.module.css";
@@ -34,6 +35,12 @@ export default async function ShopPage(){
     {products.length
       ?<div className={styles.grid}>
         {products.map(p=><article key={p.id} className={styles.card}>
+          <Link href={"/shop/"+encodeURIComponent(p.id)} className={styles.cardPreviewLink}
+            aria-label={p.title+" · 查看真实 PDF 首页样张"}>
+            <Image src={"/shop/previews/"+p.id+".png"} width={620} height={880}
+              alt={p.title+" 的实际 PDF 首页样张"} unoptimized/>
+            <span>真实 PDF 首页样张</span>
+          </Link>
           <h2><Link href={"/shop/"+encodeURIComponent(p.id)}>{p.title}</Link></h2>
           <p>PDF 电子文档 · 付款确认后按账号交付</p>
           <p>文件：{p.fileName}</p>
