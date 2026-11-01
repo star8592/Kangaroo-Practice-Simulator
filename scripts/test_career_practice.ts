@@ -90,7 +90,7 @@ for(const c of extraCases){
   const exercise=getCareerPractice(c.id);
   assert(exercise&&exercise.evidenceSignalId===c.evidence);
   assert(exercise.dataTable?.headers.length===exercise.dataTable?.rows[0].length);
-  assert(exercise.dataTable.rows.every(r=>r.length===exercise.dataTable?.headers.length));
+  assert(exercise.dataTable?.rows.every(r=>r.length===exercise.dataTable?.headers.length));
   assert.equal(exercise.questions.length,6);
   assert.equal(exercise.questions.reduce((n,q)=>n+q.weight,0),100);
   assert(buildCareerAssessmentContract(c.id)?.valid);
