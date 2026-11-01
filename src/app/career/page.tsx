@@ -5,10 +5,12 @@ import {getCareerSupplyCandidates} from "@/lib/career-product-mapper";
 import {CAREER_MARKET_GROWTH,getCareerMarketGrowth} from "@/lib/career-market-growth";
 import {CAREER_ORIGINAL_GUIDES,guideForFamily} from "@/lib/career-original-guides";
 import {CAREER_PRACTICE_CASES} from "@/lib/career-practice";
+import CareerRoleExplorer from "@/components/CareerRoleExplorer";
+import commerce from "./career-commerce.module.css";
 import styles from "./career.module.css";
 
 export const metadata={
-  title:"岗位热度、求职复习资料与在线考试｜SOCTHINK",
+  title:"职业考试与复习资料｜270个分类岗位｜SOCTHINK",
   description:"查询有真实来源的岗位招聘增长数据，免费阅读与下载原创职业教程，立即参加采购、运营和工业质量在线考试服务。明确区分实际商品、资料样本与待开发方向。",
   alternates:{canonical:"/career"},
 };
@@ -37,46 +39,48 @@ export default async function CareerDemandPage({searchParams}:{searchParams:Sear
     <nav className={styles.breadcrumb} aria-label="位置">
       <Link href="/assessments">综合考试</Link><span>/</span><span>职业岗位与产品</span>
     </nav>
-    <section className={styles.hero}>
-      <p className={styles.eyebrow}>SOCTHINK / CAREER MARKET & PRACTICE</p>
-      <h1>看岗位热度。领复习资料。直接做考试。</h1>
-      <p className={styles.lead}>根据公开招聘证据组织技能训练：了解哪些具体职业需求在增长，领取原创教程，再通过真实在线评分检验自己掌握了多少。</p>
-      <div className={styles.heroActions}>
-        <a href="#market-heat">查看招聘热度</a>
-        <a href="#digital-materials">数字资料与教程</a>
-        <a href="#digital-services">在线考试服务</a>
+    <section className={commerce.commercialHero} aria-label="职业资料与考试服务入口">
+      <div className={commerce.heroLead}>
+        <span className={commerce.overline}>职业资料与模拟考试中心</span>
+        <h1>要复习资料？还是要模拟考试？</h1>
+        <p>选对岗位，立即找到能读、能下载、能做题的内容。先免费体验，再决定是否购买后续进阶服务。</p>
       </div>
-
+      <div className={commerce.mobileQuickActions} aria-label="立即选择资料或考试服务">
+        <a href="#digital-materials">找复习资料 <span aria-hidden="true">→</span></a>
+        <a href="#digital-services">做模拟考试 <span aria-hidden="true">→</span></a>
+      </div>
+      <div className={commerce.heroOffers}>
+        <article className={commerce.heroOffer}>
+          <span className={commerce.offerKind}>01 · 数字资料</span>
+          <h2>职业教程与复习资料</h2>
+          <p>已经完成 {CAREER_ORIGINAL_GUIDES.length} 份原创职业教程，含计算示例、练习与答案。完整阅读、直接下载。</p>
+          <Link className={commerce.bigAction} href="#digital-materials">
+            找资料 · 免费领取 <span aria-hidden="true">→</span>
+          </Link>
+          <div className={commerce.quickList}>
+            <strong>直接进入已完成的教程</strong>
+            {CAREER_ORIGINAL_GUIDES.map(guide=><Link key={guide.id}
+              href={"/career/guides/"+guide.id}>{guide.title}</Link>)}
+          </div>
+        </article>
+        <article className={commerce.heroOffer+" "+commerce.heroOfferService}>
+          <span className={commerce.offerKind}>02 · 在线考试</span>
+          <h2>模拟考试与自动评分</h2>
+          <p>已经开放 {CAREER_PRACTICE_CASES.filter(x=>x.deliveryState==="free-live-preview").length} 套岗位实操。
+            真正交卷、自动评分、逐题解析；微信账号可查练习记录。</p>
+          <Link className={commerce.bigAction+" "+commerce.bigActionService}
+            href="#digital-services">做模拟考试 · 立即开始 <span aria-hidden="true">→</span></Link>
+          <div className={commerce.quickList}>
+            <strong>直接开始已开放的考试</strong>
+            {CAREER_PRACTICE_CASES.filter(x=>x.deliveryState==="free-live-preview")
+              .map(practice=><Link key={practice.id}
+                href={"/career/practice/"+practice.id}>{practice.title}</Link>)}
+          </div>
+        </article>
+      </div>
+      <p className={commerce.heroFoot}>目前这里展示的完整教程与岗位实操均可免费使用；尚未完成实际交付的收费资料或考试不展示虚假购买按钮。</p>
     </section>
-    <section className={styles.marketStage} id="market-heat">
-      <div className={styles.sectionTitle}>
-        <div><span className={styles.kicker}>MARKET SIGNALS</span><h2>招聘热度：有数据才显示增速</h2></div>
-        <p>以下是真实报告中<strong>具体职位面向应届生的同比招聘增长</strong>，不是整个职业领域的热度，也不是当前在招人数。其他岗位暂不乱填“热度分”。</p>
-      </div>
-      <div className={styles.heatGrid}>
-        {CAREER_MARKET_GROWTH.map(m=><article key={m.family} className={styles.heatCard}>
-          <span className={styles.heatOccupation}>{m.occupation}</span>
-          <div className={styles.heatRate}>+{m.growthPercent.toFixed(1)}<span>%</span></div>
-          <div className={styles.heatTrack}><span style={{width:Math.max(0,Math.min(100,m.growthPercent/60*100))+"%"}}/></div>
-          <p>2026年第三季度 · 应届职位数同比</p>
-          <a href={m.sourceUrl} target="_blank" rel="noopener noreferrer">查看智联招聘研究数据来源</a>
-        </article>)}
-      </div>
-      <p className={styles.heatFoot}>指标来自智联研究院2026年三季度报告，经2026-10-16媒体转述。图条统一按0–60%刻度展示，仅用于比较<strong>同一口径的四个具体职位</strong>；无法据此推导薪资、录取概率或其他12类岗位的冷热。</p>
-      <div className={styles.stats} aria-label="首轮非随机招聘研究资料覆盖">
-        <div><strong>{stats.employers}</strong><span>家有来源的样本企业</span></div>
-        <div><strong>{stats.families}</strong><span>个岗位领域</span></div>
-        <div><strong>{stats.detailedJobs}</strong><span>份具体职位描述</span></div>
-        <div><strong>{stats.signals}</strong><span>条招聘或类别样本</span></div>
-      </div>
-      <p className={styles.sampleNote}>企业研究样本并非全网实时招聘量；不把股票代码数、网页分类数当成在招岗位数。资料采集汇总于 {CAREER_DEMAND_OBSERVED_AT}。</p>
-    </section>
-
-    <div className={styles.commerceIntro}>
-      <span className={styles.kicker}>TWO TYPES OF DIGITAL OFFERINGS</span>
-      <h2>我们提供两种产品：资料与考试服务</h2>
-      <p>不是只有岗位展示。现在有3份真正写完、可以下载的原创学习教程，以及3套能作答、提交、自动评分和查看历史报告的在线训练服务。它们目前<strong>免费开放</strong>，尚未冒充收费商品。</p>
-    </div>
+    <CareerRoleExplorer/>
     <section className={styles.commerceSection} id="digital-materials" aria-labelledby="materials-title">
       <div className={styles.commerceHeading}>
         <div><span className={styles.commerceNumber}>01 / DIGITAL GOODS</span>
@@ -118,7 +122,34 @@ export default async function CareerDemandPage({searchParams}:{searchParams:Sear
     </section>
     <div className={styles.offerBoundary}>当前 3 份完整资料和 3 项在线训练服务均免费；正式收费教程、复习卷、深度报告需要经过内容审核、商品定价、权益发放和真实支付交付验收后才会出现购买按钮。不接受虚构商品或无法交付的付款链接。</div>
 
-    <section className={styles.intro} id="career-directory">
+    <section className={styles.marketStage} id="market-heat">
+      <div className={styles.sectionTitle}>
+        <div><span className={styles.kicker}>MARKET SIGNALS</span><h2>招聘热度：有数据才显示增速</h2></div>
+        <p>以下是真实报告中<strong>具体职位面向应届生的同比招聘增长</strong>，不是整个职业领域的热度，也不是当前在招人数。其他岗位暂不乱填“热度分”。</p>
+      </div>
+      <div className={styles.heatGrid}>
+        {CAREER_MARKET_GROWTH.map(m=><article key={m.family} className={styles.heatCard}>
+          <span className={styles.heatOccupation}>{m.occupation}</span>
+          <div className={styles.heatRate}>+{m.growthPercent.toFixed(1)}<span>%</span></div>
+          <div className={styles.heatTrack}><span style={{width:Math.max(0,Math.min(100,m.growthPercent/60*100))+"%"}}/></div>
+          <p>2026年第三季度 · 应届职位数同比</p>
+          <a href={m.sourceUrl} target="_blank" rel="noopener noreferrer">查看智联招聘研究数据来源</a>
+        </article>)}
+      </div>
+      <p className={styles.heatFoot}>指标来自智联研究院2026年三季度报告，经2026-10-16媒体转述。图条统一按0–60%刻度展示，仅用于比较<strong>同一口径的四个具体职位</strong>；无法据此推导薪资、录取概率或其他12类岗位的冷热。</p>
+      <div className={styles.stats} aria-label="首轮非随机招聘研究资料覆盖">
+        <div><strong>{stats.employers}</strong><span>家有来源的样本企业</span></div>
+        <div><strong>{stats.families}</strong><span>个岗位领域</span></div>
+        <div><strong>{stats.detailedJobs}</strong><span>份具体职位描述</span></div>
+        <div><strong>{stats.signals}</strong><span>条招聘或类别样本</span></div>
+      </div>
+      <p className={styles.sampleNote}>企业研究样本并非全网实时招聘量；不把股票代码数、网页分类数当成在招岗位数。资料采集汇总于 {CAREER_DEMAND_OBSERVED_AT}。</p>
+    </section>
+
+    <details className={commerce.researchDetails} id="career-evidence">
+      <summary>招聘研究资料与来源验证（专业研究区 · 点击展开）</summary>
+      <p className={commerce.researchDisclaimer}>这里提供已核对的企业招聘来源、样本能力要求与规划中的训练方向。它们不是正在售卖的商品，也不代表当前真实岗位数量。</p>
+    <section className={styles.intro} id="career-evidence">
       <div><span className={styles.kicker}>CAREER DIRECTORY</span><h2>按岗位找到证据与学习产品</h2></div>
       <p>先看已证实的招聘增长和本库资料覆盖，再进入对应教程或在线练习。具体企业招聘出处可以展开核对，避免大段来源抢占第一屏。</p>
     </section>
@@ -133,7 +164,7 @@ export default async function CareerDemandPage({searchParams}:{searchParams:Sear
         </select>
       </label>
       <button type="submit">筛选岗位</button>
-      {(q||family)&&<Link className={styles.clear} href="/career#career-directory">清除筛选</Link>}
+      {(q||family)&&<Link className={styles.clear} href="/career#career-evidence">清除筛选</Link>}
     </form>
     <p className={styles.resultCount}>符合条件的岗位领域：{results.length}</p>
     {results.length===0?<div className={styles.empty}>当前研究样本没有对应记录。这不代表该岗位需求为零。</div>:
@@ -192,6 +223,8 @@ export default async function CareerDemandPage({searchParams}:{searchParams:Sear
         </article>;
       })}
     </div>}
+
+    </details>
     <section className={styles.disclosure}>
       <h2>岗位热度不等于录用概率，培训也不等于企业官方考试</h2>
       <p>市场增长指标来自第三方2026年季度招聘研究，明确限定到所报道的具体职位、应届生群体和统计期间。本站企业资料是非随机来源样本；没有足够可比指标的岗位不会补造指数。资料和考试皆为本站原创，与目标企业无合作、招聘或合格保证。</p>

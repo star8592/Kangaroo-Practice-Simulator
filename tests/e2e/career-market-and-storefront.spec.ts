@@ -6,8 +6,10 @@ import {expect,test} from "@playwright/test";
 test("market growth, original materials and online service are real user journeys",async({page})=>{
   const catalog=await page.goto("/career");
   expect(catalog?.status()).toBe(200);
-  await expect(page.getByRole("heading",{level:1,name:/岗位热度/})).toBeVisible();
+  await expect(page.getByRole("heading",{level:1,name:/要复习资料？还是要模拟考试？/})).toBeVisible();
 
+  await expect(page.getByRole("link",{name:/找资料 · 免费领取/})).toBeVisible();
+  await expect(page.getByRole("link",{name:/做模拟考试 · 立即开始/})).toBeVisible();
   const market=page.locator("#market-heat");
   await expect(market).toContainText("数据工程师");
   await expect(market).toContainText("+57.4%");
