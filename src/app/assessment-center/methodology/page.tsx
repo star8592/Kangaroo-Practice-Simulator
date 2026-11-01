@@ -15,7 +15,7 @@ export default function AssessmentMethodology(){
     <span className={styles.eyebrow}>MEASUREMENT EVIDENCE · PUBLIC REGISTER</span>
     <h1>每项结果，都应当能追溯依据。</h1>
     <p>以下不是营销证书，而是公开的测评技术登记簿。你可以查看题项来源、计分办法、验证程度及不能作出的结论。算法测试通过，并不等于量表信效度得到科学验证。</p>
-    <div className={styles.heroMeta}><span>5项已开放的免费产品</span><span>0项取得中国人群标准化常模验证</span><span>不发放虚构资格认证</span></div>
+    <div className={styles.heroMeta}><span>4项测评与认知学习产品</span><span>0项取得中国人群标准化常模验证</span><span>不发放虚构资格认证</span></div>
   </header>
   <div className={styles.sectionHeading}>
     <div><span className={styles.eyebrowDark}>TECHNICAL REGISTER</span><h2>产品证据与限制逐项公开</h2></div>
@@ -32,7 +32,9 @@ export default function AssessmentMethodology(){
       <div><dt>适用人群</dt><dd>{record.audience}</dd></div>
       <div><dt>已核对证据</dt><dd>{record.evidenceStatus}</dd></div>
       <div><dt>不能推断</dt><dd>{record.limitations}</dd></div>
-      <div><dt>是否收费</dt><dd>否。当前免费，且未宣称为科学标准化报告。</dd></div>
+      <div><dt>免费/收费</dt><dd>{record.fullReportOffer==="optional-after-verification"
+        ?"答题和简要结果免费；详细个人探索报告按真实上架价格单独出售，只有支付核验后才交付。未上架时不开放付款。"
+        :"当前任务免费，可查看实际练习的正确数与复盘。"}</dd></div>
     </dl>
     <Link className={styles.tileLink} href={record.path}>打开实际项目并查看使用说明 →</Link>
    </article>)}

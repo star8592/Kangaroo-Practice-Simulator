@@ -64,6 +64,7 @@ async function run() {
   await db.query(fs.readFileSync("ops/db/006_unique_active_item_orders.sql","utf8"));
   await db.query(fs.readFileSync("ops/db/007_native_close_proof.sql","utf8"));
   await db.query(fs.readFileSync("ops/db/008_digital_sales_consent.sql","utf8"));
+  await db.query(fs.readFileSync("ops/db/009_assessment_report_rights.sql","utf8"));
   const consent={policyVersion:DIGITAL_SALES_POLICY_VERSION,acceptedAt:new Date()};
   // Native real orders are rejected without customer-initiated confirmation.
   await assert.rejects(()=>createBillingOrder("par_noconsent","plus_month","wechat_native"),
@@ -143,6 +144,61 @@ async function run() {
   assert.equal((await refundVerifiedOrder({...itemReceipt,eventId:"item-refund-01"})).revoked,true);
   assert.equal(await hasVerifiedItemEntitlement("par_item01","exam","verified-sample-a"),false);
   assert.equal(await canOpenItemExam("verified-sample-a","par_item01"),false);
+
+  // A premium report is a typed item in the SAME immutable billing ledger.
+  // Payment never unlocks until a provider-verified settlement grants rights.
+  const reportInstrumentId="ipip-big-five-50-cn-preview";
+  await db.query(`INSERT INTO billing_products
+    (id,tier,period,product_kind,content_kind,content_id,title_zh,amount_minor,currency,enabled,
+     rights_approved,delivery_verified,access_restricted)
+    VALUES('report_ipip50_v1',NULL,NULL,'item','report',$1,'大五人格完整个人探索报告',1290,'CNY',true,
+     true,true,true)`,[reportInstrumentId]);
+  await db.query(`INSERT INTO billing_products
+    (id,tier,period,product_kind,content_kind,content_id,title_zh,amount_minor,currency,enabled)
+    VALUES('report_career30_v1',NULL,NULL,'item','report','career-interest-exploration-30',
+      '职业兴趣详细探索报告',990,'CNY',false)`);
+  await assert.rejects(()=>createBillingOrder(owner.id,"report_career30_v1","wechat_native",consent),
+    BillingConflictError);
+  const reportOrder=await createBillingOrder(owner.id,"report_ipip50_v1","wechat_native",consent);
+  assert.equal(reportOrder.priceMinor,1290);
+  assert.equal(await hasVerifiedItemEntitlement(owner.id,"report",reportInstrumentId),false);
+  process.env.SOCTHINK_PUBLIC_ORIGIN="https://socthink.cn";
+  const {POST:loadPremiumReport}=await import("../src/app/api/assessment-reports/full/route");
+  const reportCookie=parentAuth.PARENT_SESSION_COOKIE+"="+parentAuth.createParentSessionToken(owner.id);
+  const rawAnswers=Object.fromEntries(Array.from({length:50},(_,i)=>["ipip-50-"+(i+1),3]));
+  const premiumBody=JSON.stringify({instrumentId:reportInstrumentId,answers:rawAnswers});
+  const premiumRequest=(cookie:string,body=premiumBody)=>new NextRequest(
+    "https://socthink.cn/api/assessment-reports/full",{
+      method:"POST",headers:{"content-type":"application/json",
+        origin:"https://socthink.cn",cookie},
+      body
+    });
+  assert.equal((await loadPremiumReport(premiumRequest(reportCookie))).status,403,
+    "unpaid answers cannot receive premium report");
+  const verifiedReportReceipt={...receipt(reportOrder.id,"report-paid-01","report-tx-01",1290),
+     provider:"wechat_native" as const};
+  await assert.rejects(()=>settleVerifiedOrder({...verifiedReportReceipt,amountMinor:999}),
+    BillingConflictError);
+  assert.equal(await hasVerifiedItemEntitlement(owner.id,"report",reportInstrumentId),false);
+  assert.equal((await settleVerifiedOrder(verifiedReportReceipt)).created,true);
+  assert.equal(await hasVerifiedItemEntitlement(owner.id,"report",reportInstrumentId),true);
+  assert.equal(await hasVerifiedItemEntitlement(stranger.id,"report",reportInstrumentId),false);
+  const premiumResponse=await loadPremiumReport(premiumRequest(reportCookie));
+  assert.equal(premiumResponse.status,200);
+  const fullReport=await premiumResponse.json() as {report:{dimensions:unknown[];kind:string;version:string}};
+  assert.equal(fullReport.report.kind,"personal-exploration-report");
+  assert.equal(fullReport.report.version,"ipip50-zh-draft-1.0");
+  assert.equal(fullReport.report.dimensions.length,5);
+  const strangerCookie=parentAuth.PARENT_SESSION_COOKIE+"="+parentAuth.createParentSessionToken(stranger.id);
+  assert.equal((await loadPremiumReport(premiumRequest(strangerCookie))).status,403);
+  assert.equal((await loadPremiumReport(premiumRequest(reportCookie,
+    JSON.stringify({instrumentId:reportInstrumentId,answers:{}})))).status,400);
+  await assert.rejects(()=>createBillingOrder(owner.id,"report_ipip50_v1","wechat_native",consent),
+    BillingConflictError);
+  assert.equal((await refundVerifiedOrder({...verifiedReportReceipt,eventId:"report-refund-01"})).revoked,true);
+  assert.equal(await hasVerifiedItemEntitlement(owner.id,"report",reportInstrumentId),false);
+  assert.equal((await loadPremiumReport(premiumRequest(reportCookie))).status,403,
+    "refund revokes report content access");
 
   // A downloadable asset is NOT sellable merely because its SKU exists.
   // Exact private bytes, independent asset approval and settled order are required.

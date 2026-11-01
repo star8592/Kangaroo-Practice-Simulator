@@ -2,7 +2,7 @@ import {readFileSync,writeFileSync} from "node:fs";
 import {buildIssuerSnapshot} from "../src/lib/career-market-import";
 import type {CareerMarket} from "../src/lib/career-enterprise-universe";
 
-/** 
+/**
  * Deterministic local transformation of a lawfully downloaded official exchange
  * export. Does not crawl exchange websites or evade access controls.
  *

@@ -124,9 +124,8 @@ export const CENTER_SECTIONS=[
   {title:"人格与性格",summary:"大五人格、稳定特质与行为倾向",icon:"01",instrumentId:"ipip-big-five-50-cn-preview"},
   {title:"认知与推理能力",summary:"数量、逻辑、空间与信息判断：原创20题任务表现，不是 IQ 测验",icon:"02",route:"/assessment-center/reasoning-practice-20",detail:"20题 · 原始正确率与逐题复盘"},
   {title:"职业兴趣与发展",summary:"RIASEC 职业兴趣、价值观与发展探索",icon:"03",instrumentId:"career-interest-exploration-30"},
-  {title:"岗位胜任与技能",summary:"真实 SQLite 执行、订单筛选、分组与客户分析：4项岗位任务",icon:"04",route:"/assessment-center/sql-lab",detail:"4项真实 SQL 执行任务 · 双数据集核对"},
-  {title:"学习能力与策略",summary:"阅读信息定位、推断、数量理解和证据判断：16题原创学习练习",icon:"05",route:"/assessment-center/reading-practice-16",detail:"4篇原创短文 · 16题 · 原文证据复盘"},
-  {title:"心理状态与生活",summary:"待建立专业筛查规范，不提供在线诊断",icon:"06"}
+  {title:"阅读理解与学习任务",summary:"阅读信息定位、推断、数量理解和证据判断：16题原创学习练习",icon:"04",route:"/assessment-center/reading-practice-16",detail:"4篇原创短文 · 16题 · 原文证据复盘"},
+  {title:"心理状态与生活",summary:"待建立专业筛查规范，不提供在线诊断",icon:"05"}
 ] as const;
 export function getInstrument(id:string):Instrument|undefined {return INSTRUMENTS.find(x=>x.id===id);}
 export type DimensionScore={id:FactorId;name:string;mean:number;sum:number;answered:number;description:string;nextStep:string};

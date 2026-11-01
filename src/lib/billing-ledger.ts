@@ -60,7 +60,7 @@ export async function createBillingOrder(
   return transaction(async c=>{
     const product=await c.query<{
       amount_minor:string;currency:string;product_kind:"subscription"|"item";
-      content_kind:"exam"|"resource"|null;content_id:string|null;
+      content_kind:"exam"|"resource"|"report"|null;content_id:string|null;
       rights_approved:boolean;delivery_verified:boolean;access_restricted:boolean;title_zh:string|null;
     }>(
       "SELECT amount_minor,currency,product_kind,content_kind,content_id,rights_approved,delivery_verified,access_restricted,title_zh FROM billing_products WHERE id=$1 AND enabled=true",[productId]);
@@ -74,6 +74,12 @@ export async function createBillingOrder(
       throw new BillingConflictError("Item unavailable for sale");
     if(p.product_kind!=="subscription" && p.product_kind!=="item")
       throw new BillingConflictError("Unsupported product");
+    if(p.product_kind==="item" && p.content_kind==="report"){
+      // Reports are ONLY our two registered self-exploration instruments.
+      // A forged SQL row cannot sell an arbitrary private content target.
+      const {getInstrument}=await import("./measurement-center");
+      if(!getInstrument(p.content_id??""))throw new BillingConflictError("Unknown report instrument");
+    }
     if(p.product_kind==="item" && p.content_kind==="resource"){
       // Never create a payable order for a missing, corrupted, unapproved
       // or public-directory file. A fixture metadata row alone is insufficient.
@@ -187,7 +193,7 @@ export async function settleVerifiedOrder(r:VerifiedPaymentReceipt){
       id:string;payer_parent_id:string;price_minor:string;currency:string;provider:string;
       provider_transaction_id:string|null;state:string;
       tier:"plus"|"pro"|null;period:"month"|"year"|null;
-      product_kind:"subscription"|"item";content_kind:"exam"|"resource"|null;content_id:string|null;
+      product_kind:"subscription"|"item";content_kind:"exam"|"resource"|"report"|null;content_id:string|null;
     }>("SELECT o.*,p.tier,p.period FROM billing_orders o JOIN billing_products p ON p.id=o.product_id WHERE o.id=$1 FOR UPDATE OF o",[r.orderId]);
     const o=result.rows[0];
     if(!o || o.provider!==r.provider || Number(o.price_minor)!==r.amountMinor || o.currency!==r.currency)
@@ -301,10 +307,10 @@ export async function verifiedGrantsForParent(parentId:string,now=new Date()):Pr
  * The caller must derive buyerId from an authenticated WeChat session.
  */
 export async function hasVerifiedItemEntitlement(
-  buyerId:string,contentKind:"exam"|"resource",contentId:string,
+  buyerId:string,contentKind:"exam"|"resource"|"report",contentId:string,
 ):Promise<boolean>{
   if(!/^par_[a-zA-Z0-9_]+$/.test(buyerId) ||
-     !["exam","resource"].includes(contentKind) ||
+     !["exam","resource","report"].includes(contentKind) ||
      !contentId || contentId.length>200)
     throw new BillingConflictError("Invalid item entitlement lookup");
   const r=await billingPool().query<{owned:boolean}>(`
