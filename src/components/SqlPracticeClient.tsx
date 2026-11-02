@@ -58,16 +58,16 @@ export default function SqlPracticeClient(){
    <span className={styles.eyebrowDark}>SOCTHINK · SQL SKILL LAB</span>
    <h1>真实 SQL · 数据分析岗位练习</h1>
    <p>用 SQLite 亲自写查询、运行真实订单数据、核对输出，而不是通过选择题猜 SQL。</p>
-   <div className={styles.labels}><span>免费实训</span><span>SQLite WebAssembly</span><span>4项岗位任务</span><span>浏览器本地沙箱</span></div>
+   <div className={styles.labels}><span>免费实训</span><span>SQLite WebAssembly</span><span>8项岗位任务</span><span>浏览器本地沙箱</span></div>
   </header>
   {stage==="intro"&&<section className={styles.panel}>
    <h2>这次练习需要完成什么？</h2>
-   <p className={styles.lead}>假设你是电商平台的数据分析助理，需要筛选有效订单、统计支付渠道、关联客户、筛选活跃付费客户。你写的 SQL 会在两组不同的模拟数据上真正执行，然后按输出结果验证。</p>
+   <p className={styles.lead}>假设你是电商平台的数据分析助理，需要筛选有效订单、统计支付渠道、关联客户、筛选活跃付费客户。你写的 SQL 会在三组不同的模拟数据上真正执行，然后按输出结果验证。</p>
    <dl className={styles.details}>
-    <div><dt>任务构成</dt><dd>4项逐级任务：筛选、分组、连接、聚合条件。</dd></div>
+    <div><dt>任务构成</dt><dd>8项逐级任务：基础筛选/汇总/连接/聚合，再进行每日支付趋势、退款对账、未付款客户识别与城市归并。</dd></div>
     <div><dt>数据来源</dt><dd>SOCTHINK 原创的虚构客户及订单数据，无真实个人信息。</dd></div>
     <div><dt>执行方式</dt><dd>浏览器 Worker 内运行 SQLite；每次新建内存数据库，查询只读并有超时限制。</dd></div>
-    <div><dt>判分</dt><dd>同一 SQL 在两组独立数据上运行，按列、值及指定排序精确比对。通过表示完成这些任务，不表示岗位资质或招聘录用能力。</dd></div>
+    <div><dt>判分</dt><dd>同一 SQL 在三组独立数据上运行，按列、值及指定排序精确比对。通过表示完成这些任务，不表示岗位资质或招聘录用能力。</dd></div>
     <div><dt>年龄与限制</dt><dd>当前面向18岁及以上成年人；只供技能学习，不是经效度验证的职业选拔测验。</dd></div>
    </dl>
    <p className={styles.privacy}>用户输入的 SQL 和执行结果不上传服务器。本练习不保存账号画像或成绩；浏览器刷新后当前记录消失。</p>
@@ -92,7 +92,7 @@ export default function SqlPracticeClient(){
       <div role="status" aria-live="polite">
         {error&&<div className={styles.sqlError}><strong>执行未完成</strong><p>{error}</p></div>}
         {last&&<div className={last.correct?styles.sqlSuccess:styles.sqlError}>
-          <strong>{last.correct?"任务完成 · 两组数据通过":"需要调整 SQL"}</strong>
+          <strong>{last.correct?"任务完成 · 三组数据通过":"需要调整 SQL"}</strong>
           <p>{last.message}（已检查 {last.fixturesChecked} 组数据）</p>
         </div>}
       </div>
@@ -120,10 +120,10 @@ export default function SqlPracticeClient(){
     </section>
   </div>}
   {stage==="report"&&<section className={styles.panel}>
-   <div className={styles.reportTitle}><div><span className={styles.eyebrowDark}>SQL PRACTICE REPORT · original-sql-v1</span><h2>岗位任务完成记录</h2></div><span className={styles.previewBadge}>非标准化训练</span></div>
-   <p className={styles.lead}>已完成并通过 {solvedCount} / {SQL_TASKS.length} 项 SQL 任务。每项在两个模拟数据集上进行实际 SQL 结果比对。这不是专业资格证书或真实岗位胜任能力证明。</p>
+   <div className={styles.reportTitle}><div><span className={styles.eyebrowDark}>SQL PRACTICE REPORT · original-sql-v2</span><h2>岗位任务完成记录</h2></div><span className={styles.previewBadge}>非标准化训练</span></div>
+   <p className={styles.lead}>已完成并通过 {solvedCount} / {SQL_TASKS.length} 项 SQL 任务。每项在三个模拟数据集上进行实际 SQL 结果比对。这不是专业资格证书或真实岗位胜任能力证明。</p>
    <ol className={styles.reviewList}>{SQL_TASKS.map(task=><li key={task.id} className={styles.reviewItem}><strong>{task.name}</strong><p>{task.concept} · 通过：{solved[task.id]?"是":"否"} · 执行次数：{attempts[task.id]??0}</p></li>)}</ol>
-   <div className={styles.reportFoot}><strong>范围说明</strong><p>该记录只说明在给定模拟数据库、四个练习任务上的完成情况，不包含统计效度、岗位能力常模、真人面试评价或招聘决策结论。</p></div>
+   <div className={styles.reportFoot}><strong>范围说明</strong><p>该记录只说明在给定模拟数据库、八个练习任务上的完成情况，不包含统计效度、岗位能力常模、真人面试评价或招聘决策结论。</p></div>
    <div className={styles.controls}><button type="button" className={styles.secondaryButton} onClick={reset}>重新练习</button><button type="button" className={styles.primaryButton} onClick={()=>window.print()}>打印记录</button></div>
   </section>}
  </div>;
