@@ -102,3 +102,64 @@ test("pasted job requirements and experience affect the actual follow-up, persis
  await expect(page.getByRole("textbox",{name:"目标岗位名称"})).toHaveValue("");
  expect(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth)).toBeLessThanOrEqual(2);
 });
+
+test("explicit opt-in sends the current answer and displays a model-grounded follow-up",async({page})=>{
+ let called=0;
+ await page.route("**/api/career/interviews/followup",async route=>{
+  if(route.request().method()==="GET"){
+   await route.fulfill({status:200,contentType:"application/json",body:JSON.stringify({enabled:true,provider:"external"})});
+   return;
+  }
+  called++;
+  const submitted=route.request().postDataJSON();
+  expect(submitted.profileId).toBe("campus-software");
+  expect(submitted.questionId).toBe("cs-intro");
+  expect(submitted.answer).toContain("订单重复");
+  expect(submitted.context.jobDescription).toContain("数据库");
+  await route.fulfill({status:200,contentType:"application/json",body:JSON.stringify({
+   mode:"semantic",question:"你提到订单重复，能说明如何构造并发重试实验来验证幂等性吗？",
+   evidenceQuote:"订单重复",reason:"缺少具体测试过程和独立验收证据"
+  })});
+ });
+ await page.goto("/career/interviews/campus-software");
+ await page.getByRole("textbox",{name:"招聘要求 / JD"}).fill("需要数据库设计与系统可靠性经验");
+ await page.getByRole("checkbox",{name:/启用AI语义追问/}).check();
+ await page.getByRole("checkbox",{name:/我理解这是一场非标准化自我练习/}).check();
+ await page.getByRole("button",{name:"开始模拟面试"}).click();
+ await page.getByRole("textbox",{name:"你的回答"}).fill("我曾解决过订单重复的问题，做过相关开发。");
+ await page.getByRole("button",{name:"提交本题回答 · 接受追问"}).click();
+ await expect(page.getByText(/能说明如何构造并发重试实验/)).toBeVisible();
+ await expect(page.getByText(/追问依据：.*订单重复/)).toBeVisible();
+ expect(called).toBe(1);
+ await page.reload();
+ await expect(page.getByText(/能说明如何构造并发重试实验/)).toBeVisible();
+});
+
+test("no AI consent never sends an answer; model outage falls back safely",async({page})=>{
+ let posts=0;
+ let outage=false;
+ await page.route("**/api/career/interviews/followup",async route=>{
+  if(route.request().method()==="GET"){
+   await route.fulfill({status:200,contentType:"application/json",body:JSON.stringify({enabled:true,provider:"local"})});
+  }else{
+   posts++;
+   await route.fulfill({status:503,contentType:"application/json",body:JSON.stringify({code:"MODEL_UNAVAILABLE"})});
+  }
+ });
+ await page.goto("/career/interviews/social-procurement");
+ await page.getByRole("checkbox",{name:/我理解这是一场非标准化自我练习/}).check();
+ await page.getByRole("button",{name:"开始模拟面试"}).click();
+ await page.getByRole("textbox",{name:"你的回答"}).fill("我负责供应商项目，但还没想好怎么衡量绩效。");
+ await page.getByRole("button",{name:"提交本题回答 · 接受追问"}).click();
+ expect(posts).toBe(0);
+ await expect(page.getByText("面试官 · 规则追问")).toBeVisible();
+ await page.getByRole("button",{name:"重新开始"}).click();
+ await page.getByRole("button",{name:"确认清空"}).click();
+ await page.getByRole("checkbox",{name:/启用AI语义追问/}).check();
+ await page.getByRole("checkbox",{name:/我理解这是一场非标准化自我练习/}).check();
+ await page.getByRole("button",{name:"开始模拟面试"}).click();
+ await page.getByRole("textbox",{name:"你的回答"}).fill("我负责供应商管理，通过会议跟进合同，但没有建立清晰的业绩指标。");
+ await page.getByRole("button",{name:"提交本题回答 · 接受追问"}).click();
+ await expect(page.getByText("面试官 · 规则追问")).toBeVisible();
+ expect(posts).toBe(1);
+});
