@@ -1,5 +1,5 @@
 "use client";
-import {useEffect,useState,useSyncExternalStore} from "react";
+import {useEffect,useRef,useState,useSyncExternalStore} from "react";
 import Link from "next/link";
 import {
  getInterviewProfile,selectFollowup,buildInterviewReview
@@ -50,6 +50,19 @@ export default function CareerInterviewClient({profileId}:{profileId:string}){
  const [context,setContext]=useState<InterviewJobContext>(saved?.context??EMPTY_INTERVIEW_JOB_CONTEXT);
  const contextAnalysis=analyzeInterviewJobContext(profileId,context);
  const [consent,setConsent]=useState(false);
+ const [semanticEnabled,setSemanticEnabled]=useState(false);
+ const [semanticProvider,setSemanticProvider]=useState<"local"|"external"|null>(null);
+ const [semanticConsent,setSemanticConsent]=useState(false);
+ const [submitting,setSubmitting]=useState(false);
+ const requestEpoch=useRef(0);
+ useEffect(()=>{
+  let active=true;
+  fetch("/api/career/interviews/followup",{cache:"no-store"})
+   .then(r=>r.ok?r.json():null)
+   .then(d=>{if(active&&d?.enabled===true){setSemanticEnabled(true);setSemanticProvider(d.provider==="local"?"local":"external");}})
+   .catch(()=>{});
+  return ()=>{active=false;};
+ },[]);
  const [confirmReset,setConfirmReset]=useState(false);
  const question=profile.questions[index];
  const entry=entries[question.id]??empty();
@@ -66,13 +79,37 @@ export default function CareerInterviewClient({profileId}:{profileId:string}){
   setEntries(prev=>({...prev,[question.id]:{...empty(),...prev[question.id],id:question.id,...next}}));
  }
  function start(){setIndex(0);setEntries({});setConfirmReset(false);setStage("main");}
- function confirmMain(){
-  if(!entry.answer.trim())return;
+ async function confirmMain(){
+  if(!entry.answer.trim()||submitting)return;
+  const epoch=++requestEpoch.current;
   const followup=selectFollowup(question,entry.answer);
-  updateCurrent({
-   followup:buildJobFocusedFollowup(profile.id,index,followup.text,entry.answer,context),
-   followupAnswer:""
-  });
+  let text=buildJobFocusedFollowup(profile.id,index,followup.text,entry.answer,context);
+  let mode:"semantic"|"rule"="rule",evidence="",reason="";
+  setSubmitting(true);
+  if(semanticEnabled&&semanticConsent){
+   try{
+    const controller=new AbortController();
+    const timer=setTimeout(()=>controller.abort(),14500);
+    try{
+     const response=await fetch("/api/career/interviews/followup",{
+      method:"POST",cache:"no-store",signal:controller.signal,
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({profileId:profile.id,questionId:question.id,answer:entry.answer,context})
+     });
+     if(response.ok){
+      const result=await response.json();
+      if(result.mode==="semantic"&&typeof result.question==="string"&&result.question.length<=240){
+       text=result.question;mode="semantic";
+       evidence=typeof result.evidenceQuote==="string"?result.evidenceQuote:"";
+       reason=typeof result.reason==="string"?result.reason:"";
+      }
+     }
+    }finally{clearTimeout(timer)}
+   }catch{/* Network/model unavailable: preserve usable rule-based practice. */}
+  }
+  if(requestEpoch.current!==epoch)return;
+  updateCurrent({followup:text,followupMode:mode,followupEvidence:evidence,followupReason:reason,followupAnswer:""});
+  setSubmitting(false);
   setStage("followup");
  }
  function next(){
@@ -81,6 +118,7 @@ export default function CareerInterviewClient({profileId}:{profileId:string}){
   else setStage("review");
  }
  function reset(){
+  requestEpoch.current++;setSubmitting(false);
   setIndex(0);setEntries({});setContext(EMPTY_INTERVIEW_JOB_CONTEXT);setConsent(false);setConfirmReset(false);
   try{sessionStorage.removeItem(storageKey(profileId))}catch{}
   setStage("intro");
@@ -133,7 +171,11 @@ export default function CareerInterviewClient({profileId}:{profileId:string}){
     </div>}
     <p className={styles.small}>这些输入只保存在本标签页的会话存储中，不上传到网站服务器；重新开始会清除。请勿填写真实密钥、联系方式、商业机密或第三方个人信息。</p>
    </div>
-   <p className={styles.small}>提示：当前追问是基于规则的分支选择，无法理解回答的专业含义；复盘要点由本人勾选确认，不是算法推断的客观能力成绩。本站原创训练内容，与招聘企业无官方授权关系。</p>
+   {semanticEnabled&&<label className={styles.check}>
+    <input type="checkbox" checked={semanticConsent} onChange={e=>setSemanticConsent(e.target.checked)}/>
+    启用AI语义追问（自愿）：每次提交主回答时，会将该轮问题、回答及填写的岗位资料发送至{semanticProvider==="local"?"本站自托管模型":"第三方模型服务"}用于生成追问。不启用则只在本地按规则追问。请勿提供隐私、密钥或商业机密。
+   </label>}
+   <p className={styles.small}>提示：{semanticEnabled?"未勾选AI追问时使用原规则；模型失败时自动降级并标注来源。":"当前仅提供规则追问，AI语义模式尚未启用。"}复盘要点由本人核对，不是客观招聘评分。本站原创训练内容，与招聘企业无官方授权关系。</p>
    <label className={styles.check}><input type="checkbox" checked={consent} onChange={e=>setConsent(e.target.checked)}/>
     我理解这是一场非标准化自我练习，不是录用评估；不会输入商业机密、真实密钥或其他人的个人信息。
    </label>
@@ -158,9 +200,12 @@ export default function CareerInterviewClient({profileId}:{profileId:string}){
     <p>经历摘要匹配：{contextAnalysis.mentioned.join("、")||"暂无匹配词条"}。此项仅供自己核对，不用于招聘能力判断。</p>
    </details>}
    <div className={styles.promptCard}>
-    <span>面试官 · {stage==="main"?"主问题":"第1次追问"}</span>
+    <span>面试官 · {stage==="main"?"主问题":entry.followupMode==="semantic"?"AI语义追问":"规则追问"}</span>
     <h2>{stage==="main"?question.prompt:entry.followup}</h2>
    </div>
+   {stage==="followup"&&entry.followupMode==="semantic"&&<p className={styles.small}>
+    追问依据：{entry.followupEvidence?`“${entry.followupEvidence}”`:"原回答缺少可核对细节"}；{entry.followupReason}
+   </p>}
    {stage==="followup"&&<details className={styles.priorAnswer}>
     <summary>回看刚才的回答</summary>
     <p>{entry.answer}</p>
@@ -168,7 +213,7 @@ export default function CareerInterviewClient({profileId}:{profileId:string}){
    <label className={styles.answerLabel} htmlFor="interview-answer">
     {stage==="main"?"你的回答":"补充回答"}
    </label>
-   <textarea className={styles.answer} id="interview-answer" rows={8} maxLength={2500}
+   <textarea className={styles.answer} id="interview-answer" rows={8} maxLength={2500} disabled={submitting}
     value={stage==="main"?entry.answer:entry.followupAnswer}
     onChange={e=>updateCurrent(stage==="main"?{answer:e.target.value}:{followupAnswer:e.target.value})}
     placeholder="请按真实经历回答；没有实际工作经历时可以用课程、社团或实习案例，不必虚构。"/>
@@ -176,9 +221,9 @@ export default function CareerInterviewClient({profileId}:{profileId:string}){
    <div className={styles.footer}>
     {stage==="followup"&&<button className={styles.secondary} type="button" onClick={()=>setStage("main")}>返回修改主回答</button>}
     <button className={styles.primary} type="button"
-     disabled={!((stage==="main"?entry.answer:entry.followupAnswer).trim())}
+     disabled={submitting||!((stage==="main"?entry.answer:entry.followupAnswer).trim())}
      onClick={stage==="main"?confirmMain:next}>
-     {stage==="main"?"提交本题回答 · 接受追问":index+1===profile.questions.length?"查看面试复盘":"下一轮面试"}
+     {stage==="main"?(submitting?"正在生成追问…":"提交本题回答 · 接受追问"):index+1===profile.questions.length?"查看面试复盘":"下一轮面试"}
     </button>
    </div>
   </section>}
@@ -221,13 +266,14 @@ export default function CareerInterviewClient({profileId}:{profileId:string}){
    <div className={styles.transcript}>{report.questions.map((q,i)=><details key={q.id} open={i===0}>
     <summary>{i+1}. {q.phase} · {q.answered?"已完成":"未完整回答"}</summary>
     <div><strong>主回答</strong><p>{q.answer||"未回答"}</p>
-     <strong>面试官追问</strong><p>{q.followup||"尚未进入追问"}</p>
+     <strong>面试官追问（{q.followupMode==="semantic"?"AI语义":"规则"}）</strong><p>{q.followup||"尚未进入追问"}</p>
+     {q.followupMode==="semantic"&&<p>追问依据：{q.followupEvidence||"未引用具体原话"}；{q.followupReason}</p>}
      <strong>补充回答</strong><p>{q.followupAnswer||"未回答"}</p>
      <strong>本人确认的要点</strong><p>{q.selfReviewed.join("、")||"未确认"}</p>
      <strong>下次练习方向</strong><ul>{q.improvement.map((m,j)=><li key={j}>{m}</li>)}</ul>
     </div>
    </details>)}</div>
-   <p className={styles.small}>本次回答仅保存在当前浏览器标签页的会话存储中，关闭后可能丢失。需要长期留存请使用打印功能。不含实名认证、语音识别、招聘录取预测或收费权益。</p>
+   <p className={styles.small}>本次记录仅保存在本标签页，关闭后可能丢失；自愿开启AI追问时对应轮次文本会发送给所选模型服务处理，不建立服务器长期面试档案。需要留存可自行打印。不含招聘录取预测或收费权益。</p>
    <div className={styles.footer}>
     <button type="button" className={styles.secondary} onClick={()=>setStage("review")}>修改复盘清单</button>
     <button type="button" className={styles.primary} onClick={()=>window.print()}>打印／保存个人复盘</button>
