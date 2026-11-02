@@ -1,0 +1,57 @@
+.shell{max-width:var(--layout-standard);margin:0 auto;padding:var(--page-top-compact) var(--page-gutter) var(--page-bottom);color:var(--portal-text);min-width:0}
+.breadcrumb{display:flex;flex-wrap:wrap;gap:10px;align-items:center;font-size:13px;color:var(--portal-muted);margin-bottom:18px}
+.breadcrumb a,.bottomNav a{color:var(--portal-blue);text-decoration:underline;text-underline-offset:3px}
+.hero{border-radius:var(--radius-panel);background:linear-gradient(120deg,var(--portal-navy),#17509c);color:#fff;padding:clamp(24px,4vw,42px)}
+.eyebrow{font-weight:800;font-size:12px;letter-spacing:.09em}
+.hero .eyebrow{color:#ccddf9}
+.hero h1{font-size:clamp(32px,4vw,48px);margin:10px 0;line-height:1.18}
+.hero p{font-size:clamp(16px,1.7vw,19px);max-width:670px;line-height:1.65;color:#e5edfa;margin:0}
+.heroLinks{display:flex;flex-wrap:wrap;gap:12px;margin-top:23px}
+.heroLinks a{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:9px 17px;border:1px solid #ffffff74;border-radius:10px;color:#fff;font-weight:750}
+.heroLinks a:first-child{background:#fff;color:#103a73}
+.filters{margin-top:22px;border:1px solid var(--portal-border);background:var(--portal-white);padding:18px;border-radius:var(--radius-card)}
+.filters label{display:block;font-size:14px;font-weight:800;margin-bottom:9px}
+.filterFields{display:grid;grid-template-columns:minmax(0,1fr) minmax(170px,230px) auto;gap:9px}
+.filterFields input,.filterFields select{min-width:0;height:45px;padding:9px 12px;border:1px solid #c3d1e2;border-radius:9px;background:#fff;color:var(--portal-text);font-size:16px}
+.filterFields button{height:45px;padding:0 20px;border:0;border-radius:9px;background:var(--portal-blue);color:#fff;font-size:15px;font-weight:800;cursor:pointer}
+.filterFields button:hover{filter:brightness(.94)}
+.sectionHeading{display:flex;align-items:end;justify-content:space-between;gap:15px;margin:30px 0 14px}
+.sectionHeading h2{font-size:25px;margin:0}
+.sectionHeading h2 span{font-size:14px;color:var(--portal-muted);font-weight:500}
+.sectionHeading p{color:var(--portal-muted);font-size:13px;margin:0}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.bookCard{min-width:0;border:1px solid var(--portal-border);background:var(--portal-white);border-radius:var(--radius-card);padding:22px;display:flex;flex-direction:column}
+.topic{font-size:12px;font-weight:800;color:#205cad;letter-spacing:.02em}
+.bookCard h3{font-size:20px;line-height:1.34;overflow-wrap:anywhere;margin:13px 0 5px}
+.bookCard h3 a:hover{color:var(--portal-blue);text-decoration:underline}
+.author{font-size:13px;line-height:1.6;color:var(--portal-muted);margin:0}
+.intro{font-size:15px;line-height:1.7;margin:16px 0;color:var(--portal-text)}
+.cardBottom{margin-top:auto;padding-top:15px;border-top:1px solid var(--portal-border);display:flex;flex-direction:column;gap:10px;font-size:13px;color:var(--portal-muted)}
+.cardBottom a,.labCard a{font-size:15px;font-weight:800;color:var(--portal-blue)}
+.policy,.empty{margin-top:24px;padding:22px;border:1px solid var(--portal-border);border-radius:var(--radius-card);background:#fff}
+.policy h2{margin:0 0 7px;font-size:20px}.policy p,.empty p{margin:0;color:var(--portal-muted);line-height:1.7;font-size:14px}
+.empty a{color:var(--portal-blue);display:inline-block;margin-top:12px}
+.detailHeader{padding:28px 0 25px;border-bottom:1px solid var(--portal-border)}
+.detailHeader h1{font-size:clamp(30px,4vw,46px);line-height:1.2;overflow-wrap:anywhere;margin:10px 0}
+.lead{font-size:18px;max-width:790px;line-height:1.7;margin:18px 0}
+.primaryLink{display:inline-flex;background:var(--portal-blue);border-radius:9px;padding:11px 19px;color:white;font-size:15px;font-weight:750}
+.access{font-size:13px;color:var(--portal-muted);margin:11px 0 0}
+.detailGrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(230px,320px);align-items:start;gap:20px;margin-top:26px}
+.mainColumn{min-width:0;display:grid;gap:15px}
+.detailSection,.labCard{border:1px solid var(--portal-border);background:#fff;padding:24px;border-radius:var(--radius-card)}
+.detailSection h2,.labCard h2{font-size:22px;margin:0 0 12px}
+.detailSection p,.labCard p{font-size:15px;line-height:1.75;margin:0}
+.detailSection .note{font-size:13px;color:var(--portal-muted);margin-top:10px}
+.linkList{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+.linkList li{display:flex;flex-wrap:wrap;gap:10px;align-items:baseline}
+.linkList span{font-size:12px;color:var(--portal-muted)}
+.linkList a{color:var(--portal-blue);text-decoration:underline;overflow-wrap:anywhere}
+.labCard{background:#f4f8ff}
+.labCard .eyebrow{color:var(--portal-blue)}
+.labCard h2{font-size:16px;margin:9px 0 18px}
+.labCard h3{font-size:22px;margin:0 0 9px}
+.labCard a{display:inline-block;margin-top:15px}
+.disclosure{font-size:13px;line-height:1.7;color:var(--portal-muted);margin:25px 0}
+.bottomNav{display:flex;gap:18px;flex-wrap:wrap;font-size:14px}
+@media(max-width:900px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.detailGrid{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:600px){.grid,.filterFields{grid-template-columns:1fr}.sectionHeading{align-items:start;flex-direction:column}.bookCard{padding:18px}.hero{padding:24px 20px}.filterFields button{width:100%}.detailSection,.labCard{padding:20px}}
