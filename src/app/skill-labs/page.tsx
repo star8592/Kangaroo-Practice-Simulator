@@ -17,6 +17,14 @@ export default function SkillLabsHome(){
    <div className={styles.sectionHeading}><div><span className={styles.eyebrowDark}>PRACTICE BY DOING</span><h2>已开放的技能实训</h2></div></div>
    <div className={styles.grid}>
    <article className={styles.tile}>
+    <div className={styles.tileTop}><span className={styles.tileNumber}>WEB 3D / GPU</span><span className={styles.previewBadge}>免费完整实训</span></div>
+    <h3>Three.js × WebGPU · 交互式 3D</h3>
+    <p>8个原创教学单元、浏览器真实三维场景，切换 WebGPU / WebGL2、观察实例与帧率，下载可独立运行的完整 Vite 工程。</p>
+    <div className={styles.tileInfo}>Three.js r186 · 实际后端检测 · 原创源码与性能实验</div>
+    <Link className={styles.tileLink} href="/skill-labs/webgpu-basics">进入 3D 实验与完整教程 <span aria-hidden="true">→</span></Link>
+   </article>
+
+   <article className={styles.tile}>
     <div className={styles.tileTop}><span className={styles.tileNumber}>AI / AGENT</span><span className={styles.previewBadge}>免费完整教程</span></div>
     <h3>AI Agent工程 · 工具调用与独立验收</h3>
     <p>6节原创中文课程、可下载的Python实验源码。真实执行7项测试，识别越权工具、错误参数和“声称成功却没有交付”的情况。</p>
