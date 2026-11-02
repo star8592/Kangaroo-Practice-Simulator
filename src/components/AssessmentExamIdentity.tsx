@@ -7,7 +7,7 @@ export default function AssessmentExamIdentity({assessmentId,mode}:{assessmentId
   <strong>SOCTHINK · {mode==="task"?"能力训练考场":"自我探索测评"}</strong>
   <div className={styles.examIdentityMeta}>
    <span>{mode==="task"?"原创训练，不代表机构官方考试":"研究性自评，暂无本土常模"}</span>
-   <Link href={"/assessment-center/methodology#"+assessmentId}>本测评依据与计分</Link>
+   <Link href={"/assessment-center/methodology#"+assessmentId} target="_blank" rel="noopener noreferrer">本测评依据与计分（新窗口）</Link>
   </div>
  </div>;
 }
