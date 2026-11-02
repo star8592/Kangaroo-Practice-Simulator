@@ -8,6 +8,14 @@ type Props={variant:"center"|"advanced"|"instrument";assessmentId?:string};
  * third-party endorsement, licensed psychological instrument, or local norms.
  */
 export default function AssessmentTrustBrief({variant,assessmentId}:Props){
+ if(variant==="center")return <section className={styles.trustCompact} aria-label="平台测评来源与可信度">
+  <div><h2>这项测评由谁开发？依据是什么？</h2>
+   <p>由 SOCTHINK 维护。每项测评均公开原始依据、评分方式和未验证事项。</p></div>
+  <div className={styles.trustCompactLinks}>
+   <Link href="/assessment-center/about">了解测评中心与开发原则 →</Link>
+   <Link href="/assessment-center/methodology">核对九套测评技术档案 →</Link>
+  </div>
+ </section>;
  const advanced=variant==="advanced";
  const record=variant==="instrument"?ASSESSMENT_EVIDENCE.find(x=>x.id===assessmentId):undefined;
  return <section className={styles.trustBrief} aria-label="开发方、测评依据与适用边界">
