@@ -36,7 +36,7 @@ function isSameOrigin(req:NextRequest){
  if(!origin)return false;
  try{
   const url=new URL(origin);
-  return url.origin===req.nextUrl.origin||url.origin==="https://socthink.cn";
+  return url.origin===req.nextUrl.origin||url.origin==="https://socthink.cn"||url.host===req.headers.get("host");
  }catch{return false;}
 }
 export async function GET(){
