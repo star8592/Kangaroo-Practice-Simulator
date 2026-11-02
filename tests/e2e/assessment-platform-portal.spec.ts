@@ -1,6 +1,6 @@
 import {test,expect} from "@playwright/test";
 
-test("seven real exam domains remain discoverable without fake purchasable items",async({page})=>{
+test("five exam-facing groups coexist with seven API assessment domains",async({page})=>{
   const response=await page.request.get("/api/assessments/catalog");
   expect(response.status()).toBe(200);
   const catalog=await response.json() as {liveDomains:number;domains:{id:string;readiness:string;liveRoutes:{href:string}[]}[]};
@@ -17,7 +17,7 @@ test("seven real exam domains remain discoverable without fake purchasable items
   const groups=directory.locator("article");
   // Upcoming categories are optional detail, not seven giant unavailable cards at first paint.
   await directory.getByRole("button",{name:"查看筹备中的考试"}).click();
-  await expect(groups).toHaveCount(7);
+  await expect(groups).toHaveCount(5);
   await expect(groups.filter({has:page.getByRole("heading",{name:"职业资格与公职考试"})})).toBeVisible();
   await expect(groups.filter({has:page.getByRole("heading",{name:"语言与国际考试"})})).toBeVisible();
   await expect(directory.getByRole("link",{name:/小学至高中计算训练/})).toBeVisible();
@@ -25,8 +25,8 @@ test("seven real exam domains remain discoverable without fake purchasable items
   expect(await directory.getByText("雅思 IELTS").locator("xpath=ancestor::a").count()).toBe(0);
 
   await directory.getByRole("searchbox").fill("SQL");
-  await expect(groups).toHaveCount(1);
-  await expect(groups.getByRole("heading",{name:"职业技能与岗位实操"})).toBeVisible();
+  await expect(groups).toHaveCount(0);
+  await expect(directory.getByRole("link",{name:/搜索全站其他内容/})).toHaveAttribute("href","/search?q=SQL");
   await directory.getByRole("searchbox").fill("袋鼠");
   await expect(groups).toHaveCount(1);
   await groups.getByRole("link",{name:/袋鼠数学/}).click();
@@ -45,7 +45,8 @@ test("home search, category links, live services and resource filters work on mo
   // Domain-specific exam filters remain independently usable.
   await page.goto("/assessments?q=SQL");
   const directory=page.getByRole("region",{name:"考试目录"});
-  await expect(directory.getByText("SQL 数据库实操")).toBeVisible();
+  await expect(directory.getByText(/没有找到相关考试方向/)).toBeVisible();
+  await expect(directory.getByRole("link",{name:/搜索全站其他内容/})).toHaveAttribute("href","/search?q=SQL");
   await directory.getByRole("searchbox").fill("unmatched-synthetic-query-2391");
   await expect(directory.getByText(/没有找到相关考试方向/)).toBeVisible();
   await directory.getByRole("button",{name:"清空"}).click();
@@ -82,7 +83,8 @@ test("exam search works with JavaScript disabled (before hydration)",async({brow
     await expect(page.locator('main a[href="/skill-labs/sql-lab"]').first()).toBeVisible();
     // Preserve the old exam-only GET route for deep links and no-JS usage.
     await page.goto("/assessments?q=SQL");
-    await expect(page.getByText("SQL 数据库实操",{exact:true})).toBeVisible();
+    await expect(page.getByText("SQL 数据库实操",{exact:true})).toHaveCount(0);
+    await expect(page.getByRole("link",{name:/搜索全站其他内容/})).toHaveAttribute("href","/search?q=SQL");
     await expect(page.getByText("雅思 IELTS",{exact:true})).toHaveCount(0);
 
     await page.goto("/assessments?q=%E9%9B%85%E6%80%9D");
@@ -93,7 +95,8 @@ test("exam search works with JavaScript disabled (before hydration)",async({brow
     await directoryForm.locator('input[name="q"]').fill("SQL");
     await directoryForm.locator('button[type="submit"]').click();
     await expect(page).toHaveURL(/\/assessments\?q=SQL/);
-    await expect(page.getByText("SQL 数据库实操",{exact:true})).toBeVisible();
+    await expect(page.getByText("SQL 数据库实操",{exact:true})).toHaveCount(0);
+    await expect(page.getByRole("link",{name:/搜索全站其他内容/})).toHaveAttribute("href","/search?q=SQL");
   }finally{
     await context.close();
   }
