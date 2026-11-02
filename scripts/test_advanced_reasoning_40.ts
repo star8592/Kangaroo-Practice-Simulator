@@ -69,7 +69,7 @@ for(const [id,correct] of Object.entries(expected)){
  assert.equal(item.options[item.answer],correct,id+" answer audit");
 }
 assert(ASSESSMENT_EVIDENCE.some(r=>r.id==="advanced-reasoning-40"&&r.fullReportOffer==="not-offered"));
-assert.equal(ASSESSMENT_EVIDENCE.length,8);
+assert.equal(ASSESSMENT_EVIDENCE.length,9);
 assert(existsSync("src/app/assessment-center/advanced-reasoning-40/page.tsx"));
 const runner=readFileSync("src/components/AdvancedReasoningRunner.tsx","utf8");
 assert(runner.includes('sessionStorage.getItem(KEY)')&&runner.includes('sessionStorage.setItem(KEY'));
