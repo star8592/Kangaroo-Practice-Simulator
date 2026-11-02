@@ -7,8 +7,8 @@ import type { HomepageUpdate } from "@/lib/site-discovery";
 import styles from "./PublicHome.module.css";
 type HomeCounts={books:number;formalPapers:number;assessments:number;guides:number};
 const COPY={
- zh:{hero:"从一份试卷，到一项真正的能力。",intro:"找考试、查资料、做训练、读技术书。需要的内容，直接进入。",search:"搜索考试、试卷、技术书、岗位或课程",searchButton:"全站搜索",quick:"立即开始",latest:"最近更新",latestNote:"按内容实际版本日期排列",kind:"按目标找服务",selected:"精选实训",categories:"按考试类别查找",categoriesNote:"这里只是考试分类目录。部分项目尚在建设，并不意味着已开放报名、考试或购买。",all:"查看全部",open:"查看内容",records:"我的订单与记录",guide:"当前显示的更新均来自已发布内容的记录日期；价格、购买和下载以真实商品页面为准。"},
- en:{hero:"From a practice paper to a skill you can use.",intro:"Find exams, papers, skill labs, and technical books. Start with real resources.",search:"Search exams, papers, technical books or career skills",searchButton:"Search",quick:"Start here",latest:"Recently updated",latestNote:"Sorted by verified content version dates",kind:"Explore by goal",selected:"Featured labs",categories:"Browse exam categories",categoriesNote:"Some exam subjects are planned; categories do not imply live exams or checkout.",all:"View all",open:"Explore",records:"My account",guide:"Updates use published source records. Purchases and downloads follow the actual product terms."},
+ zh:{hero:"从一份试卷，到一项真正的能力。",intro:"找考试、查资料、做训练、读技术书。需要的内容，直接进入。",search:"搜索考试、试卷、技术书、岗位或课程",searchButton:"全站搜索",quick:"立即开始",latest:"最近更新",latestNote:"按内容实际版本日期排列",kind:"按目标找服务",selected:"精选实训",categories:"按考试类别查找",categoriesNote:"这里只列考试方向；职业岗位、技能实训和研究测评请使用各自栏目。筹备中的考试不代表已开放。",all:"查看全部",open:"查看内容",records:"我的订单与记录",guide:"当前显示的更新均来自已发布内容的记录日期；价格、购买和下载以真实商品页面为准。"},
+ en:{hero:"From a practice paper to a skill you can use.",intro:"Find exams, papers, skill labs, and technical books. Start with real resources.",search:"Search exams, papers, technical books or career skills",searchButton:"Search",quick:"Start here",latest:"Recently updated",latestNote:"Sorted by verified content version dates",kind:"Explore by goal",selected:"Featured labs",categories:"Browse exam categories",categoriesNote:"Exam subjects only. Career services, skill labs and research assessments have separate hubs. Planned exams are not live.",all:"View all",open:"Explore",records:"My account",guide:"Updates use published source records. Purchases and downloads follow the actual product terms."},
 } as const;
 const HOT=["AMC","SQL","Agent","Rust","3D","采购"];
 const QUICK=[
@@ -19,10 +19,8 @@ const QUICK=[
 const SERVICES=[
  {href:"/career",zh:"职业岗位",en:"Careers",descZh:"模拟笔试 · 原创复习资料",descEn:"Mock tests and original guides",code:"CAREER"},
  {href:"/skill-labs",zh:"技能实训",en:"Skill labs",descZh:"AI · SQL · 编程 · 3D",descEn:"AI, SQL, code and 3D",code:"LABS"},
- {href:"/skill-labs/books",zh:"技术书库",en:"Technical books",descZh:"官方原书 · 实战关联",descEn:"Books connected to hands-on labs",code:"LIBRARY"},
  {href:"/assessment-center",zh:"测评中心",en:"Assessments",descZh:"逻辑训练 · 职业探索",descEn:"Reasoning and career interests",code:"MEASUREMENT"},
  {href:"/shop",zh:"数字商城",en:"Digital store",descZh:"查看在架资料和交付",descEn:"Published files and delivery",code:"STORE"},
- {href:"/exam-planner",zh:"考试管理",en:"Exam planner",descZh:"赛事安排和备考管理",descEn:"Events and exam planning",code:"PLANNER"},
 ] as const;
 const DOMAINS=new Map(ASSESSMENT_DOMAINS.map(x=>[x.id,x]));
 export default function PublicHome({updates,counts}:{updates:HomepageUpdate[];counts:HomeCounts}){
@@ -62,7 +60,7 @@ export default function PublicHome({updates,counts}:{updates:HomepageUpdate[];co
     </Link>)}</div>
   </section>
   <section className={styles.updates} aria-labelledby="home-updates-heading">
-   <div className={styles.sectionTop}><div><h2 id="home-updates-heading">{t.latest}</h2><p>{t.latestNote}</p></div><Link href="/skill-labs">{t.all} →</Link></div>
+   <div className={styles.sectionTop}><div><h2 id="home-updates-heading">{t.latest}</h2><p>{t.latestNote}</p></div></div>
    <div className={styles.updateGrid}>{updates.map(item=><article className={styles.updateCard} key={item.id}>
     <div className={styles.updateMeta}><span>{item.kind}</span><time dateTime={item.date}>{item.date.replaceAll("-",".")}</time></div>
     <h3><Link href={item.href}>{item.title}</Link></h3>
@@ -90,7 +88,7 @@ export default function PublicHome({updates,counts}:{updates:HomepageUpdate[];co
      <span>THREE.JS / WEBGPU</span><h3>{lang==="zh"?"3D 实验与源码交付":"3D labs and source code"}</h3>
      <p>{lang==="zh"?"8 个教学单元、交互式 3D 场景，配套技术书籍和源码。":"Eight modules, an interactive scene and related technical books."}</p>
      <div><Link href="/skill-labs/webgpu-basics">{lang==="zh"?"运行实验":"Open lab"} →</Link>
-      <Link href="/skill-labs/books/game-programming-patterns">{lang==="zh"?"相关书籍":"Related book"} →</Link></div>
+      <Link href="/skill-labs/books">{lang==="zh"?"配套技术书库":"Related technical library"} →</Link></div>
     </article>
    </div>
   </section>

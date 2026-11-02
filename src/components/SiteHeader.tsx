@@ -18,7 +18,6 @@ const TASK_LINKS=[
   {href:"/skill-labs",zh:"技能实训",en:"Skill labs"},
   {href:"/assessment-center",zh:"测评中心",en:"Assessments"},
   {href:"/shop",zh:"数字商城",en:"Digital store"},
-  {href:"/exam-planner",zh:"考试管理",en:"Exam planner"},
 ] as const;
 function MenuIcon({open}:{open:boolean}){
   return <svg viewBox="0 0 24 24" aria-hidden="true">

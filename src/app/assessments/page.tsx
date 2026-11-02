@@ -1,7 +1,7 @@
 import AssessmentPortalClient from "@/components/AssessmentPortalClient";
 export const metadata = {
   title: "综合考试与测评中心 | SOCTHINK",
-  description: "真实可用的数学能力训练和国际数学竞赛测评，并逐步扩展职场技能实操、语言与专业考试。免费浏览，选择实际可做的测评。",
+  description: "中小学与升学、数学竞赛、语言考试、大学考研和职业资格考试的统一目录。计算训练、竞赛模拟、真题资料和考试日程均从所属考试进入；岗位、技能与人格测评分别有独立业务栏目。",
   alternates: { canonical: "/assessments" },
 };
 type PageProps = {searchParams: Promise<{q?: string | string[]}>};

@@ -35,7 +35,7 @@ export default async function CareerDemandPage({searchParams}:{searchParams:Sear
   const stats=countCareerEvidence();
   const largestSample=Math.max(1,...CAREER_FAMILIES.map(x=>
     searchCareerDemand("",x.id).reduce((n,g)=>n+g.signals.length,0)));
-  return <main className={styles.shell}>
+  return <div className={styles.shell}>
     <nav className={styles.breadcrumb} aria-label="位置">
       <Link href="/">首页</Link><span>/</span><span>职业岗位</span>
     </nav>
@@ -236,7 +236,6 @@ export default async function CareerDemandPage({searchParams}:{searchParams:Sear
       <h2>岗位热度不等于录用概率，培训也不等于企业官方考试</h2>
       <p>市场增长指标来自第三方2026年季度招聘研究，明确限定到所报道的具体职位、应届生群体和统计期间。本站企业资料是非随机来源样本；没有足够可比指标的岗位不会补造指数。资料和考试皆为本站原创，与目标企业无合作、招聘或合格保证。</p>
       <Link href="/career/companies">查看上市企业、外企及合资企业研究库</Link>
-      <Link href="/assessments">返回综合考试中心</Link>
     </section>
-  </main>;
+  </div>;
 }
