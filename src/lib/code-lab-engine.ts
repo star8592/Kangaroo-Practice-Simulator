@@ -1,5 +1,6 @@
 import type {QuickJSWASMModule} from "quickjs-emscripten";
 import {CODE_CHALLENGES} from "./code-lab";
+import {ENGINEERING_CODE_CHALLENGES} from "./engineering-code-tracks";
 
 export type CodeCheck={
  taskId:string;correct:boolean;passed:number;total:number;message:string;
@@ -20,19 +21,23 @@ function stableSerialize(value:unknown):string{
  };
  return JSON.stringify(normalize(value));
 }
-export function gradeCodeWithQuickJS(QuickJS:QuickJSWASMModule,taskId:string,source:string):CodeCheck{
- const task=CODE_CHALLENGES.find(t=>t.id===taskId);
+export function gradeCodeWithQuickJS(QuickJS:QuickJSWASMModule,taskId:string,source:string,options?:{collectAll?:boolean;sampleOnly?:boolean}):CodeCheck{
+ const task=[...CODE_CHALLENGES,...ENGINEERING_CODE_CHALLENGES].find(t=>t.id===taskId);
  if(!task)throw new Error("UNKNOWN_CODE_TASK");
  if(typeof source!=="string"||!source.trim()||source.length>MAX_SOURCE_LENGTH)
   throw new Error("SOURCE_LENGTH_MUST_BE_1_TO_5000");
+ const cases=options?.sampleOnly?task.cases.slice(0,1):task.cases;
+ const total=cases.length;
+ const collectAll=options?.collectAll===true;
  const started=Date.now();
  const runtime=QuickJS.newRuntime();
  runtime.setMemoryLimit(MAX_VM_MEMORY_BYTES);
  runtime.setMaxStackSize(256*1024);
  let passed=0;
  let sample:CodeCheck["sample"]=null;
+ let firstFailure="";
  try{
-  for(const testCase of task.cases){
+  for(const testCase of cases){
    const ctx=runtime.newContext();
    const deadline=Date.now()+MAX_PER_CASE_MS;
    runtime.setInterruptHandler(()=>Date.now()>deadline);
@@ -47,28 +52,31 @@ export function gradeCodeWithQuickJS(QuickJS:QuickJSWASMModule,taskId:string,sou
      result.error.dispose();
      const msg=error&&typeof error==="object"&&"message" in error?
       String((error as {message:unknown}).message):String(error);
-     return {taskId,correct:false,passed,total:task.cases.length,
-      message:"执行或语法错误："+msg.slice(0,130),sample,elapsedMs:Date.now()-started};
+     const reason="执行或语法错误："+msg.slice(0,130);
+     if(collectAll){if(!firstFailure)firstFailure=reason;continue;}
+     return {taskId,correct:false,passed,total,message:reason,sample,elapsedMs:Date.now()-started};
     }
     const raw=ctx.dump(result.value);
     result.value.dispose();
     let actual:unknown;
     try{actual=JSON.parse(String(raw))}catch{
-     return {taskId,correct:false,passed,total:task.cases.length,
-      message:"函数必须返回可序列化的JSON结果（不能是undefined、循环对象等）。",
-      sample,elapsedMs:Date.now()-started};
+     const reason="函数必须返回可序列化的JSON结果（不能是undefined、循环对象等）。";
+     if(collectAll){if(!firstFailure)firstFailure=reason;continue;}
+     return {taskId,correct:false,passed,total,message:reason,sample,elapsedMs:Date.now()-started};
     }
     if(!sample)sample={input:testCase.input,expected:testCase.expected,actual};
     if(stableSerialize(actual)!==stableSerialize(testCase.expected)){
-     return {taskId,correct:false,passed,total:task.cases.length,
-      message:passed===0?"基础样例未通过，请检查输出类型、顺序和业务规则。":
-       "已通过部分输入，但边界场景不符合要求。请检查空输入、重复或异常状态。",
-      sample,elapsedMs:Date.now()-started};
+     const reason=passed===0?"基础样例未通过，请检查输出类型、顺序和业务规则。":
+      "已通过部分输入，但边界场景不符合要求。请检查空输入、重复或异常状态。";
+     if(collectAll){if(!firstFailure)firstFailure=reason;continue;}
+     return {taskId,correct:false,passed,total,message:reason,sample,elapsedMs:Date.now()-started};
     }
     passed++;
    }finally{ctx.dispose();}
   }
-  return {taskId,correct:true,passed,total:task.cases.length,
-   message:"全部真实执行用例通过（含边界输入）。",sample,elapsedMs:Date.now()-started};
+  return {taskId,correct:passed===total,passed,total,
+   message:passed===total?"全部真实执行用例通过（含边界输入）。":
+    "通过 "+passed+"/"+total+" 组真实执行用例。"+(firstFailure?" "+firstFailure:""),
+   sample,elapsedMs:Date.now()-started};
  }finally{runtime.dispose();}
 }

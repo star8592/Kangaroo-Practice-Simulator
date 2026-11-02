@@ -1,5 +1,6 @@
 import Link from "next/link";
 import styles from "@/app/assessment-center/measurement.module.css";
+import {ENGINEERING_TRACK_LIST} from "@/lib/engineering-code-tracks";
 export const metadata={
  title:"真实技能实训｜SOC THINK",
  description:"与心理与人格测评完全分离的实践训练中心。现开放SQL数据工程与软件工程师JavaScript实操。SQLite与隔离QuickJS WebAssembly运行、实际结果校验。",
@@ -27,6 +28,21 @@ export default function SkillLabsHome(){
     <p>真正编写并运行JavaScript：订单处理、支付统计、重试机制、测试稳定性、故障日志与事件合并，逐题4组实际输入验证。</p>
     <div className={styles.tileInfo}>QuickJS WebAssembly · 独立Worker · 非岗位资格认证</div>
     <Link className={styles.tileLink} href="/skill-labs/code-lab">进入编程实训台 <span aria-hidden="true">→</span></Link>
-   </article></div>
+   </article>
+   <article className={styles.tile}>
+    <div className={styles.tileTop}><span className={styles.tileNumber}>EXAM / SOFTWARE</span><span className={styles.previewBadge}>60分钟模拟</span></div>
+    <h3>软件工程师 · 综合编程笔试</h3>
+    <p>6道跨前端、后端和测试/SRE的代码题，60分钟限时，可跳题、复查与运行公开样例；交卷后逐题真实执行判分。</p>
+    <div className={styles.tileInfo}>6道代码题 · 24组真实判分 · 100分原始成绩</div>
+    <Link className={styles.tileLink} href="/skill-labs/engineering-mock">进入正式模拟考场 <span aria-hidden="true">→</span></Link>
+   </article>
+   {ENGINEERING_TRACK_LIST.map((track,i)=><article key={track.id} className={styles.tile}>
+    <div className={styles.tileTop}><span className={styles.tileNumber}>{String(i+3).padStart(2,"0")} / {track.focus.toUpperCase()}</span><span className={styles.previewBadge}>免费实训</span></div>
+    <h3>{track.name}</h3>
+    <p>{track.subtitle}。四项可运行代码任务，覆盖岗位常见业务边界。</p>
+    <div className={styles.tileInfo}>4项原创代码任务 · 16组真实执行 · 独立Worker</div>
+    <Link className={styles.tileLink} href={"/skill-labs/engineering/"+track.id}>进入岗位专项训练 <span aria-hidden="true">→</span></Link>
+   </article>)}
+   </div>
  </div>;
 }
