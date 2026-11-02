@@ -70,5 +70,5 @@ assert(!/\b(fetch|sendBeacon|localStorage|sessionStorage|XMLHttpRequest)\b/.test
  "no persistence or remote response upload");
 assert(runner.includes("完整作答后才能交卷")&&runner.includes("disabled={!complete}"));
 const index=readFileSync("src/app/assessment-center/page.tsx","utf8");
-for(const id of expected)assert(index.includes('href="/assessment-center/'+id+'"'));
+for(const id of expected)assert(index.includes('id:"'+id+'"'),"career assessment must be included in evidence-driven public catalogue: "+id);
 console.log("CAREER_DISCOVERY=PASS surveys=2 items=54 sjt=24 scenarios=24 dimensions=14 full_scoring=YES privacy=MEMORY_ONLY external_norms=NO");
