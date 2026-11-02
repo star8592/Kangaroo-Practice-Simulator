@@ -137,7 +137,6 @@ test("explicit opt-in sends the current answer and displays a model-grounded fol
 
 test("no AI consent never sends an answer; model outage falls back safely",async({page})=>{
  let posts=0;
- let outage=false;
  await page.route("**/api/career/interviews/followup",async route=>{
   if(route.request().method()==="GET"){
    await route.fulfill({status:200,contentType:"application/json",body:JSON.stringify({enabled:true,provider:"local"})});
