@@ -7,8 +7,8 @@ const configs=[
 test("the free assessment directory exposes three real new assessments and nine evidence records",async({page})=>{
  await page.goto("/assessment-center");
  for(const config of configs)await expect(page.locator('a[href="/assessment-center/'+config.id+'"]')).toBeVisible();
- await expect(page.locator("article")).toHaveCount(6);
- await page.getByText("测评依据与适用范围").click();
+ await expect(page.locator("article")).toHaveCount(9);
+ await page.getByRole("link",{name:"查看全部技术档案"}).click();
  await page.getByRole("link",{name:/查看全部测评技术档案/}).click();
  await expect(page.locator("article")).toHaveCount(9);
  for(const config of configs)await expect(page.getByRole("heading",{name:config.heading})).toBeVisible();
