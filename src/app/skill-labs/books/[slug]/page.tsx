@@ -33,8 +33,11 @@ export default async function TechBookDetailPage({ params }: Params) {
       <h1>{book.title}</h1>
       <p className={s.author}>{book.author}</p>
       <p className={s.lead}>{book.introduction}</p>
-      <a href={book.officialUrl} target="_blank" rel="noopener noreferrer" className={s.primaryLink}>访问作者或项目官网 ↗</a>
-      <p className={s.access}>{book.access}。请遵守原站许可与购买条款。</p>
+      <div className={s.readActions}>
+        <a href={book.officialUrl} target="_blank" rel="noopener noreferrer" className={s.primaryLink}>访问作者或项目官网 ↗</a>
+        {book.officialDownload && <a href={book.officialDownload.url} target="_blank" rel="noopener noreferrer" className={s.downloadLink}>前往官方下载 {book.officialDownload.format} ↗</a>}
+      </div>
+      <p className={s.access}>{book.officialDownload ? "此书已核验作者官网提供免费 PDF。链接直达原站，不由 SOC THINK 托管文件。" : book.access + "；本站未核验可合法下载的整本文件。"} 请遵守原站许可与购买条款。</p>
     </header>
     <div className={s.detailGrid}>
       <div className={s.mainColumn}>
