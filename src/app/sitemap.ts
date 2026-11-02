@@ -3,6 +3,7 @@ import { listTrainingExamProfiles } from "@/lib/training-question-bank";
 import { buildTrainingResourceCatalog } from "@/lib/resource-catalog";
 import { availableResourceHubs, resourceHubPath } from "@/lib/seo-resource-hubs";
 import { CAREER_ORIGINAL_GUIDES } from "@/lib/career-original-guides";
+import { TECH_BOOKS } from "@/lib/tech-books";
 
 export const dynamic = "force-dynamic";
 
@@ -23,6 +24,7 @@ const publicPaths = [
   "/shop",
   "/career",
   "/skill-labs",
+  "/skill-labs/books",
   "/skill-labs/agent-foundations",
   "/career/exams/agent-engineering-paper-2026q4-v1",
   "/skill-labs/webgpu-basics",
@@ -37,7 +39,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const publicGuides = CAREER_ORIGINAL_GUIDES
     .filter(guide => guide.deliveryState === "free-original-material")
     .map(guide => "/career/guides/" + guide.id);
-  return [...new Set([...publicPaths, ...activeHubPaths, ...publicGuides])].map((path) => ({
+  return [...new Set([...publicPaths, ...activeHubPaths, ...publicGuides, ...TECH_BOOKS.map(book => "/skill-labs/books/" + book.slug)])].map((path) => ({
     url: `https://socthink.cn${path}`,
   }));
 }

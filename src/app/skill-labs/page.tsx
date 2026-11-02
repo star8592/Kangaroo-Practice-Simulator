@@ -17,6 +17,13 @@ export default function SkillLabsHome(){
    <div className={styles.sectionHeading}><div><span className={styles.eyebrowDark}>PRACTICE BY DOING</span><h2>已开放的技能实训</h2></div></div>
    <div className={styles.grid}>
    <article className={styles.tile}>
+    <div className={styles.tileTop}><span className={styles.tileNumber}>TECH LIBRARY</span><span className={styles.previewBadge}>免费精选导读</span></div>
+    <h3>技术书库 · 从阅读走向实战</h3>
+    <p>精选并核验的技术原书、作者官网、官方文档和原创中文导读；每本书关联可用实训，不复制第三方书籍全文。</p>
+    <div className={styles.tileInfo}>书籍来源可查 · 中文阅读指引 · 实验与练习入口</div>
+    <Link className={styles.tileLink} href="/skill-labs/books">进入技术书库 <span aria-hidden="true">→</span></Link>
+   </article>
+   <article className={styles.tile}>
     <div className={styles.tileTop}><span className={styles.tileNumber}>WEB 3D / GPU</span><span className={styles.previewBadge}>免费完整实训</span></div>
     <h3>Three.js × WebGPU · 交互式 3D</h3>
     <p>8个原创教学单元、浏览器真实三维场景，切换 WebGPU / WebGL2、观察实例与帧率，下载可独立运行的完整 Vite 工程。</p>
