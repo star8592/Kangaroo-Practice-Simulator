@@ -21,7 +21,7 @@ assert(searchCareerRoles("不存在的职业名称").length===0);
 assert(searchCareerRoles("运营","product-ops").length>=4);
 assert(searchCareerRoles("量化","construction").length===0);
 assert.equal(CAREER_ORIGINAL_GUIDES.length,3);
-assert.equal(CAREER_FORMAL_PAPERS.length,3);
+assert.equal(CAREER_FORMAL_PAPERS.length,4);
 const rolePage=fs.readFileSync("src/app/career/roles/[id]/page.tsx","utf8");
 assert(rolePage.includes("notFound()")&&rolePage.includes("getCareerRole(id)"));
 assert(rolePage.includes("EXACT_PRODUCTS"),"role pages only associate content by explicitly verified training tracks");
@@ -39,4 +39,4 @@ assert(nav.includes("CAREER_ROLE_GROUPS.map"),"category navigation must be funct
 assert(nav.includes("onClick={()=>setCategory(group.id)}"),"category controls must update list");
 assert(nav.includes('href={"/career/roles/"+role.id}'),"every role is clickable");
 assert(!nav.includes("假招聘")&&!nav.includes("在招 270"));
-console.log("CAREER_COMMERCIAL_DIRECTORY=PASS industries=13 roles=270 real_guides=3 real_exams=3 commerce_first=YES research_collapsed=YES");
+console.log("CAREER_COMMERCIAL_DIRECTORY=PASS industries=13 roles=270 real_guides=3 real_exams=4 commerce_first=YES research_collapsed=YES");

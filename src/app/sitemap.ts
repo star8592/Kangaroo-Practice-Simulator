@@ -24,6 +24,7 @@ const publicPaths = [
   "/career",
   "/skill-labs",
   "/skill-labs/agent-foundations",
+  "/career/exams/agent-engineering-paper-2026q4-v1",
   "/skill-labs/webgpu-basics",
   "/skill-labs/sql-lab",
   "/skill-labs/code-lab",

@@ -31,7 +31,7 @@ test("career home puts real goods and exams first, then navigates 13 industries 
   await expect(page.locator("#digital-materials").getByRole("article")).toHaveCount(3);
   await primaryExam.click();
   await expect(page).toHaveURL(/#digital-services$/);
-  await expect(page.locator("#digital-services").getByRole("article")).toHaveCount(3);
+  await expect(page.locator("#digital-services").getByRole("article")).toHaveCount(4);
 
   const directory=page.locator("#career-directory");
   await expect(directory).toBeVisible();

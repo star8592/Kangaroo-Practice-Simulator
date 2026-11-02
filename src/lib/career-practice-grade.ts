@@ -29,7 +29,7 @@ export function buildCareerAssessmentContract(id:string){
     stem:q.prompt,
     source:{
       sourceId:"socthink-original-"+paper.id,rights:"original",
-      originalHash:hash,retrievedAt:"2026-11-01T00:00:00.000Z",
+      originalHash:hash,retrievedAt:(paper.questions[0]?.provenance?.sourceObservedAt??"2026-11-01")+"T00:00:00.000Z",
       publisher:"SOCTHINK原创",
     },
     quality:"publishable",answerEvidenceId:"career-rubric-"+paper.id+"-"+q.id,

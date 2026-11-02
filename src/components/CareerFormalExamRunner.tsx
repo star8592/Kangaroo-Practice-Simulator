@@ -174,7 +174,7 @@ export default function CareerFormalExamRunner({paper}:{paper:CareerPracticeCase
         <li>这是本站原创岗位模拟笔试，不是企业官方真题或招聘流程。</li>
         <li>点击“确认入场”后开始45分钟倒计时；到时自动交卷，服务端同时校验截止时间。</li>
         <li>可以跳题、标记待检查、查看答题卡；交卷前可进入检查页确认未答题。</li>
-        <li>题目在2026-11-01编写，逐题保留原始版本和参考考点的收集日期。</li>
+        <li>题目在{paper.questions[0]?.provenance?.authoredAt??"2026-11-01"}编写，逐题保留原始版本和参考考点的收集日期。</li>
         <li>交卷后立即得到客观题成绩与逐题解析；登录微信可保存到自己的账号历史。</li>
       </ol>
       <label className={styles.checkRule}>

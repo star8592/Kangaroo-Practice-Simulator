@@ -1,8 +1,8 @@
 {
   "bankRevision": 1,
   "observedAt": "2026-11-01",
-  "lastSourceReviewAt": "2026-11-01",
-  "publicationClaim": "与部分2025–2026招聘/笔经公开线索核对出题方向；所有已交付标准模拟题由SOCTHINK原创，未称为企业真题。",
+  "lastSourceReviewAt": "2026-11-03",
+  "publicationClaim": "与部分2025–2026招聘/笔经公开线索核对出题方向；所有已交付标准模拟题由SOCTHINK原创，未称为企业真题。 2026-11-03新增AI Agent工程师专业模拟卷，引用当日核查的MCP/OWASP/Agents/Inspect AI官方技术资料，仅用于考点依据；不复制原教材题目。",
   "refreshPolicy": "追加新来源与新题时保留不可变试卷版本；不得以定时任务执行次数冒充实际发现数。每条必须有原URL、发布时间（未知填null）、采集日期、版权使用状态。",
   "sources": [
     {
@@ -174,6 +174,79 @@
         "数字推理",
         "18分钟",
         "移动端测评"
+      ]
+    },
+    {
+      "id": "mcp2026",
+      "url": "https://blog.modelcontextprotocol.io/posts/2026-07-28/",
+      "title": "MCP 2026-07-28 Specification 发布与关键变更",
+      "platform": "Model Context Protocol",
+      "sourceKind": "official-protocol-release",
+      "publisher": "MCP项目维护者",
+      "publishedAt": "2026-07-28",
+      "observedAt": "2026-11-03",
+      "reportedExamDate": null,
+      "rights": "methodology-reference",
+      "verifiedLevel": "project-official",
+      "focus": [
+        "无状态核心",
+        "工具发现与请求头",
+        "授权发行者校验"
+      ]
+    },
+    {
+      "id": "owasp-agent",
+      "url": "https://genai.owasp.org/2026/10/08/genai-and-agentic-ai-exploit-roundup-q3-2026/",
+      "title": "OWASP GenAI与Agentic AI 2026 Q3案例综述",
+      "platform": "OWASP GenAI Security Project",
+      "sourceKind": "official-security-review",
+      "publisher": "OWASP",
+      "publishedAt": "2026-10-08",
+      "observedAt": "2026-11-03",
+      "reportedExamDate": null,
+      "rights": "methodology-reference",
+      "verifiedLevel": "project-official",
+      "focus": [
+        "提示注入",
+        "工具滥用",
+        "身份权限",
+        "敏感数据"
+      ]
+    },
+    {
+      "id": "hf-agents",
+      "url": "https://huggingface.co/learn/agents-course/en/unit1/introduction",
+      "title": "Hugging Face Agents Course 基础单元",
+      "platform": "Hugging Face",
+      "sourceKind": "project-official-course",
+      "publisher": "Hugging Face",
+      "publishedAt": null,
+      "observedAt": "2026-11-03",
+      "reportedExamDate": null,
+      "rights": "reference-topics-only",
+      "verifiedLevel": "project-official",
+      "focus": [
+        "Thought-Action-Observation",
+        "模型与工具",
+        "Agent与工作流"
+      ]
+    },
+    {
+      "id": "agent-eval",
+      "url": "https://inspect.aisi.org.uk/",
+      "title": "Inspect AI 评测框架官方文档",
+      "platform": "UK AI Security Institute",
+      "sourceKind": "project-official-evaluation-documentation",
+      "publisher": "UK AI Security Institute",
+      "publishedAt": null,
+      "observedAt": "2026-11-03",
+      "reportedExamDate": null,
+      "rights": "methodology-reference",
+      "verifiedLevel": "project-official",
+      "focus": [
+        "可复现评测",
+        "任务与评分器",
+        "独立判分与结果"
       ]
     }
   ]
