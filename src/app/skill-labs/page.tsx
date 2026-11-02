@@ -16,8 +16,8 @@ export default function SkillLabsHome(){
    <div className={styles.sectionHeading}><div><span className={styles.eyebrowDark}>PRACTICE BY DOING</span><h2>已开放的技能实训</h2></div></div>
    <div className={styles.grid}><article className={styles.tile}>
     <div className={styles.tileTop}><span className={styles.tileNumber}>01 / DATA</span><span className={styles.previewBadge}>免费实训</span></div>
-    <h3>SQL 数据分析 · 4项真实任务</h3>
-    <p>筛选订单、按渠道汇总、跨表关联与聚合判断。浏览器内独立 SQLite 真正执行两组数据并核验结果。</p>
+    <h3>SQL 数据工程 · 8项真实任务</h3>
+    <p>从订单筛选与多表关联，到日期趋势、支付退款对账、未付款客户识别和城市汇总。浏览器内 SQLite 真正执行三组原创数据并核验结果。</p>
     <div className={styles.tileInfo}>SQLite WebAssembly · 无生产数据 · 非岗位资格认证</div>
     <Link className={styles.tileLink} href="/skill-labs/sql-lab">进入独立 SQL 实训台 <span aria-hidden="true">→</span></Link>
    </article></div>

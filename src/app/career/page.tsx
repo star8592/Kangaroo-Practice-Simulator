@@ -98,7 +98,7 @@ export default async function CareerDemandPage({searchParams}:{searchParams:Sear
           <Link href="/assessment-center/career-aptitude-40">开始模拟</Link>
         </div>
         <div className={styles.quickTestItem}>
-          <strong>数据工程师 · SQL实操</strong><span>4项真实SQL任务</span>
+          <strong>数据工程师 · SQL实操</strong><span>8项真实SQL任务</span>
           <Link href="/skill-labs/sql-lab">进入实操</Link>
         </div>
       </div>
