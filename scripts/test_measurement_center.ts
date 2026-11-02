@@ -8,6 +8,8 @@ import {
 assert.deepEqual(validateMeasurementRegistry(),[],"instrument provenance, item keys and dimension counts");
 assert.equal(INSTRUMENTS.length,2);
 assert.equal(CENTER_SECTIONS.length,6);
+assert.deepEqual(CENTER_SECTIONS.map(x=>x.icon),["01","02","03","04","05","06"],
+  "public sections must use distinct consecutive numbers and React keys");
 assert(CENTER_SECTIONS.some(s=>"route" in s && s.route==="/assessment-center/career-aptitude-40"));
 assert.equal(CENTER_SECTIONS.filter(x=>"instrumentId" in x).length,2);
 const career=getInstrument("career-interest-exploration-30")!;
