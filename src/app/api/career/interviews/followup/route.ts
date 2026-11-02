@@ -17,22 +17,26 @@ const json=(data:unknown,status=200)=>NextResponse.json(data,{status,headers:{
  "Cache-Control":"private, no-store","X-Content-Type-Options":"nosniff"
 }});
 const buckets=new Map<string,{window:number;count:number}>();
+// A modest global circuit-breaker limits model spend even if client IPs are spoofed.
+let globalBudget={window:0,count:0};
 function withinRateLimit(ip:string){
  const now=Date.now(),key=ip.slice(0,100);
+ if(now-globalBudget.window>=3600000)globalBudget={window:now,count:0};
+ if(globalBudget.count>=120)return false;
  if(buckets.size>2000){
   for(const [k,v] of buckets)if(now-v.window>60000)buckets.delete(k);
  }
  const old=buckets.get(key);
- if(!old||now-old.window>=60000){buckets.set(key,{window:now,count:1});return true;}
+ if(!old||now-old.window>=60000){buckets.set(key,{window:now,count:1});globalBudget.count++;return true;}
  if(old.count>=6)return false;
- old.count++;return true;
+ old.count++;globalBudget.count++;return true;
 }
 function isSameOrigin(req:NextRequest){
  const origin=req.headers.get("origin");
  if(!origin)return false;
  try{
   const url=new URL(origin);
-  return url.origin===req.nextUrl.origin;
+  return url.origin===req.nextUrl.origin||url.origin==="https://socthink.cn";
  }catch{return false;}
 }
 export async function GET(){
