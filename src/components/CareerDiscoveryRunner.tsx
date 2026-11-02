@@ -5,6 +5,7 @@ import {
 } from "@/lib/career-exploration-bank";
 import {SJT_ITEMS,SJT_SKILLS,SJT_VERSION,scoreSjt} from "@/lib/workplace-sjt-bank";
 import styles from "@/app/assessment-center/measurement.module.css";
+import AssessmentTrustBrief from "@/components/AssessmentTrustBrief";
 type Stage="intro"|"questions"|"review"|"result";
 type Props={instrumentId:"work-values-30"|"work-style-24"|"workplace-sjt-24"};
 const SCALE=["非常不符合","比较不符合","说不清 / 一般","比较符合","非常符合"];
@@ -47,6 +48,7 @@ export default function CareerDiscoveryRunner({instrumentId}:Props){
   </header>
   {stage==="intro"&&<section className={styles.panel}>
     <h2>正式开始前</h2>
+    <AssessmentTrustBrief variant="instrument" assessmentId={instrumentId}/>
     <p className={styles.lead}>{isSjt?
       "本练习全部是原创工作案例，按预设的参考策略给出逐题解释。参考策略尚未经过独立岗位专家组评定，不是能用于实际招聘筛选的标准化SJT，也不能推算录取率。":
       "请根据真实想法或过去的工作经历作答。每个维度只显示本次回答的均值及具体行动建议，不提供中国常模、职业优劣排名、心理诊断。"}
