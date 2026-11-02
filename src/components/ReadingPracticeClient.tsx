@@ -2,6 +2,7 @@
 import {useState} from "react";
 import {READING_PASSAGES,READING_QUESTIONS,READING_SKILLS,scoreReading} from "@/lib/reading-practice";
 import styles from "@/app/assessment-center/measurement.module.css";
+import AssessmentTrustBrief from "@/components/AssessmentTrustBrief";
 
 type Stage="intro"|"questions"|"report";
 export default function ReadingPracticeClient(){
@@ -23,6 +24,7 @@ export default function ReadingPracticeClient(){
   </header>
   {stage==="intro"&&<section className={styles.panel}>
    <h2>先了解本次练习</h2>
+   <AssessmentTrustBrief variant="instrument" assessmentId="reading-practice-16"/>
    <p className={styles.lead}>本练习是由 SOCTHINK 编写的阅读任务，不是心理量表，也不是与全国学生比较的标准化阅读水平检测。报告仅反映你对这16道题的实际完成情况。</p>
    <div className={styles.exploration}><h3>四个阅读动作</h3><ul>{READING_SKILLS.map(s=><li key={s.id}><strong>{s.name}</strong>：{s.interpretation}</li>)}</ul></div>
    <dl className={styles.details}>
