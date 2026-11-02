@@ -58,7 +58,7 @@ const PROCUREMENT_TERMS:readonly Term[]=[
  {label:"SAP",pattern:/\bsap\b/i},
  {label:"Excel",pattern:/\bexcel\b/i},
  {label:"数据分析",pattern:/数据分析|数据建模/u},
- {label:"TCO",pattern:/\btco\b|总拥有成本/u},
+ {label:"TCO",pattern:/\btco\b|总拥有成本/iu},
 ];
 
 function getTerms(profileId:string):readonly Term[]{
