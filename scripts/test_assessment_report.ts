@@ -42,6 +42,7 @@ const offer=fs.readFileSync("src/app/api/assessment-reports/offer/route.ts","utf
 assert(offer.includes("amount_minor::text"),"published price must come from billing SQL");
 assert(offer.includes("enabled=true"));
 assert(offer.includes("nativeCheckoutAllowed()"));
+assert(offer.includes("nativeCheckoutAllowedForBuyer(loggedIn?account?.id:null,offer.id)"),"pilot offer must be scoped to signed-in buyer and exact SKU");
 const ui=fs.readFileSync("src/components/MeasurementRunner.tsx","utf8");
 assert(ui.includes("你的免费简要结果") && ui.includes("ReportPremiumPanel"));
 assert(!ui.includes("打印本页报告"),"old free detailed print shortcut removed");
