@@ -6,6 +6,7 @@ import {
  scoreAdvancedReasoning,type AdvancedReasoningReport,
 } from "@/lib/advanced-reasoning-bank";
 import styles from "@/app/assessment-center/measurement.module.css";
+import AssessmentExamIdentity from "@/components/AssessmentExamIdentity";
 import AssessmentTrustBrief from "@/components/AssessmentTrustBrief";
 
 type Stage="intro"|"questions"|"review"|"report";
@@ -125,6 +126,7 @@ export default function AdvancedReasoningRunner(){
    </details>
   </section>}
   {(stage==="questions"||stage==="review")&&<section className={styles.panel} aria-label="高级逻辑试卷作答">
+   <AssessmentExamIdentity assessmentId="advanced-reasoning-40" mode="task"/>
    <div className={styles.aptitudeExamBar}>
     <div><strong>已答 {answered}/{TOTAL}</strong><span>待复查 {marked} · 未答 {TOTAL-answered}</span></div>
     <div className={seconds<=300?styles.aptitudeTimeDanger:styles.aptitudeTime} role="timer" aria-label="剩余时间">{remainingText(seconds)}</div>
