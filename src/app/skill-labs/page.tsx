@@ -2,7 +2,7 @@ import Link from "next/link";
 import styles from "@/app/assessment-center/measurement.module.css";
 export const metadata={
  title:"真实技能实训｜SOC THINK",
- description:"与心理与人格测评完全分离的实践训练中心。现开放 SQL 数据分析实训，基于实际 SQLite 执行与双数据集验证。",
+ description:"与心理与人格测评完全分离的实践训练中心。现开放SQL数据工程与软件工程师JavaScript实操。SQLite与隔离QuickJS WebAssembly运行、实际结果校验。",
  alternates:{canonical:"/skill-labs"}
 };
 export default function SkillLabsHome(){
@@ -20,6 +20,13 @@ export default function SkillLabsHome(){
     <p>从订单筛选与多表关联，到日期趋势、支付退款对账、未付款客户识别和城市汇总。浏览器内 SQLite 真正执行三组原创数据并核验结果。</p>
     <div className={styles.tileInfo}>SQLite WebAssembly · 无生产数据 · 非岗位资格认证</div>
     <Link className={styles.tileLink} href="/skill-labs/sql-lab">进入独立 SQL 实训台 <span aria-hidden="true">→</span></Link>
+   </article>
+   <article className={styles.tile}>
+    <div className={styles.tileTop}><span className={styles.tileNumber}>02 / SOFTWARE</span><span className={styles.previewBadge}>免费实操</span></div>
+    <h3>软件工程师 · 6项代码任务</h3>
+    <p>真正编写并运行JavaScript：订单处理、支付统计、重试机制、测试稳定性、故障日志与事件合并，逐题4组实际输入验证。</p>
+    <div className={styles.tileInfo}>QuickJS WebAssembly · 独立Worker · 非岗位资格认证</div>
+    <Link className={styles.tileLink} href="/skill-labs/code-lab">进入编程实训台 <span aria-hidden="true">→</span></Link>
    </article></div>
  </div>;
 }
