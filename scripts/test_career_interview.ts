@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import {INTERVIEW_PROFILES,getInterviewProfile,selectFollowup,buildInterviewReview,validateInterviewProfiles} from "../src/lib/career-interview-scenarios";
+import {EMPTY_INTERVIEW_JOB_CONTEXT,INTERVIEW_JOB_LIMITS,isInterviewJobContext,analyzeInterviewJobContext,buildJobFocusedFollowup} from "../src/lib/career-interview-context";
 assert.deepEqual(validateInterviewProfiles(),[]);
 assert.equal(INTERVIEW_PROFILES.length,2);
 assert.equal(new Set(INTERVIEW_PROFILES.map(p=>p.id)).size,2);
@@ -27,3 +28,39 @@ for(const profile of INTERVIEW_PROFILES){
 assert.equal(getInterviewProfile("invalid"),undefined);
 assert.notEqual(INTERVIEW_PROFILES[0].questions[2].prompt,INTERVIEW_PROFILES[1].questions[2].prompt);
 console.log("CAREER_INTERVIEW_STRUCTURED=PASS profiles=2 main_questions=10 dynamic_branches=4 per_question=YES evidence_sections=30 truthful_report=YES");
+
+const campusContext={
+ targetRole:"React前端工程师",
+ jobDescription:"要求熟悉 TypeScript 与 React，具备单元测试和Linux项目经验。",
+ experienceSummary:"我在课程项目中使用React开发页面，编写过单元测试。",
+};
+const campusAnalysis=analyzeInterviewJobContext("campus-software",campusContext);
+assert.deepEqual(campusAnalysis.signals,["TypeScript","React","Linux","单元测试"]);
+assert.deepEqual(campusAnalysis.mentioned,["React","单元测试"]);
+assert.deepEqual(campusAnalysis.notMentioned,["TypeScript","Linux"]);
+assert(isInterviewJobContext(campusContext));
+assert(!isInterviewJobContext({...campusContext,jobDescription:"x".repeat(INTERVIEW_JOB_LIMITS.jobDescription+1)}));
+assert(!isInterviewJobContext({...campusContext,experienceSummary:null}));
+const firstQuestion=INTERVIEW_PROFILES[0].questions[0];
+const initialAnswer="我做过一个简单的课程项目。";
+const baseFollowup=selectFollowup(firstQuestion,initialAnswer).text;
+const focused=buildJobFocusedFollowup("campus-software",0,baseFollowup,initialAnswer,campusContext);
+assert(focused.includes(baseFollowup));
+assert(focused.includes("TypeScript"));
+assert(focused.includes("如果尚无相关经历"));
+assert(!focused.includes("React前端工程师")); // The role name is not misrepresented as an assessed skill.
+assert.equal(buildJobFocusedFollowup("campus-software",0,baseFollowup,initialAnswer,EMPTY_INTERVIEW_JOB_CONTEXT),baseFollowup);
+const procurementContext={
+ targetRole:"社招采购经理",
+ jobDescription:"供应商管理、采购谈判、库存周转、SAP ERP和TCO分析经验",
+ experienceSummary:"我负责供应商管理，亲自推动商务谈判并使用SAP做采购台账。",
+};
+const procurementAnalysis=analyzeInterviewJobContext("social-procurement",procurementContext);
+assert(procurementAnalysis.signals.includes("供应商管理"));
+assert(procurementAnalysis.signals.includes("SAP"));
+assert(procurementAnalysis.signals.includes("TCO"));
+assert(procurementAnalysis.mentioned.includes("供应商管理"));
+assert(procurementAnalysis.notMentioned.includes("TCO"));
+assert(buildJobFocusedFollowup("social-procurement",3,"采购追问","我优化了供应链",procurementContext).includes("采购追问"));
+assert.deepEqual(analyzeInterviewJobContext("unknown",procurementContext).signals,[]);
+console.log("CAREER_INTERVIEW_JD_CONTEXT=PASS two_cohorts=YES lexical_only=YES optional=YES retention_limits=YES");
