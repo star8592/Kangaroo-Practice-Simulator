@@ -442,3 +442,13 @@
  .question legend{font-size:21px}
  .examIdentity{margin-top:0;padding:6px 0 11px}
 }
+
+
+/* Compact evidence banner below the catalogue header; no giant marketing text. */
+.trustCompact{display:flex;align-items:center;justify-content:space-between;gap:24px;padding:14px 20px;margin:15px 0 4px;border:1px solid #d4e0ea;border-radius:10px;background:#f9fbfd}
+.trustCompact h2{font-size:16px;line-height:1.4;margin:0 0 4px;color:#183d60}
+.trustCompact p{font-size:13px;line-height:1.55;color:#536d82;margin:0}
+.trustCompactLinks{display:flex;flex-wrap:wrap;gap:9px 17px;justify-content:flex-end}
+.trustCompactLinks a{font-size:13px;color:#195c91;text-decoration:underline;text-underline-offset:3px;font-weight:750;white-space:nowrap}
+.trustBriefEvidence+.trustBriefEvidence{margin-left:14px}
+@media(max-width:850px){.trustCompact{align-items:flex-start;flex-direction:column;gap:10px}.trustCompactLinks{justify-content:flex-start}}
