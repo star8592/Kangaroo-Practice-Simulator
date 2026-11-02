@@ -16,7 +16,13 @@ export default function AboutAssessmentCenter(){
   <section className={styles.methodCard}>
    <h2>我们是谁，测评从哪里来</h2>
    <p>SOCTHINK 是本站测评产品的开发与运营品牌。题目分为自主原创任务和注明来源的研究性自评题项；部分训练题的分类参照公开的专业测评方法，但不意味着获得原测验出版机构的授权、认证或推荐。</p>
-   <p>品牌名称不等同于法律上的公司登记主体。工商注册信息、机构资质、专家参与及第三方认证，应以真实核验资料为准；本站不会编造合作机构或专家背书。</p>
+   <div className={styles.details}>
+    <div><dt>网站公示主体</dt><dd>青梧未来（武汉）人工智能应用软件有限公司</dd></div>
+    <div><dt>网站公示备案号</dt><dd>鄂ICP备2026004372号</dd></div>
+    <div><dt>信息出处</dt><dd><a href="https://socthink.cn/assessments" target="_blank" rel="noopener noreferrer">SOCTHINK 综合考试页面页脚（网站自行公示）</a></dd></div>
+    <div><dt>独立核验</dt><dd><a href="https://beian.miit.gov.cn/#/Integrated/index" target="_blank" rel="noopener noreferrer">工信部 ICP 备案查询入口</a>（以官方实时查询为准）</dd></div>
+   </div>
+   <p>以上公司名称和备案号取自本站公开页面页脚，尚不能代替工商注册信息或实时备案比对；专家参与、心理测量资质及第三方认证如无证据，不会虚构。</p>
   </section>
   <section className={styles.methodCard}>
    <h2>我们怎样把测评做专业</h2>
