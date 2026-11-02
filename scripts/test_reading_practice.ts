@@ -8,7 +8,7 @@ assert.deepEqual(validateEvidenceRegistry(),[]);
 assert.equal(READING_PASSAGES.length,4);
 assert.equal(READING_QUESTIONS.length,16);
 assert.equal(READING_SKILLS.length,4);
-assert.equal(ASSESSMENT_EVIDENCE.length,4);
+assert.equal(ASSESSMENT_EVIDENCE.length,7);
 assert.equal(CENTER_SECTIONS.filter(s=>"route" in s||"instrumentId" in s).length,5);
 for(const q of READING_QUESTIONS){
  const source=READING_PASSAGES.find(p=>p.id===q.passageId);
@@ -44,4 +44,4 @@ for(const f of ["src/app/assessment-center/reading-practice-16/page.tsx","src/ap
 const ui=fs.readFileSync("src/components/ReadingPracticeClient.tsx","utf8");
 assert(/监护人/.test(ui));
 assert(!/fetch\(|localStorage|sessionStorage|sendBeacon|XMLHttpRequest/.test(ui),"reading answers remain in memory");
-console.log("READING_CENTER=PASS passages=4 original_items=16 evidence_quotes=16 dimensions=4 scores=DETERMINISTIC norms=NONE storage=MEMORY_ONLY products=4");
+console.log("READING_CENTER=PASS passages=4 original_items=16 evidence_quotes=16 dimensions=4 scores=DETERMINISTIC norms=NONE storage=MEMORY_ONLY products=7");

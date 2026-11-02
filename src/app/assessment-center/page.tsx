@@ -3,7 +3,7 @@ import {CENTER_SECTIONS,getInstrument} from "@/lib/measurement-center";
 import styles from "./measurement.module.css";
 export const metadata={
   title:"智量测评中心｜招聘通用能力、逻辑推理、职业兴趣与人格｜SOCTHINK",
-  description:"职业与科学测评：原创40题招聘通用能力模拟、逻辑推理、大五人格、职业兴趣与阅读理解。明确题项来源、评分与研究验证边界。",
+  description:"免费职业价值观、工作方式、情境判断、招聘通用能力、逻辑推理、大五人格、职业兴趣与阅读训练，注明题项来源和非标准化边界。",
   alternates:{canonical:"/assessment-center"},
 };
 export default function MeasurementCenterPage(){
@@ -26,6 +26,13 @@ export default function MeasurementCenterPage(){
           <h3>{section.title}</h3><p>{section.summary}</p>
           <div className={route?styles.tileInfo:styles.tileMuted}>{detail}</div>
           {route&&<Link className={styles.tileLink} href={route}>{instrument?"开始测评":"开始练习"} <span aria-hidden="true">→</span></Link>}
+          {section.title==="职业兴趣与发展"&&<div className={styles.extraAssessmentLinks} aria-label="职业探索专项">
+            <Link href="/assessment-center/work-values-30">职业价值观 · 30题</Link>
+            <Link href="/assessment-center/work-style-24">工作方式 · 24题</Link>
+          </div>}
+          {section.title==="求职通用能力"&&<div className={styles.extraAssessmentLinks} aria-label="情境判断专项">
+            <Link href="/assessment-center/workplace-sjt-24">职场情境判断 · 24题</Link>
+          </div>}
         </article>;
       })}
     </div>
