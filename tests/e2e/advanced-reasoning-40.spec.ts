@@ -71,7 +71,9 @@ test("the publisher disclosure page explains origin without fabricated endorseme
  const response=await page.goto("/assessment-center/about");
  expect(response?.status()).toBe(200);
  await expect(page.getByRole("heading",{name:"让每一次测评，都有依据可查。"})).toBeVisible();
- await expect(page.getByText(/品牌名称不等同于法律上的公司登记主体/)).toBeVisible();
+ await expect(page.getByText("青梧未来（武汉）人工智能应用软件有限公司")).toBeVisible();
+ await expect(page.getByText("鄂ICP备2026004372号")).toBeVisible();
+ await expect(page.getByRole("link",{name:/工信部 ICP 备案查询入口/})).toBeVisible();
  await expect(page.getByRole("link",{name:/查看全部测评技术档案/})).toBeVisible();
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
 });
