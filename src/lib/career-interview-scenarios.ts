@@ -62,7 +62,7 @@ export const INTERVIEW_PROFILES:readonly InterviewProfile[]=[
   ]},
 ];
 export function getInterviewProfile(id:string):InterviewProfile|undefined{return INTERVIEW_PROFILES.find(p=>p.id===id);}
-export type InterviewExchange={id:string;answer:string;followup:string;followupAnswer:string;selfChecked:readonly string[]};
+export type InterviewExchange={id:string;answer:string;followup:string;followupAnswer:string;selfChecked:readonly string[];followupMode?:"semantic"|"rule";followupEvidence?:string;followupReason?:string};
 export function selectFollowup(q:InterviewQuestion,answer:string):{label:string;text:string}{
  const value=answer.trim();
  if(value.length<65)return {label:"需要补充背景",text:q.followups.brief};
@@ -80,7 +80,7 @@ export function buildInterviewReview(profile:InterviewProfile,entries:Readonly<R
   const relevant=q.evidence.filter(e=>checked.has(e.id));
   const missing=q.evidence.filter(e=>!checked.has(e.id));
   return {id:q.id,phase:q.phase,answered,answer:a?.answer??"",followup:a?.followup??"",
-   followupAnswer:a?.followupAnswer??"",selfReviewed:relevant.map(e=>e.label),improvement:missing.map(e=>e.action)};
+   followupAnswer:a?.followupAnswer??"",followupMode:a?.followupMode??"rule",followupEvidence:a?.followupEvidence??"",followupReason:a?.followupReason??"",selfReviewed:relevant.map(e=>e.label),improvement:missing.map(e=>e.action)};
  });
  return {title:profile.title,questions,completed:questions.filter(q=>q.answered).length,
   total:questions.length,practicePoints:questions.flatMap(q=>q.improvement).slice(0,6)};
