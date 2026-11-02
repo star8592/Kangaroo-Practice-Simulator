@@ -37,6 +37,13 @@ export const ASSESSMENT_EVIDENCE:readonly EvidenceRecord[]=[
   audience:"18岁及以上成年人训练",evidenceStatus:"参考策略尚未经过多名独立职业专家盲审，未建立有效性与公平性。",
   limitations:"不能作为经标定的正式SJT、心理测评、企业员工筛选、录用或晋升判断。",
   normAvailable:false,fullReportOffer:"not-offered"},
+ {id:"advanced-reasoning-40",name:"高级逻辑与批判性推理 · 40题",path:"/assessment-center/advanced-reasoning-40",version:"advanced-reasoning-original-20261102-v1",
+  category:"原创任务练习",source:"SOCTHINK原创40道文字、条件、数列与证据题。分类参考公开SHL、Pearson TalentLens及美国OPM的推理能力描述。",
+  permission:"全部题干、选项、答案与解析均自主编写；不是SHL Verify、Watson-Glaser、OPM或其他商业测验的官方题。",
+  scoring:"5类各8题，固定45分钟，40题单选；每题1分，未答或答错0分；支持暂停页面恢复、自动到时交卷、逐题解释。",
+  audience:"18岁及以上成年人逻辑与求职训练",evidenceStatus:"题库结构、答案均衡、评分、空题及完整模拟流程由自动化核查；尚未经独立心理测量验证和专家联合内容审校。",
+  limitations:"不能作为标准化IQ、招聘资格、潜能等级、人群百分位、临床诊断或实际录取预测。",
+  normAvailable:false,fullReportOffer:"not-offered"},
  {id:"reasoning-practice-20",name:"认知推理任务练习 · 20题",path:"/assessment-center/reasoning-practice-20",version:"reasoning-original-v1",
  category:"原创任务练习",source:"SOCTHINK 原创题项：数量、逻辑、方位、信息判断。",
  permission:"平台自主编写题目，不复制标准 IQ 测验。",
@@ -59,7 +66,7 @@ export function validateEvidenceRegistry():string[]{
   if(e.normAvailable||!e.evidenceStatus||!e.scoring||!e.version)errors.push("MISSING_OR_UNSAFE:"+e.id);
   if(!e.path.startsWith("/assessment-center/"))errors.push("INVALID_PATH:"+e.id);
  }
- if(ASSESSMENT_EVIDENCE.length!==7)errors.push("EXPECTED_SEVEN_MEASUREMENT_PRODUCTS");
+ if(ASSESSMENT_EVIDENCE.length!==8)errors.push("EXPECTED_EIGHT_MEASUREMENT_PRODUCTS");
  if(ASSESSMENT_EVIDENCE.filter(x=>x.fullReportOffer==="optional-after-verification").length!==2)
    errors.push("EXPECTED_TWO_OPTIONAL_REPORT_PRODUCTS");
  return errors;

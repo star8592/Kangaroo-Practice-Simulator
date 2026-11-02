@@ -10,7 +10,7 @@ test("the free assessment directory exposes three real new assessments and seven
  await expect(page.locator("article")).toHaveCount(6);
  await page.getByText("测评依据与适用范围").click();
  await page.getByRole("link",{name:/查看全部测评技术档案/}).click();
- await expect(page.locator("article")).toHaveCount(7);
+ await expect(page.locator("article")).toHaveCount(8);
  for(const config of configs)await expect(page.getByRole("heading",{name:config.heading})).toBeVisible();
 });
 for(const config of configs){

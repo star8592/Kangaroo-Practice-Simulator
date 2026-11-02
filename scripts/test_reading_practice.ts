@@ -8,7 +8,7 @@ assert.deepEqual(validateEvidenceRegistry(),[]);
 assert.equal(READING_PASSAGES.length,4);
 assert.equal(READING_QUESTIONS.length,16);
 assert.equal(READING_SKILLS.length,4);
-assert.equal(ASSESSMENT_EVIDENCE.length,7);
+assert.equal(ASSESSMENT_EVIDENCE.length,8);
 assert.equal(CENTER_SECTIONS.filter(s=>"route" in s||"instrumentId" in s).length,5);
 for(const q of READING_QUESTIONS){
  const source=READING_PASSAGES.find(p=>p.id===q.passageId);
