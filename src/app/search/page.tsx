@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { homepageUpdates, matchDiscoveryEntries, publicDiscoveryEntries, type DiscoveryEntry, type DiscoveryKind } from "@/lib/site-discovery";
+import { matchDiscoveryEntries, publicDiscoveryEntries, type DiscoveryEntry, type DiscoveryKind } from "@/lib/site-discovery";
 import { listTrainingExamProfiles } from "@/lib/training-question-bank";
 import { buildTrainingResourceCatalog, filterTrainingResources } from "@/lib/resource-catalog";
 import { listStoreProducts } from "@/lib/store-products";

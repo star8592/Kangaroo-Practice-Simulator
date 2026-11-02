@@ -37,7 +37,7 @@ export default async function CareerDemandPage({searchParams}:{searchParams:Sear
     searchCareerDemand("",x.id).reduce((n,g)=>n+g.signals.length,0)));
   return <main className={styles.shell}>
     <nav className={styles.breadcrumb} aria-label="位置">
-      <Link href="/assessments">综合考试</Link><span>/</span><span>职业岗位与产品</span>
+      <Link href="/">首页</Link><span>/</span><span>职业岗位</span>
     </nav>
     <section className={commerce.commercialHero} aria-label="职业资料与考试服务入口">
       <div className={commerce.heroLead}>

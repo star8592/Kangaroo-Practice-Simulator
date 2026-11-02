@@ -28,7 +28,7 @@ const lookup=new Map(ASSESSMENT_EVIDENCE.map(x=>[x.id,x]));
 export default function MeasurementCenterPage(){
  return <div className={styles.shell}>
   <nav className={styles.breadcrumb} aria-label="位置">
-   <Link href="/assessments">全部考试</Link><span> / </span>测评中心
+   <Link href="/">首页</Link><span> / </span>测评中心
   </nav>
   <header className={styles.catalogHero}>
    <div className={styles.catalogHeroMain}>
