@@ -17,7 +17,7 @@ export default function AssessmentTrustBrief({variant,assessmentId}:Props){
    <Link href="/assessment-center/about">了解测评中心与开发原则 →</Link>
   </div>
   <div className={styles.trustBriefGrid}>
-   <div><strong>开发与责任</strong><p>SOCTHINK 自主建设、维护测评与训练内容；不是 SHL、Pearson 或招聘机构的官方考试。</p></div>
+   <div><strong>开发与责任</strong><p>SOCTHINK 自主建设测评服务；网站公示运营主体：青梧未来（武汉）人工智能应用软件有限公司。</p></div>
    <div><strong>题目与方法</strong><p>{record?record.source:advanced?"40 道原创题，覆盖五类推理任务；领域分类参照公开专业资料。":"每项测评分别说明题项来源、许可、版本、计分方式与适用对象。"}</p></div>
    <div><strong>结果如何解释</strong><p>{record?record.limitations:advanced?"只解释本卷正确数、错题和练习方向；不报告 IQ、常模排名或录取预测。":"将经过验证的测评与原创训练分开标识；无证据不展示人群排名。"}</p></div>
   </div>
