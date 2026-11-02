@@ -40,10 +40,12 @@ test("mobile menu reaches even not-yet-live domains without a hidden strip",asyn
   await expect(nav.getByRole("link",{name:/真题资料/})).toBeVisible();
   await expect(nav.getByRole("link",{name:/计算与数学训练/})).toBeVisible();
   await expect(nav.getByRole("link",{name:"考试管理"})).toBeVisible();
-  await expect(nav.locator('a[href^="/assessments#domain-"]')).toHaveCount(7);
-  await nav.locator('a[href="/assessments#domain-professional"]').click();
-  await expect(page).toHaveURL(/\/assessments#domain-professional$/);
+  await expect(nav.locator('a[href^="/assessments#domain-"]')).toHaveCount(0);
+  await nav.getByRole("link",{name:"全部考试"}).click();
+  await expect(page).toHaveURL(/\/assessments$/);
   await expect(page.getByRole("button",{name:"打开导航菜单"})).toHaveAttribute("aria-expanded","false");
+  await page.locator('a[href="/assessments#domain-professional"]').first().click();
+  await expect(page).toHaveURL(/\/assessments#domain-professional$/);
   await expect(page.locator('#domain-professional').getByRole("heading",{name:"职业资格与公职考试"})).toBeVisible();
 });
 

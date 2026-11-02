@@ -64,13 +64,13 @@ export const EXAM_DIRECTORY:readonly ExamDirectoryGroup[]=[
     topic("university-english","大学专业英语","University academic English"),
   ]},
   {domainId:"career",topics:[
-    topic("sql","SQL 数据库实操","SQL practical assessment"),
+    topic("sql","SQL 数据库实操","SQL practical assessment","/skill-labs/sql-lab"),
     topic("data-cleaning","数据清洗","Data cleaning"),
     topic("python","Python 编程","Python programming"),
     topic("analysis","数据分析与统计","Data analysis & statistics"),
     topic("excel","Excel 与办公技能","Spreadsheet & office skills"),
-    topic("ai-application","AI 应用实操","Practical AI tools"),
-    topic("job-interviews","岗位模拟面试","Job interview simulations"),
+    topic("ai-application","AI 应用实操","Practical AI tools","/skill-labs/agent-foundations"),
+    topic("job-interviews","岗位模拟面试","Job interview simulations","/career/interviews"),
   ]},
   {domainId:"professional",topics:[
     topic("guokao","公务员国考 / 省考","Civil service examinations"),
@@ -84,11 +84,11 @@ export const EXAM_DIRECTORY:readonly ExamDirectoryGroup[]=[
     topic("securities","证券与基金从业资格","Securities and fund qualifications"),
   ]},
   {domainId:"interest",topics:[
-    topic("career-interest","职业兴趣探索","Career interest exploration"),
-    topic("aptitude","逻辑推理与基础能力","Reasoning and aptitude"),
+    topic("career-interest","职业兴趣探索","Career interest exploration","/assessment-center/career-interest-exploration-30"),
+    topic("aptitude","逻辑推理与基础能力","Reasoning and aptitude","/assessment-center/advanced-reasoning-40"),
     topic("learning-style","学习策略自评","Learning strategies"),
-    topic("personality","人格与自我探索问卷","Personality self-reflection"),
-    topic("comprehensive","综合能力测评","General aptitude assessment"),
+    topic("personality","人格与自我探索问卷","Personality self-reflection","/assessment-center/ipip-big-five-50-cn-preview"),
+    topic("comprehensive","综合能力测评","General aptitude assessment","/assessment-center/career-aptitude-40"),
   ]},
 ] as const;
 

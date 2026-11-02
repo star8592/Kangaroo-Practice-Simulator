@@ -1,185 +1,107 @@
 "use client";
-
 import Link from "next/link";
-import {useMemo,useState} from "react";
-import {ASSESSMENT_DOMAINS,type AssessmentDomainId} from "@/lib/assessment-platform";
-import {EXAM_DIRECTORY} from "@/lib/exam-directory";
-import {useSiteLanguage} from "@/lib/site-language";
+import { EXAM_DIRECTORY } from "@/lib/exam-directory";
+import { ASSESSMENT_DOMAINS } from "@/lib/assessment-platform";
+import { useSiteLanguage } from "@/lib/site-language";
+import type { HomepageUpdate } from "@/lib/site-discovery";
 import styles from "./PublicHome.module.css";
-
-const TEXT={
-  zh:{
-    eyebrow:"SOCTHINK · 考试与学习资源平台",title:"考试 · 资料 · 训练",subtitle:"搜索考试与试卷，找到就能开始。",
-    description:"七大考试领域统一分类。可用内容直接开练，尚在建设的项目清晰标记，不让你在空白页面里反复寻找。",
-    search:"搜索考试名称、学科或关键词，例如 AMC、雅思、考研、SQL",
-    searchLabel:"搜索考试",searchTitle:"从一项考试开始",popular:"大家常找",found:"搜索结果",
-    categories:"考试大类",directions:"考试方向",liveServices:"已开放的领域",enter:"立即使用",
-    jump:"搜索",papers:"检索试卷资料",signIn:"微信登录",tools:"立即开始",
-    topics:"考试详情",partial:"部分服务开放",pending:"内容准备中",ready:"已可使用",
-    source:"仅链接真实可用内容，未验收服务不会显示考试或购买入口。",
-    browseByType:"按考试类别找",browseHint:"",categoryAction:"查看考试",countSuffix:"个方向",
-    noResults:"没有找到对应分类，请换一个关键词试试。",clear:"清空搜索",viewAll:"查看所有方向",
-    liveMath:"开始计算训练",liveMathDesc:"小学到高中，直接进入现有在线数学训练。",
-    liveCompetition:"参加竞赛模拟",liveCompetitionDesc:"按赛制选择比赛，进入现有模拟与练习。",
-    livePaper:"可用试卷资料",livePaperDesc:"根据竞赛、年份、年级筛选已有训练卷。",
-    stages:"一条完整的学习路径",stageDesc:"同一内容体系，连通发现、练习、诊断和复测。",
-    step1:"查考试",step1d:"先找到适合自己的考试及资料",
-    step2:"做练习",step2d:"免费体验和正式考试清晰分开",
-    step3:"看解析",step3d:"核对成绩、答案与薄弱知识",
-    step4:"再提高",step4d:"复练错题，沉淀长期学习记录",
-    guidance:"分类目录不是可购买库存；所有试卷仍需分别核验内容来源、使用授权和服务可用性。",
-  },
-  en:{
-    eyebrow:"SOCTHINK · Exams and Learning Resources",title:"Exams · Papers · Practice",
-    subtitle:"Search an exam or paper and start practising.",
-    description:"Seven exam domains under one coherent directory. Available content opens directly; unfinished products never lead to dead-end checkout pages.",
-    search:"Search exam, subject or keyword: AMC, IELTS, postgraduate, SQL",
-    searchLabel:"Search exams",searchTitle:"Start with one exam",popular:"Popular searches",found:"Search results",
-    categories:"Exam categories",directions:"Exam directions",liveServices:"Live domains",enter:"Open",
-    jump:"Browse all exams",papers:"Search practice papers",signIn:"Sign in / Join with WeChat",tools:"Services ready now",
-    topics:"Exams and exercises",partial:"Some services available",pending:"In preparation",ready:"Available now",
-    source:"Only real destinations are linked; unverified exams are not open or for sale.",
-    browseByType:"Browse by exam category",browseHint:"Choose a subject area first, then see its specific exams.",categoryAction:"Explore this category",countSuffix:"directions",
-    noResults:"No matching categories. Try another keyword.",clear:"Clear search",viewAll:"See all exam directions",
-    liveMath:"Start math practice",liveMathDesc:"Use the existing school mathematics practice.",
-    liveCompetition:"Try mock exams",liveCompetitionDesc:"Select authentic formats and practise existing mocks.",
-    livePaper:"Training-ready paper library",livePaperDesc:"Filter existing papers by contest, grade or year.",
-    stages:"One connected learning journey",stageDesc:"Discover, attempt, understand and improve within one platform.",
-    step1:"Find",step1d:"Find the right exam and resources",
-    step2:"Practise",step2d:"Try available practice or an exam",
-    step3:"Review",step3d:"Understand scores and answers",
-    step4:"Improve",step4d:"Retest and retain your learning history",
-    guidance:"Directory entries are not a sellable inventory. Each paper still needs verified rights, content and delivery.",
-  },
+type HomeCounts={books:number;formalPapers:number;assessments:number;guides:number};
+const COPY={
+ zh:{hero:"从一份试卷，到一项真正的能力。",intro:"找考试、查资料、做训练、读技术书。需要的内容，直接进入。",search:"搜索考试、试卷、技术书、岗位或课程",searchButton:"全站搜索",quick:"立即开始",latest:"最近更新",latestNote:"按内容实际版本日期排列",kind:"按目标找服务",selected:"精选实训",categories:"按考试类别查找",categoriesNote:"这里只是考试分类目录。部分项目尚在建设，并不意味着已开放报名、考试或购买。",all:"查看全部",open:"查看内容",records:"我的订单与记录",guide:"当前显示的更新均来自已发布内容的记录日期；价格、购买和下载以真实商品页面为准。"},
+ en:{hero:"From a practice paper to a skill you can use.",intro:"Find exams, papers, skill labs, and technical books. Start with real resources.",search:"Search exams, papers, technical books or career skills",searchButton:"Search",quick:"Start here",latest:"Recently updated",latestNote:"Sorted by verified content version dates",kind:"Explore by goal",selected:"Featured labs",categories:"Browse exam categories",categoriesNote:"Some exam subjects are planned; categories do not imply live exams or checkout.",all:"View all",open:"Explore",records:"My account",guide:"Updates use published source records. Purchases and downloads follow the actual product terms."},
 } as const;
-const POPULAR=[
-  {zh:"小升初",en:"School admissions",q:"小升初"},
-  {zh:"袋鼠数学",en:"Math Kangaroo",q:"kangaroo"},
-  {zh:"雅思",en:"IELTS",q:"ielts"},
-  {zh:"公务员",en:"Civil service",q:"公务员"},
-  {zh:"考研",en:"Postgraduate",q:"考研"},
-  {zh:"SQL",en:"SQL",q:"SQL"},
+const HOT=["AMC","SQL","Agent","Rust","3D","采购"];
+const QUICK=[
+ {href:"/arithmetic",zh:"开始计算训练",en:"Start math practice",descZh:"小学到高中数学",descEn:"School mathematics"},
+ {href:"/competitions",zh:"参加竞赛模拟",en:"Try mock exams",descZh:"按最新赛制练习",descEn:"Math competitions"},
+ {href:"/resources",zh:"可用试卷资料",en:"Practice papers",descZh:"按年份和年级筛选",descEn:"Browse by year and grade"},
 ] as const;
-const QUICK_SERVICES=[
-  {href:"/arithmetic",key:"liveMath",description:"liveMathDesc",number:"01"},
-  {href:"/competitions",key:"liveCompetition",description:"liveCompetitionDesc",number:"02"},
-  {href:"/resources",key:"livePaper",description:"livePaperDesc",number:"03"},
+const SERVICES=[
+ {href:"/career",zh:"职业岗位",en:"Careers",descZh:"模拟笔试 · 原创复习资料",descEn:"Mock tests and original guides",code:"CAREER"},
+ {href:"/skill-labs",zh:"技能实训",en:"Skill labs",descZh:"AI · SQL · 编程 · 3D",descEn:"AI, SQL, code and 3D",code:"LABS"},
+ {href:"/skill-labs/books",zh:"技术书库",en:"Technical books",descZh:"官方原书 · 实战关联",descEn:"Books connected to hands-on labs",code:"LIBRARY"},
+ {href:"/assessment-center",zh:"测评中心",en:"Assessments",descZh:"逻辑训练 · 职业探索",descEn:"Reasoning and career interests",code:"MEASUREMENT"},
+ {href:"/shop",zh:"数字商城",en:"Digital store",descZh:"查看在架资料和交付",descEn:"Published files and delivery",code:"STORE"},
+ {href:"/exam-planner",zh:"考试管理",en:"Exam planner",descZh:"赛事安排和备考管理",descEn:"Events and exam planning",code:"PLANNER"},
 ] as const;
 const DOMAINS=new Map(ASSESSMENT_DOMAINS.map(x=>[x.id,x]));
-
-export default function PublicHome(){
-  const lang=useSiteLanguage(),t=TEXT[lang];
-  const [active,setActive]=useState<AssessmentDomainId>("school");
-  const [search,setSearch]=useState("");
-  const query=search.trim().toLocaleLowerCase();
-  const matching=useMemo(()=>{
-    const groups=EXAM_DIRECTORY.filter(g=>!query||g.topics.some(topic=>
-      [topic.id,topic.title.zh,topic.title.en].some(s=>s.toLocaleLowerCase().includes(query)))||
-      [DOMAINS.get(g.domainId)?.name.zh,DOMAINS.get(g.domainId)?.name.en,
-       DOMAINS.get(g.domainId)?.navName.zh,DOMAINS.get(g.domainId)?.navName.en]
-        .some(s=>(s||"").toLocaleLowerCase().includes(query)));
-    return (query?groups:groups.filter(x=>x.domainId===active)).map(group=>{
-      const domain=DOMAINS.get(group.domainId)!;
-      const whole=[domain.name.zh,domain.name.en,domain.navName.zh,domain.navName.en]
-        .some(v=>v.toLocaleLowerCase().includes(query));
-      return {domain,topics:query&&!whole?group.topics.filter(topic=>
-        [topic.id,topic.title.zh,topic.title.en].some(s=>s.toLocaleLowerCase().includes(query))):group.topics};
-    });
-  },[active,query]);
-
-  return <div data-site-shell="content" className={styles.portal}>
-    <section className={styles.hero}>
-      <div className={styles.heroMain}>
-        <h1>{t.title}</h1>
-        <div className={styles.searchPanel}>
-          <form className={styles.searchField} action="/assessments" method="get" role="search">
-            <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="7"/><path d="m16 16 5 5"/></svg>
-            <input id="portal-search" type="search" name="q" maxLength={160} value={search} placeholder={t.search}
-              aria-label={t.searchLabel} onChange={e=>setSearch(e.target.value)}/>
-            <button type="submit" className={styles.searchGo}>{t.jump}</button>
-          </form>
-          <div className={styles.popular}><span>{t.popular}</span>
-            {POPULAR.map(item=><Link key={item.zh} href={`/assessments?q=${encodeURIComponent(item.q)}`}>{item[lang]}</Link>)}
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section className={styles.quickSection} aria-labelledby="quick-services-heading">
-      <div className={styles.sectionTop}><h2 id="quick-services-heading">{t.tools}</h2>
-        <Link href="/login">{t.signIn} <span aria-hidden="true">→</span></Link></div>
-      <div className={styles.quickGrid}>{QUICK_SERVICES.map(s=>
-        <Link key={s.href} href={s.href} className={styles.quickItem}>
-<div><strong>{t[s.key]}</strong></div>
-          <span className={styles.quickArrow} aria-hidden="true">↗</span>
-        </Link>)}</div>
-      <p className={styles.practiceGuideLink}><Link href="/math-practice">{lang==="zh"?"查看 G1–G12 数学计算训练内容与方法 →":"Explore the Grade 1–12 math practice guide →"}</Link></p>
-    </section>
-
-    <section className={styles.categoryOverview} aria-labelledby="exam-category-overview">
-      <div className={styles.sectionTop}>
-        <div><h2 id="exam-category-overview">{t.browseByType}</h2>
-        </div>
-        <Link href="/assessments">{t.viewAll} →</Link>
-      </div>
-      <div className={styles.categoryGrid}>
-        {EXAM_DIRECTORY.map(group=>{
-          const domain=DOMAINS.get(group.domainId)!;
-          const available=group.topics.filter(topic=>topic.status==="live").length;
-          return <Link key={group.domainId} href={`/assessments#domain-${group.domainId}`}
-            className={styles.categoryCard} title={domain.name[lang]}>
-            <strong>{domain.navName[lang]}</strong>
-            <span className={styles.categoryCardMeta}>
-              <span className={available?styles.categoryLive:styles.categoryPending}>{available?t.partial:t.pending}</span>
-            </span>
-            <span className={styles.categoryLink}>{t.categoryAction} →</span>
-          </Link>;
-        })}
-      </div>
-    </section>
-
-    <section className={styles.directory} id="portal-directory" aria-labelledby="directory-heading">
-      <details className={styles.directoryDetails}>
-        <summary>{lang==="zh"?"查看完整考试详情":"View all exam details"}</summary>
-      <div className={styles.sectionTop}><div><span className={styles.micro}>EXPLORE / DIRECTORY</span>
-          <h2 id="directory-heading">{query?t.found:t.topics}</h2></div>
-        <Link href="/assessments">{t.viewAll} →</Link></div>
-      <div className={styles.workspace}>
-        <nav className={styles.sidebar} aria-label={t.categories}>
-          <div className={styles.sidebarTitle}>{t.categories}</div>
-          {EXAM_DIRECTORY.map((g,i)=>{
-            const domain=DOMAINS.get(g.domainId)!;
-            return <button type="button" key={g.domainId}
-              className={!query&&active===g.domainId?styles.sideActive:styles.sideItem}
-              aria-pressed={!query&&active===g.domainId}
-              onClick={()=>{setActive(g.domainId);setSearch("");}}>
-              <span className={styles.sideNumber}>{String(i+1).padStart(2,"0")}</span>
-              <span className={styles.sideLabel} title={domain.name[lang]}>{domain.navName[lang]}</span>
-              <span className={styles.sideCount}>{g.topics.length}</span>
-            </button>;
-          })}
-          <div className={styles.sidebarHint}>{t.source}</div>
-        </nav>
-        <div className={styles.resultArea} aria-live="polite">
-          {!matching.length?<div className={styles.empty}><p>{t.noResults}</p>
-            <button type="button" onClick={()=>setSearch("")}>{t.clear}</button></div>:
-          matching.map(({domain,topics})=><section key={domain.id} className={styles.group}>
-            <div className={styles.groupHead}>
-              <div><h3>{domain.name[lang]}</h3><p>{domain.summary[lang]}</p></div>
-              <span className={domain.readiness==="live"?styles.avail:styles.planned}>
-                {domain.readiness==="live"?t.partial:t.pending}
-              </span>
-            </div>
-            <div className={styles.topicGrid}>{topics.map(topic=>topic.href?
-              <Link key={topic.id} className={styles.topicLive} href={topic.href}>
-                <strong>{topic.title[lang]}</strong><span>{t.ready} ↗</span></Link>:
-              <div className={styles.topicPlanned} key={topic.id}>
-                <strong>{topic.title[lang]}</strong><span>{t.pending}</span></div>)}</div>
-          </section>)}
-        </div>
-      </div>
-      </details>
-    </section>
-
-  </div>;
+export default function PublicHome({updates,counts}:{updates:HomepageUpdate[];counts:HomeCounts}){
+ const lang=useSiteLanguage(),t=COPY[lang];
+ return <div data-site-shell="content" className={styles.portal}>
+  <section className={styles.hero}>
+   <div className={styles.heroMain}>
+    <span className={styles.heroEyebrow}>SOC THINK / EXAMS · LEARNING · SKILLS</span>
+    <h1>{t.hero}</h1>
+    <p className={styles.heroLead}>{t.intro}</p>
+    <form role="search" action="/search" method="get" className={styles.searchPanel}>
+     <div className={styles.searchField}>
+      <svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m16 16 5 5"/></svg>
+      <input id="portal-search" aria-label={t.search} type="search" name="q" placeholder={t.search} maxLength={100}/>
+      <button type="submit" className={styles.searchGo}>{t.searchButton}</button>
+     </div>
+    </form>
+    <div className={styles.popular}><span>{lang==="zh"?"搜索示例":"Examples"}</span>
+      {HOT.map(q=><Link key={q} href={"/search?q="+encodeURIComponent(q)}>{q}</Link>)}
+    </div>
+   </div>
+   <aside className={styles.heroAside}>
+    <span className={styles.heroAsideTitle}>{lang==="zh"?"已开放内容":"PUBLISHED CONTENT"}</span>
+    <div className={styles.heroNumber}><strong>{counts.formalPapers}</strong><span>{lang==="zh"?"套完整岗位模拟":"complete career mocks"}</span></div>
+    <div className={styles.heroNumber}><strong>{counts.books}</strong><span>{lang==="zh"?"本精选技术书籍":"curated technical books"}</span></div>
+    <div className={styles.heroNumber}><strong>{counts.assessments}</strong><span>{lang==="zh"?"项测评与训练":"assessments and tasks"}</span></div>
+    <Link href="/skill-labs">{lang==="zh"?"进入技能实训":"Explore skill labs"} ↗</Link>
+   </aside>
+  </section>
+  <section className={styles.quickSection} aria-labelledby="quick-services-heading">
+   <div className={styles.sectionTop}><h2 id="quick-services-heading">{t.quick}</h2><Link href="/account">{t.records} →</Link></div>
+   <div className={styles.quickGrid}>{QUICK.map((item,i)=>
+    <Link href={item.href} className={styles.quickItem} key={item.href}>
+     <span className={styles.quickNumber}>{String(i+1).padStart(2,"0")}</span>
+     <div><strong>{item[lang]}</strong><small>{lang==="zh"?item.descZh:item.descEn}</small></div>
+     <span className={styles.quickArrow} aria-hidden="true">↗</span>
+    </Link>)}</div>
+  </section>
+  <section className={styles.updates} aria-labelledby="home-updates-heading">
+   <div className={styles.sectionTop}><div><h2 id="home-updates-heading">{t.latest}</h2><p>{t.latestNote}</p></div><Link href="/skill-labs">{t.all} →</Link></div>
+   <div className={styles.updateGrid}>{updates.map(item=><article className={styles.updateCard} key={item.id}>
+    <div className={styles.updateMeta}><span>{item.kind}</span><time dateTime={item.date}>{item.date.replaceAll("-",".")}</time></div>
+    <h3><Link href={item.href}>{item.title}</Link></h3>
+    <p>{item.summary}</p><Link href={item.href} className={styles.actionLink}>{t.open} →</Link>
+   </article>)}</div>
+  </section>
+  <section className={styles.serviceSection} aria-labelledby="home-services-heading">
+   <div className={styles.sectionTop}><h2 id="home-services-heading">{t.kind}</h2></div>
+   <div className={styles.serviceGrid}>{SERVICES.map(service=><Link href={service.href} className={styles.serviceCard} key={service.href}>
+    <span className={styles.serviceCode}>{service.code}</span>
+    <strong>{service[lang]}</strong><p>{lang==="zh"?service.descZh:service.descEn}</p>
+    <span className={styles.serviceArrow} aria-hidden="true">→</span>
+   </Link>)}</div>
+  </section>
+  <section className={styles.featureSection} aria-labelledby="home-featured-heading">
+   <div className={styles.sectionTop}><h2 id="home-featured-heading">{t.selected}</h2><Link href="/skill-labs">{t.all} →</Link></div>
+   <div className={styles.featureGrid}>
+    <article className={styles.featureDark}>
+     <span>AI / AGENT</span><h3>{lang==="zh"?"AI Agent 工程实战":"Practical AI Agent engineering"}</h3>
+     <p>{lang==="zh"?"6 节课程、真实 Python 源码、独立验收与 24 题岗位模拟。":"Six lessons, runnable Python code and a 24-question career mock."}</p>
+     <div><Link href="/skill-labs/agent-foundations">{lang==="zh"?"进入课程":"Open course"} →</Link>
+      <Link href="/career/exams/agent-engineering-paper-2026q4-v1">{lang==="zh"?"模拟笔试":"Mock exam"} →</Link></div>
+    </article>
+    <article className={styles.featureLight}>
+     <span>THREE.JS / WEBGPU</span><h3>{lang==="zh"?"3D 实验与源码交付":"3D labs and source code"}</h3>
+     <p>{lang==="zh"?"8 个教学单元、交互式 3D 场景，配套技术书籍和源码。":"Eight modules, an interactive scene and related technical books."}</p>
+     <div><Link href="/skill-labs/webgpu-basics">{lang==="zh"?"运行实验":"Open lab"} →</Link>
+      <Link href="/skill-labs/books/game-programming-patterns">{lang==="zh"?"相关书籍":"Related book"} →</Link></div>
+    </article>
+   </div>
+  </section>
+  <section className={styles.categoryOverview} aria-labelledby="exam-category-overview">
+   <div className={styles.sectionTop}><h2 id="exam-category-overview">{t.categories}</h2><Link href="/assessments">{t.all} →</Link></div>
+   <div className={styles.categoryGrid}>{EXAM_DIRECTORY.map(group=><Link href={"/assessments#domain-"+group.domainId}
+    className={styles.categoryCard} key={group.domainId} title={DOMAINS.get(group.domainId)!.name[lang]}>
+     <strong>{DOMAINS.get(group.domainId)!.navName[lang]}</strong><span aria-hidden="true">↗</span>
+    </Link>)}</div>
+   <p className={styles.categoryNote}>{t.categoriesNote}</p>
+  </section>
+  <p className={styles.pageNote}>{t.guide}</p>
+ </div>;
 }

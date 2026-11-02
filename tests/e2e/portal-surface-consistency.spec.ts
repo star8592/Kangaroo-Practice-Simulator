@@ -17,7 +17,7 @@ test("public exam, resource, commerce and login pages share one coherent accessi
     await expect(page.locator("h1"),`One primary heading: ${path}`).toHaveCount(1);
     await expect(page.locator("main"),`One main landmark: ${path}`).toHaveCount(1);
     // Desktop and mobile navigation each contain an accessible entry.
-    await expect(page.locator('header a[href="/membership"]')).toHaveCount(2);
+    await expect(page.locator('header a[href="/membership"]')).toHaveCount(1);
     await expect(page.locator('footer a[href="/membership"]')).toHaveCount(1);
     const overflow=await page.evaluate(()=>
       document.documentElement.scrollWidth>window.innerWidth+2);

@@ -15,13 +15,14 @@ const eventHub=read("src/components/WorldCompetitionHub.tsx");
 const resourceClient=read("src/components/ResourceLibraryClient.tsx");
 const loginClient=read("src/components/UnifiedLoginClient.tsx");
 
-for(const slug of ["/assessments","/resources","/exam-planner","/membership",
+for(const slug of ["/assessments","/resources","/career","/skill-labs","/assessment-center","/shop","/exam-planner",
   "/arithmetic","/competitions","/review"]){
   assert.ok(header.includes(`href:"${slug}"`),`NAV_MISSING_${slug}`);
 }
 assert.ok(accountNav.includes('href="/login?next=%2Faccount"')&&accountNav.includes('"/account"'),
   "ACCOUNT_ENTRY_MUST_HAVE_ONE_SESSION_NAV");
-assert.match(header,/EXAM_DIRECTORY\.map\(/,"Navigation must read the existing full exam taxonomy");
+assert.doesNotMatch(header,/EXAM_DIRECTORY\.map\(/,"Detailed exam taxonomy belongs in the assessments page, not the global navigation");
+assert.match(header,/<Link href="\/membership" onClick=\{dismiss\}>/,"Account entitlements remain accessible from mobile global navigation");
 assert.ok(!header.includes('href:"/events"'),"Math-specific events must not be top-level tasks");
 assert.match(footer,/href:"\/membership"/);
 for(const slug of ["/assessments","/resources","/arithmetic","/account"]){

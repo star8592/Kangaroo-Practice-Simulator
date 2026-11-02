@@ -35,12 +35,15 @@ test("seven real exam domains remain discoverable without fake purchasable items
 
 test("home search, category links, live services and resource filters work on mobile and desktop",async({page})=>{
   await page.goto("/");
-  await expect(page.getByRole("heading",{level:1,name:"考试 · 资料 · 训练"})).toBeVisible();
-  const search=page.getByRole("searchbox",{name:"搜索考试"});
+  await expect(page.getByRole("heading",{level:1,name:/从一份试卷|From a practice paper/})).toBeVisible();
+  const search=page.locator('main form[action="/search"] input[name="q"]');
   await expect(search).toBeVisible();
   await search.fill("SQL");
   await search.press("Enter");
-  await expect(page).toHaveURL(/\/assessments\?q=SQL/);
+  await expect(page).toHaveURL(/\/search\?q=SQL/);
+  await expect(page.locator('main a[href="/skill-labs/sql-lab"]').first()).toBeVisible();
+  // Domain-specific exam filters remain independently usable.
+  await page.goto("/assessments?q=SQL");
   const directory=page.getByRole("region",{name:"考试目录"});
   await expect(directory.getByText("SQL 数据库实操")).toBeVisible();
   await directory.getByRole("searchbox").fill("unmatched-synthetic-query-2391");
@@ -71,11 +74,14 @@ test("exam search works with JavaScript disabled (before hydration)",async({brow
   try{
     const page=await context.newPage();
     await page.goto("/");
-    const form=page.locator('form[action="/assessments"]');
+    const form=page.locator('form[action="/search"]');
     await expect(form.locator('input[name="q"]')).toBeVisible();
     await form.locator('input[name="q"]').fill("SQL");
     await form.locator('button[type="submit"]').click();
-    await expect(page).toHaveURL(/\/assessments\?q=SQL/);
+    await expect(page).toHaveURL(/\/search\?q=SQL/);
+    await expect(page.locator('main a[href="/skill-labs/sql-lab"]').first()).toBeVisible();
+    // Preserve the old exam-only GET route for deep links and no-JS usage.
+    await page.goto("/assessments?q=SQL");
     await expect(page.getByText("SQL 数据库实操",{exact:true})).toBeVisible();
     await expect(page.getByText("雅思 IELTS",{exact:true})).toHaveCount(0);
 

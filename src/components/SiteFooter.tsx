@@ -1,36 +1,44 @@
 "use client";
 import Link from "next/link";
 import {useSiteLanguage} from "@/lib/site-language";
-
+const GROUPS=[
+ {zh:"学习与考试",en:"Learning and exams",items:[
+  {href:"/assessments",zh:"全部考试",en:"All exams"},
+  {href:"/resources",zh:"真题资料",en:"Papers"},
+  {href:"/competitions",zh:"竞赛模拟",en:"Competition mocks"},
+  {href:"/exam-planner",zh:"考试管理",en:"Planner"},
+ ]},
+ {zh:"技能与资料",en:"Skills and resources",items:[
+  {href:"/career",zh:"职业岗位",en:"Careers"},
+  {href:"/skill-labs",zh:"技能实训",en:"Skill labs"},
+  {href:"/skill-labs/books",zh:"技术书库",en:"Technical books"},
+  {href:"/assessment-center",zh:"测评中心",en:"Assessments"},
+  {href:"/shop",zh:"数字商城",en:"Digital store"},
+ ]},
+ {zh:"账户与服务",en:"Account and terms",items:[
+  {href:"/account",zh:"订单与下载",en:"Orders and downloads"},
+  {href:"/membership",zh:"购买与权益",en:"Membership"},
+  {href:"/privacy",zh:"隐私政策",en:"Privacy"},
+  {href:"/terms",zh:"服务条款",en:"Terms"},
+  {href:"/digital-purchase-policy",zh:"数字商品售后",en:"Digital purchase terms"},
+ ]},
+] as const;
 export default function SiteFooter(){
-  const lang=useSiteLanguage();
-  const items=[
-    {href:"/assessments",zh:"考试大全",en:"All exams"},
-    {href:"/resources",zh:"真题资料",en:"Practice papers"},
-    {href:"/math-practice",zh:"数学计算训练",en:"Math practice guide"},
-    {href:"/assessment-center",zh:"人格与职业兴趣",en:"Personality & interests"},
-    {href:"/skill-labs",zh:"岗位技能实训",en:"Practical skills"},
-    {href:"/exam-planner",zh:"考试管理",en:"Exam planner"},
-    {href:"/membership",zh:"购买与权益",en:"Purchases & access"},
-    {href:"/privacy",zh:"隐私政策",en:"Privacy"},
-    {href:"/terms",zh:"服务条款",en:"Terms"},
-    {href:"/digital-purchase-policy",zh:"数字商品售后",en:"Digital purchase terms"},
-  ];
-  return <footer className="site-footer">
-    <div className="site-footer-inner">
-      <div className="site-footer-top">
-        <strong>SOCTHINK · {lang==="zh"?"考试与学习资源":"Exams and learning resources"}</strong>
-        <nav aria-label={lang==="zh"?"页脚导航":"Footer navigation"}>
-          {items.map(x=><Link key={x.href} href={x.href}>{x[lang]}</Link>)}
-        </nav>
-      </div>
-      <p>{lang==="zh"?
-        "独立开发的综合考试与学习辅助平台；不代表任何考试主办方，不保证报名资格或通过结果。":
-        "An independent learning and assessment platform. Not affiliated with exam organizers; no guarantee of eligibility or passing."}</p>
-      <p>{lang==="zh"?
-        "© 2026 青梧未来（武汉）人工智能应用软件有限公司 · 版权所有":
-        "© 2026 Qingwu Future (Wuhan) AI Application Software Co., Ltd. · All rights reserved"}</p>
-      <p><a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer">鄂ICP备2026004372号</a></p>
-    </div>
-  </footer>;
+ const lang=useSiteLanguage();
+ return <footer className="site-footer">
+  <div className="site-footer-inner">
+   <div className="site-footer-top">
+    <strong>SOCTHINK · {lang==="zh"?"考试、学习与技能":"Exams, learning and skills"}</strong>
+    <nav aria-label={lang==="zh"?"页脚导航":"Footer navigation"}>
+     {GROUPS.map(group=><div className="site-footer-group" key={group.zh}>
+      <b>{group[lang]}</b>
+      <div>{group.items.map(item=><Link href={item.href} key={item.href}>{item[lang]}</Link>)}</div>
+     </div>)}
+    </nav>
+   </div>
+   <p>{lang==="zh"?"独立开发的综合学习与考试平台；非考试主办方，不保证任何考试资格或通过结果。":"An independent learning and assessment platform; not affiliated with exam organizers."}</p>
+   <p>{lang==="zh"?"© 2026 青梧未来（武汉）人工智能应用软件有限公司 · 版权所有":"© 2026 Qingwu Future (Wuhan) AI Application Software Co., Ltd. · All rights reserved"}</p>
+   <p><a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer">鄂ICP备2026004372号</a></p>
+  </div>
+ </footer>;
 }
