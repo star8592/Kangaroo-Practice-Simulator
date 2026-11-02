@@ -26,7 +26,7 @@ export default function AssessmentMethodology(){
     <div className={styles.tileTop}><span className={styles.eyebrowDark}>{record.category} · {record.version}</span><span className={styles.plannedBadge}>尚无本土标准常模</span></div>
     <h3>{record.name}</h3>
     <dl className={styles.details}>
-      <div><dt>来源</dt><dd>{record.source}</dd></div>
+      <div><dt>来源</dt><dd>{record.source}{record.referenceUrl&&<> · <a href={record.referenceUrl} target="_blank" rel="noopener noreferrer">查看原始公开资料 ↗</a></>}</dd></div>
       <div><dt>授权与题项</dt><dd>{record.permission}</dd></div>
       <div><dt>评分算法</dt><dd>{record.scoring}</dd></div>
       <div><dt>适用人群</dt><dd>{record.audience}</dd></div>
