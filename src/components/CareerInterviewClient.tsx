@@ -191,6 +191,10 @@ export default function CareerInterviewClient({profileId}:{profileId:string}){
     <button type="button" onClick={()=>setConfirmReset(false)}>取消</button>
     <button type="button" onClick={reset}>确认清空</button>
    </div>}
+   {stage==="main"&&semanticEnabled&&<label className={styles.check}>
+    <input type="checkbox" checked={semanticConsent} onChange={e=>setSemanticConsent(e.target.checked)}/>
+    本轮启用AI语义追问（{semanticProvider==="local"?"本机模型":"第三方模型"}）；仅提交时发送这一轮回答。刷新后默认关闭，可在此重新开启。
+   </label>}
    <div className={styles.progress} aria-label="面试进度">
     {profile.questions.map((q,i)=><span key={q.id} data-done={i<index?"true":undefined} data-active={i===index?"true":undefined}/>)}
    </div>
