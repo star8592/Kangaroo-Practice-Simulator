@@ -105,6 +105,11 @@ export default async function CareerDemandPage({searchParams}:{searchParams:Sear
           <strong>软件工程师 · 编程实操</strong><span>6项真实JavaScript任务</span>
           <Link href="/skill-labs/code-lab">开始编程</Link>
         </div>
+        <div className={styles.quickTestItem}>
+          <strong>软件工程综合编程模拟</strong><span>6道代码题 · 60分钟 · 100分</span>
+          <Link href="/skill-labs/engineering-mock">进入模拟考场</Link>
+        </div>
+
       </div>
       <div className={styles.offerGrid}>
         {CAREER_FORMAL_PAPERS.map(paper=><article className={styles.offerCard} key={paper.id}>

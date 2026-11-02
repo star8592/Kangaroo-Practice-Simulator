@@ -3,6 +3,9 @@ import {useEffect,useRef,useState,useSyncExternalStore} from "react";
 import type {KeyboardEvent} from "react";
 import {CODE_LAB_SESSION_KEY,indentCodeSource,parseCodeLabSnapshot} from "@/lib/code-lab-session";
 import {CODE_CHALLENGES,CODE_LAB_VERSION} from "@/lib/code-lab";
+import type {CodeChallenge} from "@/lib/code-lab";
+import {ENGINEERING_TRACKS,ENGINEERING_TRACK_VERSION} from "@/lib/engineering-code-tracks";
+import type {EngineeringTrackId} from "@/lib/engineering-code-tracks";
 import type {CodeCheck} from "@/lib/code-lab-engine";
 import styles from "./code-lab.module.css";
 type Stage="intro"|"practice"|"report";
@@ -10,19 +13,23 @@ type WorkerReply={requestId:string;ok:boolean;result?:CodeCheck;error?:string};
 const noNotifications=()=>()=>{};
 const browserReady=()=>true;
 const serverNotReady=()=>false;
-function loadLocalAttempt(){
+function loadLocalAttempt(key:string,tasks:readonly CodeChallenge[],version:string){
  if(typeof window==="undefined")return null;
- try{return parseCodeLabSnapshot(sessionStorage.getItem(CODE_LAB_SESSION_KEY));}
+ try{return parseCodeLabSnapshot(sessionStorage.getItem(key),tasks,version);}
  catch{return null;}
 }
-export default function CodeLabClient(){
+export default function CodeLabClient({trackId}:{trackId?:EngineeringTrackId}={}){
+ const track=trackId?ENGINEERING_TRACKS[trackId]:null;
+ const tasks=track?.challenges??CODE_CHALLENGES;
+ const version=track?CODE_LAB_VERSION+"-"+ENGINEERING_TRACK_VERSION+"-"+track.id:CODE_LAB_VERSION;
+ const sessionKey=track?CODE_LAB_SESSION_KEY+"-"+track.id:CODE_LAB_SESSION_KEY;
  const hydrated=useSyncExternalStore(noNotifications,browserReady,serverNotReady);
- const [initial]=useState(loadLocalAttempt);
+ const [initial]=useState(()=>loadLocalAttempt(sessionKey,tasks,version));
  const[stage,setStage]=useState<Stage>(initial?.stage??"intro");
  const[consent,setConsent]=useState(false);
  const[index,setIndex]=useState(initial?.index??0);
  const[drafts,setDrafts]=useState<Record<string,string>>(initial?.drafts??{});
- const[source,setSource]=useState(()=>initial?.drafts[CODE_CHALLENGES[initial.index].id]??CODE_CHALLENGES[initial?.index??0].starter);
+ const[source,setSource]=useState(()=>initial?.drafts[tasks[initial.index].id]??tasks[initial?.index??0].starter);
  const[busy,setBusy]=useState(false);
  const[feedback,setFeedback]=useState<CodeCheck|null>(null);
  const[error,setError]=useState("");
@@ -33,31 +40,31 @@ export default function CodeLabClient(){
  const[attempts,setAttempts]=useState<Record<string,number>>(initial?.attempts??{});
  const worker=useRef<Worker|null>(null);
  const timer=useRef<ReturnType<typeof setTimeout>|null>(null);
- const task=CODE_CHALLENGES[index];
- const count=CODE_CHALLENGES.filter(x=>solved[x.id]).length;
+ const task=tasks[index];
+ const count=tasks.filter(x=>solved[x.id]).length;
  useEffect(()=>()=>{worker.current?.terminate();if(timer.current)clearTimeout(timer.current);},[]);
  useEffect(()=>{
   if(!hydrated)return;
   try{
-   if(stage==="intro")sessionStorage.removeItem(CODE_LAB_SESSION_KEY);
-   else sessionStorage.setItem(CODE_LAB_SESSION_KEY,JSON.stringify({
-    version:CODE_LAB_VERSION,stage,index,drafts,solved,attempts
+   if(stage==="intro")sessionStorage.removeItem(sessionKey);
+   else sessionStorage.setItem(sessionKey,JSON.stringify({
+    version,stage,index,drafts,solved,attempts
    }));
   }catch{/* Private browsing or storage disabled: practice remains usable in current view. */}
- },[hydrated,stage,index,drafts,solved,attempts]);
+ },[hydrated,stage,index,drafts,solved,attempts,version,sessionKey]);
  function cleanup(){
   if(worker.current)worker.current.terminate();worker.current=null;
   if(timer.current)clearTimeout(timer.current);timer.current=null;
  }
  function navigate(i:number){
-  cleanup();setIndex(i);setSource(drafts[CODE_CHALLENGES[i].id]??CODE_CHALLENGES[i].starter);
+  cleanup();setIndex(i);setSource(drafts[tasks[i].id]??tasks[i].starter);
   setBusy(false);setFeedback(null);setError("");setHint(false);
  }
  function reset(){
-  cleanup();setIndex(0);setSource(CODE_CHALLENGES[0].starter);
+  cleanup();setIndex(0);setSource(tasks[0].starter);
   setBusy(false);setFeedback(null);setError("");setHint(false);
   setStage("intro");setConsent(false);setSolved({});setAttempts({});setDrafts({});setExpanded(false);setConfirmReset(false);
-  try{sessionStorage.removeItem(CODE_LAB_SESSION_KEY)}catch{}
+  try{sessionStorage.removeItem(sessionKey)}catch{}
  }
  function onSourceChange(value:string){
   setSource(value);setDrafts(prev=>({...prev,[task.id]:value}));setFeedback(null);setError("");
@@ -105,15 +112,15 @@ export default function CodeLabClient(){
  if(!hydrated)return <div className={styles.root}><p className={styles.note}>正在读取本标签页的练习进度…</p></div>;
  return <div className={styles.root}>
   <header className={[styles.header,stage==="practice"?styles.headerPractice:""].filter(Boolean).join(" ")}>
-   <span className={styles.eyebrow}>SOCTHINK · SOFTWARE ENGINEERING LAB</span>
-   <h1>软件工程师 · 真实代码实操</h1>
-   <p>六项原创岗位工作样例。自己编写JavaScript，在隔离的QuickJS环境里运行并核验结果。</p>
-   <div className={styles.meta}><span>6项工程任务</span><span>真实执行 · 4组用例/题</span><span>浏览器内隔离</span><span>免费</span></div>
+   <span className={styles.eyebrow}>SOCTHINK · {track?"ENGINEERING TRACK":"SOFTWARE ENGINEERING LAB"}</span>
+   <h1>{track?.name??"软件工程师 · 真实代码实操"}</h1>
+   <p>{track?.summary??"六项原创岗位工作样例。自己编写JavaScript，在隔离的QuickJS环境里运行并核验结果。"}</p>
+   <div className={styles.meta}><span>{tasks.length}项工程任务</span><span>真实执行 · 4组用例/题</span><span>浏览器内隔离</span><span>免费</span></div>
   </header>
   {stage==="intro"&&<section className={styles.panel}>
    <h2>进入实操</h2>
-   <p className={styles.lead}>这不是选择题。六项任务分别涵盖订单、资金统计、故障重试、测试稳定性、日志诊断与库存事件。你要编写符合约定接口的函数，系统会真实执行代码，检测正确性和边界情况。</p>
-   <div className={styles.taskGrid}>{CODE_CHALLENGES.map(c=><div key={c.id}><strong>{c.title}</strong><span>{c.domain}</span></div>)}</div>
+   <p className={styles.lead}>{track?track.summary:"这不是选择题。六项任务分别涵盖订单、资金统计、故障重试、测试稳定性、日志诊断与库存事件。你要编写符合约定接口的函数，系统会真实执行代码，检测正确性和边界情况。"}</p>
+   <div className={styles.taskGrid}>{tasks.map(c=><div key={c.id}><strong>{c.title}</strong><span>{c.domain}</span></div>)}</div>
    <p className={styles.note}>运行方式：代码在WebAssembly QuickJS虚拟机里执行，浏览器Worker设运行超时，VM限制内存与栈，并不开放DOM、网络或本站账号接口。不会上传你输入的代码，也不会生成账号级考试成绩。本标签页允许会话存储时，源码草稿与已完成任务可在刷新后恢复；不跨设备同步。不要粘贴真实账号密钥或机密代码。</p>
    <p className={styles.note}>成绩是本组原创题的完成情况，非企业招聘真题、职业证书或标准化人才选拔测验。项目源码中包含参考用例，不能用来监考或防作弊。</p>
    <label className={styles.consent}><input type="checkbox" checked={consent} onChange={e=>setConsent(e.target.checked)}/>我理解这是免费编程实训，代码仅在隔离环境中执行。</label>
@@ -121,8 +128,8 @@ export default function CodeLabClient(){
   </section>}
   {stage==="practice"&&<div className={[styles.workspace,expanded?styles.workspaceExpanded:""].filter(Boolean).join(" ")}>
    <section className={[styles.panel,styles.editorPanel].join(" ")}>
-    <div className={styles.progressTop}><strong>任务 {index+1} / {CODE_CHALLENGES.length}</strong>
-     <div className={styles.progressActions}><span>已通过 {count}/{CODE_CHALLENGES.length}</span>
+    <div className={styles.progressTop}><strong>任务 {index+1} / {tasks.length}</strong>
+     <div className={styles.progressActions}><span>已通过 {count}/{tasks.length}</span>
       <button type="button" className={styles.resetLink} onClick={()=>setConfirmReset(true)}>重置练习</button>
      </div>
     </div>
@@ -131,7 +138,7 @@ export default function CodeLabClient(){
       <button type="button" className={styles.secondary} onClick={()=>setConfirmReset(false)}>取消</button>
       <button type="button" className={styles.secondary} onClick={reset}>确认清空</button>
      </div>}
-    <div className={styles.progress}><span style={{width:(100*count/CODE_CHALLENGES.length)+"%"}}/></div>
+    <div className={styles.progress}><span style={{width:(100*count/tasks.length)+"%"}}/></div>
     <div className={styles.taskTop}><h2>{task.title}</h2><span>{task.domain}</span></div>
     <p className={styles.lead}>{task.description}</p>
     <div className={styles.signature}><strong>实现函数</strong><code>{task.signature}</code></div>
@@ -169,9 +176,9 @@ export default function CodeLabClient(){
     </div>}
     <div className={styles.toolbar}>
      <button type="button" className={styles.secondary} disabled={busy||index===0} onClick={()=>navigate(index-1)}>上一任务</button>
-     {index<CODE_CHALLENGES.length-1?
+     {index<tasks.length-1?
       <button type="button" className={styles.primary} disabled={busy||!solved[task.id]} onClick={()=>navigate(index+1)}>进入下一任务</button>:
-      <button type="button" className={styles.primary} disabled={busy||count!==CODE_CHALLENGES.length} onClick={()=>setStage("report")}>查看技能练习报告</button>}
+      <button type="button" className={styles.primary} disabled={busy||count!==tasks.length} onClick={()=>setStage("report")}>查看技能练习报告</button>}
     </div>
    </section>
    <aside className={styles.panel}>
@@ -187,10 +194,10 @@ export default function CodeLabClient(){
    </aside>
   </div>}
   {stage==="report"&&<section className={styles.panel}>
-   <h2>软件工程实训记录</h2>
-   <p className={styles.lead}>你在隔离JavaScript执行环境中完成了 <strong>{count}/{CODE_CHALLENGES.length}</strong> 项原创工程任务。各项结果基于实际代码运行与4组输入比对。</p>
-   <div className={styles.reportGrid}>{CODE_CHALLENGES.map(c=><div key={c.id}><strong>{c.title}</strong><span>{solved[c.id]?"通过":"未通过"} · 运行 {attempts[c.id]??0} 次</span></div>)}</div>
-   <p className={styles.note}>版本：{CODE_LAB_VERSION}。不含常模、就业概率、正式专业能力证书，本标签页可恢复本次练习记录，但不跨设备同步。仅表示本次模拟任务完成情况。</p>
+   <h2>{track?track.focus+"专项训练记录":"软件工程实训记录"}</h2>
+   <p className={styles.lead}>你在隔离JavaScript执行环境中完成了 <strong>{count}/{tasks.length}</strong> 项原创工程任务。各项结果基于实际代码运行与4组输入比对。</p>
+   <div className={styles.reportGrid}>{tasks.map(c=><div key={c.id}><strong>{c.title}</strong><span>{solved[c.id]?"通过":"未通过"} · 运行 {attempts[c.id]??0} 次</span></div>)}</div>
+   <p className={styles.note}>版本：{version}。不含常模、就业概率、正式专业能力证书，本标签页可恢复本次练习记录，但不跨设备同步。仅表示本次模拟任务完成情况。</p>
    <div className={styles.toolbar}><button type="button" className={styles.secondary} onClick={reset}>重新练习</button><button type="button" className={styles.primary} onClick={()=>window.print()}>打印本次记录</button></div>
   </section>}
  </div>;
