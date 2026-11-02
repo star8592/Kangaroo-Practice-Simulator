@@ -125,7 +125,7 @@ export const CENTER_SECTIONS=[
   {title:"认知与推理能力",summary:"数量、逻辑、空间与信息判断：原创20题任务表现，不是 IQ 测验",icon:"02",route:"/assessment-center/reasoning-practice-20",detail:"20题 · 原始正确率与逐题复盘"},
   {title:"求职通用能力",summary:"言语、数量、逻辑、资料分析与空间：原创40题完整模拟卷",icon:"03",route:"/assessment-center/career-aptitude-40",detail:"40题 · 45分钟 · 五类能力 · 逐题解析"},
   {title:"职业兴趣与发展",summary:"RIASEC 职业兴趣、价值观与发展探索",icon:"04",instrumentId:"career-interest-exploration-30"},
-  {title:"阅读理解与学习任务",summary:"阅读信息定位、推断、数量理解和证据判断：16题原创学习练习",icon:"04",route:"/assessment-center/reading-practice-16",detail:"4篇原创短文 · 16题 · 原文证据复盘"},
+  {title:"阅读理解与学习任务",summary:"阅读信息定位、推断、数量理解和证据判断：16题原创学习练习",icon:"05",route:"/assessment-center/reading-practice-16",detail:"4篇原创短文 · 16题 · 原文证据复盘"},
   {title:"心理状态与生活",summary:"待建立专业筛查规范，不提供在线诊断",icon:"06"}
 ] as const;
 export function getInstrument(id:string):Instrument|undefined {return INSTRUMENTS.find(x=>x.id===id);}
