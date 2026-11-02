@@ -311,3 +311,56 @@
 .extraAssessmentLinks a{font-size:13px;font-weight:800;line-height:1.5;color:var(--portal-blue);background:var(--portal-blue-soft);border-radius:9px;padding:9px 11px;text-decoration:none}
 .extraAssessmentLinks a:hover{text-decoration:underline}
 @media print{.extraAssessmentLinks{display:none}}
+
+
+/* Evidence-led entrance and report: compact on desktop, readable on mobile. */
+.trustBrief{margin:20px 0 24px;padding:22px 25px;background:#fff;border:1px solid var(--portal-border);border-radius:var(--radius-card)}
+.trustBriefHeading{display:flex;justify-content:space-between;align-items:end;gap:18px;margin-bottom:17px}
+.trustBriefHeading h2{font-size:clamp(18px,2vw,23px);line-height:1.3;margin:5px 0 0}
+.trustBriefHeading>a,.trustBriefEvidence{font-size:13px;color:var(--portal-blue);text-decoration:underline;text-underline-offset:3px}
+.trustBriefHeading>a{flex-shrink:0}
+.trustBriefGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}
+.trustBriefGrid>div{min-width:0;border-top:2px solid #cad9e8;padding:12px 2px 0}
+.trustBriefGrid strong{font-size:14px;color:var(--portal-text)}
+.trustBriefGrid p{font-size:13px;line-height:1.7;color:var(--portal-muted);margin:6px 0 0}
+.trustBriefEvidence{display:inline-block;margin-top:16px;font-weight:700}
+.panel .trustBrief{padding:15px 17px;margin:15px 0 18px;background:#f9fbfe}
+.panel .trustBriefHeading h2{font-size:18px}
+.panel .trustBriefGrid{gap:10px}
+.panel .trustBriefGrid>div{border-top-width:1px}
+.reportSectionHeading{margin:26px 0 8px;font-size:19px;color:var(--portal-text)}
+.reportSummary{margin:23px 0;padding:19px 22px;border:1px solid var(--portal-border);background:#fafcfe;border-radius:var(--radius-control)}
+.reportSummary h3{font-size:18px;margin:0 0 15px}
+.reportSummary h4{font-size:15px;margin:20px 0 10px}
+.reportSummary p{font-size:14px;color:#4d617a;line-height:1.8;margin:12px 0 0}
+.reportStatGrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:0}
+.reportStatGrid div{min-width:0}
+.reportStatGrid dt{font-size:12px;color:var(--portal-muted)}
+.reportStatGrid dd{font-size:24px;font-weight:850;letter-spacing:-.015em;color:var(--portal-blue);font-variant-numeric:tabular-nums;margin:4px 0}
+.reportRevisionGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:15px}
+.reportRevisionGrid>div{padding:13px 15px;border:1px solid #dbe5ef;border-radius:10px;background:#fff;min-width:0}
+.reportRevisionGrid strong{font-size:15px}
+.reportRevisionGrid p{font-size:13px;margin:7px 0 0}
+.reportEvidenceList{list-style:none;padding:0;display:grid;gap:10px}
+.reportEvidenceList li{background:white;border:1px solid #dbe5ef;border-radius:10px;padding:12px 14px}
+.reportEvidenceList strong,.reportEvidenceList span{display:block;font-size:13px;line-height:1.75}
+.reportEvidenceList strong{color:#284c70;margin-bottom:4px}
+.reportEvidenceList span{color:#496078}
+.reportFoot a{color:var(--portal-blue);text-decoration:underline}
+@media(max-width:760px){
+ .trustBriefGrid{grid-template-columns:1fr;gap:12px}
+ .trustBriefHeading{align-items:start}
+ .reportStatGrid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:590px){
+ .trustBrief{padding:17px 16px}
+ .trustBriefHeading{display:block}
+ .trustBriefHeading>a{display:inline-block;margin-top:10px}
+ .reportSummary{padding:16px 14px}
+ .reportRevisionGrid{grid-template-columns:1fr}
+ .reportStatGrid dd{font-size:22px}
+}
+@media print{
+ .trustBrief{display:none!important}
+ .reportSummary,.reportRevisionGrid>div,.reportEvidenceList li{break-inside:avoid}
+}
