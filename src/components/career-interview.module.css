@@ -3,3 +3,20 @@
 .listShell{width:min(1280px,calc(100% - 34px));margin:0 auto;padding:25px 0 80px;color:#1d394c}.breadcrumb{font-size:14px;color:#648295;display:flex;gap:9px;margin:0 0 24px;flex-wrap:wrap}.breadcrumb a{color:#1a6983;text-decoration:none}.listHead{margin:18px 0 24px}.listHead h1{font-size:clamp(32px,4vw,48px);margin:8px 0}.listHead p{font-size:17px;color:#5b7486;line-height:1.7;max-width:770px}.listGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}.listCard{padding:27px;border:1px solid #d4e3e8;border-radius:16px;background:#fff;min-width:0;display:flex;flex-direction:column;align-items:flex-start}.listCard h2{font-size:25px;line-height:1.35;margin:12px 0}.listCard p{line-height:1.7;color:#557082;font-size:15px;flex:1}.listMeta{font-size:13px;color:#637e90;margin:16px 0}.listButton{display:inline-block;background:#11745f;color:#fff!important;padding:13px 18px;font-weight:800;border-radius:9px;text-decoration:none}.listFoot{font-size:13px;color:#688394;line-height:1.8;margin-top:24px}@media(max-width:680px){.listGrid{grid-template-columns:1fr}.listCard{padding:21px}.listShell{padding-top:15px}}
 
 .sourceDetails{border:1px solid #d6e5eb;border-radius:12px;margin:23px 0;padding:14px 18px;background:#f9fbfc;color:#657c8d;font-size:13px;line-height:1.75}.sourceDetails summary{cursor:pointer;font-weight:800;font-size:14px;color:#335f73}.sourceDetails p{line-height:1.7}.sourceDetails a{color:#146783}
+
+/* Optional private JD/experience brief; same visual system as the exam, no new layout framework. */
+.contextPanel{margin:22px 0;padding:18px;border:1px solid #d5e3e9;border-radius:13px;background:#f8fbfd}
+.contextPanel h3{font-size:19px;margin:0 0 6px;color:#1b4357}
+.contextPanel .small{margin:9px 0}
+.contextFields{display:grid;gap:13px;margin-top:13px}
+.contextFields label{display:grid;gap:7px;color:#315367;font-size:14px;font-weight:750}
+.contextFields input,.contextFields textarea{display:block;box-sizing:border-box;width:100%;min-width:0;padding:12px 14px;border:1.5px solid #bad0db;border-radius:9px;font-family:inherit;font-size:15px;font-weight:400;color:#1f435b;background:#fff;line-height:1.7}
+.contextFields textarea{resize:vertical}
+.contextFields input:focus,.contextFields textarea:focus{outline:3px solid #267b9b33;border-color:#267b9b}
+.contextSignals{margin:14px 0;padding:13px 15px;border:1px solid #c9e5df;border-radius:10px;background:#f0faf6;color:#2b5b54;font-size:14px;line-height:1.75;overflow-wrap:anywhere}
+.contextSignals p{margin:6px 0 0}
+.jobNotes{margin:14px 0;border:1px solid #d5e2e9;background:#f7fafc;border-radius:10px;padding:10px 14px;color:#456779;font-size:13px;line-height:1.6}
+.jobNotes summary{font-weight:800;cursor:pointer;color:#245f78}
+.jobNotes p{margin:7px 0;overflow-wrap:anywhere}
+@media(max-width:650px){.contextPanel{padding:14px 12px}.contextFields input,.contextFields textarea{font-size:16px}}
+@media print{.contextPanel,.jobNotes{display:none!important}.contextSignals{background:#fff;border:1px solid #ccc}}
