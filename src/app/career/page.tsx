@@ -11,7 +11,7 @@ import styles from "./career.module.css";
 
 export const metadata={
   title:"职业考试与复习资料｜270个分类岗位｜SOCTHINK",
-  description:"免费参与原创40题招聘通用能力模拟、采购/运营/质量24题岗位笔试及SQL工程实训；查询来源明确的岗位资料与原创职业教程。",
+  description:"免费参与原创40题招聘通用能力模拟、采购/运营/质量24题岗位笔试、SQL和JavaScript工程实训；查询来源明确的岗位资料与原创职业教程。",
   alternates:{canonical:"/career"},
 };
 const SKILL_ZH:Record<string,string>={
@@ -100,6 +100,10 @@ export default async function CareerDemandPage({searchParams}:{searchParams:Sear
         <div className={styles.quickTestItem}>
           <strong>数据工程师 · SQL实操</strong><span>8项真实SQL任务</span>
           <Link href="/skill-labs/sql-lab">进入实操</Link>
+        </div>
+        <div className={styles.quickTestItem}>
+          <strong>软件工程师 · 编程实操</strong><span>6项真实JavaScript任务</span>
+          <Link href="/skill-labs/code-lab">开始编程</Link>
         </div>
       </div>
       <div className={styles.offerGrid}>
