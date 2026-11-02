@@ -1,6 +1,7 @@
 import Link from "next/link";
 import {CENTER_SECTIONS,getInstrument} from "@/lib/measurement-center";
 import styles from "./measurement.module.css";
+import AssessmentTrustBrief from "@/components/AssessmentTrustBrief";
 export const metadata={
   title:"智量测评中心｜招聘通用能力、逻辑推理、职业兴趣与人格｜SOCTHINK",
   description:"免费职业价值观、工作方式、情境判断、招聘通用能力、逻辑推理、大五人格、职业兴趣与阅读训练，注明题项来源和非标准化边界。",
@@ -10,9 +11,10 @@ export default function MeasurementCenterPage(){
   return <div className={styles.shell}>
     <nav className={styles.breadcrumb} aria-label="位置"><Link href="/assessments">全部考试</Link><span> / </span>科学测评</nav>
     <section className={styles.hero}>
-      <h1>科学测评</h1>
-      <p>免费试测与基本结果 · 详细报告按实际商品收费</p>
+      <h1>能力测评与专业训练</h1>
+      <p>来源可查 · 结果有据 · 基础训练免费，已上架的详细报告单独收费</p>
     </section>
+    <AssessmentTrustBrief variant="center"/>
     <div className={styles.sectionHeading}>
       <div><h2>选择测评</h2></div>
     </div>
