@@ -10,6 +10,7 @@ export type TechBook = {
   reason: string;
   practice: string;
   officialUrl: string;
+  officialDownload?: { url: string; format: "PDF"; source: "作者官网" };
   access: "作者/项目官网免费阅读" | "作者官网图书介绍，购书另行进行";
   lab: { title: string; href: string; note: string };
   references: TechReference[];
@@ -32,7 +33,9 @@ export const TECH_BOOKS: ReadonlyArray<TechBook> = [
     introduction: "把机器学习与深度学习的数学解释、代码实验和模型训练放在同一条学习路径中。",
     reason: "适合先弄明白神经网络的训练与评估，再研究 Agent 和大模型系统。",
     practice: "运行一段基础模型训练实验，分别记录训练、验证指标，解释过拟合现象。",
-    officialUrl: "https://d2l.ai/", access: "作者/项目官网免费阅读",
+    officialUrl: "https://d2l.ai/",
+    officialDownload: { url: "https://d2l.ai/d2l-en.pdf", format: "PDF", source: "作者官网" },
+    access: "作者/项目官网免费阅读",
     lab: { title: "AI Agent 工程实训", href: "/skill-labs/agent-foundations", note: "接着理解工具调用、权限和独立验收；不是本书附属课程。" },
     references: [{ title: "PyTorch 官方教程", url: "https://pytorch.org/tutorials/", kind: "官方文档" }],
   },

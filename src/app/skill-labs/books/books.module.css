@@ -55,3 +55,7 @@
 .bottomNav{display:flex;gap:18px;flex-wrap:wrap;font-size:14px}
 @media(max-width:900px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.detailGrid{grid-template-columns:minmax(0,1fr)}}
 @media(max-width:600px){.grid,.filterFields{grid-template-columns:1fr}.sectionHeading{align-items:start;flex-direction:column}.bookCard{padding:18px}.hero{padding:24px 20px}.filterFields button{width:100%}.detailSection,.labCard{padding:20px}}
+
+.readActions{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.downloadLink{display:inline-flex;align-items:center;padding:10px 16px;border:1px solid var(--portal-blue);border-radius:9px;color:var(--portal-blue);font-weight:800;font-size:15px;min-height:43px}
+.downloadLink:hover{background:var(--portal-blue-soft)}

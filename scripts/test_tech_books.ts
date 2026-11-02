@@ -9,6 +9,11 @@ for (const book of TECH_BOOKS) {
   assert.ok(topics.has(book.topic));
   assert.ok(book.title && book.author && book.reason && book.practice && book.introduction);
   assert.match(book.officialUrl, /^https:\/\//);
+  if (book.officialDownload) {
+    assert.match(book.officialDownload.url, /^https:\/\//);
+    assert.equal(book.officialDownload.source, "作者官网");
+    assert.equal(book.officialDownload.format, "PDF");
+  }
   assert.ok(allowedLabs.has(book.lab.href), "No fake or planned lab link: " + book.slug);
   assert.ok(book.references.length > 0);
   for (const ref of book.references) assert.match(ref.url, /^https:\/\//);
@@ -23,3 +28,6 @@ assert.ok(filterTechBooks("3D 与游戏开发", "").some(book => book.slug === "
 assert.ok(filterTechBooks("", "games").every(book => book.topic === "games"));
 assert.equal(TECH_BOOKS.some(book => /hacker.news.*score|z.library/i.test(book.reason)), false);
 console.log("TECH_BOOK_LIBRARY_CONTRACT=PASS; books=" + TECH_BOOKS.length);
+
+assert.equal(TECH_BOOKS.filter(book => Boolean(book.officialDownload)).length, 1, "Only verified first-party PDF is marked downloadable");
+assert.equal(getTechBook("dive-into-deep-learning")?.officialDownload?.url, "https://d2l.ai/d2l-en.pdf");

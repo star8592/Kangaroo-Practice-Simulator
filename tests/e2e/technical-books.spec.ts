@@ -75,3 +75,11 @@ test("technical library does not overflow narrow or wide screens", async ({ page
     }
   }
 });
+
+test("official book download is shown only when verified, with no third-party mirror",async({page})=>{
+  await page.goto("/skill-labs/books/dive-into-deep-learning");
+  await expect(page.getByRole("link",{name:/前往官方下载 PDF/})).toHaveAttribute("href","https://d2l.ai/d2l-en.pdf");
+  await page.goto("/skill-labs/books/designing-data-intensive-applications");
+  await expect(page.getByRole("link",{name:/前往官方下载/})).toHaveCount(0);
+  await expect(page.getByText(/未核验可合法下载的整本文件/)).toBeVisible();
+});
