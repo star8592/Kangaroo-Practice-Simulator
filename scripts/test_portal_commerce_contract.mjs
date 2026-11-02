@@ -69,6 +69,12 @@ assert.match(shopDetail,/NativeCheckoutPanel offers=\{\[offer\]\} accountLoggedI
   "PRODUCT_PAYMENT_MUST_REUSE_EXISTING_BILLING_CHECKOUT");
 assert.match(shopDetail,/nativeCheckoutAllowedForBuyer\(accountLoggedIn\?buyer\?\.id:null,p.id\)/,
   "PRODUCT_CANNOT_ADVERTISE_LIVE_CHARGES_WHEN_DISABLED");
+assert.match(shopDetail,/:!accountLoggedIn\s+\?<div className=\{styles\.purchaseActionArea\}>/,
+  "GUEST_MUST_BE_ABLE_TO_START_WECHAT_LOGIN_BEFORE_PILOT_CHECKOUT");
+assert.match(shopDetail,/微信登录后查看购买资格/,
+  "GUEST_CTA_MUST_NOT_PROMISE_PUBLIC_CHECKOUT");
+assert.doesNotMatch(shopDetail,/:checkoutReady\s+\?accountLoggedIn/,
+  "CHECKOUT_AUTH_CANNOT_HIDE_WECHAT_LOGIN_BEHIND_LOGGED_IN_GATE");
 assert.match(shopDetail,/hasVerifiedItemEntitlement/,
   "PAID_CUSTOMER_MUST_HAVE_DOWNLOAD_SHORTCUT");
 assert.match(shopDetail,/api\/resources\/download\//,
