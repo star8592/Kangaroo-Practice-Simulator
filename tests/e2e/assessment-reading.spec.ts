@@ -3,7 +3,7 @@ test("reading center offers a real task and public technical evidence",async({pa
  await page.goto("/assessment-center");
  await expect(page.getByText("原创完整模拟",{exact:true})).toHaveCount(2);
  await expect(page.locator("article")).toHaveCount(9);
- await expect(page.locator('a[href="/assessment-center/reading-practice-16"]')).toBeVisible();
+ await expect(page.locator('a[href="/assessment-center/reading-practice-16"]').first()).toBeVisible();
  await page.getByRole("link",{name:"查看全部技术档案"}).click();
  await page.getByRole("link",{name:/查看全部测评技术档案/}).click();
  await expect(page.getByRole("heading",{name:"每项结果，都应当能追溯依据。"})).toBeVisible();
