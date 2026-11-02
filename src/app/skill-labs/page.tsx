@@ -3,7 +3,7 @@ import styles from "@/app/assessment-center/measurement.module.css";
 import {ENGINEERING_TRACK_LIST} from "@/lib/engineering-code-tracks";
 export const metadata={
  title:"真实技能实训｜SOC THINK",
- description:"与心理与人格测评完全分离的实践训练中心。现开放SQL数据工程与软件工程师JavaScript实操。SQLite与隔离QuickJS WebAssembly运行、实际结果校验。",
+ description:"原创AI Agent工程教程与可运行实验，SQL数据工程、JavaScript编程及岗位实操。真实执行与可复核结果，和心理测评分离。",
  alternates:{canonical:"/skill-labs"}
 };
 export default function SkillLabsHome(){
@@ -15,7 +15,15 @@ export default function SkillLabsHome(){
     <div className={styles.heroMeta}><span>实操优先</span><span>真实执行</span><span>免费训练记录</span></div>
    </header>
    <div className={styles.sectionHeading}><div><span className={styles.eyebrowDark}>PRACTICE BY DOING</span><h2>已开放的技能实训</h2></div></div>
-   <div className={styles.grid}><article className={styles.tile}>
+   <div className={styles.grid}>
+   <article className={styles.tile}>
+    <div className={styles.tileTop}><span className={styles.tileNumber}>AI / AGENT</span><span className={styles.previewBadge}>免费完整教程</span></div>
+    <h3>AI Agent工程 · 工具调用与独立验收</h3>
+    <p>6节原创中文课程、可下载的Python实验源码。真实执行7项测试，识别越权工具、错误参数和“声称成功却没有交付”的情况。</p>
+    <div className={styles.tileInfo}>Python 3.10+ · 零外部依赖 · 自研模拟器，非真实大模型认证</div>
+    <Link className={styles.tileLink} href="/skill-labs/agent-foundations">阅读课程并下载源码 <span aria-hidden="true">→</span></Link>
+   </article>
+   <article className={styles.tile}>
     <div className={styles.tileTop}><span className={styles.tileNumber}>01 / DATA</span><span className={styles.previewBadge}>免费实训</span></div>
     <h3>SQL 数据工程 · 8项真实任务</h3>
     <p>从订单筛选与多表关联，到日期趋势、支付退款对账、未付款客户识别和城市汇总。浏览器内 SQLite 真正执行三组原创数据并核验结果。</p>

@@ -1,0 +1,29 @@
+.page{max-width:1040px}
+.hero{border:1px solid #cddced;background:linear-gradient(122deg,#f2f7ff,#fff 80%);border-radius:18px;padding:clamp(22px,4vw,43px)}
+.eyebrow{font-size:13px;letter-spacing:.03em;font-weight:750;color:#205c9a}
+.hero h1{font-size:clamp(29px,3.9vw,45px);line-height:1.22;letter-spacing:-.03em;margin:14px 0 12px;color:#173557}
+.hero>p{font-size:17px;line-height:1.75;max-width:810px;color:#3f5872}
+.facts{display:flex;flex-wrap:wrap;gap:9px;margin:18px 0}
+.facts span{background:#fff;border:1px solid #d4dfed;border-radius:24px;padding:6px 11px;font-size:13px;color:#3d536d}
+.actions{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:22px}
+.primary,.secondary{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:10px 18px;border-radius:10px;font-weight:700;font-size:15px;text-decoration:none}
+.primary{color:white;background:#195eac}.primary:hover{background:#124a87}
+.secondary{color:#195eac;background:#fff;border:1px solid #bad2eb}.secondary:hover{background:#edf5ff}
+.hero .disclosure{font-size:12px;color:#597189;margin:18px 0 0;line-height:1.6}
+.overview{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:16px}
+.overview>div{background:#fff;border:1px solid #d8e1eb;padding:18px;border-radius:12px}
+.overview strong{font-size:15px;color:#183b60}.overview p{font-size:14px;color:#48617c;margin:8px 0 0;line-height:1.6}
+.courseMain{margin-top:42px}.sectionHead{margin-bottom:18px}.sectionHead span{font-size:11px;letter-spacing:.12em;font-weight:800;color:#2765a7}
+.sectionHead h2{font-size:28px;margin:7px 0}.sectionHead p{color:#576b82;line-height:1.7}
+.lesson{border:1px solid #d6e0ea;background:white;border-radius:14px;padding:clamp(20px,3vw,30px);margin-bottom:14px}
+.lesson h3{font-size:22px;margin:0 0 17px;color:#193d64;line-height:1.4}
+.lesson p{font-size:15px;line-height:1.9;color:#354e68;margin:10px 0}
+.challenge{display:flex;align-items:baseline;gap:12px;background:#f3f7fb;border-left:3px solid #346ca5;border-radius:5px;padding:15px;margin-top:18px;line-height:1.6;font-size:14px;color:#365671}
+.challenge strong{flex-shrink:0;color:#234e7c}
+.run,.references{margin-top:23px;border:1px solid #d6e0ea;border-radius:14px;padding:clamp(20px,3vw,30px);background:#fff}
+.run h2,.references h2{font-size:23px;margin:0 0 10px}.run p,.references p{font-size:15px;line-height:1.75;color:#415a72}
+.run pre{overflow-x:auto;white-space:pre-wrap;word-break:break-all;background:#122f4f;color:#e7f3ff;font-size:14px;border-radius:12px;padding:18px;line-height:1.8}
+.references ul{padding-left:21px}.references li{margin:12px 0}.references a,.bottom a{color:#155ca6;text-underline-offset:3px}
+.updated{font-size:13px!important;color:#677b8e!important}
+.bottom{display:flex;flex-wrap:wrap;justify-content:space-between;gap:14px;margin:26px 0 8px;font-size:15px;font-weight:650}
+@media(max-width:660px){.overview{grid-template-columns:1fr}.hero{padding:22px}.hero h1{font-size:29px}.lesson h3{font-size:20px}.challenge{display:block}.challenge strong{display:block;margin-bottom:7px}.actions>a{width:100%}}
