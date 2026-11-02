@@ -30,6 +30,9 @@ export default function MeasurementCenterPage(){
             <Link href="/assessment-center/work-values-30">职业价值观 · 30题</Link>
             <Link href="/assessment-center/work-style-24">工作方式 · 24题</Link>
           </div>}
+          {section.title==="认知与推理能力"&&<div className={styles.extraAssessmentLinks} aria-label="高级推理专项">
+            <Link href="/assessment-center/advanced-reasoning-40">高级逻辑 · 40题正式卷</Link>
+          </div>}
           {section.title==="求职通用能力"&&<div className={styles.extraAssessmentLinks} aria-label="情境判断专项">
             <Link href="/assessment-center/workplace-sjt-24">职场情境判断 · 24题</Link>
           </div>}
