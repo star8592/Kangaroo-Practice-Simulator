@@ -15,6 +15,7 @@ export default function CodeLabClient(){
  const[feedback,setFeedback]=useState<CodeCheck|null>(null);
  const[error,setError]=useState("");
  const[hint,setHint]=useState(false);
+ const[expanded,setExpanded]=useState(false);
  const[solved,setSolved]=useState<Record<string,boolean>>({});
  const[attempts,setAttempts]=useState<Record<string,number>>({});
  const worker=useRef<Worker|null>(null);
@@ -31,7 +32,7 @@ export default function CodeLabClient(){
   setBusy(false);setFeedback(null);setError("");setHint(false);
  }
  function reset(){
-  navigate(0);setStage("intro");setConsent(false);setSolved({});setAttempts({});
+  navigate(0);setStage("intro");setConsent(false);setSolved({});setAttempts({});setExpanded(false);
  }
  function onSourceChange(value:string){
   setSource(value);setFeedback(null);setError("");
@@ -61,7 +62,7 @@ export default function CodeLabClient(){
   }catch{cleanup();setBusy(false);setError("无法创建安全执行环境，请更换现代浏览器重试。");}
  }
  return <div className={styles.root}>
-  <header className={styles.header}>
+  <header className={[styles.header,stage==="practice"?styles.headerPractice:""].filter(Boolean).join(" ")}>
    <span className={styles.eyebrow}>SOCTHINK · SOFTWARE ENGINEERING LAB</span>
    <h1>软件工程师 · 真实代码实操</h1>
    <p>六项原创岗位工作样例。自己编写JavaScript，在隔离的QuickJS环境里运行并核验结果。</p>
@@ -76,32 +77,44 @@ export default function CodeLabClient(){
    <label className={styles.consent}><input type="checkbox" checked={consent} onChange={e=>setConsent(e.target.checked)}/>我理解这是免费编程实训，代码仅在隔离环境中执行。</label>
    <button type="button" className={styles.primary} disabled={!consent} onClick={()=>setStage("practice")}>开始编程实操</button>
   </section>}
-  {stage==="practice"&&<div className={styles.workspace}>
-   <section className={styles.panel}>
+  {stage==="practice"&&<div className={[styles.workspace,expanded?styles.workspaceExpanded:""].filter(Boolean).join(" ")}>
+   <section className={[styles.panel,styles.editorPanel].join(" ")}>
     <div className={styles.progressTop}><strong>任务 {index+1} / {CODE_CHALLENGES.length}</strong><span>已通过 {count}/{CODE_CHALLENGES.length}</span></div>
     <div className={styles.progress}><span style={{width:(100*count/CODE_CHALLENGES.length)+"%"}}/></div>
     <div className={styles.taskTop}><h2>{task.title}</h2><span>{task.domain}</span></div>
     <p className={styles.lead}>{task.description}</p>
     <div className={styles.signature}><strong>实现函数</strong><code>{task.signature}</code></div>
-    <label className={styles.editorLabel} htmlFor="code-lab-input">你的JavaScript代码</label>
-    <textarea id="code-lab-input" className={styles.editor} spellCheck={false}
-      value={source} maxLength={5000} rows={11} onChange={e=>onSourceChange(e.target.value)}
-      aria-label="你的JavaScript代码"/>
+    <div className={styles.editorFrame}>
+     <div className={styles.editorBar}>
+      <div className={styles.fileName}><span className={styles.fileDot} aria-hidden="true"/><span>solution.js</span><span className={styles.languageTag}>JavaScript</span></div>
+      <button type="button" className={styles.expandButton} aria-pressed={expanded}
+       onClick={()=>setExpanded(v=>!v)}>{expanded?"退出扩大模式":"扩大编辑区"}</button>
+     </div>
+     <label className={styles.visuallyHidden} htmlFor="code-lab-input">你的JavaScript代码</label>
+     <textarea id="code-lab-input" className={styles.editor} spellCheck={false}
+       value={source} maxLength={5000} rows={20} onChange={e=>onSourceChange(e.target.value)}
+       aria-label="你的JavaScript代码"/>
+     <div className={styles.editorStatus}><span>QuickJS · 隔离运行</span><span>{source.length} / 5000 字符</span></div>
+    </div>
     <div className={styles.toolbar}>
      <button className={styles.secondary} type="button" disabled={busy} onClick={()=>setHint(h=>!h)}>{hint?"收起提示":"显示提示"}</button>
      <button className={styles.primary} type="button" disabled={busy||!source.trim()} onClick={run}>{busy?"隔离执行中…":"运行代码并核验"}</button>
     </div>
     {hint&&<p className={styles.hint}>{task.hint}</p>}
-    <div role="status" aria-live="polite">
-     {error&&<div className={styles.failure}><strong>本次执行失败</strong><p>{error}</p></div>}
-     {feedback&&<div className={feedback.correct?styles.success:styles.failure}>
-      <strong>{feedback.correct?"任务通过 · 4组真实执行全部正确":"需要修正代码"}</strong>
-      <p>{feedback.message} · {feedback.passed}/{feedback.total}组已通过 · 本次运行约{feedback.elapsedMs}ms</p>
-     </div>}
-    </div>
-    {feedback?.sample&&<div className={styles.output}>
-     <strong>第1组输入与实际返回结果</strong>
-     <pre>{JSON.stringify(feedback.sample,null,2)}</pre>
+    {(busy||error||feedback)&&<div className={styles.console}>
+     <div className={styles.consoleBar}><strong>执行结果</strong><span>{busy?"运行中":error?"执行失败":feedback?.correct?"通过":"未通过"}</span></div>
+     <div className={styles.consoleBody} role="status" aria-live="polite">
+      {busy&&<p>正在隔离执行并核对输出…</p>}
+      {error&&<div className={styles.consoleError}><strong>本次执行失败</strong><p>{error}</p></div>}
+      {feedback&&<div className={feedback.correct?styles.consoleSuccess:styles.consoleError}>
+       <strong>{feedback.correct?"任务通过 · 4组真实执行全部正确":"需要修正代码"}</strong>
+       <p>{feedback.message} · {feedback.passed}/{feedback.total}组已通过 · 本次运行约{feedback.elapsedMs}ms</p>
+      </div>}
+      {feedback?.sample&&<div className={styles.consoleSample}>
+       <strong>样例输入 / 期望输出 / 实际返回</strong>
+       <pre>{JSON.stringify(feedback.sample,null,2)}</pre>
+      </div>}
+     </div>
     </div>}
     <div className={styles.toolbar}>
      <button type="button" className={styles.secondary} disabled={busy||index===0} onClick={()=>navigate(index-1)}>上一任务</button>
@@ -111,12 +124,15 @@ export default function CodeLabClient(){
     </div>
    </section>
    <aside className={styles.panel}>
-    <h2>题目与测试规则</h2>
+    <h2>输入与预期</h2>
     <div className={styles.info}><strong>第一组公开样例</strong><pre>{JSON.stringify(task.cases[0].input,null,2)}</pre>
      <strong>期望输出</strong><pre>{JSON.stringify(task.cases[0].expected,null,2)}</pre></div>
-    <div className={styles.info}><strong>验证方式</strong><p>每次运行4组用例（公开样例、空输入或其他边界输入），逐组比较真实返回值。不仅检查代码文本。</p></div>
-    <div className={styles.info}><strong>执行约束</strong><p>JavaScript纯函数；单次源码≤5000字符；每用例限时约850ms；VM内存16MiB；独立Worker总超时12秒。无网络、文件、系统调用。</p></div>
-    <div className={styles.info}><strong>适用范围</strong><p>本站原创自学题，不具企业候选人监考、防作弊或行业资格证明能力。</p></div>
+    <details className={styles.ruleDetails}>
+     <summary>评分和运行规则</summary>
+     <p>每次运行4组测试输入，真实执行并核对输出，而不是只检测代码文本。</p>
+     <p>JavaScript纯函数；源码最多5000字符；每用例约850ms；虚拟机内存16MiB，Worker总超时12秒。不可访问网络、文件和系统调用。</p>
+     <p>本站原创训练，非官方职业资格认证。</p>
+    </details>
    </aside>
   </div>}
   {stage==="report"&&<section className={styles.panel}>
