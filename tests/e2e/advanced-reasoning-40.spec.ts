@@ -13,7 +13,7 @@ test("advanced reasoning is discoverable, officially distinct, and evidence regi
  await expect(page.getByText("非官方、非标准化测验")).toBeVisible();
  await expect(page.getByText(/40 道原创题，覆盖五类推理任务/)).toBeVisible();
  await page.goto("/assessment-center/methodology");
- await expect(page.locator("article")).toHaveCount(8);
+ await expect(page.locator("article")).toHaveCount(9);
  await expect(page.getByRole("heading",{name:"高级逻辑与批判性推理 · 40题"})).toBeVisible();
 });
 test("complete original 40-item advanced reasoning timed exam, resume, scoring and reset",async({page})=>{
