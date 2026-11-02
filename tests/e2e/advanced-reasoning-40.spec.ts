@@ -5,10 +5,13 @@ test("advanced reasoning is discoverable, officially distinct, and evidence regi
  expect(response?.status()).toBe(200);
  const link=page.locator('a[href="'+ROUTE+'"]');
  await expect(link).toBeVisible();
+ await expect(page.getByRole("heading",{name:"这项测评由谁开发？依据是什么？"})).toBeVisible();
+ await expect(page.getByRole("link",{name:/了解测评中心与开发原则/})).toBeVisible();
  await link.click();
  await expect(page).toHaveURL(new RegExp(ROUTE+"$"));
  await expect(page.getByRole("heading",{name:"高级逻辑与批判性推理 · 40题"})).toBeVisible();
  await expect(page.getByText("非官方、非标准化测验")).toBeVisible();
+ await expect(page.getByText(/40 道原创题，覆盖五类推理任务/)).toBeVisible();
  await page.goto("/assessment-center/methodology");
  await expect(page.locator("article")).toHaveCount(8);
  await expect(page.getByRole("heading",{name:"高级逻辑与批判性推理 · 40题"})).toBeVisible();
@@ -38,6 +41,9 @@ test("complete original 40-item advanced reasoning timed exam, resume, scoring a
  await expect(page.getByText("已答 40 题")).toBeVisible();
  await page.getByRole("button",{name:"确认交卷 · 查看成绩"}).click();
  await expect(page.getByRole("heading",{name:"本次模拟成绩"})).toBeVisible();
+ await expect(page.getByRole("heading",{name:"01 · 答卷概况"})).toBeVisible();
+ await expect(page.getByRole("heading",{name:"03 · 证据复盘与下一步训练"})).toBeVisible();
+ await expect(page.getByText("选取的错题证据")).toBeVisible();
  await expect(page.getByText("答对",{exact:false}).first()).toBeVisible();
  await page.getByText("查看40题逐题解析与原始作答").click();
  await expect(page.locator("ol").last().locator("li")).toHaveCount(40);
@@ -54,6 +60,18 @@ test("blank answer sheet can be deliberately submitted and must score zero",asyn
  await page.getByRole("button",{name:"确认交卷 · 查看成绩"}).click();
  await expect(page.getByText("答对",{exact:false}).first()).toBeVisible();
  await expect(page.getByText("0 / 40",{exact:false}).first()).toBeVisible();
+ await expect(page.getByText(/本次交白卷，只有空白记录/)).toBeVisible();
+ await expect(page.getByText(/没有已作答题，无法识别具体错误模式/)).toBeVisible();
+ await expect(page.locator("ul[class*=reportEvidenceList]")).toHaveCount(0);
  await page.getByText("查看40题逐题解析与原始作答").click();
  await expect(page.locator("ol").last().locator("li")).toHaveCount(40);
+});
+
+test("the publisher disclosure page explains origin without fabricated endorsement",async({page})=>{
+ const response=await page.goto("/assessment-center/about");
+ expect(response?.status()).toBe(200);
+ await expect(page.getByRole("heading",{name:"让每一次测评，都有依据可查。"})).toBeVisible();
+ await expect(page.getByText(/品牌名称不等同于法律上的公司登记主体/)).toBeVisible();
+ await expect(page.getByRole("link",{name:/查看全部测评技术档案/})).toBeVisible();
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
 });
