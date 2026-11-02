@@ -5,9 +5,14 @@ import {
  getInterviewProfile,selectFollowup,buildInterviewReview
 } from "@/lib/career-interview-scenarios";
 import type {InterviewExchange} from "@/lib/career-interview-scenarios";
+import {
+ EMPTY_INTERVIEW_JOB_CONTEXT,INTERVIEW_JOB_LIMITS,isInterviewJobContext,
+ analyzeInterviewJobContext,buildJobFocusedFollowup
+} from "@/lib/career-interview-context";
+import type {InterviewJobContext} from "@/lib/career-interview-context";
 import styles from "./career-interview.module.css";
 type Stage="intro"|"main"|"followup"|"review"|"report";
-type State={version:string;stage:Stage;index:number;entries:Record<string,InterviewExchange>};
+type State={version:string;stage:Stage;index:number;entries:Record<string,InterviewExchange>;context?:InterviewJobContext};
 const VERSION="career-interview-structured-preview-20261102-v1";
 const subscribe=()=>()=>{};
 const ready=()=>true;
@@ -22,7 +27,8 @@ function loadSaved(id:string,count:number):State|null{
   const val=JSON.parse(raw) as State;
   if(val.version!==VERSION||!["main","followup","review","report"].includes(val.stage)
    ||!Number.isInteger(val.index)||val.index<0||val.index>=count
-   ||!val.entries||Array.isArray(val.entries)||typeof val.entries!=="object")return null;
+   ||!val.entries||Array.isArray(val.entries)||typeof val.entries!=="object"
+   ||(val.context!==undefined&&!isInterviewJobContext(val.context)))return null;
   const allowed=new Set(getInterviewProfile(id)?.questions.map(q=>q.id)??[]);
   const valid=Object.entries(val.entries).every(([q,e])=>
    allowed.has(q)&&e!==null&&typeof e==="object"&&
@@ -41,6 +47,8 @@ export default function CareerInterviewClient({profileId}:{profileId:string}){
  const [stage,setStage]=useState<Stage>(saved?.stage??"intro");
  const [index,setIndex]=useState(saved?.index??0);
  const [entries,setEntries]=useState<Record<string,InterviewExchange>>(saved?.entries??{});
+ const [context,setContext]=useState<InterviewJobContext>(saved?.context??EMPTY_INTERVIEW_JOB_CONTEXT);
+ const contextAnalysis=analyzeInterviewJobContext(profileId,context);
  const [consent,setConsent]=useState(false);
  const [confirmReset,setConfirmReset]=useState(false);
  const question=profile.questions[index];
@@ -50,10 +58,10 @@ export default function CareerInterviewClient({profileId}:{profileId:string}){
   try{
    if(stage==="intro")sessionStorage.removeItem(storageKey(profileId));
    else sessionStorage.setItem(storageKey(profileId),JSON.stringify({
-    version:VERSION,stage,index,entries,
+    version:VERSION,stage,index,entries,context,
    }));
   }catch{/* Storage can be restricted; current page stays usable. */}
- },[hydrated,profileId,stage,index,entries]);
+ },[hydrated,profileId,stage,index,entries,context]);
  function updateCurrent(next:Partial<InterviewExchange>){
   setEntries(prev=>({...prev,[question.id]:{...empty(),...prev[question.id],id:question.id,...next}}));
  }
@@ -61,7 +69,10 @@ export default function CareerInterviewClient({profileId}:{profileId:string}){
  function confirmMain(){
   if(!entry.answer.trim())return;
   const followup=selectFollowup(question,entry.answer);
-  updateCurrent({followup:followup.text,followupAnswer:""});
+  updateCurrent({
+   followup:buildJobFocusedFollowup(profile.id,index,followup.text,entry.answer,context),
+   followupAnswer:""
+  });
   setStage("followup");
  }
  function next(){
@@ -70,7 +81,7 @@ export default function CareerInterviewClient({profileId}:{profileId:string}){
   else setStage("review");
  }
  function reset(){
-  setIndex(0);setEntries({});setConsent(false);setConfirmReset(false);
+  setIndex(0);setEntries({});setContext(EMPTY_INTERVIEW_JOB_CONTEXT);setConsent(false);setConfirmReset(false);
   try{sessionStorage.removeItem(storageKey(profileId))}catch{}
   setStage("intro");
  }
@@ -92,6 +103,36 @@ export default function CareerInterviewClient({profileId}:{profileId:string}){
     <div><strong>1份</strong><span>真实回答复盘与补弱清单</span></div>
    </div>
    <p>适用对象：{profile.audience}</p>
+   <div className={styles.contextPanel}>
+    <h3>按目标岗位准备（选填）</h3>
+    <p className={styles.small}>粘贴招聘要求和与岗位相关的经历摘要。本场会用岗位关键词调整追问；目前只是规则匹配，不是AI理解或能力评分。</p>
+    <div className={styles.contextFields}>
+     <label>目标岗位名称
+      <input type="text" maxLength={INTERVIEW_JOB_LIMITS.targetRole}
+       value={context.targetRole}
+       onChange={e=>setContext(prev=>({...prev,targetRole:e.target.value}))}
+       placeholder={profile.role}/>
+     </label>
+     <label>招聘要求 / JD
+      <textarea rows={4} maxLength={INTERVIEW_JOB_LIMITS.jobDescription}
+       value={context.jobDescription}
+       onChange={e=>setContext(prev=>({...prev,jobDescription:e.target.value}))}
+       placeholder="粘贴招聘信息中的岗位职责、技能要求或业务场景，不必粘贴公司联系方式。"/>
+     </label>
+     <label>你的相关经历摘要
+      <textarea rows={3} maxLength={INTERVIEW_JOB_LIMITS.experienceSummary}
+       value={context.experienceSummary}
+       onChange={e=>setContext(prev=>({...prev,experienceSummary:e.target.value}))}
+       placeholder="只写自己做过的项目、实习或工作任务，不必填写姓名、手机号等个人资料。"/>
+     </label>
+    </div>
+    {contextAnalysis.signals.length>0&&<div className={styles.contextSignals}>
+     <strong>从JD识别的关键词：</strong>{contextAnalysis.signals.join(" · ")}
+     <p>经历摘要中提及：{contextAnalysis.mentioned.join("、")||"暂未识别"}；
+     尚未提及：{contextAnalysis.notMentioned.join("、")||"无"}。这只是文字匹配，不代表真实掌握或欠缺。</p>
+    </div>}
+    <p className={styles.small}>这些输入只保存在本标签页的会话存储中，不上传到网站服务器；重新开始会清除。请勿填写真实密钥、联系方式、商业机密或第三方个人信息。</p>
+   </div>
    <p className={styles.small}>提示：当前追问是基于规则的分支选择，无法理解回答的专业含义；复盘要点由本人勾选确认，不是算法推断的客观能力成绩。本站原创训练内容，与招聘企业无官方授权关系。</p>
    <label className={styles.check}><input type="checkbox" checked={consent} onChange={e=>setConsent(e.target.checked)}/>
     我理解这是一场非标准化自我练习，不是录用评估；不会输入商业机密、真实密钥或其他人的个人信息。
@@ -104,13 +145,18 @@ export default function CareerInterviewClient({profileId}:{profileId:string}){
     <button className={styles.textButton} type="button" onClick={()=>setConfirmReset(true)}>重新开始</button>
    </div>
    {confirmReset&&<div className={styles.resetPrompt}>
-    <span>重新开始会清空本标签页的全部练习回答。</span>
+    <span>重新开始会清空本标签页的全部练习回答、岗位要求和经历摘要。</span>
     <button type="button" onClick={()=>setConfirmReset(false)}>取消</button>
     <button type="button" onClick={reset}>确认清空</button>
    </div>}
    <div className={styles.progress} aria-label="面试进度">
     {profile.questions.map((q,i)=><span key={q.id} data-done={i<index?"true":undefined} data-active={i===index?"true":undefined}/>)}
    </div>
+   {(context.targetRole||contextAnalysis.signals.length>0)&&<details className={styles.jobNotes}>
+    <summary>本场岗位：{context.targetRole||profile.role} · 查看定制依据</summary>
+    <p>JD识别关键词：{contextAnalysis.signals.join("、")||"未识别到预设词条，仍采用原路线题本"}</p>
+    <p>经历摘要匹配：{contextAnalysis.mentioned.join("、")||"暂无匹配词条"}。此项仅供自己核对，不用于招聘能力判断。</p>
+   </details>}
    <div className={styles.promptCard}>
     <span>面试官 · {stage==="main"?"主问题":"第1次追问"}</span>
     <h2>{stage==="main"?question.prompt:entry.followup}</h2>
@@ -166,6 +212,11 @@ export default function CareerInterviewClient({profileId}:{profileId:string}){
    <p className={styles.small}>以上是完成度与本人勾选数量，不是岗位能力分数。所有文字均来自本次真实作答与预先公布的训练要点，不使用AI凭空补写优点。</p>
    <h3>最值得优先改进的内容</h3>
    {report.practicePoints.length?<ul className={styles.points}>{report.practicePoints.map((x,i)=><li key={i}>{x}</li>)}</ul>:<p>你已自行勾选全部要点，下一步请核实这些内容是否都有真实证据，尝试用更准确的数字和案例重新回答。</p>}
+   {(context.targetRole||contextAnalysis.signals.length>0)&&<div className={styles.contextSignals}>
+    <strong>目标岗位：{context.targetRole||profile.role}</strong>
+    <p>JD涉及：{contextAnalysis.signals.join("、")||"未识别到预设关键词"}；经历摘要出现相同词条：{contextAnalysis.mentioned.join("、")||"暂无"}。</p>
+    <p>词条匹配不等于技能已验证，报告没有自动推断候选人胜任力。</p>
+   </div>}
    <h3>逐轮回答记录</h3>
    <div className={styles.transcript}>{report.questions.map((q,i)=><details key={q.id} open={i===0}>
     <summary>{i+1}. {q.phase} · {q.answered?"已完成":"未完整回答"}</summary>
