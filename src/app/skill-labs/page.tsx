@@ -17,6 +17,14 @@ export default function SkillLabsHome(){
    <div className={styles.sectionHeading}><div><span className={styles.eyebrowDark}>PRACTICE BY DOING</span><h2>已开放的技能实训</h2></div></div>
    <div className={styles.grid}>
    <article className={styles.tile}>
+    <div className={styles.tileTop}><span className={styles.tileNumber}>AI / VIDEO</span><span className={styles.previewBadge}>免费完整教程</span></div>
+    <h3>ComfyUI AI 视频 · 从工作流到成片</h3>
+    <p>8个原创中文单元，覆盖模型依赖、文本与图像视频、工作流结构、API和MP4交付。提供可实际运行的Python检查器，核实节点、模型及真实视频文件。</p>
+    <div className={styles.tileInfo}>ComfyUI工作流 · ffprobe视频检验 · 独立原创建模与评分方法</div>
+    <Link className={styles.tileLink} href="/skill-labs/comfy-video">学习完整教程并下载工具 <span aria-hidden="true">→</span></Link>
+   </article>
+
+   <article className={styles.tile}>
     <div className={styles.tileTop}><span className={styles.tileNumber}>WEB 3D / GPU</span><span className={styles.previewBadge}>免费完整实训</span></div>
     <h3>Three.js × WebGPU · 交互式 3D</h3>
     <p>8个原创教学单元、浏览器真实三维场景，切换 WebGPU / WebGL2、观察实例与帧率，下载可独立运行的完整 Vite 工程。</p>
