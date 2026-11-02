@@ -15,16 +15,17 @@ const eventHub=read("src/components/WorldCompetitionHub.tsx");
 const resourceClient=read("src/components/ResourceLibraryClient.tsx");
 const loginClient=read("src/components/UnifiedLoginClient.tsx");
 
-for(const slug of ["/assessments","/resources","/career","/skill-labs","/assessment-center","/shop","/exam-planner"]){
+for(const slug of ["/assessments","/resources","/career","/skill-labs","/assessment-center","/shop"]){
   assert.ok(header.includes(`href:"${slug}"`),`NAV_MISSING_${slug}`);
 }
+assert.ok(!header.includes('href:"/exam-planner"'),"EXAM_PLANNER_IS_SECONDARY");
 for(const route of ["/arithmetic","/competitions","/review"]){
   assert.ok(!header.includes('href:"'+route+'"'),"PRACTICE_IS_NOT_GLOBAL_NAV_"+route);
 }
 assert.ok(!header.includes("在线练习")&&!header.includes("Available practice"),
   "NO_TOP_LEVEL_PRACTICE_MENU");
 const assessmentPortal=read("src/components/AssessmentPortalClient.tsx");
-for(const route of ["/arithmetic","/competitions","/review"]){
+for(const route of ["/arithmetic","/competitions","/review","/exam-planner"]){
   assert.ok(assessmentPortal.includes('href="'+route+'"'),"EXAM_HUB_OWNS_PRACTICE_"+route);
 }
 assert.ok(accountNav.includes('href="/login?next=%2Faccount"')&&accountNav.includes('"/account"'),

@@ -27,4 +27,7 @@ const activeTopics=EXAM_DIRECTORY.flatMap(g=>g.topics.filter(t=>t.status==="live
 for(const item of activeTopics) assert.ok(entries.some(e=>e.id==="topic-"+item.id&&e.href===item.href));
 for(const needle of ["/skill-labs/sql-lab","/career/interviews","/assessment-center/career-aptitude-40"])
  assert.ok(entries.some(e=>e.href===needle),"Previously incorrectly hidden live content: "+needle);
+assert.ok(entries.some(e=>e.href==="/career"&&e.kind==="职业岗位"));
+assert.ok(entries.filter(e=>e.href.startsWith("/career/exams/")).every(e=>e.kind==="职业岗位"));
+assert.ok(!EXAM_DIRECTORY.some(g=>g.domainId==="career"||g.domainId==="interest"));
 console.log("SOCTHINK_SITE_DISCOVERY=PASS; items="+entries.length+"; updates="+updates.length+"; topics="+activeTopics.length);
