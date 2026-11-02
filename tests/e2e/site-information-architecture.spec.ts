@@ -18,14 +18,15 @@ test("desktop uses one concise task navigation and seven reachable categories",a
   await expect(categories.locator('a[href^="/assessments#domain-"]')).toHaveCount(7);
   for(const id of domains)
     await expect(categories.locator('a[href="/assessments#domain-'+id+'"]')).toBeVisible();
-  const practice=tasks.getByRole("button",{name:/在线练习/});
-  await expect(practice).toHaveAttribute("aria-expanded","false");
-  await practice.click();
-  await expect(practice).toHaveAttribute("aria-expanded","true");
-  await expect(tasks.getByRole("link",{name:/计算与数学训练/})).toBeVisible();
-  await expect(tasks.getByRole("link",{name:/国际数学竞赛模拟/})).toBeVisible();
-  await page.keyboard.press("Escape");
-  await expect(practice).toHaveAttribute("aria-expanded","false");
+  await expect(tasks.getByRole("button",{name:/在线练习/})).toHaveCount(0);
+  await expect(tasks.locator('a[href="/arithmetic"]')).toHaveCount(0);
+  await expect(tasks.locator('a[href="/competitions"]')).toHaveCount(0);
+  await expect(tasks.locator('a[href="/review"]')).toHaveCount(0);
+  await page.goto("/assessments");
+  for(const href of ["/arithmetic","/competitions","/review"]){
+    await expect(page.locator('main a[href="'+href+'"]').first()).toBeVisible();
+  }
+  await page.goto("/");
   await categories.locator('a[href="/assessments#domain-language"]').click();
   await expect(page).toHaveURL(/\/assessments#domain-language$/);
   await expect(page.locator('#domain-language').getByRole("heading",{name:"语言与国际考试"})).toBeVisible();
@@ -38,11 +39,17 @@ test("mobile menu reaches even not-yet-live domains without a hidden strip",asyn
   const nav=page.getByRole("navigation",{name:"移动端导航"});
   await expect(nav).toBeVisible();
   await expect(nav.getByRole("link",{name:/真题资料/})).toBeVisible();
-  await expect(nav.getByRole("link",{name:/计算与数学训练/})).toBeVisible();
+  for(const href of ["/arithmetic","/competitions","/review"]){
+    await expect(nav.locator('a[href="'+href+'"]')).toHaveCount(0);
+  }
+  await expect(nav.getByText("在线练习")).toHaveCount(0);
   await expect(nav.getByRole("link",{name:"考试管理"})).toBeVisible();
   await expect(nav.locator('a[href^="/assessments#domain-"]')).toHaveCount(0);
   await nav.getByRole("link",{name:"全部考试"}).click();
   await expect(page).toHaveURL(/\/assessments$/);
+  for(const href of ["/arithmetic","/competitions","/review"]){
+    await expect(page.locator('main a[href="'+href+'"]').first()).toBeVisible();
+  }
   await expect(page.getByRole("button",{name:"打开导航菜单"})).toHaveAttribute("aria-expanded","false");
   await page.locator('a[href="/assessments#domain-professional"]').first().click();
   await expect(page).toHaveURL(/\/assessments#domain-professional$/);

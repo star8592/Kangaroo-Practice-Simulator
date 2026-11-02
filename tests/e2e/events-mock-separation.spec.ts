@@ -4,7 +4,7 @@ test("top navigation is task-based and nests math events beneath exam management
   test.skip(testInfo.project.name.startsWith("mobile"), "Desktop-only nav; mobile menu has a separate test");
   await page.goto("/");
   const header = page.getByRole("navigation", { name: "主要导航" });
-  await expect(header.getByRole("button", { name: /在线练习/ })).toBeVisible();
+  await expect(header.getByRole("button", { name: /在线练习/ })).toHaveCount(0);
   await expect(header.getByRole("link", { name: "考试管理" })).toHaveAttribute("href", "/exam-planner");
   await expect(header.getByRole("link",{name:"赛事管家"})).toHaveCount(0);
   await expect(page.locator("main")).not.toContainText("华杯赛");
