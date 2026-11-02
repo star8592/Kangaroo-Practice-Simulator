@@ -15,6 +15,7 @@ for (const book of TECH_BOOKS) {
   assert.equal(getTechBook(book.slug)?.title, book.title);
 }
 assert.equal(getTechBook("not-found"), undefined);
+assert.ok(getTechBook("designing-data-intensive-applications")?.author.includes("Chris Riccomini"), "Use 2026 second-edition authors");
 assert.ok(filterTechBooks("Rust", "").some(book => book.slug === "the-rust-programming-language"));
 assert.ok(filterTechBooks("not-an-actual-book", "").length === 0);
 assert.ok(filterTechBooks("AI 与机器学习", "").some(book => book.slug === "dive-into-deep-learning"));
