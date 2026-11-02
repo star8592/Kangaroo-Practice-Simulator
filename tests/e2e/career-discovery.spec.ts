@@ -6,7 +6,7 @@ const configs=[
 ] as const;
 test("the free assessment directory exposes three real new assessments and nine evidence records",async({page})=>{
  await page.goto("/assessment-center");
- for(const config of configs)await expect(page.locator('a[href="/assessment-center/'+config.id+'"]')).toBeVisible();
+ for(const config of configs)await expect(page.locator('a[href="/assessment-center/'+config.id+'"]').first()).toBeVisible();
  await expect(page.locator("article")).toHaveCount(9);
  await page.getByRole("link",{name:"查看全部技术档案"}).click();
  await page.getByRole("link",{name:/查看全部测评技术档案/}).click();
