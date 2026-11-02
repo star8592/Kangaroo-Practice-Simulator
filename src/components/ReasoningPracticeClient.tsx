@@ -2,6 +2,7 @@
 import {useState} from "react";
 import {REASONING_ITEMS,REASONING_DOMAINS,scoreReasoning} from "@/lib/reasoning-practice";
 import styles from "@/app/assessment-center/measurement.module.css";
+import AssessmentTrustBrief from "@/components/AssessmentTrustBrief";
 type Step="intro"|"questions"|"report";
 export default function ReasoningPracticeClient(){
  const [step,setStep]=useState<Step>("intro");
@@ -21,6 +22,7 @@ export default function ReasoningPracticeClient(){
   </header>
   {step==="intro"&&<section className={styles.panel}>
     <h2>这个练习能告诉你什么？</h2>
+    <AssessmentTrustBrief variant="instrument" assessmentId="reasoning-practice-20"/>
     <p className={styles.lead}>可以观察自己在20道明确任务上的作答正确率、错误题目与对应技能。它不能估算智商、推断智力水平，也不能代表全国同龄人排名或职业胜任力。</p>
     <div className={styles.exploration}><h3>四类任务</h3><ul>{REASONING_DOMAINS.map(d=><li key={d.id}><strong>{d.title}</strong>：{d.description}</li>)}</ul></div>
     <dl className={styles.details}>
