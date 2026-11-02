@@ -5,8 +5,6 @@ import {usePathname} from "next/navigation";
 import {useEffect,useRef,useState} from "react";
 import GlobalLanguageSwitch from "@/components/GlobalLanguageSwitch";
 import SessionNav from "@/components/SessionNav";
-import {ASSESSMENT_DOMAINS} from "@/lib/assessment-platform";
-import {EXAM_DIRECTORY} from "@/lib/exam-directory";
 import {SITE_BRAND} from "@/lib/site-brand";
 import {useSiteLanguage} from "@/lib/site-language";
 import styles from "./SiteHeader.module.css";
@@ -15,17 +13,18 @@ import styles from "./SiteHeader.module.css";
  * is derived from the one authoritative assessment + directory registry. */
 const TASK_LINKS=[
   {href:"/assessments",zh:"全部考试",en:"All exams"},
-  {href:"/resources",zh:"真题资料",en:"Practice papers"},
+  {href:"/resources",zh:"真题资料",en:"Papers"},
+  {href:"/career",zh:"职业岗位",en:"Careers"},
+  {href:"/skill-labs",zh:"技能实训",en:"Skill labs"},
+  {href:"/assessment-center",zh:"测评中心",en:"Assessments"},
+  {href:"/shop",zh:"数字商城",en:"Digital store"},
   {href:"/exam-planner",zh:"考试管理",en:"Exam planner"},
-  {href:"/membership",zh:"购买与权益",en:"Purchases & access"},
 ] as const;
 const PRACTICE_LINKS=[
   {href:"/arithmetic",zh:"计算与数学训练",en:"Math practice",helpZh:"小学到高中 · 直接开练",helpEn:"School to high school · Start now"},
   {href:"/competitions",zh:"国际数学竞赛模拟",en:"Competition mocks",helpZh:"按现有赛制选择试卷",helpEn:"Select a real available exam"},
   {href:"/review",zh:"错题复盘",en:"Review mistakes",helpZh:"复查已经完成的练习",helpEn:"Review previous attempts"},
-  {href:"/skill-labs",zh:"岗位技能实训",en:"Practical skill labs",helpZh:"真实 SQL 操作，独立于性格测评",helpEn:"Real SQL practice, separate from personality tests"},
 ] as const;
-const DOMAIN_MAP=new Map(ASSESSMENT_DOMAINS.map(domain=>[domain.id,domain]));
 
 function MenuIcon({open}:{open:boolean}){
   return <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -70,7 +69,7 @@ export default function SiteHeader(){
         <span className={styles.brandMark}>{SITE_BRAND.mark}</span>
         <span className={styles.brandCopy}>
           <strong>{lang==="zh"?SITE_BRAND.nameZh:SITE_BRAND.nameEn}</strong>
-          <small>{lang==="zh"?"考试 · 资料 · 训练":"EXAMS · RESOURCES · PRACTICE"}</small>
+          <small>{lang==="zh"?"考试 · 资料 · 技能":"EXAMS · RESOURCES · SKILLS"}</small>
         </span>
       </Link>
       <nav className={styles.primaryNav} aria-label={lang==="zh"?"主要导航":"Primary navigation"}>
@@ -124,14 +123,9 @@ export default function SiteHeader(){
           className={active(item.href)?styles.mobileActive:undefined} onClick={dismiss}>
           {item[lang]} <span aria-hidden="true">›</span>
         </Link>)}
-        <p className={styles.mobileGroupTitle}>{lang==="zh"?"按考试类别找":"Browse exam categories"}</p>
-        {EXAM_DIRECTORY.map(group=>{
-          const domain=DOMAIN_MAP.get(group.domainId)!;
-          return <Link href={`/assessments#domain-${group.domainId}`}
-            key={group.domainId} onClick={dismiss}>
-            {domain.navName[lang]} <span aria-hidden="true">›</span>
-          </Link>;
-        })}
+        <span className={styles.mobileSubTitle}>{lang==="zh"?"个人服务":"My services"}</span>
+        <Link href="/membership" onClick={dismiss}>{lang==="zh"?"购买与权益":"Purchases & access"}<span aria-hidden="true">›</span></Link>
+        <Link href="/account" onClick={dismiss}>{lang==="zh"?"我的订单与下载":"Orders & downloads"}<span aria-hidden="true">›</span></Link>
       </nav>
       <div className={styles.mobileLanguage}>
         <span>{lang==="zh"?"界面语言":"Language"}</span><GlobalLanguageSwitch/>
