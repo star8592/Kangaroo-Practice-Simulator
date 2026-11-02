@@ -110,7 +110,7 @@ export default function AdvancedReasoningRunner(){
   </header>
   {stage==="intro"&&<section className={styles.panel} aria-label="模拟考试入场">
    <h2>模拟考试入场</h2>
-   <AssessmentTrustBrief variant="advanced"/>
+   <AssessmentTrustBrief variant="advanced" assessmentId="advanced-reasoning-40"/>
    <p className={styles.lead}>40题 · 45分钟 · 单选。涵盖演绎推理、条件约束、规律归纳、隐含假设与证据评价。</p>
    <div className={styles.aptitudeSummary}>
     {ADVANCED_REASONING_DOMAINS.map(d=><div key={d.id}><strong>{d.name}</strong><span>8题</span></div>)}
