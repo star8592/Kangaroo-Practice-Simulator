@@ -124,3 +124,12 @@ export function homepageUpdates():HomepageUpdate[] {
   });
   return entries.sort((a,b)=>b.date.localeCompare(a.date)||a.id.localeCompare(b.id)).slice(0,6);
 }
+
+export function homepageCounts(){
+ return {
+  books:TECH_BOOKS.length,
+  formalPapers:CAREER_FORMAL_PAPERS.filter(p=>p.deliveryState==="free-live-preview").length,
+  assessments:ASSESSMENT_EVIDENCE.length,
+  guides:CAREER_ORIGINAL_GUIDES.filter(g=>g.deliveryState==="free-original-material").length,
+ };
+}

@@ -1,4 +1,5 @@
 import PublicHome from "@/components/PublicHome";
+import {homepageUpdates,homepageCounts} from "@/lib/site-discovery";
 import { SITE_BRAND } from "@/lib/site-brand";
 
 export const metadata = { alternates: { canonical: "/" } };
@@ -18,6 +19,6 @@ export default function Home() {
     <script type="application/ld+json" dangerouslySetInnerHTML={{
       __html: JSON.stringify(organization).replace(/</g, "\\u003c"),
     }} />
-    <PublicHome/>
+    <PublicHome updates={homepageUpdates()} counts={homepageCounts()}/>
   </>;
 }
