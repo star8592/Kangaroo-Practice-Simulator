@@ -1,7 +1,7 @@
 import {NextRequest,NextResponse} from "next/server";
 import {PARENT_SESSION_COOKIE,parentFromSessionToken} from "@/lib/parent-auth";
 import {billingConfigured,billingPool,hasVerifiedItemEntitlement} from "@/lib/billing-ledger";
-import {nativeCheckoutAllowed} from "@/lib/wechat-native-flags";
+import {nativeCheckoutAllowed,nativeCheckoutAllowedForBuyer} from "@/lib/wechat-native-flags";
 import {getInstrument} from "@/lib/measurement-center";
 
 export const runtime="nodejs";
@@ -19,8 +19,10 @@ export async function GET(req:NextRequest){
  if(!billingConfigured())return response({available:false,loggedIn,owned:false,reason:"BILLING_NOT_READY"});
  try{
   const owned=loggedIn?await hasVerifiedItemEntitlement(account!.id,"report",instrument.id):false;
-  const saleReady=nativeCheckoutAllowed();
-  if(!saleReady)return response({available:false,loggedIn,owned,reason:"REPORT_CHECKOUT_NOT_ENABLED"});
+  // The existing signed-in buyer+SKU pilot must work without exposing public
+  // checkout. An anonymous visitor cannot discover pilot-only prices.
+  if(!nativeCheckoutAllowed()&&!loggedIn)
+    return response({available:false,loggedIn,owned,reason:"REPORT_CHECKOUT_NOT_ENABLED"});
   const offers=await billingPool().query<{id:string;amount_minor:string;currency:string}>(`
     SELECT id,amount_minor::text,currency
     FROM billing_products
@@ -30,6 +32,8 @@ export async function GET(req:NextRequest){
     LIMIT 1`,[instrument.id]);
   const offer=offers.rows[0];
   if(!offer)return response({available:false,loggedIn,owned,reason:"NOT_PUBLISHED"});
+  if(!nativeCheckoutAllowedForBuyer(loggedIn?account?.id:null,offer.id))
+    return response({available:false,loggedIn,owned,reason:"REPORT_CHECKOUT_NOT_ENABLED"});
   const priceMinor=Number(offer.amount_minor);
   if(!Number.isSafeInteger(priceMinor)||priceMinor<=0)return response({available:false,loggedIn,owned,reason:"INVALID_PRICE"});
   return response({available:true,loggedIn,owned,productId:offer.id,priceMinor,currency:"CNY",

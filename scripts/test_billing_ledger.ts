@@ -157,6 +157,56 @@ async function run() {
     (id,tier,period,product_kind,content_kind,content_id,title_zh,amount_minor,currency,enabled)
     VALUES('report_career30_v1',NULL,NULL,'item','report','career-interest-exploration-30',
       '职业兴趣详细探索报告',990,'CNY',false)`);
+  // The same single-buyer pilot used by paid resource SKUs also works for
+  // premium reports. Never reveal a pilot price or checkout to anonymous or
+  // any other WeChat user while the public Native checkout remains disabled.
+  const pilotKeys=[
+    "SOCTHINK_WECHAT_NATIVE_PRODUCT_APPROVED",
+    "SOCTHINK_WECHAT_NATIVE_RECONCILIATION_ENABLED",
+    "SOCTHINK_WEB_NATIVE_PAYMENTS_ENABLED",
+    "SOCTHINK_PAYMENT_SURFACE","PAYMENT_PROVIDER",
+    "SOCTHINK_WECHAT_NATIVE_PILOT_ENABLED",
+    "SOCTHINK_WECHAT_NATIVE_PILOT_BUYER_ID",
+    "SOCTHINK_WECHAT_NATIVE_PILOT_PRODUCT_ID",
+  ] as const;
+  const priorPilot=Object.fromEntries(pilotKeys.map(k=>[k,process.env[k]]));
+  Object.assign(process.env,{
+    SOCTHINK_WECHAT_NATIVE_PRODUCT_APPROVED:"1",
+    SOCTHINK_WECHAT_NATIVE_RECONCILIATION_ENABLED:"1",
+    SOCTHINK_WEB_NATIVE_PAYMENTS_ENABLED:"0",
+    SOCTHINK_PAYMENT_SURFACE:"web-native",PAYMENT_PROVIDER:"wechat_native",
+    SOCTHINK_WECHAT_NATIVE_PILOT_ENABLED:"1",
+    SOCTHINK_WECHAT_NATIVE_PILOT_BUYER_ID:owner.id,
+    SOCTHINK_WECHAT_NATIVE_PILOT_PRODUCT_ID:"report_ipip50_v1",
+  });
+  const {GET:reportOffer}=await import("../src/app/api/assessment-reports/offer/route");
+  const offerUrl="https://socthink.cn/api/assessment-reports/offer?instrumentId="+reportInstrumentId;
+  const offerFor=(accountId?:string)=>reportOffer(new NextRequest(offerUrl,{
+    headers:accountId?{cookie:parentAuth.PARENT_SESSION_COOKIE+"="+
+      parentAuth.createParentSessionToken(accountId)}:{},
+  }));
+  try {
+    const anonymous=await (await offerFor()).json() as {available:boolean;productId?:string};
+    assert.equal(anonymous.available,false,"pilot-only pricing must not reach anonymous visitors");
+    assert.equal(anonymous.productId,undefined);
+    const other=await (await offerFor(stranger.id)).json() as {available:boolean};
+    assert.equal(other.available,false,"pilot-only offer cannot reach a different logged-in user");
+    const approved=await (await offerFor(owner.id)).json() as
+      {available:boolean;productId?:string;priceMinor?:number;owned:boolean};
+    assert.equal(approved.available,true);
+    assert.equal(approved.productId,"report_ipip50_v1");
+    assert.equal(approved.priceMinor,1290,"price must come from server billing ledger");
+    assert.equal(approved.owned,false,"pending/unpaid buyer must not be considered entitled");
+    process.env.SOCTHINK_WECHAT_NATIVE_PILOT_PRODUCT_ID="report_career30_v1";
+    const wrongSku=await (await offerFor(owner.id)).json() as {available:boolean};
+    assert.equal(wrongSku.available,false,"pilot whitelist cannot sell a different report");
+  } finally {
+    for(const key of pilotKeys){
+      const value=priorPilot[key];
+      if(value===undefined)delete process.env[key];
+      else process.env[key]=value;
+    }
+  }
   await assert.rejects(()=>createBillingOrder(owner.id,"report_career30_v1","wechat_native",consent),
     BillingConflictError);
   const reportOrder=await createBillingOrder(owner.id,"report_ipip50_v1","wechat_native",consent);
