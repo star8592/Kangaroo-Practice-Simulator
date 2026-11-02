@@ -11,7 +11,7 @@ test("homepage contains live updates, real routes and seven secondary exam categ
  const dates=await updates.evaluateAll(nodes=>nodes.map(n=>n.getAttribute("datetime")||""));
  expect(dates).toEqual([...dates].sort().reverse());
  for(const href of ["/career","/skill-labs","/skill-labs/books","/assessment-center","/shop","/exam-planner"]){
-  await expect(main.locator('a[href="'+href+'"]').first()).toBeVisible();
+  await expect(main.locator('[aria-labelledby="home-services-heading"] a[href="'+href+'"]')).toBeVisible();
  }
  await expect(main.locator('a[href^="/assessments#domain-"]')).toHaveCount(7);
  const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth);
