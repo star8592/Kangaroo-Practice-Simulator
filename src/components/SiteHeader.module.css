@@ -10,17 +10,9 @@
 .brandCopy strong{color:var(--portal-navy);overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font-size:20px;font-weight:850;letter-spacing:-.03em}
 .brandCopy small{color:#64768f;font-size:12px;font-weight:700;letter-spacing:.01em;white-space:nowrap}
 .primaryNav{display:flex;align-items:center;justify-content:center;gap:2px}
-.primaryNav>a,.practiceRoot>button{display:inline-flex;justify-content:center;align-items:center;gap:5px;min-height:46px;white-space:nowrap;padding:0 13px;border:0;border-radius:9px;background:transparent;font-size:15px;font-weight:750;color:#344d6b;cursor:pointer}
-.primaryNav>a:hover,.practiceRoot>button:hover{background:#f0f5fd;color:var(--portal-blue)}
-.primaryNav .activeNav,.practiceRoot>button.activeNav{background:var(--portal-blue-soft);color:var(--portal-blue)}
-.practiceRoot{position:relative}
-.chevron{font-size:18px;line-height:1}
-.practiceMenu{position:absolute;top:calc(100% + 12px);left:50%;transform:translateX(-50%);width:310px;padding:12px;background:#fff;border:1px solid var(--portal-border);border-radius:15px;box-shadow:0 18px 50px #10284b24;display:grid;gap:2px}
-.practiceMenu>strong{padding:9px 11px;font-size:13px;color:var(--portal-muted)}
-.practiceMenu>a{display:grid;gap:5px;padding:13px 12px;border-radius:10px}
-.practiceMenu>a:hover,.practiceMenu>a:focus-visible{background:var(--portal-blue-soft)}
-.practiceMenu b{font-size:15px;color:var(--portal-text)}
-.practiceMenu small{font-size:13px;color:var(--portal-muted)}
+.primaryNav>a{display:inline-flex;justify-content:center;align-items:center;gap:5px;min-height:46px;white-space:nowrap;padding:0 13px;border:0;border-radius:9px;background:transparent;font-size:15px;font-weight:750;color:#344d6b;cursor:pointer}
+.primaryNav>a:hover{background:#f0f5fd;color:var(--portal-blue)}
+.primaryNav .activeNav{background:var(--portal-blue-soft);color:var(--portal-blue)}
 .actions{min-width:0;display:flex;justify-content:flex-end;align-items:center;gap:9px}
 .languageDesktop{display:block}
 .menuButton{width:44px;height:44px;display:none;place-items:center;padding:0;border:1px solid #d6e1ef;border-radius:10px;background:#fff;color:var(--portal-navy)}
@@ -61,7 +53,7 @@
 
 @media(max-width:1240px){
  .inner{grid-template-columns:minmax(160px,1fr) auto minmax(150px,1fr);gap:8px}
- .primaryNav>a,.practiceRoot>button{padding:0 9px;font-size:14px}
+ .primaryNav>a{padding:0 9px;font-size:14px}
  .brandCopy strong{font-size:18px}
  .categoryInner a{font-size:13px;padding-inline:4px}
 }

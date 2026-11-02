@@ -40,6 +40,9 @@ test("the new public navigation exposes actual business hubs without duplicating
  const nav=page.getByRole("navigation",{name:width<1180?"移动端导航":"主要导航"});
  for(const label of ["全部考试","真题资料","职业岗位","技能实训","测评中心","数字商城","考试管理"])
   await expect(nav.getByRole("link",{name:label,exact:true})).toBeVisible();
+ await expect(nav.getByRole("button",{name:/在线练习|Practice/})).toHaveCount(0);
+ for(const href of ["/arithmetic","/competitions","/review"])
+  await expect(nav.locator('a[href="'+href+'"]')).toHaveCount(0);
  if(width<1180){
   await expect(nav.getByRole("link",{name:"购买与权益"})).toBeVisible();
   await expect(nav.locator('a[href^="/assessments#domain-"]')).toHaveCount(0);

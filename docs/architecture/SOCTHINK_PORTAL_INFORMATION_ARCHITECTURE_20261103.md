@@ -11,7 +11,7 @@
 
 首页 \`/\`：一屏内能搜索、看到可用入口、理解该站的真正服务。
 一级任务：\`/assessments\` 全部考试；\`/resources\` 真题资料；\`/career\` 职业岗位；\`/skill-labs\` 技能实训；\`/assessment-center\` 测评中心；\`/shop\` 数字商城；\`/exam-planner\` 考试管理。
-在线练习菜单：\`/arithmetic\`、\`/competitions\`、\`/review\`；**不再重复技能实训入口**。
+2026-11-03 导航纠偏：**删除顶部与手机导航的“在线练习”独立菜单**。\`/arithmetic\`、\`/competitions\`、\`/review\` 是数学/K12 与竞赛的二级训练动作，已归入 \`/assessments\` 的考试/训练入口和首页快捷入口；保留原有路径、权限及成绩。顶部只保留七项真实业务栏目，不建立练习的平行顶级分类。
 归属关系：技术书库 \`/skill-labs/books\` 为技能体系子层；Agent / Three.js / SQL / 编程皆属技能实训；岗位笔试及原创教程属 \`/career\`；心理和研究测评独立于正式职业资格和岗位考试；资料商城只展示实际在架商品，付费仍走单一账本。
 7 类考试领域仍由 \`EXAM_DIRECTORY\` 为唯一权威，但在 \`/assessments\` 负责详细分类；首页只有轻量二级入口，不在全站导航复制 7 类长菜单。
 \`/search?q=...\` 是全站公开内容发现入口；不再复用考试搜索扮演全站搜索。搜索页 noindex，内容详情页保留原 canonical SEO URL。
