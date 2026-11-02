@@ -21,6 +21,7 @@ export default function AssessmentTrustBrief({variant,assessmentId}:Props){
    <div><strong>题目与方法</strong><p>{record?record.source:advanced?"40 道原创题，覆盖五类推理任务；领域分类参照公开专业资料。":"每项测评分别说明题项来源、许可、版本、计分方式与适用对象。"}</p></div>
    <div><strong>结果如何解释</strong><p>{record?record.limitations:advanced?"只解释本卷正确数、错题和练习方向；不报告 IQ、常模排名或录取预测。":"将经过验证的测评与原创训练分开标识；无证据不展示人群排名。"}</p></div>
   </div>
+  {record?.referenceUrl&&<a className={styles.trustBriefEvidence} href={record.referenceUrl} target="_blank" rel="noopener noreferrer">查看原始公开方法资料 ↗</a>}
   <Link className={styles.trustBriefEvidence} href={advanced?"/assessment-center/methodology#advanced-reasoning-40":record?"/assessment-center/methodology#"+record.id:"/assessment-center/methodology"}>
     查看公开技术档案、证据状态与适用限制 →
   </Link>
