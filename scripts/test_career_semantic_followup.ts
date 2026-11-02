@@ -23,6 +23,7 @@ assert.equal(parseSemanticContent("invalid json",base.answer),null);
 assert.equal(parseSemanticContent(JSON.stringify(q).repeat(200),base.answer),null);
 const messages=makeSemanticMessages(base);
 assert(messages[0].content.includes("不可信数据"));
+assert(messages[0].content.includes("没有记录某个历史指标"));
 assert(messages[1].content.includes("幂等"));
 assert(messages[1].content.includes("服务稳定性"));
 const procurement={profileId:"social-procurement",questionId:"sp-supplier",answer:"我推动了两家供应商的交期验证，并追踪按时交付率。",context:EMPTY_INTERVIEW_JOB_CONTEXT};
