@@ -111,6 +111,7 @@ export default async function CareerDemandPage({searchParams}:{searchParams:Sear
         </div>
 
       </div>
+      <p className={styles.sampleNote}><Link href="/career/interviews">体验校招／社招结构化模拟面试（免费体验版）</Link> · 当前提供岗位追问及真实回答复盘，尚未开放AI语义评分和收费。</p>
       <div className={styles.offerGrid}>
         {CAREER_FORMAL_PAPERS.map(paper=><article className={styles.offerCard} key={paper.id}>
           <div className={styles.offerTop}><span>标准模拟笔试 / 限时考场</span><strong>免费完整体验</strong></div>
