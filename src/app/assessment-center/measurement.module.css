@@ -364,3 +364,81 @@
  .trustBrief{display:none!important}
  .reportSummary,.reportRevisionGrid>div,.reportEvidenceList li{break-inside:avoid}
 }
+
+
+/* Measurement catalog v2: show every real instrument, not invisible nested links. */
+.catalogHero{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(265px,.75fr);gap:28px;align-items:stretch;padding:clamp(26px,3vw,40px);background:#12365e;color:#fff;border:1px solid #1e4a76;border-radius:var(--radius-panel)}
+.catalogHeroMain{min-width:0}
+.catalogEyebrow{font-size:12px;letter-spacing:.12em;font-weight:800;color:#c6dced}
+.catalogHero h1{font-size:clamp(30px,3.5vw,43px);line-height:1.25;letter-spacing:-.028em;margin:12px 0 11px;color:#fff}
+.catalogHero p{font-size:16px;line-height:1.65;color:#e0e9f4;margin:0}
+.catalogHeroLinks{display:flex;flex-wrap:wrap;gap:17px;margin-top:25px}
+.catalogHeroLinks a{font-size:14px;line-height:1.5;font-weight:750;color:#fff;text-decoration:underline;text-underline-offset:4px;text-decoration-color:#9dbbdb}
+.catalogHeroFacts{display:grid;gap:1px;border:1px solid #6485a677;border-radius:13px;overflow:hidden;background:#6485a655}
+.catalogHeroFacts div{display:flex;align-items:baseline;justify-content:space-between;gap:13px;padding:12px 15px;background:#1e456d}
+.catalogHeroFacts strong{font-size:24px;font-variant-numeric:tabular-nums;white-space:nowrap;color:#fff}
+.catalogHeroFacts span{font-size:12px;text-align:right;color:#e0eaf3;line-height:1.4}
+.catalogSection{margin-top:29px}
+.catalogHeading{display:flex;align-items:end;justify-content:space-between;gap:20px;margin:0 0 17px}
+.catalogHeading h2{font-size:clamp(24px,2.6vw,29px);margin:5px 0 0;line-height:1.3}
+.catalogHeading p{max-width:470px;color:var(--portal-muted);font-size:14px;line-height:1.6;margin:0}
+.catalogGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.catalogCard{display:flex;flex-direction:column;min-width:0;background:#fff;border:1px solid #d5e0eb;border-radius:14px;padding:22px 23px;box-shadow:0 5px 15px #18345609}
+.catalogCard:focus-within,.catalogCard:hover{border-color:#9cb8d3;box-shadow:0 7px 24px #163d6113}
+.catalogCardTop{display:flex;justify-content:space-between;gap:12px;align-items:center}
+.catalogIndex{color:#7a8fa4;font-size:13px;font-weight:750;font-variant-numeric:tabular-nums}
+.catalogType{border:1px solid #d9e2ed;color:#48607b;border-radius:5px;font-size:12px;line-height:1.35;padding:5px 7px;font-weight:750}
+.catalogCard h3{font-size:clamp(18px,1.8vw,22px);line-height:1.4;margin:16px 0 8px;letter-spacing:-.01em}
+.catalogCard h3 a{color:#173c63;text-decoration:none}
+.catalogCard h3 a:hover{text-decoration:underline;text-underline-offset:3px}
+.catalogFocus{color:#53687d;font-size:14px;line-height:1.65;margin:0 0 14px;min-height:2.5em}
+.catalogFacts{display:flex;flex-wrap:wrap;gap:8px 13px;color:#426180;font-size:13px;font-weight:700;margin-bottom:13px}
+.catalogMethod{margin:auto 0 0;border-top:1px solid #e1e9f0;padding-top:12px}
+.catalogMethod div{padding:0 0 9px}
+.catalogMethod dt{font-size:12px;color:#6e8090;margin-bottom:4px}
+.catalogMethod dd{font-size:13px;line-height:1.6;color:#304e69;margin:0;overflow-wrap:anywhere}
+.catalogCardActions{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-top:10px}
+.catalogStart{display:inline-flex;align-items:center;justify-content:space-between;gap:19px;min-height:43px;padding:10px 15px;border-radius:8px;background:#15599b;color:#fff!important;text-decoration:none;font-size:14px;font-weight:800}
+.catalogStart:hover{background:#0b477f}
+.catalogEvidence{font-size:13px;color:#245d91;text-decoration:underline;text-underline-offset:3px}
+.catalogFootnote{display:flex;justify-content:space-between;align-items:center;gap:28px;padding:23px 26px;background:#eff5f9;border:1px solid #d5e3ed;border-radius:14px;margin-top:30px}
+.catalogFootnote h2{margin:0 0 6px;font-size:22px}
+.catalogFootnote p{margin:0;color:#4e6277;font-size:14px;line-height:1.7;max-width:740px}
+.catalogFootnote>a{flex-shrink:0;color:#12518b;text-decoration:underline;font-weight:800;font-size:14px}
+.catalogMinorNote{margin:16px 0 0;font-size:13px;line-height:1.7;color:#65778a}
+.catalogMinorNote a{margin-left:9px;color:#245d91;text-decoration:underline}
+@media(max-width:1020px){.catalogGrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:740px){
+ .catalogHero{grid-template-columns:1fr;padding:25px 22px;gap:19px}
+ .catalogHeroFacts{grid-template-columns:repeat(3,minmax(0,1fr));gap:1px}
+ .catalogHeroFacts div{display:flex;flex-direction:column;align-items:flex-start;gap:6px;padding:10px}
+ .catalogHeroFacts strong{font-size:18px}
+ .catalogHeroFacts span{text-align:left}
+ .catalogHeading{display:block}
+ .catalogHeading p{margin-top:7px}
+ .catalogFootnote{display:block}
+ .catalogFootnote>a{display:inline-block;margin-top:15px}
+}
+@media(max-width:620px){
+ .catalogGrid{grid-template-columns:1fr}
+ .catalogCard{padding:20px 18px}
+ .catalogHeroFacts span{font-size:11px}
+}
+@media print{.catalogCard{break-inside:avoid}.catalogHero{background:#fff;color:#12365e}.catalogHero h1,.catalogHero p{color:#12365e}}
+/* Formal exam reading: calm, wide, legible, consistent across practice types. */
+.runner{max-width:min(100%,1080px)}
+.runnerHeader{border-bottom:1px solid #e2e9f0;margin-bottom:18px}
+.runnerHeader h1{color:#143858;letter-spacing:-.02em}
+.panel{border-color:#d9e3ed;box-shadow:0 6px 20px #153d6810}
+.question legend{font-weight:750;font-size:clamp(21px,2.2vw,27px);line-height:1.58;letter-spacing:0;max-width:920px}
+.choice,.choiceActive{font-size:16px;border-radius:9px}
+.examIdentity{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:7px 18px;min-height:43px;margin:-1px 0 18px;padding:8px 0 12px;border-bottom:1px solid #dce5ed}
+.examIdentity strong{font-size:12px;letter-spacing:.045em;color:#284969}
+.examIdentity a{font-size:12px;font-weight:700;color:#246499;text-decoration:underline;text-underline-offset:3px}
+.examIdentityMeta{display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-size:12px;color:#637c92}
+@media(max-width:590px){
+ .panel{padding:20px 17px}
+ .runnerHeader{margin-bottom:13px}
+ .question legend{font-size:21px}
+ .examIdentity{margin-top:0;padding:6px 0 11px}
+}
