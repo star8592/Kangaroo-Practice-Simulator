@@ -6,6 +6,8 @@ import {
  scoreAptitude,type AptitudeReport,
 } from "@/lib/career-aptitude-bank";
 import styles from "@/app/assessment-center/measurement.module.css";
+import AssessmentExamIdentity from "@/components/AssessmentExamIdentity";
+import AssessmentTrustBrief from "@/components/AssessmentTrustBrief";
 
 type Stage="intro"|"questions"|"review"|"report";
 type Saved={
@@ -103,6 +105,7 @@ export default function CareerAptitudeRunner(){
   </header>
   {stage==="intro"&&<section className={styles.panel} aria-label="模拟考试入场">
    <h2>模拟考试入场</h2>
+   <AssessmentTrustBrief variant="instrument" assessmentId="career-aptitude-40"/>
    <p className={styles.lead}>40题 · 45分钟 · 单选。考查言语、数量、逻辑、资料分析和空间推理。</p>
    <div className={styles.aptitudeSummary}>
     {APTITUDE_DOMAINS.map(d=><div key={d.id}><strong>{d.title}</strong><span>8题</span></div>)}
@@ -118,6 +121,7 @@ export default function CareerAptitudeRunner(){
    </details>
   </section>}
   {(stage==="questions"||stage==="review")&&<section className={styles.panel} aria-label="招聘通用能力作答">
+   <AssessmentExamIdentity assessmentId="career-aptitude-40" mode="task"/>
    <div className={styles.aptitudeExamBar}>
     <div><strong>已答 {answered}/{TOTAL}</strong><span>待复查 {marked} · 未答 {TOTAL-answered}</span></div>
     <div className={seconds<=300?styles.aptitudeTimeDanger:styles.aptitudeTime} role="timer" aria-label="剩余时间">{remainingText(seconds)}</div>

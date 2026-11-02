@@ -6,6 +6,8 @@ import ReportPremiumPanel from "@/components/ReportPremiumPanel";
 import type {Instrument} from "@/lib/measurement-center";
 import {scoreInstrument} from "@/lib/measurement-center";
 import styles from "@/app/assessment-center/measurement.module.css";
+import AssessmentExamIdentity from "@/components/AssessmentExamIdentity";
+import AssessmentTrustBrief from "@/components/AssessmentTrustBrief";
 
 type Stage="intro"|"questions"|"review"|"report";
 
@@ -42,6 +44,7 @@ export default function MeasurementRunner({instrument}:{instrument:Instrument}){
 
     {stage==="intro"&&<section className={styles.panel} aria-label="测评开始说明">
       <h2>测评说明</h2>
+      <AssessmentTrustBrief variant="instrument" assessmentId={instrument.id}/>
       <p className={styles.lead}>{instrument.methodology}</p>
       <div className={styles.examInstructions}>
         <span>逐题选择最符合自身的回答</span><span aria-hidden="true">·</span>
@@ -74,6 +77,7 @@ export default function MeasurementRunner({instrument}:{instrument:Instrument}){
     </section>}
 
     {stage==="questions"&&<section className={styles.panel} aria-label="正式测评作答">
+   <AssessmentExamIdentity assessmentId={instrument.id} mode="research"/>
       <div className={styles.progressRow}>
         <strong>第 {index+1} 题 / 共 {total} 题</strong>
         <span aria-live="polite">已答 {done}/{total} · 待复查 {marked}</span>

@@ -2,6 +2,8 @@
 import {useState} from "react";
 import {REASONING_ITEMS,REASONING_DOMAINS,scoreReasoning} from "@/lib/reasoning-practice";
 import styles from "@/app/assessment-center/measurement.module.css";
+import AssessmentExamIdentity from "@/components/AssessmentExamIdentity";
+import AssessmentTrustBrief from "@/components/AssessmentTrustBrief";
 type Step="intro"|"questions"|"report";
 export default function ReasoningPracticeClient(){
  const [step,setStep]=useState<Step>("intro");
@@ -13,7 +15,7 @@ export default function ReasoningPracticeClient(){
  const report=step==="report"?scoreReasoning(answers):null;
  const reset=()=>{setStep("intro");setIndex(0);setAnswers({});setAccepted(false);};
  return <div className={styles.runner}>
-  <header className={styles.runnerHeader}>
+  <header className={styles.runnerHeader+(step==="intro"?"":" "+styles.compactHeader)}>
     <span className={styles.eyebrowDark}>SOCTHINK · ORIGINAL TASK PRACTICE</span>
     <h1>认知推理任务练习 · 20题</h1>
     <p>数量规律、逻辑关系、方位空间与阅读信息判断。每题都有可核对答案与解释。</p>
@@ -21,6 +23,7 @@ export default function ReasoningPracticeClient(){
   </header>
   {step==="intro"&&<section className={styles.panel}>
     <h2>这个练习能告诉你什么？</h2>
+    <AssessmentTrustBrief variant="instrument" assessmentId="reasoning-practice-20"/>
     <p className={styles.lead}>可以观察自己在20道明确任务上的作答正确率、错误题目与对应技能。它不能估算智商、推断智力水平，也不能代表全国同龄人排名或职业胜任力。</p>
     <div className={styles.exploration}><h3>四类任务</h3><ul>{REASONING_DOMAINS.map(d=><li key={d.id}><strong>{d.title}</strong>：{d.description}</li>)}</ul></div>
     <dl className={styles.details}>
@@ -34,6 +37,7 @@ export default function ReasoningPracticeClient(){
     <div className={styles.controls}><button type="button" className={styles.primaryButton} disabled={!accepted} onClick={()=>setStep("questions")}>开始20题练习</button></div>
   </section>}
   {step==="questions"&&<section className={styles.panel}>
+   <AssessmentExamIdentity assessmentId="reasoning-practice-20" mode="task"/>
     <div className={styles.progressRow}><strong>第 {index+1} / {REASONING_ITEMS.length} 题 · {REASONING_DOMAINS.find(x=>x.id===item.domain)?.title}</strong><span>已答 {complete} / 20</span></div>
     <div className={styles.progress} role="progressbar" aria-label="已答题数" aria-valuemin={0} aria-valuemax={20} aria-valuenow={complete}><span style={{width:(complete/20*100)+"%"}}/></div>
     <fieldset className={styles.question}><legend>{item.stem}</legend><div className={styles.choices}>

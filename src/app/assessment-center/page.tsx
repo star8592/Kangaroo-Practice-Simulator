@@ -1,55 +1,90 @@
 import Link from "next/link";
-import {CENTER_SECTIONS,getInstrument} from "@/lib/measurement-center";
+import AssessmentTrustBrief from "@/components/AssessmentTrustBrief";
+import {ASSESSMENT_EVIDENCE} from "@/lib/assessment-evidence";
 import styles from "./measurement.module.css";
+
 export const metadata={
-  title:"智量测评中心｜招聘通用能力、逻辑推理、职业兴趣与人格｜SOCTHINK",
-  description:"免费职业价值观、工作方式、情境判断、招聘通用能力、逻辑推理、大五人格、职业兴趣与阅读训练，注明题项来源和非标准化边界。",
-  alternates:{canonical:"/assessment-center"},
+ title:"9套能力训练与研究测评｜SOCTHINK 测评中心",
+ description:"九套可作答的原创训练与研究性自评，逐项公开方法来源、适用对象、计分及验证状态。含大五人格、RIASEC、职业价值观、逻辑推理与招聘通用能力。",
+ alternates:{canonical:"/assessment-center"},
 };
+
+const catalog=[
+ {title:"推理与职业能力训练",subtitle:"完整模拟、逐题解析与实际任务表现",items:[
+  {id:"advanced-reasoning-40",tag:"原创完整模拟",time:"45分钟",focus:"演绎、约束、归纳、假设与证据判断"},
+  {id:"career-aptitude-40",tag:"原创完整模拟",time:"45分钟",focus:"言语、数量、逻辑、资料分析与空间"},
+  {id:"workplace-sjt-24",tag:"情境判断训练",time:"约15–20分钟",focus:"沟通、协作、质量与交付决策"},
+  {id:"reasoning-practice-20",tag:"基础练习",time:"约8–12分钟",focus:"数量、逻辑、方位与信息判断"},
+  {id:"reading-practice-16",tag:"阅读任务练习",time:"按个人进度",focus:"信息定位、推断、数量理解与证据核对"},
+ ]},
+ {title:"人格与职业探索",subtitle:"根据实际回答呈现描述性结果，不做心理诊断或人群排名",items:[
+  {id:"ipip-big-five-50-cn-preview",tag:"公开题项研究译稿",time:"约10–15分钟",focus:"大五人格五维自我描述"},
+  {id:"career-interest-exploration-30",tag:"职业兴趣研究",time:"约6–9分钟",focus:"RIASEC 六类职业活动兴趣"},
+  {id:"work-values-30",tag:"原创职业探索",time:"约7–10分钟",focus:"六项职业价值观偏好"},
+  {id:"work-style-24",tag:"原创行为探索",time:"约6–9分钟",focus:"计划、探索、协作与推进习惯"},
+ ]},
+] as const;
+const lookup=new Map(ASSESSMENT_EVIDENCE.map(x=>[x.id,x]));
 export default function MeasurementCenterPage(){
-  return <div className={styles.shell}>
-    <nav className={styles.breadcrumb} aria-label="位置"><Link href="/assessments">全部考试</Link><span> / </span>科学测评</nav>
-    <section className={styles.hero}>
-      <h1>科学测评</h1>
-      <p>免费试测与基本结果 · 详细报告按实际商品收费</p>
-    </section>
-    <div className={styles.sectionHeading}>
-      <div><h2>选择测评</h2></div>
+ return <div className={styles.shell}>
+  <nav className={styles.breadcrumb} aria-label="位置">
+   <Link href="/assessments">全部考试</Link><span> / </span>测评中心
+  </nav>
+  <header className={styles.catalogHero}>
+   <div className={styles.catalogHeroMain}>
+    <span className={styles.catalogEyebrow}>SOCTHINK / ASSESSMENT CENTER</span>
+    <h1>专业能力测评与训练</h1>
+    <p>九套可作答项目。明确来源、规则与结果边界，先了解，再开始。</p>
+    <div className={styles.catalogHeroLinks}>
+     <Link href="/assessment-center/about">认识开发方</Link>
+     <Link href="/assessment-center/methodology">查看全部技术档案</Link>
+     <Link href="/assessment-center/report-preview">详细报告示例</Link>
     </div>
-    <div className={styles.grid}>
-      {CENTER_SECTIONS.map(section=>{
-        const instrument="instrumentId" in section?getInstrument(section.instrumentId):undefined;
-        const route="route" in section?section.route:instrument?"/assessment-center/"+instrument.id:undefined;
-        const detail="detail" in section?section.detail:instrument?`${instrument.items.length}题 · ${instrument.duration} · ${instrument.audience}`:"待完成题库与验证后开放";
-        return <article className={styles.tile} key={section.icon}>
-          <div className={styles.tileTop}><span className={styles.tileNumber}>{section.icon}</span><span className={route?styles.previewBadge:styles.plannedBadge}>{instrument?"免费研究预览":route?"免费训练":"建设中"}</span></div>
-          <h3>{section.title}</h3><p>{section.summary}</p>
-          <div className={route?styles.tileInfo:styles.tileMuted}>{detail}</div>
-          {route&&<Link className={styles.tileLink} href={route}>{instrument?"开始测评":"开始练习"} <span aria-hidden="true">→</span></Link>}
-          {section.title==="职业兴趣与发展"&&<div className={styles.extraAssessmentLinks} aria-label="职业探索专项">
-            <Link href="/assessment-center/work-values-30">职业价值观 · 30题</Link>
-            <Link href="/assessment-center/work-style-24">工作方式 · 24题</Link>
-          </div>}
-          {section.title==="认知与推理能力"&&<div className={styles.extraAssessmentLinks} aria-label="高级推理专项">
-            <Link href="/assessment-center/advanced-reasoning-40">高级逻辑 · 40题正式卷</Link>
-          </div>}
-          {section.title==="求职通用能力"&&<div className={styles.extraAssessmentLinks} aria-label="情境判断专项">
-            <Link href="/assessment-center/workplace-sjt-24">职场情境判断 · 24题</Link>
-          </div>}
-        </article>;
-      })}
-    </div>
-    <section className={styles.premiumIntro}>
-      <div><h2>详细测评报告</h2>
-        <p>查看维度评分、题项证据与行动建议。正式开放时展示价格，购买后由微信账号领取。</p>
-        <Link className={styles.tileLink} href="/assessment-center/report-preview">查看报告样例 →</Link>
+   </div>
+   <div className={styles.catalogHeroFacts} aria-label="当前测评产品统计">
+    <div><strong>{ASSESSMENT_EVIDENCE.length}</strong><span>套现有测评与训练</span></div>
+    <div><strong>9 / 9</strong><span>公开来源和评分规则</span></div>
+    <div><strong>未建立</strong><span>中国本土常模（如实披露）</span></div>
+   </div>
+  </header>
+  <AssessmentTrustBrief variant="center"/>
+  {catalog.map((group,groupIndex)=><section className={styles.catalogSection} key={group.title} aria-label={group.title}>
+   <div className={styles.catalogHeading}>
+    <div><span className={styles.eyebrowDark}>0{groupIndex+1} / ASSESSMENTS</span><h2>{group.title}</h2></div>
+    <p>{group.subtitle}</p>
+   </div>
+   <div className={styles.catalogGrid}>
+    {group.items.map((entry,index)=>{
+     const evidence=lookup.get(entry.id);
+     if(!evidence)return null;
+     return <article className={styles.catalogCard} key={entry.id}>
+      <div className={styles.catalogCardTop}>
+       <span className={styles.catalogIndex}>{String(index+1).padStart(2,"0")}</span>
+       <span className={styles.catalogType}>{entry.tag}</span>
       </div>
-    </section>
-    <details className={styles.trust}>
-      <summary>测评依据与适用范围</summary>
-      <ol><li>测量什么，不测量什么</li><li>题项来源与使用许可</li><li>计分规则和反向计分</li><li>适用年龄及语言</li><li>信度、效度与常模证据</li><li>结果误差和建议使用边界</li></ol>
-      <p>人格与兴趣研究试测尚无中国本土常模；原创推理和阅读练习仅报告当次真实任务表现，不声称智商、临床诊断、升学预测或职业成功率。</p>
-      <div className={styles.sources}><Link href="/assessment-center/methodology">查看全部测评技术档案与证据等级 →</Link><a href="https://www.intestcom.org/page/16" target="_blank" rel="noopener noreferrer">ITC 技术测评指南 ↗</a><a href="https://ipip.ori.org/" target="_blank" rel="noopener noreferrer">IPIP 官方题项 ↗</a><a href="https://www.onetcenter.org/license_tools.html" target="_blank" rel="noopener noreferrer">O*NET 授权说明 ↗</a></div>
-    </details>
-  </div>;
+      <h3><Link href={evidence.path}>{evidence.name}</Link></h3>
+      <p className={styles.catalogFocus}>{entry.focus}</p>
+      <div className={styles.catalogFacts}><span>{entry.time}</span><span>{evidence.audience}</span></div>
+      <dl className={styles.catalogMethod}>
+       <div><dt>出处与依据</dt><dd>{evidence.source}</dd></div>
+       <div><dt>验证状态</dt><dd>尚未建立适用人群的标准常模，结果限于训练或自我探索</dd></div>
+      </dl>
+      <div className={styles.catalogCardActions}>
+       <Link className={styles.catalogStart} href={evidence.path}>进入测评 <span aria-hidden="true">→</span></Link>
+       <Link className={styles.catalogEvidence} href={"/assessment-center/methodology#"+evidence.id}>技术档案</Link>
+      </div>
+     </article>;
+    })}
+   </div>
+  </section>)}
+  <section className={styles.catalogFootnote}>
+   <div><h2>报告不是一个分数。</h2>
+    <p>每一项结果应能回到原始答卷、计分规则和明确的解释边界。基础训练及简要结果免费；收费深度报告只按实际已上架商品和支付确认状态开放。</p></div>
+   <Link href="/assessment-center/report-preview">先看完整报告样例 →</Link>
+  </section>
+  <div className={styles.catalogMinorNote}>
+   <strong>心理健康筛查尚未开放。</strong> 不将研究性自评当作临床诊断，也不使用未经验证的人群百分位、IQ或职业录取率。
+   <Link href="/assessment-center/methodology">查看证据状态</Link>
+  </div>
+ </div>;
 }

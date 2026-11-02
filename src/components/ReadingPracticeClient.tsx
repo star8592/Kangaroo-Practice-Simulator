@@ -2,6 +2,8 @@
 import {useState} from "react";
 import {READING_PASSAGES,READING_QUESTIONS,READING_SKILLS,scoreReading} from "@/lib/reading-practice";
 import styles from "@/app/assessment-center/measurement.module.css";
+import AssessmentExamIdentity from "@/components/AssessmentExamIdentity";
+import AssessmentTrustBrief from "@/components/AssessmentTrustBrief";
 
 type Stage="intro"|"questions"|"report";
 export default function ReadingPracticeClient(){
@@ -15,7 +17,7 @@ export default function ReadingPracticeClient(){
  const report=stage==="report"?scoreReading(answers):null;
  const reset=()=>{setStage("intro");setConsent(false);setAnswers({});setIndex(0);};
  return <div className={styles.runner}>
-  <header className={styles.runnerHeader}>
+  <header className={styles.runnerHeader+(stage==="intro"?"":" "+styles.compactHeader)}>
    <span className={styles.eyebrowDark}>SOCTHINK · READING & LEARNING LAB</span>
    <h1>阅读理解与证据判断 · 16题</h1>
    <p>读四篇原创短文，完成信息定位、合理推断、数量理解与证据判断。交卷后根据真实错题获得针对性练习建议。</p>
@@ -23,6 +25,7 @@ export default function ReadingPracticeClient(){
   </header>
   {stage==="intro"&&<section className={styles.panel}>
    <h2>先了解本次练习</h2>
+   <AssessmentTrustBrief variant="instrument" assessmentId="reading-practice-16"/>
    <p className={styles.lead}>本练习是由 SOCTHINK 编写的阅读任务，不是心理量表，也不是与全国学生比较的标准化阅读水平检测。报告仅反映你对这16道题的实际完成情况。</p>
    <div className={styles.exploration}><h3>四个阅读动作</h3><ul>{READING_SKILLS.map(s=><li key={s.id}><strong>{s.name}</strong>：{s.interpretation}</li>)}</ul></div>
    <dl className={styles.details}>
@@ -37,6 +40,7 @@ export default function ReadingPracticeClient(){
    <div className={styles.controls}><button type="button" className={styles.primaryButton} disabled={!consent} onClick={()=>setStage("questions")}>开始阅读与作答</button></div>
   </section>}
   {stage==="questions"&&<section className={styles.panel}>
+   <AssessmentExamIdentity assessmentId="reading-practice-16" mode="task"/>
    <div className={styles.progressRow}><strong>第 {index+1} / {READING_QUESTIONS.length} 题</strong><span>已完成 {count} / 16</span></div>
    <div className={styles.progress} role="progressbar" aria-label="已答题数" aria-valuemin={0} aria-valuemax={16} aria-valuenow={count}>
     <span style={{width:(count/16*100)+"%"}}/></div>
