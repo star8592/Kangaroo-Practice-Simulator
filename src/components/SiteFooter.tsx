@@ -12,7 +12,10 @@ const GROUPS=[
   {href:"/career",zh:"职业岗位",en:"Careers"},
   {href:"/skill-labs",zh:"技能实训",en:"Skill labs"},
   {href:"/skill-labs/books",zh:"技术书库",en:"Technical books"},
-  {href:"/assessment-center",zh:"测评中心",en:"Assessments"},
+ ]},
+ {zh:"专业测评",en:"Assessments",items:[
+  {href:"/assessment-center",zh:"测评中心",en:"Assessment center"},
+  {href:"/assessment-center/methodology",zh:"方法与来源",en:"Methods and sources"},
  ]},
  {zh:"商城与账户",en:"Store and account",items:[
   {href:"/shop",zh:"数字商城",en:"Digital store"},
