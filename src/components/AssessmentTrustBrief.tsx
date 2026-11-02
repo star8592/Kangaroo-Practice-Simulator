@@ -17,7 +17,7 @@ export default function AssessmentTrustBrief({variant,assessmentId}:Props){
   </div>
  </section>;
  const advanced=variant==="advanced";
- const record=variant==="instrument"?ASSESSMENT_EVIDENCE.find(x=>x.id===assessmentId):undefined;
+ const record=assessmentId?ASSESSMENT_EVIDENCE.find(x=>x.id===assessmentId):undefined;
  return <section className={styles.trustBrief} aria-label="开发方、测评依据与适用边界">
   <div className={styles.trustBriefHeading}>
    <div><span className={styles.eyebrowDark}>ABOUT THE ASSESSMENT</span>
