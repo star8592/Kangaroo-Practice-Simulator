@@ -76,3 +76,13 @@
 @media(max-width:650px){.panel{padding:17px}.taskGrid,.reportGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.toolbar button{flex:1 1 125px}.primary{margin-left:0}.editorPanel{padding:12px}.editor{min-height:420px;height:clamp(420px,58vh,660px);padding:17px 13px;font-size:16px}.workspaceExpanded .editor{min-height:70vh;height:75vh}.editorBar{padding:5px 9px}.fileName{gap:6px}.languageTag{display:none}.expandButton{font-size:12px;padding:5px 9px}.headerPractice h1{font-size:22px}.headerPractice .meta{gap:5px}.headerPractice .meta span{padding:4px 7px;font-size:11px}}
 @media(max-width:380px){.taskGrid,.reportGrid{grid-template-columns:1fr}}
 @media print{.header,.editor,.editorLabel,.toolbar,.workspace aside,.signature{display:none!important}}
+
+/* Editor keyboard conventions remain compact and never crowd the mobile editor. */
+.editorShortcut{color:#8eafc9;white-space:nowrap}
+@media(max-width:880px){.editorShortcut{display:none}}
+
+.progressActions{display:flex;align-items:center;flex-wrap:wrap;gap:10px}
+.resetLink{border:0;background:transparent;font-size:12px;font-weight:750;color:var(--portal-blue);cursor:pointer;text-decoration:underline;text-underline-offset:3px;min-height:36px;padding:4px}
+.resetConfirm{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:12px;padding:10px 12px;border:1px solid var(--portal-border);border-radius:10px;background:#f6f8fb}
+.resetConfirm span{font-size:13px;color:var(--portal-muted);flex:1 1 220px;line-height:1.5}
+.resetConfirm button{padding:7px 10px;font-size:12px;min-height:36px}

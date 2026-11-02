@@ -40,8 +40,11 @@ test("widescreen and laptop workspaces use available width rather than a narrow 
   await page.setViewportSize({width,height:900});
   const response=await page.goto(URL);
   expect(response?.status()).toBe(200);
-  await page.getByRole("checkbox",{name:/我理解这是免费编程实训/}).check();
-  await page.getByRole("button",{name:"开始编程实操"}).click();
+  const start=page.getByRole("button",{name:"开始编程实操"});
+  if(await start.isVisible()){
+   await page.getByRole("checkbox",{name:/我理解这是免费编程实训/}).check();
+   await start.click();
+  }
   const rect=await page.getByRole("textbox",{name:"你的JavaScript代码"}).boundingBox();
   expect(rect).not.toBeNull();
   const data=await page.evaluate(()=>({scrollWidth:document.documentElement.scrollWidth,viewport:innerWidth}));

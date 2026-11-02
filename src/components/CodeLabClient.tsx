@@ -1,41 +1,66 @@
 "use client";
-import {useEffect,useRef,useState} from "react";
+import {useEffect,useRef,useState,useSyncExternalStore} from "react";
+import type {KeyboardEvent} from "react";
+import {CODE_LAB_SESSION_KEY,indentCodeSource,parseCodeLabSnapshot} from "@/lib/code-lab-session";
 import {CODE_CHALLENGES,CODE_LAB_VERSION} from "@/lib/code-lab";
 import type {CodeCheck} from "@/lib/code-lab-engine";
 import styles from "./code-lab.module.css";
 type Stage="intro"|"practice"|"report";
 type WorkerReply={requestId:string;ok:boolean;result?:CodeCheck;error?:string};
-const first=CODE_CHALLENGES[0];
+const noNotifications=()=>()=>{};
+const browserReady=()=>true;
+const serverNotReady=()=>false;
+function loadLocalAttempt(){
+ if(typeof window==="undefined")return null;
+ try{return parseCodeLabSnapshot(sessionStorage.getItem(CODE_LAB_SESSION_KEY));}
+ catch{return null;}
+}
 export default function CodeLabClient(){
- const[stage,setStage]=useState<Stage>("intro");
+ const hydrated=useSyncExternalStore(noNotifications,browserReady,serverNotReady);
+ const [initial]=useState(loadLocalAttempt);
+ const[stage,setStage]=useState<Stage>(initial?.stage??"intro");
  const[consent,setConsent]=useState(false);
- const[index,setIndex]=useState(0);
- const[source,setSource]=useState(first.starter);
+ const[index,setIndex]=useState(initial?.index??0);
+ const[drafts,setDrafts]=useState<Record<string,string>>(initial?.drafts??{});
+ const[source,setSource]=useState(()=>initial?.drafts[CODE_CHALLENGES[initial.index].id]??CODE_CHALLENGES[initial?.index??0].starter);
  const[busy,setBusy]=useState(false);
  const[feedback,setFeedback]=useState<CodeCheck|null>(null);
  const[error,setError]=useState("");
  const[hint,setHint]=useState(false);
  const[expanded,setExpanded]=useState(false);
- const[solved,setSolved]=useState<Record<string,boolean>>({});
- const[attempts,setAttempts]=useState<Record<string,number>>({});
+ const[confirmReset,setConfirmReset]=useState(false);
+ const[solved,setSolved]=useState<Record<string,boolean>>(initial?.solved??{});
+ const[attempts,setAttempts]=useState<Record<string,number>>(initial?.attempts??{});
  const worker=useRef<Worker|null>(null);
  const timer=useRef<ReturnType<typeof setTimeout>|null>(null);
  const task=CODE_CHALLENGES[index];
  const count=CODE_CHALLENGES.filter(x=>solved[x.id]).length;
  useEffect(()=>()=>{worker.current?.terminate();if(timer.current)clearTimeout(timer.current);},[]);
+ useEffect(()=>{
+  if(!hydrated)return;
+  try{
+   if(stage==="intro")sessionStorage.removeItem(CODE_LAB_SESSION_KEY);
+   else sessionStorage.setItem(CODE_LAB_SESSION_KEY,JSON.stringify({
+    version:CODE_LAB_VERSION,stage,index,drafts,solved,attempts
+   }));
+  }catch{/* Private browsing or storage disabled: practice remains usable in current view. */}
+ },[hydrated,stage,index,drafts,solved,attempts]);
  function cleanup(){
   if(worker.current)worker.current.terminate();worker.current=null;
   if(timer.current)clearTimeout(timer.current);timer.current=null;
  }
  function navigate(i:number){
-  cleanup();setIndex(i);setSource(CODE_CHALLENGES[i].starter);
+  cleanup();setIndex(i);setSource(drafts[CODE_CHALLENGES[i].id]??CODE_CHALLENGES[i].starter);
   setBusy(false);setFeedback(null);setError("");setHint(false);
  }
  function reset(){
-  navigate(0);setStage("intro");setConsent(false);setSolved({});setAttempts({});setExpanded(false);
+  cleanup();setIndex(0);setSource(CODE_CHALLENGES[0].starter);
+  setBusy(false);setFeedback(null);setError("");setHint(false);
+  setStage("intro");setConsent(false);setSolved({});setAttempts({});setDrafts({});setExpanded(false);setConfirmReset(false);
+  try{sessionStorage.removeItem(CODE_LAB_SESSION_KEY)}catch{}
  }
  function onSourceChange(value:string){
-  setSource(value);setFeedback(null);setError("");
+  setSource(value);setDrafts(prev=>({...prev,[task.id]:value}));setFeedback(null);setError("");
   setSolved(prev=>({...prev,[task.id]:false}));
  }
  function run(){
@@ -61,6 +86,23 @@ export default function CodeLabClient(){
    w.postMessage({requestId,taskId:task.id,source});
   }catch{cleanup();setBusy(false);setError("无法创建安全执行环境，请更换现代浏览器重试。");}
  }
+ function onEditorKeyDown(event:KeyboardEvent<HTMLTextAreaElement>){
+  if((event.ctrlKey||event.metaKey)&&event.key==="Enter"){
+   event.preventDefault();
+   if(!busy&&source.trim())run();
+   return;
+  }
+  if(event.key!=="Tab"||event.ctrlKey||event.metaKey||event.altKey||busy)return;
+  event.preventDefault();
+  const input=event.currentTarget;
+  const next=indentCodeSource(source,input.selectionStart,input.selectionEnd,event.shiftKey);
+  if(next.source.length>5000)return;
+  onSourceChange(next.source);
+  requestAnimationFrame(()=>{
+   if(input.isConnected){input.focus();input.setSelectionRange(next.start,next.end);}
+  });
+ }
+ if(!hydrated)return <div className={styles.root}><p className={styles.note}>正在读取本标签页的练习进度…</p></div>;
  return <div className={styles.root}>
   <header className={[styles.header,stage==="practice"?styles.headerPractice:""].filter(Boolean).join(" ")}>
    <span className={styles.eyebrow}>SOCTHINK · SOFTWARE ENGINEERING LAB</span>
@@ -72,14 +114,23 @@ export default function CodeLabClient(){
    <h2>进入实操</h2>
    <p className={styles.lead}>这不是选择题。六项任务分别涵盖订单、资金统计、故障重试、测试稳定性、日志诊断与库存事件。你要编写符合约定接口的函数，系统会真实执行代码，检测正确性和边界情况。</p>
    <div className={styles.taskGrid}>{CODE_CHALLENGES.map(c=><div key={c.id}><strong>{c.title}</strong><span>{c.domain}</span></div>)}</div>
-   <p className={styles.note}>运行方式：代码在WebAssembly QuickJS虚拟机里执行，浏览器Worker设运行超时，VM限制内存与栈，并不开放DOM、网络或本站账号接口。不会上传你输入的代码，也不会生成账号级考试成绩。浏览器刷新后训练记录消失。</p>
+   <p className={styles.note}>运行方式：代码在WebAssembly QuickJS虚拟机里执行，浏览器Worker设运行超时，VM限制内存与栈，并不开放DOM、网络或本站账号接口。不会上传你输入的代码，也不会生成账号级考试成绩。本标签页允许会话存储时，源码草稿与已完成任务可在刷新后恢复；不跨设备同步。不要粘贴真实账号密钥或机密代码。</p>
    <p className={styles.note}>成绩是本组原创题的完成情况，非企业招聘真题、职业证书或标准化人才选拔测验。项目源码中包含参考用例，不能用来监考或防作弊。</p>
    <label className={styles.consent}><input type="checkbox" checked={consent} onChange={e=>setConsent(e.target.checked)}/>我理解这是免费编程实训，代码仅在隔离环境中执行。</label>
    <button type="button" className={styles.primary} disabled={!consent} onClick={()=>setStage("practice")}>开始编程实操</button>
   </section>}
   {stage==="practice"&&<div className={[styles.workspace,expanded?styles.workspaceExpanded:""].filter(Boolean).join(" ")}>
    <section className={[styles.panel,styles.editorPanel].join(" ")}>
-    <div className={styles.progressTop}><strong>任务 {index+1} / {CODE_CHALLENGES.length}</strong><span>已通过 {count}/{CODE_CHALLENGES.length}</span></div>
+    <div className={styles.progressTop}><strong>任务 {index+1} / {CODE_CHALLENGES.length}</strong>
+     <div className={styles.progressActions}><span>已通过 {count}/{CODE_CHALLENGES.length}</span>
+      <button type="button" className={styles.resetLink} onClick={()=>setConfirmReset(true)}>重置练习</button>
+     </div>
+    </div>
+    {confirmReset&&<div className={styles.resetConfirm} role="group" aria-label="确认清空本次练习">
+      <span>清空本标签页的所有代码草稿和已完成记录？</span>
+      <button type="button" className={styles.secondary} onClick={()=>setConfirmReset(false)}>取消</button>
+      <button type="button" className={styles.secondary} onClick={reset}>确认清空</button>
+     </div>}
     <div className={styles.progress}><span style={{width:(100*count/CODE_CHALLENGES.length)+"%"}}/></div>
     <div className={styles.taskTop}><h2>{task.title}</h2><span>{task.domain}</span></div>
     <p className={styles.lead}>{task.description}</p>
@@ -92,9 +143,9 @@ export default function CodeLabClient(){
      </div>
      <label className={styles.visuallyHidden} htmlFor="code-lab-input">你的JavaScript代码</label>
      <textarea id="code-lab-input" className={styles.editor} spellCheck={false}
-       value={source} maxLength={5000} rows={20} onChange={e=>onSourceChange(e.target.value)}
+       value={source} maxLength={5000} rows={20} onChange={e=>onSourceChange(e.target.value)} onKeyDown={onEditorKeyDown}
        aria-label="你的JavaScript代码"/>
-     <div className={styles.editorStatus}><span>QuickJS · 隔离运行</span><span>{source.length} / 5000 字符</span></div>
+     <div className={styles.editorStatus}><span>QuickJS · 隔离运行</span><span className={styles.editorShortcut}>Tab缩进 · Shift+Tab反缩进 · Ctrl/⌘+Enter运行</span><span>{source.length} / 5000 字符 · 本标签页暂存</span></div>
     </div>
     <div className={styles.toolbar}>
      <button className={styles.secondary} type="button" disabled={busy} onClick={()=>setHint(h=>!h)}>{hint?"收起提示":"显示提示"}</button>
@@ -139,7 +190,7 @@ export default function CodeLabClient(){
    <h2>软件工程实训记录</h2>
    <p className={styles.lead}>你在隔离JavaScript执行环境中完成了 <strong>{count}/{CODE_CHALLENGES.length}</strong> 项原创工程任务。各项结果基于实际代码运行与4组输入比对。</p>
    <div className={styles.reportGrid}>{CODE_CHALLENGES.map(c=><div key={c.id}><strong>{c.title}</strong><span>{solved[c.id]?"通过":"未通过"} · 运行 {attempts[c.id]??0} 次</span></div>)}</div>
-   <p className={styles.note}>版本：{CODE_LAB_VERSION}。不含常模、就业概率、正式专业能力证书，也不保留跨设备成绩。仅表示本次模拟任务完成情况。</p>
+   <p className={styles.note}>版本：{CODE_LAB_VERSION}。不含常模、就业概率、正式专业能力证书，本标签页可恢复本次练习记录，但不跨设备同步。仅表示本次模拟任务完成情况。</p>
    <div className={styles.toolbar}><button type="button" className={styles.secondary} onClick={reset}>重新练习</button><button type="button" className={styles.primary} onClick={()=>window.print()}>打印本次记录</button></div>
   </section>}
  </div>;
