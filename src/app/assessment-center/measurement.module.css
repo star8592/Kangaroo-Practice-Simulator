@@ -305,3 +305,9 @@
 @media(max-width:700px){.aptitudeSummary{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:500px){.aptitudeSummary{grid-template-columns:repeat(2,minmax(0,1fr))}.aptitudeQuestionTop{align-items:flex-start;flex-direction:column}.aptitudeTime,.aptitudeTimeDanger{font-size:22px}.aptitudeExamBar>div:first-child strong{font-size:16px}}
 @media print{.aptitudeReviewDetails:not([open]){display:none}.aptitudeReviewLink,.aptitudeQuestionTop button{display:none}}
+
+/* Actual additional assessments, not placeholders; share existing compact tiles. */
+.extraAssessmentLinks{display:flex;flex-wrap:wrap;gap:8px;margin-top:13px;padding-top:11px;border-top:1px solid var(--portal-border)}
+.extraAssessmentLinks a{font-size:13px;font-weight:800;line-height:1.5;color:var(--portal-blue);background:var(--portal-blue-soft);border-radius:9px;padding:9px 11px;text-decoration:none}
+.extraAssessmentLinks a:hover{text-decoration:underline}
+@media print{.extraAssessmentLinks{display:none}}
