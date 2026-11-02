@@ -118,7 +118,7 @@ export default function CareerInterviewClient({profileId}:{profileId:string}){
   else setStage("review");
  }
  function reset(){
-  requestEpoch.current++;setSubmitting(false);
+  requestEpoch.current++;setSubmitting(false);setSemanticConsent(false);
   setIndex(0);setEntries({});setContext(EMPTY_INTERVIEW_JOB_CONTEXT);setConsent(false);setConfirmReset(false);
   try{sessionStorage.removeItem(storageKey(profileId))}catch{}
   setStage("intro");
@@ -169,7 +169,7 @@ export default function CareerInterviewClient({profileId}:{profileId:string}){
      <p>经历摘要中提及：{contextAnalysis.mentioned.join("、")||"暂未识别"}；
      尚未提及：{contextAnalysis.notMentioned.join("、")||"无"}。这只是文字匹配，不代表真实掌握或欠缺。</p>
     </div>}
-    <p className={styles.small}>这些输入只保存在本标签页的会话存储中，不上传到网站服务器；重新开始会清除。请勿填写真实密钥、联系方式、商业机密或第三方个人信息。</p>
+    <p className={styles.small}>默认只保存在本标签页；仅在明确勾选AI语义追问后，相应岗位信息和回答才会发送至模型服务。重新开始会清除本地资料。请勿填写密钥、联系方式、商业机密或第三方个人信息。</p>
    </div>
    {semanticEnabled&&<label className={styles.check}>
     <input type="checkbox" checked={semanticConsent} onChange={e=>setSemanticConsent(e.target.checked)}/>
@@ -217,7 +217,7 @@ export default function CareerInterviewClient({profileId}:{profileId:string}){
     value={stage==="main"?entry.answer:entry.followupAnswer}
     onChange={e=>updateCurrent(stage==="main"?{answer:e.target.value}:{followupAnswer:e.target.value})}
     placeholder="请按真实经历回答；没有实际工作经历时可以用课程、社团或实习案例，不必虚构。"/>
-   <div className={styles.answerFooter}><span>{(stage==="main"?entry.answer:entry.followupAnswer).length} / 2500字</span><span>本标签页草稿 · 不上传服务器</span></div>
+   <div className={styles.answerFooter}><span>{(stage==="main"?entry.answer:entry.followupAnswer).length} / 2500字</span><span>{semanticEnabled&&semanticConsent?"AI追问已授权 · 本轮提交将发送模型":"本标签页草稿 · 不发送模型"}</span></div>
    <div className={styles.footer}>
     {stage==="followup"&&<button className={styles.secondary} type="button" onClick={()=>setStage("main")}>返回修改主回答</button>}
     <button className={styles.primary} type="button"
