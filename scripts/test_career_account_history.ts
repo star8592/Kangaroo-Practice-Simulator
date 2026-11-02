@@ -26,7 +26,7 @@ async function main(){
     ]);
     const paper=getCareerFormalPaper("procurement-paper-2026q4-v1")!;
     assert(paper&&paper.questions.length===24);
-    assert.equal(CAREER_FORMAL_PAPERS.length,3);
+    assert.equal(CAREER_FORMAL_PAPERS.length,4);
     const ID="11111111-1111-4111-8111-111111111111";
     const ID2="22222222-2222-4222-8222-222222222222";
     const CORRECT=Object.fromEntries(paper.questions.map(q=>{
@@ -141,7 +141,7 @@ async function main(){
     }
     assert.equal(typeof listCareerAttemptSummaries,"function");
     assert.equal(typeof readCareerAttempt,"function");
-    console.log("CAREER_FORMAL_ACCOUNT_HISTORY=PASS papers=3 questions=24 score=100/0 verified_wechat=YES owner_isolation=YES idempotent=YES six_quiz=RETIRED");
+    console.log("CAREER_FORMAL_ACCOUNT_HISTORY=PASS papers=4 tested_paper_questions=24 score=100/0 verified_wechat=YES owner_isolation=YES idempotent=YES six_quiz=RETIRED");
   }finally{
     delete process.env.SOCTHINK_USER_DATA_DIR;
     fs.rmSync(root,{recursive:true,force:true});

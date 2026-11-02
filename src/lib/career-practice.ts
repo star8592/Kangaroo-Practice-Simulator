@@ -17,7 +17,7 @@ export type CareerPracticeQuestion=Readonly<{
 }>;
 export type CareerPracticeCase=Readonly<{
   id:string;revision:number;title:string;domain:"career";
-  family:"procurement"|"operations"|"supply";
+  family:"procurement"|"operations"|"supply"|"agent";
   evidenceSignalId:string;evidenceSkillCodes:readonly string[];
   sourceRights:"original";deliveryState:"free-live-preview";
   maxPoints:number;durationMinutes:number;context:string;

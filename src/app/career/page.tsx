@@ -121,7 +121,7 @@ export default async function CareerDemandPage({searchParams}:{searchParams:Sear
             <span>{paper.maxPoints} 分</span><span>{paper.durationMinutes} 分钟限时</span><span>2026 Q4 · 原创v{paper.revision}</span></div>
           <div className={styles.offerActions}>
             <Link href={"/career/exams/"+paper.id}>进入考场 · 确认入场</Link>
-            <Link href={"/career/guides/"+guideForFamily(paper.family)!.id}>考前复习资料</Link>
+            <Link href={paper.family==="agent"?"/skill-labs/agent-foundations":"/career/guides/"+guideForFamily(paper.family)!.id}>考前复习资料</Link>
           </div>
         </article>)}
       </div>

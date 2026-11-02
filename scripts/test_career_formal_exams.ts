@@ -26,8 +26,8 @@ async function main(){
     ]);
 
     assert.deepEqual(validateCareerFormalBank(),[]);
-    assert.equal(CAREER_FORMAL_PAPERS.length,3);
-    assert.equal(CAREER_FORMAL_SOURCE_SUMMARY.reviewedAt,"2026-11-01");
+    assert.equal(CAREER_FORMAL_PAPERS.length,4);
+    assert.equal(CAREER_FORMAL_SOURCE_SUMMARY.reviewedAt,"2026-11-03");
     assert(CAREER_FORMAL_SOURCE_SUMMARY.sources.length>=7);
     assert(CAREER_FORMAL_SOURCE_SUMMARY.sources.some(x=>x.sourceKind==="candidate-recollection"));
     assert(CAREER_FORMAL_SOURCE_SUMMARY.sources.every(x=>x.url.startsWith("https://")));
@@ -44,7 +44,7 @@ async function main(){
       assert.equal(paper.questions.reduce((n,q)=>n+q.weight,0),100);
       assert(buildCareerAssessmentContract(paper.id)?.valid);
       assert(paper.questions.every(q=>q.provenance?.sourceKind==="original"&&
-        q.provenance.authoredAt==="2026-11-01"&&q.provenance.topicSourceUrl?.startsWith("https://")));
+        q.provenance.authoredAt===(paper.family==="agent"?"2026-11-03":"2026-11-01")&&q.provenance.topicSourceUrl?.startsWith("https://")));
       for(const q of paper.questions){
         assert(!Object.hasOwn(q,"correct")&&!Object.hasOwn(q,"explanation"),
           "Never serialize correct answer or rationale before submission");
@@ -99,8 +99,8 @@ async function main(){
       assert.equal(blankResponse.status,200);
       assert.equal((await blankResponse.json()).grade.score,0);
     }
-    assert.equal(totalQuestions,72);
-    console.log("CAREER_FORMAL_EXAMS=PASS papers=3 question_bank=72 full_score=100 blank_score=0 version=2026-11-01 signed_sessions=YES expiration=YES original_provenance=YES");
+    assert.equal(totalQuestions,96);
+    console.log("CAREER_FORMAL_EXAMS=PASS papers=4 question_bank=96 full_score=100 blank_score=0 source_review=2026-11-03 signed_sessions=YES expiration=YES original_provenance=YES");
   }finally{
     delete process.env.SOCTHINK_USER_DATA_DIR;
     fs.rmSync(privateRoot,{recursive:true,force:true});

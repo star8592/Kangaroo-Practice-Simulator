@@ -28,7 +28,7 @@ assert(groups.length>=12);
 assert(groups.every(g=>g.signals.every(s=>s.roleFamily===g.id)));
 assert.deepEqual(validateCareerGuides(),[]);
 assert.equal(CAREER_ORIGINAL_GUIDES.length,3);
-assert.equal(CAREER_FORMAL_PAPERS.filter(x=>x.deliveryState==="free-live-preview").length,3);
+assert.equal(CAREER_FORMAL_PAPERS.filter(x=>x.deliveryState==="free-live-preview").length,4);
 for(const guide of CAREER_ORIGINAL_GUIDES){
   assert(getCareerGuide(guide.id)===guide);
   assert(guideForFamily(guide.family)===guide);
@@ -77,6 +77,6 @@ async function verifyDownload(){
     {params:Promise.resolve({id:"not-a-real-item"})},
   );
   assert.equal(missing.status,404);
-  console.log("CAREER_MARKET_TWO_PRODUCTS=PASS market_indicators=4 original_guides=3 downloadable=3 graded_services=3 unseen_heat_never_invented=YES");
+  console.log("CAREER_MARKET_TWO_PRODUCTS=PASS market_indicators=4 original_guides=3 downloadable=3 graded_services=4 unseen_heat_never_invented=YES");
 }
 verifyDownload().catch(e=>{console.error(e);process.exitCode=1;});

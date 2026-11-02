@@ -75,6 +75,7 @@ export default function AgentFoundationsPage(){
       <p className={s.updated}>内容版本 {course.revision} · 最近实质整理 {course.updatedAt} · 适用于 Python 3.10+</p>
     </section>
     <nav className={s.bottom} aria-label="继续学习">
+      <Link href="/career/exams/agent-engineering-paper-2026q4-v1">参加 Agent 工程师正式模拟笔试（24题）</Link>
       <Link href="/skill-labs">浏览其他真实技能实训</Link>
       <Link href="/career">查看职业技能与岗位模拟考试</Link>
     </nav>

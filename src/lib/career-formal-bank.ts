@@ -1,6 +1,7 @@
 import procurement from "../../data/career/formal_exam_procurement_20261101.json";
 import operations from "../../data/career/formal_exam_operations_20261101.json";
 import quality from "../../data/career/formal_exam_quality_20261101.json";
+import agent from "../../data/career/formal_exam_agent_20261103.json";
 import sourceLedger from "../../data/career/formal_exam_sources_20261101.json";
 import type {CareerPracticeCase,CareerPracticeQuestion} from "./career-practice";
 
@@ -14,7 +15,7 @@ type BankQuestion=Readonly<{
   points:number;authoredAt:string;sourceKind:"original";topicSourceId:string;
 }>;
 type BankPaper=Readonly<{
-  id:string;revision:number;category:"procurement"|"operations"|"supply";
+  id:string;revision:number;category:"procurement"|"operations"|"supply"|"agent";
   title:string;role:string;durationMinutes:number;authoredAt:string;
   observedAt:string;origin:"socthink-original";form:string;
   referenceIds:readonly string[];context:string;assumptions:readonly string[];
@@ -25,7 +26,7 @@ type SourceRecord=Readonly<{
   observedAt:string;publishedAt:string|null;reportedExamDate:string|null;
   rights:string;verifiedLevel:string;
 }>;
-const BANK=[procurement,operations,quality] as unknown as readonly BankPaper[];
+const BANK=[procurement,operations,quality,agent] as unknown as readonly BankPaper[];
 const SOURCES=sourceLedger.sources as readonly SourceRecord[];
 const sourceById=new Map(SOURCES.map(x=>[x.id,x]));
 
@@ -60,9 +61,11 @@ function publicQuestion(q:BankQuestion):CareerPracticeQuestion{
 
 export const CAREER_FORMAL_PAPERS:readonly CareerPracticeCase[]=BANK.map(p=>({
   id:p.id,revision:p.revision,domain:"career",family:p.category,
-  title:p.title,evidenceSignalId:p.category==="procurement"?"meituan-procurement":
+  title:p.title,evidenceSignalId:p.category==="agent"?"mcp-2026-agent-engineering":
+    p.category==="procurement"?"meituan-procurement":
     p.category==="operations"?"meituan-ops":"schneider-quality",
-  evidenceSkillCodes:p.category==="procurement"?["supplier_selection"]:
+  evidenceSkillCodes:p.category==="agent"?["agent","mcp","api"]:
+    p.category==="procurement"?["supplier_selection"]:
     p.category==="operations"?["roi"]:["quality_risk"],
   sourceRights:"original",deliveryState:"free-live-preview",
   durationMinutes:p.durationMinutes,maxPoints:100,context:p.context,
@@ -122,6 +125,6 @@ export function validateCareerFormalBank():string[]{
       }
     }
   }
-  if(BANK.length!==3)errors.push("invalid-case-count");
+  if(BANK.length!==4)errors.push("invalid-case-count");
   return errors;
 }
