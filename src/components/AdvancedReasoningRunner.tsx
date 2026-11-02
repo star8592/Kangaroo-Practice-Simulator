@@ -6,6 +6,7 @@ import {
  scoreAdvancedReasoning,type AdvancedReasoningReport,
 } from "@/lib/advanced-reasoning-bank";
 import styles from "@/app/assessment-center/measurement.module.css";
+import AssessmentTrustBrief from "@/components/AssessmentTrustBrief";
 
 type Stage="intro"|"questions"|"review"|"report";
 type Saved={
@@ -74,6 +75,11 @@ export default function AdvancedReasoningRunner(){
  const report: AdvancedReasoningReport|null=stage==="report"?scoreAdvancedReasoning(answers):null;
  const firstUnanswered=ADVANCED_REASONING_ITEMS.findIndex(q=>answers[q.id]===undefined);
  const firstMarked=ADVANCED_REASONING_ITEMS.findIndex(q=>Boolean(flagged[q.id]));
+ // The report is a transparent exercise summary, not a psychological score.
+ const revisionDomains=report?.groups.filter(d=>d.answered>d.correct)
+  .sort((a,b)=>(b.answered-b.correct)-(a.answered-a.correct)).slice(0,2)??[];
+ const wrongExamples=report?.review.map((r,i)=>({result:r,item:ADVANCED_REASONING_ITEMS[i],number:i+1}))
+  .filter(x=>x.result.chosen!==null&&!x.result.correct).slice(0,3)??[];
  function start(){
   if(!accepted)return;
   const due=Date.now()+INITIAL_TIME*1000;
@@ -103,6 +109,7 @@ export default function AdvancedReasoningRunner(){
   </header>
   {stage==="intro"&&<section className={styles.panel} aria-label="模拟考试入场">
    <h2>模拟考试入场</h2>
+   <AssessmentTrustBrief variant="advanced"/>
    <p className={styles.lead}>40题 · 45分钟 · 单选。涵盖演绎推理、条件约束、规律归纳、隐含假设与证据评价。</p>
    <div className={styles.aptitudeSummary}>
     {ADVANCED_REASONING_DOMAINS.map(d=><div key={d.id}><strong>{d.name}</strong><span>8题</span></div>)}
@@ -170,11 +177,49 @@ export default function AdvancedReasoningRunner(){
    <div className={styles.reportTitle}><div><span className={styles.eyebrowDark}>ORIGINAL MOCK · {report.version}</span><h2>本次模拟成绩</h2></div><span className={styles.previewBadge}>原始答题成绩</span></div>
    {timedOut&&<p className={styles.aptitudeWarning}>考试计时结束，系统按已经保存在本标签页的答案自动交卷。</p>}
    <p className={styles.lead}>答对 <strong>{report.correct} / {report.total}</strong> 题，已作答 {report.answered} 题。分数仅反映这套原创推理训练卷的完成情况，不代表全国排名或招聘录取概率。</p>
+   <section className={styles.reportSummary} aria-label="答卷完整性与成绩解释">
+    <h3>01 · 答卷概况</h3>
+    <dl className={styles.reportStatGrid}>
+     <div><dt>原始总成绩</dt><dd>{report.correct} / {report.total}</dd></div>
+     <div><dt>完成题目</dt><dd>{report.answered} / {report.total}</dd></div>
+     <div><dt>未答题目</dt><dd>{report.total-report.answered}</dd></div>
+     <div><dt>已答题准确率</dt><dd>{report.answered?Math.round(report.correct/report.answered*100)+"%":"未形成"}</dd></div>
+    </dl>
+    <p>{report.answered===0
+      ?"本次交白卷，只有空白记录，不能据此判断推理能力。"
+      :report.answered<report.total
+       ?"存在未答题：总成绩将空白计0分；已答准确率仅在已作答题中计算，不可当作完整能力指标。"
+       :"已完成全卷；成绩仍只代表这40道训练题的本次表现，不是与其他人的能力比较。"}</p>
+   </section>
+   <h3 className={styles.reportSectionHeading}>02 · 五项任务表现</h3>
    <div className={styles.scoreList}>{report.groups.map(d=><div key={d.id} className={styles.score}>
     <div className={styles.scoreTop}><strong>{d.name}</strong><span>{d.correct} <small>/ {d.total}</small></span></div>
     <div className={styles.scoreTrack}><span style={{width:(d.correct/d.total*100)+"%"}}/></div>
     <p>{d.practice}</p>
    </div>)}</div>
+   <section className={styles.reportSummary} aria-label="针对本次错题的训练建议">
+    <h3>03 · 证据复盘与下一步训练</h3>
+    {report.answered===0?<p>没有已作答题，无法识别具体错误模式。建议完整完成试卷后再查看复盘建议。</p>:
+     wrongExamples.length===0?<p>本次已作答题没有错题。建议检查未答题，并通过不同题目的新卷验证掌握情况；不能据此判定推理能力等级。</p>:<>
+      <p>以下仅依据本次答题记录给出复盘优先顺序，不将每类8道题的分数解释为稳定的能力强弱。</p>
+      <div className={styles.reportRevisionGrid}>
+       {revisionDomains.map(d=><div key={d.id}>
+        <strong>{d.name}</strong>
+        <p>已答 {d.answered}/8 · 错题 {d.answered-d.correct} 道</p>
+        <p>{d.practice}</p>
+       </div>)}
+      </div>
+      <h4>选取的错题证据</h4>
+      <ul className={styles.reportEvidenceList}>
+       {wrongExamples.map(x=><li key={x.result.id}>
+        <strong>第 {x.number} 题 · {ADVANCED_REASONING_DOMAINS.find(d=>d.id===x.item.domain)?.name}</strong>
+        <span>你选 {String.fromCharCode(65+x.result.chosen!)}，正确答案为 {String.fromCharCode(65+x.result.answer)}。{x.item.explanation}</span>
+       </li>)}
+      </ul>
+      <p><strong>训练建议：</strong>今天逐题复述推理链；次日用不同案例练习相同方法；一周后用新题复测。进步判断应比较多次新题表现，而非重复记住这一卷答案。</p>
+     </>}
+   </section>
+   <h3 className={styles.reportSectionHeading}>04 · 40题作答证据</h3>
    <details className={styles.aptitudeReviewDetails}>
     <summary>查看40题逐题解析与原始作答</summary>
     <ol className={styles.reviewList}>{report.review.map((r,i)=>{
@@ -188,7 +233,8 @@ export default function AdvancedReasoningRunner(){
      </li>;
     })}</ol>
    </details>
-   <div className={styles.reportFoot}><strong>评分与报告边界</strong>
+   <div className={styles.reportFoot}><strong>05 · 方法、版本与报告边界</strong>
+    <p>开发方：SOCTHINK · 卷版本：{report.version} · 计分：答对1分，答错或空白0分 · 适用：18岁及以上成人训练。<a href="/assessment-center/methodology#advanced-reasoning-40">查阅公开技术档案</a></p>
     <p>原创训练题 · 固定40题 · 每题1分。尚未开展大样本题目难度校准、信效度或地区/年龄常模研究。本页面不提供IQ、潜能等级、企业适岗预测或官方考试凭证。</p>
    </div>
    <div className={styles.controls}>
