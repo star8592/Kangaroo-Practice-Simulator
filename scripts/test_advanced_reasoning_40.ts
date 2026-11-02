@@ -76,5 +76,5 @@ assert(runner.includes('sessionStorage.getItem(KEY)')&&runner.includes('sessionS
 assert(runner.includes('remaining===0')&&runner.includes('setStage("report")'));
 assert(!/\bfetch\(|XMLHttpRequest|sendBeacon|localStorage/.test(runner),"no answer upload");
 const center=readFileSync("src/app/assessment-center/page.tsx","utf8");
-assert(center.includes('href="/assessment-center/advanced-reasoning-40"'));
+assert(center.includes('id:"advanced-reasoning-40"'),"advanced reasoning in nine-item public catalog");
 console.log("ADVANCED_REASONING=PASS original_items=40 five_domains=8_each answer_positions=10_each duration=45m empty=0 perfect=40 partial=39 evidence=EXPLICIT privacy=SESSION_ONLY");
