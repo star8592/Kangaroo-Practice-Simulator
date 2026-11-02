@@ -4,10 +4,10 @@ test("advanced reasoning is discoverable, officially distinct, and evidence regi
  const response=await page.goto("/assessment-center");
  expect(response?.status()).toBe(200);
  const link=page.locator('a[href="'+ROUTE+'"]');
- await expect(link).toBeVisible();
+ await expect(link.first()).toBeVisible();
  await expect(page.getByRole("heading",{name:"这项测评由谁开发？依据是什么？"})).toBeVisible();
  await expect(page.getByRole("link",{name:/了解测评中心与开发原则/})).toBeVisible();
- await link.click();
+ await link.first().click();
  await expect(page).toHaveURL(new RegExp(ROUTE+"$"));
  await expect(page.getByRole("heading",{name:"高级逻辑与批判性推理 · 40题"})).toBeVisible();
  await expect(page.getByText("非官方、非标准化测验")).toBeVisible();
