@@ -44,6 +44,13 @@ export const ASSESSMENT_EVIDENCE:readonly EvidenceRecord[]=[
   audience:"18岁及以上成年人逻辑与求职训练",evidenceStatus:"题库结构、答案均衡、评分、空题及完整模拟流程由自动化核查；尚未经独立心理测量验证和专家联合内容审校。",
   limitations:"不能作为标准化IQ、招聘资格、潜能等级、人群百分位、临床诊断或实际录取预测。",
   normAvailable:false,fullReportOffer:"not-offered"},
+ {id:"career-aptitude-40",name:"招聘通用能力完整模拟卷 · 40题",path:"/assessment-center/career-aptitude-40",version:"career-aptitude-original-20261102-v1",
+  category:"原创任务练习",source:"SOCTHINK原创言语、数量、逻辑、资料分析、空间推理训练题；分类参考公开招聘通用能力描述。",
+  permission:"原创模拟卷，不属于任何招聘企业、北森或牛客的官方真题。",
+  scoring:"五类各8题，固定45分钟，40题单选；每题1分，未答或答错0分；可跳题、标记并查看答案解析。",
+  audience:"求职及备考成年人",evidenceStatus:"自动化计分及答卷流程测试已建立；暂无专家内容盲审、心理测量学信效度与常模。",
+  limitations:"不能代表任何企业正式笔试分数、国家职业资格、录用概率、能力常模百分位或IQ等级。",
+  normAvailable:false,fullReportOffer:"not-offered"},
  {id:"reasoning-practice-20",name:"认知推理任务练习 · 20题",path:"/assessment-center/reasoning-practice-20",version:"reasoning-original-v1",
  category:"原创任务练习",source:"SOCTHINK 原创题项：数量、逻辑、方位、信息判断。",
  permission:"平台自主编写题目，不复制标准 IQ 测验。",
@@ -66,7 +73,7 @@ export function validateEvidenceRegistry():string[]{
   if(e.normAvailable||!e.evidenceStatus||!e.scoring||!e.version)errors.push("MISSING_OR_UNSAFE:"+e.id);
   if(!e.path.startsWith("/assessment-center/"))errors.push("INVALID_PATH:"+e.id);
  }
- if(ASSESSMENT_EVIDENCE.length!==8)errors.push("EXPECTED_EIGHT_MEASUREMENT_PRODUCTS");
+ if(ASSESSMENT_EVIDENCE.length!==9)errors.push("EXPECTED_NINE_MEASUREMENT_PRODUCTS");
  if(ASSESSMENT_EVIDENCE.filter(x=>x.fullReportOffer==="optional-after-verification").length!==2)
    errors.push("EXPECTED_TWO_OPTIONAL_REPORT_PRODUCTS");
  return errors;
