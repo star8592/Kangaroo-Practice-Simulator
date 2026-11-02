@@ -65,6 +65,11 @@ const QUICK_SERVICES=[
   {href:"/competitions",key:"liveCompetition",description:"liveCompetitionDesc",number:"02"},
   {href:"/resources",key:"livePaper",description:"livePaperDesc",number:"03"},
 ] as const;
+const FRONTIER_SERVICES=[
+  {href:"/skill-labs/agent-foundations",title:{zh:"AI Agent 工程",en:"AI Agent Engineering"},detail:{zh:"6节原创教程 · Python实验源码",en:"6 lessons · Runnable Python lab"},action:{zh:"进入课程",en:"Open course"}},
+  {href:"/skill-labs/webgpu-basics",title:{zh:"Three.js · WebGPU 3D",en:"Three.js · WebGPU 3D"},detail:{zh:"8节课程 · 在线三维实验 · 源工程",en:"8 lessons · Live 3D lab · Source project"},action:{zh:"体验3D",en:"Try 3D lab"}},
+  {href:"/career",title:{zh:"岗位正式模拟笔试",en:"Career Mock Exams"},detail:{zh:"完整24题卷 · 入场计时 · 服务端评分",en:"24-item papers · Timed · Server-graded"},action:{zh:"进入考场",en:"Open exams"}}
+] as const;
 const DOMAINS=new Map(ASSESSMENT_DOMAINS.map(x=>[x.id,x]));
 
 export default function PublicHome(){
@@ -102,6 +107,10 @@ export default function PublicHome(){
             {POPULAR.map(item=><Link key={item.zh} href={`/assessments?q=${encodeURIComponent(item.q)}`}>{item[lang]}</Link>)}
           </div>
         </div>
+        <div className={styles.frontierHeroLinks} aria-label={lang==="zh"?"已开放的前沿技能":"Frontier skills available now"}>
+          <Link href="/skill-labs/agent-foundations">{lang==="zh"?"AI Agent 实战":"AI Agent Lab"} <span aria-hidden="true">↗</span></Link>
+          <Link href="/skill-labs/webgpu-basics">{lang==="zh"?"WebGPU 3D 实战":"WebGPU 3D Lab"} <span aria-hidden="true">↗</span></Link>
+        </div>
       </div>
     </section>
 
@@ -114,6 +123,21 @@ export default function PublicHome(){
           <span className={styles.quickArrow} aria-hidden="true">↗</span>
         </Link>)}</div>
       <p className={styles.practiceGuideLink}><Link href="/math-practice">{lang==="zh"?"查看 G1–G12 数学计算训练内容与方法 →":"Explore the Grade 1–12 math practice guide →"}</Link></p>
+    </section>
+
+
+    <section className={styles.frontierSection} aria-labelledby="frontier-heading">
+      <div className={styles.sectionTop}>
+        <h2 id="frontier-heading">{lang==="zh"?"前沿技术 · 真实动手":"Frontier Skills · Learn by Doing"}</h2>
+        <Link href="/skill-labs">{lang==="zh"?"全部技能实训":"All skill labs"} <span aria-hidden="true">→</span></Link>
+      </div>
+      <div className={styles.frontierGrid}>
+        {FRONTIER_SERVICES.map(item=><Link key={item.href} href={item.href} className={styles.frontierCard}>
+          <strong>{item.title[lang]}</strong>
+          <span>{item.detail[lang]}</span>
+          <b>{item.action[lang]} <span aria-hidden="true">→</span></b>
+        </Link>)}
+      </div>
     </section>
 
     <section className={styles.categoryOverview} aria-labelledby="exam-category-overview">
