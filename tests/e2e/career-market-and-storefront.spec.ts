@@ -26,7 +26,7 @@ test("market growth, original materials and online service are real user journey
   const goods=page.locator("#digital-materials");
   const services=page.locator("#digital-services");
   await expect(goods.getByRole("article")).toHaveCount(3);
-  await expect(services.getByRole("article")).toHaveCount(3);
+  await expect(services.getByRole("article")).toHaveCount(4);
   await expect(goods).toContainText("免费完整领取");
   await expect(services).toContainText("免费完整体验");
   await expect(page.locator("main").last()).toContainText("暂无可比数据");

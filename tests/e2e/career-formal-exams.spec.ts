@@ -54,6 +54,7 @@ test("24-question career test has a real admission room, timed paper, marked car
 for(const item of [
   {id:"operations-paper-2026q4-v1",title:"商品运营与增长分析"},
   {id:"quality-paper-2026q4-v1",title:"工业质量与FMEA"},
+  {id:"agent-engineering-paper-2026q4-v1",title:"AI Agent 工程师"},
 ]){
   test(item.title+" supports 24 real questions and blank-paper report",async({page})=>{
     const response=await page.goto("/career/exams/"+item.id);
@@ -64,7 +65,7 @@ for(const item of [
     const sheet=page.getByLabel("岗位正式模拟笔试考场");
     await expect(sheet).toContainText("第 1 / 24 题");
     await expect(sheet).toContainText("题目来源：本站原创");
-    await expect(sheet).toContainText("编写 2026-11-01");
+    await expect(sheet).toContainText("编写 "+(item.id.startsWith("agent-")?"2026-11-03":"2026-11-01"));
     await page.getByRole("button",{name:"检查答卷 / 提前交卷"}).click();
     await expect(page.locator("main").last()).toContainText("未答 24 题");
     await page.getByRole("button",{name:"确认交卷 · 查看成绩"}).click();
@@ -81,8 +82,8 @@ test("career storefront exclusively lists full-length timed exams",async({page})
   const response=await page.goto("/career");
   expect(response?.status()).toBe(200);
   const section=page.locator("#digital-services");
-  await expect(section.getByRole("article")).toHaveCount(3);
-  await expect(section).toContainText("72道原创题");
+  await expect(section.getByRole("article")).toHaveCount(4);
+  await expect(section).toContainText("96道原创题");
   await expect(section).toContainText("24题 / 45分钟");
   const first=section.getByRole("link",{name:"进入考场 · 确认入场"}).first();
   await first.click();
