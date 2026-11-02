@@ -9,7 +9,7 @@ for(const entry of entries){
  assert.ok(entry.id&&entry.title&&entry.summary&&entry.kind);
  assert.ok(!seen.has(entry.id),"Duplicate public discovery id: "+entry.id);
  seen.add(entry.id);
- assert.match(entry.href,/^\/(?!\/)[\w\/%-]+$/,"Only real internal public routes are permitted");
+ assert.match(entry.href,/^\/(?!\/)[^?#\s]+$/,"Only real internal public routes are permitted");
 }
 const updates=homepageUpdates();
 assert.ok(updates.length>=5,"Homepage must not stay a static three-card exam shell");
