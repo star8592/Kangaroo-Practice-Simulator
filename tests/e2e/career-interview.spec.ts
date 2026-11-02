@@ -133,6 +133,12 @@ test("explicit opt-in sends the current answer and displays a model-grounded fol
  expect(called).toBe(1);
  await page.reload();
  await expect(page.getByText(/能说明如何构造并发重试实验/)).toBeVisible();
+ await page.getByRole("textbox",{name:"补充回答"}).fill("我会记录重试是否生成重复订单，并确认唯一约束有效。");
+ await page.getByRole("button",{name:"下一轮面试"}).click();
+ const renewedConsent=page.getByRole("checkbox",{name:/本轮启用AI语义追问/});
+ await expect(renewedConsent).not.toBeChecked();
+ await renewedConsent.check();
+ await expect(renewedConsent).toBeChecked();
 });
 
 test("no AI consent never sends an answer; model outage falls back safely",async({page})=>{
