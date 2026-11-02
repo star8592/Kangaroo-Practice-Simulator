@@ -1,0 +1,49 @@
+.page{max-width:1130px}
+.hero{border-radius:20px;padding:clamp(24px,4vw,49px);background:radial-gradient(circle at 90% 10%,#214d84 0%,#112849 42%,#0b172c 95%);color:white}
+.eyebrow{color:#87dcff;font-size:12px;font-weight:800;letter-spacing:.14em}
+.hero h1{font-size:clamp(29px,4vw,46px);line-height:1.2;letter-spacing:-.03em;margin:17px 0 11px}
+.hero>p{font-size:16px;line-height:1.75;color:#c5e3f6;max-width:835px}
+.info{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0 22px}
+.info span{padding:6px 10px;color:#ccedff;background:#203b59;border:1px solid #40769f;border-radius:7px;font-size:13px}
+.actions{display:flex;flex-wrap:wrap;gap:12px}
+.download,.outline{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:10px 17px;border-radius:10px;font-weight:800;font-size:14px;text-decoration:none}
+.download{background:#0f75c0;color:white}
+.download:hover{background:#095c9a}
+.outline{color:#d4efff;border:1px solid #78a1c4}
+.notice{font-size:12px!important;color:#a8c0d5!important;margin-top:18px;line-height:1.65!important}
+.about{display:grid;grid-template-columns:repeat(3,1fr);gap:13px;margin:16px 0 28px}
+.about>div{border:1px solid var(--portal-border);border-radius:13px;background:#fff;padding:18px}
+.about b{color:#27455e}.about p{color:#596c7f;font-size:14px;line-height:1.7;margin-bottom:0}
+.lab{border-radius:18px;background:#08182c;color:#e9f7ff;overflow:hidden;border:1px solid #234b70}
+.labHeading{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:22px;padding:24px 28px 16px}
+.labHeading span{font-size:12px;color:#91bfdf;font-weight:700;letter-spacing:.08em}
+.labHeading h2{font-size:27px;margin:8px 0}.labHeading p{color:#bcd7eb;margin:0;font-size:14px}
+.metrics{display:flex;gap:8px}
+.metrics>div{min-width:100px;padding:10px 14px;border:1px solid #456b89;border-radius:9px;text-align:center}
+.metrics>div span{display:block;margin-bottom:7px;letter-spacing:0;font-size:12px;color:#8fb5ce}
+.metrics strong{font-size:21px;color:#fff}
+.stage{height:clamp(310px,45vw,520px);width:100%;position:relative;background:radial-gradient(ellipse at center,#15345b,#08182c)}
+.stage canvas{display:block;max-width:100%}
+.error,.loading{position:absolute;left:5%;right:5%;top:40%;color:#d3e7f5;text-align:center;font-size:14px}
+.error p{line-height:1.7}
+.controlGrid{display:grid;grid-template-columns:1.3fr .8fr .8fr;gap:16px;padding:22px 24px}
+.controlGrid label{display:flex;flex-direction:column;gap:9px;font-size:13px;color:#b5d6e9;font-weight:700}
+.controlGrid label strong{color:#fff}
+.controlGrid select,.controlGrid input{width:100%;min-height:38px;accent-color:#55d4ef}
+.controlGrid select{border:1px solid #52718f;border-radius:7px;background:#14304e;color:#fff;padding:8px}
+.caveat{margin:0;padding:0 24px 22px;color:#a8c4d7;line-height:1.65;font-size:12px}
+.caveat strong{color:#dcf2ff}
+.chapterHeading{margin:39px 0 18px}.chapterHeading span{color:#0c73ad;letter-spacing:.1em;font-size:11px;font-weight:800}.chapterHeading h2{font-size:27px;margin:9px 0}
+.lesson{background:#fff;border:1px solid var(--portal-border);border-radius:12px;padding:24px 27px;margin:13px 0}
+.lesson h3{font-size:22px;color:#1e4266;margin:0 0 15px}
+.lesson p{line-height:1.85;font-size:15px;color:#3f5468;margin:12px 0}
+.challenge{display:flex;gap:12px;background:#edf6ff;border-left:3px solid #1599cc;border-radius:4px;padding:14px;margin-top:17px;font-size:14px;line-height:1.65;color:#31567a}
+.challenge strong{flex-shrink:0}
+.project,.sources{border:1px solid var(--portal-border);border-radius:13px;background:#fff;padding:26px;margin-top:26px}
+.project h2,.sources h2{font-size:23px;margin:0 0 12px}
+.project p,.sources p{font-size:14px;line-height:1.75;color:#50647a}
+.project .notice{color:#5d7185!important}
+.project .download{margin-top:9px}
+.sources li{margin:10px 0}.sources a,.bottom a{color:#126ca9;text-underline-offset:3px}
+.bottom{display:flex;justify-content:space-between;gap:15px;margin:25px 0;font-weight:700}
+@media(max-width:700px){.about{grid-template-columns:1fr}.controlGrid{grid-template-columns:1fr}.metrics{width:100%}.metrics>div{flex:1}.hero{padding:25px}.labHeading{padding:22px}.download,.outline{width:100%}.challenge{display:block}.challenge strong{display:block;margin-bottom:4px}.bottom{flex-direction:column}}

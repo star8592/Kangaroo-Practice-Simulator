@@ -1,0 +1,2 @@
+device,os_version,browser_version,three_version,requested_backend,actual_backend,viewport_px,dpr,instance_count,test_seconds,run_number,observed_fps,temperature_notes,background_load,observations
+Example GPU,Example OS,Example Browser,0.186.0,auto,WebGL2,1200x600,1,256,30,1,NOT_MEASURED,unknown,unknown,Replace with real observations
