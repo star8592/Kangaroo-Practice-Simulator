@@ -3,7 +3,7 @@ import Image from "next/image";
 import {cookies} from "next/headers";
 import {notFound} from "next/navigation";
 import {findStoreProduct} from "@/lib/store-products";
-import {nativeCheckoutAllowedForBuyer} from "@/lib/wechat-native-flags";
+import {nativeCheckoutAllowed,nativeCheckoutAllowedForBuyer} from "@/lib/wechat-native-flags";
 import {billingConfigured,hasVerifiedItemEntitlement} from "@/lib/billing-ledger";
 import {parentFromSessionToken,PARENT_SESSION_COOKIE} from "@/lib/parent-auth";
 import NativeCheckoutPanel,{type PublishedMembershipOffer} from "@/app/membership/NativeCheckoutPanel";
@@ -28,6 +28,7 @@ export default async function StoreProductPage({params}:{
   const buyer=parentFromSessionToken(jar.get(PARENT_SESSION_COOKIE)?.value);
   const accountLoggedIn=Boolean(buyer?.active&&(buyer.wechatId||buyer.wechatOpenId));
   const checkoutReady=nativeCheckoutAllowedForBuyer(accountLoggedIn?buyer?.id:null,p.id);
+  const publicCheckoutReady=nativeCheckoutAllowed();
   let purchased=false;
   if(accountLoggedIn&&buyer&&billingConfigured()){
     try {purchased=await hasVerifiedItemEntitlement(buyer.id,"resource",p.resourceId);}
@@ -73,13 +74,19 @@ export default async function StoreProductPage({params}:{
                 <a className={styles.primaryAction} href={downloadUrl}>下载已购 PDF</a>
                 <Link className={styles.secondaryAction} href="/account">查看我的订单</Link>
               </div>
-            :checkoutReady
-              ?accountLoggedIn
+            :!accountLoggedIn
+              ?<div className={styles.purchaseActionArea}>
+                  <Link className={styles.primaryAction} href={signInUrl}>
+                    {publicCheckoutReady?"微信登录后购买":"微信登录后查看购买资格"}
+                  </Link>
+                  <p className={styles.purchaseDisclaimer}>
+                    {publicCheckoutReady
+                      ?"登录后返回本页确认价格和交付内容，不会自动扣费。"
+                      :"公开支付尚未开放；受邀试付账号可以登录后继续，不会自动扣费。"}
+                  </p>
+                </div>
+              :checkoutReady
                 ?<NativeCheckoutPanel offers={[offer]} accountLoggedIn compact/>
-                :<div className={styles.purchaseActionArea}>
-                    <Link className={styles.primaryAction} href={signInUrl}>微信登录后购买</Link>
-                    <p className={styles.purchaseDisclaimer}>登录后回到本页确认价格，再由本人发起微信支付。</p>
-                  </div>
               :<div className={styles.purchaseActionArea} role="status">
                   <button type="button" className={styles.disabledAction} disabled>微信支付尚未开放</button>
                   <p className={styles.purchaseDisclaimer}>商户接入已配置，真实付款与交付正在验收。本页目前不会创建订单或扣款。</p>
