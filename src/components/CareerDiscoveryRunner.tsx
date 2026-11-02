@@ -5,6 +5,7 @@ import {
 } from "@/lib/career-exploration-bank";
 import {SJT_ITEMS,SJT_SKILLS,SJT_VERSION,scoreSjt} from "@/lib/workplace-sjt-bank";
 import styles from "@/app/assessment-center/measurement.module.css";
+import AssessmentExamIdentity from "@/components/AssessmentExamIdentity";
 import AssessmentTrustBrief from "@/components/AssessmentTrustBrief";
 type Stage="intro"|"questions"|"review"|"result";
 type Props={instrumentId:"work-values-30"|"work-style-24"|"workplace-sjt-24"};
@@ -36,15 +37,15 @@ export default function CareerDiscoveryRunner({instrumentId}:Props){
  const sjtResult=isSjt&&stage==="result"?scoreSjt(answers):null;
  const showReview=()=>setStage("review");
  return <div className={styles.runner}>
-  <header className={styles.runnerHeader}>
+  <header className={styles.runnerHeader+(stage==="intro"?"":" "+styles.compactHeader)}>
    <span className={styles.eyebrowDark}>SOCTHINK · ORIGINAL CAREER ASSESSMENT</span>
    <h1>{title}</h1>
    <p>{subtitle}</p>
-   <div className={styles.labels}>
+   {stage==="intro"&&<div className={styles.labels}>
     <span>免费</span><span>{questions.length}题</span>
     <span>约 {isSjt?"15–20":instrumentId==="work-values-30"?"7–10":"6–9"} 分钟</span>
     <span>{isSjt?"职场案例训练":"非标准化自我探索"}</span>
-   </div>
+   </div>}
   </header>
   {stage==="intro"&&<section className={styles.panel}>
     <h2>正式开始前</h2>
@@ -69,6 +70,7 @@ export default function CareerDiscoveryRunner({instrumentId}:Props){
       disabled={!consented} onClick={()=>setStage("questions")}>确认入场 · 开始作答</button></div>
   </section>}
   {stage==="questions"&&<section className={styles.panel}>
+   <AssessmentExamIdentity assessmentId={instrumentId} mode={isSjt?"task":"research"}/>
     <div className={styles.progressRow}><strong>第 {index+1} / {questions.length} 题</strong><span>已答 {count} / {questions.length}</span></div>
     <div className={styles.progress} role="progressbar" aria-label="当前答题进度"
       aria-valuemin={0} aria-valuemax={questions.length} aria-valuenow={count}>
