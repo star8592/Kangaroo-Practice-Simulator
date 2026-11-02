@@ -17,6 +17,8 @@ for (const book of TECH_BOOKS) {
 assert.equal(getTechBook("not-found"), undefined);
 assert.ok(filterTechBooks("Rust", "").some(book => book.slug === "the-rust-programming-language"));
 assert.ok(filterTechBooks("not-an-actual-book", "").length === 0);
+assert.ok(filterTechBooks("AI 与机器学习", "").some(book => book.slug === "dive-into-deep-learning"));
+assert.ok(filterTechBooks("3D 与游戏开发", "").some(book => book.slug === "game-programming-patterns"));
 assert.ok(filterTechBooks("", "games").every(book => book.topic === "games"));
 assert.equal(TECH_BOOKS.some(book => /hacker.news.*score|z.library/i.test(book.reason)), false);
 console.log("TECH_BOOK_LIBRARY_CONTRACT=PASS; books=" + TECH_BOOKS.length);

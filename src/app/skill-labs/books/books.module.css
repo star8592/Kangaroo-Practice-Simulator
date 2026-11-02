@@ -12,7 +12,7 @@
 .filters{margin-top:22px;border:1px solid var(--portal-border);background:var(--portal-white);padding:18px;border-radius:var(--radius-card)}
 .filters label{display:block;font-size:14px;font-weight:800;margin-bottom:9px}
 .filterFields{display:grid;grid-template-columns:minmax(0,1fr) minmax(170px,230px) auto;gap:9px}
-.filterFields input,.filterFields select{min-width:0;height:45px;padding:9px 12px;border:1px solid #c3d1e2;border-radius:9px;background:#fff;color:var(--portal-text);font-size:15px}
+.filterFields input,.filterFields select{min-width:0;height:45px;padding:9px 12px;border:1px solid #c3d1e2;border-radius:9px;background:#fff;color:var(--portal-text);font-size:16px}
 .filterFields button{height:45px;padding:0 20px;border:0;border-radius:9px;background:var(--portal-blue);color:#fff;font-size:15px;font-weight:800;cursor:pointer}
 .filterFields button:hover{filter:brightness(.94)}
 .sectionHeading{display:flex;align-items:end;justify-content:space-between;gap:15px;margin:30px 0 14px}

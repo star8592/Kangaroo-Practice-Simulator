@@ -22,7 +22,7 @@ export default async function TechBookDetailPage({ params }: Params) {
   const category = TECH_TOPICS.find(item => item.id === book.topic)?.label;
   const schema = {
     "@context": "https://schema.org", "@type": "Book", name: book.title,
-    author: { "@type": "Person", name: book.author },
+    author: book.author,
     url: book.officialUrl,
   };
   return <div className={s.shell}>

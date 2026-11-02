@@ -125,7 +125,8 @@ export function filterTechBooks(query: string, topic: string): TechBook[] {
   const normalized = query.trim().toLocaleLowerCase();
   return TECH_BOOKS.filter(book =>
     (!topic || book.topic === topic) &&
-    (!normalized || [book.title, book.author, book.introduction, book.reason].some(
+    (!normalized || [book.title, book.author, book.introduction, book.reason,
+      TECH_TOPICS.find(topic => topic.id === book.topic)?.label ?? ""].some(
       value => value.toLocaleLowerCase().includes(normalized)
     ))
   );
