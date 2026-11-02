@@ -2,6 +2,7 @@
 import {useState} from "react";
 import {READING_PASSAGES,READING_QUESTIONS,READING_SKILLS,scoreReading} from "@/lib/reading-practice";
 import styles from "@/app/assessment-center/measurement.module.css";
+import AssessmentExamIdentity from "@/components/AssessmentExamIdentity";
 import AssessmentTrustBrief from "@/components/AssessmentTrustBrief";
 
 type Stage="intro"|"questions"|"report";
@@ -16,7 +17,7 @@ export default function ReadingPracticeClient(){
  const report=stage==="report"?scoreReading(answers):null;
  const reset=()=>{setStage("intro");setConsent(false);setAnswers({});setIndex(0);};
  return <div className={styles.runner}>
-  <header className={styles.runnerHeader}>
+  <header className={styles.runnerHeader+(stage==="intro"?"":" "+styles.compactHeader)}>
    <span className={styles.eyebrowDark}>SOCTHINK · READING & LEARNING LAB</span>
    <h1>阅读理解与证据判断 · 16题</h1>
    <p>读四篇原创短文，完成信息定位、合理推断、数量理解与证据判断。交卷后根据真实错题获得针对性练习建议。</p>
@@ -39,6 +40,7 @@ export default function ReadingPracticeClient(){
    <div className={styles.controls}><button type="button" className={styles.primaryButton} disabled={!consent} onClick={()=>setStage("questions")}>开始阅读与作答</button></div>
   </section>}
   {stage==="questions"&&<section className={styles.panel}>
+   <AssessmentExamIdentity assessmentId="reading-practice-16" mode="task"/>
    <div className={styles.progressRow}><strong>第 {index+1} / {READING_QUESTIONS.length} 题</strong><span>已完成 {count} / 16</span></div>
    <div className={styles.progress} role="progressbar" aria-label="已答题数" aria-valuemin={0} aria-valuemax={16} aria-valuenow={count}>
     <span style={{width:(count/16*100)+"%"}}/></div>
