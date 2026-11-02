@@ -78,3 +78,27 @@ test("interview reset requires confirmation and does not share drafts across cam
  await page.reload();
  await expect(page.getByRole("button",{name:"开始模拟面试"})).toBeVisible();
 });
+
+test("pasted job requirements and experience affect the actual follow-up, persist, and clear on reset",async({page})=>{
+ await page.goto("/career/interviews/campus-software");
+ await page.getByRole("textbox",{name:"目标岗位名称"}).fill("前端工程师");
+ await page.getByRole("textbox",{name:"招聘要求 / JD"}).fill("招聘熟悉 TypeScript 和 React 的前端研发工程师");
+ await page.getByRole("textbox",{name:"你的相关经历摘要"}).fill("我在一个React课程项目中参与页面设计。");
+ await expect(page.getByText(/从JD识别的关键词/)).toBeVisible();
+ await expect(page.getByText(/尚未提及：TypeScript/)).toBeVisible();
+ await page.getByRole("checkbox",{name:/我理解这是一场非标准化自我练习/}).check();
+ await page.getByRole("button",{name:"开始模拟面试"}).click();
+ await expect(page.getByText(/本场岗位：前端工程师/)).toBeVisible();
+ await page.getByRole("textbox",{name:"你的回答"}).fill("我做过一个前端课程项目");
+ await page.getByRole("button",{name:"提交本题回答 · 接受追问"}).click();
+ await expect(page.getByText(/招聘描述涉及「TypeScript」/)).toBeVisible();
+ await expect.poll(()=>page.evaluate(()=>Object.values(sessionStorage).some(v=>v.includes("招聘熟悉 TypeScript")))).toBe(true);
+ await page.reload();
+ await expect(page.getByText(/招聘描述涉及「TypeScript」/)).toBeVisible();
+ await page.getByRole("button",{name:"重新开始"}).click();
+ await page.getByRole("button",{name:"确认清空"}).click();
+ await expect(page.getByRole("textbox",{name:"招聘要求 / JD"})).toHaveValue("");
+ await expect(page.getByRole("textbox",{name:"你的相关经历摘要"})).toHaveValue("");
+ await expect(page.getByRole("textbox",{name:"目标岗位名称"})).toHaveValue("");
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth)).toBeLessThanOrEqual(2);
+});
