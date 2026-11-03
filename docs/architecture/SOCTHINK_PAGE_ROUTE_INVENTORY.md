@@ -2,7 +2,7 @@
 
 > 唯一架构权威仍是 [全站信息架构总纲](SOCTHINK_SITE_ARCHITECTURE_MASTER.md)。本文是由当前代码生成的逐页审计附录，不能用来替代总纲。
 
-代码快照：`8cece890368eb245d74dff79a6003d5353af7f35`
+代码快照：`65146101d5aaa3c5d7b1e008f42c2ea244a4a2d5`
 
 本次枚举：**75 个网页模板、70 个 API handler、8 个小程序页面源文件**。动态路由仅按文件模板计数，不等于线上真实 URL 数。
 
@@ -189,7 +189,22 @@
 - `apps/miniapp/src/pages/profile/index.tsx`
 - `apps/miniapp/src/pages/review/index.tsx`
 
-## 5. 每一行真正完成所需的验收
+## 5. 根布局与页面重复 main 地标
+
+根布局 src/app/layout.tsx 已声明一个 main。以下页面代码中仍直接含有 main 标签，必须审查为重复主地标的风险，不应简单断言 CSS 不受影响。
+- `/admin` — `src/app/admin/page.tsx`
+- `/admin/activate` — `src/app/admin/activate/page.tsx`
+- `/admin/feedback` — `src/app/admin/feedback/page.tsx`
+- `/admin/seo` — `src/app/admin/seo/page.tsx`
+- `/career/companies` — `src/app/career/companies/page.tsx`
+- `/skill-labs/agent-foundations` — `src/app/skill-labs/agent-foundations/page.tsx`
+- `/skill-labs/engineering-mock` — `src/app/skill-labs/engineering-mock/page.tsx`
+- `/skill-labs/engineering/[track]` — `src/app/skill-labs/engineering/[track]/page.tsx`
+- `/skill-labs/webgpu-basics` — `src/app/skill-labs/webgpu-basics/page.tsx`
+- `/student/calendar` — `src/app/student/calendar/page.tsx`
+- `/student/cards` — `src/app/student/cards/page.tsx`
+
+## 6. 每一行真正完成所需的验收
 
 1. **归属**：唯一主 owner，L1/L2/L3/L4 层级，允许跨业务推荐但不能多重面包屑。
 2. **可达**：首页/六大业务父页/业务详情/真实数据库目录能到达；有一条合理返回路；明确静态与动态 URL；历史书签不断链。
