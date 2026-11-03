@@ -136,7 +136,7 @@
     "test:career-directory": "tsx scripts/test_career_role_directory.ts",
     "test:career-formal-exams": "tsx scripts/test_career_formal_exams.ts",
     "test:career-semantic": "tsx scripts/test_career_semantic_followup.ts",
-    "test:site-architecture": "tsx scripts/test_site_architecture.ts",
+    "test:site-architecture": "tsx scripts/test_site_architecture.ts && tsx scripts/test_site_page_inventory.ts",
     "test:career-guided": "tsx scripts/test_career_guided_interview.ts"
   },
   "dependencies": {

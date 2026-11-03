@@ -2,7 +2,7 @@
 
 ## Canonical public site information architecture
 
-Before changing the homepage, navigation, page hierarchy, breadcrumbs, search, SEO URLs or cross-business links, read **docs/architecture/SOCTHINK_SITE_ARCHITECTURE_MASTER.md**. Main categories come from **src/lib/site-architecture.ts**; exam topics come from the separate exam directory. Do not promote exercises, books, calendars, account actions or unvalidated products into parallel top-level businesses. Preserve existing URLs, payment authority and learner data. Validate with **npm run test:site-architecture** and the existing CI; no extra release gates.
+Before changing the homepage, navigation, page hierarchy, breadcrumbs, search, SEO URLs or cross-business links, read **docs/architecture/SOCTHINK_SITE_ARCHITECTURE_MASTER.md** and the per-page audit **docs/architecture/SOCTHINK_PAGE_ROUTE_AUDIT.md**. Main categories come from **src/lib/site-architecture.ts**; exam topics come from the separate exam directory. Do not promote exercises, books, calendars, account actions or unvalidated products into parallel top-level businesses. Preserve existing URLs, payment authority and learner data. Validate with **npm run test:site-architecture** and the existing CI; no extra release gates.
 
 ## Mandatory cross-project access/auth preflight
 
