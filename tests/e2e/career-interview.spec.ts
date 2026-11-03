@@ -283,3 +283,45 @@ test("unpublished AI plans show free access without placeholder paid cards or ch
  await expect(page.getByRole("button",{name:"微信扫码购买"})).toHaveCount(0);
  await expect(page.getByRole("button",{name:"开始模拟面试"})).toBeVisible();
 });
+
+test("an undelivered first paid AI round restores its credit before the next reservation",async({page})=>{
+ let reservations=0,modelCalls=0;
+ await page.route("**/api/career/interviews/session",async route=>{
+  reservations++;
+  const sessionId="cais_"+String(reservations===1?"d":"e").repeat(32);
+  await route.fulfill({status:200,contentType:"application/json",body:JSON.stringify({sessionId,duplicated:false})});
+ });
+ await page.route("**/api/career/interviews/followup**",async route=>{
+  if(route.request().method()==="GET"){
+   await route.fulfill({status:200,contentType:"application/json",body:JSON.stringify({
+    enabled:true,provider:"local",providers:["本机 Ollama"]
+   })});
+   return;
+  }
+  modelCalls++;
+  if(modelCalls===1){
+   await route.fulfill({status:503,contentType:"application/json",
+    headers:{"X-Career-Credit-Restored":"1"},
+    body:JSON.stringify({code:"MODEL_UNAVAILABLE"})});
+  }else{
+   await route.fulfill({status:200,contentType:"application/json",body:JSON.stringify({
+    mode:"guided",question:INTERVIEW_PROFILES[0].questions[1].followups.ownership,
+    branch:"ownership",evidenceQuote:"亲自",reason:"需继续核查当事人的真实项目责任和边界"
+   })});
+  }
+ });
+ await page.goto("/career/interviews/campus-software");
+ await page.getByRole("checkbox",{name:/启用AI语义追问/}).check();
+ await page.getByRole("checkbox",{name:/我理解这是一场非标准化自我练习/}).check();
+ await page.getByRole("button",{name:"开始模拟面试"}).click();
+ await page.getByRole("textbox",{name:"你的回答"}).fill("我参与过一个课程软件项目，最近还做了订单接口测试。");
+ await page.getByRole("button",{name:"提交本题回答 · 接受追问"}).click();
+ await expect(page.getByRole("status").filter({hasText:/已自动恢复本次预留的付费面试场次/})).toBeVisible();
+ await page.getByRole("textbox",{name:"补充回答"}).fill("我会先核对课程中实际承担的部分和可以公开的测试结果。");
+ await page.getByRole("button",{name:"下一轮面试"}).click();
+ await page.getByRole("textbox",{name:"你的回答"}).fill("我亲自负责了软件项目里的接口调试，并写了可重复执行的测试代码。");
+ await page.getByRole("button",{name:"提交本题回答 · 接受追问"}).click();
+ await expect.poll(()=>reservations).toBe(2);
+ expect(modelCalls).toBe(2);
+ await expect(page.getByRole("heading",{name:INTERVIEW_PROFILES[0].questions[1].followups.ownership})).toBeVisible();
+});
