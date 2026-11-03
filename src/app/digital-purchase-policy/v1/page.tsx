@@ -1,7 +1,7 @@
 import Link from "next/link";
 import {PREVIOUS_DIGITAL_SALES_POLICY_VERSION} from "@/lib/digital-sales-policy";
 
-export const metadata={title:"数字商品购买与售后规则 V1 历史档案 · SOCTHINK"};
+export const metadata={title:"数字商品购买与售后规则 V1 历史档案 · SOCTHINK",robots:{index:false,follow:true}};
 
 export default function HistoricalDigitalPolicyV1Page(){
   return <div className="legal-page">

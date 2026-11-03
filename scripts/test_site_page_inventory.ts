@@ -83,7 +83,20 @@ const robots=read("src/app/robots.ts");
 for(const privatePrefix of ["/admin","/student","/parent","/account","/report/","/result","/review","/login","/exam/","/arithmetic/print"]){
  assert.ok(robots.includes('"'+privatePrefix+'"'),"Missing robots privacy protection: "+privatePrefix);
 }
+// Public verification evidence must not be in the same robots disallow list.
+assert.ok(!robots.includes('"/verification"'),
+  "Indexable math verification page is blocked by robots.txt");
+const shopIndex=read("src/app/shop/page.tsx");
+const shopDetail=read("src/app/shop/[productId]/page.tsx");
+assert.ok(read("src/app/digital-purchase-policy/v1/page.tsx").includes("index:false"),
+  "Historical legal policy must not compete with current version in search");
+assert.ok(shopIndex.includes('canonical:"/shop"'),"Shop index needs a stable canonical");
+assert.ok(shopDetail.includes("generateMetadata")&&
+  shopDetail.includes('canonical:"/shop/"+encodeURIComponent(product.id)'),
+  "Each published store SKU must produce its own canonical");
 const sitemap=read("src/app/sitemap.ts");
+assert.ok(sitemap.includes("listStoreProducts")&&sitemap.includes("publishedProductPaths"),
+  "Verified real storefront SKUs must participate in public sitemap");
 for(const hub of ["/assessment-center","/career/companies","/verification"]){
  assert.ok(sitemap.includes('"'+hub+'"'),"Public quality page missing from sitemap: "+hub);
 }
