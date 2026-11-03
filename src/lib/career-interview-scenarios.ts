@@ -62,7 +62,7 @@ export const INTERVIEW_PROFILES:readonly InterviewProfile[]=[
   ]},
 ];
 export function getInterviewProfile(id:string):InterviewProfile|undefined{return INTERVIEW_PROFILES.find(p=>p.id===id);}
-export type InterviewExchange={id:string;answer:string;followup:string;followupAnswer:string;selfChecked:readonly string[];followupMode?:"semantic"|"rule";followupEvidence?:string;followupReason?:string};
+export type InterviewExchange={id:string;answer:string;followup:string;followupAnswer:string;selfChecked:readonly string[];followupMode?:"semantic"|"guided"|"rule";followupEvidence?:string;followupReason?:string};
 export function selectFollowup(q:InterviewQuestion,answer:string):{label:string;text:string}{
  const value=answer.trim();
  if(value.length<65)return {label:"需要补充背景",text:q.followups.brief};
