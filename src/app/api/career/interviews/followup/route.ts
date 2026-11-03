@@ -4,12 +4,13 @@ import {
  validateSemanticRequest,parseSemanticContent,makeSemanticMessages
 } from "@/lib/career-semantic-followup";
 import {getConfig,withModelBackup,providerLabels} from "@/lib/career-model-routing";
+import {careerModelDeliveryReady} from "@/lib/career-model-readiness";
 import {makeGuidedMessages,parseGuidedDecision,composeGuidedFollowup} from "@/lib/career-guided-interview";
 import {makeGuidedEvidenceMessages,parseGuidedEvidence} from "@/lib/career-guided-evidence";
 import {billingConfigured} from "@/lib/billing-ledger";
 import {verifiedInterviewBuyer,validCareerOrigin} from "@/lib/career-interview-security";
 import {getPaidCareerSessionAvailability,claimPaidCareerRound,finishPaidCareerRound,
- CareerSessionUnavailable,CareerRoundUnavailable} from "@/lib/career-service-ledger";
+ restoreUnservedCareerSession,CareerSessionUnavailable,CareerRoundUnavailable} from "@/lib/career-service-ledger";
 export const runtime="nodejs";
 export const dynamic="force-dynamic";
 
@@ -43,6 +44,7 @@ export async function GET(req:NextRequest){
  try{
   const available=await getPaidCareerSessionAvailability(buyerId,profileId);
   if(!available.available)return json({enabled:false,provider:null,providers:[],reason:"INTERVIEW_PAYMENT_REQUIRED"});
+  if(!await careerModelDeliveryReady(cfg))return json({enabled:false,provider:null,providers:[],reason:"MODEL_DELIVERY_UNAVAILABLE"});
   return json({enabled:true,provider:cfg.primary==="ollama"?"local":"external",
    providers:[providerLabels[cfg.primary],...(cfg.backup?[providerLabels[cfg.backup]]:[])],
    remainingSessions:available.remainingSessions,activeSessions:available.activeSessions});
@@ -108,5 +110,10 @@ export async function POST(req:NextRequest){
  }finally{
   // Never charge another session for a retry; a failed model invocation is retryable once.
   await finishPaidCareerRound({sessionId,questionId:data.questionId,claimToken,success:completed});
+  // Only restore when no valid AI round was delivered in this paid session.
+  // The ledger serializes this with other in-flight rounds and prevents double credits.
+  if(!completed)await restoreUnservedCareerSession({
+   buyerId,profileId:data.profileId,sessionId
+  });
  }
 }
