@@ -18,7 +18,9 @@ function findFiles(folder:string):string[]{
 }
 const pages=findFiles("src/app").filter(p=>p.endsWith("/page.tsx")).sort();
 const routeFromFile=(p:string)=>p.slice("src/app".length).replace(/\/page\.tsx$/,"")||"/";
-const routes=pages.map(routeFromFile);
+const htmlFiles=findFiles("public").filter(p=>/\.html?$/.test(p)).sort();
+const htmlRoutes=htmlFiles.map(p=>"/"+p.slice("public/".length));
+const routes=[...pages.map(routeFromFile),...htmlRoutes];
 const set=new Set(routes);
 assert.equal(set.size,routes.length,"Duplicate Next.js page route");
 const tick=String.fromCharCode(96);
@@ -68,6 +70,13 @@ for(const row of rows){
 const layout=read("src/app/layout.tsx");
 assert.equal((layout.match(/<main\b/g)||[]).length,1,"Root layout must own one main landmark");
 for(const file of pages)assert.ok(!/<main\b/.test(read(file)),"Nested main on "+file);
+for(const route of htmlRoutes){
+ const content=read("public"+route);
+ assert.ok(content.includes('name="robots"')&&content.includes("noindex"),"Static HTML must be excluded from indexing: "+route);
+ assert.ok(content.includes('rel="canonical"'),"Static HTML lacks canonical: "+route);
+ assert.ok(content.includes('href="/skill-labs/webgpu-basics"'),"Static HTML needs a usable owner link: "+route);
+ assert.ok(!content.includes('src="/src/main.js"'),"Vite source must not be executed at a public static URL: "+route);
+}
 assert.ok(!/<main\b/.test(read("src/components/SourceReviewDashboard.tsx")),
   "Admin source-review component must not nest a main landmark");
 const robots=read("src/app/robots.ts");
@@ -121,5 +130,5 @@ assert.ok(!read("src/app/career/companies/page.tsx").includes('href="/assessment
  "Employer research must not descend from exams");
 assert.ok(read("src/app/assessment-center/sql-lab/page.tsx").includes('permanentRedirect("/skill-labs/sql-lab")'),
  "Legacy SQL link must return to its skill owner");
-console.log("SITE_PAGE_INVENTORY=PASS templates="+routes.length+" owned="+scoped+
+console.log("SITE_PAGE_INVENTORY=PASS templates="+routes.length+" next="+pages.length+" public_static_html="+htmlRoutes.length+" owned="+scoped+
  " restricted_or_controlled="+restricted+" parents=ACYCLIC public_backlinks="+publicReferenced+" private=EXCLUDED_FROM_SITEMAP");

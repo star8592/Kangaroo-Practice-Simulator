@@ -41,3 +41,15 @@ test("sitemap discovers public owner pages without indexing private account rout
   expect(xml).not.toContain("<loc>https://socthink.cn"+path+"</loc>");
  }
 });
+
+test("legacy WebGPU static HTML redirects to its canonical skill course",async({page,request})=>{
+ const response=await request.get("/skill-labs/webgpu-basics/index.html");
+ expect(response.status()).toBe(200);
+ const html=await response.text();
+ expect(html).toContain('name="robots" content="noindex,follow"');
+ expect(html).toContain('rel="canonical" href="https://socthink.cn/skill-labs/webgpu-basics"');
+ expect(html).not.toContain('src="/src/main.js"');
+ await page.goto("/skill-labs/webgpu-basics/index.html");
+ await expect(page).toHaveURL(/\/skill-labs\/webgpu-basics$/);
+ await expect(page.locator("main h1").first()).toBeVisible();
+});

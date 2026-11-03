@@ -1,6 +1,6 @@
 # SOC THINK 全站逐页路由归属审计（代码扫描台账）
 
-审计基线：2026-11-03；源自当前 GitHub Next.js `src/app/**/page.tsx` 路由树，**75 个页面模板，非实际商品/试卷/动态 URL 实例数**。
+审计基线：2026-11-03；源自当前 GitHub Next.js `src/app/**/page.tsx` 路由树，**75 个 Next.js 页面模板 + 1 个静态兼容 HTML 入口（共 76 个），非实际商品/试卷/动态 URL 实例数**。
 
 > **地位**：本表是 [《全站信息架构总纲》](SOCTHINK_SITE_ARCHITECTURE_MASTER.md) 的逐页实施台账，不是另一套页面注册表、CMS、路由或授权来源。内容归属仍以 `src/lib/site-architecture.ts` 和现有业务权威目录为准。
 
@@ -85,6 +85,7 @@
 | `/skill-labs/engineering/[track]` | 技能实训 | `/skill-labs` | 动态详情 | 父目录按条目动态生成 |
 | `/skill-labs/sql-lab` | 技能实训 | `/skill-labs` | 公开内容 | 所属业务目录或内容推荐 |
 | `/skill-labs/webgpu-basics` | 技能实训 | `/skill-labs` | 公开内容 | 所属业务目录或内容推荐 |
+| `/skill-labs/webgpu-basics/index.html` | 技能实训 | `/skill-labs/webgpu-basics` | 历史静态跳转 | 原始 Vite HTML 旧址无索引跳转至实训课；源码只在 assets 与已发布 ZIP |
 | `/student` | 账户与权益 | `/account` | 受控学习记录 | 统一账号 → 学习报告 |
 | `/student/calendar` | 账户与权益 | `/student` | 受控学习记录 | 个人报告 → 关注赛事 |
 | `/student/cards` | 账户与权益 | `/student` | 受控学习记录 | 个人报告 → 学习卡册 |
@@ -94,7 +95,7 @@
 
 ## 3. 逐层汇总与不变约束
 
-**总计：75 个模板，无未知主归属、无无效父路径。** 按 owner 分布：全站入口 2；账户与权益 11；管理后台 10；全部考试 15；测评中心 12；技能实训 10；职业岗位 7；政策与权益 4；真题资料 2；数字商城 2。此数字只反映工程路由模板的归属整理，不是全部网页、动态商品实例、SEO 收录量或客户实际访问量。
+**总计：76 个入口模板（75 Next.js + 1 静态兼容 HTML），无未知主归属、无无效父路径。** 按 owner 分布：全站入口 2；账户与权益 11；管理后台 10；全部考试 15；测评中心 12；技能实训 11；职业岗位 7；政策与权益 4；真题资料 2；数字商城 2。此数字只反映网站公开页面入口模板及受限路由的归属整理，不是全部网页、动态商品实例、SEO 收录量或客户实际访问量。
 
 1. **全站首页与六大业务**：首页 `/`；一级导航依次是 `/assessments`、`/resources`、`/career`、`/skill-labs`、`/assessment-center`、`/shop`。全站搜索 `/search` 是发现工具，不升成第七业务。
 2. **一级以下的公开内容**：L2 目录 → L3 详情 → L4 使用/复盘与交付。考试日程、数学计算、验证说明、技术书库、岗位面试各有明确父级。`/assessment-center/sql-lab` 是技术迁移遗留重定向，今后只推广 `/skill-labs/sql-lab`。
@@ -115,3 +116,11 @@
 - P2：根据真实访问/搜索/转化数据迭代，而不是为了整齐继续扩大一级导航。所有未完成内容归到既有 Issue #268 统一追踪。
 
 **不变量**：页面归属不是页面存在性；页面可访问不是商品可购买；静态链接存在不代表用户有权限。必须分别记录检查的证据类型。
+
+## 6. 公开静态 HTML 的独立审计补充
+
+实查 `public/` 目录另有一个并非 Next.js `page.tsx` 的 HTML：`/skill-labs/webgpu-basics/index.html`。原来它本质是 Vite 源码模板，使用 `/src/main.js` 绝对路径和 `three/webgpu` 裸模块导入，在生产静态 URL 直接打开并不是可执行的网页，这是一个真实的非 Next 孤立/失效入口，**不能被 75 条 Next 路由的完备性掩盖**。
+
+治理方式：Vite 工程原始 `index.html`、`src/main.js`、锁定依赖和示例说明归集到非公开 `assets/skill-labs/webgpu-basics/` 供开发维护；已验证的原工程 `/skill-labs/webgpu-basics/orbit-lab.zip` 下载 URL 保持不变。静态旧 HTML 仅保留 `noindex`、canonical 和自动导向正式 `/skill-labs/webgpu-basics` 的兼容入口，并提供直接可点链接，不再在公开网址加载不能解析的裸导入。
+
+现有逐页检查将同时枚举 `src/app/**/page.tsx` 和 `public/**/*.html`，以后新增静态 HTML 也必须审核归属和访问路径。静态 76 项/75 路由模板不是网站的真实商品/试卷/生成动态页面实例数。
