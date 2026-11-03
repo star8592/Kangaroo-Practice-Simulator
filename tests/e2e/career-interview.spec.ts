@@ -182,6 +182,7 @@ test("no AI consent never sends an answer; model outage falls back safely",async
  await page.getByRole("textbox",{name:"你的回答"}).fill("我负责供应商管理，通过会议跟进合同，但没有建立清晰的业绩指标。");
  await page.getByRole("button",{name:"提交本题回答 · 接受追问"}).click();
  await expect(page.getByText("面试官 · 规则追问")).toBeVisible();
+ await expect(page.getByRole("status").filter({hasText:/本轮未获得有效 AI 追问/})).toBeVisible();
  expect(posts).toBe(1);
  expect(sessions).toBe(1);
 });
@@ -268,7 +269,7 @@ test("published AI interview plans offer both one-off sessions and manual monthl
  expect(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth)).toBeLessThanOrEqual(2);
 });
 
-test("unpublished AI plans show two purchase methods without invented prices or checkout",async({page})=>{
+test("unpublished AI plans show free access without placeholder paid cards or checkout",async({page})=>{
  await page.route("**/api/career/interviews/offer?profileId=social-procurement",async route=>{
   await route.fulfill({status:200,contentType:"application/json",body:JSON.stringify({
    available:false,loggedIn:false,offers:[],reason:"CAREER_SERVICE_NOT_PUBLISHED"
@@ -276,7 +277,9 @@ test("unpublished AI plans show two purchase methods without invented prices or 
  });
  await page.goto("/career/interviews/social-procurement");
  await expect(page.getByText("专业 AI 面试")).toBeVisible();
- await expect(page.getByText("当前尚未开放 AI 面试购买，以下免费结构化练习可正常使用。")).toBeVisible();
+ await expect(page.getByText(/当前5轮结构化面试免费可用，无须付费/)).toBeVisible();
+ await expect(page.getByText("按次购买",{exact:true})).toHaveCount(0);
+ await expect(page.getByText("包月购买",{exact:true})).toHaveCount(0);
  await expect(page.getByRole("button",{name:"微信扫码购买"})).toHaveCount(0);
  await expect(page.getByRole("button",{name:"开始模拟面试"})).toBeVisible();
 });
