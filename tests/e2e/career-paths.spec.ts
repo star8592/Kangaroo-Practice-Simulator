@@ -33,7 +33,7 @@ test("real formal mock and role pages are connected in both directions",async({p
  await expect(page.getByRole("link",{name:/进入岗位学习路线/})).toBeVisible();
  await page.getByRole("link",{name:/进入岗位学习路线/}).click();
  await expect(page).toHaveURL(/\/career\/paths\/commerce-operations$/);
- await expect(page.locator('a[href="/career/guides/retail-campaign-roi-handbook"]')).toBeVisible();
+ await expect(page.locator('a[href="/career/guides/retail-campaign-roi-handbook"]').first()).toBeVisible();
  await expect(page.locator('a[href="/career/exams/operations-paper-2026q4-v1"]')).toBeVisible();
  await page.locator('a[href="/career/exams/operations-paper-2026q4-v1"]').click();
  await expect(page.getByRole("button",{name:"确认入场 · 开始模拟笔试"})).toBeVisible();
