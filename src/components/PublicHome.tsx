@@ -11,12 +11,7 @@ const COPY={
  en:{hero:"Build skills for your next job.",intro:"Choose a role, try real lessons, labs and mocks. Pay for deeper services only when their pricing and deliverables are published.",search:"Search roles, skills, labs or interview practice",searchButton:"Search",quick:"Choose your next step",latest:"Recently updated",latestNote:"Sorted by verified content version dates",kind:"Explore by goal",selected:"Featured labs",all:"View all",open:"Explore",records:"My account",guide:"Updates use published source records. Purchases and downloads follow the actual product terms."},
 } as const;
 const HOT=["AI Agent","SQL","数据分析","Python","商品运营","面试"];
-const QUICK=[
- {href:"/career",zh:"选择目标岗位",en:"Explore roles",descZh:"从校招或社招岗位出发",descEn:"Campus and experienced hires"},
- {href:"/learn",zh:"学习与实训",en:"Learn and practice",descZh:"免费导学与可运行项目",descEn:"Free guides and runnable labs"},
- {href:"/practice",zh:"模拟笔试与面试",en:"Mock tests and interviews",descZh:"按岗位完整模拟与复盘",descEn:"Job-relevant practice"},
-] as const;
-/* Homepage selects four useful storefront cards, not an alternative taxonomy. */
+/* Derive the 3 task cards from the one canonical navigation registry. */
 const SERVICE_DETAILS:Partial<Record<SiteBusinessId,{descZh:string;descEn:string;code:string}>>={
  career:{descZh:"校招与社招 · 选择岗位方向",descEn:"Find a role for your next move",code:"ROLES"},
  skills:{descZh:"免费导学 · 真实项目 · 可运行实训",descEn:"Guides, projects and runnable labs",code:"LEARN"},
@@ -63,15 +58,6 @@ export default function PublicHome({updates,counts}:{updates:HomepageUpdate[];co
     <Link href="/career/paths?audience=social">{lang==="zh"?"社招 / 转岗":"Experienced / switching"} <span aria-hidden="true">→</span></Link>
     <span>{lang==="zh"?"不同阶段看不同的训练环节":"A focused journey for each stage"}</span>
   </nav>
-  <section className={styles.quickSection} aria-labelledby="quick-services-heading">
-   <div className={styles.sectionTop}><h2 id="quick-services-heading">{t.quick}</h2><Link href="/account">{t.records} →</Link></div>
-   <div className={styles.quickGrid}>{QUICK.map((item,i)=>
-    <Link href={item.href} className={styles.quickItem} key={item.href}>
-     <span className={styles.quickNumber}>{String(i+1).padStart(2,"0")}</span>
-     <div><strong>{item[lang]}</strong><small>{lang==="zh"?item.descZh:item.descEn}</small></div>
-     <span className={styles.quickArrow} aria-hidden="true">↗</span>
-    </Link>)}</div>
-  </section>
   <section className={styles.pathSection} aria-labelledby="home-paths-heading">
     <div className={styles.sectionTop}>
       <div><span className={styles.sectionEyebrow}>{lang==="zh"?"真实可用的产品":"AVAILABLE TRAINING"}</span>
@@ -98,6 +84,15 @@ export default function PublicHome({updates,counts}:{updates:HomepageUpdate[];co
     </div>
     <p className={styles.pathDisclaimer}>{lang==="zh"?"已开放训练可直接进入；尚未开售的职业付费项目不会显示虚构价格或付款按钮。":"Live activities open directly; unpublished paid services never show fictitious prices or checkout buttons."}</p>
   </section>
+  <section className={styles.quickSection} aria-labelledby="quick-services-heading">
+   <div className={styles.sectionTop}><h2 id="quick-services-heading">{t.quick}</h2><Link href="/account">{t.records} →</Link></div>
+   <div className={styles.quickGrid}>{SERVICES.map((item,i)=>
+    <Link href={item.href} className={styles.quickItem} key={item.href}>
+     <span className={styles.quickNumber}>{String(i+1).padStart(2,"0")}</span>
+     <div><strong>{item[lang]}</strong><small>{lang==="zh"?item.descZh:item.descEn}</small></div>
+     <span className={styles.quickArrow} aria-hidden="true">↗</span>
+    </Link>)}</div>
+  </section>
   <section className={styles.updates} aria-labelledby="home-updates-heading">
    <div className={styles.sectionTop}><div><h2 id="home-updates-heading">{t.latest}</h2><p>{t.latestNote}</p></div></div>
    <div className={styles.updateGrid}>{updates.map(item=><article className={styles.updateCard} key={item.id}>
@@ -105,31 +100,6 @@ export default function PublicHome({updates,counts}:{updates:HomepageUpdate[];co
     <h3><Link href={item.href}>{item.title}</Link></h3>
     <p>{item.summary}</p><Link href={item.href} className={styles.actionLink}>{t.open} →</Link>
    </article>)}</div>
-  </section>
-  <section className={styles.serviceSection} aria-labelledby="home-services-heading">
-   <div className={styles.sectionTop}><h2 id="home-services-heading">{t.kind}</h2></div>
-   <div className={styles.serviceGrid}>{SERVICES.map(service=><Link href={service.href} className={styles.serviceCard} key={service.href}>
-    <span className={styles.serviceCode}>{service.code}</span>
-    <strong>{service[lang]}</strong><p>{lang==="zh"?service.descZh:service.descEn}</p>
-    <span className={styles.serviceArrow} aria-hidden="true">→</span>
-   </Link>)}</div>
-  </section>
-  <section className={styles.featureSection} aria-labelledby="home-featured-heading">
-   <div className={styles.sectionTop}><h2 id="home-featured-heading">{t.selected}</h2><Link href="/skill-labs">{t.all} →</Link></div>
-   <div className={styles.featureGrid}>
-    <article className={styles.featureDark}>
-     <span>AI / AGENT</span><h3>{lang==="zh"?"AI Agent 工程实战":"Practical AI Agent engineering"}</h3>
-     <p>{lang==="zh"?"6 节课程、真实 Python 源码、独立验收与 24 题岗位模拟。":"Six lessons, runnable Python code and a 24-question career mock."}</p>
-     <div><Link href="/skill-labs/agent-foundations">{lang==="zh"?"进入课程":"Open course"} →</Link>
-      <Link href="/career/exams/agent-engineering-paper-2026q4-v1">{lang==="zh"?"模拟笔试":"Mock exam"} →</Link></div>
-    </article>
-    <article className={styles.featureLight}>
-     <span>THREE.JS / WEBGPU</span><h3>{lang==="zh"?"3D 实验与源码交付":"3D labs and source code"}</h3>
-     <p>{lang==="zh"?"8 个教学单元、交互式 3D 场景，配套技术书籍和源码。":"Eight modules, an interactive scene and related technical books."}</p>
-     <div><Link href="/skill-labs/webgpu-basics">{lang==="zh"?"运行实验":"Open lab"} →</Link>
-      <Link href="/skill-labs/books">{lang==="zh"?"配套技术书库":"Related technical library"} →</Link></div>
-    </article>
-   </div>
   </section>
   <p className={styles.pageNote}>{t.guide}</p>
  </div>;
