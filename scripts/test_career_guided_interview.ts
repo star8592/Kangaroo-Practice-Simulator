@@ -76,6 +76,15 @@ await callModel("qwen",makeGuidedMessages(base),1500,qwenEnv,fakeRequest as type
 assert.equal(inspectedUrl,"https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions");
 assert.equal(inspectedBody.model,"qwen3.8-flash");
 assert.equal(inspectedAuthorization,"Bearer unit-test-only");
+const ollamaEnv={SOCTHINK_INTERVIEW_AI_PROVIDER:"ollama",SOCTHINK_INTERVIEW_AI_MODEL:"qwen3:4b-instruct-2507-q4_K_M"};
+await callModel("ollama",makeGuidedMessages(base),1500,ollamaEnv,
+ (async(url:RequestInfo|URL,init?:RequestInit)=>{
+  inspectedUrl=String(url);inspectedBody=JSON.parse(String(init?.body||"{}"));
+  return new Response(JSON.stringify({message:{content:JSON.stringify(decision)}}),{status:200});
+ }) as typeof fetch);
+assert.equal(inspectedUrl,"http://127.0.0.1:11434/api/chat");
+assert.equal(inspectedBody.think,false);
+assert.equal(inspectedBody.stream,false);
 console.log("CAREER_GUIDED_INTERVIEW=PASS scripted_branches=40 quote_proof=YES invalid_output=REJECT primary_backup=YES fail_closed=YES");
 
 }
