@@ -75,16 +75,22 @@ export async function createBillingOrder(
     if(p.product_kind!=="subscription" && p.product_kind!=="item" && p.product_kind!=="service")
       throw new BillingConflictError("Unsupported product");
     let serviceSessions:number|null=null;
+    let serviceMode:"per_use"|"monthly"|null=null;
     if(p.product_kind==="service"){
       const {getInterviewProfile}=await import("./career-interview-scenarios");
       if(p.content_kind!=="career_interview" || !getInterviewProfile(p.content_id??"") ||
          !p.rights_approved || !p.delivery_verified || !p.access_restricted || !p.title_zh?.trim())
         throw new BillingConflictError("Interview service not ready");
       // A migration is required before service SKUs can be inserted/enabled.
-      const count=await c.query<{service_sessions:number}>(
-        "SELECT service_sessions FROM billing_products WHERE id=$1",[productId]);
+      const count=await c.query<{service_sessions:number;service_billing_mode:string}>(
+        "SELECT service_sessions,service_billing_mode FROM billing_products WHERE id=$1",[productId]);
       serviceSessions=count.rows[0]?.service_sessions;
-      if(!Number.isInteger(serviceSessions)||serviceSessions===null||serviceSessions<1||serviceSessions>20)
+      const mode=count.rows[0]?.service_billing_mode;
+      if(mode!=="per_use"&&mode!=="monthly")
+        throw new BillingConflictError("Invalid career billing mode");
+      serviceMode=mode;
+      if(!Number.isInteger(serviceSessions)||serviceSessions===null||serviceSessions<1||
+         serviceSessions>(serviceMode==="monthly"?60:20))
         throw new BillingConflictError("Invalid interview session count");
       await c.query("SELECT pg_advisory_xact_lock(hashtextextended($1,0))",[parentId+":career-service:"+productId]);
       const pending=await c.query<{id:string}>(
@@ -138,10 +144,10 @@ export async function createBillingOrder(
     if(p.product_kind==="service"){
       await c.query(`INSERT INTO billing_orders
         (id,payer_parent_id,product_id,price_minor,currency,provider,product_kind,content_kind,content_id,title_snapshot,
-         sales_policy_version,sales_policy_accepted_at,service_sessions_snapshot)
-        VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)`,
+         sales_policy_version,sales_policy_accepted_at,service_sessions_snapshot,service_billing_mode_snapshot)
+        VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14)`,
         [id,parentId,productId,p.amount_minor,p.currency,provider,p.product_kind,p.content_kind,p.content_id,
-         p.title_zh,consent?.policyVersion??null,consent?.acceptedAt??null,serviceSessions]);
+         p.title_zh,consent?.policyVersion??null,consent?.acceptedAt??null,serviceSessions,serviceMode]);
     }else{
       await c.query("INSERT INTO billing_orders(id,payer_parent_id,product_id,price_minor,currency,provider,product_kind,content_kind,content_id,title_snapshot,sales_policy_version,sales_policy_accepted_at) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)",
         [id,parentId,productId,p.amount_minor,p.currency,provider,p.product_kind,p.content_kind,p.content_id,p.title_zh,
@@ -221,7 +227,7 @@ export async function settleVerifiedOrder(r:VerifiedPaymentReceipt){
       provider_transaction_id:string|null;state:string;
       tier:"plus"|"pro"|null;period:"month"|"year"|null;
       product_kind:"subscription"|"item"|"service";content_kind:"exam"|"resource"|"report"|"career_interview"|null;content_id:string|null;
-      service_sessions_snapshot:number|null;
+      service_sessions_snapshot:number|null;service_billing_mode_snapshot:"per_use"|"monthly"|null;
     }>("SELECT o.*,p.tier,p.period FROM billing_orders o JOIN billing_products p ON p.id=o.product_id WHERE o.id=$1 FOR UPDATE OF o",[r.orderId]);
     const o=result.rows[0];
     if(!o || o.provider!==r.provider || Number(o.price_minor)!==r.amountMinor || o.currency!==r.currency)
@@ -251,15 +257,34 @@ export async function settleVerifiedOrder(r:VerifiedPaymentReceipt){
       return {orderId:o.id,grantId:id,tier:null,created:true};
     }
     if(o.product_kind==="service"){
+      const mode=o.service_billing_mode_snapshot;
       if(o.content_kind!=="career_interview" || !o.content_id ||
          !["campus-software","social-procurement"].includes(o.content_id) ||
+         (mode!=="per_use"&&mode!=="monthly") ||
          !Number.isInteger(o.service_sessions_snapshot) || !o.service_sessions_snapshot ||
-         o.service_sessions_snapshot<1 || o.service_sessions_snapshot>20)
+         o.service_sessions_snapshot<1 || o.service_sessions_snapshot>(mode==="monthly"?60:20))
         throw new BillingConflictError("Invalid career interview service snapshot");
+      let validFrom:Date|null=null,expiresAt:Date|null=null;
+      if(mode==="monthly"){
+        // Manual renewal extends the prior paid monthly term, never discards
+        // paid overlapping days and never auto-charges customers.
+        await c.query("SELECT pg_advisory_xact_lock(hashtextextended($1,0))",
+          ["career-monthly:"+o.payer_parent_id+":"+o.content_id]);
+        const dates=await c.query<{valid_from:Date;expires_at:Date}>(`
+          SELECT GREATEST($3::timestamptz,COALESCE(MAX(g.expires_at),$3::timestamptz)) AS valid_from,
+             GREATEST($3::timestamptz,COALESCE(MAX(g.expires_at),$3::timestamptz)) + interval '30 days' AS expires_at
+          FROM billing_career_session_grants g JOIN billing_orders old ON old.id=g.source_order_id
+          WHERE g.payer_parent_id=$1 AND g.profile_id=$2 AND g.billing_mode='monthly'
+            AND old.state='paid' AND g.revoked_at IS NULL`,
+          [o.payer_parent_id,o.content_id,r.verifiedAt]);
+        validFrom=dates.rows[0].valid_from;expiresAt=dates.rows[0].expires_at;
+      }
       await c.query(`INSERT INTO billing_career_session_grants
-        (source_order_id,payer_parent_id,profile_id,purchased_sessions,remaining_sessions,granted_at)
-        VALUES($1,$2,$3,$4,$4,$5)`,
-        [o.id,o.payer_parent_id,o.content_id,o.service_sessions_snapshot,r.verifiedAt]);
+        (source_order_id,payer_parent_id,profile_id,purchased_sessions,remaining_sessions,granted_at,
+         billing_mode,valid_from,expires_at)
+        VALUES($1,$2,$3,$4,$4,$5,$6,$7,$8)`,
+        [o.id,o.payer_parent_id,o.content_id,o.service_sessions_snapshot,r.verifiedAt,
+         mode,validFrom,expiresAt]);
       return {orderId:o.id,grantId:o.id,tier:null,created:true};
     }
     if(o.product_kind!=="subscription" || !o.tier || !o.period)

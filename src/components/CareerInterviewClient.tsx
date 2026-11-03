@@ -11,6 +11,7 @@ import {
 } from "@/lib/career-interview-context";
 import type {InterviewJobContext} from "@/lib/career-interview-context";
 import styles from "./career-interview.module.css";
+import CareerInterviewPurchasePanel from "./CareerInterviewPurchasePanel";
 type Stage="intro"|"main"|"followup"|"review"|"report";
 type State={version:string;stage:Stage;index:number;entries:Record<string,InterviewExchange>;
  context?:InterviewJobContext;aiSessionId?:string;aiRequestId?:string;};
@@ -168,6 +169,7 @@ export default function CareerInterviewClient({profileId}:{profileId:string}){
     <div><strong>1份</strong><span>真实回答复盘与补弱清单</span></div>
    </div>
    <p>适用对象：{profile.audience}</p>
+   <CareerInterviewPurchasePanel profileId={profile.id}/>
    <div className={styles.contextPanel}>
     <h3>按目标岗位准备（选填）</h3>
     <p className={styles.small}>粘贴招聘要求和与岗位相关的经历摘要。本场会用岗位关键词调整追问；目前只是规则匹配，不是AI理解或能力评分。</p>

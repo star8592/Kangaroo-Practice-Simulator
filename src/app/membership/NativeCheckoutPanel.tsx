@@ -13,6 +13,8 @@ export type PublishedMembershipOffer=Readonly<
   {kind:"subscription";id:string;tier:"plus"|"pro";period:"month"|"year";priceMinor:number;currency:"CNY"}
   | {kind:"item";id:string;contentKind:"exam";contentId:string;titleZh:string;priceMinor:number;currency:"CNY"}
   | {kind:"item";id:string;contentKind:"resource";contentId:string;titleZh:string;fileName:string;sizeBytes:number;priceMinor:number;currency:"CNY"}
+  | {kind:"service";id:string;contentKind:"career_interview";contentId:string;titleZh:string;
+     billingMode:"per_use"|"monthly";sessions:number;priceMinor:number;currency:"CNY"}
 >;
 
 type CheckoutReply={
@@ -26,8 +28,9 @@ function qrDeadlineFromAcceptedResponse(ttl:number):number {
   return performance.now()+ttl*1000;
 }
 
-export default function NativeCheckoutPanel({offers,accountLoggedIn,compact=false}:{
+export default function NativeCheckoutPanel({offers,accountLoggedIn,compact=false,successHref}:{
   offers:readonly PublishedMembershipOffer[];accountLoggedIn:boolean;compact?:boolean;
+  successHref?:string;
 }) {
   const en=useSiteLanguage()==="en";
   const [pendingId,setPendingId]=useState<string|null>(null);
@@ -131,6 +134,9 @@ export default function NativeCheckoutPanel({offers,accountLoggedIn,compact=fals
       {offers.map(offer=><div id={"buy-"+offer.id} key={offer.id} className={styles.checkoutOffer}>
         <b>{offer.kind==="item"
           ? (offer.contentKind==="exam"?(en?"Individual exam":"单张试卷"):(en?"Digital resource":"数字资料"))+" · "+offer.titleZh
+          :offer.kind==="service"
+          ?(offer.billingMode==="monthly"?(en?"Monthly plan":"包月 · 30天"):(en?"Pay per session":"按次购买"))+
+           " · "+offer.titleZh+" · "+offer.sessions+(en?" sessions":"场")
           : offer.tier.toUpperCase()+" · "+(offer.period==="month"?(en?"Monthly":"月度"):(en?"Yearly":"年度"))}</b>
         {offer.kind==="item"&&offer.contentKind==="resource"&&
           <small>{offer.fileName} · {(offer.sizeBytes/1048576).toFixed(2)} MB · {en?"Download immediately after verified payment":"付款核实后在我的账号下载"}</small>}
@@ -162,7 +168,9 @@ export default function NativeCheckoutPanel({offers,accountLoggedIn,compact=fals
       <p role="status">{message || (en
         ?"The payment QR has expired or could not be safely displayed. We will continue checking the original order with WeChat; do not create another payment until its final status is confirmed."
         :"本订单二维码已过期或无法安全展示，正在继续核对原订单的微信官方支付状态。确认关单之前请勿重复付款。")}</p>}
-    {state==="paid"&&<div role="status" className={styles.checkoutPaid}><p>{en?"Verified payment recorded.":"已确认微信付款并完成权益记账。"}</p><Link href="/account">{en?"Open My orders and downloads":"前往我的订单下载资料"} →</Link></div>}
+    {state==="paid"&&<div role="status" className={styles.checkoutPaid}><p>{en?"Verified payment recorded.":"已确认微信付款并完成权益记账。"}</p>{successHref
+        ? <a href={successHref}>{en?"Return to your AI interview":"返回面试，加载已购权益"}</a>
+        : <Link href="/account">{en?"Open My orders and downloads":"前往我的订单下载资料"} →</Link>}</div>}
     {state==="failed"&&<p role="alert">{message||(en?"Order closed or refunded":"订单已关闭或退款")}</p>}
   </section>;
 }

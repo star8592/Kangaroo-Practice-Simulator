@@ -222,3 +222,61 @@ test("guided mode selects a pre-reviewed follow-up and discloses approved backup
  await expect(page.getByText(/追问依据：.*亲自负责/)).toBeVisible();
  expect(posts).toBe(1);
 });
+
+test("published AI interview plans offer both one-off sessions and manual monthly access",async({page})=>{
+ let orderedProduct="";
+ await page.route("**/api/career/interviews/offer?profileId=campus-software",async route=>{
+  await route.fulfill({status:200,contentType:"application/json",body:JSON.stringify({
+   available:true,loggedIn:true,remainingSessions:3,perUseRemaining:1,monthlyRemaining:2,
+   monthlyActiveUntil:"2026-12-03T12:00:00.000Z",activeSessions:0,
+   offers:[
+    {kind:"service",id:"career_campus_two_test",contentKind:"career_interview",contentId:"campus-software",
+     titleZh:"软件研发面试两场",billingMode:"per_use",sessions:2,priceMinor:399,currency:"CNY"},
+    {kind:"service",id:"career_campus_month_test",contentKind:"career_interview",contentId:"campus-software",
+     titleZh:"软件研发30天30场",billingMode:"monthly",sessions:30,priceMinor:1299,currency:"CNY"}
+   ]
+  })});
+ });
+ await page.route("**/api/payments/wechat/checkout",async route=>{
+  const body=route.request().postDataJSON();
+  orderedProduct=body.productId;
+  expect(body.policyAccepted).toBe(true);
+  await route.fulfill({status:200,contentType:"application/json",body:JSON.stringify({
+   orderId:"ord_mockpayment01",qrDataUrl:"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQIHWP4z8DwHwAFgAI/ScL/nwAAAABJRU5ErkJggg==",
+   priceMinor:399,currency:"CNY",qrTtlSeconds:180,status:"pending"
+  })});
+ });
+ await page.route("**/api/payments/wechat/orders/ord_mockpayment01",async route=>{
+  await route.fulfill({status:200,contentType:"application/json",body:JSON.stringify({
+   orderId:"ord_mockpayment01",status:"paid",priceMinor:399,currency:"CNY"
+  })});
+ });
+ await page.goto("/career/interviews/campus-software");
+ await expect(page.getByText("专业 AI 面试")).toBeVisible();
+ await expect(page.getByText("按次购买",{exact:true})).toBeVisible();
+ await expect(page.getByText("包月购买",{exact:true})).toBeVisible();
+ await expect(page.getByText("2场 · ¥3.99")).toBeVisible();
+ await expect(page.getByText("30场 · ¥12.99")).toBeVisible();
+ await expect(page.getByText(/可用 3 场/)).toBeVisible();
+ const checkout=page.getByRole("region",{name:"微信扫码购买"});
+ await expect(checkout.getByRole("button",{name:"微信扫码购买"})).toHaveCount(2);
+ await checkout.getByRole("checkbox").first().check();
+ await checkout.getByRole("button",{name:"微信扫码购买"}).first().click();
+ await expect.poll(()=>orderedProduct).toBe("career_campus_two_test");
+ await expect(page.getByRole("link",{name:"返回面试，加载已购权益"})).toHaveAttribute(
+  "href","/career/interviews/campus-software");
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth)).toBeLessThanOrEqual(2);
+});
+
+test("unpublished AI plans show two purchase methods without invented prices or checkout",async({page})=>{
+ await page.route("**/api/career/interviews/offer?profileId=social-procurement",async route=>{
+  await route.fulfill({status:200,contentType:"application/json",body:JSON.stringify({
+   available:false,loggedIn:false,offers:[],reason:"CAREER_SERVICE_NOT_PUBLISHED"
+  })});
+ });
+ await page.goto("/career/interviews/social-procurement");
+ await expect(page.getByText("专业 AI 面试")).toBeVisible();
+ await expect(page.getByText("当前尚未开放 AI 面试购买，以下免费结构化练习可正常使用。")).toBeVisible();
+ await expect(page.getByRole("button",{name:"微信扫码购买"})).toHaveCount(0);
+ await expect(page.getByRole("button",{name:"开始模拟面试"})).toBeVisible();
+});
