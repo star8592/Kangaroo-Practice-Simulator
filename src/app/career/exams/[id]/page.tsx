@@ -21,12 +21,12 @@ export default async function CareerFormalExamPage({params}:{
   const {id}=await params;
   const paper=getCareerFormalPaper(id);
   if(!paper||paper.questions.length!==24)notFound();
-  return <main className={styles.shell}>
+  return <div className={styles.shell}>
     <nav className={styles.breadcrumb} aria-label="位置">
       <Link href="/career">职业资料与考试</Link><span> / </span>
       <Link href="/career#digital-services">岗位模拟笔试</Link><span> / </span>
       <span>{paper.title}</span>
     </nav>
     <CareerFormalExamRunner paper={paper}/>
-  </main>;
+  </div>;
 }

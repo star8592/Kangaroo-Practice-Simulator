@@ -7,19 +7,11 @@ import GlobalLanguageSwitch from "@/components/GlobalLanguageSwitch";
 import SessionNav from "@/components/SessionNav";
 import {SITE_BRAND} from "@/lib/site-brand";
 import {useSiteLanguage} from "@/lib/site-language";
+import {PRIMARY_BUSINESS_NAV as TASK_LINKS} from "@/lib/site-architecture";
 import styles from "./SiteHeader.module.css";
 
-/* Task navigation is not a copy of the exam taxonomy. Domain navigation below
- * is derived from the one authoritative assessment + directory registry. */
-const TASK_LINKS=[
-  {href:"/assessments",zh:"全部考试",en:"All exams"},
-  {href:"/resources",zh:"真题资料",en:"Papers"},
-  {href:"/career",zh:"职业岗位",en:"Careers"},
-  {href:"/skill-labs",zh:"技能实训",en:"Skill labs"},
-  {href:"/assessment-center",zh:"测评中心",en:"Assessments"},
-  {href:"/shop",zh:"数字商城",en:"Digital store"},
-  {href:"/exam-planner",zh:"考试管理",en:"Exam planner"},
-] as const;
+/* Main navigation is derived from the single site-architecture registry.
+ * Exam topics remain inside the specialist exam directory, never this header. */
 function MenuIcon({open}:{open:boolean}){
   return <svg viewBox="0 0 24 24" aria-hidden="true">
     {open?<path d="M6 6l12 12M18 6L6 18"/>:<path d="M4 7h16M4 12h16M4 17h16"/>}

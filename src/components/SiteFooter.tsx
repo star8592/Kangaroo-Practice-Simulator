@@ -6,16 +6,19 @@ const GROUPS=[
   {href:"/assessments",zh:"全部考试",en:"All exams"},
   {href:"/resources",zh:"真题资料",en:"Papers"},
   {href:"/competitions",zh:"竞赛模拟",en:"Competition mocks"},
-  {href:"/exam-planner",zh:"考试管理",en:"Planner"},
+  {href:"/exam-planner",zh:"考试日程",en:"Exam calendar"},
  ]},
- {zh:"技能与资料",en:"Skills and resources",items:[
+ {zh:"职业与技能",en:"Careers and skills",items:[
   {href:"/career",zh:"职业岗位",en:"Careers"},
   {href:"/skill-labs",zh:"技能实训",en:"Skill labs"},
   {href:"/skill-labs/books",zh:"技术书库",en:"Technical books"},
-  {href:"/assessment-center",zh:"测评中心",en:"Assessments"},
-  {href:"/shop",zh:"数字商城",en:"Digital store"},
  ]},
- {zh:"账户与服务",en:"Account and terms",items:[
+ {zh:"专业测评",en:"Assessments",items:[
+  {href:"/assessment-center",zh:"测评中心",en:"Assessment center"},
+  {href:"/assessment-center/methodology",zh:"方法与来源",en:"Methods and sources"},
+ ]},
+ {zh:"商城与账户",en:"Store and account",items:[
+  {href:"/shop",zh:"数字商城",en:"Digital store"},
   {href:"/account",zh:"订单与下载",en:"Orders and downloads"},
   {href:"/membership",zh:"购买与权益",en:"Membership"},
   {href:"/privacy",zh:"隐私政策",en:"Privacy"},

@@ -12,7 +12,7 @@ import { AGENT_FOUNDATIONS_COURSE } from "@/lib/frontier-agent-course";
 import { WEBGPU_COURSE } from "@/lib/webgpu-course";
 import agentExam from "../../data/career/formal_exam_agent_20261103.json";
 
-export type DiscoveryKind = "考试" | "试卷" | "技能" | "技术书" | "岗位资料" | "测评" | "商城";
+export type DiscoveryKind = "考试" | "试卷" | "职业岗位" | "技能" | "技术书" | "岗位资料" | "测评" | "商城";
 export type DiscoveryEntry = Readonly<{
   id: string; title: string; summary: string; kind: DiscoveryKind;
   href: string; keywords?: string; updatedAt?: string;
@@ -29,11 +29,11 @@ export function publicDiscoveryEntries(): DiscoveryEntry[] {
   const entries: DiscoveryEntry[] = [
     { id:"hub-exams",kind:"考试",title:"全部考试与模拟",summary:"按考试类别查找可用模拟与练习",href:"/assessments",keywords:"考试 数学 校内 竞赛" },
     { id:"hub-resources",kind:"试卷",title:"试卷与训练资料",summary:"筛选已可用于在线训练的试卷",href:"/resources",keywords:"真题 数学 资料 试卷" },
-    { id:"hub-career",kind:"考试",title:"职业岗位与模拟笔试",summary:"按岗位找模拟笔试与免费原创资料",href:"/career",keywords:"招聘 校招 社招 岗位 面试" },
+    { id:"hub-career",kind:"职业岗位",title:"职业岗位与模拟笔试",summary:"按岗位找模拟笔试与免费原创资料",href:"/career",keywords:"招聘 校招 社招 岗位 面试" },
     { id:"hub-skills",kind:"技能",title:"技能实训中心",summary:"SQL、编程、AI Agent、3D 等实训",href:"/skill-labs",keywords:"学习 代码 技术 项目" },
     { id:"hub-shop",kind:"商城",title:"数字资料商城",summary:"核对实际在架的原创数字资料与交付方式",href:"/shop",keywords:"购买 下载 资料 商城 商品" },
     { id:"hub-assessments",kind:"测评",title:"专业能力与研究测评",summary:"逻辑能力训练、职业兴趣与研究性量表",href:"/assessment-center",keywords:"测评 心理 性格 能力 逻辑" },
-    { id:"hub-events",kind:"考试",title:"赛事与考试管理",summary:"数学赛事信息及个人考试规划",href:"/exam-planner",keywords:"赛历 赛事 报名 日程" },
+    { id:"hub-events",kind:"考试",title:"考试日程与赛事管理",summary:"数学赛事信息及个人考试规划",href:"/exam-planner",keywords:"赛历 赛事 报名 日程" },
     { id:"lab-agent",kind:"技能",title:AGENT_FOUNDATIONS_COURSE.title,summary:AGENT_FOUNDATIONS_COURSE.summary,
       href:"/skill-labs/agent-foundations",keywords:"Python MCP LLM Agent 智能体 工具调用",updatedAt:AGENT_FOUNDATIONS_COURSE.updatedAt },
     { id:"lab-webgpu",kind:"技能",title:WEBGPU_COURSE.title,summary:WEBGPU_COURSE.description,
@@ -45,6 +45,9 @@ export function publicDiscoveryEntries(): DiscoveryEntry[] {
     { id:"lab-3d",kind:"技能",title:"软件工程师综合编程模拟",summary:"限时编程模拟与独立代码执行判分",
       href:"/skill-labs/engineering-mock",keywords:"软件工程 编程 笔试" },
   ];
+  entries.push({id:"hub-career-interview",kind:"职业岗位",title:"岗位模拟面试",
+    summary:"按真实岗位进行结构化模拟与回答训练",href:"/career/interviews",
+    keywords:"面试 校招 社招 职业 招聘"});
   for (const book of TECH_BOOKS) {
     entries.push({
       id:"book-"+book.slug,kind:"技术书",title:book.title,
@@ -62,7 +65,7 @@ export function publicDiscoveryEntries(): DiscoveryEntry[] {
   for (const paper of CAREER_FORMAL_PAPERS) {
     if (paper.deliveryState !== "free-live-preview") continue;
     entries.push({
-      id:"career-exam-"+paper.id,kind:"考试",title:paper.title,
+      id:"career-exam-"+paper.id,kind:"职业岗位",title:paper.title,
       summary:"原创完整岗位模拟笔试 · "+paper.questions.length+"题 · "+paper.durationMinutes+"分钟",
       href:"/career/exams/"+paper.id,keywords:paper.context,
       ...(paper.id===agentExam.id ? {updatedAt:agentExam.authoredAt} : {}),

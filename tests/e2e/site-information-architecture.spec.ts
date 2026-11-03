@@ -1,21 +1,20 @@
 import {expect,test} from "@playwright/test";
 
 const domains=[
-  "school","math-competition","language","university",
-  "career","professional","interest",
+  "school","math-competition","language","university","professional",
 ] as const;
 
-test("desktop uses one concise task navigation and seven reachable categories",async({page})=>{
+test("desktop shows six business links and five exam-only categories",async({page})=>{
   await page.setViewportSize({width:1440,height:900});
   await page.goto("/");
   const tasks=page.getByRole("navigation",{name:"主要导航"});
   const categories=page.locator('[aria-labelledby="exam-category-overview"]');
   await expect(tasks.getByRole("link",{name:"全部考试"})).toBeVisible();
   await expect(tasks.getByRole("link",{name:"真题资料"})).toBeVisible();
-  await expect(tasks.getByRole("link",{name:"考试管理"})).toBeVisible();
+  await expect(tasks.getByRole("link",{name:"考试管理"})).toHaveCount(0);
   // A second sticky taxonomy strip would repeat the same navigation.
   await expect(page.locator("header nav[aria-label='考试分类']")).toHaveCount(0);
-  await expect(categories.locator('a[href^="/assessments#domain-"]')).toHaveCount(7);
+  await expect(categories.locator('a[href^="/assessments#domain-"]')).toHaveCount(5);
   for(const id of domains)
     await expect(categories.locator('a[href="/assessments#domain-'+id+'"]')).toBeVisible();
   await expect(tasks.getByRole("button",{name:/在线练习/})).toHaveCount(0);
@@ -43,7 +42,7 @@ test("mobile menu reaches even not-yet-live domains without a hidden strip",asyn
     await expect(nav.locator('a[href="'+href+'"]')).toHaveCount(0);
   }
   await expect(nav.getByText("在线练习")).toHaveCount(0);
-  await expect(nav.getByRole("link",{name:"考试管理"})).toBeVisible();
+  await expect(nav.getByRole("link",{name:"考试管理"})).toHaveCount(0);
   await expect(nav.locator('a[href^="/assessments#domain-"]')).toHaveCount(0);
   await nav.getByRole("link",{name:"全部考试"}).click();
   await expect(page).toHaveURL(/\/assessments$/);
@@ -83,22 +82,22 @@ test("switching a category after search clears filters and reveals that domain",
   const directory=page.getByRole("region",{name:"考试目录"});
   const groups=directory.locator("article");
   await directory.getByRole("searchbox").fill("SQL");
-  await expect(groups).toHaveCount(1);
+  await expect(groups).toHaveCount(0);
   await directory.getByRole("navigation",{name:"考试分类"})
     .locator('a[href="/assessments#domain-language"]').click();
-  await expect(groups).toHaveCount(7);
+  await expect(groups).toHaveCount(5);
   await expect(page).toHaveURL(/#domain-language$/);
   await expect(directory.locator("#domain-language").getByRole("heading",{name:"语言与国际考试"})).toBeVisible();
 });
 
-test("seven exam category navigation labels stay four characters, on one line, and aligned",async({page})=>{
-  const names=["校内升学","数学竞赛","语言考试","大学考研","职业技能","资格公考","人格测评"];
+test("five exam category labels remain aligned without mixing skills or personality",async({page})=>{
+  const names=["校内升学","数学竞赛","语言考试","大学考研","资格公考"];
   for(const width of [390,768,960,1440]){
     await page.setViewportSize({width,height:860});
     await page.goto("/assessments");
     const nav=page.getByRole("navigation",{name:"考试分类"});
     const links=nav.locator('a[href^="/assessments#domain-"]');
-    await expect(links).toHaveCount(7);
+    await expect(links).toHaveCount(5);
     const metrics=await links.evaluateAll(nodes=>nodes.map(node=>{
       const label=node.querySelector("strong")!;
       const count=node.querySelector("em")!;
@@ -130,10 +129,12 @@ test("seven exam category navigation labels stay four characters, on one line, a
       }
     }
   }
-  await page.goto("/");
-  await expect(page.getByRole("link",{name:/人格测评/}).first()).toBeVisible();
   await page.goto("/assessments?q=人格测评");
   const directory=page.getByRole("region",{name:"考试目录"});
-  await expect(directory.locator("article")).toHaveCount(1);
-  await expect(directory.locator("article").getByRole("heading",{name:"人格、职业兴趣与能力探索"})).toBeVisible();
+  await expect(directory.locator("article")).toHaveCount(0);
+  await expect(directory.getByRole("link",{name:/搜索全站其他内容/})).toBeVisible();
+  await page.goto("/assessments#domain-interest");
+  await expect(page).toHaveURL(/\/assessment-center$/);
+  await page.goto("/assessments#domain-career");
+  await expect(page).toHaveURL(/\/career$/);
 });

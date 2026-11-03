@@ -9,6 +9,6 @@ export const metadata:Metadata={
 };
 export default function ReasoningPage(){
   return <div className={styles.shell}><nav className={styles.breadcrumb} aria-label="位置">
-    <Link href="/assessments">全部考试</Link><span> / </span><Link href="/assessment-center">智量测评中心</Link>
+    <Link href="/assessment-center">智量测评中心</Link>
     <span> / </span>认知推理任务</nav><ReasoningPracticeClient/></div>;
 }
