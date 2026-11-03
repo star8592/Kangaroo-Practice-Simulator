@@ -2,6 +2,7 @@
 import {useMemo,useState} from "react";
 import Link from "next/link";
 import {CAREER_ROLE_GROUPS,CAREER_ROLES} from "@/lib/career-role-taxonomy";
+import {CAREER_PATHS} from "@/lib/career-paths";
 import styles from "@/app/career/career-commerce.module.css";
 
 export default function CareerRoleExplorer(){
@@ -23,9 +24,20 @@ export default function CareerRoleExplorer(){
   const overview=category==="all"&&!query;
   return <section id="career-directory" className={styles.catalogSection} aria-label="按行业分类搜索职业岗位">
     <div className={styles.sectionHeading}>
+      <div><span className={styles.overline}>VERIFIED CAREER TRACKS</span><h2>先从已有课程和模拟的岗位开始</h2><p>这几条路线已经关联真实学习内容。其他岗位仍保留目录，但不会把未建设的课程说成已提供。</p></div>
+    </div>
+    <section className={styles.overviewGrid} aria-label="已经开放的岗位学习路线">
+      {CAREER_PATHS.map(path=><article className={styles.overviewCard} key={path.slug}>
+        <div className={styles.overviewCardHead}><h3>{path.title}</h3><span>{path.steps.filter(s=>s.status==="live").length} 项已开放</span></div>
+        <p>{path.subtitle}</p>
+        <Link href={"/career/paths/"+path.slug}>查看校招／社招学习路线 →</Link>
+      </article>)}
+    </section>
+    <p className={styles.directoryFoot}><Link href="/career/paths">查看全部重点路线及当前交付状态 →</Link></p>
+    <div className={styles.sectionHeading}>
       <div>
         <span className={styles.overline}>EXPLORE CAREERS</span>
-        <h2>按行业找岗位</h2>
+        <h2>全部岗位分类</h2>
         <p>先选择行业，再查看具体职位。{CAREER_ROLE_GROUPS.length} 个行业大类、{CAREER_ROLES.length} 个岗位名称，支持搜索。</p>
       </div>
       <div className={styles.roleCount} aria-label={"共"+CAREER_ROLES.length+"个岗位名称"}>
@@ -58,7 +70,7 @@ export default function CareerRoleExplorer(){
         <>筛选匹配 <strong>{count}</strong> 个岗位</>}
       <span>岗位分类不等于实时在招；只有经过验收的资料与服务才显示实际领取入口。</span>
     </div>
-    {overview?<div className={styles.overviewGrid}>
+    {overview?<section className={styles.overviewGrid} aria-label="全部行业分类">
       {CAREER_ROLE_GROUPS.map(group=><article className={styles.overviewCard} key={group.id}>
         <div className={styles.overviewCardHead}>
           <h3>{group.title}</h3><span>{group.roleCount} 个岗位</span>
@@ -71,7 +83,7 @@ export default function CareerRoleExplorer(){
           查看这一行业全部 {group.roleCount} 个岗位 <span aria-hidden="true">→</span>
         </button>
       </article>)}
-    </div>:visible.length===0?<div className={styles.emptyRoles}>未找到匹配岗位，可换一个词或清除行业筛选。</div>:
+    </section>:visible.length===0?<div className={styles.emptyRoles}>未找到匹配岗位，可换一个词或清除行业筛选。</div>:
       <div className={styles.roleGroups}>
         {visible.map(group=><article key={group.id} className={styles.roleGroup}>
           <div className={styles.roleGroupHeader}>
