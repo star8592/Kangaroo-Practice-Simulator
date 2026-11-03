@@ -27,6 +27,8 @@ const publicPaths = [
   "/digital-purchase-policy",
   "/shop",
   "/career",
+  "/learn",
+  "/practice",
   "/skill-labs",
   "/skill-labs/books",
   "/skill-labs/agent-foundations",
