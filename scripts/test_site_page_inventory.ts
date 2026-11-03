@@ -113,7 +113,7 @@ const proof=[
  ["src/app/verification/page.tsx",'href="/math-practice"'],
  ["src/app/career/companies/page.tsx",'href="/career"'],
  ["src/app/assessment-center/about/page.tsx",'href="/assessment-center"'],
- ["src/components/SiteFooter.tsx",'href="/account"'],
+ ["src/components/SiteFooter.tsx",'href:"/account"'],
  ["src/components/AssessmentPortalClient.tsx",'href="/exam-planner"'],
 ];
 for(const [p,needle] of proof)assert.ok(read(p).includes(needle),"Missing actual inbound/parent evidence: "+p+" "+needle);
