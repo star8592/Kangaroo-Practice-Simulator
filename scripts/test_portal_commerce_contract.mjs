@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import {readFileSync,readdirSync} from "node:fs";
 const read=p=>readFileSync(p,"utf8");
 const header=read("src/components/SiteHeader.tsx");
+const architecture=read("src/lib/site-architecture.ts");
 const accountNav=read("src/components/SessionNav.tsx");
 const footer=read("src/components/SiteFooter.tsx");
 const member=read("src/app/membership/MembershipClient.tsx");
@@ -16,9 +17,11 @@ const resourceClient=read("src/components/ResourceLibraryClient.tsx");
 const loginClient=read("src/components/UnifiedLoginClient.tsx");
 
 for(const slug of ["/assessments","/resources","/career","/skill-labs","/assessment-center","/shop"]){
-  assert.ok(header.includes(`href:"${slug}"`),`NAV_MISSING_${slug}`);
+  assert.ok(architecture.includes(`href:"${slug}"`),`NAV_MISSING_${slug}`);
 }
-assert.ok(!header.includes('href:"/exam-planner"'),"EXAM_PLANNER_IS_SECONDARY");
+assert.ok(header.includes("PRIMARY_BUSINESS_NAV as TASK_LINKS"),
+  "SINGLE_PRIMARY_NAVIGATION_SOURCE");
+assert.ok(!architecture.includes('href:"/exam-planner"'),"EXAM_PLANNER_IS_SECONDARY");
 for(const route of ["/arithmetic","/competitions","/review"]){
   assert.ok(!header.includes('href:"'+route+'"'),"PRACTICE_IS_NOT_GLOBAL_NAV_"+route);
 }

@@ -3,6 +3,7 @@ import Link from "next/link";
 import { EXAM_DIRECTORY } from "@/lib/exam-directory";
 import { ASSESSMENT_DOMAINS } from "@/lib/assessment-platform";
 import { useSiteLanguage } from "@/lib/site-language";
+import { PRIMARY_BUSINESS_NAV, type SiteBusinessId } from "@/lib/site-architecture";
 import type { HomepageUpdate } from "@/lib/site-discovery";
 import styles from "./PublicHome.module.css";
 type HomeCounts={books:number;formalPapers:number;assessments:number;guides:number};
@@ -16,12 +17,17 @@ const QUICK=[
  {href:"/competitions",zh:"参加竞赛模拟",en:"Try mock exams",descZh:"按最新赛制练习",descEn:"Math competitions"},
  {href:"/resources",zh:"可用试卷资料",en:"Practice papers",descZh:"按年份和年级筛选",descEn:"Browse by year and grade"},
 ] as const;
-const SERVICES=[
- {href:"/career",zh:"职业岗位",en:"Careers",descZh:"模拟笔试 · 原创复习资料",descEn:"Mock tests and original guides",code:"CAREER"},
- {href:"/skill-labs",zh:"技能实训",en:"Skill labs",descZh:"AI · SQL · 编程 · 3D",descEn:"AI, SQL, code and 3D",code:"LABS"},
- {href:"/assessment-center",zh:"测评中心",en:"Assessments",descZh:"逻辑训练 · 职业探索",descEn:"Reasoning and career interests",code:"MEASUREMENT"},
- {href:"/shop",zh:"数字商城",en:"Digital store",descZh:"查看在架资料和交付",descEn:"Published files and delivery",code:"STORE"},
-] as const;
+/* Homepage selects four useful storefront cards, not an alternative taxonomy. */
+const SERVICE_DETAILS:Partial<Record<SiteBusinessId,{descZh:string;descEn:string;code:string}>>={
+  career:{descZh:"模拟笔试 · 原创复习资料",descEn:"Mock tests and original guides",code:"CAREER"},
+  skills:{descZh:"AI · SQL · 编程 · 3D",descEn:"AI, SQL, code and 3D",code:"LABS"},
+  assessments:{descZh:"逻辑训练 · 职业探索",descEn:"Reasoning and career interests",code:"MEASUREMENT"},
+  store:{descZh:"查看在架资料和交付",descEn:"Published files and delivery",code:"STORE"},
+};
+const SERVICES=PRIMARY_BUSINESS_NAV.flatMap(item=>{
+ const details=SERVICE_DETAILS[item.id];
+ return details?[{...item,...details}]:[];
+});
 const DOMAINS=new Map(ASSESSMENT_DOMAINS.map(x=>[x.id,x]));
 export default function PublicHome({updates,counts}:{updates:HomepageUpdate[];counts:HomeCounts}){
  const lang=useSiteLanguage(),t=COPY[lang];

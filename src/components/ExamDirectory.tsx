@@ -5,6 +5,7 @@ import {ASSESSMENT_DOMAINS} from "@/lib/assessment-platform";
 import {EXAM_DIRECTORY} from "@/lib/exam-directory";
 import {useSiteLanguage} from "@/lib/site-language";
 import {useRouter} from "next/navigation";
+import {legacyExamHashDestination} from "@/lib/site-architecture";
 import styles from "./ExamDirectory.module.css";
 
 const LABEL={
@@ -42,8 +43,8 @@ export default function ExamDirectory({initialQuery=""}:{initialQuery?:string}){
       const hash=window.location.hash.slice(1);
       // Old deep links keep working without putting career/psychometrics
       // back inside the exam directory.
-      if(hash==="domain-career"){router.replace("/career");return;}
-      if(hash==="domain-interest"){router.replace("/assessment-center");return;}
+      const legacyRoute=legacyExamHashDestination(hash);
+      if(legacyRoute){router.replace(legacyRoute);return;}
       if(!EXAM_DIRECTORY.some(group=>hash===`domain-${group.domainId}`))return;
       setShowPlanned(true);
       // The anchor can be absent until React has rendered planned domains.
