@@ -3,6 +3,7 @@ import { CAREER_ORIGINAL_GUIDES } from "@/lib/career-original-guides";
 import { TECH_BOOKS } from "@/lib/tech-books";
 import { ASSESSMENT_EVIDENCE } from "@/lib/assessment-evidence";
 import { CAREER_FORMAL_PAPERS } from "@/lib/career-formal-bank";
+import { CAREER_PATHS } from "@/lib/career-paths";
 import { ENGINEERING_TRACK_LIST } from "@/lib/engineering-code-tracks";
 import { listStoreProducts } from "@/lib/store-products";
 
@@ -18,6 +19,7 @@ const publicPaths = [
   "/digital-purchase-policy",
   "/shop",
   "/career",
+  "/career/paths",
   "/learn",
   "/practice",
   "/skill-labs",
@@ -49,7 +51,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const assessmentPages=ASSESSMENT_EVIDENCE.map(record=>record.path);
   const engineeringPages=ENGINEERING_TRACK_LIST.map(track=>"/skill-labs/engineering/"+track.id);
   return [...new Set([...publicPaths, ...publicGuides,
-    ...liveCareerPapers, ...assessmentPages, ...engineeringPages, ...publishedProductPaths,
+    ...liveCareerPapers, ...CAREER_PATHS.map(p=>"/career/paths/"+p.slug),
+    ...assessmentPages, ...engineeringPages, ...publishedProductPaths,
     ...TECH_BOOKS.map(book => "/skill-labs/books/" + book.slug)])].map((path) => ({
     url: `https://socthink.cn${path}`,
   }));
