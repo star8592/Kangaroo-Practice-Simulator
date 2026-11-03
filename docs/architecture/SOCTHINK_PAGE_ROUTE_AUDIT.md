@@ -33,7 +33,7 @@
 | `/arithmetic/print` | 全部考试 | `/arithmetic` | 受控训练 | 计算训练客户端 → 打印 |
 | `/arithmetic/print/export` | 全部考试 | `/arithmetic/print` | 受控打印 | 打印客户端导出动作 |
 | `/arithmetic/session/[grade]` | 全部考试 | `/arithmetic` | 受控训练 | 计算训练客户端选择年级与模式 |
-| `/assessment-center` | 测评中心 | `/` | 一级业务 | 全站公共导航唯一注册表 |
+| `/assessment-center` | 测评中心 | `/` | 历史业务目录 | 旧路径暂时可用，不再显示在顶级导航 |
 | `/assessment-center/[id]` | 测评中心 | `/assessment-center` | 动态详情 | 测评目录按量表 ID 打开 |
 | `/assessment-center/about` | 测评中心 | `/assessment-center` | 公开内容 | 所属业务目录或内容推荐 |
 | `/assessment-center/advanced-reasoning-40` | 测评中心 | `/assessment-center` | 公开内容 | 所属业务目录或内容推荐 |
@@ -46,7 +46,7 @@
 | `/assessment-center/work-style-24` | 测评中心 | `/assessment-center` | 公开内容 | 所属业务目录或内容推荐 |
 | `/assessment-center/work-values-30` | 测评中心 | `/assessment-center` | 公开内容 | 所属业务目录或内容推荐 |
 | `/assessment-center/workplace-sjt-24` | 测评中心 | `/assessment-center` | 公开内容 | 所属业务目录或内容推荐 |
-| `/assessments` | 全部考试 | `/` | 一级业务 | 全站公共导航唯一注册表 |
+| `/assessments` | 全部考试 | `/` | 历史业务目录 | 旧路径暂时可用，不再显示在顶级导航 |
 | `/learn` | 技能实训 | `/` | 一级业务 | 职业学习主入口；真实实训链接复用原技能模块 |
 | `/practice` | 求职训练 | `/` | 一级业务 | 岗位模拟笔试/面试主入口；实际执行复用现有权威代码 |
 | `/career` | 职业岗位 | `/` | 一级业务 | 全站公共导航唯一注册表 |
@@ -71,14 +71,14 @@
 | `/parent/report/[studentId]/[attemptId]` | 账户与权益 | `/account` | 历史受控 | 旧家长报告仅既有授权主体可用 |
 | `/privacy` | 政策与权益 | `/` | 公开政策 | 全站页脚隐私政策 |
 | `/report/[attemptId]` | 全部考试 | `/student` | 受控报告 | 学习报告按本人成绩 ID 打开 |
-| `/resources` | 真题资料 | `/` | 一级业务 | 全站公共导航唯一注册表 |
+| `/resources` | 真题资料 | `/` | 历史业务目录 | 旧路径暂时可用，不再显示在顶级导航 |
 | `/resources/competitions/[slug]` | 真题资料 | `/resources` | 动态专题 | 试卷目录按竞赛类型生成专题 |
 | `/result` | 全部考试 | `/exam/[examId]` | 受控结果 | 考试交卷后查看结果 |
 | `/review` | 全部考试 | `/assessments` | 受控复盘 | 考试中心 → 错题复盘 |
 | `/search` | 全站入口 | `/` | 搜索工具 | 首页搜索表单，全站结果 noindex |
-| `/shop` | 数字商城 | `/` | 一级业务 | 全站公共导航唯一注册表 |
+| `/shop` | 数字商城 | `/` | 历史业务目录 | 旧路径暂时可用，不再显示在顶级导航 |
 | `/shop/[productId]` | 数字商城 | `/shop` | 动态商品 | 仅已验证在架的商品链接 |
-| `/skill-labs` | 技能实训 | `/` | 一级业务 | 全站公共导航唯一注册表 |
+| `/skill-labs` | 技能实训 | `/` | 历史业务目录 | 旧路径暂时可用，不再显示在顶级导航 |
 | `/skill-labs/agent-foundations` | 技能实训 | `/skill-labs` | 公开内容 | 所属业务目录或内容推荐 |
 | `/skill-labs/books` | 技能实训 | `/skill-labs` | 公开内容 | 所属业务目录或内容推荐 |
 | `/skill-labs/books/[slug]` | 技能实训 | `/skill-labs/books` | 动态详情 | 父目录按条目动态生成 |
@@ -132,7 +132,9 @@
 
 本节只提供**决策/迁移归属**，不建立第二份运行时路由表。上方第 2 节的五列表是静态自动核验的当前路由台账。下方每条单独记录下一步，尤其保护共享的 /exam、/result 和 /report。
 
-共 77 条路由/静态入口（包含 2 条职业新入口）。状态「已建入口」仅证明源码已添加，**不代表生产发布**；「未来迁移」不是已经迁移。
+共 78 条路由/静态入口（包含 2 条职业新入口）。- `/`：**主站**；首页保留，R1 完成职业优先改版。
+
+状态「已建入口」仅证明源码已添加，**不代表生产发布**；「未来迁移」不是已经迁移。
 
 - `/account`：**主站基础设施**；保留权威数据；R3 无二套账号/支付/权益系统。
 - `/admin`：**管理后台**；按业务拆分；R2/R3 主站业务与数学教学分离。
