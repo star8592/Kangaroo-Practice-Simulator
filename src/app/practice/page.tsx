@@ -15,6 +15,7 @@ export default function PracticeHome(){
    <p>按岗位选择完整模拟笔试或面试训练。成绩与反馈用于发现需要提升的技能，并非企业官方招聘考试或录用承诺。</p>
    <div className={styles.heroMeta}><span>明确题量和时长</span><span>实际交卷评分</span><span>可复盘</span></div>
   </header>
+  <p><Link href="/career/paths">不知道该选择哪张卷？先选目标岗位和当前求职阶段 →</Link></p>
   <div className={styles.sectionHeading}><div><span className={styles.eyebrowDark}>FORMAL MOCKS</span><h2>已开放的岗位模拟笔试</h2></div></div>
   <div className={styles.grid}>{CAREER_FORMAL_PAPERS.map(p=><article className={styles.tile} key={p.id}>
     <div className={styles.tileTop}><span className={styles.tileNumber}>岗位模拟</span><span className={styles.previewBadge}>完整模拟卷</span></div>
