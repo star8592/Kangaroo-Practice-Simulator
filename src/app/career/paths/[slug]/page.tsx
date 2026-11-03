@@ -21,12 +21,30 @@ export default async function CareerPathDetail({params,searchParams}:PageProps){
  const audience=query.audience==="social"?"social":"campus";
  const steps=path.steps.filter(s=>s.audience==="both"||s.audience===audience);
  const actions={learn:"阅读完整教程",lab:"开始动手练习","formal-exam":"进入正式模拟",interview:"开始模拟面试",resource:"打开资料"} as const;
+ const available=steps.filter(s=>s.status==="live"&&s.href);
+ const first=available.find(s=>s.stage==="learn"||s.stage==="lab")??available[0];
+ const formal=available.find(s=>s.stage==="formal-exam");
+ const planned=steps.filter(s=>s.status==="planned").length;
+
  return <div className={styles.shell}>
   <nav className={styles.breadcrumb} aria-label="位置"><Link href="/career">岗位方向</Link><span>/</span><Link href="/career/paths">学习路线</Link><span>/</span><span>{path.title}</span></nav>
   <header className={styles.hero}>
-   <span className={styles.eyebrow}>CAREER / VERIFIED LEARNING TRACK</span>
-   <h1>{path.title}</h1><p>{path.subtitle}</p>
-   <div className={styles.meta}><span>{path.audience}</span><span>{steps.filter(s=>s.status==="live").length} 项可直接开始</span><span>{steps.filter(s=>s.status==="planned").length} 项待完成</span></div>
+   <div className={styles.offerHero}>
+    <div className={styles.offerCopy}>
+     <span className={styles.eyebrow}>SOC THINK / 职业训练</span>
+     <h1>{path.title}</h1>
+     <p>{path.subtitle}</p>
+     <div className={styles.meta}><span>校招 / 社招分别准备</span><span>真实课程与练习</span><span>按实际交付收费</span></div>
+    </div>
+    <aside className={styles.offerSummary} aria-label="本路线可获得的服务">
+     <span className={styles.offerEyebrow}>这条路线现在能做什么</span>
+     <strong>{available.length} 项已开放</strong>
+     <p>免费体验已有课程、练习或模拟；未开放的专属考试与收费服务不会显示付款入口。</p>
+     {first?.href&&<Link className={styles.offerStart} href={first.href}>先免费开始训练 <span aria-hidden="true">→</span></Link>}
+     <a className={styles.offerSecondary} href="#learning-stages">查看全部学习环节</a>
+     <small>{planned>0?`${planned} 项专项内容尚未完成`:"所有列出的环节均已开放"} · 不承诺就业录用</small>
+    </aside>
+   </div>
   </header>
   <section className={styles.twocol} style={{marginTop:22}}>
    <div className={styles.panel}><h2>完成这条路线，你应当能够</h2><ul>{path.outcomes.map(x=><li key={x}>{x}</li>)}</ul></div>
@@ -35,12 +53,12 @@ export default async function CareerPathDetail({params,searchParams}:PageProps){
     return role?<li key={id}><Link href={"/career/roles/"+id}>{role.title}</Link></li>:null;
    })}</ul><p className={styles.note}>先修建议：{path.requirements}</p></div>
   </section>
-  <h2 className={styles.title}>按你的求职阶段学习</h2>
+  <h2 id="learning-stages" className={styles.title}>按你的求职阶段学习</h2>
   <div className={styles.switch} aria-label="求职阶段">
    <Link href={"/career/paths/"+path.slug+"?audience=campus"} aria-current={audience==="campus"?"page":undefined}>校招 / 应届</Link>
    <Link href={"/career/paths/"+path.slug+"?audience=social"} aria-current={audience==="social"?"page":undefined}>社招 / 转岗</Link>
   </div>
-  <p className={styles.note}>以下环节不强制按顺序付费或解锁。已有服务可以直接进入；未验收的专用考试、AI 面试不会显示可购买按钮。</p>
+  <p className={styles.note}>已开放的项目直接进入，未完成的专项内容只作说明，不提供虚假付款入口。</p>
   <ol className={styles.steps}>
    {steps.map((step,i)=><li className={styles.step+(step.status==="planned"?" "+styles.pending:"")} key={step.id}>
     <span className={styles.stepNum}>{i+1}</span><div>
@@ -51,13 +69,17 @@ export default async function CareerPathDetail({params,searchParams}:PageProps){
     </div>
    </li>)}
   </ol>
-  <section className={styles.sources}>
-   <h2>原始资料与技术依据</h2>
+  <section className={styles.conversionFoot} aria-label="接下来怎么训练">
+    <div><strong>先练，再决定下一步</strong><p>从真实课程与实操开始；完成后可用已开放的模拟检查自己还缺什么。</p></div>
+    <div className={styles.conversionFootActions}>{first?.href&&<Link href={first.href}>开始学习</Link>}{formal?.href&&<Link href={formal.href}>进入正式模拟</Link>}</div>
+  </section>
+  <details className={styles.sources}>
+   <summary>查看原始资料与技术依据</summary>
    <p className={styles.note}>开源仓库和公开文档用于核对概念与源码，不构成本站原创教学或商业转售授权。下列原始链接可以直接访问上游。</p>
    <ul>{path.sourceLinks.map(source=><li key={source.url}>
      <a href={source.url} target="_blank" rel="noopener noreferrer">{source.label}</a> · {source.note}
    </li>)}</ul>
-  </section>
+  </details>
   <p className={styles.warning}>{path.caveat}</p>
   <Link href="/career/paths">← 返回全部岗位路线</Link>
  </div>;
