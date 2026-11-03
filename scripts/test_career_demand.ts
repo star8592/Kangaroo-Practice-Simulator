@@ -1,6 +1,7 @@
 import {getCareerSupplyCandidates,careerSupplyCoverage} from "../src/lib/career-product-mapper";
 import assert from "node:assert/strict";
 import fs from "node:fs";
+import {PRIMARY_BUSINESS_NAV} from "../src/lib/site-architecture";
 import path from "node:path";
 import {
   CAREER_FAMILIES,CAREER_DEMAND_OBSERVED_AT,
@@ -73,7 +74,8 @@ assert(!page.includes('href="/shop"'),"no unverified checkout link");
 const header=fs.readFileSync(path.join(process.cwd(),"src/components/SiteHeader.tsx"),"utf8");
 const discovery=fs.readFileSync(path.join(process.cwd(),"src/lib/site-discovery.ts"),"utf8");
 const portal=fs.readFileSync(path.join(process.cwd(),"src/components/AssessmentPortalClient.tsx"),"utf8");
-assert(header.includes('href:"/career"'),"career must remain a first-class public business");
+assert(header.includes("PRIMARY_BUSINESS_NAV as TASK_LINKS"),"Header must use canonical navigation");
+assert(PRIMARY_BUSINESS_NAV.some(item=>item.id==="career"&&item.href==="/career"),"Career must remain a first-class public business");
 assert(discovery.includes('href:"/career"'),"career must remain searchable");
 assert(!portal.includes('href="/career"'),"career must not be misfiled under exams");
 console.log("CAREER_DEMAND_TEST=PASS",JSON.stringify(counts));
