@@ -81,6 +81,7 @@ for file in APP.rglob("page.tsx"):
     incoming = incoming_links(url, source)
     pages.append(dict(url=url, source=source, owner=owner, level=level, access=access, incoming=incoming))
 pages.sort(key=lambda x: x["url"])
+nested_main = [p for p in pages if re.search(r"<main(?:\\s|>)", (ROOT / p["source"]).read_text(encoding="utf-8"))]
 
 api_routes = []
 for file in APP.rglob("route.ts"):
@@ -113,6 +114,7 @@ head = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True
 summary = dict(
     code_sha=head, pages=len(pages), api_routes=len(api_routes), miniapp_pages=len(miniapp),
     candidate_count=len(candidates), candidate_urls=[p["url"] for p in candidates],
+    nested_main_count=len(nested_main), nested_main_urls=[p["url"] for p in nested_main],
     owners=dict(collections.Counter(p["owner"] for p in pages)),
 )
 lines = [
@@ -159,7 +161,15 @@ for file in miniapp:
     lines.append("- " + QUOTE + file + QUOTE)
 lines += [
     "",
-    "## 5. 每一行真正完成所需的验收",
+    "## 5. 根布局与页面重复 main 地标",
+    "",
+    "根布局 src/app/layout.tsx 已声明一个 main。以下页面代码中仍直接含有 main 标签，必须审查为重复主地标的风险，不应简单断言 CSS 不受影响。",
+]
+for page in nested_main:
+    lines.append("- " + QUOTE + page["url"] + QUOTE + " — " + QUOTE + page["source"] + QUOTE)
+lines += [
+    "",
+    "## 6. 每一行真正完成所需的验收",
     "",
     "1. **归属**：唯一主 owner，L1/L2/L3/L4 层级，允许跨业务推荐但不能多重面包屑。",
     "2. **可达**：首页/六大业务父页/业务详情/真实数据库目录能到达；有一条合理返回路；明确静态与动态 URL；历史书签不断链。",
