@@ -1,7 +1,7 @@
 .shell{max-width:1160px;margin:0 auto;padding:clamp(18px,3vw,36px) clamp(16px,2.5vw,30px) 72px;color:#19384c}
 .breadcrumb{display:flex;gap:10px;align-items:center;font-size:14px;color:#567183;margin-bottom:20px}
 .breadcrumb a{color:#235e78;text-decoration:none}
-.hero{border-radius:20px;border:1px solid #d2e3e9;background:linear-gradient(145deg,#eff6fa,#fff 67%);padding:clamp(22px,4vw,44px)}
+.hero{border-radius:20px;border:1px solid #d6e4ea;background:linear-gradient(145deg,#f2f8fa,#fff 68%);padding:clamp(22px,3.5vw,36px)}
 .eyebrow{font-size:12px;letter-spacing:.09em;text-transform:uppercase;font-weight:800;color:#26728e}
 .hero h1{font-size:clamp(30px,4.3vw,50px);line-height:1.18;letter-spacing:-.035em;margin:9px 0 12px}
 .hero p{font-size:17px;line-height:1.7;color:#4f6c7e;max-width:780px;margin:0}
@@ -15,7 +15,7 @@
 .card p{font-size:15px;line-height:1.65;color:#597080}
 .cardTags{display:flex;gap:7px;flex-wrap:wrap;margin:12px 0}
 .cardTags span{color:#316476;background:#eef6f8;border-radius:5px;padding:5px 8px;font-size:13px}
-.action{display:inline-flex;margin-top:10px;align-items:center;min-height:43px;border-radius:9px;background:#136681;color:#fff!important;text-decoration:none;padding:11px 15px;font-weight:750;font-size:15px}
+.action{display:inline-flex;margin-top:10px;align-items:center;min-height:48px;border-radius:9px;background:#136681;color:#fff!important;text-decoration:none;padding:11px 15px;font-weight:750;font-size:15px}
 .twocol{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
 .panel{border:1px solid #d9e7ed;border-radius:15px;padding:21px;background:#fff}
 .panel h2{margin:0 0 12px;font-size:23px}
@@ -39,3 +39,51 @@
 .sources a{color:#145e79;font-weight:750}
 .warning{font-size:14px;color:#4b6778;line-height:1.75;margin-top:25px}
 @media(max-width:720px){.cards,.twocol{grid-template-columns:1fr}.hero{padding:23px 19px}.step{padding:15px;grid-template-columns:33px 1fr;gap:10px}.stepNum{width:33px;height:33px}.card{padding:19px}}
+
+/* One coherent career product language across home, discovery and detail. */
+.shell{color:#142f43}
+.hero h1{color:#112e43}
+.card{box-shadow:0 6px 21px #183a4a09;transition:border-color .16s,box-shadow .16s}
+.card:hover{border-color:#9ac0ce;box-shadow:0 10px 28px #183a4a15}
+.card h2{font-size:24px}
+.card .action{background:#125e7e;color:#fff!important}
+.card .action:hover{background:#104c69}
+.switch{margin:17px 0 24px}
+.switch a{min-height:47px;display:inline-flex;align-items:center;justify-content:center;min-width:135px;background:#fff;color:#245f76;border:1px solid #bfd5df}
+.switch a[aria-current="page"]{background:#145e7d;color:#fff;border-color:#145e7d}
+.offerHero{display:grid;grid-template-columns:minmax(0,1fr) minmax(280px,34%);align-items:stretch;gap:clamp(16px,3vw,40px)}
+.offerCopy{padding:clamp(10px,1.5vw,22px) 0;align-self:center}
+.offerCopy h1{font-size:clamp(32px,3.8vw,48px);line-height:1.2;margin:11px 0 12px}
+.offerCopy p{font-size:clamp(16px,1.6vw,19px);line-height:1.6;margin:0}
+.offerSummary{background:#fff;border:1px solid #d4e3e9;border-radius:15px;padding:22px;box-shadow:0 8px 25px #17445a10;display:flex;flex-direction:column;gap:12px}
+.offerEyebrow{font-size:13px;color:#537788;font-weight:750}
+.offerSummary>strong{font-size:30px;font-weight:850;letter-spacing:-.04em;color:#113e54}
+.offerSummary p{font-size:14px;line-height:1.7;color:#4f6a7b;margin:0}
+.offerStart{display:flex;align-items:center;justify-content:space-between;gap:12px;background:#125e7e;color:#fff!important;min-height:49px;padding:12px 16px;border-radius:10px;font-size:16px;font-weight:800}
+.offerStart:hover{background:#104c69}
+.offerSecondary{color:#205c76;font-size:14px;font-weight:750;text-decoration:underline;text-underline-offset:3px}
+.offerSummary small{font-size:12px;color:#6b7e89;line-height:1.6}
+.conversionFoot{margin-top:24px;padding:22px;border-radius:14px;border:1px solid #d4e4e9;background:#f0f7f9;display:flex;align-items:center;justify-content:space-between;gap:24px}
+.conversionFoot strong{font-size:20px;color:#123b50}
+.conversionFoot p{font-size:14px;line-height:1.65;margin:6px 0 0;color:#587083}
+.conversionFootActions{display:flex;gap:9px;flex-wrap:wrap;flex-shrink:0}
+.conversionFootActions a{min-height:44px;display:inline-flex;align-items:center;border:1px solid #b5d4de;background:white;color:#125e7e;border-radius:8px;padding:10px 14px;font-size:14px;font-weight:800}
+.conversionFootActions a:first-child{background:#125e7e;color:#fff;border-color:#125e7e}
+.sources{padding:16px 22px}
+.sources summary{font-size:17px;font-weight:800;line-height:1.6;cursor:pointer;color:#255d73}
+.sources[open] summary{margin-bottom:18px}
+.title{scroll-margin-top:90px}
+@media(max-width:820px){
+ .offerHero{grid-template-columns:1fr}
+ .offerCopy{padding:0}
+ .offerSummary{padding:19px}
+ .conversionFoot{align-items:stretch;flex-direction:column;gap:14px}
+ .conversionFootActions{flex-wrap:wrap}
+}
+@media(max-width:550px){
+ .switch{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+ .switch a{min-width:0;padding:10px 12px;font-size:14px}
+ .offerSummary>strong{font-size:28px}
+ .conversionFootActions{display:grid;grid-template-columns:1fr 1fr}
+ .conversionFootActions a{justify-content:center;padding:10px 8px}
+}
