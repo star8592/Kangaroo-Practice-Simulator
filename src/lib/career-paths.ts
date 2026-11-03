@@ -1,12 +1,11 @@
 import {CAREER_ROLES,getCareerRole} from "./career-role-taxonomy";
-import {CAREER_FORMAL_PAPERS} from "./career-formal-bank";
-import {CAREER_ORIGINAL_GUIDES} from "./career-original-guides";
-import {INTERVIEW_PROFILES} from "./career-interview-scenarios";
 
 /**
  * Small, verified product-to-role mapping. This is not an exhaustive job
  * taxonomy, learning CMS, or employment recommendation model.
  *
+ * No answer-bearing exam bank may be imported into this CLIENT-SAFE registry.
+ * Exact live resource/assessment existence is verified by server-side tests.
  * Each live item points to an existing public URL. 'planned' items are
  * explicitly non-clickable, and may not be sold or described as delivered.
  */
@@ -113,14 +112,7 @@ export function careerPathForRole(roleId:string):CareerPath|undefined {
 export function validateCareerPaths():string[]{
  const issues:string[]=[];
  const ids=new Set<string>(),links=new Set<string>();
- const livePapers=new Set(CAREER_FORMAL_PAPERS.filter(p=>p.deliveryState==="free-live-preview").map(p=>"/career/exams/"+p.id));
- const liveGuides=new Set(CAREER_ORIGINAL_GUIDES.filter(g=>g.deliveryState==="free-original-material").map(g=>"/career/guides/"+g.id));
- const liveInterviews=new Set(INTERVIEW_PROFILES.map(p=>"/career/interviews/"+p.id));
- const knownLive=new Set<string>([
-   ...livePapers,...liveGuides,...liveInterviews,
-   "/skill-labs/agent-foundations","/skill-labs/sql-lab","/skill-labs/code-lab",
-   "/skill-labs/engineering-mock","/skill-labs/books","/skill-labs/books/python-data-science-handbook",
- ]);
+
  for(const path of CAREER_PATHS){
   if(ids.has(path.slug))issues.push("duplicate-path:"+path.slug);
   ids.add(path.slug);
@@ -132,10 +124,8 @@ export function validateCareerPaths():string[]{
   }
   for(const s of path.steps){
    if(s.status==="planned"&&s.href!==null)issues.push("planned-with-link:"+path.slug+"/"+s.id);
-   if(s.status==="live"&&(!s.href||!s.href.startsWith("/")||!knownLive.has(s.href.split("#")[0])))
-    issues.push("unverified-live-link:"+path.slug+"/"+s.id);
-   if(s.stage==="formal-exam"&&s.status==="live"&&s.href?.startsWith("/career/exams/")&&!livePapers.has(s.href))
-    issues.push("paper-not-live:"+path.slug+"/"+s.id);
+   if(s.status==="live"&&(!s.href||!s.href.startsWith("/")||s.href.includes("//")||s.href.includes("?")))
+    issues.push("invalid-live-link:"+path.slug+"/"+s.id);
   }
   for(const source of path.sourceLinks){
    try {if(new URL(source.url).protocol!=="https:")issues.push("insecure-source:"+path.slug);}
