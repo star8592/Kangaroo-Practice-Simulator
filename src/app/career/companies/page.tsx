@@ -29,9 +29,9 @@ export default async function CareerCompaniesPage({searchParams}:Props){
   const kind=typeof params.kind==="string"?params.kind:"";
   const companies=searchCareerEnterprises(q,kind);
   const totals=summarizeCareerEnterprises();
-  return <main className={styles.shell}>
+  return <div className={styles.shell}>
     <nav className={styles.breadcrumb} aria-label="位置">
-      <Link href="/assessments">综合考试</Link><span>/</span>
+      
       <Link href="/career">职业需求</Link><span>/</span><span>企业研究库</span>
     </nav>
     <section className={styles.hero}>
@@ -108,5 +108,5 @@ export default async function CareerCompaniesPage({searchParams}:Props){
       <p>交易所完整名单及美国 SEC 数据是接下来扩容的来源，不把证券代码数、集团数、职位数混加成同一种“采集数量”。</p>
       <Link href="/career">查看按职位需求倒推的训练产品方向</Link>
     </section>
-  </main>;
+  </div>;
 }

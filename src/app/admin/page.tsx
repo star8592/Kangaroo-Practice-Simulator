@@ -95,7 +95,7 @@ export default async function AdminPage({ searchParams }: Params) {
   const chart = connected ? sampleSeries(revenue.daily, period, new Date(revenue.asOf)) : [];
   const maxAmount = Math.max(1, ...chart.map(d => d.amount));
 
-  return <main className={styles.shell}>
+  return <div className={styles.shell}>
     <header className={styles.hero}>
       <div className={styles.heroTop}>
         <div>
@@ -259,5 +259,5 @@ export default async function AdminPage({ searchParams }: Params) {
       </div>
       <p className={styles.footnote}>收款来自已核验订单，不是财务利润；搜索收录需官方站长平台；使用次数与真正付费转化率必须在数据来源和归因链路核实后展示。</p>
     </section>
-  </main>;
+  </div>;
 }

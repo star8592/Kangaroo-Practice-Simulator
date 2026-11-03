@@ -53,7 +53,7 @@ export default async function StudentCardsPage() {
       ? "你已经拿到神话档战绩。换一套正式试卷，继续扩充卡册。"
       : "You reached Mythic. Try a different full paper to grow your collection.");
 
-  return <main className={styles.page}>
+  return <div className={styles.page}>
     <div className={styles.top}>
       <div>
         <span className={styles.eyebrow}>MY CARD BOOK</span>
@@ -130,5 +130,5 @@ export default async function StudentCardsPage() {
       <p>{lang === "zh" ? "完成一次正式竞赛挑战，或在计算训练里达成真正里程碑，都会留下可回看的数学荣誉。" : "Complete a formal challenge or reach a meaningful calculation milestone to create a lasting math honor."}</p>
       <Link className="primary-button" href="/competitions">{lang === "zh" ? "去挑战" : "Start a challenge"}</Link>
     </div>}
-  </main>;
+  </div>;
 }

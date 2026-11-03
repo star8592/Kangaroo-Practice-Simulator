@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>SOC THINK · Three.js WebGPU 3D 实验源工程</title>
+  <style>
+    *{box-sizing:border-box}body{margin:0;background:#071727;color:#edfaff;font-family:system-ui,-apple-system,"Noto Sans SC",sans-serif}
+    header{padding:22px 25px 15px;background:#092443}h1{font-size:clamp(24px,4vw,36px);margin:10px 0 8px}
+    header p{line-height:1.6;color:#aac5d7;max-width:830px}
+    #stage{height:min(70vh,600px);min-height:340px;position:relative;background:#061322}
+    #stage canvas{display:block;max-width:100%}#message{position:absolute;top:40%;left:10%;right:10%;text-align:center;color:#aac9de}
+    .controls{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:20px;padding:19px 25px;background:#0e2943}
+    label{display:flex;flex-direction:column;gap:8px;font-size:14px;font-weight:650;color:#b6d9e7}
+    select{padding:9px;border:1px solid #5d8bb0;border-radius:7px;background:#153958;color:#fff}
+    input{accent-color:#5bd0ef}
+    .bar{display:flex;flex-wrap:wrap;gap:14px;padding:10px 25px;background:#12334f;color:#caefff}
+    .bar strong{color:white}
+    footer{padding:21px 25px;color:#95b8cd;line-height:1.7;font-size:13px}
+    @media(max-width:680px){.controls{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <header><div>SOC THINK · ORIGINAL LEARNING PROJECT</div>
+    <h1>Three.js × WebGPU：三维实例化实验</h1>
+    <p>原创可运行样例，观察实例数量、渲染后端与动画速度的变化。本案例仅为学习项目，不是跨设备性能排行榜。</p>
+  </header>
+  <div class="bar"><span>实际渲染后端：<strong id="backend">初始化中</strong></span>
+    <span>即时 FPS：<strong id="fps">—</strong></span></div>
+  <div id="stage"><div id="message">正在初始化三维图形…</div></div>
+  <section class="controls" aria-label="实验参数">
+    <label>渲染方式<select id="mode"><option value="auto">WebGPU优先（允许回退WebGL2）</option><option value="webgl">强制 WebGL2</option></select></label>
+    <label>实例数量<select id="count"><option>64</option><option selected>256</option><option>1024</option></select></label>
+    <label>旋转速度：<span id="speedLabel">0.4×</span><input id="speed" type="range" min="0" max="2" step="0.1" value="0.4"></label>
+  </section>
+  <footer>Three.js r186 · 源码为 SOC THINK 独立编写。WebGPU 未必可用，必须以页面实际后端显示为准。FPS 为短时观察值，请重复实验。</footer>
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>

@@ -30,7 +30,7 @@ export default function AgentFoundationsPage(){
     educationalLevel:"初级至进阶",
     dateModified:course.updatedAt
   };
-  return <main className={[m.shell,s.page].join(" ")}>
+  return <div className={[m.shell,s.page].join(" ")}>
     <script type="application/ld+json" dangerouslySetInnerHTML={{__html:JSON.stringify(ld).replace(/</g,"\\u003c")}}/>
     <nav className={m.breadcrumb} aria-label="位置">
       <Link href="/skill-labs">技能实训</Link><span>/</span><span>Agent工程</span>
@@ -79,5 +79,5 @@ export default function AgentFoundationsPage(){
       <Link href="/skill-labs">浏览其他真实技能实训</Link>
       <Link href="/career">查看职业技能与岗位模拟考试</Link>
     </nav>
-  </main>;
+  </div>;
 }

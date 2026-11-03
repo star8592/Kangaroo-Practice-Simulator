@@ -35,7 +35,7 @@ export default function SourceReviewDashboard(){
     }catch(e){setError(e instanceof Error?e.message:"保存失败");}
     finally{setSaving("");}
   };
-  return <main className={styles.page}>
+  return <div className={styles.page}>
     <header className={styles.head}>
       <div><p className={styles.eyebrow}>OFFICIAL SOURCE MONITOR · REVIEW ONLY</p>
         <h1>赛事官方情报审核</h1>
@@ -101,5 +101,5 @@ export default function SourceReviewDashboard(){
         </article>)}</div>}
       </section>
     </>}
-  </main>;
+  </div>;
 }

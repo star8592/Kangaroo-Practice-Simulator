@@ -125,7 +125,7 @@ export default function ExamDirectory({initialQuery=""}:{initialQuery?:string}){
       </div>
     </div>
     <nav className={styles.actions} aria-label={lang==="zh"?"可用服务":"Available services"}>
-      <Link href="/resources">{t.browse}</Link><Link href="/exam-planner">{lang==="zh"?"考试日程":"Exam planner"}</Link><Link href="/events">{t.calendar}</Link>
+      <Link href="/resources">{t.browse}</Link><Link href="/math-practice">{lang==="zh"?"分年级数学计算指南":"Grade-level math guide"}</Link><Link href="/exam-planner">{lang==="zh"?"考试日程":"Exam planner"}</Link><Link href="/events">{t.calendar}</Link>
     </nav>
   </section>;
 }

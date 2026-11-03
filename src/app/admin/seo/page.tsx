@@ -31,7 +31,7 @@ export default async function AdminSeoDashboard() {
     siteStatus === "stale" ? "数据过期" : "尚未采集";
 
   return (
-    <main className={styles.page} data-site-shell="content">
+    <div className={styles.page} data-site-shell="content">
       <header className={styles.header}>
         <div>
           <span className={styles.kicker}>SOC THINK / OPERATIONS</span>
@@ -156,6 +156,6 @@ export default async function AdminSeoDashboard() {
           真正的购买收入应由独立收费账本统计，不能用自然搜索点击数来估算。
         </p>
       </section>
-    </main>
+    </div>
   );
 }

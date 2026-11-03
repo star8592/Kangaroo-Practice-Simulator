@@ -19,7 +19,7 @@ export default function AboutAssessmentCenter(){
    <div className={styles.details}>
     <div><dt>网站公示主体</dt><dd>青梧未来（武汉）人工智能应用软件有限公司</dd></div>
     <div><dt>网站公示备案号</dt><dd>鄂ICP备2026004372号</dd></div>
-    <div><dt>信息出处</dt><dd><a href="https://socthink.cn/assessments" target="_blank" rel="noopener noreferrer">SOCTHINK 综合考试页面页脚（网站自行公示）</a></dd></div>
+    <div><dt>信息出处</dt><dd><a href="https://socthink.cn/assessment-center" target="_blank" rel="noopener noreferrer">SOCTHINK 测评中心页脚（网站自行公示）</a></dd></div>
     <div><dt>独立核验</dt><dd><a href="https://beian.miit.gov.cn/#/Integrated/index" target="_blank" rel="noopener noreferrer">工信部 ICP 备案查询入口</a>（以官方实时查询为准）</dd></div>
    </div>
    <p>以上公司名称和备案号取自本站公开页面页脚，尚不能代替工商注册信息或实时备案比对；专家参与、心理测量资质及第三方认证如无证据，不会虚构。</p>

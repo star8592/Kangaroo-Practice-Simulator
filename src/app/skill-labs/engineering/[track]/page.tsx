@@ -24,10 +24,10 @@ export default async function EngineeringTrackPage({params}:{params:Promise<{tra
  const {track:id}=await params;
  if(!Object.prototype.hasOwnProperty.call(ENGINEERING_TRACKS,id))notFound();
  const track=id as EngineeringTrackId;
- return <main className={[styles.shell,workStyles.pageShell].join(" ")}>
+ return <div className={[styles.shell,workStyles.pageShell].join(" ")}>
   <nav className={styles.breadcrumb} aria-label="位置">
    <Link href="/skill-labs">技能实训</Link><span> / </span>{ENGINEERING_TRACKS[track].name}
   </nav>
   <CodeLabClient trackId={track}/>
- </main>;
+ </div>;
 }
