@@ -23,7 +23,6 @@ export default async function CareerPathDetail({params,searchParams}:PageProps){
  const actions={learn:"阅读完整教程",lab:"开始动手练习","formal-exam":"进入正式模拟",interview:"开始模拟面试",resource:"打开资料"} as const;
  const available=steps.filter(s=>s.status==="live"&&s.href);
  const first=available.find(s=>s.stage==="learn"||s.stage==="lab")??available[0];
- const formal=available.find(s=>s.stage==="formal-exam");
  const planned=steps.filter(s=>s.status==="planned").length;
 
  return <div className={styles.shell}>
@@ -69,10 +68,6 @@ export default async function CareerPathDetail({params,searchParams}:PageProps){
     </div>
    </li>)}
   </ol>
-  <section className={styles.conversionFoot} aria-label="接下来怎么训练">
-    <div><strong>先练，再决定下一步</strong><p>从真实课程与实操开始；完成后可用已开放的模拟检查自己还缺什么。</p></div>
-    <div className={styles.conversionFootActions}>{first?.href&&<Link href={first.href}>开始学习</Link>}{formal?.href&&<Link href={formal.href}>进入正式模拟</Link>}</div>
-  </section>
   <details className={styles.sources}>
    <summary>查看原始资料与技术依据</summary>
    <p className={styles.note}>开源仓库和公开文档用于核对概念与源码，不构成本站原创教学或商业转售授权。下列原始链接可以直接访问上游。</p>
