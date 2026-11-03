@@ -5,6 +5,7 @@ import {BillingConflictError,billingConfigured,billingPool,createBillingOrder,ha
 import {isExamBundleTrainingReady,loadTrainingExamBundle} from "@/lib/training-question-bank";
 import {getInterviewProfile} from "@/lib/career-interview-scenarios";
 import {getConfig as getInterviewModelConfig} from "@/lib/career-model-routing";
+import {careerModelDeliveryReady} from "@/lib/career-model-readiness";
 import {nativeCheckoutAllowedForBuyer,nativeServerContext} from "@/lib/wechat-native-server";
 import {createVerifiedWechatNativeCheckout} from "@/lib/wechat-native-transport";
 import {DIGITAL_SALES_POLICY_VERSION,validDigitalSalesPolicyConsent} from "@/lib/digital-sales-policy";
@@ -92,11 +93,14 @@ export async function POST(req:NextRequest) {
     if(p.product_kind==="service"){
       // A service credit cannot become payable until verified AI capacity,
       // a dedicated commercial activation, and the existing Native policy agree.
+      const interviewModel=getInterviewModelConfig();
       if(process.env.SOCTHINK_CAREER_AI_BILLING_ENABLED!=="1" ||
-         !getInterviewModelConfig() || p.content_kind!=="career_interview" ||
+         !interviewModel || p.content_kind!=="career_interview" ||
          !getInterviewProfile(p.content_id||"") ||
          !p.rights_approved || !p.delivery_verified || !p.access_restricted || !p.title_zh)
         return reply({error:"专业面试服务尚未开放付费",code:"INTERVIEW_SERVICE_NOT_READY"},409);
+      if(!await careerModelDeliveryReady(interviewModel))
+        return reply({error:"AI 面试模型目前无法稳定交付，暂不创建付款订单",code:"INTERVIEW_MODEL_UNAVAILABLE"},503);
     }
     const order=await createBillingOrder(parent.id,productId,"wechat_native",{
       policyVersion:DIGITAL_SALES_POLICY_VERSION,acceptedAt:new Date(),
