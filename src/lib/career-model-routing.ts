@@ -38,7 +38,9 @@ export async function callModel(p:Provider,messages:Message[],timeout:number,e:E
  }
  const body=p==="ollama"
   ?{model,messages,stream:false,format:"json",options:{temperature:0.1,num_predict:260}}
-  :{model,messages,stream:false,response_format:{type:"json_object"},max_tokens:260};
+  :p==="mimo"
+   ?{model,messages,stream:false,response_format:{type:"json_object"},max_completion_tokens:320,thinking:{type:"disabled"}}
+   :{model,messages,stream:false,response_format:{type:"json_object"},max_tokens:260};
  const start=Date.now();
  const res=await request(urls[p],{method:"POST",headers,body:JSON.stringify(body),signal:AbortSignal.timeout(timeout)});
  if(!res.ok)throw new Error("PROVIDER_ERROR");
