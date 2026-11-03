@@ -35,6 +35,7 @@ def normalize(href):
   if u.scheme!="https" or u.netloc!="socthink.cn":return None
   p=u.path.rstrip("/") or "/"
   if any(p==v.rstrip("/") or p.startswith(v) for v in EXCLUDE):return None
+  if "/download" in p or p.endswith(".py"):return None
   if re.search(r"\.(?:pdf|png|jpg|jpeg|webp|js|css|woff|ico|zip|md|ics)$",p,re.I):return None
   return p
  except ValueError:return None
@@ -78,7 +79,8 @@ with concurrent.futures.ThreadPoolExecutor(max_workers=5) as pool:
     addpath(link,queue,seen,bucket)
  if len(rows)>=MAX_PAGES:pass
 counts=collections.Counter(str(x["status"]) for x in rows)
-suspect=[x for x in rows if x["status"]!=200 and x["status"]!=301 and x["status"]!=302]
+suspect=[x for x in rows if str(x["status"]).startswith(("4","5","ERROR"))]
+auth_redirects=[x for x in rows if x["final"]=="/login" and x["path"]!="/login"]
 double=[x for x in rows if x["mains"] is not None and x["mains"]>1]
 unlinked=[x for x in rows if not parent_links[x["path"]] and x["path"]!="/"]
 date=datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
@@ -94,6 +96,7 @@ lines=[
  "- 共抽查："+str(len(rows))+" 个公开站内 URL；当前脚本上限："+str(MAX_PAGES)+"；Sitemap 发现："+str(len(locations))+"；状态分布："+json.dumps(dict(counts),ensure_ascii=False)+"。",
  "- 匿名检索到多主地标页面："+str(len(double))+"；被本轮其他页面内链发现为 0 的条目："+str(len(unlinked))+"（不代表确定孤儿页，可能是 Sitemap 入口）。",
  "- 站点地图读取异常："+str(sitemap_error or "无")+"。",
+ "- 原始内容最终跳转到 /login 的页面："+str(len(auth_redirects))+"。这类 HTTP 200 是**登录页**，不能计入原页面已成功展示。",
  "",
  "## 逐 URL 现场验证",
  "",
@@ -106,6 +109,8 @@ lines+=["","## 实际 4xx/5xx/请求失败"]
 if suspect:
  for x in suspect:lines.append("- "+T+x["path"]+T+"：HTTP "+str(x["status"]))
 else:lines.append("- 本轮抽查未遇到；不代表所有未扫描页面通过。")
+lines+=["","## 原目标跳转至登录页（需要身份测试，不算内容交付成功）"]
+for x in auth_redirects:lines.append("- "+T+x["path"]+T+" → /login")
 lines+=["","## 重复 main 地标（现场 HTML）"]
 if double:
  for x in double:lines.append("- "+T+x["path"]+T+"："+str(x["mains"]))
@@ -115,4 +120,4 @@ for x in unlinked[:40]:lines.append("- "+T+x["path"]+T+"：本轮内链未命中
 lines += ["","最终页面级归属以 [路由总账](SOCTHINK_PAGE_ROUTE_INVENTORY.md) 及 [唯一 IA 总纲](SOCTHINK_SITE_ARCHITECTURE_MASTER.md) 为准。公开 200 不等于用户可以完成付款、考试和授权下载；这些另做具权限的真实回归。"]
 output=ROOT/"docs/architecture/SOCTHINK_PUBLIC_LINK_CRAWL_20261103.md"
 output.write_text("\n".join(lines)+"\n",encoding="utf8")
-print(json.dumps({"date":date,"sampled":len(rows),"status":dict(counts),"sitemap":len(locations),"doubleMain":[x["path"] for x in double],"suspect":[[x["path"],x["status"]] for x in suspect],"reportBytes":output.stat().st_size},ensure_ascii=False))
+print(json.dumps({"date":date,"sampled":len(rows),"status":dict(counts),"sitemap":len(locations),"doubleMain":[x["path"] for x in double],"authRedirect":[x["path"] for x in auth_redirects],"suspect":[[x["path"],x["status"]] for x in suspect],"reportBytes":output.stat().st_size},ensure_ascii=False))
