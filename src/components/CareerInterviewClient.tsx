@@ -52,6 +52,7 @@ export default function CareerInterviewClient({profileId}:{profileId:string}){
  const [consent,setConsent]=useState(false);
  const [semanticEnabled,setSemanticEnabled]=useState(false);
  const [semanticProvider,setSemanticProvider]=useState<"local"|"external"|null>(null);
+ const [modelProviders,setModelProviders]=useState<string[]>([]);
  const [semanticConsent,setSemanticConsent]=useState(false);
  const [submitting,setSubmitting]=useState(false);
  const requestEpoch=useRef(0);
@@ -59,7 +60,8 @@ export default function CareerInterviewClient({profileId}:{profileId:string}){
   let active=true;
   fetch("/api/career/interviews/followup",{cache:"no-store"})
    .then(r=>r.ok?r.json():null)
-   .then(d=>{if(active&&d?.enabled===true){setSemanticEnabled(true);setSemanticProvider(d.provider==="local"?"local":"external");}})
+   .then(d=>{if(active&&d?.enabled===true){setSemanticEnabled(true);setSemanticProvider(d.provider==="local"?"local":"external");
+    setModelProviders(Array.isArray(d.providers)?d.providers.filter((p:unknown)=>typeof p==="string").slice(0,2):[]);}})
    .catch(()=>{});
   return ()=>{active=false;};
  },[]);
@@ -84,7 +86,7 @@ export default function CareerInterviewClient({profileId}:{profileId:string}){
   const epoch=++requestEpoch.current;
   const followup=selectFollowup(question,entry.answer);
   let text=buildJobFocusedFollowup(profile.id,index,followup.text,entry.answer,context);
-  let mode:"semantic"|"rule"="rule",evidence="",reason="";
+  let mode:"guided"|"semantic"|"rule"="rule",evidence="",reason="";
   setSubmitting(true);
   if(semanticEnabled&&semanticConsent){
    try{
@@ -98,8 +100,8 @@ export default function CareerInterviewClient({profileId}:{profileId:string}){
      });
      if(response.ok){
       const result=await response.json();
-      if(result.mode==="semantic"&&typeof result.question==="string"&&result.question.length<=240){
-       text=result.question;mode="semantic";
+      if((result.mode==="semantic"||result.mode==="guided")&&typeof result.question==="string"&&result.question.length<=240){
+       text=result.question;mode=result.mode;
        evidence=typeof result.evidenceQuote==="string"?result.evidenceQuote:"";
        reason=typeof result.reason==="string"?result.reason:"";
       }
@@ -173,7 +175,7 @@ export default function CareerInterviewClient({profileId}:{profileId:string}){
    </div>
    {semanticEnabled&&<label className={styles.check}>
     <input type="checkbox" checked={semanticConsent} onChange={e=>setSemanticConsent(e.target.checked)}/>
-    启用AI语义追问（自愿）：每次提交主回答时，会将该轮问题、回答及填写的岗位资料发送至{semanticProvider==="local"?"本站自托管模型":"第三方模型服务"}用于生成追问。不启用则只在本地按规则追问。请勿提供隐私、密钥或商业机密。
+    启用AI语义追问（自愿）：每次提交主回答时，会将该轮问题、回答及填写的岗位资料发送至{modelProviders.length?modelProviders.join("、"):semanticProvider==="local"?"本站自托管模型":"第三方模型服务"}（含故障备用供应商，如有）用于判断追问。不启用则只在本地按规则追问。请勿提供隐私、密钥或商业机密。
    </label>}
    <p className={styles.small}>提示：{semanticEnabled?"未勾选AI追问时使用原规则；模型失败时自动降级并标注来源。":"当前仅提供规则追问，AI语义模式尚未启用。"}复盘要点由本人核对，不是客观招聘评分。本站原创训练内容，与招聘企业无官方授权关系。</p>
    <label className={styles.check}><input type="checkbox" checked={consent} onChange={e=>setConsent(e.target.checked)}/>
@@ -193,7 +195,7 @@ export default function CareerInterviewClient({profileId}:{profileId:string}){
    </div>}
    {stage==="main"&&semanticEnabled&&<label className={styles.check}>
     <input type="checkbox" checked={semanticConsent} onChange={e=>setSemanticConsent(e.target.checked)}/>
-    本轮启用AI语义追问（{semanticProvider==="local"?"本机模型":"第三方模型"}）；仅提交时发送这一轮回答。刷新后默认关闭，可在此重新开启。
+    本轮启用AI语义追问（{modelProviders.join("、")|| (semanticProvider==="local"?"本机模型":"第三方模型")}）；仅提交时发送这一轮回答。刷新后默认关闭，可在此重新开启。
    </label>}
    <div className={styles.progress} aria-label="面试进度">
     {profile.questions.map((q,i)=><span key={q.id} data-done={i<index?"true":undefined} data-active={i===index?"true":undefined}/>)}
@@ -204,10 +206,10 @@ export default function CareerInterviewClient({profileId}:{profileId:string}){
     <p>经历摘要匹配：{contextAnalysis.mentioned.join("、")||"暂无匹配词条"}。此项仅供自己核对，不用于招聘能力判断。</p>
    </details>}
    <div className={styles.promptCard}>
-    <span>面试官 · {stage==="main"?"主问题":entry.followupMode==="semantic"?"AI语义追问":"规则追问"}</span>
+    <span>面试官 · {stage==="main"?"主问题":entry.followupMode==="guided"?"AI判断 · 预审追问":entry.followupMode==="semantic"?"AI语义追问":"规则追问"}</span>
     <h2>{stage==="main"?question.prompt:entry.followup}</h2>
    </div>
-   {stage==="followup"&&entry.followupMode==="semantic"&&<p className={styles.small}>
+   {stage==="followup"&&(entry.followupMode==="semantic"||entry.followupMode==="guided")&&<p className={styles.small}>
     追问依据：{entry.followupEvidence?`“${entry.followupEvidence}”`:"原回答缺少可核对细节"}；{entry.followupReason}
    </p>}
    {stage==="followup"&&<details className={styles.priorAnswer}>
@@ -270,8 +272,8 @@ export default function CareerInterviewClient({profileId}:{profileId:string}){
    <div className={styles.transcript}>{report.questions.map((q,i)=><details key={q.id} open={i===0}>
     <summary>{i+1}. {q.phase} · {q.answered?"已完成":"未完整回答"}</summary>
     <div><strong>主回答</strong><p>{q.answer||"未回答"}</p>
-     <strong>面试官追问（{q.followupMode==="semantic"?"AI语义":"规则"}）</strong><p>{q.followup||"尚未进入追问"}</p>
-     {q.followupMode==="semantic"&&<p>追问依据：{q.followupEvidence||"未引用具体原话"}；{q.followupReason}</p>}
+     <strong>面试官追问（{q.followupMode==="guided"?"AI判断 · 预审追问":q.followupMode==="semantic"?"AI语义":"规则"}）</strong><p>{q.followup||"尚未进入追问"}</p>
+     {(q.followupMode==="guided"||q.followupMode==="semantic")&&<p>追问依据：{q.followupEvidence||"未引用具体原话"}；{q.followupReason}</p>}
      <strong>补充回答</strong><p>{q.followupAnswer||"未回答"}</p>
      <strong>本人确认的要点</strong><p>{q.selfReviewed.join("、")||"未确认"}</p>
      <strong>下次练习方向</strong><ul>{q.improvement.map((m,j)=><li key={j}>{m}</li>)}</ul>
