@@ -14,11 +14,11 @@ test("homepage presents three actual career tasks instead of mixing school exams
  await expect(main.locator('[aria-labelledby="home-paths-heading"] article')).toHaveCount(4);
  await expect(main.locator('a[href="/career/paths"]').first()).toBeVisible();
  for(const href of ["/career","/learn","/practice"]){
-  await expect(main.locator('[aria-labelledby="home-services-heading"] a[href="'+href+'"]')).toBeVisible();
+  await expect(main.locator('[aria-labelledby="quick-services-heading"] a[href="'+href+'"]')).toBeVisible();
  }
  await expect(main.locator('a[href^="/assessments#domain-"]')).toHaveCount(0);
- await expect(main.locator('[aria-labelledby="home-services-heading"] a[href="/skill-labs/books"]')).toHaveCount(0);
- await expect(main.locator('[aria-labelledby="home-services-heading"] a[href="/exam-planner"]')).toHaveCount(0);
+ await expect(main.locator('[aria-labelledby="quick-services-heading"] a[href="/skill-labs/books"]')).toHaveCount(0);
+ await expect(main.locator('[aria-labelledby="quick-services-heading"] a[href="/exam-planner"]')).toHaveCount(0);
  await expect(main.locator('a[href="/skill-labs/books"]').first()).toBeVisible();
  const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth);
  expect(overflow).toBeLessThanOrEqual(2);
