@@ -61,6 +61,7 @@ export default function CareerInterviewClient({profileId}:{profileId:string}){
  const [aiSessionId,setAiSessionId]=useState(saved?.aiSessionId??"");
  const [aiRequestId,setAiRequestId]=useState(saved?.aiRequestId??"");
  const [submitting,setSubmitting]=useState(false);
+ const [aiStatusMessage,setAiStatusMessage]=useState("");
  const requestEpoch=useRef(0);
  useEffect(()=>{
   let active=true;
@@ -97,6 +98,7 @@ export default function CareerInterviewClient({profileId}:{profileId:string}){
   let text=buildJobFocusedFollowup(profile.id,index,followup.text,entry.answer,context);
   let mode:"guided"|"semantic"|"rule"="rule",evidence="",reason="";
   setSubmitting(true);
+  setAiStatusMessage("");
   if(semanticEnabled&&semanticConsent){
    try{
     const controller=new AbortController();
@@ -136,6 +138,9 @@ export default function CareerInterviewClient({profileId}:{profileId:string}){
    }catch{/* Invalid payment/session or unavailable model: use the rule-based question. */}
   }
   if(requestEpoch.current!==epoch)return;
+  if(semanticEnabled&&semanticConsent&&mode==="rule")setAiStatusMessage(
+   "本轮未获得有效 AI 追问，已改用免费规则追问。若本次面试没有任何成功的 AI 轮次，服务端会尝试恢复预留场次；请在「我的账号」核对权益。"
+  );
   updateCurrent({followup:text,followupMode:mode,followupEvidence:evidence,followupReason:reason,followupAnswer:""});
   setSubmitting(false);
   setStage("followup");
@@ -147,7 +152,7 @@ export default function CareerInterviewClient({profileId}:{profileId:string}){
  }
  function reset(){
   requestEpoch.current++;setSubmitting(false);setSemanticConsent(false);setAiSessionId("");setAiRequestId("");
-  setIndex(0);setEntries({});setContext(EMPTY_INTERVIEW_JOB_CONTEXT);setConsent(false);setConfirmReset(false);
+  setIndex(0);setEntries({});setContext(EMPTY_INTERVIEW_JOB_CONTEXT);setConsent(false);setConfirmReset(false);setAiStatusMessage("");
   try{sessionStorage.removeItem(storageKey(profileId))}catch{}
   setStage("intro");
  }
@@ -236,6 +241,7 @@ export default function CareerInterviewClient({profileId}:{profileId:string}){
     <span>面试官 · {stage==="main"?"主问题":entry.followupMode==="guided"?"AI判断 · 预审追问":entry.followupMode==="semantic"?"AI语义追问":"规则追问"}</span>
     <h2>{stage==="main"?question.prompt:entry.followup}</h2>
    </div>
+   {stage==="followup"&&aiStatusMessage&&<p role="status" className={styles.small}>{aiStatusMessage}</p>}
    {stage==="followup"&&(entry.followupMode==="semantic"||entry.followupMode==="guided")&&<p className={styles.small}>
     追问依据：{entry.followupEvidence?`“${entry.followupEvidence}”`:"原回答缺少可核对细节"}；{entry.followupReason}
    </p>}
