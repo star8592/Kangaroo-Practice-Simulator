@@ -7,7 +7,7 @@ import {NextRequest} from "next/server";
 import {readVerifiedDigitalResource} from "../src/lib/digital-resource-file";
 import {DIGITAL_SALES_POLICY_VERSION} from "../src/lib/digital-sales-policy";
 import {startPaidCareerSession,getPaidCareerSessionAvailability,claimPaidCareerRound,
- finishPaidCareerRound,CareerCreditsRequired,CareerSessionUnavailable,CareerRoundUnavailable}
+ finishPaidCareerRound,restoreUnservedCareerSession,CareerCreditsRequired,CareerSessionUnavailable,CareerRoundUnavailable}
  from "../src/lib/career-service-ledger";
 import { billingPool,closeBillingPoolForTests,createBillingOrder,
   settleVerifiedOrder,refundVerifiedOrder,consumeUsage,verifiedGrantsForParent,hasVerifiedItemEntitlement,
@@ -551,6 +551,28 @@ async function run() {
   const monthSession=await startPaidCareerSession({buyerId:monthlyBuyer,profileId,clientRequestId:crypto.randomUUID()});
   assert.ok(monthSession.sessionId.startsWith("cais_"));
   assert.equal((await getPaidCareerSessionAvailability(monthlyBuyer,profileId)).monthlyRemaining,29);
+  // A first AI call that produced no valid answer must restore its single paid quota.
+  const failedSession=await startPaidCareerSession({
+    buyerId:monthlyBuyer,profileId,clientRequestId:crypto.randomUUID()
+  });
+  const failedClaim=await claimPaidCareerRound({buyerId:monthlyBuyer,profileId,
+    sessionId:failedSession.sessionId,questionId:"cs-project"});
+  assert.equal((await getPaidCareerSessionAvailability(monthlyBuyer,profileId)).monthlyRemaining,28);
+  assert.equal(await restoreUnservedCareerSession({
+    buyerId:monthlyBuyer,profileId,sessionId:failedSession.sessionId
+  }),false,"In-flight AI requests must not be refunded");
+  assert.equal(await finishPaidCareerRound({sessionId:failedSession.sessionId,
+    questionId:"cs-project",claimToken:failedClaim.claimToken,success:false}),true);
+  assert.equal(await restoreUnservedCareerSession({
+    buyerId:monthlyBuyer,profileId,sessionId:failedSession.sessionId
+  }),true,"Entirely unserved first AI session must restore exactly one paid credit");
+  assert.equal((await getPaidCareerSessionAvailability(monthlyBuyer,profileId)).monthlyRemaining,29);
+  assert.equal(await restoreUnservedCareerSession({
+    buyerId:monthlyBuyer,profileId,sessionId:failedSession.sessionId
+  }),false,"Repeated restores must be idempotent");
+  await assert.rejects(()=>claimPaidCareerRound({
+    buyerId:monthlyBuyer,profileId,sessionId:failedSession.sessionId,questionId:"cs-intro"
+  }),CareerSessionUnavailable);
   // Early renewal extends the original 30-day term rather than overlapping it.
   const renewalOrder=await createBillingOrder(monthlyBuyer,"career_ai_monthly_test","wechat_native",consent);
   assert.equal((await settleVerifiedOrder({...receipt(renewalOrder.id,"monthly-paid-two","monthly-tx-two",1299),provider:"wechat_native" as const})).created,true);
@@ -586,6 +608,8 @@ async function run() {
     sessionId:monthSession.sessionId,questionId:"cs-intro"});
   assert.equal(await finishPaidCareerRound({sessionId:monthSession.sessionId,questionId:"cs-intro",
     claimToken:lastRound.claimToken,success:true}),true);
+  assert.equal(await restoreUnservedCareerSession({buyerId:monthlyBuyer,profileId,
+    sessionId:monthSession.sessionId}),false,"Successful AI rounds forbid restoring session credits");
   console.log("CAREER_MONTHLY_AND_PER_USE=PASS two modes, 30-day term, quota, early renewal, expiry and active-session finish");
   console.log("CAREER_PAID_SESSIONS=PASS settled-only; immutable-quantity; 4-way-concurrency; idempotency; single-round; retry; cross-owner; refund-revoke");
   console.log("BILLING_LEDGER_PASS order-payment, renewal, refund, owner isolation, 4-way quota concurrency, idempotency");
