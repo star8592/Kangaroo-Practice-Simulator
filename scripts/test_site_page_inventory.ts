@@ -95,6 +95,8 @@ assert.ok(shopDetail.includes("generateMetadata")&&
   shopDetail.includes('canonical:"/shop/"+encodeURIComponent(product.id)'),
   "Each published store SKU must produce its own canonical");
 const sitemap=read("src/app/sitemap.ts");
+assert.ok(sitemap.includes("listStoreProducts")&&sitemap.includes("publishedProductPaths"),
+  "Verified real storefront SKUs must participate in public sitemap");
 for(const hub of ["/assessment-center","/career/companies","/verification"]){
  assert.ok(sitemap.includes('"'+hub+'"'),"Public quality page missing from sitemap: "+hub);
 }
