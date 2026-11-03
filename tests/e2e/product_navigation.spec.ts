@@ -1,16 +1,19 @@
 import { expect, test } from "@playwright/test";
 
 test.describe("SOC THINK unified public navigation", () => {
-  test("three homepage actions lead to distinct functional destinations", async ({ page }) => {
+  test("career home actions are real and mathematics has its own directory", async ({ page }) => {
     await page.goto("/");
     const content=page.locator("main");
-    await expect(content.locator('a[href="/arithmetic"]').filter({hasText:"开始计算训练"}).first()).toBeVisible();
-    await expect(content.locator('a[href="/competitions"]').filter({hasText:"参加竞赛模拟"}).first()).toBeVisible();
-    const mobile=(page.viewportSize()?.width??1280)<=760;
-    if(mobile)await page.getByRole("button",{name:"打开导航菜单"}).click();
-    await page.getByRole("navigation",{name:mobile?"移动端导航":"主要导航"})
-      .getByRole("link",{name:"全部考试"}).click();
-    await expect(page).toHaveURL(/\/assessments$/);
+    for(const href of ["/career","/learn","/practice"])
+      await expect(content.locator('a[href="'+href+'"]').first()).toBeVisible();
+    await content.locator('a[href="/learn"]').first().click();
+    await expect(page).toHaveURL(/\/learn$/);
+    await expect(page.getByRole("heading",{level:1,name:/岗位真正需要的技能/})).toBeVisible();
+    await page.goto("/practice");
+    await expect(page.getByRole("heading",{level:1,name:/模拟检验求职/})).toBeVisible();
+
+    await page.goto("/math");
+    await expect(page.getByRole("heading",{level:1,name:"数学课堂"})).toBeVisible();
     await page.locator('main a[href="/exam-planner"]').first().click();
     await expect(page).toHaveURL(/\/exam-planner$/);
     await expect(page.getByRole("heading",{name:"我的考试管理"})).toBeVisible();
