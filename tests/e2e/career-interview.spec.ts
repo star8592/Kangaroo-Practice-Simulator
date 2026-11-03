@@ -105,7 +105,15 @@ test("pasted job requirements and experience affect the actual follow-up, persis
 
 test("explicit opt-in sends the current answer and displays a model-grounded follow-up",async({page})=>{
  let called=0;
- await page.route("**/api/career/interviews/followup",async route=>{
+ let sessions=0;
+ await page.route("**/api/career/interviews/session",async route=>{
+  sessions++;
+  const request=route.request().postDataJSON();
+  expect(request.profileId).toBe("campus-software");
+  expect(request.clientRequestId).toMatch(/^[0-9a-f-]{36}$/);
+  await route.fulfill({status:200,contentType:"application/json",body:JSON.stringify({sessionId:"cais_"+"a".repeat(32),duplicated:false})});
+ });
+ await page.route("**/api/career/interviews/followup**",async route=>{
   if(route.request().method()==="GET"){
    await route.fulfill({status:200,contentType:"application/json",body:JSON.stringify({enabled:true,provider:"external"})});
    return;
@@ -115,6 +123,7 @@ test("explicit opt-in sends the current answer and displays a model-grounded fol
   expect(submitted.profileId).toBe("campus-software");
   expect(submitted.questionId).toBe("cs-intro");
   expect(submitted.answer).toContain("订单重复");
+  expect(submitted.sessionId).toBe("cais_"+"a".repeat(32));
   expect(submitted.context.jobDescription).toContain("数据库");
   await route.fulfill({status:200,contentType:"application/json",body:JSON.stringify({
    mode:"semantic",question:"你提到订单重复，能说明如何构造并发重试实验来验证幂等性吗？",
@@ -131,6 +140,7 @@ test("explicit opt-in sends the current answer and displays a model-grounded fol
  await expect(page.getByText(/能说明如何构造并发重试实验/)).toBeVisible();
  await expect(page.getByText(/追问依据：.*订单重复/)).toBeVisible();
  expect(called).toBe(1);
+ expect(sessions).toBe(1);
  await page.reload();
  await expect(page.getByText(/能说明如何构造并发重试实验/)).toBeVisible();
  await page.getByRole("textbox",{name:"补充回答"}).fill("我会记录重试是否生成重复订单，并确认唯一约束有效。");
@@ -143,7 +153,12 @@ test("explicit opt-in sends the current answer and displays a model-grounded fol
 
 test("no AI consent never sends an answer; model outage falls back safely",async({page})=>{
  let posts=0;
- await page.route("**/api/career/interviews/followup",async route=>{
+ let sessions=0;
+ await page.route("**/api/career/interviews/session",async route=>{
+  sessions++;
+  await route.fulfill({status:200,contentType:"application/json",body:JSON.stringify({sessionId:"cais_"+"b".repeat(32),duplicated:false})});
+ });
+ await page.route("**/api/career/interviews/followup**",async route=>{
   if(route.request().method()==="GET"){
    await route.fulfill({status:200,contentType:"application/json",body:JSON.stringify({enabled:true,provider:"local"})});
   }else{
@@ -157,6 +172,7 @@ test("no AI consent never sends an answer; model outage falls back safely",async
  await page.getByRole("textbox",{name:"你的回答"}).fill("我负责供应商项目，但还没想好怎么衡量绩效。");
  await page.getByRole("button",{name:"提交本题回答 · 接受追问"}).click();
  expect(posts).toBe(0);
+ expect(sessions).toBe(0);
  await expect(page.getByText("面试官 · 规则追问")).toBeVisible();
  await page.getByRole("button",{name:"重新开始"}).click();
  await page.getByRole("button",{name:"确认清空"}).click();
@@ -167,11 +183,15 @@ test("no AI consent never sends an answer; model outage falls back safely",async
  await page.getByRole("button",{name:"提交本题回答 · 接受追问"}).click();
  await expect(page.getByText("面试官 · 规则追问")).toBeVisible();
  expect(posts).toBe(1);
+ expect(sessions).toBe(1);
 });
 
 test("guided mode selects a pre-reviewed follow-up and discloses approved backup providers",async({page})=>{
  let posts=0;
- await page.route("**/api/career/interviews/followup",async route=>{
+ await page.route("**/api/career/interviews/session",async route=>{
+  await route.fulfill({status:200,contentType:"application/json",body:JSON.stringify({sessionId:"cais_"+"c".repeat(32),duplicated:false})});
+ });
+ await page.route("**/api/career/interviews/followup**",async route=>{
   if(route.request().method()==="GET"){
    await route.fulfill({status:200,contentType:"application/json",body:JSON.stringify({
     enabled:true,provider:"external",providers:["小米 MiMo","DeepSeek"]
@@ -181,6 +201,7 @@ test("guided mode selects a pre-reviewed follow-up and discloses approved backup
   posts++;
   const body=route.request().postDataJSON();
   expect(body.questionId).toBe("cs-intro");
+  expect(body.sessionId).toBe("cais_"+"c".repeat(32));
   expect(body.answer).toContain("亲自负责");
   await route.fulfill({status:200,contentType:"application/json",body:JSON.stringify({
    mode:"guided",
