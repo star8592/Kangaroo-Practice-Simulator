@@ -20,6 +20,7 @@ export default async function CareerPathDetail({params,searchParams}:PageProps){
  if(!path)notFound();
  const audience=query.audience==="social"?"social":"campus";
  const steps=path.steps.filter(s=>s.audience==="both"||s.audience===audience);
+ const actions={learn:"阅读完整教程",lab:"开始动手练习","formal-exam":"进入正式模拟",interview:"开始模拟面试",resource:"打开资料"} as const;
  return <div className={styles.shell}>
   <nav className={styles.breadcrumb} aria-label="位置"><Link href="/career">岗位方向</Link><span>/</span><Link href="/career/paths">学习路线</Link><span>/</span><span>{path.title}</span></nav>
   <header className={styles.hero}>
@@ -45,7 +46,7 @@ export default async function CareerPathDetail({params,searchParams}:PageProps){
     <span className={styles.stepNum}>{i+1}</span><div>
      <div className={styles.stepHead}><h3>{step.name}</h3><span className={styles.status}>{step.status==="live"?"已开放":"尚未上线"}</span></div>
      <p>{step.detail}</p>
-     {step.href&&<Link href={step.href}>进入这一环节 →</Link>}
+     {step.href&&<Link href={step.href}>{actions[step.stage]} →</Link>}
      {step.note&&<p>{step.note}</p>}
     </div>
    </li>)}
