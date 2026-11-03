@@ -20,3 +20,18 @@
 .jobNotes p{margin:7px 0;overflow-wrap:anywhere}
 @media(max-width:650px){.contextPanel{padding:14px 12px}.contextFields input,.contextFields textarea{font-size:16px}}
 @media print{.contextPanel,.jobNotes{display:none!important}.contextSignals{background:#fff;border:1px solid #ccc}}
+
+/* Two clearly differentiated purchase modes, without fake SKU prices. */
+.purchasePanel{border:1px solid #d3e3e8;border-radius:13px;padding:18px;margin:20px 0;background:#fafcfd}
+.purchaseHeading{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.purchaseHeading h3{margin:0;font-size:20px;color:#1d4d62}
+.purchaseHeading span{font-size:12px;color:#4d7d81}
+.purchasePlans{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:14px 0}
+.purchasePlans>div{padding:13px 16px;border:1px solid #dbe7ed;background:white;border-radius:10px;min-width:0}
+.purchasePlans strong{font-size:16px;color:#164a65}
+.purchasePlans p{font-size:17px;color:#174f69;font-weight:800;margin:7px 0;overflow-wrap:anywhere}
+.purchasePlans small{font-size:12px;color:#6d8190}
+.purchaseCredits{padding:11px 14px;background:#eff9f5;border-radius:8px;font-size:14px;color:#236e58;line-height:1.7}
+.retryOffer{margin-left:10px;border:0;border-bottom:1px solid #217d91;background:none;cursor:pointer;color:#217d91;font:inherit}
+@media(max-width:650px){.purchasePanel{padding:14px}.purchaseHeading{align-items:flex-start}.purchasePlans{gap:8px}.purchasePlans>div{padding:12px}.purchasePlans p{font-size:15px}}
+@media print{.purchasePanel{display:none!important}}

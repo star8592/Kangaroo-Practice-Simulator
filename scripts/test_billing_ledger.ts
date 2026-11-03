@@ -70,8 +70,10 @@ async function run() {
   await db.query(fs.readFileSync("ops/db/008_digital_sales_consent.sql","utf8"));
   await db.query(fs.readFileSync("ops/db/009_assessment_report_rights.sql","utf8"));
   await db.query(fs.readFileSync("ops/db/010_career_interview_service_sessions.sql","utf8"));
-  // The additive migration must be repeatable on a fresh CI database.
+  // Both additive migrations must be repeatable in an isolated database.
   await db.query(fs.readFileSync("ops/db/010_career_interview_service_sessions.sql","utf8"));
+  await db.query(fs.readFileSync("ops/db/011_career_monthly_and_per_use.sql","utf8"));
+  await db.query(fs.readFileSync("ops/db/011_career_monthly_and_per_use.sql","utf8"));
   const consent={policyVersion:DIGITAL_SALES_POLICY_VERSION,acceptedAt:new Date()};
   // Native real orders are rejected without customer-initiated confirmation.
   await assert.rejects(()=>createBillingOrder("par_noconsent","plus_month","wechat_native"),
@@ -467,9 +469,9 @@ async function run() {
   const profileId="campus-software";
   await db.query(`INSERT INTO billing_products
     (id,tier,period,product_kind,content_kind,content_id,title_zh,
-     amount_minor,currency,service_sessions,enabled)
+     amount_minor,currency,service_sessions,service_billing_mode,enabled)
     VALUES('career_ai_campus_2',NULL,NULL,'service','career_interview','campus-software',
-     '研发模拟面试两场',399,'CNY',2,true)`);
+     '研发模拟面试两场',399,'CNY',2,'per_use',true)`);
   await assert.rejects(()=>createBillingOrder(buyer,"career_ai_campus_2","wechat_native",consent),BillingConflictError);
   await db.query("UPDATE billing_products SET rights_approved=true,delivery_verified=true,access_restricted=true WHERE id='career_ai_campus_2'");
   await assert.rejects(()=>startPaidCareerSession({buyerId:buyer,profileId,clientRequestId:crypto.randomUUID()}),CareerCreditsRequired);
@@ -522,6 +524,69 @@ async function run() {
   await assert.rejects(()=>startPaidCareerSession({buyerId:buyer,profileId,clientRequestId:nonce}),CareerSessionUnavailable);
   await assert.rejects(()=>claimPaidCareerRound({buyerId:buyer,profileId,
     sessionId:oneSession.sessionId,questionId:"cs-intro"}),CareerSessionUnavailable);
+  // The monthly product is a 30-day fixed period, with a fixed session quota.
+  const monthlyBuyer="par_career_monthly";
+  await db.query(`INSERT INTO billing_products
+    (id,tier,period,product_kind,content_kind,content_id,title_zh,
+     amount_minor,currency,service_sessions,service_billing_mode,
+     enabled,rights_approved,delivery_verified,access_restricted)
+    VALUES('career_ai_monthly_test',NULL,NULL,'service','career_interview','campus-software',
+     '研发模拟面试30天',1299,'CNY',30,'monthly',true,true,true,true)`);
+  const monthlyOrder=await createBillingOrder(monthlyBuyer,"career_ai_monthly_test","wechat_native",consent);
+  const monthlySnapshot=await db.query<{service_sessions_snapshot:number;service_billing_mode_snapshot:string}>(
+    "SELECT service_sessions_snapshot,service_billing_mode_snapshot FROM billing_orders WHERE id=$1",[monthlyOrder.id]);
+  assert.equal(monthlySnapshot.rows[0].service_sessions_snapshot,30);
+  assert.equal(monthlySnapshot.rows[0].service_billing_mode_snapshot,"monthly");
+  await db.query("UPDATE billing_products SET service_sessions=45 WHERE id='career_ai_monthly_test'");
+  const monthReceipt={...receipt(monthlyOrder.id,"monthly-paid-one","monthly-tx-one",1299),provider:"wechat_native" as const};
+  assert.equal((await settleVerifiedOrder(monthReceipt)).created,true);
+  assert.equal((await settleVerifiedOrder(monthReceipt)).created,false);
+  const dateRows=await db.query<{billing_mode:string;purchased_sessions:number;valid_from:Date;expires_at:Date}>(
+    "SELECT billing_mode,purchased_sessions,valid_from,expires_at FROM billing_career_session_grants WHERE source_order_id=$1",
+    [monthlyOrder.id]);
+  assert.equal(dateRows.rows[0].billing_mode,"monthly");
+  assert.equal(dateRows.rows[0].purchased_sessions,30);
+  assert.equal(dateRows.rows[0].expires_at.getTime()-dateRows.rows[0].valid_from.getTime(),30*86400000);
+  assert.equal((await getPaidCareerSessionAvailability(monthlyBuyer,profileId)).monthlyRemaining,30);
+  const monthSession=await startPaidCareerSession({buyerId:monthlyBuyer,profileId,clientRequestId:crypto.randomUUID()});
+  assert.ok(monthSession.sessionId.startsWith("cais_"));
+  assert.equal((await getPaidCareerSessionAvailability(monthlyBuyer,profileId)).monthlyRemaining,29);
+  // Early renewal extends the original 30-day term rather than overlapping it.
+  const renewalOrder=await createBillingOrder(monthlyBuyer,"career_ai_monthly_test","wechat_native",consent);
+  assert.equal((await settleVerifiedOrder({...receipt(renewalOrder.id,"monthly-paid-two","monthly-tx-two",1299),provider:"wechat_native" as const})).created,true);
+  const periods=await db.query<{valid_from:Date;expires_at:Date}>(
+    "SELECT valid_from,expires_at FROM billing_career_session_grants WHERE payer_parent_id=$1 ORDER BY valid_from",
+    [monthlyBuyer]);
+  assert.equal(periods.rows.length,2);
+  assert.equal(periods.rows[1].valid_from.getTime(),periods.rows[0].expires_at.getTime());
+  assert.equal((await getPaidCareerSessionAvailability(monthlyBuyer,profileId)).monthlyRemaining,29);
+  // Both modes can be owned together; expiring monthly sessions are used first.
+  const oneOffOrder=await createBillingOrder(monthlyBuyer,"career_ai_campus_2","wechat_native",consent);
+  const oneOffReceipt={...receipt(oneOffOrder.id,"mixed-mode-paid","mixed-mode-tx",399),provider:"wechat_native" as const};
+  await settleVerifiedOrder(oneOffReceipt);
+  const combined=await getPaidCareerSessionAvailability(monthlyBuyer,profileId);
+  assert.equal(combined.perUseRemaining,10);
+  assert.equal(combined.monthlyRemaining,29);
+  const combinedSession=await startPaidCareerSession({buyerId:monthlyBuyer,profileId,clientRequestId:crypto.randomUUID()});
+  assert.ok(combinedSession.sessionId.startsWith("cais_"));
+  const chosen=await getPaidCareerSessionAvailability(monthlyBuyer,profileId);
+  assert.equal(chosen.monthlyRemaining,28);
+  assert.equal(chosen.perUseRemaining,10);
+  await refundVerifiedOrder({...oneOffReceipt,eventId:"mixed-mode-refund"});
+  assert.equal((await getPaidCareerSessionAvailability(monthlyBuyer,profileId)).perUseRemaining,0);
+  // Test expiry only in isolated fixtures; never mutate real paid customer grants.
+  await db.query(`UPDATE billing_career_session_grants
+    SET valid_from=now()-interval '31 days',expires_at=now()-interval '1 day'
+    WHERE source_order_id=$1`,[monthlyOrder.id]);
+  assert.equal((await getPaidCareerSessionAvailability(monthlyBuyer,profileId)).monthlyRemaining,0);
+  await assert.rejects(()=>startPaidCareerSession({buyerId:monthlyBuyer,profileId,
+    clientRequestId:crypto.randomUUID()}),CareerCreditsRequired);
+  // A session started before the end of a term can finish its two-hour window.
+  const lastRound=await claimPaidCareerRound({buyerId:monthlyBuyer,profileId,
+    sessionId:monthSession.sessionId,questionId:"cs-intro"});
+  assert.equal(await finishPaidCareerRound({sessionId:monthSession.sessionId,questionId:"cs-intro",
+    claimToken:lastRound.claimToken,success:true}),true);
+  console.log("CAREER_MONTHLY_AND_PER_USE=PASS two modes, 30-day term, quota, early renewal, expiry and active-session finish");
   console.log("CAREER_PAID_SESSIONS=PASS settled-only; immutable-quantity; 4-way-concurrency; idempotency; single-round; retry; cross-owner; refund-revoke");
   console.log("BILLING_LEDGER_PASS order-payment, renewal, refund, owner isolation, 4-way quota concurrency, idempotency");
 }

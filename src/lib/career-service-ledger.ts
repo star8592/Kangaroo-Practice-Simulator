@@ -20,10 +20,15 @@ async function tx<T>(fn:(client:PoolClient)=>Promise<T>){
 export async function getPaidCareerSessionAvailability(buyerId:string,profileId:string){
  if(!buyerOK(buyerId)||!validProfile(profileId))throw new BillingConflictError("Invalid buyer or profile");
  const [credits,live]=await Promise.all([
-  billingPool().query<{count:string}>(`
-    SELECT COALESCE(SUM(g.remaining_sessions),0)::text AS count
+  billingPool().query<{count:string;per_use:string;monthly:string;monthly_until:Date|null}>(`
+    SELECT COALESCE(SUM(g.remaining_sessions),0)::text AS count,
+      COALESCE(SUM(g.remaining_sessions) FILTER (WHERE g.billing_mode='per_use'),0)::text AS per_use,
+      COALESCE(SUM(g.remaining_sessions) FILTER (WHERE g.billing_mode='monthly'),0)::text AS monthly,
+      MAX(g.expires_at) FILTER (WHERE g.billing_mode='monthly') AS monthly_until
     FROM billing_career_session_grants g JOIN billing_orders o ON o.id=g.source_order_id
-    WHERE g.payer_parent_id=$1 AND g.profile_id=$2 AND g.revoked_at IS NULL AND o.state='paid'`,
+    WHERE g.payer_parent_id=$1 AND g.profile_id=$2 AND g.revoked_at IS NULL AND o.state='paid'
+      AND (g.billing_mode='per_use' OR
+           (g.billing_mode='monthly' AND g.valid_from<=now() AND g.expires_at>now()))`,
    [buyerId,profileId]),
   billingPool().query<{count:string}>(`
     SELECT COUNT(*)::text AS count FROM billing_career_sessions s
@@ -33,7 +38,11 @@ export async function getPaidCareerSessionAvailability(buyerId:string,profileId:
       AND g.revoked_at IS NULL AND o.state='paid'`,[buyerId,profileId]),
  ]);
  const remaining=Number(credits.rows[0]?.count||0),activeSessions=Number(live.rows[0]?.count||0);
- return {remainingSessions:remaining,activeSessions,available:remaining>0||activeSessions>0};
+ return {remainingSessions:remaining,
+  perUseRemaining:Number(credits.rows[0]?.per_use||0),
+  monthlyRemaining:Number(credits.rows[0]?.monthly||0),
+  monthlyActiveUntil:credits.rows[0]?.monthly_until?.toISOString()??null,
+  activeSessions,available:remaining>0||activeSessions>0};
 }
 /** Only the server-side verified WeChat buyer can open or retry this reservation. */
 export async function startPaidCareerSession(input:{buyerId:string;profileId:string;clientRequestId:string}){
@@ -59,7 +68,10 @@ export async function startPaidCareerSession(input:{buyerId:string;profileId:str
     JOIN billing_orders o ON o.id=g.source_order_id
     WHERE g.payer_parent_id=$1 AND g.profile_id=$2 AND g.revoked_at IS NULL
       AND o.state='paid' AND g.remaining_sessions>0
-    ORDER BY g.granted_at,g.source_order_id LIMIT 1 FOR UPDATE OF g`,[buyerId,profileId]);
+      AND (g.billing_mode='per_use' OR
+           (g.billing_mode='monthly' AND g.valid_from<=now() AND g.expires_at>now()))
+    ORDER BY g.expires_at ASC NULLS LAST,g.granted_at,g.source_order_id
+    LIMIT 1 FOR UPDATE OF g`,[buyerId,profileId]);
   const source=grant.rows[0]?.source_order_id;
   if(!source)throw new CareerCreditsRequired("No paid interview sessions remain");
   const debit=await c.query("UPDATE billing_career_session_grants SET remaining_sessions=remaining_sessions-1 WHERE source_order_id=$1 AND remaining_sessions>0 RETURNING source_order_id",[source]);
