@@ -8,15 +8,12 @@ import {ASSESSMENT_DOMAINS} from "../src/lib/assessment-platform";
 
 const root=(href:string)=>path.join(process.cwd(),"src/app",href.slice(1),"page.tsx");
 const targets=[
- ["exams","/assessments","全部考试"],
- ["resources","/resources","真题资料"],
- ["career","/career","职业岗位"],
- ["skills","/skill-labs","技能实训"],
- ["assessments","/assessment-center","测评中心"],
- ["store","/shop","数字商城"],
+ ["career","/career","岗位方向"],
+ ["skills","/learn","学习与实训"],
+ ["practice","/practice","模拟笔试与面试"],
 ];
 assert.deepEqual(PRIMARY_BUSINESS_NAV.map(x=>[x.id,x.href,x.zh]),targets);
-assert.equal(new Set(PRIMARY_BUSINESS_NAV.map(x=>x.href)).size,6);
+assert.equal(new Set(PRIMARY_BUSINESS_NAV.map(x=>x.href)).size,3);
 for(const item of PRIMARY_BUSINESS_NAV){
  assert.ok(fs.existsSync(root(item.href)),"Missing public business entry: "+item.href);
  assert.equal(businessForPublicPath(item.href),item.id);
@@ -88,6 +85,15 @@ assert.equal(businessForPublicPath("/parent"),null,"Legacy family account must n
 const doc="docs/architecture/SOCTHINK_SITE_ARCHITECTURE_MASTER.md";
 assert.ok(fs.existsSync(doc),"Canonical site architecture document is missing");
 const text=read(doc);
-for(const word of ["六大独立业务","五类","业务所有权","SEO/GEO","URL","验收"])
+for(const word of ["校招","社招","学习与实训","岗位方向","SEO/GEO","URL","验收"])
  assert.ok(text.includes(word),"Canonical architecture is missing: "+word);
-console.log("SOCTHINK_SITE_ARCHITECTURE=PASS businesses=6 exam_groups=5 legacy_routes="+BUSINESS_SUBROUTES.length+" cross_paths="+cases.length);
+console.log("SOCTHINK_SITE_ARCHITECTURE=PASS businesses=3 exam_groups=5 legacy_routes="+BUSINESS_SUBROUTES.length+" cross_paths="+cases.length);
+
+// Career-first public navigation is separate from the still-working math classroom routes.
+for(const url of ["/assessments","/resources","/shop","/competitions","/arithmetic"])
+ assert.ok(!PRIMARY_BUSINESS_NAV.some(x=>x.href===url),"Classroom/transaction path leaked into main navigation: "+url);
+for(const entry of ["/learn","/practice"]){
+ assert.ok(home.includes('href:"'+entry+'"')||home.includes('href=\"'+entry+'\"'),"Home missing career task "+entry);
+ const html=read("src/app"+entry+"/page.tsx");
+ assert.ok(html.includes('canonical:"'+entry+'"'),"Career hub has no canonical: "+entry);
+}
