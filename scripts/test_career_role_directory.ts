@@ -6,6 +6,7 @@ import {
 } from "../src/lib/career-role-taxonomy";
 import {CAREER_ORIGINAL_GUIDES} from "../src/lib/career-original-guides";
 import {CAREER_FORMAL_PAPERS} from "../src/lib/career-formal-bank";
+import {CAREER_PATHS,careerPathForRole,validateCareerPaths} from "../src/lib/career-paths";
 
 assert.deepEqual(validateCareerRoleTaxonomy(),[]);
 assert.equal(CAREER_ROLE_GROUPS.length,13,"browse 13 customer-facing industries");
@@ -22,8 +23,16 @@ assert(searchCareerRoles("运营","product-ops").length>=4);
 assert(searchCareerRoles("量化","construction").length===0);
 assert.equal(CAREER_ORIGINAL_GUIDES.length,3);
 assert.equal(CAREER_FORMAL_PAPERS.length,4);
+assert.deepEqual(validateCareerPaths(),[],"All advertised career steps must match real content");
+assert.equal(CAREER_PATHS.length,4);
+assert.equal(careerPathForRole("intelligence-01-04")?.slug,"ai-agent-engineer");
+assert.equal(careerPathForRole("intelligence-02-01")?.slug,"data-analyst-sql");
+assert.equal(careerPathForRole("product-ops-02-01")?.slug,"commerce-operations");
+assert.equal(careerPathForRole("digital-01-02")?.slug,"software-engineer");
+assert.equal(careerPathForRole("construction-01-01"),undefined,"Do not invent products for unverified roles");
 const rolePage=fs.readFileSync("src/app/career/roles/[id]/page.tsx","utf8");
 assert(rolePage.includes("notFound()")&&rolePage.includes("getCareerRole(id)"));
+assert(rolePage.includes("careerPathForRole"),"Role pages must use single source of verified career tracks");
 assert(rolePage.includes("EXACT_PRODUCTS"),"role pages only associate content by explicitly verified training tracks");
 assert(rolePage.includes("这个具体岗位的专项资料尚未上线"),"no false products for merely listed occupations");
 const home=fs.readFileSync("src/app/career/page.tsx","utf8");
@@ -36,6 +45,7 @@ assert(home.indexOf('id="digital-materials"')<home.indexOf("researchDetails"));
 for(const label of ["查看岗位方向","查看正式模拟与面试","先找到要准备的岗位","岗位模拟笔试与面试"]){
   assert(home.includes(label),"missing primary CTA:"+label);
 }
+assert(nav.includes("CAREER_PATHS.map"),"Prioritize verified training routes before raw job names");
 assert(nav.includes("CAREER_ROLE_GROUPS.map"),"category navigation must be functional");
 assert(nav.includes("onClick={()=>setCategory(group.id)}"),"category controls must update list");
 assert(nav.includes('href={"/career/roles/"+role.id}'),"every role is clickable");
