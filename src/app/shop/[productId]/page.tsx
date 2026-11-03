@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type {Metadata} from "next";
 import Image from "next/image";
 import {cookies} from "next/headers";
 import {notFound} from "next/navigation";
@@ -10,10 +11,20 @@ import NativeCheckoutPanel,{type PublishedMembershipOffer} from "@/app/membershi
 import styles from "../shop.module.css";
 
 export const dynamic="force-dynamic";
-export const metadata={
-  title:"原创数字资料详情与购买 | SOCTHINK",
-  description:"查看实际交付文件、题量与价格，微信验证付款后在同一账号下载。",
-};
+// Every real SKU has one stable canonical; a removed or unknown SKU is never indexable.
+export async function generateMetadata({params}:{params:Promise<{productId:string}>}):Promise<Metadata>{
+  const {productId}=await params;
+  const product=await findStoreProduct(productId);
+  if(!product)return {
+    title:"资料不存在 | SOCTHINK",
+    robots:{index:false,follow:false},
+  };
+  return {
+    title:product.title+" | SOCTHINK 数字商城",
+    description:"原创 PDF 数字资料："+product.title+"。查看实际交付文件、价格与内容，购买权益以官方付款结果为准。",
+    alternates:{canonical:"/shop/"+encodeURIComponent(product.id)},
+  };
+}
 
 const money=(fen:number)=>(fen/100).toFixed(2);
 
