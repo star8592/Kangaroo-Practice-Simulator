@@ -14,6 +14,8 @@ const LINKS=[
  {name:"口算与计算训练",description:"计算训练与按年级练习",href:"/arithmetic"},
  {name:"错题复盘",description:"查看本人授权的历史错题与复练",href:"/review"},
  {name:"学习记录",description:"学生登录后查看自己的成绩和记录",href:"/student"},
+ {name:"考试日程",description:"记录数学竞赛和考试安排",href:"/exam-planner"},
+ {name:"赛事管家",description:"查看数学赛事信息与准备事项",href:"/events"},
 ] as const;
 export default function ClassroomMath(){
  return <div className={styles.shell}>
