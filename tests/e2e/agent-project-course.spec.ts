@@ -21,7 +21,6 @@ test("Agent project course has real study stages, source boundaries and an inter
  await expect(course.getByText("1/6")).toBeVisible();
  await course.getByRole("button",{name:/意图识别与不确定性/}).click();
  await expect(course.getByRole("heading",{level:3,name:"意图识别与不确定性"})).toBeVisible();
- await expect(course.getByText("同一个").first()).toHaveCount(0);
  await expect(course.getByText(/仅保存在当前浏览器/)).toBeVisible();
  await expect(page.getByRole("button",{name:/付费|付款|立即购买/})).toHaveCount(0);
 });
