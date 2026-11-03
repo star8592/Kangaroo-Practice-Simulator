@@ -49,3 +49,19 @@ export async function callModel(p:Provider,messages:Message[],timeout:number,e:E
  if(typeof content!=="string"||content.length>4500)throw new Error("INVALID_MODEL_CONTENT");
  return {content,provider:p,latencyMs:Date.now()-start};
 }
+
+/** The primary and secondary providers are never called in parallel: bound spend and latency. */
+export async function withModelBackup<T>(
+ config:Config,messages:Message[],parse:(s:string)=>T|null,
+ caller:typeof callModel=callModel
+):Promise<{result:T;provider:Provider;latencyMs:number;viaBackup:boolean}|null>{
+ const choices=[config.primary,...(config.backup?[config.backup]:[])];
+ for(let i=0;i<choices.length;i++){
+  try{
+   const response=await caller(choices[i],messages,modelTimeout(i===0?"primary":"backup"));
+   const parsed=parse(response.content);
+   if(parsed)return {result:parsed,provider:response.provider,latencyMs:response.latencyMs,viaBackup:i>0};
+  }catch{/* Expected: unavailable, timeout, invalid JSON; try the next approved provider. */}
+ }
+ return null;
+}
