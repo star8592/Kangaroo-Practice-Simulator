@@ -32,6 +32,8 @@ def classify(url):
         return "全站首页", "L0", "public"
     if url == "/search":
         return "全站搜索", "L0", "noindex"
+    if url == "/assessment-center/sql-lab":
+        return "技能实训（旧路径永久重定向）", "redirect", "public-redirect"
     if url.startswith("/admin"):
         return "运营后台", "private", "restricted"
     if url.startswith(POLICIES):
@@ -91,6 +93,8 @@ for file in APP.rglob("route.ts"):
         owner = "统一账户/授权"
     elif url.startswith("/api/payments"):
         owner = "支付/统一账本"
+    elif url == "/api/release":
+        owner = "全站版本和状态"
     elif url.startswith("/api/admin"):
         owner = "运营后台"
     elif url.startswith("/api/miniapp"):
