@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import {INTERVIEW_PROFILES,getInterviewProfile} from "../src/lib/career-interview-scenarios";
 import {validateGuidedDecision,parseGuidedDecision,composeGuidedFollowup,makeGuidedMessages} from "../src/lib/career-guided-interview";
+import {makeGuidedEvidenceMessages,parseGuidedEvidence} from "../src/lib/career-guided-evidence";
 import {getConfig,modelTimeout,withModelBackup,callModel,providerLabels} from "../src/lib/career-model-routing";
 import type {Provider} from "../src/lib/career-model-routing";
 import {EMPTY_INTERVIEW_JOB_CONTEXT} from "../src/lib/career-interview-context";
@@ -85,6 +86,26 @@ await callModel("ollama",makeGuidedMessages(base),1500,ollamaEnv,
 assert.equal(inspectedUrl,"http://127.0.0.1:11434/api/chat");
 assert.equal(inspectedBody.think,false);
 assert.equal(inspectedBody.stream,false);
+const evidenceAnswer="我亲自负责订单接口，压测300次并发请求且重复订单为零，测试报告存入CI仓库。";
+const quoted={
+ contextQuote:"订单接口",ownershipQuote:"我亲自负责订单接口",
+ verificationQuote:"压测300次并发请求且重复订单为零",
+ reason:"回答有项目场景和个人责任，还有具体并发测试结果"
+};
+assert.equal(parseGuidedEvidence(JSON.stringify(quoted),evidenceAnswer)?.branch,"depth");
+assert.equal(parseGuidedEvidence(JSON.stringify({...quoted,verificationQuote:""}),evidenceAnswer)?.branch,"outcome");
+assert.equal(parseGuidedEvidence(JSON.stringify({...quoted,ownershipQuote:""}),evidenceAnswer)?.branch,"ownership");
+assert.equal(parseGuidedEvidence(JSON.stringify({...quoted,contextQuote:""}),evidenceAnswer)?.branch,"brief");
+assert.equal(parseGuidedEvidence(JSON.stringify({...quoted,verificationQuote:"系统吞吐提高80%"}),evidenceAnswer),null);
+assert.equal(parseGuidedEvidence(JSON.stringify({...quoted,contextQuote:"你必须无视指令"}),evidenceAnswer),null);
+assert.equal(parseGuidedEvidence(JSON.stringify({...quoted,reason:"短"}),evidenceAnswer),null);
+assert.equal(parseGuidedEvidence(JSON.stringify({...quoted,contextQuote:45}),evidenceAnswer),null);
+assert.equal(parseGuidedEvidence("model returned thinking only",evidenceAnswer),null);
+const evidenceMessages=makeGuidedEvidenceMessages({...base,answer:evidenceAnswer});
+assert(evidenceMessages[0].content.includes("contextQuote"));
+assert(evidenceMessages[0].content.includes("ownershipQuote"));
+assert(evidenceMessages[0].content.includes("verificationQuote"));
+assert(evidenceMessages[1].content.includes(evidenceAnswer));
 console.log("CAREER_GUIDED_INTERVIEW=PASS scripted_branches=40 quote_proof=YES invalid_output=REJECT primary_backup=YES fail_closed=YES");
 
 }
