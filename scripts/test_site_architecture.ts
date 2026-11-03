@@ -68,11 +68,11 @@ assert.ok(!header.includes("在线练习")&&!header.includes('href:"/exam-planne
  "Standalone practice/calendar must not be a primary nav entry");
 // RootLayout owns the only <main> landmark; business screens use sections/divs.
 const layout=read("src/app/layout.tsx");
-assert.equal((layout.match(/<main\\b/g)||[]).length,1,"Root layout must have a single main");
+assert.equal((layout.match(/<main\b/g)||[]).length,1,"Root layout must have a single main");
 for(const page of ["src/app/career/page.tsx","src/app/career/exams/[id]/page.tsx",
  "src/app/career/guides/[id]/page.tsx","src/app/career/roles/[id]/page.tsx"]){
  const body=read(page);
- assert.ok(!/<main\\b/.test(body),"Nested main landmark in "+page);
+ assert.ok(!/<main\b/.test(body),"Nested main landmark in "+page);
 }
 for(const page of ["src/app/assessment-center/[id]/page.tsx",
  "src/app/assessment-center/advanced-reasoning-40/page.tsx",
