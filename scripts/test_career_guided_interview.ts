@@ -87,6 +87,7 @@ await callModel("ollama",makeGuidedMessages(base),1500,ollamaEnv,
 assert.equal(inspectedUrl,"http://127.0.0.1:11434/api/chat");
 assert.equal(inspectedBody.think,false);
 assert.equal(inspectedBody.stream,false);
+assert.equal(inspectedBody.keep_alive,"20m");
 const evidenceAnswer="我亲自负责订单接口，压测300次并发请求且重复订单为零，测试报告存入CI仓库。";
 const quoted={
  contextQuote:"订单接口",ownershipQuote:"我亲自负责订单接口",

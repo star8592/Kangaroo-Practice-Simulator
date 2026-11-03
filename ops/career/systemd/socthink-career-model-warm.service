@@ -1,0 +1,10 @@
+[Unit]
+Description=SOC THINK GPU-aware local career interview model preload
+After=network-online.target
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 %h/.local/share/socthink-career/prewarm_ollama.py
+TimeoutStartSec=70
+NoNewPrivileges=yes
+[Install]
+WantedBy=default.target

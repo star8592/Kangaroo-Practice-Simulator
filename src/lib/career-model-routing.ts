@@ -37,7 +37,7 @@ export async function callModel(p:Provider,messages:Message[],timeout:number,e:E
   headers.Authorization="Bearer "+key;
  }
  const body=p==="ollama"
-  ?{model,messages,stream:false,think:false,format:"json",options:{temperature:0.1,num_predict:260}}
+  ?{model,messages,stream:false,think:false,format:"json",keep_alive:"20m",options:{temperature:0.1,num_predict:260}}
   :p==="mimo"
    ?{model,messages,stream:false,response_format:{type:"json_object"},max_completion_tokens:320,thinking:{type:"disabled"}}
    :{model,messages,stream:false,response_format:{type:"json_object"},max_tokens:260};
