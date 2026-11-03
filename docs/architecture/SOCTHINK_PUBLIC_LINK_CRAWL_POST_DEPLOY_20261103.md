@@ -1,14 +1,14 @@
-# SOC THINK 页面架构 v1.2 生产复验：188 条公开路径
+# SOC THINK 页面架构 v1.2 生产复验：189 条公开路径
 
-时间（UTC）：2026-11-03T02:29:43Z。原始基址：https://socthink.cn。生产部署 SHA：`52412cdbbd49dfd8c5f37b4df885d61c1430c76a`。脚本：scripts/audit_site_public_crawl.py。
+时间（UTC）：2026-11-03T02:34:30Z。原始基址：https://socthink.cn。生产部署 SHA：`52412cdbbd49dfd8c5f37b4df885d61c1430c76a`。脚本：scripts/audit_site_public_crawl.py。
 
-与旧版基线比较：Sitemap 已从 37 项扩大至 59 项；已知重复 `<main>` 从 7 个公开 URL 降至 0。新版扫描扩大了各类职业动态详情的覆盖范围（117 → 188 条），因此样本量不能直接作为新增网页数量或页面增长指标。
+本轮已覆盖全部 59 个 Sitemap URL（包含公开的 `/verification`）、职业动态岗位/面试详情与可读商城商品页。与整改前基线比较：Sitemap 从 37 项增加到 59 项，已知重复 `<main>` 从 7 个公开 URL 降至 0。不同轮次扫描范围变化（117 → 189），不能把样本量误报成新增页面数量。
 
 这不是完整私有权限 E2E，也不是对动态试卷/商品实例的全量验证。只读取公开、匿名、GET 的 HTML/站点地图；登录、订单、管理、报告、API、下载等敏感或状态页明确跳过，不能据此认定它们是孤儿。
 
 ## 概况
 
-- 共抽查：188 个公开站内 URL；当前脚本上限：220；Sitemap 发现：59；状态分布：{"200": 186, "307": 2}。
+- 共抽查：189 个公开站内 URL；当前脚本上限：220；Sitemap 发现：59；状态分布：{"200": 187, "307": 2}。
 - 匿名检索到多主地标页面：0；被本轮其他页面内链发现为 0 的条目：0（不代表确定孤儿页，可能是 Sitemap 入口）。
 - 站点地图读取异常：无。
 - 原始内容最终跳转到 /login 的页面：11。这类 HTTP 200 是**登录页**，不能计入原页面已成功展示。
@@ -17,24 +17,24 @@
 
 | URL | HTTP | 最终路径 | 页面 main 数 | canonical | 已发现站内入口数 |
 | --- | --- | --- | ---: | --- | ---: |
-| `/` | 200 | `/` | 1 | `https://socthink.cn` | 186 |
+| `/` | 200 | `/` | 1 | `https://socthink.cn` | 187 |
 | `/arithmetic` | 307 | `/arithmetic` | - | 未发现 | 3 |
 | `/arithmetic/print` | 307 | `/arithmetic/print` | - | 未发现 | 1 |
-| `/assessment-center` | 200 | `/assessment-center` | 1 | `https://socthink.cn/assessment-center` | 186 |
+| `/assessment-center` | 200 | `/assessment-center` | 1 | `https://socthink.cn/assessment-center` | 187 |
 | `/assessment-center/about` | 200 | `/assessment-center/about` | 1 | `https://socthink.cn/assessment-center/about` | 8 |
 | `/assessment-center/advanced-reasoning-40` | 200 | `/assessment-center/advanced-reasoning-40` | 1 | `https://socthink.cn/assessment-center/advanced-reasoning-40` | 2 |
 | `/assessment-center/career-aptitude-40` | 200 | `/assessment-center/career-aptitude-40` | 1 | `https://socthink.cn/assessment-center/career-aptitude-40` | 3 |
 | `/assessment-center/career-interest-exploration-30` | 200 | `/assessment-center/career-interest-exploration-30` | 1 | `https://socthink.cn/assessment-center/career-interest-exploration-30` | 2 |
 | `/assessment-center/ipip-big-five-50-cn-preview` | 200 | `/assessment-center/ipip-big-five-50-cn-preview` | 1 | `https://socthink.cn/assessment-center/ipip-big-five-50-cn-preview` | 3 |
-| `/assessment-center/methodology` | 200 | `/assessment-center/methodology` | 1 | `https://socthink.cn/assessment-center/methodology` | 186 |
+| `/assessment-center/methodology` | 200 | `/assessment-center/methodology` | 1 | `https://socthink.cn/assessment-center/methodology` | 187 |
 | `/assessment-center/reading-practice-16` | 200 | `/assessment-center/reading-practice-16` | 1 | `https://socthink.cn/assessment-center/reading-practice-16` | 2 |
 | `/assessment-center/reasoning-practice-20` | 200 | `/assessment-center/reasoning-practice-20` | 1 | `https://socthink.cn/assessment-center/reasoning-practice-20` | 2 |
 | `/assessment-center/report-preview` | 200 | `/assessment-center/report-preview` | 1 | `https://socthink.cn/assessment-center/report-preview` | 1 |
 | `/assessment-center/work-style-24` | 200 | `/assessment-center/work-style-24` | 1 | `https://socthink.cn/assessment-center/work-style-24` | 2 |
 | `/assessment-center/work-values-30` | 200 | `/assessment-center/work-values-30` | 1 | `https://socthink.cn/assessment-center/work-values-30` | 2 |
 | `/assessment-center/workplace-sjt-24` | 200 | `/assessment-center/workplace-sjt-24` | 1 | `https://socthink.cn/assessment-center/workplace-sjt-24` | 2 |
-| `/assessments` | 200 | `/assessments` | 1 | `https://socthink.cn/assessments` | 186 |
-| `/career` | 200 | `/career` | 1 | `https://socthink.cn/career` | 186 |
+| `/assessments` | 200 | `/assessments` | 1 | `https://socthink.cn/assessments` | 187 |
+| `/career` | 200 | `/career` | 1 | `https://socthink.cn/career` | 187 |
 | `/career/companies` | 200 | `/career/companies` | 1 | `https://socthink.cn/career/companies` | 1 |
 | `/career/exams/agent-engineering-paper-2026q4-v1` | 200 | `/career/exams/agent-engineering-paper-2026q4-v1` | 1 | `https://socthink.cn/career/exams/agent-engineering-paper-2026q4-v1` | 3 |
 | `/career/exams/operations-paper-2026q4-v1` | 200 | `/career/exams/operations-paper-2026q4-v1` | 1 | `https://socthink.cn/career/exams/operations-paper-2026q4-v1` | 2 |
@@ -146,11 +146,11 @@
 | `/career/roles/supply-01-02` | 200 | `/career/roles/supply-01-02` | 1 | `https://socthink.cn/career/roles/supply-01-02` | 4 |
 | `/career/roles/supply-01-03` | 200 | `/career/roles/supply-01-03` | 1 | `https://socthink.cn/career/roles/supply-01-03` | 4 |
 | `/career/roles/supply-01-04` | 200 | `/career/roles/supply-01-04` | 1 | `https://socthink.cn/career/roles/supply-01-04` | 4 |
-| `/competitions` | 200 | `/competitions` | 1 | `https://socthink.cn/competitions` | 186 |
-| `/digital-purchase-policy` | 200 | `/digital-purchase-policy` | 1 | `https://socthink.cn/digital-purchase-policy` | 186 |
+| `/competitions` | 200 | `/competitions` | 1 | `https://socthink.cn/competitions` | 187 |
+| `/digital-purchase-policy` | 200 | `/digital-purchase-policy` | 1 | `https://socthink.cn/digital-purchase-policy` | 187 |
 | `/digital-purchase-policy/v1` | 200 | `/digital-purchase-policy/v1` | 1 | 未发现 | 1 |
 | `/events` | 200 | `/events` | 1 | `https://socthink.cn/events` | 3 |
-| `/exam-planner` | 200 | `/exam-planner` | 1 | `https://socthink.cn/exam-planner` | 186 |
+| `/exam-planner` | 200 | `/exam-planner` | 1 | `https://socthink.cn/exam-planner` | 187 |
 | `/exam/cemc-cayley-2026` | 200 | `/login` | 1 | 未发现 | 2 |
 | `/exam/cemc-fermat-2026` | 200 | `/login` | 1 | 未发现 | 2 |
 | `/exam/cemc-gauss-2026-grade-7` | 200 | `/login` | 1 | 未发现 | 2 |
@@ -161,9 +161,9 @@
 | `/exam/de-2026-56` | 200 | `/login` | 1 | 未发现 | 2 |
 | `/exam/de-2026-78` | 200 | `/login` | 1 | 未发现 | 2 |
 | `/exam/de-2026-910` | 200 | `/login` | 1 | 未发现 | 2 |
-| `/math-practice` | 200 | `/math-practice` | 1 | `https://socthink.cn/math-practice` | 1 |
-| `/privacy` | 200 | `/privacy` | 1 | `https://socthink.cn/privacy` | 186 |
-| `/resources` | 200 | `/resources` | 1 | `https://socthink.cn/resources` | 186 |
+| `/math-practice` | 200 | `/math-practice` | 1 | `https://socthink.cn/math-practice` | 2 |
+| `/privacy` | 200 | `/privacy` | 1 | `https://socthink.cn/privacy` | 187 |
+| `/resources` | 200 | `/resources` | 1 | `https://socthink.cn/resources` | 187 |
 | `/resources/competitions/australian-amc` | 200 | `/resources/competitions/australian-amc` | 1 | `https://socthink.cn/resources/competitions/australian-amc` | 1 |
 | `/resources/competitions/cemc` | 200 | `/resources/competitions/cemc` | 1 | `https://socthink.cn/resources/competitions/cemc` | 1 |
 | `/resources/competitions/kangaroo` | 200 | `/resources/competitions/kangaroo` | 1 | `https://socthink.cn/resources/competitions/kangaroo` | 1 |
@@ -171,7 +171,7 @@
 | `/resources/competitions/seamo` | 200 | `/resources/competitions/seamo` | 1 | `https://socthink.cn/resources/competitions/seamo` | 1 |
 | `/review` | 200 | `/login` | 1 | 未发现 | 1 |
 | `/search` | 200 | `/search` | 1 | 未发现 | 2 |
-| `/shop` | 200 | `/shop` | 1 | 未发现 | 186 |
+| `/shop` | 200 | `/shop` | 1 | 未发现 | 187 |
 | `/shop/g6_thinking_original_2026_01` | 200 | `/shop/g6_thinking_original_2026_01` | 1 | 未发现 | 1 |
 | `/shop/socthink_application_models_2026_batch01` | 200 | `/shop/socthink_application_models_2026_batch01` | 1 | 未发现 | 1 |
 | `/shop/socthink_g1_original_2026_batch01` | 200 | `/shop/socthink_g1_original_2026_batch01` | 1 | 未发现 | 1 |
@@ -185,9 +185,9 @@
 | `/shop/socthink_g9_original_2026_batch01` | 200 | `/shop/socthink_g9_original_2026_batch01` | 1 | 未发现 | 1 |
 | `/shop/socthink_geometry_space_2026_batch01` | 200 | `/shop/socthink_geometry_space_2026_batch01` | 1 | 未发现 | 1 |
 | `/shop/socthink_integer_patterns_2026_batch01` | 200 | `/shop/socthink_integer_patterns_2026_batch01` | 1 | 未发现 | 1 |
-| `/skill-labs` | 200 | `/skill-labs` | 1 | `https://socthink.cn/skill-labs` | 186 |
+| `/skill-labs` | 200 | `/skill-labs` | 1 | `https://socthink.cn/skill-labs` | 187 |
 | `/skill-labs/agent-foundations` | 200 | `/skill-labs/agent-foundations` | 1 | `https://socthink.cn/skill-labs/agent-foundations` | 6 |
-| `/skill-labs/books` | 200 | `/skill-labs/books` | 1 | `https://socthink.cn/skill-labs/books` | 186 |
+| `/skill-labs/books` | 200 | `/skill-labs/books` | 1 | `https://socthink.cn/skill-labs/books` | 187 |
 | `/skill-labs/books/3d-math-primer` | 200 | `/skill-labs/books/3d-math-primer` | 1 | `https://socthink.cn/skill-labs/books/3d-math-primer` | 1 |
 | `/skill-labs/books/automate-the-boring-stuff-with-python` | 200 | `/skill-labs/books/automate-the-boring-stuff-with-python` | 1 | `https://socthink.cn/skill-labs/books/automate-the-boring-stuff-with-python` | 1 |
 | `/skill-labs/books/designing-data-intensive-applications` | 200 | `/skill-labs/books/designing-data-intensive-applications` | 1 | `https://socthink.cn/skill-labs/books/designing-data-intensive-applications` | 1 |
@@ -204,7 +204,8 @@
 | `/skill-labs/engineering/qa` | 200 | `/skill-labs/engineering/qa` | 1 | `https://socthink.cn/skill-labs/engineering/qa` | 1 |
 | `/skill-labs/sql-lab` | 200 | `/skill-labs/sql-lab` | 1 | `https://socthink.cn/skill-labs/sql-lab` | 5 |
 | `/skill-labs/webgpu-basics` | 200 | `/skill-labs/webgpu-basics` | 1 | `https://socthink.cn/skill-labs/webgpu-basics` | 4 |
-| `/terms` | 200 | `/terms` | 1 | `https://socthink.cn/terms` | 186 |
+| `/terms` | 200 | `/terms` | 1 | `https://socthink.cn/terms` | 187 |
+| `/verification` | 200 | `/verification` | 1 | `https://socthink.cn/verification` | 1 |
 
 ## 实际 4xx/5xx/请求失败
 - 本轮抽查未遇到；不代表所有未扫描页面通过。
