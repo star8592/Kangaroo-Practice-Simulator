@@ -1,22 +1,17 @@
 import { test, expect } from "@playwright/test";
 
-test("exam planning and events remain inside the exam business", async ({ page }, testInfo) => {
-  test.skip(testInfo.project.name.startsWith("mobile"), "Desktop-only nav; mobile menu has a separate test");
-  await page.goto("/");
-  const header = page.getByRole("navigation", { name: "主要导航" });
-  await expect(header.getByRole("button", { name: /在线练习/ })).toHaveCount(0);
-  await expect(header.getByRole("link", { name: "考试管理" })).toHaveCount(0);
-  await expect(header.getByRole("link", { name: "全部考试" })).toHaveAttribute("href", "/assessments");
-  await expect(header.getByRole("link",{name:"赛事管家"})).toHaveCount(0);
-  await expect(page.locator("main")).not.toContainText("华杯赛");
-  await expect(page.locator("main")).not.toContainText("希望杯");
-  await header.getByRole("link",{name:"全部考试"}).click();
-  await expect(page).toHaveURL(/\/assessments$/);
-  await page.locator('main a[href="/exam-planner"]').first().click();
-  await expect(page).toHaveURL(/\/exam-planner$/);
-  await page.getByRole("link",{name:/打开数学赛事管家/}).click();
-  await expect(page).toHaveURL(/\/events$/);
-  await expect(page.getByRole("region",{name:"全球数学赛事管家"})).toBeVisible();
+test("math planner and events remain in the separate classroom directory",async({page})=>{
+ await page.goto("/");
+ const nav=page.getByRole("navigation",{name:"主要导航"});
+ await expect(nav.locator('a[href="/assessments"]')).toHaveCount(0);
+ await expect(nav.locator('a[href="/events"]')).toHaveCount(0);
+ await page.goto("/math");
+ await expect(page.getByRole("heading",{level:1,name:"数学课堂"})).toBeVisible();
+ await page.locator('main a[href="/exam-planner"]').click();
+ await expect(page).toHaveURL(/\/exam-planner$/);
+ await page.getByRole("link",{name:/打开数学赛事管家/}).click();
+ await expect(page).toHaveURL(/\/events$/);
+ await expect(page.getByRole("region",{name:"全球数学赛事管家"})).toBeVisible();
 });
 
 test("China information-only event never offers an in-site mock", async ({ page }) => {
@@ -47,15 +42,13 @@ test("old bookmarks still open the exact event", async ({ page }) => {
   await expect(page.locator("#world-competition-detail")).toContainText("英国 UKMT");
 });
 
-test("mobile header can open the events manager", async ({ page }, testInfo) => {
-  test.skip(!testInfo.project.name.startsWith("mobile"), "Mobile-only navigation");
-  await page.goto("/");
-  await page.getByRole("button", { name: "打开导航菜单" }).click();
-  await page.getByRole("navigation", { name: "移动端导航" }).getByRole("link", { name: "全部考试" }).click();
-  await expect(page).toHaveURL(/\/assessments$/);
-  await page.locator('main a[href="/exam-planner"]').first().click();
-  await expect(page).toHaveURL(/\/exam-planner$/);
-  await page.getByRole("link",{name:/打开数学赛事管家/}).click();
-  await expect(page).toHaveURL(/\/events$/);
-  await expect(page.getByRole("region", { name: "全球数学赛事管家" })).toBeVisible();
+test("math classroom opens the events manager on mobile",async({page})=>{
+ await page.setViewportSize({width:390,height:844});
+ await page.goto("/math");
+ await expect(page.locator('main a[href="/exam-planner"]')).toBeVisible();
+ await page.locator('main a[href="/exam-planner"]').click();
+ await expect(page).toHaveURL(/\/exam-planner$/);
+ await page.getByRole("link",{name:/打开数学赛事管家/}).click();
+ await expect(page).toHaveURL(/\/events$/);
+ await expect(page.getByRole("region",{name:"全球数学赛事管家"})).toBeVisible();
 });
