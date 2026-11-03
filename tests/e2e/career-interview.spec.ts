@@ -168,3 +168,36 @@ test("no AI consent never sends an answer; model outage falls back safely",async
  await expect(page.getByText("面试官 · 规则追问")).toBeVisible();
  expect(posts).toBe(1);
 });
+
+test("guided mode selects a pre-reviewed follow-up and discloses approved backup providers",async({page})=>{
+ let posts=0;
+ await page.route("**/api/career/interviews/followup",async route=>{
+  if(route.request().method()==="GET"){
+   await route.fulfill({status:200,contentType:"application/json",body:JSON.stringify({
+    enabled:true,provider:"external",providers:["小米 MiMo","DeepSeek"]
+   })});
+   return;
+  }
+  posts++;
+  const body=route.request().postDataJSON();
+  expect(body.questionId).toBe("cs-intro");
+  expect(body.answer).toContain("亲自负责");
+  await route.fulfill({status:200,contentType:"application/json",body:JSON.stringify({
+   mode:"guided",
+   question:INTERVIEW_PROFILES[0].questions[0].followups.ownership,
+   branch:"ownership",evidenceQuote:"亲自负责",reason:"需要核实个人工作范围和可验证的贡献",
+   provider:"DeepSeek",viaBackup:true,latencyMs:210
+  })});
+ });
+ await page.goto("/career/interviews/campus-software");
+ await expect(page.getByText(/小米 MiMo、DeepSeek/)).toBeVisible();
+ await page.getByRole("checkbox",{name:/启用AI语义追问/}).check();
+ await page.getByRole("checkbox",{name:/我理解这是一场非标准化自我练习/}).check();
+ await page.getByRole("button",{name:"开始模拟面试"}).click();
+ await page.getByRole("textbox",{name:"你的回答"}).fill("我亲自负责课程项目中的接口设计与数据库建模。");
+ await page.getByRole("button",{name:"提交本题回答 · 接受追问"}).click();
+ await expect(page.getByText("面试官 · AI判断 · 预审追问")).toBeVisible();
+ await expect(page.getByRole("heading",{name:INTERVIEW_PROFILES[0].questions[0].followups.ownership})).toBeVisible();
+ await expect(page.getByText(/追问依据：.*亲自负责/)).toBeVisible();
+ expect(posts).toBe(1);
+});
