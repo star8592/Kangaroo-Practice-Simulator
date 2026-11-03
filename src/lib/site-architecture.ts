@@ -29,6 +29,7 @@ const LEGACY_BUSINESS_PATHS:readonly {id:SiteBusinessId;href:string}[]=[
 /** Public URLs that are outside their owner's URL prefix for legacy reasons. */
 export const BUSINESS_SUBROUTES:readonly {path:string;owner:SiteBusinessId;role:string}[] = [
   {path:"/arithmetic",owner:"exams",role:"school-math-practice"},
+  {path:"/math",owner:"exams",role:"classroom-math-portal"},
   {path:"/math-practice",owner:"exams",role:"school-math-practice"},
   {path:"/competitions",owner:"exams",role:"competition-mocks"},
   {path:"/review",owner:"exams",role:"mistake-review"},
