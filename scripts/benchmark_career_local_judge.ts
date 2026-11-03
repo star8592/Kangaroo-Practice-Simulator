@@ -31,6 +31,7 @@ type Result={
 };
 const results:Result[]=[];
 const startedAt=new Date().toISOString();
+async function main(){
 for(const test of selected){
  const input={profileId:test.profileId,questionId:test.questionId,answer:test.answer,context:EMPTY_INTERVIEW_JOB_CONTEXT};
  const body={model,think:false,stream:false,format:"json",
@@ -79,3 +80,6 @@ console.log("BENCHMARK_SUMMARY="+JSON.stringify({
  correct:summary.exactBranchMatches,accuracy:summary.exactBranchRate,
  latencyMs:summary.latencyMs},null,0));
 if(output){writeFileSync(output,JSON.stringify(summary,null,2)+"\n");console.log("BENCHMARK_REPORT="+output);}
+
+}
+main().catch(error=>{console.error(error);process.exitCode=1;});
