@@ -61,9 +61,9 @@ export async function POST(req:NextRequest){
  const question=profile.questions.find(q=>q.id===data.questionId)!;
  const style=process.env.SOCTHINK_INTERVIEW_AI_STYLE==="free"?"free":"guided";
  const messages=style==="guided"?makeGuidedMessages(data):makeSemanticMessages(data);
- const resolved=await withModelBackup(cfg,messages,style==="guided"
-  ?(text)=>parseGuidedDecision(text,data.answer)
-  :(text)=>parseSemanticContent(text,data.answer));
+ const resolved=style==="guided"
+  ?await withModelBackup(cfg,messages,(text)=>parseGuidedDecision(text,data.answer))
+  :await withModelBackup(cfg,messages,(text)=>parseSemanticContent(text,data.answer));
  if(!resolved)return json({code:"MODEL_UNAVAILABLE"},503);
  const meta={provider:providerLabels[resolved.provider],viaBackup:resolved.viaBackup,latencyMs:resolved.latencyMs};
  if(style==="guided"){
