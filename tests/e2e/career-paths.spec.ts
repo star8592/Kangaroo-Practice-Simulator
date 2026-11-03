@@ -19,7 +19,7 @@ test("student or experienced candidate can see real gaps without fake purchases"
  await expect(page.getByRole("heading",{level:1,name:"数据分析与 SQL 实训"})).toBeVisible();
  await expect(page.getByRole("link",{name:/社招 \/ 转岗/})).toHaveAttribute("aria-current","page");
  await expect(page.getByRole("link",{name:/浏览器 SQL 真执行训练/})).toHaveCount(0);
- await expect(page.locator('a[href="/skill-labs/sql-lab"]')).toBeVisible();
+ await expect(page.locator('a[href="/skill-labs/sql-lab"]').first()).toBeVisible();
  await expect(page.getByText("数据分析岗位完整专业模拟卷")).toBeVisible();
  const planned=page.locator("li").filter({hasText:"数据分析岗位完整专业模拟卷"});
  await expect(planned.getByText("尚未上线")).toBeVisible();
