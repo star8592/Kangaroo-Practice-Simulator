@@ -35,7 +35,7 @@ test("five exam-facing groups coexist with seven API assessment domains",async({
 
 test("home search, category links, live services and resource filters work on mobile and desktop",async({page})=>{
   await page.goto("/");
-  await expect(page.getByRole("heading",{level:1,name:/从一份试卷|From a practice paper/})).toBeVisible();
+  await expect(page.getByRole("heading",{level:1,name:/学会岗位需要的能力|Build the skills/})).toBeVisible();
   const search=page.locator('main form[action="/search"] input[name="q"]');
   await expect(search).toBeVisible();
   await search.fill("SQL");
@@ -52,15 +52,12 @@ test("home search, category links, live services and resource filters work on mo
   await directory.getByRole("button",{name:"清空"}).click();
   await expect(directory.getByRole("searchbox")).toHaveValue("");
 
-  await page.goto("/");
-  await expect(page.locator('[aria-labelledby="exam-category-overview"] a[href="/assessments#domain-math-competition"]')).toBeVisible();
-  const mobile=(page.viewportSize()?.width??1280)<=760;
-  if(mobile)await page.getByRole("button",{name:"打开导航菜单"}).click();
-  await expect(page.getByRole("link",{name:"真题资料"}).first()).toBeVisible();
-  if(mobile)await page.getByRole("button",{name:"关闭导航菜单"}).click();
-
-  await page.getByRole("link",{name:/可用试卷资料/}).first().click();
-  await expect(page).toHaveURL(/\/resources/);
+  // The public career homepage does not promote school mathematics.
+  // Existing classroom material remains independently accessible.
+  await page.goto("/math");
+  await expect(page.getByRole("heading",{level:1,name:"数学课堂"})).toBeVisible();
+  await expect(page.locator('main a[href="/competitions"]')).toBeVisible();
+  await page.goto("/resources");
   await expect(page.getByRole("heading",{level:1,name:"查找试卷，直接练习"})).toBeVisible();
   await expect(page.getByRole("searchbox")).toBeVisible();
   await expect(page.getByLabel("全部竞赛").first()).toBeVisible();
