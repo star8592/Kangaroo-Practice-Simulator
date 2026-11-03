@@ -88,6 +88,8 @@ assert.ok(!robots.includes('"/verification"'),
   "Indexable math verification page is blocked by robots.txt");
 const shopIndex=read("src/app/shop/page.tsx");
 const shopDetail=read("src/app/shop/[productId]/page.tsx");
+assert.ok(read("src/app/digital-purchase-policy/v1/page.tsx").includes("index:false"),
+  "Historical legal policy must not compete with current version in search");
 assert.ok(shopIndex.includes('canonical:"/shop"'),"Shop index needs a stable canonical");
 assert.ok(shopDetail.includes("generateMetadata")&&
   shopDetail.includes('canonical:"/shop/"+encodeURIComponent(product.id)'),
