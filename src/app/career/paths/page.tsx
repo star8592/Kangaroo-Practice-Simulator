@@ -9,7 +9,7 @@ export const metadata={
 };
 
 export default function CareerPathsPage(){
- return <main className={styles.shell}>
+ return <div className={styles.shell}>
    <nav className={styles.breadcrumb} aria-label="位置"><Link href="/">首页</Link><span>/</span><Link href="/career">岗位方向</Link><span>/</span><span>学习路线</span></nav>
    <header className={styles.hero}>
     <span className={styles.eyebrow}>Career paths · SOC THINK</span>
@@ -29,5 +29,5 @@ export default function CareerPathsPage(){
     </article>)}
    </section>
    <p className={styles.warning}>说明：公开岗位目录不等于当前在招职位。模拟题与面试由本站自主开发，不声称是企业官方考试、招聘录用评价或就业保证。</p>
- </main>;
+ </div>;
 }
