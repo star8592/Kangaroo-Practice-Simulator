@@ -18,7 +18,7 @@
 | --- | --- | --- | --- | --- |
 | `/` | 全站入口 | `—` | 首页 | 主导航品牌链接 |
 | `/account` | 账户与权益 | `/` | 私有流程 | 页脚、会话导航 → 我的订单 |
-| `/admin` | 管理后台 | `/admin/login` | 管理员 | 管理员登录后的工作台 |
+| `/admin` | 管理后台 | `/` | 管理员 | 管理员登录后的工作台（仅授权后可达） |
 | `/admin/activate` | 管理后台 | `/admin/login` | 邀请流程 | 仅一次性管理员邀请，不公开导航 |
 | `/admin/competition-source-watch` | 管理后台 | `/admin` | 管理员 | AdminOperationsNav → 赛事来源审核 |
 | `/admin/families` | 管理后台 | `/admin` | 管理员 | 管理后台内的专用页面 |
