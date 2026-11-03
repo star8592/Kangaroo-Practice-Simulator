@@ -3,7 +3,7 @@ import {getInterviewProfile} from "@/lib/career-interview-scenarios";
 import {
  validateSemanticRequest,parseSemanticContent,makeSemanticMessages
 } from "@/lib/career-semantic-followup";
-import {getConfig,callModel,modelTimeout,providerLabels} from "@/lib/career-model-routing";
+import {getConfig,withModelBackup,providerLabels} from "@/lib/career-model-routing";
 import {makeGuidedMessages,parseGuidedDecision,composeGuidedFollowup} from "@/lib/career-guided-interview";
 export const runtime="nodejs";
 export const dynamic="force-dynamic";
@@ -61,23 +61,18 @@ export async function POST(req:NextRequest){
  const question=profile.questions.find(q=>q.id===data.questionId)!;
  const style=process.env.SOCTHINK_INTERVIEW_AI_STYLE==="free"?"free":"guided";
  const messages=style==="guided"?makeGuidedMessages(data):makeSemanticMessages(data);
- const providers=[cfg.primary,...(cfg.backup?[cfg.backup]:[])];
- for(let i=0;i<providers.length;i++){
-  const provider=providers[i];
-  try{
-   const result=await callModel(provider,messages,modelTimeout(i===0?"primary":"backup"));
-   if(style==="guided"){
-    const decision=parseGuidedDecision(result.content,data.answer);
-    if(!decision)continue;
-    const followup=composeGuidedFollowup(question,decision);
-    return json({mode:"guided",question:followup.question,evidenceQuote:followup.evidenceQuote,
-     reason:followup.reason,branch:followup.branch,provider:providerLabels[provider],latencyMs:result.latencyMs});
-   }
-   const free=parseSemanticContent(result.content,data.answer);
-   if(!free)continue;
-   return json({mode:"semantic",question:free.question,evidenceQuote:free.evidenceQuote,
-    reason:free.reason,provider:providerLabels[provider],latencyMs:result.latencyMs});
-  }catch{/* Primary unavailable/invalid: try configured backup, then client rules. */}
+ const resolved=await withModelBackup(cfg,messages,style==="guided"
+  ?(text)=>parseGuidedDecision(text,data.answer)
+  :(text)=>parseSemanticContent(text,data.answer));
+ if(!resolved)return json({code:"MODEL_UNAVAILABLE"},503);
+ const meta={provider:providerLabels[resolved.provider],viaBackup:resolved.viaBackup,latencyMs:resolved.latencyMs};
+ if(style==="guided"){
+  const choice=resolved.result as NonNullable<ReturnType<typeof parseGuidedDecision>>;
+  const selected=composeGuidedFollowup(question,choice);
+  return json({mode:"guided",question:selected.question,evidenceQuote:selected.evidenceQuote,
+   reason:selected.reason,branch:selected.branch,...meta});
  }
- return json({code:"MODEL_UNAVAILABLE"},503);
+ const free=resolved.result as NonNullable<ReturnType<typeof parseSemanticContent>>;
+ return json({mode:"semantic",question:free.question,evidenceQuote:free.evidenceQuote,
+  reason:free.reason,...meta});
 }
