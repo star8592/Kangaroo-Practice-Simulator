@@ -35,7 +35,7 @@ test("five exam-facing groups coexist with seven API assessment domains",async({
 
 test("home search, category links, live services and resource filters work on mobile and desktop",async({page})=>{
   await page.goto("/");
-  await expect(page.getByRole("heading",{level:1,name:/学会岗位需要的能力|Build the skills/})).toBeVisible();
+  await expect(page.getByRole("heading",{level:1,name:/为下一份工作，练出真本事|Build skills for your next job/})).toBeVisible();
   const search=page.locator('main form[action="/search"] input[name="q"]');
   await expect(search).toBeVisible();
   await search.fill("SQL");
