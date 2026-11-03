@@ -7,7 +7,8 @@ import { TECH_BOOKS } from "@/lib/tech-books";
 import { CAREER_ORIGINAL_GUIDES } from "@/lib/career-original-guides";
 import { CAREER_FORMAL_PAPERS } from "@/lib/career-formal-bank";
 import { ASSESSMENT_EVIDENCE } from "@/lib/assessment-evidence";
-import { EXAM_DIRECTORY } from "@/lib/exam-directory";
+import { CAREER_PATHS,careerPathForRole } from "@/lib/career-paths";
+import { CAREER_ROLES } from "@/lib/career-role-taxonomy";
 import { AGENT_FOUNDATIONS_COURSE } from "@/lib/frontier-agent-course";
 import { WEBGPU_COURSE } from "@/lib/webgpu-course";
 import agentExam from "../../data/career/formal_exam_agent_20261103.json";
@@ -24,18 +25,16 @@ export type HomepageUpdate = Readonly<{
 /** A site-wide catalog release date, not a fabricated per-book publication date. */
 export const BOOK_CATALOG_RELEASED_AT = "2026-11-03";
 
-/** Only public, genuinely reachable destinations. No placeholders or paywall claims. */
+/** Career-only discovery, never load the school math catalogue then hide it client-side.
+ * Role names are taxonomy, not open vacancies; only verified tracks have products.
+ * Prices are never inferred from these listings. */
 export function publicDiscoveryEntries(): DiscoveryEntry[] {
   const entries: DiscoveryEntry[] = [
-    { id:"hub-exams",kind:"考试",title:"全部考试与模拟",summary:"按考试类别查找可用模拟与练习",href:"/assessments",keywords:"考试 数学 校内 竞赛" },
-    { id:"hub-resources",kind:"试卷",title:"试卷与训练资料",summary:"筛选已可用于在线训练的试卷",href:"/resources",keywords:"真题 数学 资料 试卷" },
     { id:"hub-learn",kind:"技能",title:"学习与实训",summary:"按岗位学习技能、运行实验并追溯原始资料",href:"/learn",keywords:"课程 Github AI SQL 编程 项目 实操" },
     { id:"hub-practice",kind:"职业岗位",title:"模拟笔试与面试",summary:"按岗位进行完整模拟笔试、面试及复盘",href:"/practice",keywords:"校招 社招 练习 招聘 测试 面试" },
     { id:"hub-career",kind:"职业岗位",title:"职业岗位与模拟笔试",summary:"按岗位找模拟笔试与免费原创资料",href:"/career",keywords:"招聘 校招 社招 岗位 面试" },
     { id:"hub-skills",kind:"技能",title:"技能实训中心",summary:"SQL、编程、AI Agent、3D 等实训",href:"/skill-labs",keywords:"学习 代码 技术 项目" },
-    { id:"hub-shop",kind:"商城",title:"数字资料商城",summary:"核对实际在架的原创数字资料与交付方式",href:"/shop",keywords:"购买 下载 资料 商城 商品" },
     { id:"hub-assessments",kind:"测评",title:"专业能力与研究测评",summary:"逻辑能力训练、职业兴趣与研究性量表",href:"/assessment-center",keywords:"测评 心理 性格 能力 逻辑" },
-    { id:"hub-events",kind:"考试",title:"考试日程与赛事管理",summary:"数学赛事信息及个人考试规划",href:"/exam-planner",keywords:"赛历 赛事 报名 日程" },
     { id:"lab-agent",kind:"技能",title:AGENT_FOUNDATIONS_COURSE.title,summary:AGENT_FOUNDATIONS_COURSE.summary,
       href:"/skill-labs/agent-foundations",keywords:"Python MCP LLM Agent 智能体 工具调用",updatedAt:AGENT_FOUNDATIONS_COURSE.updatedAt },
     { id:"lab-webgpu",kind:"技能",title:WEBGPU_COURSE.title,summary:WEBGPU_COURSE.description,
@@ -47,6 +46,19 @@ export function publicDiscoveryEntries(): DiscoveryEntry[] {
     { id:"lab-3d",kind:"技能",title:"软件工程师综合编程模拟",summary:"限时编程模拟与独立代码执行判分",
       href:"/skill-labs/engineering-mock",keywords:"软件工程 编程 笔试" },
   ];
+  for(const path of CAREER_PATHS){
+    entries.push({id:"career-path-"+path.slug,kind:"职业岗位",title:path.title,
+      summary:path.subtitle+" · "+path.steps.filter(s=>s.status==="live").length+" 项实际开放",
+      href:"/career/paths/"+path.slug,
+      keywords:[...path.recommendedFor,...path.outcomes].join(" ")});
+  }
+  for(const role of CAREER_ROLES){
+    const track=careerPathForRole(role.id);
+    entries.push({id:"career-role-"+role.id,kind:"职业岗位",title:role.title,
+      summary:track?"已关联岗位训练："+track.title:"岗位分类已收录；专项产品尚未上线",
+      href:"/career/roles/"+role.id,
+      keywords:[role.groupTitle,role.segment,track?.title??""].join(" ")});
+  }
   entries.push({id:"hub-career-interview",kind:"职业岗位",title:"岗位模拟面试",
     summary:"按真实岗位进行结构化模拟与回答训练",href:"/career/interviews",
     keywords:"面试 校招 社招 职业 招聘"});
@@ -74,21 +86,12 @@ export function publicDiscoveryEntries(): DiscoveryEntry[] {
     });
   }
   for (const assessment of ASSESSMENT_EVIDENCE) {
+    if(!/career-aptitude|advanced-reasoning|reasoning-practice|work-values|workplace-sjt/.test(assessment.path))continue;
     entries.push({
       id:"assessment-"+assessment.id,kind:"测评",title:assessment.name,
       summary:assessment.category+" · "+assessment.audience,
       href:assessment.path,keywords:[assessment.category,assessment.source].join(" "),
     });
-  }
-  for (const group of EXAM_DIRECTORY) {
-    for (const topic of group.topics) {
-      if (topic.status!=="live" || !topic.href) continue;
-      entries.push({
-        id:"topic-"+topic.id,kind:"考试",title:topic.title.zh,
-        summary:topic.title.en,href:topic.href,
-        keywords:topic.id.replaceAll("-"," "),
-      });
-    }
   }
   return entries;
 }
