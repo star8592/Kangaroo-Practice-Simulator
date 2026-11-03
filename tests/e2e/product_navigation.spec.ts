@@ -4,9 +4,11 @@ test.describe("SOC THINK unified public navigation", () => {
   test("career home actions are real and mathematics has its own directory", async ({ page }) => {
     await page.goto("/");
     const content=page.locator("main");
+    // Mobile hides the duplicate service-card grid; the actual quick action
+    // links remain visible on both mobile and desktop.
     for(const href of ["/career","/learn","/practice"])
-      await expect(content.locator('a[href="'+href+'"]').first()).toBeVisible();
-    await content.locator('a[href="/learn"]').first().click();
+      await expect(content.locator('a[class*="quickItem"][href="'+href+'"]')).toBeVisible();
+    await content.locator('a[class*="quickItem"][href="/learn"]').click();
     await expect(page).toHaveURL(/\/learn$/);
     await expect(page.getByRole("heading",{level:1,name:/岗位真正需要的技能/})).toBeVisible();
     await page.goto("/practice");
