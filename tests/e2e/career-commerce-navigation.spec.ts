@@ -1,37 +1,25 @@
 import {expect,test} from "@playwright/test";
 
-test("career home puts real goods and exams first, then navigates 13 industries and 270 roles",async({page})=>{
+test("career home prioritizes role choice, then complete training and mock service",async({page})=>{
   const response=await page.goto("/career");
   expect(response?.status()).toBe(200);
-  await expect(page.getByRole("heading",{level:1,name:/要复习资料？还是要模拟考试？/})).toBeVisible();
+  await expect(page.getByRole("heading",{level:1,name:/选择目标岗位，补足关键能力/})).toBeVisible();
   const isNarrow=page.viewportSize()!.width<=920;
-  const primaryGoods=isNarrow
-    ?page.getByRole("link",{name:/^找复习资料/})
-    :page.getByRole("link",{name:/找资料 · 免费领取/});
-  const primaryExam=isNarrow
-    ?page.getByRole("link",{name:"做模拟考试",exact:true})
-    :page.getByRole("link",{name:/做模拟考试 · 立即开始/});
-  await expect(primaryGoods).toBeVisible();
-  await expect(primaryExam).toBeVisible();
-  if(isNarrow){
-    for(const action of [primaryGoods,primaryExam]){
-      const box=await action.boundingBox();
-      expect(box).not.toBeNull();
-      expect(box!.y).toBeLessThan(page.viewportSize()!.height-20);
-      expect(box!.height).toBeGreaterThanOrEqual(50);
-    }
-  }else{
-    await expect(page.getByRole("heading",{level:2,name:"职业教程与复习资料"})).toBeVisible();
-    await expect(page.getByRole("heading",{level:2,name:"模拟考试与自动评分"})).toBeVisible();
-  }
+  const roleAction=isNarrow
+    ?page.getByRole("link",{name:/^找目标岗位/})
+    :page.getByRole("link",{name:/查看岗位方向/});
+  const practiceAction=isNarrow
+    ?page.getByRole("link",{name:/做模拟笔试与面试/})
+    :page.getByRole("link",{name:/查看正式模拟与面试/});
+  await expect(roleAction).toBeVisible();
+  await expect(practiceAction).toBeVisible();
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
-
-  await primaryGoods.click();
-  await expect(page).toHaveURL(/#digital-materials$/);
-  await expect(page.locator("#digital-materials").getByRole("article")).toHaveCount(3);
-  await primaryExam.click();
-  await expect(page).toHaveURL(/#digital-services$/);
-  await expect(page.locator("#digital-services").getByRole("article")).toHaveCount(4);
+  await roleAction.click();
+  await expect(page).toHaveURL(/#career-directory$/);
+  await practiceAction.click();
+  await expect(page).toHaveURL(/\/practice$/);
+  await expect(page.getByRole("heading",{level:1,name:/用模拟检验求职准备程度/})).toBeVisible();
+  await page.goto("/career");
 
   const directory=page.locator("#career-directory");
   await expect(directory).toBeVisible();
