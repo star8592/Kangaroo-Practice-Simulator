@@ -11,6 +11,7 @@ test("career homepage puts verifiable role routes ahead of the broad directory",
  await expect(page.getByRole("heading",{level:1,name:"AI Agent 应用工程"})).toBeVisible();
  await expect(page.locator('a[href="/skill-labs/agent-foundations"]').first()).toBeVisible();
  await expect(page.locator('a[href="/career/exams/agent-engineering-paper-2026q4-v1"]')).toBeVisible();
+ await page.getByText("查看原始资料与技术依据").click();
  await expect(page.locator('a[href="https://github.com/karpathy/micrograd"]')).toBeVisible();
 });
 
