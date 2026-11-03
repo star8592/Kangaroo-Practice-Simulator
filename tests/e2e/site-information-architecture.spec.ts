@@ -54,7 +54,7 @@ test("career headings, main tasks and search are readable across breakpoints",as
    return {
     heroTitle:font("main h1"),
     primaryAction:font("main [class*='quickItem'] strong"),
-    serviceTitle:font("main [class*='serviceCard'] strong"),
+    serviceTitle:font("main [class*='pathCard'] h3"),
     searchInput:font('main input[name="q"]'),
     overflow:document.documentElement.scrollWidth-window.innerWidth,
    };
