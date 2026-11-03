@@ -58,6 +58,24 @@ assert.equal((await withModelBackup(getConfig(env)!,makeGuidedMessages(base),txt
 assert.deepEqual(attempts,["mimo","deepseek"]);
 assert.equal(await withModelBackup({primary:"mimo",backup:null},makeGuidedMessages(base),()=>null,stub as typeof callModel),null);
 assert.equal(await withModelBackup({primary:"mimo",backup:"deepseek"},makeGuidedMessages(base),()=>null,stub as typeof callModel),null);
+let inspectedUrl="",inspectedBody:Record<string,unknown>={},inspectedAuthorization="";
+const fakeRequest=async(url:RequestInfo|URL,init?:RequestInit)=>{
+ inspectedUrl=String(url);
+ inspectedBody=JSON.parse(String(init?.body||"{}"));
+ inspectedAuthorization=String((init?.headers as Record<string,string>)?.Authorization||"");
+ return new Response(JSON.stringify({choices:[{message:{content:JSON.stringify(decision)}}]}),{status:200,headers:{"Content-Type":"application/json"}});
+};
+const mimoResult=await callModel("mimo",makeGuidedMessages(base),1500,env,fakeRequest as typeof fetch);
+assert.equal(mimoResult.provider,"mimo");
+assert.equal(inspectedUrl,"https://api.xiaomimimo.com/v1/chat/completions");
+assert.deepEqual(inspectedBody.thinking,{type:"disabled"});
+assert.equal(inspectedBody.max_completion_tokens,320);
+assert.equal(inspectedAuthorization,"Bearer fake-key-for-test-only");
+const qwenEnv={SOCTHINK_INTERVIEW_AI_PROVIDER:"qwen",DASHSCOPE_API_KEY:"unit-test-only"};
+await callModel("qwen",makeGuidedMessages(base),1500,qwenEnv,fakeRequest as typeof fetch);
+assert.equal(inspectedUrl,"https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions");
+assert.equal(inspectedBody.model,"qwen3.8-flash");
+assert.equal(inspectedAuthorization,"Bearer unit-test-only");
 console.log("CAREER_GUIDED_INTERVIEW=PASS scripted_branches=40 quote_proof=YES invalid_output=REJECT primary_backup=YES fail_closed=YES");
 
 }
