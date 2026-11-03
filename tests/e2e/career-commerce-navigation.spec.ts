@@ -25,7 +25,8 @@ test("career home prioritizes role choice, then complete training and mock servi
   await expect(directory).toBeVisible();
   await expect(directory).toContainText("270");
   await expect(directory.locator("button[aria-pressed]")).toHaveCount(14);
-  await expect(directory.locator("article")).toHaveCount(13);
+  await expect(directory.getByRole("region",{name:"已经开放的岗位学习路线"}).locator("article")).toHaveCount(4);
+  await expect(directory.getByRole("region",{name:"全部行业分类"}).locator("article")).toHaveCount(13);
   const industry=directory.getByRole("button",{name:/制造业与工业工程/});
   await industry.click();
   await expect(industry).toHaveAttribute("aria-pressed","true");
