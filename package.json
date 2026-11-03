@@ -137,7 +137,7 @@
     "test:career-formal-exams": "tsx scripts/test_career_formal_exams.ts",
     "test:career-semantic": "tsx scripts/test_career_semantic_followup.ts",
     "test:site-architecture": "tsx scripts/test_site_architecture.ts && tsx scripts/test_site_page_inventory.ts",
-    "test:career-guided": "tsx scripts/test_career_guided_interview.ts",
+    "test:career-guided": "tsx scripts/test_career_guided_interview.ts && python3 scripts/test_career_model_warm.py",
     "bench:career-local": "tsx scripts/benchmark_career_local_judge.ts",
     "test:career-judge-dataset": "tsx scripts/test_career_judge_dataset.ts"
   },
