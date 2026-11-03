@@ -70,7 +70,7 @@ export default function CodeLabClient({trackId}:{trackId?:EngineeringTrackId}={}
   setSource(value);setDrafts(prev=>({...prev,[task.id]:value}));setFeedback(null);setError("");
   setSolved(prev=>({...prev,[task.id]:false}));
  }
- function run(){
+ function run(code=source){
   if(busy)return;
   setBusy(true);setFeedback(null);setError("");
   setAttempts(prev=>({...prev,[task.id]:(prev[task.id]??0)+1}));
@@ -90,19 +90,20 @@ export default function CodeLabClient({trackId}:{trackId?:EngineeringTrackId}={}
    timer.current=setTimeout(()=>{
     cleanup();setBusy(false);setError("执行超过安全时间限制，已终止本次运行。请检查死循环或复杂度。");
    },12000);
-   w.postMessage({requestId,taskId:task.id,source});
+   w.postMessage({requestId,taskId:task.id,source:code});
   }catch{cleanup();setBusy(false);setError("无法创建安全执行环境，请更换现代浏览器重试。");}
  }
  function onEditorKeyDown(event:KeyboardEvent<HTMLTextAreaElement>){
   if((event.ctrlKey||event.metaKey)&&event.key==="Enter"){
    event.preventDefault();
-   if(!busy&&source.trim())run();
+   if(!busy&&event.currentTarget.value.trim())run(event.currentTarget.value);
    return;
   }
   if(event.key!=="Tab"||event.ctrlKey||event.metaKey||event.altKey||busy)return;
   event.preventDefault();
   const input=event.currentTarget;
-  const next=indentCodeSource(source,input.selectionStart,input.selectionEnd,event.shiftKey);
+  // The DOM holds the latest keystroke even before React commits the controlled state.
+  const next=indentCodeSource(input.value,input.selectionStart,input.selectionEnd,event.shiftKey);
   if(next.source.length>5000)return;
   onSourceChange(next.source);
   requestAnimationFrame(()=>{
@@ -156,7 +157,7 @@ export default function CodeLabClient({trackId}:{trackId?:EngineeringTrackId}={}
     </div>
     <div className={styles.toolbar}>
      <button className={styles.secondary} type="button" disabled={busy} onClick={()=>setHint(h=>!h)}>{hint?"收起提示":"显示提示"}</button>
-     <button className={styles.primary} type="button" disabled={busy||!source.trim()} onClick={run}>{busy?"隔离执行中…":"运行代码并核验"}</button>
+     <button className={styles.primary} type="button" disabled={busy||!source.trim()} onClick={()=>run()}>{busy?"隔离执行中…":"运行代码并核验"}</button>
     </div>
     {hint&&<p className={styles.hint}>{task.hint}</p>}
     {(busy||error||feedback)&&<div className={styles.console}>
