@@ -322,6 +322,6 @@ test("an undelivered first paid AI round restores its credit before the next res
  await page.getByRole("textbox",{name:"你的回答"}).fill("我亲自负责了软件项目里的接口调试，并写了可重复执行的测试代码。");
  await page.getByRole("button",{name:"提交本题回答 · 接受追问"}).click();
  await expect.poll(()=>reservations).toBe(2);
- expect(modelCalls).toBe(2);
+ await expect.poll(()=>modelCalls).toBe(2);
  await expect(page.getByRole("heading",{name:INTERVIEW_PROFILES[0].questions[1].followups.ownership})).toBeVisible();
 });
