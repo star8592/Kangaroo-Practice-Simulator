@@ -9,10 +9,10 @@ export const metadata:Metadata={
  alternates:{canonical:"/skill-labs/engineering-mock"},
 };
 export default function EngineeringCodeMockPage(){
- return <main className={[styles.shell,workspace.pageShell].join(" ")}>
+ return <div className={[styles.shell,workspace.pageShell].join(" ")}>
   <nav className={styles.breadcrumb} aria-label="位置">
    <Link href="/skill-labs">技能实训</Link><span> / </span>软件工程综合模拟笔试
   </nav>
   <EngineeringCodeExamClient/>
- </main>;
+ </div>;
 }

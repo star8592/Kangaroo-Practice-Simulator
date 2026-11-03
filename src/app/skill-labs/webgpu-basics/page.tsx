@@ -21,7 +21,7 @@ export default function WebGpuCoursePage(){
     url:"https://socthink.cn"+path,isAccessibleForFree:true,
     dateModified:course.updatedAt,educationalLevel:"入门与进阶"
   };
-  return <main className={[base.shell,s.page].join(" ")}>
+  return <div className={[base.shell,s.page].join(" ")}>
     <script type="application/ld+json" dangerouslySetInnerHTML={{__html:JSON.stringify(ld).replace(/</g,"\\u003c")}}/>
     <nav className={base.breadcrumb} aria-label="位置"><Link href="/skill-labs">技能实训</Link><span>/</span><span>WebGPU交互3D</span></nav>
     <header className={s.hero}>
@@ -61,5 +61,5 @@ export default function WebGpuCoursePage(){
       <p>课程原创版本 {course.version} · 更新于 {course.updatedAt}。官方 WebGPURenderer 仍处于演进阶段，阅读后应以当前文档和真实设备复验。</p>
     </section>
     <nav className={s.bottom}><Link href="/skill-labs">返回技能实训目录</Link><Link href="/skill-labs/agent-foundations">继续学习 AI Agent 工程</Link></nav>
-  </main>;
+  </div>;
 }

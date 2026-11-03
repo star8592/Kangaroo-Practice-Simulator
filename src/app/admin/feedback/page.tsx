@@ -31,7 +31,7 @@ export default async function FeedbackPage() {
   const data = readCustomerFeedbackOverview({ days: 30, limit: 100 });
   const cases = readCaseStates();
   const pending = data.items.filter(x => !["closed","dismissed"].includes(cases.get(x.id)?.status || "open")).length;
-  return <main className={styles.shell}>
+  return <div className={styles.shell}>
     <header className={styles.head}>
       <div><span className={styles.eyebrow}>SOC THINK · 客户驱动</span>
         <h1>客户反馈处理台</h1>
@@ -78,5 +78,5 @@ export default async function FeedbackPage() {
       <h2>处理原则</h2>
       <p>严格按「待核查 → 核查中 → 已修复／有结论 → 已复测 → 已归档」处理，疑似误报可在核查中附证据驳回，复测失败可退回核查。每一步独立追加审计记录，禁止覆盖原始反馈或依据投诉直接修改试题答案；完成状态不代表客户本人确认满意。</p>
     </section>
-  </main>;
+  </div>;
 }

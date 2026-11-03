@@ -19,7 +19,7 @@ export default async function Page(){
   const rows=buildAcademicCalendar(user,today);
   const followed=buildWorldFollowedCalendar(user.id,today);
   const nextActions=followed.filter(x=>x.nextTaskZh).slice(0,3);
-  return <main className={styles.shell}>
+  return <div className={styles.shell}>
     <header>
       <div><span>MY WORLD MATH CALENDAR</span><h1>我的数学赛历</h1>
         <p>关注全球赛事，不等于已报名某届比赛。这里分别记录备赛待办与已经核验的具体考试日期。</p></div>
@@ -50,5 +50,5 @@ export default async function Page(){
         <div className={styles.timeline}>{row.milestones.map(m=><article key={m.id} className={m.start<today?styles.past:""}><time>{m.start.slice(5)}</time><i/><div><b>{m.titleZh}</b><small>{m.kind}</small></div></article>)}</div>
       </section>):<p className={styles.note}>尚未添加有明确赛区和日期的报名/参赛计划。仅关注赛事不会自动创建参赛记录。</p>}
     </section>
-  </main>;
+  </div>;
 }
