@@ -1,0 +1,11 @@
+[Unit]
+Description=Maintain available low-latency local career interview model
+[Timer]
+OnBootSec=2min
+OnUnitInactiveSec=8min
+AccuracySec=1min
+RandomizedDelaySec=30s
+Unit=socthink-career-model-warm.service
+Persistent=true
+[Install]
+WantedBy=timers.target
