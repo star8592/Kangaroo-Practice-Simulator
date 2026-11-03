@@ -21,7 +21,7 @@ for(const item of PRIMARY_BUSINESS_NAV){
 }
 const cases=[
  ["/arithmetic","exams"],["/arithmetic/print","exams"],
- ["/math-practice","exams"],["/competitions","exams"],
+ ["/math","exams"],["/math-practice","exams"],["/competitions","exams"],
  ["/review","exams"],["/exam-planner","exams"],["/events","exams"],
  ["/skill-labs/books","skills"],["/skill-labs/books/a-book","skills"],
  ["/skill-labs/sql-lab","skills"],["/career/interviews","career"],
