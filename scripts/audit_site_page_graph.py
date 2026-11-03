@@ -81,7 +81,7 @@ for file in APP.rglob("page.tsx"):
     incoming = incoming_links(url, source)
     pages.append(dict(url=url, source=source, owner=owner, level=level, access=access, incoming=incoming))
 pages.sort(key=lambda x: x["url"])
-nested_main = [p for p in pages if re.search(r"<main(?:\\s|>)", (ROOT / p["source"]).read_text(encoding="utf-8"))]
+nested_main = [p for p in pages if re.search(r"<main(?:\s|>)", (ROOT / p["source"]).read_text(encoding="utf-8"))]
 
 api_routes = []
 for file in APP.rglob("route.ts"):
