@@ -1,7 +1,4 @@
 import type { MetadataRoute } from "next";
-import { listTrainingExamProfiles } from "@/lib/training-question-bank";
-import { buildTrainingResourceCatalog } from "@/lib/resource-catalog";
-import { availableResourceHubs, resourceHubPath } from "@/lib/seo-resource-hubs";
 import { CAREER_ORIGINAL_GUIDES } from "@/lib/career-original-guides";
 import { TECH_BOOKS } from "@/lib/tech-books";
 import { ASSESSMENT_EVIDENCE } from "@/lib/assessment-evidence";
@@ -16,12 +13,6 @@ export const dynamic = "force-dynamic";
 // No account, checkout, private exam session, or unreviewed paper URLs here.
 const publicPaths = [
   "/",
-  "/assessments",
-  "/competitions",
-  "/events",
-  "/resources",
-  "/math-practice",
-  "/exam-planner",
   "/privacy",
   "/terms",
   "/digital-purchase-policy",
@@ -43,15 +34,12 @@ const publicPaths = [
   "/assessment-center/report-preview",
   "/career/companies",
   "/career/interviews",
-  "/verification",
 ] as const;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Use the same rights/verified-file catalogue as the public shop; no speculative SKU URLs.
   const products=await listStoreProducts();
   const publishedProductPaths=products.map(product=>"/shop/"+encodeURIComponent(product.id));
-  const rows = buildTrainingResourceCatalog(listTrainingExamProfiles());
-  const activeHubPaths = availableResourceHubs(rows).map(resourceHubPath);
   const publicGuides = CAREER_ORIGINAL_GUIDES
     .filter(guide => guide.deliveryState === "free-original-material")
     .map(guide => "/career/guides/" + guide.id);
@@ -60,7 +48,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     .map(p=>"/career/exams/"+p.id);
   const assessmentPages=ASSESSMENT_EVIDENCE.map(record=>record.path);
   const engineeringPages=ENGINEERING_TRACK_LIST.map(track=>"/skill-labs/engineering/"+track.id);
-  return [...new Set([...publicPaths, ...activeHubPaths, ...publicGuides,
+  return [...new Set([...publicPaths, ...publicGuides,
     ...liveCareerPapers, ...assessmentPages, ...engineeringPages, ...publishedProductPaths,
     ...TECH_BOOKS.map(book => "/skill-labs/books/" + book.slug)])].map((path) => ({
     url: `https://socthink.cn${path}`,
