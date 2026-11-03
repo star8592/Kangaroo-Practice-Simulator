@@ -26,13 +26,13 @@ export default function CareerRoleExplorer(){
     <div className={styles.sectionHeading}>
       <div><span className={styles.overline}>VERIFIED CAREER TRACKS</span><h2>先从已有课程和模拟的岗位开始</h2><p>这几条路线已经关联真实学习内容。其他岗位仍保留目录，但不会把未建设的课程说成已提供。</p></div>
     </div>
-    <div className={styles.overviewGrid} aria-label="已经开放的岗位学习路线">
+    <section className={styles.overviewGrid} aria-label="已经开放的岗位学习路线">
       {CAREER_PATHS.map(path=><article className={styles.overviewCard} key={path.slug}>
         <div className={styles.overviewCardHead}><h3>{path.title}</h3><span>{path.steps.filter(s=>s.status==="live").length} 项已开放</span></div>
         <p>{path.subtitle}</p>
         <Link href={"/career/paths/"+path.slug}>查看校招／社招学习路线 →</Link>
       </article>)}
-    </div>
+    </section>
     <p className={styles.directoryFoot}><Link href="/career/paths">查看全部重点路线及当前交付状态 →</Link></p>
     <div className={styles.sectionHeading}>
       <div>
