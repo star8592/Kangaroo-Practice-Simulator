@@ -14,10 +14,10 @@ import xml.etree.ElementTree as ET
 
 BASE="https://socthink.cn"
 ROOT=pathlib.Path(__file__).resolve().parents[1]
-MAX_PAGES=150
+MAX_PAGES=220
 SEEDS=["/","/assessments","/resources","/career","/skill-labs","/assessment-center","/shop","/exam-planner","/arithmetic","/competitions","/events","/review","/skill-labs/books","/privacy","/terms","/digital-purchase-policy"]
 EXCLUDE=("/api/","/admin","/account","/parent","/student","/login","/membership","/verification","/_next","/report","/result","/arithmetic/session")
-DYNAMIC_LIMITS={"/exam/":10,"/shop/":15,"/career/":40,"/skill-labs/books/":15,"/resources/competitions/":10}
+DYNAMIC_LIMITS={"/exam/":10,"/shop/":80,"/career/roles/":100,"/career/interviews/":20,"/career/guides/":50,"/career/exams/":80,"/skill-labs/books/":30,"/resources/competitions/":20}
 T=chr(96)
 class HtmlAudit(HTMLParser):
  def __init__(self):
