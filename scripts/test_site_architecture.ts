@@ -93,7 +93,7 @@ console.log("SOCTHINK_SITE_ARCHITECTURE=PASS businesses=3 exam_groups=5 legacy_r
 for(const url of ["/assessments","/resources","/shop","/competitions","/arithmetic"])
  assert.ok(!PRIMARY_BUSINESS_NAV.some(x=>x.href===url),"Classroom/transaction path leaked into main navigation: "+url);
 for(const entry of ["/learn","/practice"]){
- assert.ok(home.includes('href:"'+entry+'"')||home.includes('href=\"'+entry+'\"'),"Home missing career task "+entry);
+ assert.ok(home.includes('href:"'+entry+'"'),"Home missing career task "+entry);
  const html=read("src/app"+entry+"/page.tsx");
  assert.ok(html.includes('canonical:"'+entry+'"'),"Career hub has no canonical: "+entry);
 }
