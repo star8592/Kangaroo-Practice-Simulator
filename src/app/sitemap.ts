@@ -7,6 +7,7 @@ import { TECH_BOOKS } from "@/lib/tech-books";
 import { ASSESSMENT_EVIDENCE } from "@/lib/assessment-evidence";
 import { CAREER_FORMAL_PAPERS } from "@/lib/career-formal-bank";
 import { ENGINEERING_TRACK_LIST } from "@/lib/engineering-code-tracks";
+import { listStoreProducts } from "@/lib/store-products";
 
 export const dynamic = "force-dynamic";
 
@@ -43,7 +44,10 @@ const publicPaths = [
   "/verification",
 ] as const;
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  // Use the same rights/verified-file catalogue as the public shop; no speculative SKU URLs.
+  const products=await listStoreProducts();
+  const publishedProductPaths=products.map(product=>"/shop/"+encodeURIComponent(product.id));
   const rows = buildTrainingResourceCatalog(listTrainingExamProfiles());
   const activeHubPaths = availableResourceHubs(rows).map(resourceHubPath);
   const publicGuides = CAREER_ORIGINAL_GUIDES
@@ -55,7 +59,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const assessmentPages=ASSESSMENT_EVIDENCE.map(record=>record.path);
   const engineeringPages=ENGINEERING_TRACK_LIST.map(track=>"/skill-labs/engineering/"+track.id);
   return [...new Set([...publicPaths, ...activeHubPaths, ...publicGuides,
-    ...liveCareerPapers, ...assessmentPages, ...engineeringPages,
+    ...liveCareerPapers, ...assessmentPages, ...engineeringPages, ...publishedProductPaths,
     ...TECH_BOOKS.map(book => "/skill-labs/books/" + book.slug)])].map((path) => ({
     url: `https://socthink.cn${path}`,
   }));
