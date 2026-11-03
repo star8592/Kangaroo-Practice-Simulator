@@ -1,14 +1,15 @@
 import Link from "next/link";
 import type {Metadata} from "next";
 import {AGENT_FOUNDATIONS_COURSE as course} from "@/lib/frontier-agent-course";
+import AgentProjectCourse from "@/components/AgentProjectCourse";
 import m from "@/app/assessment-center/measurement.module.css";
 import s from "./frontier.module.css";
 
 const canonical = "/skill-labs/agent-foundations";
 
 export const metadata:Metadata = {
-  title: "AI Agent 工程实战教程：工具调用、权限与独立验收｜SOC THINK",
-  description: "免费原创中文Agent工程教程：6节完整讲解与可运行Python源码，学习工具schema、越权拒绝、真实执行轨迹与独立验收。含实验任务和明确技术来源。",
+  title: "AI Agent 项目制实战课程｜工单项目、工程测试与岗位面试｜SOC THINK",
+  description: "原创 AI Agent 项目课程：六节免费基础课、六个工程实战模块、互动知识核对与可运行 Python 实验；带你理解权限、注入防护、幂等与故障降级。",
   alternates: {canonical},
   openGraph: {
     type:"article", title:course.title,
@@ -36,33 +37,34 @@ export default function AgentFoundationsPage(){
       <Link href="/skill-labs">技能实训</Link><span>/</span><span>Agent工程</span>
     </nav>
     <header className={s.hero}>
-      <span className={s.eyebrow}>原创中文工程实训 · 免费完整开放</span>
-      <h1>{course.title}</h1>
-      <p>{course.summary}</p>
+      <span className={s.eyebrow}>项目制职业课程 · 免费基础课及实战试学</span>
+      <h1>AI Agent 项目制工程课程</h1>
+      <p>从六节工程基础课进入六模块工单 Agent 项目：先学原理，再做判断、验证代码、解释错误，最后准备可复核的项目面试表达。</p>
       <div className={s.facts}>
-        <span>6节课程</span><span>{course.duration}</span><span>可运行源码</span><span>版本 {course.revision}</span>
+        <span>6节免费基础课</span><span>6个项目实战模块</span><span>即时知识检查</span><span>Python 原创实验</span>
       </div>
       <div className={s.actions}>
-        <a className={s.primary} href={course.sourceFile} download>下载原创 Python 实验源码</a>
-        <a className={s.secondary} href="#chapters">阅读完整课程</a>
+        <a className={s.primary} href="#agent-project">开始项目课程</a>
+        <a className={s.secondary} href="#chapters">先学免费基础课</a>
       </div>
-      <p className={s.disclosure}>这是 SOC THINK 自研入门实训，并非官方认证；源码模拟工具调用，不冒充已连接真实大模型。当前完全免费，不涉及付款。</p>
+      <p className={s.disclosure}>基础课和本页项目知识检查均可免费使用，不要求先付款。本页不提供招聘认证或自动代码评分；完整工程包及自动化作业报告尚未作为收费课程发布。</p>
     </header>
     <div className={s.overview}>
       <div><strong>适合人群</strong><p>{course.audience}</p></div>
       <div><strong>先修要求</strong><p>{course.prerequisite}</p></div>
-      <div><strong>学完交付</strong><p>能复现工具调用实验，提交测试日志与自己的安全改进方案。</p></div>
+      <div><strong>完成目标</strong><p>理解工具授权与输入校验；能解释工单 Agent 的24项真实单元测试，并准备项目复盘。</p></div>
     </div>
     <section id="chapters" aria-labelledby="chapters-title" className={s.courseMain}>
-      <div className={s.sectionHead}><span>LEARNING PATH</span><h2 id="chapters-title">完整课程与实操</h2><p>每一节都有概念、工程边界和一个可以动手检验的问题。</p></div>
+      <div className={s.sectionHead}><span>FOUNDATION · FREE</span><h2 id="chapters-title">第一阶段：六节免费工程基础</h2><p>先学习工具契约与真实执行验收；项目课程在下方，按你的进度自由进入。</p></div>
       {course.lessons.map(lesson=><article key={lesson.title} className={s.lesson}>
         <h3>{lesson.title}</h3>
         {lesson.paragraphs.map(p=><p key={p}>{p}</p>)}
         <div className={s.challenge}><strong>本节实践</strong><span>{lesson.challenge}</span></div>
       </article>)}
     </section>
+    <AgentProjectCourse/>
     <section className={s.run} aria-labelledby="run-title">
-      <h2 id="run-title">先运行，再修改</h2>
+      <h2 id="run-title">可免费下载的基础实验</h2>
       <p>实验源码只依赖 Python 标准库。复制以下命令（下载后在文件所在目录执行）：</p>
       <pre><code>python3 agent_tool_contract_lab.py --self-test{"\n"}python3 agent_tool_contract_lab.py --demo</code></pre>
       <p>自测结束会显示 7 个固定场景的通过或失败记录；运行结果由实际执行决定，不预先伪造性能数据。</p>
