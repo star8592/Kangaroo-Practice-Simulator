@@ -56,7 +56,9 @@ test("exam manager remains legible and scrollable on mobile",async({page})=>{
   await page.goto("/");
   await page.getByRole("button",{name:"打开导航菜单"}).click();
   await page.getByRole("navigation",{name:"移动端导航"})
-    .getByRole("link",{name:"考试管理"}).click();
+    .getByRole("link",{name:"全部考试"}).click();
+  await expect(page).toHaveURL(/\/assessments$/);
+  await page.locator('main a[href="/exam-planner"]').first().click();
   await expect(page).toHaveURL(/\/exam-planner$/);
   await expect(page.getByLabel("所属考试领域")).toBeVisible();
   const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-window.innerWidth);

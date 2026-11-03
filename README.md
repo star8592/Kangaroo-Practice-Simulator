@@ -1,3 +1,9 @@
+# SOC THINK · 综合考试、资料与技能服务平台
+
+**全站结构设计唯一主文档**：[SOC THINK 全站信息架构总纲](docs/architecture/SOCTHINK_SITE_ARCHITECTURE_MASTER.md)。六大业务、五类考试、URL 与内容归属、跨业务关联、支付交付、SEO/GEO 和新增栏目规则以此为准。历史数学竞赛工程说明保留在下文。
+
+## 原数学竞赛工程说明
+
 # Math Competition Lab · 国际数学竞赛训练中心
 
 > **2026-10 当前工程入口**：GitHub 仓库 star8592/Kangaroo-Practice-Simulator，Web 生产站点 https://socthink.cn，生产目录 /opt/socthink-math。旧章节部分仍记录早期本地 3027 端口及历史路径，不代表当前生产环境。统一工程规则见 docs/engineering/ENGINEERING_OPERATING_SYSTEM.md，运行/发布/故障处理见 ops/release/SOCTHINK_DEPLOYMENT.md 与 docs/engineering/INCIDENT_RESPONSE_RUNBOOK.md。

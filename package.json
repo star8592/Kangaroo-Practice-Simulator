@@ -13,7 +13,7 @@
     "test:career-discovery": "tsx scripts/test_career_discovery.ts",
     "test:advanced-reasoning": "tsx scripts/test_advanced_reasoning_40.ts",
     "test:site-discovery": "tsx scripts/test_site_discovery.ts",
-    "test:platform": "npm run test:site-discovery && npm run test:career-interview && npm run test:career-semantic && npm run test:career-guided && npm run test:advanced-reasoning && npm run test:career-discovery && npm run test:engineering-tracks && npm run test:engineering-mock && npm run test:code-lab-session && npm run test:code-lab && npm run test:career-aptitude && tsx scripts/test_assessment_platform.ts && tsx scripts/test_resource_catalog.ts && tsx scripts/test_exam_directory.ts && npm run test:measurement-center && npm run test:assessment-skills && npm run test:assessment-reading && npm run test:e2e-origin && npm run test:assessment-report && npm run test:career-research",
+    "test:platform": "npm run test:site-architecture && npm run test:site-discovery && npm run test:career-interview && npm run test:career-semantic && npm run test:career-guided && npm run test:advanced-reasoning && npm run test:career-discovery && npm run test:engineering-tracks && npm run test:engineering-mock && npm run test:code-lab-session && npm run test:code-lab && npm run test:career-aptitude && tsx scripts/test_assessment_platform.ts && tsx scripts/test_resource_catalog.ts && tsx scripts/test_exam_directory.ts && npm run test:measurement-center && npm run test:assessment-skills && npm run test:assessment-reading && npm run test:e2e-origin && npm run test:assessment-report && npm run test:career-research",
     "test:exam-directory": "tsx scripts/test_exam_directory.ts",
     "test:resource-catalog": "tsx scripts/test_resource_catalog.ts",
     "test:rust-catalog-contract": "tsx scripts/test_rust_catalog_snapshot.ts",
@@ -136,6 +136,7 @@
     "test:career-directory": "tsx scripts/test_career_role_directory.ts",
     "test:career-formal-exams": "tsx scripts/test_career_formal_exams.ts",
     "test:career-semantic": "tsx scripts/test_career_semantic_followup.ts",
+    "test:site-architecture": "tsx scripts/test_site_architecture.ts",
     "test:career-guided": "tsx scripts/test_career_guided_interview.ts"
   },
   "dependencies": {

@@ -1,6 +1,6 @@
 import {test,expect} from "@playwright/test";
 
-test("homepage contains live updates, real routes and seven secondary exam categories",async({page})=>{
+test("homepage separates four core service cards from five exam categories",async({page})=>{
  const res=await page.goto("/");
  expect(res?.status()).toBe(200);
  await expect(page.getByRole("heading",{level:1,name:/从一份试卷|From a practice paper/})).toBeVisible();
@@ -10,10 +10,13 @@ test("homepage contains live updates, real routes and seven secondary exam categ
  expect(await updates.count()).toBeGreaterThanOrEqual(5);
  const dates=await updates.evaluateAll(nodes=>nodes.map(n=>n.getAttribute("datetime")||""));
  expect(dates).toEqual([...dates].sort().reverse());
- for(const href of ["/career","/skill-labs","/skill-labs/books","/assessment-center","/shop","/exam-planner"]){
+ for(const href of ["/career","/skill-labs","/assessment-center","/shop"]){
   await expect(main.locator('[aria-labelledby="home-services-heading"] a[href="'+href+'"]')).toBeVisible();
  }
- await expect(main.locator('a[href^="/assessments#domain-"]')).toHaveCount(7);
+ await expect(main.locator('a[href^="/assessments#domain-"]')).toHaveCount(5);
+ await expect(main.locator('[aria-labelledby="home-services-heading"] a[href="/skill-labs/books"]')).toHaveCount(0);
+ await expect(main.locator('[aria-labelledby="home-services-heading"] a[href="/exam-planner"]')).toHaveCount(0);
+ await expect(main.locator('a[href="/skill-labs/books"]').first()).toBeVisible();
  const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth);
  expect(overflow).toBeLessThanOrEqual(2);
 });
@@ -38,9 +41,10 @@ test("the new public navigation exposes actual business hubs without duplicating
  const width=page.viewportSize()!.width;
  if(width<1180)await page.getByRole("button",{name:"打开导航菜单"}).click();
  const nav=page.getByRole("navigation",{name:width<1180?"移动端导航":"主要导航"});
- for(const label of ["全部考试","真题资料","职业岗位","技能实训","测评中心","数字商城","考试管理"])
+ for(const label of ["全部考试","真题资料","职业岗位","技能实训","测评中心","数字商城"])
   await expect(nav.getByRole("link",{name:label,exact:true})).toBeVisible();
  await expect(nav.getByRole("button",{name:/在线练习|Practice/})).toHaveCount(0);
+ await expect(nav.locator('a[href="/exam-planner"]')).toHaveCount(0);
  for(const href of ["/arithmetic","/competitions","/review"])
   await expect(nav.locator('a[href="'+href+'"]')).toHaveCount(0);
  if(width<1180){

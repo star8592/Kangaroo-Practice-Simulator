@@ -1,5 +1,9 @@
 # SOCTHINK · project agent instructions
 
+## Canonical public site information architecture
+
+Before changing the homepage, navigation, page hierarchy, breadcrumbs, search, SEO URLs or cross-business links, read **docs/architecture/SOCTHINK_SITE_ARCHITECTURE_MASTER.md**. Main categories come from **src/lib/site-architecture.ts**; exam topics come from the separate exam directory. Do not promote exercises, books, calendars, account actions or unvalidated products into parallel top-level businesses. Preserve existing URLs, payment authority and learner data. Validate with **npm run test:site-architecture** and the existing CI; no extra release gates.
+
 ## Mandatory cross-project access/auth preflight
 
 Before SSH, DevControl/Zoria tool execution, deployment, Google/WeChat OAuth, browser control, device enrollment, payments or secrets, read the **[canonical EngineeringOS access and authentication lessons](https://github.com/star8592/EngineeringOS/blob/main/docs/operations/CROSS_PROJECT_ACCESS_AND_AUTH_LESSONS.md)** and then this project's current deployment instructions at `ops/release/SOCTHINK_DEPLOYMENT.md` and incident response at `docs/engineering/INCIDENT_RESPONSE_RUNBOOK.md`.

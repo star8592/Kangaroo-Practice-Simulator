@@ -22,6 +22,11 @@ const topic = (id:string,zh:string,en:string,href?:string):DirectoryTopic =>
  * A heading is NOT a promise of available exams, pricing, papers or answers.
  * Topic-level readiness must be based on a working public route, not on plans.
  */
+/** Only actual exam domains are published in the exam directory.
+ * Career simulations, coding skills and research assessments belong to their
+ * own first-class business hubs; assessment-core still knows all seven domains.
+ */
+export const EXAM_DOMAIN_IDS=["school","math-competition","language","university","professional"] as const;
 export const EXAM_DIRECTORY:readonly ExamDirectoryGroup[]=[
   {domainId:"school",topics:[
     topic("math-g1-g12","小学至高中计算训练","G1–G12 math practice","/arithmetic"),
@@ -63,15 +68,6 @@ export const EXAM_DIRECTORY:readonly ExamDirectoryGroup[]=[
     topic("academic-skills","学术能力与研究方法","Academic research skills"),
     topic("university-english","大学专业英语","University academic English"),
   ]},
-  {domainId:"career",topics:[
-    topic("sql","SQL 数据库实操","SQL practical assessment","/skill-labs/sql-lab"),
-    topic("data-cleaning","数据清洗","Data cleaning"),
-    topic("python","Python 编程","Python programming"),
-    topic("analysis","数据分析与统计","Data analysis & statistics"),
-    topic("excel","Excel 与办公技能","Spreadsheet & office skills"),
-    topic("ai-application","AI 应用实操","Practical AI tools","/skill-labs/agent-foundations"),
-    topic("job-interviews","岗位模拟面试","Job interview simulations","/career/interviews"),
-  ]},
   {domainId:"professional",topics:[
     topic("guokao","公务员国考 / 省考","Civil service examinations"),
     topic("public-institutions","事业单位招聘考试","Public institution recruitment"),
@@ -83,23 +79,18 @@ export const EXAM_DIRECTORY:readonly ExamDirectoryGroup[]=[
     topic("medical","医疗卫生职业资格","Healthcare qualifications"),
     topic("securities","证券与基金从业资格","Securities and fund qualifications"),
   ]},
-  {domainId:"interest",topics:[
-    topic("career-interest","职业兴趣探索","Career interest exploration","/assessment-center/career-interest-exploration-30"),
-    topic("aptitude","逻辑推理与基础能力","Reasoning and aptitude","/assessment-center/advanced-reasoning-40"),
-    topic("learning-style","学习策略自评","Learning strategies"),
-    topic("personality","人格与自我探索问卷","Personality self-reflection","/assessment-center/ipip-big-five-50-cn-preview"),
-    topic("comprehensive","综合能力测评","General aptitude assessment","/assessment-center/career-aptitude-40"),
-  ]},
 ] as const;
 
 export function validateExamDirectory():string[]{
   const problems:string[]=[];
   const known=new Map(ASSESSMENT_DOMAINS.map(x=>[x.id,x]));
   const groups=new Set<AssessmentDomainId>(),topics=new Set<string>();
+  const allowed=new Set<string>(EXAM_DOMAIN_IDS);
   for(const group of EXAM_DIRECTORY){
     if(groups.has(group.domainId)) problems.push("duplicate-domain:"+group.domainId);
     groups.add(group.domainId);
     if(!known.has(group.domainId)) problems.push("unknown-domain:"+group.domainId);
+    if(!allowed.has(group.domainId)) problems.push("non-exam-domain:"+group.domainId);
     if(!group.topics.length) problems.push("empty-domain:"+group.domainId);
     for(const t of group.topics){
       if(topics.has(t.id)) problems.push("duplicate-topic:"+t.id);
@@ -113,7 +104,7 @@ export function validateExamDirectory():string[]{
         problems.push("unlaunched-domain-live-topic:"+t.id);
     }
   }
-  for(const domain of ASSESSMENT_DOMAINS)
-    if(!groups.has(domain.id)) problems.push("missing-domain:"+domain.id);
+  for(const id of EXAM_DOMAIN_IDS)
+    if(!groups.has(id)) problems.push("missing-exam-domain:"+id);
   return problems;
 }

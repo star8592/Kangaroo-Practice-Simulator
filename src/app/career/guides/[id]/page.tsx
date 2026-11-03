@@ -19,7 +19,7 @@ export async function generateMetadata({params}:{params:Promise<{id:string}>}){
 export default async function CareerGuidePage({params}:{params:Promise<{id:string}>}){
   const {id}=await params;const guide=getCareerGuide(id);
   if(!guide||guide.deliveryState!=="free-original-material")notFound();
-  return <main className={styles.shell}>
+  return <div className={styles.shell}>
     <nav className={styles.breadcrumb} aria-label="当前位置">
       <Link href="/career">职业训练中心</Link><span>/</span><span>原创复习教程</span>
     </nav>
@@ -60,5 +60,5 @@ export default async function CareerGuidePage({params}:{params:Promise<{id:strin
         <Link href="/career">返回岗位热度与产品目录</Link>
       </div>
     </div>
-  </main>;
+  </div>;
 }

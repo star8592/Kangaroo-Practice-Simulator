@@ -4,6 +4,8 @@ import {useEffect,useMemo,useState} from "react";
 import {ASSESSMENT_DOMAINS} from "@/lib/assessment-platform";
 import {EXAM_DIRECTORY} from "@/lib/exam-directory";
 import {useSiteLanguage} from "@/lib/site-language";
+import {useRouter} from "next/navigation";
+import {legacyExamHashDestination} from "@/lib/site-architecture";
 import styles from "./ExamDirectory.module.css";
 
 const LABEL={
@@ -33,11 +35,16 @@ const DOMAIN_BY_ID=new Map(ASSESSMENT_DOMAINS.map(d=>[d.id,d]));
 
 export default function ExamDirectory({initialQuery=""}:{initialQuery?:string}){
   const lang=useSiteLanguage(),t=LABEL[lang];
+  const router=useRouter();
   const [query,setQuery]=useState(initialQuery);
   const [showPlanned,setShowPlanned]=useState(false);
   useEffect(()=>{
     const revealHashTarget=()=>{
       const hash=window.location.hash.slice(1);
+      // Old deep links keep working without putting career/psychometrics
+      // back inside the exam directory.
+      const legacyRoute=legacyExamHashDestination(hash);
+      if(legacyRoute){router.replace(legacyRoute);return;}
       if(!EXAM_DIRECTORY.some(group=>hash===`domain-${group.domainId}`))return;
       setShowPlanned(true);
       // The anchor can be absent until React has rendered planned domains.
@@ -48,7 +55,7 @@ export default function ExamDirectory({initialQuery=""}:{initialQuery?:string}){
     revealHashTarget();
     window.addEventListener("hashchange",revealHashTarget);
     return ()=>window.removeEventListener("hashchange",revealHashTarget);
-  },[]);
+  },[router]);
   const matched=useMemo(()=>{
     const term=query.trim().toLocaleLowerCase();
     return EXAM_DIRECTORY.map(group=>{
@@ -95,7 +102,9 @@ export default function ExamDirectory({initialQuery=""}:{initialQuery?:string}){
         })}
       </nav>
       <div className={styles.groups} aria-live="polite">
-        {!matched.length&&<div className={styles.empty}>{t.empty}</div>}
+        {!matched.length&&<div className={styles.empty}>{t.empty}{" "}
+          <Link href={"/search?q="+encodeURIComponent(query)}>{lang==="zh"?"搜索全站其他内容 →":"Search all site content →"}</Link>
+        </div>}
         {visible.map(({domain,topics})=><article className={styles.group}
           id={`domain-${domain.id}`} key={domain.id}>
           <div className={styles.groupTop}>
@@ -116,7 +125,7 @@ export default function ExamDirectory({initialQuery=""}:{initialQuery?:string}){
       </div>
     </div>
     <nav className={styles.actions} aria-label={lang==="zh"?"可用服务":"Available services"}>
-      <Link href="/resources">{t.browse}</Link><Link href="/events">{t.calendar}</Link>
+      <Link href="/resources">{t.browse}</Link><Link href="/exam-planner">{lang==="zh"?"考试日程":"Exam planner"}</Link><Link href="/events">{t.calendar}</Link>
     </nav>
   </section>;
 }

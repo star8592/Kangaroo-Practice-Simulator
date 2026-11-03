@@ -9,7 +9,9 @@ test.describe("SOC THINK unified public navigation", () => {
     const mobile=(page.viewportSize()?.width??1280)<=760;
     if(mobile)await page.getByRole("button",{name:"打开导航菜单"}).click();
     await page.getByRole("navigation",{name:mobile?"移动端导航":"主要导航"})
-      .getByRole("link",{name:"考试管理"}).click();
+      .getByRole("link",{name:"全部考试"}).click();
+    await expect(page).toHaveURL(/\/assessments$/);
+    await page.locator('main a[href="/exam-planner"]').first().click();
     await expect(page).toHaveURL(/\/exam-planner$/);
     await expect(page.getByRole("heading",{name:"我的考试管理"})).toBeVisible();
     await page.getByRole("link",{name:/打开数学赛事管家/}).click();

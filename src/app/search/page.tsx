@@ -13,7 +13,7 @@ export const metadata:Metadata = {
   robots: { index:false, follow:true },
 };
 type Props = { searchParams:Promise<{q?:string|string[]}> };
-const KINDS:readonly DiscoveryKind[] = ["考试","试卷","技能","技术书","岗位资料","测评","商城"];
+const KINDS:readonly DiscoveryKind[] = ["考试","试卷","职业岗位","技能","技术书","岗位资料","测评","商城"];
 
 export default async function SiteSearchPage({searchParams}:Props) {
   const params=await searchParams;
