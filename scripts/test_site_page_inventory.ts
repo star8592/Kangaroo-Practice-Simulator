@@ -84,6 +84,28 @@ for(const privatePrefix of ["/admin","/student","/account","/parent","/report","
 for(const business of PRIMARY_BUSINESS_NAV){
  assert.equal(byRoute.get(business.href)?.parent,"/","Primary navigation lacks home as parent");
 }
+// Static reference audit: public concrete pages must be mentioned by some
+// other application source, not merely by their own metadata or sitemap.
+// A reference is discovery evidence, NOT proof that every dynamic instance
+// renders an authorized clickable link; that needs browser/runtime testing.
+const codeSources=findFiles("src").filter(p=>/\.(ts|tsx)$/.test(p)&&
+ !p.endsWith("/sitemap.ts")&&!p.endsWith("/robots.ts"));
+const sourceTexts=codeSources.map(file=>({file,body:read(file)}));
+const publicModes=new Set(["一级业务","公开目录","公开内容","公开指南",
+ "公开工具","公开政策","公开证据"]);
+const unreachable:string[]=[];
+let publicReferenced=0;
+for(const row of rows){
+ if(!publicModes.has(row.mode)||row.route==="/")continue;
+ const own="src/app"+row.route+"/page.tsx";
+ const patterns=['"'+row.route+'"',"'"+row.route+"'"];
+ const referenced=sourceTexts.some(src=>src.file!==own&&
+   patterns.some(pattern=>src.body.includes(pattern)));
+ if(!referenced)unreachable.push(row.route);
+ else publicReferenced++;
+}
+assert.deepEqual(unreachable,[],"Public route with no static discovery reference");
+
 const proof=[
  ["src/components/AdminOperationsNav.tsx",'href="/admin/competition-source-watch"'],
  ["src/app/math-practice/page.tsx",'href="/verification"'],
@@ -100,4 +122,4 @@ assert.ok(!read("src/app/career/companies/page.tsx").includes('href="/assessment
 assert.ok(read("src/app/assessment-center/sql-lab/page.tsx").includes('permanentRedirect("/skill-labs/sql-lab")'),
  "Legacy SQL link must return to its skill owner");
 console.log("SITE_PAGE_INVENTORY=PASS templates="+routes.length+" owned="+scoped+
- " restricted_or_controlled="+restricted+" parents=ACYCLIC private=EXCLUDED_FROM_SITEMAP");
+ " restricted_or_controlled="+restricted+" parents=ACYCLIC public_backlinks="+publicReferenced+" private=EXCLUDED_FROM_SITEMAP");
