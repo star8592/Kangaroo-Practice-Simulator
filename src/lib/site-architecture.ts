@@ -23,6 +23,7 @@ export const BUSINESS_SUBROUTES:readonly {path:string;owner:SiteBusinessId;role:
   {path:"/review",owner:"exams",role:"mistake-review"},
   {path:"/exam-planner",owner:"exams",role:"personal-exam-calendar"},
   {path:"/events",owner:"exams",role:"competition-companion"},
+  {path:"/verification",owner:"exams",role:"math-proof-records"},
 ];
 
 /** Execution-only public routes have an owner but must never appear as L1.

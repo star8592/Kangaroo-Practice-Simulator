@@ -55,7 +55,8 @@ const breadcrumbs = {
   "@type": "BreadcrumbList",
   itemListElement: [
     { "@type": "ListItem", position: 1, name: "首页", item: "https://socthink.cn/" },
-    { "@type": "ListItem", position: 2, name: "数学计算训练", item: "https://socthink.cn/math-practice" },
+    { "@type": "ListItem", position: 2, name: "全部考试", item: "https://socthink.cn/assessments" },
+    { "@type": "ListItem", position: 3, name: "数学计算训练", item: "https://socthink.cn/math-practice" },
   ],
 };
 
@@ -75,6 +76,7 @@ export default function MathPracticeLanding() {
 
       <nav aria-label="面包屑" className={styles.crumbs}>
         <Link href="/">首页</Link><span aria-hidden="true">/</span>
+        <Link href="/assessments">全部考试</Link><span aria-hidden="true">/</span>
         <span aria-current="page">数学计算训练</span>
       </nav>
 
@@ -171,6 +173,7 @@ export default function MathPracticeLanding() {
         <div className={styles.actions}>
           <Link className={styles.primary} href="/arithmetic">打开在线计算训练</Link>
           <Link className={styles.outline} href="/resources">查看数学竞赛训练卷</Link>
+          <Link className={styles.outline} href="/verification">数学题形式化验证档案</Link>
         </div>
         <p className={styles.note}>
           这里是 SOC THINK 自有训练工具的使用说明，不是教育主管部门的考试规则，

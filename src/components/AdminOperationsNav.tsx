@@ -9,5 +9,6 @@ export default function AdminOperationsNav() {
     <Link href="/admin/students">学生与学习画像</Link>
     <Link href="/admin/questions">题库检查</Link>
     <Link href="/admin/feedback">客户反馈</Link>
+    <Link href="/admin/competition-source-watch">赛事来源审核</Link>
   </nav>;
 }
