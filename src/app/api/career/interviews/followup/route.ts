@@ -83,6 +83,7 @@ export async function POST(req:NextRequest){
   return json({code:"INTERVIEW_ENTITLEMENT_UNAVAILABLE"},503);
  }
  let completed=false;
+ let outgoing:NextResponse|null=null;
  try{
  const profile=getInterviewProfile(data.profileId)!;
  const question=profile.questions.find(q=>q.id===data.questionId)!;
@@ -92,19 +93,19 @@ export async function POST(req:NextRequest){
   const messages=style==="guided"?makeGuidedEvidenceMessages(data):makeGuidedMessages(data);
   const parser=style==="guided"?parseGuidedEvidence:parseGuidedDecision;
   const resolved=await withModelBackup(cfg,messages,text=>parser(text,data.answer));
-  if(!resolved)return json({code:"MODEL_UNAVAILABLE"},503);
+  if(!resolved)return outgoing=json({code:"MODEL_UNAVAILABLE"},503);
   completed=true;
   const selected=composeGuidedFollowup(question,resolved.result);
-  return json({mode:"guided",strategy:style==="guided"?"evidence-extraction":"branch-choice",
+  return outgoing=json({mode:"guided",strategy:style==="guided"?"evidence-extraction":"branch-choice",
    question:selected.question,evidenceQuote:selected.evidenceQuote,reason:selected.reason,
    branch:selected.branch,provider:providerLabels[resolved.provider],
    viaBackup:resolved.viaBackup,latencyMs:resolved.latencyMs});
  }
  const resolved=await withModelBackup(cfg,makeSemanticMessages(data),text=>parseSemanticContent(text,data.answer));
- if(!resolved)return json({code:"MODEL_UNAVAILABLE"},503);
+ if(!resolved)return outgoing=json({code:"MODEL_UNAVAILABLE"},503);
  completed=true;
  const free=resolved.result;
- return json({mode:"semantic",question:free.question,evidenceQuote:free.evidenceQuote,
+ return outgoing=json({mode:"semantic",question:free.question,evidenceQuote:free.evidenceQuote,
   reason:free.reason,provider:providerLabels[resolved.provider],
   viaBackup:resolved.viaBackup,latencyMs:resolved.latencyMs});
  }finally{
@@ -112,8 +113,12 @@ export async function POST(req:NextRequest){
   await finishPaidCareerRound({sessionId,questionId:data.questionId,claimToken,success:completed});
   // Only restore when no valid AI round was delivered in this paid session.
   // The ledger serializes this with other in-flight rounds and prevents double credits.
-  if(!completed)await restoreUnservedCareerSession({
-   buyerId,profileId:data.profileId,sessionId
-  });
+  if(!completed){
+   const restored=await restoreUnservedCareerSession({
+    buyerId,profileId:data.profileId,sessionId
+   });
+   // Browser may clear its stale reserved session only after a verified release.
+   if(outgoing)outgoing.headers.set("X-Career-Credit-Restored",restored?"1":"0");
+  }
  }
 }
