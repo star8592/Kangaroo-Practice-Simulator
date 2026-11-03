@@ -12,7 +12,8 @@ import {
 import type {InterviewJobContext} from "@/lib/career-interview-context";
 import styles from "./career-interview.module.css";
 type Stage="intro"|"main"|"followup"|"review"|"report";
-type State={version:string;stage:Stage;index:number;entries:Record<string,InterviewExchange>;context?:InterviewJobContext};
+type State={version:string;stage:Stage;index:number;entries:Record<string,InterviewExchange>;
+ context?:InterviewJobContext;aiSessionId?:string;aiRequestId?:string;};
 const VERSION="career-interview-structured-preview-20261102-v1";
 const subscribe=()=>()=>{};
 const ready=()=>true;
@@ -28,7 +29,9 @@ function loadSaved(id:string,count:number):State|null{
   if(val.version!==VERSION||!["main","followup","review","report"].includes(val.stage)
    ||!Number.isInteger(val.index)||val.index<0||val.index>=count
    ||!val.entries||Array.isArray(val.entries)||typeof val.entries!=="object"
-   ||(val.context!==undefined&&!isInterviewJobContext(val.context)))return null;
+   ||(val.context!==undefined&&!isInterviewJobContext(val.context))
+   ||(val.aiSessionId&& !/^cais_[a-f0-9]{32}$/.test(val.aiSessionId))
+   ||(val.aiRequestId&& !/^[a-f0-9-]{36}$/i.test(val.aiRequestId)))return null;
   const allowed=new Set(getInterviewProfile(id)?.questions.map(q=>q.id)??[]);
   const valid=Object.entries(val.entries).every(([q,e])=>
    allowed.has(q)&&e!==null&&typeof e==="object"&&
@@ -54,17 +57,19 @@ export default function CareerInterviewClient({profileId}:{profileId:string}){
  const [semanticProvider,setSemanticProvider]=useState<"local"|"external"|null>(null);
  const [modelProviders,setModelProviders]=useState<string[]>([]);
  const [semanticConsent,setSemanticConsent]=useState(false);
+ const [aiSessionId,setAiSessionId]=useState(saved?.aiSessionId??"");
+ const [aiRequestId,setAiRequestId]=useState(saved?.aiRequestId??"");
  const [submitting,setSubmitting]=useState(false);
  const requestEpoch=useRef(0);
  useEffect(()=>{
   let active=true;
-  fetch("/api/career/interviews/followup",{cache:"no-store"})
+  fetch("/api/career/interviews/followup?profileId="+encodeURIComponent(profileId),{cache:"no-store"})
    .then(r=>r.ok?r.json():null)
    .then(d=>{if(active&&d?.enabled===true){setSemanticEnabled(true);setSemanticProvider(d.provider==="local"?"local":"external");
     setModelProviders(Array.isArray(d.providers)?d.providers.filter((p:unknown)=>typeof p==="string").slice(0,2):[]);}})
    .catch(()=>{});
   return ()=>{active=false;};
- },[]);
+ },[profileId]);
  const [confirmReset,setConfirmReset]=useState(false);
  const question=profile.questions[index];
  const entry=entries[question.id]??empty();
@@ -73,14 +78,17 @@ export default function CareerInterviewClient({profileId}:{profileId:string}){
   try{
    if(stage==="intro")sessionStorage.removeItem(storageKey(profileId));
    else sessionStorage.setItem(storageKey(profileId),JSON.stringify({
-    version:VERSION,stage,index,entries,context,
+    version:VERSION,stage,index,entries,context,aiSessionId,aiRequestId,
    }));
   }catch{/* Storage can be restricted; current page stays usable. */}
- },[hydrated,profileId,stage,index,entries,context]);
+ },[hydrated,profileId,stage,index,entries,context,aiSessionId,aiRequestId]);
  function updateCurrent(next:Partial<InterviewExchange>){
   setEntries(prev=>({...prev,[question.id]:{...empty(),...prev[question.id],id:question.id,...next}}));
  }
- function start(){setIndex(0);setEntries({});setConfirmReset(false);setStage("main");}
+ function start(){
+  setIndex(0);setEntries({});setAiSessionId("");
+  setAiRequestId(crypto.randomUUID());setConfirmReset(false);setStage("main");
+ }
  async function confirmMain(){
   if(!entry.answer.trim()||submitting)return;
   const epoch=++requestEpoch.current;
@@ -93,10 +101,27 @@ export default function CareerInterviewClient({profileId}:{profileId:string}){
     const controller=new AbortController();
     const timer=setTimeout(()=>controller.abort(),14500);
     try{
+     let activeSession=aiSessionId;
+     if(!activeSession){
+      const requestId=aiRequestId||crypto.randomUUID();
+      if(!aiRequestId)setAiRequestId(requestId);
+      const reserved=await fetch("/api/career/interviews/session",{
+       method:"POST",cache:"no-store",signal:controller.signal,
+       headers:{"Content-Type":"application/json"},
+       body:JSON.stringify({profileId:profile.id,clientRequestId:requestId})
+      });
+      if(!reserved.ok)throw new Error("AI_SESSION_NOT_AVAILABLE");
+      const result=await reserved.json();
+      if(typeof result.sessionId!=="string"||!/^cais_[a-f0-9]{32}$/.test(result.sessionId))
+       throw new Error("INVALID_AI_SESSION");
+      activeSession=result.sessionId;
+      setAiSessionId(activeSession);
+     }
      const response=await fetch("/api/career/interviews/followup",{
       method:"POST",cache:"no-store",signal:controller.signal,
       headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({profileId:profile.id,questionId:question.id,answer:entry.answer,context})
+      body:JSON.stringify({profileId:profile.id,questionId:question.id,
+       answer:entry.answer,context,sessionId:activeSession})
      });
      if(response.ok){
       const result=await response.json();
@@ -107,7 +132,7 @@ export default function CareerInterviewClient({profileId}:{profileId:string}){
       }
      }
     }finally{clearTimeout(timer)}
-   }catch{/* Network/model unavailable: preserve usable rule-based practice. */}
+   }catch{/* Invalid payment/session or unavailable model: use the rule-based question. */}
   }
   if(requestEpoch.current!==epoch)return;
   updateCurrent({followup:text,followupMode:mode,followupEvidence:evidence,followupReason:reason,followupAnswer:""});
@@ -120,7 +145,7 @@ export default function CareerInterviewClient({profileId}:{profileId:string}){
   else setStage("review");
  }
  function reset(){
-  requestEpoch.current++;setSubmitting(false);setSemanticConsent(false);
+  requestEpoch.current++;setSubmitting(false);setSemanticConsent(false);setAiSessionId("");setAiRequestId("");
   setIndex(0);setEntries({});setContext(EMPTY_INTERVIEW_JOB_CONTEXT);setConsent(false);setConfirmReset(false);
   try{sessionStorage.removeItem(storageKey(profileId))}catch{}
   setStage("intro");
@@ -134,7 +159,7 @@ export default function CareerInterviewClient({profileId}:{profileId:string}){
    <p>{profile.subtitle}</p>
   </header>
   {stage==="intro"&&<section className={styles.panel}>
-   <span className={styles.status}>免费体验 · 结构化模拟（非AI语义评分）</span>
+   <span className={styles.status}>{semanticEnabled?"已付费权益 · 可选专业AI追问":"免费体验 · 结构化模拟（非AI语义评分）"}</span>
    <h2>面试入场</h2>
    <p className={styles.lead}>{profile.description}</p>
    <div className={styles.facts}>
@@ -189,7 +214,7 @@ export default function CareerInterviewClient({profileId}:{profileId:string}){
     <button className={styles.textButton} type="button" onClick={()=>setConfirmReset(true)}>重新开始</button>
    </div>
    {confirmReset&&<div className={styles.resetPrompt}>
-    <span>重新开始会清空本标签页的全部练习回答、岗位要求和经历摘要。</span>
+    <span>重新开始会清空本标签页的全部练习回答、岗位要求和经历摘要。{aiSessionId?"本次已预留的付费面试次数不会因清空而自动返还。":""}</span>
     <button type="button" onClick={()=>setConfirmReset(false)}>取消</button>
     <button type="button" onClick={reset}>确认清空</button>
    </div>}
@@ -279,7 +304,7 @@ export default function CareerInterviewClient({profileId}:{profileId:string}){
      <strong>下次练习方向</strong><ul>{q.improvement.map((m,j)=><li key={j}>{m}</li>)}</ul>
     </div>
    </details>)}</div>
-   <p className={styles.small}>本次记录仅保存在本标签页，关闭后可能丢失；自愿开启AI追问时对应轮次文本会发送给所选模型服务处理，不建立服务器长期面试档案。需要留存可自行打印。不含招聘录取预测或收费权益。</p>
+   <p className={styles.small}>本次记录仅保存在本标签页，关闭后可能丢失；自愿开启AI追问时对应轮次文本会发送给所选模型服务处理，不建立服务器长期面试档案。需要留存可自行打印。不含招聘录取预测或正式职业认证。</p>
    <div className={styles.footer}>
     <button type="button" className={styles.secondary} onClick={()=>setStage("review")}>修改复盘清单</button>
     <button type="button" className={styles.primary} onClick={()=>window.print()}>打印／保存个人复盘</button>

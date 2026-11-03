@@ -3,6 +3,8 @@ import QRCode from "qrcode";
 import {PARENT_SESSION_COOKIE,parentFromSessionToken} from "@/lib/parent-auth";
 import {BillingConflictError,billingConfigured,billingPool,createBillingOrder,hasVerifiedItemEntitlement} from "@/lib/billing-ledger";
 import {isExamBundleTrainingReady,loadTrainingExamBundle} from "@/lib/training-question-bank";
+import {getInterviewProfile} from "@/lib/career-interview-scenarios";
+import {getConfig as getInterviewModelConfig} from "@/lib/career-model-routing";
 import {nativeCheckoutAllowedForBuyer,nativeServerContext} from "@/lib/wechat-native-server";
 import {createVerifiedWechatNativeCheckout} from "@/lib/wechat-native-transport";
 import {DIGITAL_SALES_POLICY_VERSION,validDigitalSalesPolicyConsent} from "@/lib/digital-sales-policy";
@@ -55,8 +57,8 @@ export async function POST(req:NextRequest) {
     // Product price and delivery tier come from a trusted server table.
     // Never trust a posted amount, name or entitlement.
     const product=await billingPool().query<{
-      id:string;amount_minor:string;currency:string;product_kind:"subscription"|"item";
-      content_kind:"exam"|"resource"|"report"|null;content_id:string|null;title_zh:string|null;
+      id:string;amount_minor:string;currency:string;product_kind:"subscription"|"item"|"service";
+      content_kind:"exam"|"resource"|"report"|"career_interview"|null;content_id:string|null;title_zh:string|null;
       rights_approved:boolean;delivery_verified:boolean;access_restricted:boolean;
     }>(
       "SELECT id,amount_minor,currency,product_kind,content_kind,content_id,title_zh,rights_approved,delivery_verified,access_restricted FROM billing_products WHERE id=$1 AND enabled=true",[productId]);
@@ -87,6 +89,15 @@ export async function POST(req:NextRequest) {
       if(await hasVerifiedItemEntitlement(parent.id,p.content_kind,p.content_id))
         return reply({error:"已购买该商品，请在我的账号中使用",code:"ALREADY_OWNED"},409);
     }
+    if(p.product_kind==="service"){
+      // A service credit cannot become payable until verified AI capacity,
+      // a dedicated commercial activation, and the existing Native policy agree.
+      if(process.env.SOCTHINK_CAREER_AI_BILLING_ENABLED!=="1" ||
+         !getInterviewModelConfig() || p.content_kind!=="career_interview" ||
+         !getInterviewProfile(p.content_id||"") ||
+         !p.rights_approved || !p.delivery_verified || !p.access_restricted || !p.title_zh)
+        return reply({error:"专业面试服务尚未开放付费",code:"INTERVIEW_SERVICE_NOT_READY"},409);
+    }
     const order=await createBillingOrder(parent.id,productId,"wechat_native",{
       policyVersion:DIGITAL_SALES_POLICY_VERSION,acceptedAt:new Date(),
     });
@@ -110,6 +121,9 @@ export async function POST(req:NextRequest) {
       qrTtlSeconds:checkoutQrTtlSeconds(orderExpiresAtSeconds,Math.floor(Date.now()/1000)),
       status:"pending",note:"请以微信支付结果和服务端权益到账为准"},200);
   } catch(error) {
+    if(error instanceof BillingConflictError && error.message==="Service payment already pending")
+      return reply({error:"此面试次数包已有待支付订单，请先查询原订单，避免重复扣款",
+        code:"INTERVIEW_PAYMENT_PENDING"},409);
     if(error instanceof BillingConflictError &&
        error.message==="Item payment already pending")
       return reply({error:"该商品已有待支付订单，请先完成或关闭原订单，避免重复扣款",

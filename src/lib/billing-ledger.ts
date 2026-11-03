@@ -59,8 +59,8 @@ export async function createBillingOrder(
     throw new BillingConflictError("Digital sales policy confirmation required");
   return transaction(async c=>{
     const product=await c.query<{
-      amount_minor:string;currency:string;product_kind:"subscription"|"item";
-      content_kind:"exam"|"resource"|"report"|null;content_id:string|null;
+      amount_minor:string;currency:string;product_kind:"subscription"|"item"|"service";
+      content_kind:"exam"|"resource"|"report"|"career_interview"|null;content_id:string|null;
       rights_approved:boolean;delivery_verified:boolean;access_restricted:boolean;title_zh:string|null;
     }>(
       "SELECT amount_minor,currency,product_kind,content_kind,content_id,rights_approved,delivery_verified,access_restricted,title_zh FROM billing_products WHERE id=$1 AND enabled=true",[productId]);
@@ -72,8 +72,26 @@ export async function createBillingOrder(
         !p.access_restricted || !p.content_kind || !p.content_id ||
         !p.title_zh?.trim()))
       throw new BillingConflictError("Item unavailable for sale");
-    if(p.product_kind!=="subscription" && p.product_kind!=="item")
+    if(p.product_kind!=="subscription" && p.product_kind!=="item" && p.product_kind!=="service")
       throw new BillingConflictError("Unsupported product");
+    let serviceSessions:number|null=null;
+    if(p.product_kind==="service"){
+      const {getInterviewProfile}=await import("./career-interview-scenarios");
+      if(p.content_kind!=="career_interview" || !getInterviewProfile(p.content_id??"") ||
+         !p.rights_approved || !p.delivery_verified || !p.access_restricted || !p.title_zh?.trim())
+        throw new BillingConflictError("Interview service not ready");
+      // A migration is required before service SKUs can be inserted/enabled.
+      const count=await c.query<{service_sessions:number}>(
+        "SELECT service_sessions FROM billing_products WHERE id=$1",[productId]);
+      serviceSessions=count.rows[0]?.service_sessions;
+      if(!Number.isInteger(serviceSessions)||serviceSessions===null||serviceSessions<1||serviceSessions>20)
+        throw new BillingConflictError("Invalid interview session count");
+      await c.query("SELECT pg_advisory_xact_lock(hashtextextended($1,0))",[parentId+":career-service:"+productId]);
+      const pending=await c.query<{id:string}>(
+        "SELECT id FROM billing_orders WHERE payer_parent_id=$1 AND product_id=$2 AND product_kind='service' AND state='pending' LIMIT 1",
+        [parentId,productId]);
+      if(pending.rows[0])throw new BillingConflictError("Service payment already pending");
+    }
     if(p.product_kind==="item" && p.content_kind==="report"){
       // Reports are ONLY our two registered self-exploration instruments.
       // A forged SQL row cannot sell an arbitrary private content target.
@@ -117,9 +135,18 @@ export async function createBillingOrder(
         active.rows[0].state==="pending"?"Item payment already pending":"Item already owned"
       );
     }
-    await c.query("INSERT INTO billing_orders(id,payer_parent_id,product_id,price_minor,currency,provider,product_kind,content_kind,content_id,title_snapshot,sales_policy_version,sales_policy_accepted_at) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)",
-      [id,parentId,productId,p.amount_minor,p.currency,provider,p.product_kind,p.content_kind,p.content_id,p.title_zh,
-        consent?.policyVersion??null,consent?.acceptedAt??null]);
+    if(p.product_kind==="service"){
+      await c.query(`INSERT INTO billing_orders
+        (id,payer_parent_id,product_id,price_minor,currency,provider,product_kind,content_kind,content_id,title_snapshot,
+         sales_policy_version,sales_policy_accepted_at,service_sessions_snapshot)
+        VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)`,
+        [id,parentId,productId,p.amount_minor,p.currency,provider,p.product_kind,p.content_kind,p.content_id,
+         p.title_zh,consent?.policyVersion??null,consent?.acceptedAt??null,serviceSessions]);
+    }else{
+      await c.query("INSERT INTO billing_orders(id,payer_parent_id,product_id,price_minor,currency,provider,product_kind,content_kind,content_id,title_snapshot,sales_policy_version,sales_policy_accepted_at) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)",
+        [id,parentId,productId,p.amount_minor,p.currency,provider,p.product_kind,p.content_kind,p.content_id,p.title_zh,
+         consent?.policyVersion??null,consent?.acceptedAt??null]);
+    }
     return {id,priceMinor:Number(p.amount_minor),currency:p.currency};
   });
 }
@@ -193,15 +220,19 @@ export async function settleVerifiedOrder(r:VerifiedPaymentReceipt){
       id:string;payer_parent_id:string;price_minor:string;currency:string;provider:string;
       provider_transaction_id:string|null;state:string;
       tier:"plus"|"pro"|null;period:"month"|"year"|null;
-      product_kind:"subscription"|"item";content_kind:"exam"|"resource"|"report"|null;content_id:string|null;
+      product_kind:"subscription"|"item"|"service";content_kind:"exam"|"resource"|"report"|"career_interview"|null;content_id:string|null;
+      service_sessions_snapshot:number|null;
     }>("SELECT o.*,p.tier,p.period FROM billing_orders o JOIN billing_products p ON p.id=o.product_id WHERE o.id=$1 FOR UPDATE OF o",[r.orderId]);
     const o=result.rows[0];
     if(!o || o.provider!==r.provider || Number(o.price_minor)!==r.amountMinor || o.currency!==r.currency)
       throw new BillingConflictError("Provider order amount/currency mismatch");
     if(o.state==="paid"){
       if(o.provider_transaction_id!==r.transactionId)throw new BillingConflictError("Transaction already settled differently");
-      const grantTable=o.product_kind==="item"?"billing_item_entitlements":"billing_entitlements";
-      const e=await c.query<{id:string}>(`SELECT id FROM ${grantTable} WHERE source_order_id=$1`,[o.id]);
+      const grantTable=o.product_kind==="item"?"billing_item_entitlements":o.product_kind==="service"?
+        "billing_career_session_grants":"billing_entitlements";
+      const e=await c.query<{id:string}>(o.product_kind==="service"?
+        "SELECT source_order_id AS id FROM billing_career_session_grants WHERE source_order_id=$1":
+        `SELECT id FROM ${grantTable} WHERE source_order_id=$1`,[o.id]);
       if(!e.rows[0])throw new BillingConflictError("Paid order without grant");
       return {orderId:o.id,grantId:e.rows[0].id,tier:o.tier,created:false};
     }
@@ -218,6 +249,18 @@ export async function settleVerifiedOrder(r:VerifiedPaymentReceipt){
       await c.query("INSERT INTO billing_item_entitlements(id,payer_parent_id,source_order_id,content_kind,content_id,granted_at) VALUES($1,$2,$3,$4,$5,$6)",
         [id,o.payer_parent_id,o.id,o.content_kind,o.content_id,r.verifiedAt]);
       return {orderId:o.id,grantId:id,tier:null,created:true};
+    }
+    if(o.product_kind==="service"){
+      if(o.content_kind!=="career_interview" || !o.content_id ||
+         !["campus-software","social-procurement"].includes(o.content_id) ||
+         !Number.isInteger(o.service_sessions_snapshot) || !o.service_sessions_snapshot ||
+         o.service_sessions_snapshot<1 || o.service_sessions_snapshot>20)
+        throw new BillingConflictError("Invalid career interview service snapshot");
+      await c.query(`INSERT INTO billing_career_session_grants
+        (source_order_id,payer_parent_id,profile_id,purchased_sessions,remaining_sessions,granted_at)
+        VALUES($1,$2,$3,$4,$4,$5)`,
+        [o.id,o.payer_parent_id,o.content_id,o.service_sessions_snapshot,r.verifiedAt]);
+      return {orderId:o.id,grantId:o.id,tier:null,created:true};
     }
     if(o.product_kind!=="subscription" || !o.tier || !o.period)
       throw new BillingConflictError("Invalid subscription order");
@@ -241,6 +284,7 @@ export async function refundVerifiedOrder(r:VerifiedPaymentReceipt){
   return transaction(async c=>{
     const rows=await c.query<{
       id:string;provider:string;price_minor:string;currency:string;provider_transaction_id:string|null;state:string;
+      product_kind:"subscription"|"item"|"service";
     }>("SELECT * FROM billing_orders WHERE id=$1 FOR UPDATE",[r.orderId]);
     const o=rows.rows[0];
     if(!o || o.provider!==r.provider || Number(o.price_minor)!==r.amountMinor ||
@@ -253,6 +297,8 @@ export async function refundVerifiedOrder(r:VerifiedPaymentReceipt){
     await c.query("UPDATE billing_orders SET state='refunded',refunded_at=$2 WHERE id=$1",[o.id,r.verifiedAt]);
     await c.query("UPDATE billing_entitlements SET revoked_at=$2 WHERE source_order_id=$1 AND revoked_at IS NULL",[o.id,r.verifiedAt]);
     await c.query("UPDATE billing_item_entitlements SET revoked_at=$2 WHERE source_order_id=$1 AND revoked_at IS NULL",[o.id,r.verifiedAt]);
+    if(o.product_kind==="service")
+      await c.query("UPDATE billing_career_session_grants SET revoked_at=$2 WHERE source_order_id=$1 AND revoked_at IS NULL",[o.id,r.verifiedAt]);
     return {orderId:o.id,revoked:true};
   });
 }

@@ -6,9 +6,13 @@ import path from "node:path";
 import {NextRequest} from "next/server";
 import {readVerifiedDigitalResource} from "../src/lib/digital-resource-file";
 import {DIGITAL_SALES_POLICY_VERSION} from "../src/lib/digital-sales-policy";
+import {startPaidCareerSession,getPaidCareerSessionAvailability,claimPaidCareerRound,
+ finishPaidCareerRound,CareerCreditsRequired,CareerSessionUnavailable,CareerRoundUnavailable}
+ from "../src/lib/career-service-ledger";
 import { billingPool,closeBillingPoolForTests,createBillingOrder,
   settleVerifiedOrder,refundVerifiedOrder,consumeUsage,verifiedGrantsForParent,hasVerifiedItemEntitlement,
   verifiedParentsForStudent,linkVerifiedFamilyMember,closeVerifiedNativeOrder,BillingConflictError,
+  
   BillingQuotaExceededError,recordVerifiedNativeNotification,type VerifiedPaymentReceipt } from "../src/lib/billing-ledger";
 
 const testUrl = new URL(process.env.SOCTHINK_BILLING_DATABASE_URL || "postgres://invalid/invalid");
@@ -65,6 +69,9 @@ async function run() {
   await db.query(fs.readFileSync("ops/db/007_native_close_proof.sql","utf8"));
   await db.query(fs.readFileSync("ops/db/008_digital_sales_consent.sql","utf8"));
   await db.query(fs.readFileSync("ops/db/009_assessment_report_rights.sql","utf8"));
+  await db.query(fs.readFileSync("ops/db/010_career_interview_service_sessions.sql","utf8"));
+  // The additive migration must be repeatable on a fresh CI database.
+  await db.query(fs.readFileSync("ops/db/010_career_interview_service_sessions.sql","utf8"));
   const consent={policyVersion:DIGITAL_SALES_POLICY_VERSION,acceptedAt:new Date()};
   // Native real orders are rejected without customer-initiated confirmation.
   await assert.rejects(()=>createBillingOrder("par_noconsent","plus_month","wechat_native"),
@@ -454,6 +461,68 @@ async function run() {
   await refundVerifiedOrder(receipt(two.id,"refund-02","wx-02"));
   assert.equal((await db.query("SELECT count(*)::int AS count FROM billing_entitlements WHERE revoked_at IS NOT NULL")).rows[0].count,3);
   await assert.rejects(()=>settleVerifiedOrder(receipt(one.id,"paid-new","wx-01")),BillingConflictError);
+  // Paid AI interviews are a distinct SERVICE product. This is a synthetic
+  // 2-session purchase inside the isolated PostgreSQL CI database only.
+  const buyer="par_career_demo";
+  const profileId="campus-software";
+  await db.query(`INSERT INTO billing_products
+    (id,tier,period,product_kind,content_kind,content_id,title_zh,
+     amount_minor,currency,service_sessions,enabled)
+    VALUES('career_ai_campus_2',NULL,NULL,'service','career_interview','campus-software',
+     '研发模拟面试两场',399,'CNY',2,true)`);
+  await assert.rejects(()=>createBillingOrder(buyer,"career_ai_campus_2","wechat_native",consent),BillingConflictError);
+  await db.query("UPDATE billing_products SET rights_approved=true,delivery_verified=true,access_restricted=true WHERE id='career_ai_campus_2'");
+  await assert.rejects(()=>startPaidCareerSession({buyerId:buyer,profileId,clientRequestId:crypto.randomUUID()}),CareerCreditsRequired);
+  const order=await createBillingOrder(buyer,"career_ai_campus_2","wechat_native",consent);
+  await assert.rejects(()=>createBillingOrder(buyer,"career_ai_campus_2","wechat_native",consent),BillingConflictError);
+  const readOrder=await db.query<{service_sessions_snapshot:number}>(
+    "SELECT service_sessions_snapshot FROM billing_orders WHERE id=$1",[order.id]);
+  assert.equal(readOrder.rows[0].service_sessions_snapshot,2);
+  // Later edits to SKU quantities cannot change the amount of credit bought.
+  await db.query("UPDATE billing_products SET service_sessions=10 WHERE id='career_ai_campus_2'");
+  assert.equal((await getPaidCareerSessionAvailability(buyer,profileId)).remainingSessions,0);
+  const careerPaidReceipt={...receipt(order.id,"career-paid-01","career-tx-01",399),provider:"wechat_native" as const};
+  await assert.rejects(()=>settleVerifiedOrder({...careerPaidReceipt,amountMinor:398}),BillingConflictError);
+  assert.equal((await settleVerifiedOrder(careerPaidReceipt)).created,true);
+  assert.equal((await settleVerifiedOrder(careerPaidReceipt)).created,false);
+  assert.equal((await getPaidCareerSessionAvailability(buyer,profileId)).remainingSessions,2);
+  assert.equal((await getPaidCareerSessionAvailability("par_other",profileId)).remainingSessions,0);
+  const nonce=crypto.randomUUID();
+  const oneSession=await startPaidCareerSession({buyerId:buyer,profileId,clientRequestId:nonce});
+  assert.equal(oneSession.duplicated,false);
+  const identical=await startPaidCareerSession({buyerId:buyer,profileId,clientRequestId:nonce});
+  assert.equal(identical.sessionId,oneSession.sessionId);
+  assert.equal(identical.duplicated,true);
+  const attemptsService=await Promise.allSettled(Array.from({length:3},()=>
+    startPaidCareerSession({buyerId:buyer,profileId,clientRequestId:crypto.randomUUID()})));
+  assert.equal(attemptsService.filter(x=>x.status==="fulfilled").length,1);
+  assert.equal(attemptsService.filter(x=>x.status==="rejected"&&x.reason instanceof CareerCreditsRequired).length,2);
+  assert.equal((await getPaidCareerSessionAvailability(buyer,profileId)).remainingSessions,0);
+  await assert.rejects(()=>claimPaidCareerRound({buyerId:"par_stranger",profileId,
+    sessionId:oneSession.sessionId,questionId:"cs-project"}),CareerSessionUnavailable);
+  const claim=await claimPaidCareerRound({buyerId:buyer,profileId,sessionId:oneSession.sessionId,questionId:"cs-project"});
+  await assert.rejects(()=>claimPaidCareerRound({buyerId:buyer,profileId,
+    sessionId:oneSession.sessionId,questionId:"cs-project"}),CareerRoundUnavailable);
+  assert.equal(await finishPaidCareerRound({sessionId:oneSession.sessionId,questionId:"cs-project",
+    claimToken:claim.claimToken,success:false}),true);
+  const retry=await claimPaidCareerRound({buyerId:buyer,profileId,
+    sessionId:oneSession.sessionId,questionId:"cs-project"});
+  assert.notEqual(retry.claimToken,claim.claimToken);
+  assert.equal(await finishPaidCareerRound({sessionId:oneSession.sessionId,questionId:"cs-project",
+    claimToken:retry.claimToken,success:true}),true);
+  assert.equal(await finishPaidCareerRound({sessionId:oneSession.sessionId,questionId:"cs-project",
+    claimToken:claim.claimToken,success:true}),false);
+  await assert.rejects(()=>claimPaidCareerRound({buyerId:buyer,profileId,
+    sessionId:oneSession.sessionId,questionId:"cs-project"}),CareerRoundUnavailable);
+  await assert.rejects(()=>claimPaidCareerRound({buyerId:buyer,profileId,
+    sessionId:oneSession.sessionId,questionId:"sp-supplier"}),CareerSessionUnavailable);
+  const reversed=await refundVerifiedOrder({...careerPaidReceipt,eventId:"career-refund-01"});
+  assert.equal(reversed.revoked,true);
+  assert.equal((await getPaidCareerSessionAvailability(buyer,profileId)).available,false);
+  await assert.rejects(()=>startPaidCareerSession({buyerId:buyer,profileId,clientRequestId:nonce}),CareerSessionUnavailable);
+  await assert.rejects(()=>claimPaidCareerRound({buyerId:buyer,profileId,
+    sessionId:oneSession.sessionId,questionId:"cs-intro"}),CareerSessionUnavailable);
+  console.log("CAREER_PAID_SESSIONS=PASS settled-only; immutable-quantity; 4-way-concurrency; idempotency; single-round; retry; cross-owner; refund-revoke");
   console.log("BILLING_LEDGER_PASS order-payment, renewal, refund, owner isolation, 4-way quota concurrency, idempotency");
 }
 run().then(()=>closeBillingPoolForTests()).catch(async e=>{
