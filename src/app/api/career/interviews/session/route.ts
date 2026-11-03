@@ -1,6 +1,7 @@
 import {NextRequest,NextResponse} from "next/server";
 import {billingConfigured} from "@/lib/billing-ledger";
 import {getConfig} from "@/lib/career-model-routing";
+import {careerModelDeliveryReady} from "@/lib/career-model-readiness";
 import {verifiedInterviewBuyer,validCareerOrigin} from "@/lib/career-interview-security";
 import {startPaidCareerSession,CareerCreditsRequired,CareerSessionUnavailable} from "@/lib/career-service-ledger";
 
@@ -10,7 +11,8 @@ const NO_STORE={"Cache-Control":"private, no-store","Vary":"Cookie, Authorizatio
 const reply=(body:object,status=200)=>NextResponse.json(body,{status,headers:NO_STORE});
 /** Creates one idempotent 2-hour interview right, debiting exactly one verified paid session. */
 export async function POST(req:NextRequest){
- if(!billingConfigured()||!getConfig()||process.env.SOCTHINK_CAREER_AI_BILLING_ENABLED!=="1")
+ const config=getConfig();
+ if(!billingConfigured()||!config||process.env.SOCTHINK_CAREER_AI_BILLING_ENABLED!=="1")
   return reply({code:"INTERVIEW_AI_NOT_READY"},503);
  if(!validCareerOrigin(req))return reply({code:"INVALID_ORIGIN"},403);
  if(!req.headers.get("content-type")?.startsWith("application/json"))return reply({code:"INVALID_CONTENT_TYPE"},415);
@@ -26,6 +28,8 @@ export async function POST(req:NextRequest){
  const d=data as Record<string,unknown>;
  if(typeof d.profileId!=="string"||typeof d.clientRequestId!=="string")
   return reply({code:"INVALID_REQUEST"},400);
+ // A configured but unreachable LLM may not consume the first purchased session.
+ if(!await careerModelDeliveryReady(config))return reply({code:"AI_DELIVERY_UNAVAILABLE"},503);
  try{
   const result=await startPaidCareerSession({buyerId,profileId:d.profileId,clientRequestId:d.clientRequestId});
   return reply({...result,expiresInSeconds:7200});
