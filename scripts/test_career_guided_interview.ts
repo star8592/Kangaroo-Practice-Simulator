@@ -5,6 +5,7 @@ import {getConfig,modelTimeout,withModelBackup,callModel,providerLabels} from ".
 import type {Provider} from "../src/lib/career-model-routing";
 import {EMPTY_INTERVIEW_JOB_CONTEXT} from "../src/lib/career-interview-context";
 
+async function main(){
 const answer="我负责订单支付系统的并发测试，没有记录历史错误率，但运行过故障注入。";
 const base={profileId:"campus-software",questionId:"cs-project",answer,context:EMPTY_INTERVIEW_JOB_CONTEXT};
 const decision={branch:"outcome" as const,evidenceQuote:"没有记录历史错误率",reason:"候选人给了过程但没有对结果的独立验证证据"};
@@ -58,3 +59,6 @@ assert.deepEqual(attempts,["mimo","deepseek"]);
 assert.equal(await withModelBackup({primary:"mimo",backup:null},makeGuidedMessages(base),()=>null,stub as typeof callModel),null);
 assert.equal(await withModelBackup({primary:"mimo",backup:"deepseek"},makeGuidedMessages(base),()=>null,stub as typeof callModel),null);
 console.log("CAREER_GUIDED_INTERVIEW=PASS scripted_branches=40 quote_proof=YES invalid_output=REJECT primary_backup=YES fail_closed=YES");
+
+}
+main().catch(err=>{console.error(err);process.exitCode=1;});
