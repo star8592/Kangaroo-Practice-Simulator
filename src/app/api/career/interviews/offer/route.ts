@@ -1,6 +1,7 @@
 import {NextRequest,NextResponse} from "next/server";
 import {billingConfigured,billingPool} from "@/lib/billing-ledger";
 import {getConfig} from "@/lib/career-model-routing";
+import {careerModelDeliveryReady} from "@/lib/career-model-readiness";
 import {getInterviewProfile} from "@/lib/career-interview-scenarios";
 import {verifiedInterviewBuyer} from "@/lib/career-interview-security";
 import {getPaidCareerSessionAvailability} from "@/lib/career-service-ledger";
@@ -16,8 +17,12 @@ export async function GET(req:NextRequest){
  const buyerId=verifiedInterviewBuyer(req);
  const loggedIn=Boolean(buyerId);
  // Never leak pilot-only prices or pretend a model-enabled product exists when checkout is disabled.
- if(!billingConfigured() || !getConfig() || process.env.SOCTHINK_CAREER_AI_BILLING_ENABLED!=="1")
+ const cfg=getConfig();
+ if(!billingConfigured() || !cfg || process.env.SOCTHINK_CAREER_AI_BILLING_ENABLED!=="1")
   return reply({available:false,loggedIn,offers:[],reason:"CAREER_SERVICE_NOT_PUBLISHED"});
+ // Never show payable plans when the live model cannot complete a grounded interview turn.
+ if(!await careerModelDeliveryReady(cfg))
+  return reply({available:false,loggedIn,offers:[],reason:"MODEL_DELIVERY_UNAVAILABLE"});
  try{
   const entitlement=buyerId?await getPaidCareerSessionAvailability(buyerId,profileId):null;
   const offers=await billingPool().query<{
