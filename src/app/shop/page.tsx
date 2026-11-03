@@ -8,6 +8,7 @@ export const dynamic="force-dynamic";
 export const metadata={
   title:"原创数学资料商城 · 真题以外的专项练习 | SOCTHINK",
   description:"小学一年级至初三原创数学训练卷、专题练习与逐题解析。清楚展示真实文件、价格与交付内容。",
+  alternates:{canonical:"/shop"},
 };
 
 export default async function ShopPage(){
