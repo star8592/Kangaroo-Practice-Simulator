@@ -97,7 +97,7 @@ assert.ok(shopDetail.includes("generateMetadata")&&
 const sitemap=read("src/app/sitemap.ts");
 assert.ok(sitemap.includes("listStoreProducts")&&sitemap.includes("publishedProductPaths"),
   "Verified real storefront SKUs must participate in public sitemap");
-for(const hub of ["/assessment-center","/career/companies","/verification"]){
+for(const hub of ["/career","/learn","/practice","/career/companies"]){
  assert.ok(sitemap.includes('"'+hub+'"'),"Public quality page missing from sitemap: "+hub);
 }
 for(const privatePrefix of ["/admin","/student","/account","/parent","/report","/result"]){
@@ -106,6 +106,12 @@ for(const privatePrefix of ["/admin","/student","/account","/parent","/report","
 for(const business of PRIMARY_BUSINESS_NAV){
  assert.equal(byRoute.get(business.href)?.parent,"/","Primary navigation lacks home as parent");
 }
+assert.ok(read("src/app/math/page.tsx").includes("index:false"),
+  "Classroom staging page must not be indexed on career website");
+for(const mathHub of ["/assessments","/competitions","/resources","/math-practice","/events","/exam-planner"]){
+ assert.ok(!sitemap.includes('"'+mathHub+'"'),"School math portal leaked into career sitemap: "+mathHub);
+}
+
 // Static reference audit: public concrete pages must be mentioned by some
 // other application source, not merely by their own metadata or sitemap.
 // A reference is discovery evidence, NOT proof that every dynamic instance
