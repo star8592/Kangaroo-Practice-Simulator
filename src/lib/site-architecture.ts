@@ -25,12 +25,20 @@ export const BUSINESS_SUBROUTES:readonly {path:string;owner:SiteBusinessId;role:
   {path:"/events",owner:"exams",role:"competition-companion"},
 ];
 
+/** Execution-only public routes have an owner but must never appear as L1.
+ * The account/student dashboard remains a cross-cutting facility, not a new
+ * learning business. An exam result is not a product and cannot be indexed.
+ */
+export const EXAM_EXECUTION_PREFIXES = ["/exam", "/result", "/report"] as const;
+
 /** Classification is for breadcrumbs/navigation, never for access control. */
 export function businessForPublicPath(rawPath:string):SiteBusinessId|null {
   const pathname=rawPath.split(/[?#]/)[0].replace(/\/+$/,"") || "/";
   const branch=PRIMARY_BUSINESS_NAV.find(x=>
     pathname===x.href || pathname.startsWith(x.href+"/"));
   if(branch)return branch.id;
+  if(EXAM_EXECUTION_PREFIXES.some(prefix=>
+    pathname===prefix||pathname.startsWith(prefix+"/")))return "exams";
   const subordinate=BUSINESS_SUBROUTES.find(x=>
     pathname===x.path || pathname.startsWith(x.path+"/"));
   return subordinate?.owner??null;

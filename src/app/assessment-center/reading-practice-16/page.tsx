@@ -9,6 +9,6 @@ export const metadata:Metadata={
 };
 export default function ReadingPracticePage(){
  return <div className={styles.shell}><nav className={styles.breadcrumb} aria-label="位置">
-  <Link href="/assessments">全部考试</Link><span> / </span><Link href="/assessment-center">智量测评中心</Link>
+  <Link href="/assessment-center">智量测评中心</Link>
   <span> / </span>阅读与证据判断</nav><ReadingPracticeClient/></div>;
 }

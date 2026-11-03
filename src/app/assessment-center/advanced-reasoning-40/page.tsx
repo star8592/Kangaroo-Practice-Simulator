@@ -9,8 +9,7 @@ export const metadata:Metadata={
 };
 export default function AdvancedReasoningPage(){
  return <div className={styles.shell}>
-  <nav className={styles.breadcrumb} aria-label="位置"><Link href="/assessments">全部考试</Link><span> / </span>
-   <Link href="/assessment-center">测评中心</Link><span> / </span>高级逻辑推理</nav>
+  <nav className={styles.breadcrumb} aria-label="位置"><Link href="/assessment-center">测评中心</Link><span> / </span>高级逻辑推理</nav>
   <AdvancedReasoningRunner/>
  </div>;
 }

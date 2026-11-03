@@ -25,7 +25,7 @@ export default async function CareerRolePage({params}:Context){
   const guide=pairing?getCareerGuide(pairing.guideId):undefined;
   const paper=pairing?getCareerFormalPaper(pairing.formalPaperId):undefined;
   const similar=CAREER_ROLES.filter(x=>x.id!==role.id&&x.segment===role.segment).slice(0,9);
-  return <main className={styles.roleDetail}>
+  return <div className={styles.roleDetail}>
     <nav className={styles.roleBreadcrumb} aria-label="当前位置">
       <Link href="/career">职业资料与考试中心</Link><span>/</span>
       <Link href="/career#career-directory">{role.groupTitle}</Link><span>/</span>{role.title}
@@ -65,5 +65,5 @@ export default async function CareerRolePage({params}:Context){
       <h2>同一细分领域的其他岗位</h2>
       <div>{similar.map(x=><Link key={x.id} href={"/career/roles/"+x.id}>{x.title}</Link>)}</div>
     </section>
-  </main>;
+  </div>;
 }

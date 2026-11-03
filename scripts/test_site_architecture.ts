@@ -31,6 +31,7 @@ const cases=[
  ["/career/exams/role-exam","career"],["/career/guides/a-guide","career"],
  ["/assessment-center/methodology","assessments"],["/shop/example","store"],
  ["/resources/competitions/example","resources"],
+ ["/exam/maa-amc-8-test","exams"],["/result","exams"],["/report/attempt-1","exams"],
 ] as const;
 for(const [href,owner] of cases)assert.equal(businessForPublicPath(href),owner,href);
 for(const item of BUSINESS_SUBROUTES){
@@ -65,6 +66,25 @@ for(const route of ["/career","/skill-labs","/assessment-center"])
  assert.ok(!exam.includes('href="'+route+'"'),"Exam page must not duplicate another business: "+route);
 assert.ok(!header.includes("在线练习")&&!header.includes('href:"/exam-planner"'),
  "Standalone practice/calendar must not be a primary nav entry");
+// RootLayout owns the only <main> landmark; business screens use sections/divs.
+const layout=read("src/app/layout.tsx");
+assert.equal((layout.match(/<main\\b/g)||[]).length,1,"Root layout must have a single main");
+for(const page of ["src/app/career/page.tsx","src/app/career/exams/[id]/page.tsx",
+ "src/app/career/guides/[id]/page.tsx","src/app/career/roles/[id]/page.tsx"]){
+ const body=read(page);
+ assert.ok(!/<main\\b/.test(body),"Nested main landmark in "+page);
+}
+for(const page of ["src/app/assessment-center/[id]/page.tsx",
+ "src/app/assessment-center/advanced-reasoning-40/page.tsx",
+ "src/app/assessment-center/career-aptitude-40/page.tsx",
+ "src/app/assessment-center/reasoning-practice-20/page.tsx",
+ "src/app/assessment-center/reading-practice-16/page.tsx"]){
+ const body=read(page);
+ assert.ok(!body.includes('href="/assessments"'),"Assessment breadcrumb points to wrong business: "+page);
+ assert.ok(body.includes('href="/assessment-center"'),"Assessment owner link missing: "+page);
+}
+assert.equal(businessForPublicPath("/student"),null,"Account/learning history is not a seventh business");
+assert.equal(businessForPublicPath("/parent"),null,"Legacy family account must not appear as public business");
 const doc="docs/architecture/SOCTHINK_SITE_ARCHITECTURE_MASTER.md";
 assert.ok(fs.existsSync(doc),"Canonical site architecture document is missing");
 const text=read(doc);

@@ -15,6 +15,6 @@ export default async function MeasurementDetail({params}:{params:Promise<{id:str
   const {id}=await params;const instrument=getInstrument(id);
   if(!instrument)notFound();
   return <div className={styles.shell}><nav className={styles.breadcrumb} aria-label="位置">
-    <Link href="/assessments">全部考试</Link><span> / </span><Link href="/assessment-center">智量测评中心</Link><span> / </span>{instrument.title}
+    <Link href="/assessment-center">智量测评中心</Link><span> / </span>{instrument.title}
   </nav><MeasurementRunner instrument={instrument}/></div>;
 }
