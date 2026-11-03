@@ -5,6 +5,7 @@ import {
 } from "@/lib/career-semantic-followup";
 import {getConfig,withModelBackup,providerLabels} from "@/lib/career-model-routing";
 import {makeGuidedMessages,parseGuidedDecision,composeGuidedFollowup} from "@/lib/career-guided-interview";
+import {makeGuidedEvidenceMessages,parseGuidedEvidence} from "@/lib/career-guided-evidence";
 export const runtime="nodejs";
 export const dynamic="force-dynamic";
 
@@ -59,20 +60,23 @@ export async function POST(req:NextRequest){
  const data=input;
  const profile=getInterviewProfile(data.profileId)!;
  const question=profile.questions.find(q=>q.id===data.questionId)!;
- const style=process.env.SOCTHINK_INTERVIEW_AI_STYLE==="free"?"free":"guided";
- const messages=style==="guided"?makeGuidedMessages(data):makeSemanticMessages(data);
- const resolved=style==="guided"
-  ?await withModelBackup(cfg,messages,(text)=>parseGuidedDecision(text,data.answer))
-  :await withModelBackup(cfg,messages,(text)=>parseSemanticContent(text,data.answer));
- if(!resolved)return json({code:"MODEL_UNAVAILABLE"},503);
- const meta={provider:providerLabels[resolved.provider],viaBackup:resolved.viaBackup,latencyMs:resolved.latencyMs};
- if(style==="guided"){
-  const choice=resolved.result as NonNullable<ReturnType<typeof parseGuidedDecision>>;
-  const selected=composeGuidedFollowup(question,choice);
-  return json({mode:"guided",question:selected.question,evidenceQuote:selected.evidenceQuote,
-   reason:selected.reason,branch:selected.branch,...meta});
+ const style=process.env.SOCTHINK_INTERVIEW_AI_STYLE==="free"?"free"
+  :process.env.SOCTHINK_INTERVIEW_AI_STYLE==="guided-branch"?"guided-branch":"guided";
+ if(style!=="free"){
+  const messages=style==="guided"?makeGuidedEvidenceMessages(data):makeGuidedMessages(data);
+  const parser=style==="guided"?parseGuidedEvidence:parseGuidedDecision;
+  const resolved=await withModelBackup(cfg,messages,text=>parser(text,data.answer));
+  if(!resolved)return json({code:"MODEL_UNAVAILABLE"},503);
+  const selected=composeGuidedFollowup(question,resolved.result);
+  return json({mode:"guided",strategy:style==="guided"?"evidence-extraction":"branch-choice",
+   question:selected.question,evidenceQuote:selected.evidenceQuote,reason:selected.reason,
+   branch:selected.branch,provider:providerLabels[resolved.provider],
+   viaBackup:resolved.viaBackup,latencyMs:resolved.latencyMs});
  }
- const free=resolved.result as NonNullable<ReturnType<typeof parseSemanticContent>>;
+ const resolved=await withModelBackup(cfg,makeSemanticMessages(data),text=>parseSemanticContent(text,data.answer));
+ if(!resolved)return json({code:"MODEL_UNAVAILABLE"},503);
+ const free=resolved.result;
  return json({mode:"semantic",question:free.question,evidenceQuote:free.evidenceQuote,
-  reason:free.reason,...meta});
+  reason:free.reason,provider:providerLabels[resolved.provider],
+  viaBackup:resolved.viaBackup,latencyMs:resolved.latencyMs});
 }
