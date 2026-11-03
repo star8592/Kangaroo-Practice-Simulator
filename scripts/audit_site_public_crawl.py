@@ -117,7 +117,7 @@ if double:
 else:lines.append("- 本轮公开页面未发现。")
 lines += ["","## 不应误判的条目"]
 for x in unlinked[:40]:lines.append("- "+T+x["path"]+T+"：本轮内链未命中，可能由 sitemap、动态链接或历史外链进入；需判断后才能认定孤儿。")
-lines += ["","最终页面级归属以 [路由总账](SOCTHINK_PAGE_ROUTE_INVENTORY.md) 及 [唯一 IA 总纲](SOCTHINK_SITE_ARCHITECTURE_MASTER.md) 为准。公开 200 不等于用户可以完成付款、考试和授权下载；这些另做具权限的真实回归。"]
+lines += ["","最终页面级归属以 [路由总账](SOCTHINK_PAGE_ROUTE_AUDIT.md) 及 [唯一 IA 总纲](SOCTHINK_SITE_ARCHITECTURE_MASTER.md) 为准。公开 200 不等于用户可以完成付款、考试和授权下载；这些另做具权限的真实回归。"]
 output=ROOT/"docs/architecture/SOCTHINK_PUBLIC_LINK_CRAWL_20261103.md"
 output.write_text("\n".join(lines)+"\n",encoding="utf8")
 print(json.dumps({"date":date,"sampled":len(rows),"status":dict(counts),"sitemap":len(locations),"doubleMain":[x["path"] for x in double],"authRedirect":[x["path"] for x in auth_redirects],"suspect":[[x["path"],x["status"]] for x in suspect],"reportBytes":output.stat().st_size},ensure_ascii=False))
