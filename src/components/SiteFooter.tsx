@@ -2,23 +2,16 @@
 import Link from "next/link";
 import {useSiteLanguage} from "@/lib/site-language";
 const GROUPS=[
- {zh:"学习与考试",en:"Learning and exams",items:[
-  {href:"/assessments",zh:"全部考试",en:"All exams"},
-  {href:"/resources",zh:"真题资料",en:"Papers"},
-  {href:"/competitions",zh:"竞赛模拟",en:"Competition mocks"},
-  {href:"/exam-planner",zh:"考试日程",en:"Exam calendar"},
+ {zh:"职业准备",en:"Career preparation",items:[
+  {href:"/career",zh:"岗位方向",en:"Roles"},
+  {href:"/learn",zh:"学习与实训",en:"Learning and labs"},
+  {href:"/practice",zh:"模拟笔试与面试",en:"Mock tests and interviews"},
  ]},
- {zh:"职业与技能",en:"Careers and skills",items:[
-  {href:"/career",zh:"职业岗位",en:"Careers"},
-  {href:"/skill-labs",zh:"技能实训",en:"Skill labs"},
-  {href:"/skill-labs/books",zh:"技术书库",en:"Technical books"},
+ {zh:"深入学习",en:"Learning resources",items:[
+  {href:"/skill-labs/books",zh:"技术资料与导学",en:"Technical library"},
+  {href:"/assessment-center/methodology",zh:"测评方法与来源",en:"Assessment methods"},
  ]},
- {zh:"专业测评",en:"Assessments",items:[
-  {href:"/assessment-center",zh:"测评中心",en:"Assessment center"},
-  {href:"/assessment-center/methodology",zh:"方法与来源",en:"Methods and sources"},
- ]},
- {zh:"商城与账户",en:"Store and account",items:[
-  {href:"/shop",zh:"数字商城",en:"Digital store"},
+ {zh:"账户与服务",en:"Account and services",items:[
   {href:"/account",zh:"订单与下载",en:"Orders and downloads"},
   {href:"/membership",zh:"购买与权益",en:"Membership"},
   {href:"/privacy",zh:"隐私政策",en:"Privacy"},
@@ -31,7 +24,7 @@ export default function SiteFooter(){
  return <footer className="site-footer">
   <div className="site-footer-inner">
    <div className="site-footer-top">
-    <strong>SOCTHINK · {lang==="zh"?"考试、学习与技能":"Exams, learning and skills"}</strong>
+    <strong>SOCTHINK · {lang==="zh"?"职业能力学习与求职准备":"Career learning and preparation"}</strong>
     <nav aria-label={lang==="zh"?"页脚导航":"Footer navigation"}>
      {GROUPS.map(group=><div className="site-footer-group" key={group.zh}>
       <b>{group[lang]}</b>
@@ -39,7 +32,7 @@ export default function SiteFooter(){
      </div>)}
     </nav>
    </div>
-   <p>{lang==="zh"?"独立开发的综合学习与考试平台；非考试主办方，不保证任何考试资格或通过结果。":"An independent learning and assessment platform; not affiliated with exam organizers."}</p>
+   <p>{lang==="zh"?"独立开发的职业学习与求职模拟平台；非雇主招聘方，不承诺获得工作或通过招聘考试。":"An independent career learning and mock-interview platform; no hiring outcomes are guaranteed."}</p>
    <p>{lang==="zh"?"© 2026 青梧未来（武汉）人工智能应用软件有限公司 · 版权所有":"© 2026 Qingwu Future (Wuhan) AI Application Software Co., Ltd. · All rights reserved"}</p>
    <p><a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer">鄂ICP备2026004372号</a></p>
   </div>
