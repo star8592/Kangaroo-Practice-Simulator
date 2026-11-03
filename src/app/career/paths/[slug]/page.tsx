@@ -20,7 +20,7 @@ export default async function CareerPathDetail({params,searchParams}:PageProps){
  if(!path)notFound();
  const audience=query.audience==="social"?"social":"campus";
  const steps=path.steps.filter(s=>s.audience==="both"||s.audience===audience);
- return <main className={styles.shell}>
+ return <div className={styles.shell}>
   <nav className={styles.breadcrumb} aria-label="位置"><Link href="/career">岗位方向</Link><span>/</span><Link href="/career/paths">学习路线</Link><span>/</span><span>{path.title}</span></nav>
   <header className={styles.hero}>
    <span className={styles.eyebrow}>CAREER / VERIFIED LEARNING TRACK</span>
@@ -59,5 +59,5 @@ export default async function CareerPathDetail({params,searchParams}:PageProps){
   </section>
   <p className={styles.warning}>{path.caveat}</p>
   <Link href="/career/paths">← 返回全部岗位路线</Link>
- </main>;
+ </div>;
 }
