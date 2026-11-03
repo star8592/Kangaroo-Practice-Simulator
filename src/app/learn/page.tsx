@@ -21,6 +21,7 @@ export default function LearnHome(){
    <p>找到一个方向，先看免费资料，再完成可以实际运行的练习。学习和实训都可以连接到岗位笔试与面试。</p>
    <div className={styles.heroMeta}><span>原始来源可查</span><span>练习可运行</span><span>按岗位继续</span></div>
   </header>
+  <p><Link href="/career/paths">按目标岗位选择完整学习路线：AI Agent、数据分析、商品运营与软件研发 →</Link></p>
   <div className={styles.sectionHeading}><div><span className={styles.eyebrowDark}>CURRENTLY AVAILABLE</span><h2>目前可用的学习入口</h2></div></div>
   <div className={styles.grid}>{COURSES.map(course=><article key={course.id} className={styles.tile}>
     <div className={styles.tileTop}><span className={styles.tileNumber}>{course.kind}</span><span className={styles.previewBadge}>可访问</span></div>
