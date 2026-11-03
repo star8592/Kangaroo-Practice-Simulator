@@ -6,6 +6,8 @@ import {
 } from "../src/lib/career-role-taxonomy";
 import {CAREER_ORIGINAL_GUIDES} from "../src/lib/career-original-guides";
 import {CAREER_FORMAL_PAPERS} from "../src/lib/career-formal-bank";
+import {INTERVIEW_PROFILES} from "../src/lib/career-interview-scenarios";
+import {TECH_BOOKS} from "../src/lib/tech-books";
 import {CAREER_PATHS,careerPathForRole,validateCareerPaths} from "../src/lib/career-paths";
 
 assert.deepEqual(validateCareerRoleTaxonomy(),[]);
@@ -24,6 +26,30 @@ assert(searchCareerRoles("量化","construction").length===0);
 assert.equal(CAREER_ORIGINAL_GUIDES.length,3);
 assert.equal(CAREER_FORMAL_PAPERS.length,4);
 assert.deepEqual(validateCareerPaths(),[],"All advertised career steps must match real content");
+// Executed only in Node tests; never pull answer-bearing source banks into
+// CareerRoleExplorer's browser JS bundle through career-paths.ts.
+const liveExamHrefs=new Set(CAREER_FORMAL_PAPERS.filter(p=>p.deliveryState==="free-live-preview")
+  .map(p=>"/career/exams/"+p.id));
+const liveGuideHrefs=new Set(CAREER_ORIGINAL_GUIDES.filter(g=>g.deliveryState==="free-original-material")
+  .map(g=>"/career/guides/"+g.id));
+const liveInterviewHrefs=new Set(INTERVIEW_PROFILES.map(p=>"/career/interviews/"+p.id));
+const bookHrefs=new Set(TECH_BOOKS.map(b=>"/skill-labs/books/"+b.slug));
+for(const careerPath of CAREER_PATHS){
+ for(const step of careerPath.steps){
+  if(step.status!=="live")continue;
+  const href=(step.href||"").split("#")[0];
+  if(href.startsWith("/career/exams/"))assert(liveExamHrefs.has(href),"Only genuinely live paper: "+href);
+  else if(href.startsWith("/career/guides/"))assert(liveGuideHrefs.has(href),"Only genuinely live guide: "+href);
+  else if(href.startsWith("/career/interviews/"))assert(liveInterviewHrefs.has(href),"Only genuinely live interview: "+href);
+  else if(href.startsWith("/skill-labs/books/"))assert(bookHrefs.has(href),"Only published tech book: "+href);
+  else assert(fs.existsSync("src/app"+href+"/page.tsx"),"Missing runnable learning entry: "+href);
+ }
+}
+const routeSource=fs.readFileSync("src/lib/career-paths.ts","utf8");
+for(const secretImport of ["career-formal-bank","career-original-guides","career-interview-scenarios"]){
+ assert(!routeSource.includes('from "./'+secretImport+'"'),"Client path registry must not import full server content: "+secretImport);
+}
+
 assert.equal(CAREER_PATHS.length,4);
 assert.equal(careerPathForRole("intelligence-01-04")?.slug,"ai-agent-engineer");
 assert.equal(careerPathForRole("intelligence-02-01")?.slug,"data-analyst-sql");
