@@ -3,16 +3,11 @@ import {getInterviewProfile} from "@/lib/career-interview-scenarios";
 import {
  validateSemanticRequest,parseSemanticContent,makeSemanticMessages
 } from "@/lib/career-semantic-followup";
+import {getConfig,callModel,modelTimeout,providerLabels} from "@/lib/career-model-routing";
+import {makeGuidedMessages,parseGuidedDecision,composeGuidedFollowup} from "@/lib/career-guided-interview";
 export const runtime="nodejs";
 export const dynamic="force-dynamic";
 
-type Provider="openai"|"ollama";
-function providerReady():Provider|null{
- if(process.env.SOCTHINK_INTERVIEW_AI_ENABLED!=="1")return null;
- if(process.env.SOCTHINK_INTERVIEW_AI_PROVIDER==="ollama")return "ollama";
- if(process.env.SOCTHINK_INTERVIEW_AI_PROVIDER==="openai"&&process.env.OPENAI_API_KEY)return "openai";
- return null;
-}
 const json=(data:unknown,status=200)=>NextResponse.json(data,{status,headers:{
  "Cache-Control":"private, no-store","X-Content-Type-Options":"nosniff"
 }});
@@ -40,12 +35,13 @@ function isSameOrigin(req:NextRequest){
  }catch{return false;}
 }
 export async function GET(){
- const provider=providerReady();
- return json({enabled:provider!==null,provider:provider==="ollama"?"local":provider==="openai"?"external":null});
+ const cfg=getConfig();
+ return json({enabled:Boolean(cfg),provider:cfg?.primary==="ollama"?"local":cfg?"external":null,
+  providers:cfg?[providerLabels[cfg.primary],...(cfg.backup?[providerLabels[cfg.backup]]:[])]:[]});
 }
 export async function POST(req:NextRequest){
- const provider=providerReady();
- if(!provider)return json({code:"AI_UNAVAILABLE"},503);
+ const cfg=getConfig();
+ if(!cfg)return json({code:"AI_UNAVAILABLE"},503);
  if(!isSameOrigin(req))return json({code:"INVALID_ORIGIN"},403);
  if(!req.headers.get("content-type")?.startsWith("application/json"))return json({code:"INVALID_CONTENT_TYPE"},415);
  const size=Number(req.headers.get("content-length")||0);
@@ -63,46 +59,25 @@ export async function POST(req:NextRequest){
  const data=input;
  const profile=getInterviewProfile(data.profileId)!;
  const question=profile.questions.find(q=>q.id===data.questionId)!;
- const messages=makeSemanticMessages(data);
- const signal=AbortSignal.timeout(12500);
- try{
-  let result:Response;
-  if(provider==="openai"){
-   result=await fetch("https://api.openai.com/v1/chat/completions",{
-    method:"POST",signal,cache:"no-store",
-    headers:{"Content-Type":"application/json","Authorization":`Bearer ${process.env.OPENAI_API_KEY!}`},
-    body:JSON.stringify({
-     model:process.env.SOCTHINK_INTERVIEW_AI_MODEL||"gpt-4.1-mini",
-     messages,
-     response_format:{type:"json_schema",json_schema:{
-      name:"interview_followup",strict:true,
-      schema:{type:"object",additionalProperties:false,properties:{
-       question:{type:"string"},evidenceQuote:{type:"string"},reason:{type:"string"}
-      },required:["question","evidenceQuote","reason"]}
-     }},
-     max_completion_tokens:350,
-    })
-   });
-  }else{
-   result=await fetch("http://127.0.0.1:11434/api/chat",{
-    method:"POST",signal,cache:"no-store",
-    headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({
-     model:process.env.SOCTHINK_INTERVIEW_AI_MODEL||"qwen3:8b",
-     messages,stream:false,format:"json",options:{temperature:0.25,num_predict:350}
-    })
-   });
-  }
-  if(!result.ok)return json({code:"MODEL_UNAVAILABLE"},503);
-  const raw=await result.text();
-  if(raw.length>20000)return json({code:"MODEL_INVALID_RESPONSE"},502);
-  const parsed=JSON.parse(raw);
-  const content=provider==="openai"?parsed.choices?.[0]?.message?.content:parsed.message?.content;
-  const followup=parseSemanticContent(content,data.answer);
-  if(!followup)return json({code:"MODEL_INVALID_RESPONSE"},502);
-  // Do not log model or user data. No server-side transcript storage.
-  return json({mode:"semantic",question:followup.question,evidenceQuote:followup.evidenceQuote,reason:followup.reason,phase:question.phase});
- }catch{
-  return json({code:"MODEL_UNAVAILABLE"},503);
+ const style=process.env.SOCTHINK_INTERVIEW_AI_STYLE==="free"?"free":"guided";
+ const messages=style==="guided"?makeGuidedMessages(data):makeSemanticMessages(data);
+ const providers=[cfg.primary,...(cfg.backup?[cfg.backup]:[])];
+ for(let i=0;i<providers.length;i++){
+  const provider=providers[i];
+  try{
+   const result=await callModel(provider,messages,modelTimeout(i===0?"primary":"backup"));
+   if(style==="guided"){
+    const decision=parseGuidedDecision(result.content,data.answer);
+    if(!decision)continue;
+    const followup=composeGuidedFollowup(question,decision);
+    return json({mode:"guided",question:followup.question,evidenceQuote:followup.evidenceQuote,
+     reason:followup.reason,branch:followup.branch,provider:providerLabels[provider],latencyMs:result.latencyMs});
+   }
+   const free=parseSemanticContent(result.content,data.answer);
+   if(!free)continue;
+   return json({mode:"semantic",question:free.question,evidenceQuote:free.evidenceQuote,
+    reason:free.reason,provider:providerLabels[provider],latencyMs:result.latencyMs});
+  }catch{/* Primary unavailable/invalid: try configured backup, then client rules. */}
  }
+ return json({code:"MODEL_UNAVAILABLE"},503);
 }
