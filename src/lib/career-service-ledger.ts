@@ -95,7 +95,7 @@ export async function claimPaidCareerRound(input:{buyerId:string;profileId:strin
     JOIN billing_orders o ON o.id=g.source_order_id
     WHERE s.id=$1 AND s.payer_parent_id=$2 AND s.profile_id=$3
       AND s.started_at>now()-interval '2 hours' AND o.state='paid' AND g.revoked_at IS NULL
-    LIMIT 1`,[sessionId,buyerId,profileId]);
+    LIMIT 1 FOR UPDATE OF s`,[sessionId,buyerId,profileId]);
   if(!session.rows[0])throw new CareerSessionUnavailable("Unowned, revoked or expired interview session");
   const claimToken=crypto.randomBytes(16).toString("hex");
   const added=await c.query<{claim_token:string}>(`
@@ -122,4 +122,44 @@ export async function finishPaidCareerRound(input:{sessionId:string;questionId:s
    WHERE session_id=$1 AND question_id=$2 AND claim_token=$3 AND status='pending'
    RETURNING session_id`,[input.sessionId,input.questionId,input.claimToken,input.success?"done":"failed"]);
  return Boolean(result.rows[0]);
+}
+
+
+/** Restore exactly one purchased session when its first AI delivery never succeeded.
+ * Idempotent under repeated failure callbacks; a session with any successful or
+ * still-pending AI round is never refundable through this internal operation.
+ * Not exposed as a user-triggered refund endpoint.
+ */
+export async function restoreUnservedCareerSession(input:{
+ buyerId:string;profileId:string;sessionId:string;
+}):Promise<boolean>{
+ const {buyerId,profileId,sessionId}=input;
+ if(!buyerOK(buyerId)||!validProfile(profileId)||!sessionOK(sessionId))
+  throw new BillingConflictError("Invalid unserved interview session");
+ return tx(async c=>{
+  await c.query("SELECT pg_advisory_xact_lock(hashtextextended($1,0))",
+   ["career-sessions:"+buyerId+":"+profileId]);
+  const session=await c.query<{source_order_id:string}>(`
+   SELECT s.source_order_id FROM billing_career_sessions s
+   JOIN billing_career_session_grants g ON g.source_order_id=s.source_order_id
+   JOIN billing_orders o ON o.id=g.source_order_id
+   WHERE s.id=$1 AND s.payer_parent_id=$2 AND s.profile_id=$3
+     AND g.revoked_at IS NULL AND o.state='paid'
+   LIMIT 1 FOR UPDATE OF s,g`,[sessionId,buyerId,profileId]);
+  const source=session.rows[0]?.source_order_id;
+  if(!source)return false;
+  const rounds=await c.query<{status:string}>(`
+   SELECT status FROM billing_career_round_calls WHERE session_id=$1 FOR UPDATE`,[sessionId]);
+  // A paid AI turn that succeeded is already a delivered service, and an
+  // in-flight attempt might still succeed. Refuse both cases.
+  if(!rounds.rows.length||rounds.rows.some(r=>r.status!=="failed"))return false;
+  await c.query("DELETE FROM billing_career_round_calls WHERE session_id=$1",[sessionId]);
+  await c.query("DELETE FROM billing_career_sessions WHERE id=$1",[sessionId]);
+  const restored=await c.query(`
+   UPDATE billing_career_session_grants SET remaining_sessions=remaining_sessions+1
+   WHERE source_order_id=$1 AND revoked_at IS NULL AND remaining_sessions<purchased_sessions
+   RETURNING source_order_id`,[source]);
+  if(restored.rowCount!==1)throw new BillingConflictError("Unable to restore unserved interview credit");
+  return true;
+ });
 }

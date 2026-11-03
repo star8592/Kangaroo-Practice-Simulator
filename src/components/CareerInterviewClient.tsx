@@ -61,6 +61,7 @@ export default function CareerInterviewClient({profileId}:{profileId:string}){
  const [aiSessionId,setAiSessionId]=useState(saved?.aiSessionId??"");
  const [aiRequestId,setAiRequestId]=useState(saved?.aiRequestId??"");
  const [submitting,setSubmitting]=useState(false);
+ const [aiStatusMessage,setAiStatusMessage]=useState("");
  const requestEpoch=useRef(0);
  useEffect(()=>{
   let active=true;
@@ -95,8 +96,9 @@ export default function CareerInterviewClient({profileId}:{profileId:string}){
   const epoch=++requestEpoch.current;
   const followup=selectFollowup(question,entry.answer);
   let text=buildJobFocusedFollowup(profile.id,index,followup.text,entry.answer,context);
-  let mode:"guided"|"semantic"|"rule"="rule",evidence="",reason="";
+  let mode:"guided"|"semantic"|"rule"="rule",evidence="",reason="",restoredCredit=false;
   setSubmitting(true);
+  setAiStatusMessage("");
   if(semanticEnabled&&semanticConsent){
    try{
     const controller=new AbortController();
@@ -124,6 +126,11 @@ export default function CareerInterviewClient({profileId}:{profileId:string}){
       body:JSON.stringify({profileId:profile.id,questionId:question.id,
        answer:entry.answer,context,sessionId:activeSession})
      });
+     if(!response.ok&&response.headers.get("X-Career-Credit-Restored")==="1"){
+      // The server has restored the entire unserved reservation transactionally.
+      // A next attempt must not reuse a session that no longer exists.
+      restoredCredit=true;setAiSessionId("");setAiRequestId("");
+     }
      if(response.ok){
       const result=await response.json();
       if((result.mode==="semantic"||result.mode==="guided")&&typeof result.question==="string"&&result.question.length<=240){
@@ -136,6 +143,11 @@ export default function CareerInterviewClient({profileId}:{profileId:string}){
    }catch{/* Invalid payment/session or unavailable model: use the rule-based question. */}
   }
   if(requestEpoch.current!==epoch)return;
+  if(semanticEnabled&&semanticConsent&&mode==="rule")setAiStatusMessage(
+   restoredCredit
+    ?"本轮 AI 追问未能交付，已自动恢复本次预留的付费面试场次；现在使用免费的规则追问，可在「我的账号」核对。"
+    :"本轮未获得有效 AI 追问，已改用免费规则追问。若本场尚无成功的 AI 轮次，服务端会核对场次恢复；请在「我的账号」确认。"
+  );
   updateCurrent({followup:text,followupMode:mode,followupEvidence:evidence,followupReason:reason,followupAnswer:""});
   setSubmitting(false);
   setStage("followup");
@@ -147,7 +159,7 @@ export default function CareerInterviewClient({profileId}:{profileId:string}){
  }
  function reset(){
   requestEpoch.current++;setSubmitting(false);setSemanticConsent(false);setAiSessionId("");setAiRequestId("");
-  setIndex(0);setEntries({});setContext(EMPTY_INTERVIEW_JOB_CONTEXT);setConsent(false);setConfirmReset(false);
+  setIndex(0);setEntries({});setContext(EMPTY_INTERVIEW_JOB_CONTEXT);setConsent(false);setConfirmReset(false);setAiStatusMessage("");
   try{sessionStorage.removeItem(storageKey(profileId))}catch{}
   setStage("intro");
  }
@@ -236,6 +248,7 @@ export default function CareerInterviewClient({profileId}:{profileId:string}){
     <span>面试官 · {stage==="main"?"主问题":entry.followupMode==="guided"?"AI判断 · 预审追问":entry.followupMode==="semantic"?"AI语义追问":"规则追问"}</span>
     <h2>{stage==="main"?question.prompt:entry.followup}</h2>
    </div>
+   {stage==="followup"&&aiStatusMessage&&<p role="status" className={styles.small}>{aiStatusMessage}</p>}
    {stage==="followup"&&(entry.followupMode==="semantic"||entry.followupMode==="guided")&&<p className={styles.small}>
     追问依据：{entry.followupEvidence?`“${entry.followupEvidence}”`:"原回答缺少可核对细节"}；{entry.followupReason}
    </p>}

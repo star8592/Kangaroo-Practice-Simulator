@@ -3,6 +3,7 @@ import {INTERVIEW_PROFILES,getInterviewProfile} from "../src/lib/career-intervie
 import {validateGuidedDecision,parseGuidedDecision,composeGuidedFollowup,makeGuidedMessages} from "../src/lib/career-guided-interview";
 import {makeGuidedEvidenceMessages,parseGuidedEvidence} from "../src/lib/career-guided-evidence";
 import {getConfig,modelTimeout,withModelBackup,callModel,providerLabels} from "../src/lib/career-model-routing";
+import {probeCareerModelDelivery} from "../src/lib/career-model-readiness";
 import type {Provider} from "../src/lib/career-model-routing";
 import {EMPTY_INTERVIEW_JOB_CONTEXT} from "../src/lib/career-interview-context";
 
@@ -106,6 +107,24 @@ assert(evidenceMessages[0].content.includes("contextQuote"));
 assert(evidenceMessages[0].content.includes("ownershipQuote"));
 assert(evidenceMessages[0].content.includes("verificationQuote"));
 assert(evidenceMessages[1].content.includes(evidenceAnswer));
+// A provider key or a live Ollama socket alone is not a commercial deliverability proof.
+const readyResponse={
+ contextQuote:"订单接口",ownershipQuote:"我亲自负责订单接口",
+ verificationQuote:"压测300次并发请求且重复订单为零",
+ reason:"候选人提供了具体场景、自己负责的任务和可核对的并发测试结果"
+};
+const probeOk=async(p:Provider)=>({provider:p,content:JSON.stringify(readyResponse),latencyMs:15});
+assert.equal(await probeCareerModelDelivery({primary:"ollama",backup:null},probeOk as typeof callModel),true);
+const probeInvalid=async(p:Provider)=>({provider:p,
+ content:JSON.stringify({...readyResponse,verificationQuote:"1000倍的虚构效率提升"}),latencyMs:15});
+assert.equal(await probeCareerModelDelivery({primary:"ollama",backup:null},probeInvalid as typeof callModel),false);
+const probeWrongBranch=async(p:Provider)=>({provider:p,
+ content:JSON.stringify({...readyResponse,verificationQuote:""}),latencyMs:15});
+assert.equal(await probeCareerModelDelivery({primary:"ollama",backup:null},probeWrongBranch as typeof callModel),false);
+const probeCalls:Provider[]=[];
+const probeFailover=async(p:Provider)=>{probeCalls.push(p);if(p==="ollama")throw Error("offline");return probeOk(p);};
+assert.equal(await probeCareerModelDelivery({primary:"ollama",backup:"deepseek"},probeFailover as typeof callModel),true);
+assert.deepEqual(probeCalls,["ollama","deepseek"]);
 console.log("CAREER_GUIDED_INTERVIEW=PASS scripted_branches=40 quote_proof=YES invalid_output=REJECT primary_backup=YES fail_closed=YES");
 
 }
