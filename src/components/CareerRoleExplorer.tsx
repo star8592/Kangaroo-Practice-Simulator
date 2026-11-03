@@ -70,7 +70,7 @@ export default function CareerRoleExplorer(){
         <>筛选匹配 <strong>{count}</strong> 个岗位</>}
       <span>岗位分类不等于实时在招；只有经过验收的资料与服务才显示实际领取入口。</span>
     </div>
-    {overview?<div className={styles.overviewGrid}>
+    {overview?<section className={styles.overviewGrid} aria-label="全部行业分类">
       {CAREER_ROLE_GROUPS.map(group=><article className={styles.overviewCard} key={group.id}>
         <div className={styles.overviewCardHead}>
           <h3>{group.title}</h3><span>{group.roleCount} 个岗位</span>
@@ -83,7 +83,7 @@ export default function CareerRoleExplorer(){
           查看这一行业全部 {group.roleCount} 个岗位 <span aria-hidden="true">→</span>
         </button>
       </article>)}
-    </div>:visible.length===0?<div className={styles.emptyRoles}>未找到匹配岗位，可换一个词或清除行业筛选。</div>:
+    </section>:visible.length===0?<div className={styles.emptyRoles}>未找到匹配岗位，可换一个词或清除行业筛选。</div>:
       <div className={styles.roleGroups}>
         {visible.map(group=><article key={group.id} className={styles.roleGroup}>
           <div className={styles.roleGroupHeader}>
