@@ -3,19 +3,22 @@ import {test,expect} from "@playwright/test";
 test("homepage presents three actual career tasks instead of mixing school exams",async({page})=>{
  const res=await page.goto("/");
  expect(res?.status()).toBe(200);
- await expect(page.getByRole("heading",{level:1,name:/学会岗位需要的能力|Build the skills/})).toBeVisible();
+ await expect(page.getByRole("heading",{level:1,name:/为下一份工作，练出真本事|Build skills for your next job/})).toBeVisible();
  const main=page.locator("main");
  await expect(main.getByRole("heading",{name:"最近更新"})).toBeVisible();
  const updates=main.locator("time[datetime]");
  expect(await updates.count()).toBeGreaterThanOrEqual(5);
  const dates=await updates.evaluateAll(nodes=>nodes.map(n=>n.getAttribute("datetime")||""));
  expect(dates).toEqual([...dates].sort().reverse());
+ await expect(main.getByRole("heading",{name:"从这些岗位直接开始"})).toBeVisible();
+ await expect(main.locator('[aria-labelledby="home-paths-heading"] article')).toHaveCount(4);
+ await expect(main.locator('a[href="/career/paths"]').first()).toBeVisible();
  for(const href of ["/career","/learn","/practice"]){
-  await expect(main.locator('[aria-labelledby="home-services-heading"] a[href="'+href+'"]')).toBeVisible();
+  await expect(main.locator('[aria-labelledby="quick-services-heading"] a[href="'+href+'"]')).toBeVisible();
  }
  await expect(main.locator('a[href^="/assessments#domain-"]')).toHaveCount(0);
- await expect(main.locator('[aria-labelledby="home-services-heading"] a[href="/skill-labs/books"]')).toHaveCount(0);
- await expect(main.locator('[aria-labelledby="home-services-heading"] a[href="/exam-planner"]')).toHaveCount(0);
+ await expect(main.locator('[aria-labelledby="quick-services-heading"] a[href="/skill-labs/books"]')).toHaveCount(0);
+ await expect(main.locator('[aria-labelledby="quick-services-heading"] a[href="/exam-planner"]')).toHaveCount(0);
  await expect(main.locator('a[href="/skill-labs/books"]').first()).toBeVisible();
  const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth);
  expect(overflow).toBeLessThanOrEqual(2);
@@ -32,6 +35,10 @@ test("global search links books, labs and career products without old exam-only 
  const result=page.locator("main");
  await expect(result.locator('a[href="/skill-labs/agent-foundations"]').first()).toBeVisible();
  await expect(result.locator('a[href="/career/exams/agent-engineering-paper-2026q4-v1"]').first()).toBeVisible();
+ await page.goto("/search?q=智能体开发工程师");
+ await expect(page.locator('a[href="/career/roles/intelligence-01-04"]').first()).toBeVisible();
+ await page.goto("/search?q=数学竞赛");
+ await expect(page.locator('a[href="/assessments"]')).toHaveCount(0);
  await page.goto("/search?q=zzzznoresult2026");
  await expect(page.getByText(/暂时没有匹配的已开放内容/)).toBeVisible();
 });

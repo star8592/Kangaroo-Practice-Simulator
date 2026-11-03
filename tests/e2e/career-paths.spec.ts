@@ -11,6 +11,7 @@ test("career homepage puts verifiable role routes ahead of the broad directory",
  await expect(page.getByRole("heading",{level:1,name:"AI Agent 应用工程"})).toBeVisible();
  await expect(page.locator('a[href="/skill-labs/agent-foundations"]').first()).toBeVisible();
  await expect(page.locator('a[href="/career/exams/agent-engineering-paper-2026q4-v1"]')).toBeVisible();
+ await page.getByText("查看原始资料与技术依据").click();
  await expect(page.locator('a[href="https://github.com/karpathy/micrograd"]')).toBeVisible();
 });
 
@@ -19,7 +20,7 @@ test("student or experienced candidate can see real gaps without fake purchases"
  await expect(page.getByRole("heading",{level:1,name:"数据分析与 SQL 实训"})).toBeVisible();
  await expect(page.getByRole("link",{name:/社招 \/ 转岗/})).toHaveAttribute("aria-current","page");
  await expect(page.getByRole("link",{name:/浏览器 SQL 真执行训练/})).toHaveCount(0);
- await expect(page.locator('a[href="/skill-labs/sql-lab"]')).toBeVisible();
+ await expect(page.locator('a[href="/skill-labs/sql-lab"]').first()).toBeVisible();
  await expect(page.getByText("数据分析岗位完整专业模拟卷")).toBeVisible();
  const planned=page.locator("li").filter({hasText:"数据分析岗位完整专业模拟卷"});
  await expect(planned.getByText("尚未上线")).toBeVisible();
