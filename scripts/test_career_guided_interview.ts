@@ -121,7 +121,7 @@ assert.equal(await probeCareerModelDelivery({primary:"ollama",backup:null},probe
 const probeWrongBranch=async(p:Provider)=>({provider:p,
  content:JSON.stringify({...readyResponse,verificationQuote:""}),latencyMs:15});
 assert.equal(await probeCareerModelDelivery({primary:"ollama",backup:null},probeWrongBranch as typeof callModel),false);
-let probeCalls:Provider[]=[];
+const probeCalls:Provider[]=[];
 const probeFailover=async(p:Provider)=>{probeCalls.push(p);if(p==="ollama")throw Error("offline");return probeOk(p);};
 assert.equal(await probeCareerModelDelivery({primary:"ollama",backup:"deepseek"},probeFailover as typeof callModel),true);
 assert.deepEqual(probeCalls,["ollama","deepseek"]);
