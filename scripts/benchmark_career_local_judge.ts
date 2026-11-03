@@ -6,6 +6,7 @@
  */
 import {writeFileSync} from "node:fs";
 import {JUDGE_CASES} from "./fixtures/career-judge-v1";
+import {HOLDOUT_CASES} from "./fixtures/career-judge-holdout-v1";
 import {makeGuidedMessages,parseGuidedDecision} from "../src/lib/career-guided-interview";
 import {EMPTY_INTERVIEW_JOB_CONTEXT} from "../src/lib/career-interview-context";
 
@@ -18,12 +19,15 @@ const ids=opt("ids","").split(",").filter(Boolean);
 const timeout=Number(opt("timeout-ms","90000"));
 const output=opt("output","");
 const rubric=opt("rubric","baseline");
+const suite=opt("suite","dev");
+if(suite!=="dev"&&suite!=="holdout")throw Error("Invalid suite");
+const cases=suite==="holdout"?HOLDOUT_CASES:JUDGE_CASES;
 if(!["baseline","priority","extract"].includes(rubric))throw Error("Invalid rubric");
 if(!/^[\w.\-/:]+$/.test(model)||timeout<1000||timeout>180000)
  throw Error("Invalid model name or timeout");
-const unknown=ids.filter(id=>!JUDGE_CASES.some(x=>x.id===id));
+const unknown=ids.filter(id=>!cases.some(x=>x.id===id));
 if(unknown.length)throw Error("Unknown case IDs: "+unknown.join(","));
-const selected=JUDGE_CASES.filter(x=>!ids.length||ids.includes(x.id));
+const selected=cases.filter(x=>!ids.length||ids.includes(x.id));
 if(!selected.length)throw Error("No cases selected");
 
 const PRIORITY_RUBRIC=[
@@ -107,7 +111,7 @@ for(const test of selected){
 const sorted=results.map(x=>x.elapsedMs).sort((a,b)=>a-b);
 const percentile=(p:number)=>sorted.length?sorted[Math.min(sorted.length-1,Math.ceil(sorted.length*p)-1)]:null;
 const summary={
- schema:"socthink-career-judge-benchmark-v1",model,rubric,startedAt,finishedAt:new Date().toISOString(),
+ schema:"socthink-career-judge-benchmark-v1",model,rubric,suite,startedAt,finishedAt:new Date().toISOString(),
  sampleSize:results.length,groundTruthStatus:"provisional synthetic author labels; expert adjudication pending",
  validCount:results.filter(x=>x.valid).length,
  exactBranchMatches:results.filter(x=>x.correct).length,
@@ -117,7 +121,7 @@ const summary={
  results,
 };
 console.log("BENCHMARK_SUMMARY="+JSON.stringify({
- model:summary.model,rubric,samples:summary.sampleSize,valid:summary.validCount,
+ model:summary.model,rubric,suite,samples:summary.sampleSize,valid:summary.validCount,
  correct:summary.exactBranchMatches,accuracy:summary.exactBranchRate,
  latencyMs:summary.latencyMs},null,0));
 if(output){writeFileSync(output,JSON.stringify(summary,null,2)+"\n");console.log("BENCHMARK_REPORT="+output);}
