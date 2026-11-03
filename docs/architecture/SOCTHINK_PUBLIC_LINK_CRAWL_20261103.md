@@ -1,6 +1,6 @@
 # SOC THINK 公网真实链接抽查（只读抓取）
 
-时间（UTC）：2026-11-03T02:11:48Z。原始基址：https://socthink.cn。脚本：scripts/audit_site_public_crawl.py。
+时间（UTC）：2026-11-03T02:11:48Z。原始基址：https://socthink.cn。脚本：scripts/audit_site_public_crawl.py。实测生产部署版本：`5ad145324c867f6d3231a5bc8afc39e6f433553f`；主分支随后有新的逐页整改，故本表属于**整改前公网基线快照**，不得误当作最新代码仍存在这些缺陷。
 
 这不是完整私有权限 E2E，也不是对动态试卷/商品实例的全量验证。只读取公开、匿名、GET 的 HTML/站点地图；登录、订单、管理、报告、API、下载等敏感或状态页明确跳过，不能据此认定它们是孤儿。
 
@@ -161,4 +161,4 @@
 ## 不应误判的条目
 - `/math-practice`：本轮内链未命中，可能由 sitemap、动态链接或历史外链进入；需判断后才能认定孤儿。
 
-最终页面级归属以 [路由总账](SOCTHINK_PAGE_ROUTE_INVENTORY.md) 及 [唯一 IA 总纲](SOCTHINK_SITE_ARCHITECTURE_MASTER.md) 为准。公开 200 不等于用户可以完成付款、考试和授权下载；这些另做具权限的真实回归。
+最终页面级归属以 [路由总账](SOCTHINK_PAGE_ROUTE_AUDIT.md) 及 [唯一 IA 总纲](SOCTHINK_SITE_ARCHITECTURE_MASTER.md) 为准。公开 200 不等于用户可以完成付款、考试和授权下载；这些另做具权限的真实回归。
