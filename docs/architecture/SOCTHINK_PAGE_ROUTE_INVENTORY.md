@@ -2,7 +2,7 @@
 
 > 唯一架构权威仍是 [全站信息架构总纲](SOCTHINK_SITE_ARCHITECTURE_MASTER.md)。本文是由当前代码生成的逐页审计附录，不能用来替代总纲。
 
-代码快照：`65146101d5aaa3c5d7b1e008f42c2ea244a4a2d5`
+代码快照：`f0930d097a83acc175c4ef64d4e3b79dc7308d6c`
 
 本次枚举：**75 个网页模板、70 个 API handler、8 个小程序页面源文件**。动态路由仅按文件模板计数，不等于线上真实 URL 数。
 
@@ -38,7 +38,7 @@
 | `/assessment-center/reading-practice-16` | 测评中心 | L2 | conditional | `src/lib/assessment-evidence.ts`、`src/lib/measurement-center.ts` |
 | `/assessment-center/reasoning-practice-20` | 测评中心 | L2 | conditional | `src/lib/assessment-evidence.ts`、`src/lib/measurement-center.ts` |
 | `/assessment-center/report-preview` | 测评中心 | L2 | conditional | `src/app/assessment-center/page.tsx`、`src/components/ReportPremiumPanel.tsx` |
-| `/assessment-center/sql-lab` | 测评中心 | L2 | conditional | 未检出字面路径，待核实 |
+| `/assessment-center/sql-lab` | 技能实训（旧路径永久重定向） | redirect | public-redirect | 未检出字面路径，待核实 |
 | `/assessment-center/work-style-24` | 测评中心 | L2 | conditional | `src/lib/assessment-evidence.ts` |
 | `/assessment-center/work-values-30` | 测评中心 | L2 | conditional | `src/lib/assessment-evidence.ts` |
 | `/assessment-center/workplace-sjt-24` | 测评中心 | L2 | conditional | `src/lib/assessment-evidence.ts` |
@@ -170,7 +170,7 @@
 | `/api/payments/wechat/checkout` | 支付/统一账本 |
 | `/api/payments/wechat/notify` | 支付/统一账本 |
 | `/api/payments/wechat/orders/[orderId]` | 支付/统一账本 |
-| `/api/release` | 未分配 |
+| `/api/release` | 全站版本和状态 |
 | `/api/reports/[attemptId]/pdf` | 全部考试（兼容旧短路径） |
 | `/api/resources/download/[resourceId]` | 真题资料 |
 | `/api/solutions/[questionId]` | 全部考试 |
