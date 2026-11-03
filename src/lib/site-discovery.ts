@@ -29,6 +29,8 @@ export function publicDiscoveryEntries(): DiscoveryEntry[] {
   const entries: DiscoveryEntry[] = [
     { id:"hub-exams",kind:"考试",title:"全部考试与模拟",summary:"按考试类别查找可用模拟与练习",href:"/assessments",keywords:"考试 数学 校内 竞赛" },
     { id:"hub-resources",kind:"试卷",title:"试卷与训练资料",summary:"筛选已可用于在线训练的试卷",href:"/resources",keywords:"真题 数学 资料 试卷" },
+    { id:"hub-learn",kind:"技能",title:"学习与实训",summary:"按岗位学习技能、运行实验并追溯原始资料",href:"/learn",keywords:"课程 Github AI SQL 编程 项目 实操" },
+    { id:"hub-practice",kind:"职业岗位",title:"模拟笔试与面试",summary:"按岗位进行完整模拟笔试、面试及复盘",href:"/practice",keywords:"校招 社招 练习 招聘 测试 面试" },
     { id:"hub-career",kind:"职业岗位",title:"职业岗位与模拟笔试",summary:"按岗位找模拟笔试与免费原创资料",href:"/career",keywords:"招聘 校招 社招 岗位 面试" },
     { id:"hub-skills",kind:"技能",title:"技能实训中心",summary:"SQL、编程、AI Agent、3D 等实训",href:"/skill-labs",keywords:"学习 代码 技术 项目" },
     { id:"hub-shop",kind:"商城",title:"数字资料商城",summary:"核对实际在架的原创数字资料与交付方式",href:"/shop",keywords:"购买 下载 资料 商城 商品" },

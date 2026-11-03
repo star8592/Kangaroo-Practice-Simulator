@@ -67,19 +67,15 @@ test("worldwide public directory is read-only to anonymous visitors", async ({ r
 });
 
 
-test("public nationwide homepage excludes China contests from training while the events companion remains discoverable", async ({page}) => {
+test("career homepage excludes school math while classroom events remain accessible", async ({page}) => {
   await page.goto("/");
   const main=page.locator("main");
-  await expect(main.locator('a[href="/assessments#domain-math-competition"]')).toContainText("数学竞赛");
+  await expect(main.locator('a[href="/competitions"]')).toHaveCount(0);
   await expect(main).not.toContainText("华罗庚金杯");
   await expect(main).not.toContainText("希望杯");
-  const mobile=(page.viewportSize()?.width??1280)<=760;
-  if(mobile)await page.getByRole("button",{name:"打开导航菜单"}).click();
-  const menu=page.getByRole("navigation",{name:mobile?"移动端导航":"主要导航"});
-  await expect(menu.getByRole("link",{name:"考试管理"})).toHaveCount(0);
-  await menu.getByRole("link",{name:"全部考试"}).click();
-  await expect(page).toHaveURL(/\/assessments$/);
-  await page.locator('main a[href="/exam-planner"]').first().click();
+  await page.goto("/math");
+  await expect(page.getByRole("heading",{level:1,name:"数学课堂"})).toBeVisible();
+  await page.locator('main a[href="/exam-planner"]').click();
   await expect(page).toHaveURL(/\/exam-planner$/);
   await page.getByRole("link",{name:/打开数学赛事管家/}).click();
   await expect(page).toHaveURL(/\/events$/);

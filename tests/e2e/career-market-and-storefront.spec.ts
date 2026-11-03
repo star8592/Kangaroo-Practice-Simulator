@@ -6,14 +6,14 @@ import {expect,test} from "@playwright/test";
 test("market growth, original materials and online service are real user journeys",async({page})=>{
   const catalog=await page.goto("/career");
   expect(catalog?.status()).toBe(200);
-  await expect(page.getByRole("heading",{level:1,name:/要复习资料？还是要模拟考试？/})).toBeVisible();
+  await expect(page.getByRole("heading",{level:1,name:/选择目标岗位，补足关键能力/})).toBeVisible();
 
   const narrow=(page.viewportSize()?.width??1280)<=920;
   await expect(page.getByRole("link",{
-    name:narrow?/^找复习资料/:/找资料 · 免费领取/,
+    name:narrow?/^找目标岗位/:/查看岗位方向/,
   })).toBeVisible();
   await expect(page.getByRole("link",{
-    name:narrow?"做模拟考试":/做模拟考试 · 立即开始/,
+    name:narrow?/做模拟笔试与面试/:/查看正式模拟与面试/,
     exact:narrow,
   })).toBeVisible();
   const market=page.locator("#market-heat");

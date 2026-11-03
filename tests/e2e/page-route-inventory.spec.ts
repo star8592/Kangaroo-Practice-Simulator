@@ -1,7 +1,7 @@
 import {expect,test} from "@playwright/test";
 
 test("every primary business hub remains discoverable under one main landmark",async({page})=>{
- for(const route of ["/assessments","/resources","/career","/skill-labs","/assessment-center","/shop"]){
+ for(const route of ["/career","/learn","/practice","/math"]){
   await page.goto(route);
   await expect(page.locator("main")).toHaveCount(1);
   await expect(page.locator("main h1").first()).toBeVisible();
@@ -34,8 +34,11 @@ test("sitemap discovers public owner pages without indexing private account rout
  expect(response.status()).toBe(200);
  const xml=await response.text();
  for(const url of ["/assessment-center","/assessment-center/methodology",
-   "/career/companies","/career/interviews","/verification"]){
+   "/career/companies","/career/interviews","/learn","/practice"]){
   expect(xml).toContain("<loc>https://socthink.cn"+url+"</loc>");
+ }
+ for(const path of ["/math","/assessments","/competitions","/events","/exam-planner","/resources","/verification"]){
+  expect(xml).not.toContain("<loc>https://socthink.cn"+path+"</loc>");
  }
  for(const path of ["/admin","/account","/student","/result"]){
   expect(xml).not.toContain("<loc>https://socthink.cn"+path+"</loc>");

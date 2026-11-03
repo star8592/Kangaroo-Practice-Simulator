@@ -51,16 +51,13 @@ test("date-only event remains an all-day milestone; no fake push promise",async(
   expect(text).toContain("TRIGGER:-P1D");
 });
 
-test("exam manager remains legible and scrollable on mobile",async({page})=>{
-  await page.setViewportSize({width:390,height:844});
-  await page.goto("/");
-  await page.getByRole("button",{name:"打开导航菜单"}).click();
-  await page.getByRole("navigation",{name:"移动端导航"})
-    .getByRole("link",{name:"全部考试"}).click();
-  await expect(page).toHaveURL(/\/assessments$/);
-  await page.locator('main a[href="/exam-planner"]').first().click();
-  await expect(page).toHaveURL(/\/exam-planner$/);
-  await expect(page.getByLabel("所属考试领域")).toBeVisible();
-  const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-window.innerWidth);
-  expect(overflow).toBeLessThanOrEqual(2);
+test("math classroom planner remains usable on mobile",async({page})=>{
+ await page.setViewportSize({width:390,height:844});
+ await page.goto("/math");
+ await expect(page.getByRole("heading",{level:1,name:"数学课堂"})).toBeVisible();
+ await page.locator('main a[href="/exam-planner"]').click();
+ await expect(page).toHaveURL(/\/exam-planner$/);
+ await expect(page.getByLabel("所属考试领域")).toBeVisible();
+ const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-window.innerWidth);
+ expect(overflow).toBeLessThanOrEqual(2);
 });

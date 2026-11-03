@@ -29,14 +29,15 @@ assert(rolePage.includes("这个具体岗位的专项资料尚未上线"),"no fa
 const home=fs.readFileSync("src/app/career/page.tsx","utf8");
 const nav=fs.readFileSync("src/components/CareerRoleExplorer.tsx","utf8");
 assert(home.indexOf("commercialHero")<home.indexOf("<CareerRoleExplorer/>"));
-assert(home.includes("mobileQuickActions"),"mobile first screen must expose both product categories");
+assert(home.includes("mobileQuickActions"),"mobile first screen must expose role choice and practice");
+assert(home.indexOf("<CareerRoleExplorer/>")<home.indexOf('id="digital-materials"'),"Role choice must precede any offers");
 assert(home.indexOf("CareerRoleExplorer")<home.indexOf('id="market-heat"'));
 assert(home.indexOf('id="digital-materials"')<home.indexOf("researchDetails"));
-for(const label of ["找资料 · 免费领取","做模拟考试 · 立即开始","职业教程与复习资料","模拟考试与自动评分"]){
+for(const label of ["查看岗位方向","查看正式模拟与面试","先找到要准备的岗位","岗位模拟笔试与面试"]){
   assert(home.includes(label),"missing primary CTA:"+label);
 }
 assert(nav.includes("CAREER_ROLE_GROUPS.map"),"category navigation must be functional");
 assert(nav.includes("onClick={()=>setCategory(group.id)}"),"category controls must update list");
 assert(nav.includes('href={"/career/roles/"+role.id}'),"every role is clickable");
 assert(!nav.includes("假招聘")&&!nav.includes("在招 270"));
-console.log("CAREER_COMMERCIAL_DIRECTORY=PASS industries=13 roles=270 real_guides=3 real_exams=4 commerce_first=YES research_collapsed=YES");
+console.log("CAREER_COMMERCIAL_DIRECTORY=PASS industries=13 roles=270 real_guides=3 real_exams=4 role_first=YES research_collapsed=YES");

@@ -48,11 +48,17 @@ jobs:
       - name: Public quality gate
         run: npm run verify:public
 
-  web-browser-click-e2e:
+  # Separate GitHub runners keep desktop/mobile browser state, the synthetic
+  # student fixture and their local Next servers isolated. Run concurrently.
+  browser-e2e-shard:
     if: github.event_name == 'pull_request'
-    name: Web browser click E2E (desktop + mobile)
+    name: Browser E2E (${{ matrix.project }})
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        project: [desktop-chromium, mobile-chromium]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -68,22 +74,36 @@ jobs:
       - name: Browser click and login-gate E2E
         env:
           E2E_ALLOW_SYNTHETIC_FIXTURE: "1"
-        run: npm run test:e2e:smoke
-      - name: Cross-browser career WeChat-account history, isolated storage
+        run: npx playwright test --project="${{ matrix.project }}"
+      - name: Career WeChat-account history with isolated data
         env:
           E2E_ALLOW_SYNTHETIC_FIXTURE: "1"
-          SOCTHINK_USER_DATA_DIR: /tmp/socthink-career-history-ci-${{ github.run_id }}
-        run: npx playwright test tests/e2e/career-account-history.spec.ts --project=desktop-chromium --project=mobile-chromium
-
-      - name: Preserve screenshots and traces on failure
+          SOCTHINK_USER_DATA_DIR: /tmp/socthink-career-history-${{ github.run_id }}-${{ matrix.project }}
+        run: npx playwright test tests/e2e/career-account-history.spec.ts --project="${{ matrix.project }}"
+      - name: Preserve browser screenshots and traces on failure
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: browser-e2e-failure-evidence
+          name: browser-e2e-${{ matrix.project }}-failure-evidence
           path: |
             playwright-report/
             test-results/
           retention-days: 14
+
+  # Preserve the one existing required E2E status. This aggregation merely
+  # asserts both actual browser shards succeeded; no additional release gate.
+  web-browser-click-e2e:
+    if: always() && github.event_name == 'pull_request'
+    name: Web browser click E2E (desktop + mobile)
+    needs: browser-e2e-shard
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Verify desktop and mobile browser shards both passed
+        env:
+          BROWSER_SHARDS_RESULT: ${{ needs.browser-e2e-shard.result }}
+        run: |
+          test "$BROWSER_SHARDS_RESULT" = "success"
 
   billing-ledger:
     runs-on: ubuntu-latest

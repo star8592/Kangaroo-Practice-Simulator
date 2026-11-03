@@ -1,40 +1,36 @@
 "use client";
 import Link from "next/link";
-import { EXAM_DIRECTORY } from "@/lib/exam-directory";
-import { ASSESSMENT_DOMAINS } from "@/lib/assessment-platform";
 import { useSiteLanguage } from "@/lib/site-language";
 import { PRIMARY_BUSINESS_NAV, type SiteBusinessId } from "@/lib/site-architecture";
 import type { HomepageUpdate } from "@/lib/site-discovery";
 import styles from "./PublicHome.module.css";
 type HomeCounts={books:number;formalPapers:number;assessments:number;guides:number};
 const COPY={
- zh:{hero:"从一份试卷，到一项真正的能力。",intro:"找考试、查资料、做训练、读技术书。需要的内容，直接进入。",search:"搜索考试、试卷、技术书、岗位或课程",searchButton:"全站搜索",quick:"立即开始",latest:"最近更新",latestNote:"按内容实际版本日期排列",kind:"按目标找服务",selected:"精选实训",categories:"按考试类别查找",categoriesNote:"这里只列考试方向；职业岗位、技能实训和研究测评请使用各自栏目。筹备中的考试不代表已开放。",all:"查看全部",open:"查看内容",records:"我的订单与记录",guide:"当前显示的更新均来自已发布内容的记录日期；价格、购买和下载以真实商品页面为准。"},
- en:{hero:"From a practice paper to a skill you can use.",intro:"Find exams, papers, skill labs, and technical books. Start with real resources.",search:"Search exams, papers, technical books or career skills",searchButton:"Search",quick:"Start here",latest:"Recently updated",latestNote:"Sorted by verified content version dates",kind:"Explore by goal",selected:"Featured labs",categories:"Browse exam categories",categoriesNote:"Exam subjects only. Career services, skill labs and research assessments have separate hubs. Planned exams are not live.",all:"View all",open:"Explore",records:"My account",guide:"Updates use published source records. Purchases and downloads follow the actual product terms."},
+ zh:{hero:"学会岗位需要的能力，做好下一次求职准备。",intro:"选择目标岗位，学习真实技能，完成项目，再用笔试与面试检验掌握程度。",search:"搜索岗位、技能、课程、实训或模拟面试",searchButton:"全站搜索",quick:"立即开始",latest:"最近更新",latestNote:"按内容实际版本日期排列",kind:"按目标找服务",selected:"精选实训",all:"查看全部",open:"查看内容",records:"我的订单与记录",guide:"当前显示的更新均来自已发布内容的记录日期；价格、购买和下载以真实商品页面为准。"},
+ en:{hero:"Build the skills your next job requires.",intro:"Choose a role, learn the skills, complete hands-on labs, and practice for interviews.",search:"Search roles, skills, labs or interview practice",searchButton:"Search",quick:"Start here",latest:"Recently updated",latestNote:"Sorted by verified content version dates",kind:"Explore by goal",selected:"Featured labs",all:"View all",open:"Explore",records:"My account",guide:"Updates use published source records. Purchases and downloads follow the actual product terms."},
 } as const;
-const HOT=["AMC","SQL","Agent","Rust","3D","采购"];
+const HOT=["AI Agent","SQL","数据分析","Python","商品运营","面试"];
 const QUICK=[
- {href:"/arithmetic",zh:"开始计算训练",en:"Start math practice",descZh:"小学到高中数学",descEn:"School mathematics"},
- {href:"/competitions",zh:"参加竞赛模拟",en:"Try mock exams",descZh:"按最新赛制练习",descEn:"Math competitions"},
- {href:"/resources",zh:"可用试卷资料",en:"Practice papers",descZh:"按年份和年级筛选",descEn:"Browse by year and grade"},
+ {href:"/career",zh:"选择目标岗位",en:"Explore roles",descZh:"从校招或社招岗位出发",descEn:"Campus and experienced hires"},
+ {href:"/learn",zh:"学习与实训",en:"Learn and practice",descZh:"免费导学与可运行项目",descEn:"Free guides and runnable labs"},
+ {href:"/practice",zh:"模拟笔试与面试",en:"Mock tests and interviews",descZh:"按岗位完整模拟与复盘",descEn:"Job-relevant practice"},
 ] as const;
 /* Homepage selects four useful storefront cards, not an alternative taxonomy. */
 const SERVICE_DETAILS:Partial<Record<SiteBusinessId,{descZh:string;descEn:string;code:string}>>={
-  career:{descZh:"模拟笔试 · 原创复习资料",descEn:"Mock tests and original guides",code:"CAREER"},
-  skills:{descZh:"AI · SQL · 编程 · 3D",descEn:"AI, SQL, code and 3D",code:"LABS"},
-  assessments:{descZh:"逻辑训练 · 职业探索",descEn:"Reasoning and career interests",code:"MEASUREMENT"},
-  store:{descZh:"查看在架资料和交付",descEn:"Published files and delivery",code:"STORE"},
+ career:{descZh:"校招与社招 · 选择岗位方向",descEn:"Find a role for your next move",code:"ROLES"},
+ skills:{descZh:"免费导学 · 真实项目 · 可运行实训",descEn:"Guides, projects and runnable labs",code:"LEARN"},
+ practice:{descZh:"正式模拟 · 结构化面试 · 报告",descEn:"Mocks, interviews and reports",code:"PRACTICE"},
 };
 const SERVICES=PRIMARY_BUSINESS_NAV.flatMap(item=>{
  const details=SERVICE_DETAILS[item.id];
  return details?[{...item,...details}]:[];
 });
-const DOMAINS=new Map(ASSESSMENT_DOMAINS.map(x=>[x.id,x]));
 export default function PublicHome({updates,counts}:{updates:HomepageUpdate[];counts:HomeCounts}){
  const lang=useSiteLanguage(),t=COPY[lang];
  return <div data-site-shell="content" className={styles.portal}>
   <section className={styles.hero}>
    <div className={styles.heroMain}>
-    <span className={styles.heroEyebrow}>SOC THINK / EXAMS · LEARNING · SKILLS</span>
+    <span className={styles.heroEyebrow}>SOC THINK / CAREERS · LEARNING · PRACTICE</span>
     <h1>{t.hero}</h1>
     <p className={styles.heroLead}>{t.intro}</p>
     <form role="search" action="/search" method="get" className={styles.searchPanel}>
@@ -52,8 +48,8 @@ export default function PublicHome({updates,counts}:{updates:HomepageUpdate[];co
     <span className={styles.heroAsideTitle}>{lang==="zh"?"已开放内容":"PUBLISHED CONTENT"}</span>
     <div className={styles.heroNumber}><strong>{counts.formalPapers}</strong><span>{lang==="zh"?"套完整岗位模拟":"complete career mocks"}</span></div>
     <div className={styles.heroNumber}><strong>{counts.books}</strong><span>{lang==="zh"?"本精选技术书籍":"curated technical books"}</span></div>
-    <div className={styles.heroNumber}><strong>{counts.assessments}</strong><span>{lang==="zh"?"项测评与训练":"assessments and tasks"}</span></div>
-    <Link href="/skill-labs">{lang==="zh"?"进入技能实训":"Explore skill labs"} ↗</Link>
+    <div className={styles.heroNumber}><strong>{counts.guides}</strong><span>{lang==="zh"?"份原创岗位资料":"original career guides"}</span></div>
+    <Link href="/learn">{lang==="zh"?"进入学习与实训":"Explore learning"} ↗</Link>
    </aside>
   </section>
   <section className={styles.quickSection} aria-labelledby="quick-services-heading">
@@ -97,14 +93,6 @@ export default function PublicHome({updates,counts}:{updates:HomepageUpdate[];co
       <Link href="/skill-labs/books">{lang==="zh"?"配套技术书库":"Related technical library"} →</Link></div>
     </article>
    </div>
-  </section>
-  <section className={styles.categoryOverview} aria-labelledby="exam-category-overview">
-   <div className={styles.sectionTop}><h2 id="exam-category-overview">{t.categories}</h2><Link href="/assessments">{t.all} →</Link></div>
-   <div className={styles.categoryGrid}>{EXAM_DIRECTORY.map(group=><Link href={"/assessments#domain-"+group.domainId}
-    className={styles.categoryCard} key={group.domainId} title={DOMAINS.get(group.domainId)!.name[lang]}>
-     <strong>{DOMAINS.get(group.domainId)!.navName[lang]}</strong><span aria-hidden="true">↗</span>
-    </Link>)}</div>
-   <p className={styles.categoryNote}>{t.categoriesNote}</p>
   </section>
   <p className={styles.pageNote}>{t.guide}</p>
  </div>;

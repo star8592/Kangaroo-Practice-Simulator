@@ -11,7 +11,7 @@ import {PRIMARY_BUSINESS_NAV as TASK_LINKS} from "@/lib/site-architecture";
 import styles from "./SiteHeader.module.css";
 
 /* Main navigation is derived from the single site-architecture registry.
- * Exam topics remain inside the specialist exam directory, never this header. */
+ * School mathematics is maintained separately; public navigation follows career tasks. */
 function MenuIcon({open}:{open:boolean}){
   return <svg viewBox="0 0 24 24" aria-hidden="true">
     {open?<path d="M6 6l12 12M18 6L6 18"/>:<path d="M4 7h16M4 12h16M4 17h16"/>}
@@ -40,7 +40,7 @@ export default function SiteHeader(){
         <span className={styles.brandMark}>{SITE_BRAND.mark}</span>
         <span className={styles.brandCopy}>
           <strong>{lang==="zh"?SITE_BRAND.nameZh:SITE_BRAND.nameEn}</strong>
-          <small>{lang==="zh"?"考试 · 资料 · 技能":"EXAMS · RESOURCES · SKILLS"}</small>
+          <small>{lang==="zh"?"岗位 · 学习 · 求职":"ROLES · LEARN · PRACTICE"}</small>
         </span>
       </Link>
       <nav className={styles.primaryNav} aria-label={lang==="zh"?"主要导航":"Primary navigation"}>
@@ -62,7 +62,7 @@ export default function SiteHeader(){
     </div>
     <div id="site-mobile-navigation" className={`${styles.mobilePanel} ${mobileOpen?styles.mobilePanelOpen:""}`}>
       <nav aria-label={lang==="zh"?"移动端导航":"Mobile navigation"}>
-        <p className={styles.mobileGroupTitle}>{lang==="zh"?"找考试 · 找服务":"Exams & services"}</p>
+        <p className={styles.mobileGroupTitle}>{lang==="zh"?"职业准备":"Career preparation"}</p>
         {TASK_LINKS.map(item=><Link href={item.href} key={item.href}
           className={active(item.href)?styles.mobileActive:undefined} onClick={dismiss}>
           {item[lang]} <span aria-hidden="true">›</span>

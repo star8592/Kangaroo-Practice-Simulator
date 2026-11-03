@@ -45,7 +45,10 @@ test("Web deploy CI and independent miniapp CI keep real browser and native cont
   const web=read(".github/workflows/ci.yml");
   const miniapp=read(".github/workflows/miniapp-ci.yml");
   assert.match(web,/name: Web browser click E2E/);
-  assert.match(web,/test:e2e:smoke/);
+  assert.match(web,/npx playwright test --project=/,"Every device must run actual Playwright tests");
+  assert.match(web,/project: \[desktop-chromium, mobile-chromium\]/,"Both real devices must be covered");
+  assert.match(web,/needs: browser-e2e-shard/,"The existing required check must aggregate both independent browser shards");
+  assert.match(web,/BROWSER_SHARDS_RESULT/,"A failed browser shard must fail the aggregate status");
   assert.match(web,/E2E_ALLOW_SYNTHETIC_FIXTURE/);
   assert.doesNotMatch(web,/miniapp-build-and-contract:/,"WeChat compilation must not hold Web deploy CI");
   assert.match(miniapp,/name: Miniapp build and API contracts/);

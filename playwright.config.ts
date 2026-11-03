@@ -20,9 +20,9 @@ export default defineConfig({
   testDir:"./tests/e2e",
   timeout:30000,
   expect:{timeout:10000},
-  // Full cross-device suite includes >180 real browser cases and WASM execution.
-  // Preserve every test; cap the whole suite at five minutes, not three.
-  globalTimeout:300000,
+  // Each CI shard runs only one device on an isolated runner, never sharing
+  // synthetic student fixtures. Keep all tests; time budget is per device.
+  globalTimeout:480000,
   workers:1,
   // CI must not hide flaky tests behind a successful retry.\n  retries:0,
   forbidOnly:!!process.env.CI,
