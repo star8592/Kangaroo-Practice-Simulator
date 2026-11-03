@@ -13,12 +13,17 @@ export default function AgentProjectCourse(){
  const [completed,setCompleted]=useState<string[]>([]);
  const [ready,setReady]=useState(false);
  useEffect(()=>{
-  try{
-   const value=JSON.parse(localStorage.getItem(KEY)??"[]");
-   if(Array.isArray(value))setCompleted(value.filter((v):v is string=>
-    typeof v==="string"&&AGENT_PROJECT_MODULES.some(m=>m.id===v)));
-  }catch{/* Browser storage is optional; the lesson remains usable. */}
-  setReady(true);
+  // Defer the optional browser snapshot until after hydration; there is no
+  // account-level progress or external state to synchronise during render.
+  const frame=requestAnimationFrame(()=>{
+   try{
+    const value=JSON.parse(localStorage.getItem(KEY)??"[]");
+    if(Array.isArray(value))setCompleted(value.filter((v):v is string=>
+     typeof v==="string"&&AGENT_PROJECT_MODULES.some(m=>m.id===v)));
+   }catch{/* Browser storage is optional; the lesson remains usable. */}
+   setReady(true);
+  });
+  return ()=>cancelAnimationFrame(frame);
  },[]);
  const item=AGENT_PROJECT_MODULES[active];
  const correct=selected===item.answer;
