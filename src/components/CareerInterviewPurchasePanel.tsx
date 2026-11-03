@@ -58,10 +58,10 @@ export default function CareerInterviewPurchasePanel({profileId}:{profileId:stri
      ` · 月度权益截至 ${until.toLocaleDateString("zh-CN",{timeZone:"Asia/Shanghai"})}（北京时间）`}
    </p>}
   {onSale&&<>
-   {!offer.loggedIn&&<p className={styles.small}>
+   {!offer?.loggedIn&&<p className={styles.small}>
     <Link href={"/login?next="+encodeURIComponent("/career/interviews/"+profileId)}>微信登录后购买</Link>
    </p>}
-   <NativeCheckoutPanel offers={offers} accountLoggedIn={offer.loggedIn}
+   <NativeCheckoutPanel offers={offers} accountLoggedIn={Boolean(offer?.loggedIn)}
     compact successHref={"/career/interviews/"+profileId}/>
    <p className={styles.small}>付款后返回本页加载已购权益；只有实际通过微信支付核验的订单才会发放场次。</p>
   </>}
