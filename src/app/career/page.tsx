@@ -10,8 +10,8 @@ import commerce from "./career-commerce.module.css";
 import styles from "./career.module.css";
 
 export const metadata={
-  title:"职业考试与复习资料｜270个分类岗位｜SOCTHINK",
-  description:"免费参与原创40题招聘通用能力模拟、采购/运营/质量24题岗位笔试、SQL和JavaScript工程实训；查询来源明确的岗位资料与原创职业教程。",
+  title:"岗位方向｜校招社招的技能与面试准备｜SOC THINK",
+  description:"面向校招学生和社招求职者，查看岗位方向、相关学习与实训、完整模拟笔试和结构化面试。",
   alternates:{canonical:"/career"},
 };
 const SKILL_ZH:Record<string,string>={
@@ -41,31 +41,32 @@ export default async function CareerDemandPage({searchParams}:{searchParams:Sear
     </nav>
     <section className={commerce.commercialHero} aria-label="职业资料与考试服务入口">
       <div className={commerce.heroLead}>
-        <span className={commerce.overline}>职业资料与模拟考试中心</span>
-        <h1>要复习资料？还是要模拟考试？</h1>
+        <span className={commerce.overline}>CAREER PATHS / SOC THINK</span>
+        <h1>选择目标岗位，补足关键能力</h1>
       </div>
       <div className={commerce.mobileQuickActions} aria-label="资料或模拟考试">
-        <a href="#digital-materials">找复习资料 <span aria-hidden="true">→</span></a>
-        <a href="#digital-services">做模拟考试 <span aria-hidden="true">→</span></a>
+        <a href="#career-directory">找目标岗位 <span aria-hidden="true">→</span></a>
+        <Link href="/practice">做模拟笔试与面试 <span aria-hidden="true">→</span></Link>
       </div>
       <div className={commerce.heroOffers}>
         <article className={commerce.heroOffer}>
-          <span className={commerce.offerKind}>01 · 数字资料</span>
-          <h2>职业教程与复习资料</h2>
-          <p>{CAREER_ORIGINAL_GUIDES.length} 份完整教程 · 免费阅读与下载</p>
-          <Link className={commerce.bigAction} href="#digital-materials">
-            找资料 · 免费领取 <span aria-hidden="true">→</span>
+          <span className={commerce.offerKind}>01 · 岗位方向</span>
+          <h2>先找到要准备的岗位</h2>
+          <p>按行业和具体岗位查找，匹配已上线的学习、实训和模拟服务。</p>
+          <Link className={commerce.bigAction} href="#career-directory">
+            查看岗位方向 <span aria-hidden="true">→</span>
           </Link>
         </article>
         <article className={commerce.heroOffer+" "+commerce.heroOfferService}>
-          <span className={commerce.offerKind}>02 · 在线考试</span>
-          <h2>模拟考试与自动评分</h2>
+          <span className={commerce.offerKind}>02 · 能力训练</span>
+          <h2>岗位模拟笔试与面试</h2>
           <p>{CAREER_FORMAL_PAPERS.length} 套标准岗位笔试 · 每套24题 / 45分钟</p>
           <Link className={commerce.bigAction+" "+commerce.bigActionService}
-            href="#digital-services">做模拟考试 · 立即开始 <span aria-hidden="true">→</span></Link>
+            href="/practice">查看正式模拟与面试 <span aria-hidden="true">→</span></Link>
         </article>
       </div>
     </section>
+    <CareerRoleExplorer/>
     <section className={styles.commerceSection} id="digital-materials" aria-labelledby="materials-title">
       <div className={styles.commerceHeading}>
         <div><span className={styles.commerceNumber}>01 / DIGITAL GOODS</span>
@@ -127,7 +128,6 @@ export default async function CareerDemandPage({searchParams}:{searchParams:Sear
       </div>
 
     </section>
-    <CareerRoleExplorer/>
 
     <section className={styles.marketStage} id="market-heat">
       <div className={styles.sectionTitle}>
