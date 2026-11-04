@@ -8,9 +8,9 @@ import fs from "node:fs";
 import path from "node:path";
 import type {CodeCheck} from "./code-lab-engine";
 import {AGENT_CODE_CHALLENGES} from "./agent-code-challenges";
-import {ENGINEERING_TRACK_VERSION} from "./engineering-code-tracks";
-export const AGENT_CODE_ATTEMPT_VERSION="agent-code-"+ENGINEERING_TRACK_VERSION;
 import {userDataPath} from "./user-data-store";
+/** Freeze this per-assignment rubric, independent of unrelated engineering tracks. */
+export const AGENT_CODE_ATTEMPT_VERSION="agent-code-assignments-20261104-v1";
 
 const ROOT=userDataPath("agent-code-attempts");
 const UUID=/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i;
