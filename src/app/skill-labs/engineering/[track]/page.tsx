@@ -30,7 +30,7 @@ export default async function EngineeringTrackPage({params}:{params:Promise<{tra
   </nav>
   {track==="agent"&&<p style={{lineHeight:1.75,color:"#456173",padding:"14px 16px",background:"#f1f8fa",borderRadius:10}}>
    这是 Agent 项目课程的 JavaScript 代码作业；你提交的函数将在浏览器 QuickJS WebAssembly 中真实执行，四项任务共16组输入输出。
-   原始 Python 工单 Agent 是另外一份离线项目，本页不执行 Python、不上传代码、不生成账号级可信成绩。
+   原始 Python 工单 Agent 是另一份离线项目，本页不执行 Python。默认代码仅在浏览器内运行；只有微信登录用户主动点击保存时，源码才临时发送服务器重新执行测试，保存账号学习记录（不保留源码）。这不是防作弊考试或职业认证。
   </p>}
   <CodeLabClient trackId={track}/>
  </div>;

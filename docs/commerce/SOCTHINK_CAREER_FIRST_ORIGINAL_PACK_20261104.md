@@ -1,6 +1,6 @@
 # SOC THINK AI Agent 项目制职业课程：正式产品定位（2026-11-04）
 
-状态：**基础课程与项目知识练习已可用；完整工程作业验收与课程收费未上线**。
+状态：**免费基础课、项目知识检查及 JavaScript 实操 R1 已开发；R2 微信账号服务器复测与记录提交中；完整 Python 项目自动评分及收费仍未上线**。
 核心页面：`/skill-labs/agent-foundations`，统一放在「学习与实训」一级导航之下，岗位路线 `/career/paths/ai-agent-engineer` 直接通向此课程。
 
 ## 商业定位纠正：取消 ZIP 商品
@@ -47,3 +47,7 @@
 - 只有拿到真实代码提交、测试、作业报告、课程权限和微信付款后的交付回执，才称为「商业收费课程已上线」。
 
 **下一步按课程产品而非 ZIP 商品推进。**
+
+## Agent 工程作业增量状态
+
+JavaScript 工程实操复用 `/skill-labs/engineering/agent`（R1 4 项 × 4 用例），不是新的课程体系。R2 在现有 CodeLabClient 内增加自主提交、服务端 QuickJS 重测及微信学习记录，不再复制题库、编辑器或付费 SKU。详情见 `SOCTHINK_AGENT_REAL_CODE_ASSIGNMENTS_R1_20261104.md`。完整 Python 工程依旧是独立的离线演示，不能把 JavaScript 的局部测试成绩说成整套 Python 工程验收；课程正式收费仍须独立隔离的 Python 代码评分、可信报告及真实订单权益回执。

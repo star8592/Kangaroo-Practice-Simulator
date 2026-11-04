@@ -133,7 +133,7 @@
     "test:career-research": "npm run test:career-demand && npm run test:career-universe && python3 scripts/test_cninfo_market_normalize.py && python3 scripts/test_sse_stocklist_normalize.py && npm run test:career-account && npm run test:career-storefront && npm run test:career-directory && npm run test:career-formal-exams",
     "test:career-account": "tsx scripts/test_career_account_history.ts",
     "test:career-storefront": "tsx scripts/test_career_storefront.ts",
-    "test:career-directory": "tsx scripts/test_career_role_directory.ts && tsx scripts/test_agent_project_course.ts",
+    "test:career-directory": "tsx scripts/test_career_role_directory.ts && tsx scripts/test_agent_project_course.ts && tsx scripts/test_agent_code_account_api.ts",
     "test:career-formal-exams": "tsx scripts/test_career_formal_exams.ts",
     "test:career-semantic": "tsx scripts/test_career_semantic_followup.ts",
     "test:site-architecture": "tsx scripts/test_site_architecture.ts && tsx scripts/test_site_page_inventory.ts",
