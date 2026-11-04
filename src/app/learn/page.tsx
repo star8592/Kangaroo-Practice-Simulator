@@ -8,7 +8,7 @@ export const metadata={
 };
 
 const COURSES=[
- {id:"agent",kind:"AI / Agent",name:"AI Agent 工程",summary:"工具调用、任务流程与可验证的工程实践。已开放免费基础课、六个项目模块与可核对的代码实验。",href:"/skill-labs/agent-foundations",related:"/career/exams/agent-engineering-paper-2026q4-v1",action:"配套岗位笔试"},
+ {id:"agent",kind:"AI / Agent",name:"AI Agent 工程",summary:"工具调用、任务流程与可验证的工程实践。已开放免费基础课、六个项目模块、真实代码执行与微信账号复测记录。",href:"/skill-labs/agent-foundations",related:"/career/exams/agent-engineering-paper-2026q4-v1",action:"配套岗位笔试"},
  {id:"sql",kind:"Data / SQL",name:"SQL 数据分析实训",summary:"在浏览器中真正执行 SQL，验证查询结果，了解订单、客户与经营分析。",href:"/skill-labs/sql-lab",related:"/career",action:"查看相关岗位"},
  {id:"code",kind:"Engineering",name:"JavaScript 编程实操",summary:"执行真实代码任务和测试，训练日常业务编程及错误处理。",href:"/skill-labs/code-lab",related:"/skill-labs/engineering-mock",action:"综合编程模拟"},
  {id:"books",kind:"Open resources",name:"技术资料与中文导学",summary:"查找已核验的原著、官方文档及来源链接；尊重上游许可，不把第三方原视频包装为自有课程。",href:"/skill-labs/books",related:"/career",action:"选择岗位"},
