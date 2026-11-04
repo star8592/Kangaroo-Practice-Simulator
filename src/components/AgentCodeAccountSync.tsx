@@ -68,7 +68,7 @@ export default function AgentCodeAccountSync({
  return <div className={styles.box} aria-label="微信账号 Agent 代码作业记录">
   <div className={styles.heading}>
    <strong>微信账号学习记录</strong>
-   {status==="ready"&&<span>服务器累计通过 {savedCount}/4 项</span>}
+   {status==="ready"&&<span>最近30次提交中通过 {savedCount}/4 项</span>}
   </div>
   {status==="loading"&&<p>检查是否已有微信学习记录…</p>}
   {status==="guest"&&<p>代码在浏览器免费运行。<Link href="/login?next=%2Fskill-labs%2Fengineering%2Fagent">微信登录</Link>后，可以主动提交服务器复测，获得跨设备训练记录。</p>}
