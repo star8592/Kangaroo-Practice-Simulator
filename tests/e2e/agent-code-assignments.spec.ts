@@ -8,7 +8,7 @@ test("Agent project course launches a real JavaScript coding assignment rather t
  await expect(page).toHaveURL(/\/skill-labs\/engineering\/agent$/);
  await expect(page.getByRole("heading",{level:1,name:/AI Agent 工程 · 真实代码作业/})).toBeVisible();
  await expect(page.getByText(/JavaScript 版本的受控工程练习|JavaScript 代码作业/).first()).toBeVisible();
- await expect(page.getByText(/不上传你输入的代码/)).toBeVisible();
+ await expect(page.getByText(/不会上传你输入的代码/)).toBeVisible();
  await page.getByRole("checkbox",{name:/我理解这是免费编程实训/}).check();
  await page.getByRole("button",{name:"开始编程实操"}).click();
  await expect(page.getByRole("heading",{name:/校验不可信工单输入/})).toBeVisible();
