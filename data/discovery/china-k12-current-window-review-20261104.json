@@ -1,0 +1,1855 @@
+{
+  "schemaVersion": 1,
+  "generatedAtUtc": "2026-11-04T15:33:53.810066+00:00",
+  "scope": "China mainland K12 current-window source leads only; no foreign active collection.",
+  "legacy433": {
+    "knownUniqueListingUrls": 433,
+    "eligibleForManualReview": 347,
+    "verifiedOriginalPapersFromLegacyIndex": 0,
+    "priorityTopPublicationDate": "2026-02-09",
+    "warning": "Legacy 433 is a Wuhan third-party listing index, not a current nationwide queue or original-paper inventory."
+  },
+  "regionalIndexSource": "data/discovery/china-k12-priority-regions-live-20261101.json",
+  "externalLeadSource": "data/discovery/china-k12-current-window-external-leads-20261104.json",
+  "regionalThirdPartyLeads": [
+    {
+      "id": "regional-1c17e107f6f662a0",
+      "queueKind": "regional_third_party_page",
+      "sourceUrl": "https://www.wh111.com/yingyu/jingxuanshiti/gaozhongyingyu/gaoyiyingyuyuekao/2026-10-31/88570.html",
+      "title": "襄阳四中2026-2027学年高一上学期10月质量检测英语试题（PDF版含答案）",
+      "region": "wuhan_hubei",
+      "publicationDate": "2026-10-31",
+      "subjects": [
+        "英语"
+      ],
+      "examType": "质量检测",
+      "actualExamDate": null,
+      "paperFileDownloaded": false,
+      "answerFileDownloaded": false,
+      "rightsStatus": "unknown",
+      "state": "third_party_index_only",
+      "reviewOnly": true
+    },
+    {
+      "id": "regional-9bec7df5fecbb9f6",
+      "queueKind": "regional_third_party_page",
+      "sourceUrl": "https://www.wh111.com/yingyu/jingxuanshiti/gaozhongyingyu/gaosanyingyuyuekao/2026-10-31/88566.html",
+      "title": "湖北荆荆襄恩2026-2027学年高三上学期10月阶段检测英语试题（PDF版含答案）",
+      "region": "wuhan_hubei",
+      "publicationDate": "2026-10-31",
+      "subjects": [
+        "英语"
+      ],
+      "examType": "阶段检测",
+      "actualExamDate": null,
+      "paperFileDownloaded": false,
+      "answerFileDownloaded": false,
+      "rightsStatus": "unknown",
+      "state": "third_party_index_only",
+      "reviewOnly": true
+    },
+    {
+      "id": "regional-df8f4733ea24d4fa",
+      "queueKind": "regional_third_party_page",
+      "sourceUrl": "https://www.wh111.com/yingyu/jingxuanshiti/gaozhongyingyu/gaosanyingyuyuekao/2026-10-31/88565.html",
+      "title": "武汉市2026-2027学年高三10月英语检测听力MP3",
+      "region": "wuhan_hubei",
+      "publicationDate": "2026-10-31",
+      "subjects": [
+        "英语"
+      ],
+      "examType": "待核实",
+      "actualExamDate": null,
+      "paperFileDownloaded": false,
+      "answerFileDownloaded": false,
+      "rightsStatus": "unknown",
+      "state": "third_party_index_only",
+      "reviewOnly": true
+    },
+    {
+      "id": "regional-f4f2e378c97f63d8",
+      "queueKind": "regional_third_party_page",
+      "sourceUrl": "https://www.wh111.com/yingyu/jingxuanshiti/gaozhongyingyu/gaosanyingyuyuekao/2026-10-31/88564.html",
+      "title": "武汉市2026-2027学年高三10月英语检测试题（word版含解析）",
+      "region": "wuhan_hubei",
+      "publicationDate": "2026-10-31",
+      "subjects": [
+        "英语"
+      ],
+      "examType": "待核实",
+      "actualExamDate": null,
+      "paperFileDownloaded": false,
+      "answerFileDownloaded": false,
+      "rightsStatus": "unknown",
+      "state": "third_party_index_only",
+      "reviewOnly": true
+    },
+    {
+      "id": "regional-8f270db24d7f6619",
+      "queueKind": "regional_third_party_page",
+      "sourceUrl": "https://www.wh111.com/yingyu/jingxuanshiti/gaozhongyingyu/gaoeryingyuyuekao/2026-10-31/88569.html",
+      "title": "襄阳四中2026-2027学年高二上学期10月质量检测英语试题（PDF版含答案）",
+      "region": "wuhan_hubei",
+      "publicationDate": "2026-10-31",
+      "subjects": [
+        "英语"
+      ],
+      "examType": "质量检测",
+      "actualExamDate": null,
+      "paperFileDownloaded": false,
+      "answerFileDownloaded": false,
+      "rightsStatus": "unknown",
+      "state": "third_party_index_only",
+      "reviewOnly": true
+    },
+    {
+      "id": "regional-c113e6aecc31d0d2",
+      "queueKind": "regional_third_party_page",
+      "sourceUrl": "https://www.wh111.com/yingyu/jingxuanshiti/chuzhongyingyu/chueryingyuyuekao/2026-10-31/88576.html",
+      "title": "华一初2026-2027学年10月八年级英语试题（PDF版含答案）",
+      "region": "wuhan_hubei",
+      "publicationDate": "2026-10-31",
+      "subjects": [
+        "英语"
+      ],
+      "examType": "待核实",
+      "actualExamDate": null,
+      "paperFileDownloaded": false,
+      "answerFileDownloaded": false,
+      "rightsStatus": "unknown",
+      "state": "third_party_index_only",
+      "reviewOnly": true
+    },
+    {
+      "id": "regional-f8b6b6aa4766b745",
+      "queueKind": "regional_third_party_page",
+      "sourceUrl": "https://www.wh111.com/xiaoxue/wunianji/2026-10-31/88575.html",
+      "title": "青山区红钢城小学2026-2027学年上学期期中四年级数学试题（PDF版）",
+      "region": "wuhan_hubei",
+      "publicationDate": "2026-10-31",
+      "subjects": [
+        "数学"
+      ],
+      "examType": "期中",
+      "actualExamDate": null,
+      "paperFileDownloaded": false,
+      "answerFileDownloaded": false,
+      "rightsStatus": "unknown",
+      "state": "third_party_index_only",
+      "reviewOnly": true
+    },
+    {
+      "id": "regional-0145cb2bf7c1db88",
+      "queueKind": "regional_third_party_page",
+      "sourceUrl": "https://www.wh111.com/xiaoxue/sinianji/2026-10-31/88574.html",
+      "title": "江岸区2026-2027学年上学期期中四年级数学试题（PDF版）",
+      "region": "wuhan_hubei",
+      "publicationDate": "2026-10-31",
+      "subjects": [
+        "数学"
+      ],
+      "examType": "期中",
+      "actualExamDate": null,
+      "paperFileDownloaded": false,
+      "answerFileDownloaded": false,
+      "rightsStatus": "unknown",
+      "state": "third_party_index_only",
+      "reviewOnly": true
+    },
+    {
+      "id": "regional-f6bde664d0235b06",
+      "queueKind": "regional_third_party_page",
+      "sourceUrl": "https://www.wh111.com/xiaoxue/sannianji/2026-10-31/88573.html",
+      "title": "武汉光谷未来2026-2027学年上学期期中三年级数学试题（PDF版）",
+      "region": "wuhan_hubei",
+      "publicationDate": "2026-10-31",
+      "subjects": [
+        "数学"
+      ],
+      "examType": "期中",
+      "actualExamDate": null,
+      "paperFileDownloaded": false,
+      "answerFileDownloaded": false,
+      "rightsStatus": "unknown",
+      "state": "third_party_index_only",
+      "reviewOnly": true
+    },
+    {
+      "id": "regional-cdb0fd776898f070",
+      "queueKind": "regional_third_party_page",
+      "sourceUrl": "https://www.wh111.com/shuxue/jingxuanshiti/gaozhongshuxue/gaoyishuxueyuekao/2026-10-31/88572.html",
+      "title": "武汉市育才高中2026-2027学年度10月高一数学试卷（PDF版含答案）",
+      "region": "wuhan_hubei",
+      "publicationDate": "2026-10-31",
+      "subjects": [
+        "数学"
+      ],
+      "examType": "待核实",
+      "actualExamDate": null,
+      "paperFileDownloaded": false,
+      "answerFileDownloaded": false,
+      "rightsStatus": "unknown",
+      "state": "third_party_index_only",
+      "reviewOnly": true
+    },
+    {
+      "id": "regional-3eb1e4fed7243614",
+      "queueKind": "regional_third_party_page",
+      "sourceUrl": "https://www.wh111.com/shuxue/jingxuanshiti/gaozhongshuxue/gaoyishuxueyuekao/2026-10-31/88567.html",
+      "title": "襄阳四中2026-2027学年高一上学期10月质量检测数学试题（PDF版含答案）",
+      "region": "wuhan_hubei",
+      "publicationDate": "2026-10-31",
+      "subjects": [
+        "数学"
+      ],
+      "examType": "质量检测",
+      "actualExamDate": null,
+      "paperFileDownloaded": false,
+      "answerFileDownloaded": false,
+      "rightsStatus": "unknown",
+      "state": "third_party_index_only",
+      "reviewOnly": true
+    },
+    {
+      "id": "regional-0e7c50b315f13dd8",
+      "queueKind": "regional_third_party_page",
+      "sourceUrl": "https://www.wh111.com/shuxue/jingxuanshiti/gaozhongshuxue/gaosanshuxueyuekao/2026-10-31/88563.html",
+      "title": "武汉九师联盟2026-2027学年高三上学期10月数学试卷（PDF版含答案）.pdf",
+      "region": "wuhan_hubei",
+      "publicationDate": "2026-10-31",
+      "subjects": [
+        "数学"
+      ],
+      "examType": "待核实",
+      "actualExamDate": null,
+      "paperFileDownloaded": false,
+      "answerFileDownloaded": false,
+      "rightsStatus": "unknown",
+      "state": "third_party_index_only",
+      "reviewOnly": true
+    },
+    {
+      "id": "regional-96e821e026fec43e",
+      "queueKind": "regional_third_party_page",
+      "sourceUrl": "https://www.wh111.com/shuxue/jingxuanshiti/gaozhongshuxue/gaoershuxueyuekao/2026-10-31/88568.html",
+      "title": "襄阳四中2026-2027学年高二上学期10月质量检测数学试题（PDF版含答案）",
+      "region": "wuhan_hubei",
+      "publicationDate": "2026-10-31",
+      "subjects": [
+        "数学"
+      ],
+      "examType": "质量检测",
+      "actualExamDate": null,
+      "paperFileDownloaded": false,
+      "answerFileDownloaded": false,
+      "rightsStatus": "unknown",
+      "state": "third_party_index_only",
+      "reviewOnly": true
+    },
+    {
+      "id": "regional-6cd7c7c4c9abcd30",
+      "queueKind": "regional_third_party_page",
+      "sourceUrl": "https://www.wh111.com/lihuasheng/jingxuanshiti/gaozhongwuli/gaoerwuliyuekao/2026-10-31/88571.html",
+      "title": "襄阳四中2026-2027学年高二上学期10月质量检测物理试题（PDF版含答案）",
+      "region": "wuhan_hubei",
+      "publicationDate": "2026-10-31",
+      "subjects": [
+        "物理"
+      ],
+      "examType": "质量检测",
+      "actualExamDate": null,
+      "paperFileDownloaded": false,
+      "answerFileDownloaded": false,
+      "rightsStatus": "unknown",
+      "state": "third_party_index_only",
+      "reviewOnly": true
+    },
+    {
+      "id": "regional-311cdaa44c27544b",
+      "queueKind": "regional_third_party_page",
+      "sourceUrl": "https://www.wh111.com/lihuasheng/jingxuanshiti/chuzhongwuli/chusanwuliqizhong/2026-10-31/88579.html",
+      "title": "武汉市2026-2027 学年上学期期中模拟九年级物理试卷（二）",
+      "region": "wuhan_hubei",
+      "publicationDate": "2026-10-31",
+      "subjects": [
+        "物理"
+      ],
+      "examType": "期中",
+      "actualExamDate": null,
+      "paperFileDownloaded": false,
+      "answerFileDownloaded": false,
+      "rightsStatus": "unknown",
+      "state": "third_party_index_only",
+      "reviewOnly": true
+    },
+    {
+      "id": "regional-3d4dbf1edacab9bf",
+      "queueKind": "regional_third_party_page",
+      "sourceUrl": "https://www.wh111.com/lihuasheng/jingxuanshiti/chuzhonghuaxue/jiushanghuaxueqizhong/2026-10-31/88581.html",
+      "title": "武汉市2026-2027 学年上学期期中模拟九年级化学试卷（三）（word版含答案）",
+      "region": "wuhan_hubei",
+      "publicationDate": "2026-10-31",
+      "subjects": [
+        "化学"
+      ],
+      "examType": "期中",
+      "actualExamDate": null,
+      "paperFileDownloaded": false,
+      "answerFileDownloaded": false,
+      "rightsStatus": "unknown",
+      "state": "third_party_index_only",
+      "reviewOnly": true
+    },
+    {
+      "id": "regional-e766908c4a41067d",
+      "queueKind": "regional_third_party_page",
+      "sourceUrl": "https://www.wh111.com/lihuasheng/jingxuanshiti/chuzhonghuaxue/jiushanghuaxueqizhong/2026-10-31/88580.html",
+      "title": "武汉市2026-2027 学年上学期期中模拟九年级化学试卷（二）（word版含答案）",
+      "region": "wuhan_hubei",
+      "publicationDate": "2026-10-31",
+      "subjects": [
+        "化学"
+      ],
+      "examType": "期中",
+      "actualExamDate": null,
+      "paperFileDownloaded": false,
+      "answerFileDownloaded": false,
+      "rightsStatus": "unknown",
+      "state": "third_party_index_only",
+      "reviewOnly": true
+    },
+    {
+      "id": "regional-3d93401fc17bce32",
+      "queueKind": "regional_third_party_page",
+      "sourceUrl": "https://www.wh111.com/zhengshidi/jingxuanshiti/chuzhongzhengshi/qishangzhengshi/2026-10-30/88560.html",
+      "title": "武汉光谷实验学校2026-2027学年9月七年级道法试题（word版）",
+      "region": "wuhan_hubei",
+      "publicationDate": "2026-10-30",
+      "subjects": [
+        "道法"
+      ],
+      "examType": "待核实",
+      "actualExamDate": null,
+      "paperFileDownloaded": false,
+      "answerFileDownloaded": false,
+      "rightsStatus": "unknown",
+      "state": "third_party_index_only",
+      "reviewOnly": true
+    },
+    {
+      "id": "regional-0cb2fd5add5ca325",
+      "queueKind": "regional_third_party_page",
+      "sourceUrl": "https://www.wh111.com/zhengshidi/jingxuanshiti/chuzhongzhengshi/qishangzhengshi/2026-10-30/88559.html",
+      "title": "武汉光谷实验学校2026-2027学年9月七年级历史试题（word版）",
+      "region": "wuhan_hubei",
+      "publicationDate": "2026-10-30",
+      "subjects": [
+        "历史"
+      ],
+      "examType": "待核实",
+      "actualExamDate": null,
+      "paperFileDownloaded": false,
+      "answerFileDownloaded": false,
+      "rightsStatus": "unknown",
+      "state": "third_party_index_only",
+      "reviewOnly": true
+    },
+    {
+      "id": "regional-d70dd0f6173a7be4",
+      "queueKind": "regional_third_party_page",
+      "sourceUrl": "https://www.wh111.com/zhengshidi/jingxuanshiti/chuzhongzhengshi/jiushangzhengshi/2026-10-30/88558.html",
+      "title": "武汉光谷实验学校2026-2027学年10月九年级历史试题（word版）",
+      "region": "wuhan_hubei",
+      "publicationDate": "2026-10-30",
+      "subjects": [
+        "历史"
+      ],
+      "examType": "待核实",
+      "actualExamDate": null,
+      "paperFileDownloaded": false,
+      "answerFileDownloaded": false,
+      "rightsStatus": "unknown",
+      "state": "third_party_index_only",
+      "reviewOnly": true
+    },
+    {
+      "id": "regional-2230ff90dd48260c",
+      "queueKind": "regional_third_party_page",
+      "sourceUrl": "https://www.wh111.com/zhengshidi/jingxuanshiti/chuzhongzhengshi/jiushangzhengshi/2026-10-30/88557.html",
+      "title": "武汉光谷实验学校2026-2027学年10月九年级道法试题（高清PDF版）",
+      "region": "wuhan_hubei",
+      "publicationDate": "2026-10-30",
+      "subjects": [
+        "道法"
+      ],
+      "examType": "待核实",
+      "actualExamDate": null,
+      "paperFileDownloaded": false,
+      "answerFileDownloaded": false,
+      "rightsStatus": "unknown",
+      "state": "third_party_index_only",
+      "reviewOnly": true
+    },
+    {
+      "id": "regional-f954e2f3c644f03d",
+      "queueKind": "regional_third_party_page",
+      "sourceUrl": "https://www.wh111.com/yuwen/jingxuanshiti/chuzhongyuwen/chuyiyuwen/qishangyuekao/2026-10-30/88561.html",
+      "title": "武汉光谷实验学校2026-2027学年9月七年级语文试题（word版）",
+      "region": "wuhan_hubei",
+      "publicationDate": "2026-10-30",
+      "subjects": [
+        "语文"
+      ],
+      "examType": "待核实",
+      "actualExamDate": null,
+      "paperFileDownloaded": false,
+      "answerFileDownloaded": false,
+      "rightsStatus": "unknown",
+      "state": "third_party_index_only",
+      "reviewOnly": true
+    },
+    {
+      "id": "regional-08c64f38af5fafc8",
+      "queueKind": "regional_third_party_page",
+      "sourceUrl": "https://www.wh111.com/yuwen/jingxuanshiti/chuzhongyuwen/chusanyuwen/jiushangyuekao/2026-10-30/88556.html",
+      "title": "武汉光谷实验学校2026-2027学年10月九年级语文试题（word版）",
+      "region": "wuhan_hubei",
+      "publicationDate": "2026-10-30",
+      "subjects": [
+        "语文"
+      ],
+      "examType": "待核实",
+      "actualExamDate": null,
+      "paperFileDownloaded": false,
+      "answerFileDownloaded": false,
+      "rightsStatus": "unknown",
+      "state": "third_party_index_only",
+      "reviewOnly": true
+    },
+    {
+      "id": "regional-8e73778723f80975",
+      "queueKind": "regional_third_party_page",
+      "sourceUrl": "https://www.wh111.com/yingyu/jingxuanshiti/chuzhongyingyu/chusanyingyuyuekao/2026-10-30/88551.html",
+      "title": "华一初2026-2027学年上学期10月九年级英语试题（PDF版含答案）",
+      "region": "wuhan_hubei",
+      "publicationDate": "2026-10-30",
+      "subjects": [
+        "英语"
+      ],
+      "examType": "待核实",
+      "actualExamDate": null,
+      "paperFileDownloaded": false,
+      "answerFileDownloaded": false,
+      "rightsStatus": "unknown",
+      "state": "third_party_index_only",
+      "reviewOnly": true
+    },
+    {
+      "id": "regional-0c252eff8883c444",
+      "queueKind": "regional_third_party_page",
+      "sourceUrl": "https://www.wh111.com/lihuasheng/jingxuanshiti/chuzhongwuli/chuerwuliqizhong/2026-10-30/88554.html",
+      "title": "武汉市2026-2027 学年上学期期中模拟八年级物理试题（三）（word版含答案）",
+      "region": "wuhan_hubei",
+      "publicationDate": "2026-10-30",
+      "subjects": [
+        "物理"
+      ],
+      "examType": "期中",
+      "actualExamDate": null,
+      "paperFileDownloaded": false,
+      "answerFileDownloaded": false,
+      "rightsStatus": "unknown",
+      "state": "third_party_index_only",
+      "reviewOnly": true
+    },
+    {
+      "id": "regional-2eb836115d08f141",
+      "queueKind": "regional_third_party_page",
+      "sourceUrl": "https://www.wh111.com/lihuasheng/jingxuanshiti/chuzhongwuli/chuerwuliqizhong/2026-10-30/88553.html",
+      "title": "武汉市2026-2027 学年上学期期中模拟八年级物理试题（二）（word版含答案）",
+      "region": "wuhan_hubei",
+      "publicationDate": "2026-10-30",
+      "subjects": [
+        "物理"
+      ],
+      "examType": "期中",
+      "actualExamDate": null,
+      "paperFileDownloaded": false,
+      "answerFileDownloaded": false,
+      "rightsStatus": "unknown",
+      "state": "third_party_index_only",
+      "reviewOnly": true
+    },
+    {
+      "id": "regional-d22a3d547c657890",
+      "queueKind": "regional_third_party_page",
+      "sourceUrl": "https://www.wh111.com/lihuasheng/jingxuanshiti/chuzhonghuaxue/jiushanghuaxueyuekao/2026-10-30/88555.html",
+      "title": "武汉粮道街中学2026-2027学年10月考九年级化学试卷（word版含答案）",
+      "region": "wuhan_hubei",
+      "publicationDate": "2026-10-30",
+      "subjects": [
+        "化学"
+      ],
+      "examType": "月考",
+      "actualExamDate": null,
+      "paperFileDownloaded": false,
+      "answerFileDownloaded": false,
+      "rightsStatus": "unknown",
+      "state": "third_party_index_only",
+      "reviewOnly": true
+    },
+    {
+      "id": "regional-20342ff1aa4f0899",
+      "queueKind": "regional_third_party_page",
+      "sourceUrl": "https://www.wh111.com/lihuasheng/jingxuanshiti/chuzhonghuaxue/jiushanghuaxueyuekao/2026-10-30/88552.html",
+      "title": "武珞路中学2026-2027学年九上化学第四单元《自然界的水》检测卷（PDF版）",
+      "region": "wuhan_hubei",
+      "publicationDate": "2026-10-30",
+      "subjects": [
+        "化学"
+      ],
+      "examType": "待核实",
+      "actualExamDate": null,
+      "paperFileDownloaded": false,
+      "answerFileDownloaded": false,
+      "rightsStatus": "unknown",
+      "state": "third_party_index_only",
+      "reviewOnly": true
+    },
+    {
+      "id": "regional-c00f841eb2ff2504",
+      "queueKind": "regional_third_party_page",
+      "sourceUrl": "https://www.wh111.com/lihuasheng/jingxuanshiti/chuzhongwuli/chusanwuliyuekao/2026-10-29/88548.html",
+      "title": "武汉光谷实验学校2026-2027学年10月九年级物理试题（word版含标答）",
+      "region": "wuhan_hubei",
+      "publicationDate": "2026-10-29",
+      "subjects": [
+        "物理"
+      ],
+      "examType": "待核实",
+      "actualExamDate": null,
+      "paperFileDownloaded": false,
+      "answerFileDownloaded": false,
+      "rightsStatus": "unknown",
+      "state": "third_party_index_only",
+      "reviewOnly": true
+    },
+    {
+      "id": "regional-22cd2d4634b4b963",
+      "queueKind": "regional_third_party_page",
+      "sourceUrl": "https://www.wh111.com/lihuasheng/jingxuanshiti/chuzhongwuli/chusanwuliyuekao/2026-10-29/88539.html",
+      "title": "武汉光谷实验学校2026-2027学年10月九年级理化试题（高清PDF版）",
+      "region": "wuhan_hubei",
+      "publicationDate": "2026-10-29",
+      "subjects": [
+        "物理",
+        "化学"
+      ],
+      "examType": "待核实",
+      "actualExamDate": null,
+      "paperFileDownloaded": false,
+      "answerFileDownloaded": false,
+      "rightsStatus": "unknown",
+      "state": "third_party_index_only",
+      "reviewOnly": true
+    },
+    {
+      "id": "regional-e8826460b26bd582",
+      "queueKind": "regional_third_party_page",
+      "sourceUrl": "https://www.wh111.com/lihuasheng/jingxuanshiti/chuzhongwuli/chusanwuliyuekao/2026-10-27/88522.html",
+      "title": "武汉卓刀泉中学2026-2027学年10月考九年级物理试卷（word版含答案）",
+      "region": "wuhan_hubei",
+      "publicationDate": "2026-10-27",
+      "subjects": [
+        "物理"
+      ],
+      "examType": "月考",
+      "actualExamDate": null,
+      "paperFileDownloaded": false,
+      "answerFileDownloaded": false,
+      "rightsStatus": "unknown",
+      "state": "third_party_index_only",
+      "reviewOnly": true
+    },
+    {
+      "id": "regional-6cadf2b5229c8bef",
+      "queueKind": "regional_third_party_page",
+      "sourceUrl": "https://www.wh111.com/lihuasheng/jingxuanshiti/chuzhongwuli/chusanwuliyuekao/2026-10-27/88521.html",
+      "title": "武汉粮道街中学2026-2027学年10月考九年级物理试卷（word版含答案）",
+      "region": "wuhan_hubei",
+      "publicationDate": "2026-10-27",
+      "subjects": [
+        "物理"
+      ],
+      "examType": "月考",
+      "actualExamDate": null,
+      "paperFileDownloaded": false,
+      "answerFileDownloaded": false,
+      "rightsStatus": "unknown",
+      "state": "third_party_index_only",
+      "reviewOnly": true
+    },
+    {
+      "id": "regional-ace8aa74f3a21b62",
+      "queueKind": "regional_third_party_page",
+      "sourceUrl": "https://www.wh111.com/lihuasheng/jingxuanshiti/chuzhongwuli/chusanwuliyuekao/2026-10-27/88516.html",
+      "title": "洪山区2026-2027学年上学期10月九年级物理试题（高清PDF版含答案）",
+      "region": "wuhan_hubei",
+      "publicationDate": "2026-10-27",
+      "subjects": [
+        "物理"
+      ],
+      "examType": "待核实",
+      "actualExamDate": null,
+      "paperFileDownloaded": false,
+      "answerFileDownloaded": false,
+      "rightsStatus": "unknown",
+      "state": "third_party_index_only",
+      "reviewOnly": true
+    },
+    {
+      "id": "regional-8d9caada84eeb752",
+      "queueKind": "regional_third_party_page",
+      "sourceUrl": "https://www.wh111.com/shuxue/jingxuanshiti/gaozhongshuxue/gaoershuxueyuekao/2026-10-25/88465.html",
+      "title": "荆州中学2026-2027学年上学期10月月考高二数学试卷（PDF版含答案）",
+      "region": "wuhan_hubei",
+      "publicationDate": "2026-10-25",
+      "subjects": [
+        "数学"
+      ],
+      "examType": "月考",
+      "actualExamDate": null,
+      "paperFileDownloaded": false,
+      "answerFileDownloaded": false,
+      "rightsStatus": "unknown",
+      "state": "third_party_index_only",
+      "reviewOnly": true
+    },
+    {
+      "id": "regional-01e5c98a3b0d97d8",
+      "queueKind": "regional_third_party_page",
+      "sourceUrl": "https://www.wh111.com/shuxue/jingxuanshiti/gaozhongshuxue/gaoyishuxueyuekao/2026-10-24/88463.html",
+      "title": "武汉汉阳外国语学校2026-2027学年度上学期10月月考高一数学试卷（PDF版含答案）",
+      "region": "wuhan_hubei",
+      "publicationDate": "2026-10-24",
+      "subjects": [
+        "数学"
+      ],
+      "examType": "月考",
+      "actualExamDate": null,
+      "paperFileDownloaded": false,
+      "answerFileDownloaded": false,
+      "rightsStatus": "unknown",
+      "state": "third_party_index_only",
+      "reviewOnly": true
+    },
+    {
+      "id": "regional-dcf8799873228384",
+      "queueKind": "regional_third_party_page",
+      "sourceUrl": "https://www.wh111.com/shuxue/jingxuanshiti/gaozhongshuxue/gaoyishuxueyuekao/2026-10-24/88462.html",
+      "title": "武钢三中2026-2027学年上学期高一第一次月考数学试卷（PDF版含答案）",
+      "region": "wuhan_hubei",
+      "publicationDate": "2026-10-24",
+      "subjects": [
+        "数学"
+      ],
+      "examType": "月考",
+      "actualExamDate": null,
+      "paperFileDownloaded": false,
+      "answerFileDownloaded": false,
+      "rightsStatus": "unknown",
+      "state": "third_party_index_only",
+      "reviewOnly": true
+    },
+    {
+      "id": "regional-ffb1413f3086c5c9",
+      "queueKind": "regional_third_party_page",
+      "sourceUrl": "https://www.wh111.com/shuxue/jingxuanshiti/gaozhongshuxue/gaoyishuxueyuekao/2026-10-24/88461.html",
+      "title": "武汉经开外校2026-2027学年高一上学期10月月考数学试卷（PDF版含答案）",
+      "region": "wuhan_hubei",
+      "publicationDate": "2026-10-24",
+      "subjects": [
+        "数学"
+      ],
+      "examType": "月考",
+      "actualExamDate": null,
+      "paperFileDownloaded": false,
+      "answerFileDownloaded": false,
+      "rightsStatus": "unknown",
+      "state": "third_party_index_only",
+      "reviewOnly": true
+    },
+    {
+      "id": "regional-13b55847e3315ab9",
+      "queueKind": "regional_third_party_page",
+      "sourceUrl": "https://www.wh111.com/shuxue/jingxuanshiti/gaozhongshuxue/gaoyishuxueyuekao/2026-10-24/88460.html",
+      "title": "武汉市第十一中学2026-2027学年高一上学期十月月考数学试卷（PDF版含答案）",
+      "region": "wuhan_hubei",
+      "publicationDate": "2026-10-24",
+      "subjects": [
+        "数学"
+      ],
+      "examType": "月考",
+      "actualExamDate": null,
+      "paperFileDownloaded": false,
+      "answerFileDownloaded": false,
+      "rightsStatus": "unknown",
+      "state": "third_party_index_only",
+      "reviewOnly": true
+    },
+    {
+      "id": "regional-54875660f9e6be32",
+      "queueKind": "regional_third_party_page",
+      "sourceUrl": "https://www.wh111.com/lihuasheng/jingxuanshiti/chuzhongwuli/chusanwuliyuekao/2026-10-23/88439.html",
+      "title": "武汉名校2025-2026学年九上物理9、10月考试题分类汇编（word版含解析）",
+      "region": "wuhan_hubei",
+      "publicationDate": "2026-10-23",
+      "subjects": [
+        "物理"
+      ],
+      "examType": "月考",
+      "actualExamDate": null,
+      "paperFileDownloaded": false,
+      "answerFileDownloaded": false,
+      "rightsStatus": "unknown",
+      "state": "third_party_index_only",
+      "reviewOnly": true
+    },
+    {
+      "id": "regional-9fd05cb30fb5fe3b",
+      "queueKind": "regional_third_party_page",
+      "sourceUrl": "https://www.wh111.com/shuxue/jingxuanshiti/gaozhongshuxue/gaoyishuxueyuekao/2026-10-22/88399.html",
+      "title": "襄阳五中2026-2027学年上学期9月考高一数学试卷（word版含答案）",
+      "region": "wuhan_hubei",
+      "publicationDate": "2026-10-22",
+      "subjects": [
+        "数学"
+      ],
+      "examType": "月考",
+      "actualExamDate": null,
+      "paperFileDownloaded": false,
+      "answerFileDownloaded": false,
+      "rightsStatus": "unknown",
+      "state": "third_party_index_only",
+      "reviewOnly": true
+    },
+    {
+      "id": "regional-e8e4467eb3a5cb33",
+      "queueKind": "regional_third_party_page",
+      "sourceUrl": "https://www.wh111.com/shuxue/jingxuanshiti/chuzhongshuxue/chusanshuxue/jiushangshuxueqizhong/2026-10-22/88406.html",
+      "title": "武汉市2026-2027学年上学期期中模拟九年",
+      "region": "wuhan_hubei",
+      "publicationDate": "2026-10-22",
+      "subjects": [],
+      "examType": "期中",
+      "actualExamDate": null,
+      "paperFileDownloaded": false,
+      "answerFileDownloaded": false,
+      "rightsStatus": "unknown",
+      "state": "third_party_index_only",
+      "reviewOnly": true
+    },
+    {
+      "id": "regional-ff6f5e28fad9ec55",
+      "queueKind": "regional_third_party_page",
+      "sourceUrl": "https://www.wh111.com/shuxue/jingxuanshiti/chuzhongshuxue/chuershuxue/bashangshuxueqizhong/2026-10-22/88405.html",
+      "title": "武汉市2026-2027学年上学期期中模拟八年",
+      "region": "wuhan_hubei",
+      "publicationDate": "2026-10-22",
+      "subjects": [],
+      "examType": "期中",
+      "actualExamDate": null,
+      "paperFileDownloaded": false,
+      "answerFileDownloaded": false,
+      "rightsStatus": "unknown",
+      "state": "third_party_index_only",
+      "reviewOnly": true
+    },
+    {
+      "id": "regional-41225d12775fc1bc",
+      "queueKind": "regional_third_party_page",
+      "sourceUrl": "https://www.wh111.com/lihuasheng/jingxuanshiti/chuzhongwuli/chusanwuliyuekao/2026-10-21/88396.html",
+      "title": "武汉六初2026-2027学年上学期10月九年级理化试题（word版）",
+      "region": "wuhan_hubei",
+      "publicationDate": "2026-10-21",
+      "subjects": [
+        "物理",
+        "化学"
+      ],
+      "examType": "待核实",
+      "actualExamDate": null,
+      "paperFileDownloaded": false,
+      "answerFileDownloaded": false,
+      "rightsStatus": "unknown",
+      "state": "third_party_index_only",
+      "reviewOnly": true
+    },
+    {
+      "id": "regional-6da33ab6d607d891",
+      "queueKind": "regional_third_party_page",
+      "sourceUrl": "https://www.wh111.com/shuxue/jingxuanshiti/gaozhongshuxue/gaosanshuxueyuekao/2026-10-20/88369.html",
+      "title": "湖北楚天协作体2027届高三10月考数学试卷（PDF版含答案）",
+      "region": "wuhan_hubei",
+      "publicationDate": "2026-10-20",
+      "subjects": [
+        "数学"
+      ],
+      "examType": "月考",
+      "actualExamDate": null,
+      "paperFileDownloaded": false,
+      "answerFileDownloaded": false,
+      "rightsStatus": "unknown",
+      "state": "third_party_index_only",
+      "reviewOnly": true
+    },
+    {
+      "id": "regional-0f27d7896b35e501",
+      "queueKind": "regional_third_party_page",
+      "sourceUrl": "https://www.wh111.com/shuxue/jingxuanshiti/gaozhongshuxue/gaoyishuxueyuekao/2026-10-18/88332.html",
+      "title": "武汉外国语学校2026—2027学年度上学期十月高一数学试卷（word版含答案）",
+      "region": "wuhan_hubei",
+      "publicationDate": "2026-10-18",
+      "subjects": [
+        "数学"
+      ],
+      "examType": "待核实",
+      "actualExamDate": null,
+      "paperFileDownloaded": false,
+      "answerFileDownloaded": false,
+      "rightsStatus": "unknown",
+      "state": "third_party_index_only",
+      "reviewOnly": true
+    },
+    {
+      "id": "regional-29b38b3390957499",
+      "queueKind": "regional_third_party_page",
+      "sourceUrl": "https://www.wh111.com/shuxue/jingxuanshiti/gaozhongshuxue/gaosanshuxueyuekao/2026-10-18/88327.html",
+      "title": "【免费】襄阳四中2026-2027学年高三上学期9月数学试题(PDF版）",
+      "region": "wuhan_hubei",
+      "publicationDate": "2026-10-18",
+      "subjects": [
+        "数学"
+      ],
+      "examType": "待核实",
+      "actualExamDate": null,
+      "paperFileDownloaded": false,
+      "answerFileDownloaded": false,
+      "rightsStatus": "unknown",
+      "state": "third_party_index_only",
+      "reviewOnly": true
+    },
+    {
+      "id": "regional-39bd2944c8dce2c2",
+      "queueKind": "regional_third_party_page",
+      "sourceUrl": "https://www.wh111.com/shuxue/jingxuanshiti/gaozhongshuxue/gaoershuxueyuekao/2026-10-18/88337.html",
+      "title": "武汉市第三中学2026-2027学年高二上学期10月素养调研数学试题（高清PDF版含解析）",
+      "region": "wuhan_hubei",
+      "publicationDate": "2026-10-18",
+      "subjects": [
+        "数学"
+      ],
+      "examType": "待核实",
+      "actualExamDate": null,
+      "paperFileDownloaded": false,
+      "answerFileDownloaded": false,
+      "rightsStatus": "unknown",
+      "state": "third_party_index_only",
+      "reviewOnly": true
+    },
+    {
+      "id": "regional-30ad1a9c7f531ec1",
+      "queueKind": "regional_third_party_page",
+      "sourceUrl": "https://www.wh111.com/lihuasheng/jingxuanshiti/chuzhongwuli/chusanwuliyuekao/2026-10-18/88342.html",
+      "title": "江汉区四校2026-2027学年10月九年级物理试题（word版含答案）",
+      "region": "wuhan_hubei",
+      "publicationDate": "2026-10-18",
+      "subjects": [
+        "物理"
+      ],
+      "examType": "待核实",
+      "actualExamDate": null,
+      "paperFileDownloaded": false,
+      "answerFileDownloaded": false,
+      "rightsStatus": "unknown",
+      "state": "third_party_index_only",
+      "reviewOnly": true
+    },
+    {
+      "id": "regional-48ea456d977090dd",
+      "queueKind": "regional_third_party_page",
+      "sourceUrl": "https://www.wh111.com/yingyu/jingxuanshiti/chuzhongyingyu/chuyiyingyuqizhong/2026-10-16/88284.html",
+      "title": "武汉各区2025-2026学年七上期中英语真题",
+      "region": "wuhan_hubei",
+      "publicationDate": "2026-10-16",
+      "subjects": [
+        "英语"
+      ],
+      "examType": "期中",
+      "actualExamDate": null,
+      "paperFileDownloaded": false,
+      "answerFileDownloaded": false,
+      "rightsStatus": "unknown",
+      "state": "third_party_index_only",
+      "reviewOnly": true
+    },
+    {
+      "id": "regional-5819936a579e6cd3",
+      "queueKind": "regional_third_party_page",
+      "sourceUrl": "https://www.wh111.com/yingyu/jingxuanshiti/chuzhongyingyu/chusanyingyuyuekao/2026-10-16/88293.html",
+      "title": "武汉光谷实验学校2026-2027学年10月九年级英语试题（word版含答案）",
+      "region": "wuhan_hubei",
+      "publicationDate": "2026-10-16",
+      "subjects": [
+        "英语"
+      ],
+      "examType": "待核实",
+      "actualExamDate": null,
+      "paperFileDownloaded": false,
+      "answerFileDownloaded": false,
+      "rightsStatus": "unknown",
+      "state": "third_party_index_only",
+      "reviewOnly": true
+    },
+    {
+      "id": "regional-42ac00a834f598e5",
+      "queueKind": "regional_third_party_page",
+      "sourceUrl": "https://www.wh111.com/yingyu/jingxuanshiti/chuzhongyingyu/chueryingyuqizhong/2026-10-16/88285.html",
+      "title": "武汉各区2025-2026学年八上期中英语真题",
+      "region": "wuhan_hubei",
+      "publicationDate": "2026-10-16",
+      "subjects": [
+        "英语"
+      ],
+      "examType": "期中",
+      "actualExamDate": null,
+      "paperFileDownloaded": false,
+      "answerFileDownloaded": false,
+      "rightsStatus": "unknown",
+      "state": "third_party_index_only",
+      "reviewOnly": true
+    },
+    {
+      "id": "regional-21f01e5ce84ac4a3",
+      "queueKind": "regional_third_party_page",
+      "sourceUrl": "https://www.wh111.com/lihuasheng/jingxuanshiti/chuzhongwuli/chusanwuliyuekao/2026-10-16/88311.html",
+      "title": "【免费】江汉区四校2026-2027学年上学期10月九年级物理试题（PDF版）",
+      "region": "wuhan_hubei",
+      "publicationDate": "2026-10-16",
+      "subjects": [
+        "物理"
+      ],
+      "examType": "待核实",
+      "actualExamDate": null,
+      "paperFileDownloaded": false,
+      "answerFileDownloaded": false,
+      "rightsStatus": "unknown",
+      "state": "third_party_index_only",
+      "reviewOnly": true
+    },
+    {
+      "id": "regional-b2d07a5b19b7a747",
+      "queueKind": "regional_third_party_page",
+      "sourceUrl": "https://www.wh111.com/lihuasheng/jingxuanshiti/chuzhongwuli/chusanwuliyuekao/2026-10-16/88309.html",
+      "title": "武汉光谷实验学校2026-2027学年10月九年级理化试题（高清PDF版）",
+      "region": "wuhan_hubei",
+      "publicationDate": "2026-10-16",
+      "subjects": [
+        "物理",
+        "化学"
+      ],
+      "examType": "待核实",
+      "actualExamDate": null,
+      "paperFileDownloaded": false,
+      "answerFileDownloaded": false,
+      "rightsStatus": "unknown",
+      "state": "third_party_index_only",
+      "reviewOnly": true
+    },
+    {
+      "id": "regional-ae6e7571f8e77176",
+      "queueKind": "regional_third_party_page",
+      "sourceUrl": "https://www.wh111.com/shuxue/jingxuanshiti/gaozhongshuxue/gaoyishuxueyuekao/2026-10-14/88244.html",
+      "title": "【免费】武汉外校2026-2027学年高一上学期10月数学试卷（PDF版）",
+      "region": "wuhan_hubei",
+      "publicationDate": "2026-10-14",
+      "subjects": [
+        "数学"
+      ],
+      "examType": "待核实",
+      "actualExamDate": null,
+      "paperFileDownloaded": false,
+      "answerFileDownloaded": false,
+      "rightsStatus": "unknown",
+      "state": "third_party_index_only",
+      "reviewOnly": true
+    },
+    {
+      "id": "regional-e942fc162ae3fe24",
+      "queueKind": "regional_third_party_page",
+      "sourceUrl": "https://www.wh111.com/lihuasheng/jingxuanshiti/chuzhongwuli/chusanwuliyuekao/2026-10-14/88230.html",
+      "title": "武汉粮道街中学2026-2027学年10月考九年级理化试卷（PDF版含答案）(1).",
+      "region": "wuhan_hubei",
+      "publicationDate": "2026-10-14",
+      "subjects": [
+        "物理",
+        "化学"
+      ],
+      "examType": "月考",
+      "actualExamDate": null,
+      "paperFileDownloaded": false,
+      "answerFileDownloaded": false,
+      "rightsStatus": "unknown",
+      "state": "third_party_index_only",
+      "reviewOnly": true
+    },
+    {
+      "id": "regional-7704ddc495cd0015",
+      "queueKind": "regional_third_party_page",
+      "sourceUrl": "https://www.wh111.com/shuxue/jingxuanshiti/gaozhongshuxue/gaosanshuxueyuekao/2026-10-13/88229.html",
+      "title": "【免费】湖北云学联盟2026-2027学年高三上学期10月数学试题(PDF版含答案）",
+      "region": "wuhan_hubei",
+      "publicationDate": "2026-10-13",
+      "subjects": [
+        "数学"
+      ],
+      "examType": "待核实",
+      "actualExamDate": null,
+      "paperFileDownloaded": false,
+      "answerFileDownloaded": false,
+      "rightsStatus": "unknown",
+      "state": "third_party_index_only",
+      "reviewOnly": true
+    },
+    {
+      "id": "regional-526030753e7779e8",
+      "queueKind": "regional_third_party_page",
+      "sourceUrl": "https://www.wh111.com/lihuasheng/jingxuanshiti/chuzhongwuli/chusanwuliyuekao/2026-10-12/88209.html",
+      "title": "武汉光谷未来2026-2027学年上学期9月九年级理化试题9.28（PDF版）",
+      "region": "wuhan_hubei",
+      "publicationDate": "2026-10-12",
+      "subjects": [
+        "物理",
+        "化学"
+      ],
+      "examType": "待核实",
+      "actualExamDate": null,
+      "paperFileDownloaded": false,
+      "answerFileDownloaded": false,
+      "rightsStatus": "unknown",
+      "state": "third_party_index_only",
+      "reviewOnly": true
+    },
+    {
+      "id": "regional-cc5ef5361ecf5c8f",
+      "queueKind": "regional_third_party_page",
+      "sourceUrl": "https://www.wh111.com/shuxue/jingxuanshiti/gaozhongshuxue/gaoershuxueyuekao/2026-10-11/88200.html",
+      "title": "武汉二中2026-2027学年高二上学期10月阶段性检测数学试卷（PDF版含答案）",
+      "region": "wuhan_hubei",
+      "publicationDate": "2026-10-11",
+      "subjects": [
+        "数学"
+      ],
+      "examType": "待核实",
+      "actualExamDate": null,
+      "paperFileDownloaded": false,
+      "answerFileDownloaded": false,
+      "rightsStatus": "unknown",
+      "state": "third_party_index_only",
+      "reviewOnly": true
+    },
+    {
+      "id": "regional-6a2d0821585ca221",
+      "queueKind": "regional_third_party_page",
+      "sourceUrl": "https://www.wh111.com/shuxue/jingxuanshiti/gaozhongshuxue/gaoershuxueyuekao/2026-10-05/88134.html",
+      "title": "武汉市新洲一中2026-2027学年高二上学期9月月考数学试卷（PDF版含解析）",
+      "region": "wuhan_hubei",
+      "publicationDate": "2026-10-05",
+      "subjects": [
+        "数学"
+      ],
+      "examType": "月考",
+      "actualExamDate": null,
+      "paperFileDownloaded": false,
+      "answerFileDownloaded": false,
+      "rightsStatus": "unknown",
+      "state": "third_party_index_only",
+      "reviewOnly": true
+    },
+    {
+      "id": "regional-4be85e4bab9b51bd",
+      "queueKind": "regional_third_party_page",
+      "sourceUrl": "https://www.wh111.com/shuxue/jingxuanshiti/chuzhongshuxue/chuyishuxue/qishangshuxueyuekao/2026-09-30/88085.html",
+      "title": "武汉名校2025-2026学年七上数学9月月考",
+      "region": "wuhan_hubei",
+      "publicationDate": "2026-09-30",
+      "subjects": [
+        "数学"
+      ],
+      "examType": "月考",
+      "actualExamDate": null,
+      "paperFileDownloaded": false,
+      "answerFileDownloaded": false,
+      "rightsStatus": "unknown",
+      "state": "third_party_index_only",
+      "reviewOnly": true
+    },
+    {
+      "id": "regional-719e488e55f5015a",
+      "queueKind": "regional_third_party_page",
+      "sourceUrl": "https://www.wh111.com/shuxue/jingxuanshiti/chuzhongshuxue/chusanshuxue/jiushangshuxueyuekao/2026-09-30/88087.html",
+      "title": "武汉名校2025-2026学年九上数学10月月考",
+      "region": "wuhan_hubei",
+      "publicationDate": "2026-09-30",
+      "subjects": [
+        "数学"
+      ],
+      "examType": "月考",
+      "actualExamDate": null,
+      "paperFileDownloaded": false,
+      "answerFileDownloaded": false,
+      "rightsStatus": "unknown",
+      "state": "third_party_index_only",
+      "reviewOnly": true
+    },
+    {
+      "id": "regional-4b338f74a098b888",
+      "queueKind": "regional_third_party_page",
+      "sourceUrl": "https://www.wh111.com/shuxue/jingxuanshiti/gaozhongshuxue/gaosanshuxueyuekao/2026-09-27/88068.html",
+      "title": "武汉三中2027届高三九月月考数学试卷（PDF版含答案）",
+      "region": "wuhan_hubei",
+      "publicationDate": "2026-09-27",
+      "subjects": [
+        "数学"
+      ],
+      "examType": "月考",
+      "actualExamDate": null,
+      "paperFileDownloaded": false,
+      "answerFileDownloaded": false,
+      "rightsStatus": "unknown",
+      "state": "third_party_index_only",
+      "reviewOnly": true
+    },
+    {
+      "id": "regional-deb8d92596b8f2e8",
+      "queueKind": "regional_third_party_page",
+      "sourceUrl": "https://www.wh111.com/lihuasheng/jingxuanshiti/chuzhongwuli/chusanwuliyuekao/2026-09-18/87942.html",
+      "title": "【更正】武汉光谷未来2026-2027学年上学期9月九年级物理试题（PDF版）",
+      "region": "wuhan_hubei",
+      "publicationDate": "2026-09-18",
+      "subjects": [
+        "物理"
+      ],
+      "examType": "待核实",
+      "actualExamDate": null,
+      "paperFileDownloaded": false,
+      "answerFileDownloaded": false,
+      "rightsStatus": "unknown",
+      "state": "third_party_index_only",
+      "reviewOnly": true
+    },
+    {
+      "id": "regional-d101d641942bdd89",
+      "queueKind": "regional_third_party_page",
+      "sourceUrl": "https://www.wh111.com/shuxue/jingxuanshiti/gaozhongshuxue/gaosanshuxueyuekao/2026-09-17/87911.html",
+      "title": "武汉市2027届高中毕业生九月调研考试数学标答及评分标准",
+      "region": "wuhan_hubei",
+      "publicationDate": "2026-09-17",
+      "subjects": [
+        "数学"
+      ],
+      "examType": "待核实",
+      "actualExamDate": null,
+      "paperFileDownloaded": false,
+      "answerFileDownloaded": false,
+      "rightsStatus": "unknown",
+      "state": "third_party_index_only",
+      "reviewOnly": true
+    },
+    {
+      "id": "regional-e8501202d275939c",
+      "queueKind": "regional_third_party_page",
+      "sourceUrl": "https://www.wh111.com/shuxue/jingxuanshiti/gaozhongshuxue/gaosanshuxueyuekao/2026-09-16/87878.html",
+      "title": "武汉市2027届高中毕业生九月调研考试数学试卷（PDF版含标答）",
+      "region": "wuhan_hubei",
+      "publicationDate": "2026-09-16",
+      "subjects": [
+        "数学"
+      ],
+      "examType": "待核实",
+      "actualExamDate": null,
+      "paperFileDownloaded": false,
+      "answerFileDownloaded": false,
+      "rightsStatus": "unknown",
+      "state": "third_party_index_only",
+      "reviewOnly": true
+    },
+    {
+      "id": "regional-197275cd1d0ebdf5",
+      "queueKind": "regional_third_party_page",
+      "sourceUrl": "https://www.wh111.com/shuxue/jingxuanshiti/gaozhongshuxue/gaosanshuxueyuekao/2026-09-15/87853.html",
+      "title": "黄冈市2026-2027学年高三9月调考数学试题(PDF版含答案）",
+      "region": "wuhan_hubei",
+      "publicationDate": "2026-09-15",
+      "subjects": [
+        "数学"
+      ],
+      "examType": "调考",
+      "actualExamDate": null,
+      "paperFileDownloaded": false,
+      "answerFileDownloaded": false,
+      "rightsStatus": "unknown",
+      "state": "third_party_index_only",
+      "reviewOnly": true
+    },
+    {
+      "id": "regional-63ae651d267d0648",
+      "queueKind": "regional_third_party_page",
+      "sourceUrl": "https://www.wh111.com/shuxue/jingxuanshiti/gaozhongshuxue/gaosanshuxueyuekao/2026-09-10/87805.html",
+      "title": "【免费】湖北楚天协作体2026-2027学年高三9月起点考数学试题(PDF版含答案）",
+      "region": "wuhan_hubei",
+      "publicationDate": "2026-09-10",
+      "subjects": [
+        "数学"
+      ],
+      "examType": "待核实",
+      "actualExamDate": null,
+      "paperFileDownloaded": false,
+      "answerFileDownloaded": false,
+      "rightsStatus": "unknown",
+      "state": "third_party_index_only",
+      "reviewOnly": true
+    },
+    {
+      "id": "regional-68ef350f8b387262",
+      "queueKind": "regional_third_party_page",
+      "sourceUrl": "https://www.wh111.com/shuxue/jingxuanshiti/gaozhongshuxue/gaosanshuxueyuekao/2026-09-08/87773.html",
+      "title": "黄冈市2026年高三年级9月调研考试数学试卷（PDF版含答案）",
+      "region": "wuhan_hubei",
+      "publicationDate": "2026-09-08",
+      "subjects": [
+        "数学"
+      ],
+      "examType": "待核实",
+      "actualExamDate": null,
+      "paperFileDownloaded": false,
+      "answerFileDownloaded": false,
+      "rightsStatus": "unknown",
+      "state": "third_party_index_only",
+      "reviewOnly": true
+    },
+    {
+      "id": "regional-433a7b0f8312cb99",
+      "queueKind": "regional_third_party_page",
+      "sourceUrl": "https://www.wh111.com/lihuasheng/jingxuanshiti/chuzhongwuli/chusanwuliyuekao/2026-09-08/87776.html",
+      "title": "江岸区2026-2027学年九上开学物理周测试题（PDF版）",
+      "region": "wuhan_hubei",
+      "publicationDate": "2026-09-08",
+      "subjects": [
+        "物理"
+      ],
+      "examType": "待核实",
+      "actualExamDate": null,
+      "paperFileDownloaded": false,
+      "answerFileDownloaded": false,
+      "rightsStatus": "unknown",
+      "state": "third_party_index_only",
+      "reviewOnly": true
+    },
+    {
+      "id": "regional-553bb773a01c2b4c",
+      "queueKind": "regional_third_party_page",
+      "sourceUrl": "https://www.wh111.com/lihuasheng/jingxuanshiti/chuzhongwuli/chusanwuliyuekao/2026-08-29/87631.html",
+      "title": "武汉市2026-2027 学年九年级物理上学期9月学情自测卷（二）（word版含答案）",
+      "region": "wuhan_hubei",
+      "publicationDate": "2026-08-29",
+      "subjects": [
+        "物理"
+      ],
+      "examType": "待核实",
+      "actualExamDate": null,
+      "paperFileDownloaded": false,
+      "answerFileDownloaded": false,
+      "rightsStatus": "unknown",
+      "state": "third_party_index_only",
+      "reviewOnly": true
+    },
+    {
+      "id": "regional-5c1aee87e444c5e3",
+      "queueKind": "regional_third_party_page",
+      "sourceUrl": "https://www.wh111.com/lihuasheng/jingxuanshiti/chuzhongwuli/chusanwuliqizhong/2026-08-24/87557.html",
+      "title": "武汉市各区2025-2026学年九上物理期中真题分类汇编（word版含解析）",
+      "region": "wuhan_hubei",
+      "publicationDate": "2026-08-24",
+      "subjects": [
+        "物理"
+      ],
+      "examType": "期中",
+      "actualExamDate": null,
+      "paperFileDownloaded": false,
+      "answerFileDownloaded": false,
+      "rightsStatus": "unknown",
+      "state": "third_party_index_only",
+      "reviewOnly": true
+    },
+    {
+      "id": "regional-444ded73d7043a95",
+      "queueKind": "regional_third_party_page",
+      "sourceUrl": "https://www.wh111.com/lihuasheng/jingxuanshiti/chuzhongwuli/chuerwuliqizhong/2026-08-24/87556.html",
+      "title": "武汉市各区2025-2026学年八上物理期中真题分类汇编（word版含解析）",
+      "region": "wuhan_hubei",
+      "publicationDate": "2026-08-24",
+      "subjects": [
+        "物理"
+      ],
+      "examType": "期中",
+      "actualExamDate": null,
+      "paperFileDownloaded": false,
+      "answerFileDownloaded": false,
+      "rightsStatus": "unknown",
+      "state": "third_party_index_only",
+      "reviewOnly": true
+    },
+    {
+      "id": "regional-54f89014bf80146c",
+      "queueKind": "regional_third_party_page",
+      "sourceUrl": "https://www.wh111.com/lihuasheng/jingxuanshiti/chuzhonghuaxue/jiushanghuaxueqizhong/2026-08-24/87558.html",
+      "title": "武汉市各区2025-2026学年九上化学期中真题分类汇编（word版含解析）",
+      "region": "wuhan_hubei",
+      "publicationDate": "2026-08-24",
+      "subjects": [
+        "化学"
+      ],
+      "examType": "期中",
+      "actualExamDate": null,
+      "paperFileDownloaded": false,
+      "answerFileDownloaded": false,
+      "rightsStatus": "unknown",
+      "state": "third_party_index_only",
+      "reviewOnly": true
+    },
+    {
+      "id": "regional-1336b9231831d5cd",
+      "queueKind": "regional_third_party_page",
+      "sourceUrl": "https://www.wh111.com/yingyu/jingxuanshiti/chuzhongyingyu/chuyiyingyuqizhong/2026-08-23/87553.html",
+      "title": "武汉各区2025-2026学年七上期中英语真题分类汇编（word版含答案）",
+      "region": "wuhan_hubei",
+      "publicationDate": "2026-08-23",
+      "subjects": [
+        "英语"
+      ],
+      "examType": "期中",
+      "actualExamDate": null,
+      "paperFileDownloaded": false,
+      "answerFileDownloaded": false,
+      "rightsStatus": "unknown",
+      "state": "third_party_index_only",
+      "reviewOnly": true
+    },
+    {
+      "id": "regional-4b2e0ff205091439",
+      "queueKind": "regional_third_party_page",
+      "sourceUrl": "https://www.wh111.com/yingyu/jingxuanshiti/chuzhongyingyu/chusanyingyuqizhong/2026-08-23/87555.html",
+      "title": "武汉各区2025-2026学年九上期中英语真题分类汇编（word版含答案）",
+      "region": "wuhan_hubei",
+      "publicationDate": "2026-08-23",
+      "subjects": [
+        "英语"
+      ],
+      "examType": "期中",
+      "actualExamDate": null,
+      "paperFileDownloaded": false,
+      "answerFileDownloaded": false,
+      "rightsStatus": "unknown",
+      "state": "third_party_index_only",
+      "reviewOnly": true
+    },
+    {
+      "id": "regional-c5128a449bf43e4a",
+      "queueKind": "regional_third_party_page",
+      "sourceUrl": "https://www.wh111.com/yingyu/jingxuanshiti/chuzhongyingyu/chueryingyuqizhong/2026-08-23/87554.html",
+      "title": "武汉各区2025-2026学年八上期中英语真题分类汇编（word版含答案）",
+      "region": "wuhan_hubei",
+      "publicationDate": "2026-08-23",
+      "subjects": [
+        "英语"
+      ],
+      "examType": "期中",
+      "actualExamDate": null,
+      "paperFileDownloaded": false,
+      "answerFileDownloaded": false,
+      "rightsStatus": "unknown",
+      "state": "third_party_index_only",
+      "reviewOnly": true
+    },
+    {
+      "id": "regional-f87cb156d0bdeb3a",
+      "queueKind": "regional_third_party_page",
+      "sourceUrl": "https://www.wh111.com/yuwen/jingxuanshiti/chuzhongyuwen/chusanyuwen/jiushangqizhong/2026-08-22/87540.html",
+      "title": "武汉市各区2025-2026学年九上语文期中试题分类汇编（word版含答案）",
+      "region": "wuhan_hubei",
+      "publicationDate": "2026-08-22",
+      "subjects": [
+        "语文"
+      ],
+      "examType": "期中",
+      "actualExamDate": null,
+      "paperFileDownloaded": false,
+      "answerFileDownloaded": false,
+      "rightsStatus": "unknown",
+      "state": "third_party_index_only",
+      "reviewOnly": true
+    },
+    {
+      "id": "regional-e1fc91dfc79bcf4f",
+      "queueKind": "regional_third_party_page",
+      "sourceUrl": "https://www.wh111.com/shuxue/jingxuanshiti/chuzhongshuxue/chuyishuxue/qishangshuxueqizhong/2026-08-21/87521.html",
+      "title": "武汉各区2025-2026学年七上期中数学真题分类汇编（word版含答案）",
+      "region": "wuhan_hubei",
+      "publicationDate": "2026-08-21",
+      "subjects": [
+        "数学"
+      ],
+      "examType": "期中",
+      "actualExamDate": null,
+      "paperFileDownloaded": false,
+      "answerFileDownloaded": false,
+      "rightsStatus": "unknown",
+      "state": "third_party_index_only",
+      "reviewOnly": true
+    },
+    {
+      "id": "regional-d48ed4f03b19119d",
+      "queueKind": "regional_third_party_page",
+      "sourceUrl": "https://www.wh111.com/shuxue/jingxuanshiti/chuzhongshuxue/chusanshuxue/jiushangshuxueqizhong/2026-08-21/87523.html",
+      "title": "武汉各区2025-2026学年九上期中数学真题分类汇编（word版含答案）",
+      "region": "wuhan_hubei",
+      "publicationDate": "2026-08-21",
+      "subjects": [
+        "数学"
+      ],
+      "examType": "期中",
+      "actualExamDate": null,
+      "paperFileDownloaded": false,
+      "answerFileDownloaded": false,
+      "rightsStatus": "unknown",
+      "state": "third_party_index_only",
+      "reviewOnly": true
+    },
+    {
+      "id": "regional-66491bc39d4c4ea9",
+      "queueKind": "regional_third_party_page",
+      "sourceUrl": "https://www.wh111.com/shuxue/jingxuanshiti/chuzhongshuxue/chuershuxue/bashangshuxueqizhong/2026-08-21/87522.html",
+      "title": "武汉各区2025-2026学年八上期中数学真题分类汇编（word版含答案）",
+      "region": "wuhan_hubei",
+      "publicationDate": "2026-08-21",
+      "subjects": [
+        "数学"
+      ],
+      "examType": "期中",
+      "actualExamDate": null,
+      "paperFileDownloaded": false,
+      "answerFileDownloaded": false,
+      "rightsStatus": "unknown",
+      "state": "third_party_index_only",
+      "reviewOnly": true
+    },
+    {
+      "id": "regional-c111f906bd8329dc",
+      "queueKind": "regional_third_party_page",
+      "sourceUrl": "https://www.wh111.com/shuxue/jingxuanshiti/gaozhongshuxue/gaoershuxueyuekao/2026-08-14/87447.html",
+      "title": "武汉市2026-2027学年高二上开学学情数学自测卷（word版含答案）",
+      "region": "wuhan_hubei",
+      "publicationDate": "2026-08-14",
+      "subjects": [
+        "数学"
+      ],
+      "examType": "待核实",
+      "actualExamDate": null,
+      "paperFileDownloaded": false,
+      "answerFileDownloaded": false,
+      "rightsStatus": "unknown",
+      "state": "third_party_index_only",
+      "reviewOnly": true
+    }
+  ],
+  "externalEventCandidates": [
+    {
+      "id": "hubei-jingjing-xiangen-g12-2026-10",
+      "eventGroupId": "hubei-jingjing-xiangen-five-school-alliance-g12-2026-10",
+      "queueClass": "paper_candidate",
+      "regionKey": "wuhan_hubei",
+      "province": "湖北省",
+      "city": "荆州/荆门/襄阳/恩施（联盟名称线索，具体学校待核）",
+      "school": null,
+      "schoolIdentityStatus": "alliance_label_only",
+      "grade": "高三（2027届）",
+      "subjects": [
+        "地理",
+        "历史",
+        "生物",
+        "数学",
+        "物理",
+        "英语",
+        "思想政治"
+      ],
+      "eventLabel": "2026—2027学年高三上学期10月阶段检测",
+      "actualExamDate": null,
+      "publicationDate": "2026-11-02T00:17:29",
+      "sourceType": "third_party_resource_platform_and_public_education_article",
+      "sourceUrls": [
+        "https://www.51jiaoxi.com/album-158446.html",
+        "https://www.yeyulingfeng.com/a/1293767.html"
+      ],
+      "evidence": {
+        "albumUpdateDate": "2026-10-30",
+        "listedSubjectPackCount": 7,
+        "englishAudioStatus": "页面标题注明无听力音频",
+        "publicArticleRetrieval": "文章提供夸克分享链接；未打开网盘或下载文件。"
+      },
+      "possibleDuplicateOf": [
+        "https://www.wh111.com/yingyu/jingxuanshiti/gaozhongyingyu/gaosanyingyuyuekao/2026-10-31/88566.html"
+      ],
+      "downloadStatus": "membership_gate_on_resource_platform; public_article_has_cloud_share_link_not_fetched",
+      "paperFileDownloaded": false,
+      "answerFileDownloaded": false,
+      "audioFileDownloaded": false,
+      "allPagesChecked": false,
+      "archiveStatus": "not_archived",
+      "archivedBytes": 0,
+      "rightsStatus": "unknown",
+      "state": "third_party_lead_only",
+      "anomalies": [
+        "关联数学单科页的正文描述指向河南许平济洛考试，与标题湖北荆荆襄恩不一致；该数学页已单独隔离，不作湖北卷证据。"
+      ]
+    },
+    {
+      "id": "hubei-shiyan-dongfeng-g12-biology-2026-10",
+      "eventGroupId": "hubei-shiyan-dongfeng-g12-2026-10-phase",
+      "queueClass": "paper_candidate",
+      "regionKey": "wuhan_hubei",
+      "province": "湖北省",
+      "city": "十堰市",
+      "school": "十堰市东风高级中学",
+      "schoolIdentityStatus": "third_party_title_only",
+      "grade": "高三（2027届）",
+      "subjects": [
+        "生物"
+      ],
+      "eventLabel": "2026—2027学年高三上学期10月阶段检测",
+      "actualExamDate": null,
+      "publicationDate": "2026-10-26T23:31:06",
+      "sourceType": "third_party_resource_platform",
+      "sourceUrls": [
+        "https://jx.panqjy.cn/doc-18912083.html"
+      ],
+      "evidence": {
+        "packageSizeLabel": "3.36 MB",
+        "listedFiles": 2,
+        "listedPaper": "生物试题 PDF",
+        "listedAnswer": "生物答案 PDF",
+        "paperPreviewCounter": "1/9",
+        "answerPreviewCounter": "1/9",
+        "pageCountCaveat": "平台正文页数描述与分文件预览计数口径不一致；不能据此确认原PDF完整页数。"
+      },
+      "downloadStatus": "membership_required_not_attempted",
+      "paperFileDownloaded": false,
+      "answerFileDownloaded": false,
+      "audioFileDownloaded": false,
+      "allPagesChecked": false,
+      "archiveStatus": "not_archived",
+      "archivedBytes": 0,
+      "rightsStatus": "unknown",
+      "state": "third_party_lead_only"
+    },
+    {
+      "id": "wuhan-city-g12-english-2026-10",
+      "eventGroupId": "wuhan-g12-2026-10-english-phase-possible-duplicate",
+      "queueClass": "paper_candidate",
+      "regionKey": "wuhan_hubei",
+      "province": "湖北省",
+      "city": "武汉市",
+      "school": null,
+      "schoolIdentityStatus": "not_identified",
+      "grade": "高三（2027届）",
+      "subjects": [
+        "英语"
+      ],
+      "eventLabel": "2026—2027学年高三上学期10月阶段检测",
+      "actualExamDate": null,
+      "publicationDate": "2026-10-19T18:33:44",
+      "sourceType": "third_party_resource_platform",
+      "sourceUrls": [
+        "https://jx.panqjy.cn/doc-18894684.html"
+      ],
+      "possibleDuplicateOf": [
+        "https://www.wh111.com/yingyu/jingxuanshiti/gaozhongyingyu/gaosanyingyuyuekao/2026-10-31/88564.html",
+        "https://www.wh111.com/yingyu/jingxuanshiti/gaozhongyingyu/gaosanyingyuyuekao/2026-10-31/88565.html"
+      ],
+      "evidence": {
+        "packageSizeLabel": "6.17 MB",
+        "listedFiles": 2,
+        "listedPaper": "英语试卷 PDF",
+        "listedAnswer": "英语答案 PDF",
+        "pageCountClaimInDescription": 7,
+        "previewCounterShown": "1/12",
+        "audioStatus": "title explicitly says listening text but no audio"
+      },
+      "downloadStatus": "membership_or_points_gate_not_attempted",
+      "paperFileDownloaded": false,
+      "answerFileDownloaded": false,
+      "audioFileDownloaded": false,
+      "allPagesChecked": false,
+      "archiveStatus": "not_archived",
+      "archivedBytes": 0,
+      "rightsStatus": "unknown",
+      "state": "third_party_lead_only",
+      "caution": "可能与武汉教育资源网2026-10-31的88564/88565同一考试事件；未证实前不得重复计卷。"
+    },
+    {
+      "id": "guangzhou-ten-schools-g12-2026-10",
+      "eventGroupId": "guangzhou-ten-schools-g12-2026-10-joint-test",
+      "queueClass": "paper_candidate",
+      "regionKey": "guangdong",
+      "province": "广东省",
+      "city": "广州市",
+      "school": null,
+      "schoolIdentityStatus": "member_school_names_reported_not_independently_confirmed",
+      "grade": "高三（2027届）",
+      "subjects": [
+        "语文",
+        "数学",
+        "英语",
+        "物理",
+        "化学",
+        "生物",
+        "历史",
+        "思想政治",
+        "地理"
+      ],
+      "eventLabel": "2027届高三广州十校10月联考",
+      "actualExamDate": null,
+      "publicationDate": "2026-10-16T15:31:40",
+      "sourceType": "public_education_resource_article",
+      "sourceUrls": [
+        "https://www.yeyulingfeng.com/a/1193655.html"
+      ],
+      "evidence": {
+        "reportedMemberSchools": [
+          "华南师范大学附属中学",
+          "广东实验中学",
+          "广州市第二中学",
+          "广州大学附属中学",
+          "广州外国语学校",
+          "广州市执信中学",
+          "广州市第六中学",
+          "广州市铁一中学",
+          "广雅中学",
+          "清华附中湾区学校"
+        ],
+        "subjectsPlanned": 9,
+        "retrievalMethod": "公众号回复关键词“广州十校”",
+        "publicDirectFileUrl": false
+      },
+      "downloadStatus": "wechat_keyword_retrieval_required_no_public_file_url",
+      "paperFileDownloaded": false,
+      "answerFileDownloaded": false,
+      "audioFileDownloaded": false,
+      "allPagesChecked": false,
+      "archiveStatus": "not_archived",
+      "archivedBytes": 0,
+      "rightsStatus": "unknown",
+      "state": "third_party_lead_only",
+      "caution": "只确认公开文章列出的联考与学校名称线索，未取得任何科目原卷、答案或授权。"
+    },
+    {
+      "id": "hubei-g12-english-stage-training-2026-10",
+      "eventGroupId": "hubei-g12-2026-10-english-stage-training-unresolved",
+      "queueClass": "paper_candidate",
+      "regionKey": "wuhan_hubei",
+      "province": "湖北省",
+      "city": null,
+      "school": null,
+      "schoolIdentityStatus": "not_identified",
+      "grade": "高三（2027届）",
+      "subjects": [
+        "英语"
+      ],
+      "eventLabel": "2026—2027学年高三年级10月阶段训练",
+      "actualExamDate": null,
+      "publicationDate": "2026-10-15T12:09:51",
+      "sourceType": "third_party_resource_platform",
+      "sourceUrls": [
+        "https://jx.panqjy.cn/doc-18883204.html"
+      ],
+      "evidence": {
+        "packageSizeLabel": "22.42 MB",
+        "listedFiles": 3,
+        "listedPaper": "DOCX 试卷",
+        "listedAnswer": "PDF答案及评分细则",
+        "listedAudio": "MP4听力音频",
+        "platformPaperPageClaim": 27,
+        "previewEvidence": "页面列出试卷、答案和视频三个文件；听力音频未取得，无法核时长、声道及内容。"
+      },
+      "downloadStatus": "membership_or_points_gate_not_attempted",
+      "paperFileDownloaded": false,
+      "answerFileDownloaded": false,
+      "audioFileDownloaded": false,
+      "allPagesChecked": false,
+      "archiveStatus": "not_archived",
+      "archivedBytes": 0,
+      "rightsStatus": "unknown",
+      "state": "third_party_lead_only",
+      "caution": "考试组织方、学校和实际考试日均未从原始卷头证实；与武汉市同月英语卷可能重叠。"
+    },
+    {
+      "id": "zhejiang-strong-foundation-alliance-g12-2026-10",
+      "eventGroupId": "zhejiang-strong-foundation-alliance-g12-2026-10-possible",
+      "queueClass": "paper_candidate",
+      "regionKey": "zhejiang",
+      "province": "浙江省",
+      "city": null,
+      "school": null,
+      "schoolIdentityStatus": "organizer_and_school_roster_unverified",
+      "grade": "高三（2027届）",
+      "subjects": [
+        "语文",
+        "数学",
+        "地理",
+        "技术"
+      ],
+      "eventLabel": "2026年10月高三联考（第三方页面指向浙江强基联盟，待核组织方）",
+      "actualExamDate": null,
+      "publicationDate": "2026-10-12",
+      "sourceType": "third_party_resource_platform",
+      "sourceUrls": [
+        "https://jx.panqjy.cn/doc-18868743.html",
+        "https://jx.panqjy.cn/doc-18868750.html",
+        "https://jx.panqjy.cn/doc-18864747.html",
+        "https://jx.panqjy.cn/doc-18863531.html"
+      ],
+      "evidence": {
+        "pagePublicationDates": [
+          "2026-10-09",
+          "2026-10-10",
+          "2026-10-11",
+          "2026-10-12"
+        ],
+        "subjectComponents": [
+          "数学",
+          "语文",
+          "技术",
+          "地理"
+        ],
+        "downloadGate": "membership_required",
+        "note": "四个学科页面可能属于同一考试事件，必须按事件+版本去重，不计为四场考试。"
+      },
+      "downloadStatus": "membership_required_not_attempted",
+      "paperFileDownloaded": false,
+      "answerFileDownloaded": false,
+      "audioFileDownloaded": false,
+      "allPagesChecked": false,
+      "archiveStatus": "not_archived",
+      "archivedBytes": 0,
+      "rightsStatus": "unknown",
+      "state": "third_party_lead_only"
+    },
+    {
+      "id": "wuhu-grade8-biology-practical-2026",
+      "eventGroupId": "wuhu-grade8-biology-practical-2026",
+      "queueClass": "official_attachment",
+      "regionKey": "other_domestic",
+      "province": "安徽省",
+      "city": "芜湖市",
+      "school": null,
+      "schoolIdentityStatus": "official_city_education_bureau_notice",
+      "grade": "初中八年级",
+      "subjects": [
+        "生物"
+      ],
+      "eventLabel": "2026年芜湖市初中学业水平生物实验操作考试",
+      "actualExamDate": null,
+      "scheduledExamDate": "2026-05-28/29",
+      "publicationDate": "2026-05-23T09:00:00",
+      "sourceType": "official_government_notice",
+      "sourceUrls": [
+        "https://jyj.wuhu.gov.cn/xwzx/tzgg/8931714.html",
+        "https://jyj.wuhu.gov.cn/group4/M00/07/9E/rBwdT2oQECiAS_duAANKFdBKWAc588.pdf"
+      ],
+      "sourceAuthorityStatus": "official_notice_confirmed",
+      "evidence": {
+        "attachmentLabel": "芜湖市2026年八年级生物学实验操作考试试题.pdf",
+        "attachmentHttpStatus": 403,
+        "attemptedMethod": "single normal public HTTPS GET from authorized Z890 device",
+        "failure": "HTTP 403; stopped without alternate host, credential, proxy or bypass."
+      },
+      "downloadStatus": "official_attachment_http_403_no_bypass",
+      "paperFileDownloaded": false,
+      "answerFileDownloaded": false,
+      "audioFileDownloaded": false,
+      "allPagesChecked": false,
+      "archiveStatus": "not_archived",
+      "archivedBytes": 0,
+      "rightsStatus": "not_stated",
+      "state": "official_source_confirmed_attachment_bytes_unavailable",
+      "policyReview": "八年级市级实验操作考核；需按2025年考试管理规定进一步确认分类，不冒充普通笔试卷或毕业年级统考。"
+    }
+  ],
+  "eventWatch": [
+    {
+      "id": "beijing-2026-autumn-midterm-schedule-watch",
+      "sourceUrl": "https://www.ysxiao.cn/zhongdianxiaoxue/223093.html",
+      "sourceType": "local_education_information_portal",
+      "publicationDate": "2026-09-30T10:56:00",
+      "reportedDates": {
+        "haidian": "2026-11-03/05",
+        "xicheng": "2026-11-06/07 and 2026-11-10/12",
+        "chaoyang_middle": "2026-10-27/31 with some schools 2026-11-04/05",
+        "chaoyang_high": "2026-11-03/07",
+        "dongcheng": "2026-11-first-week school-based tests; no district-wide unified exam reported"
+      },
+      "paperFilesFound": 0,
+      "state": "schedule_watch_only_not_exam_paper",
+      "verification": "third_party_schedule_summary; confirm against individual school notices"
+    }
+  ],
+  "quarantined": [
+    {
+      "id": "nanjing-high1-2025-2026-delayed-republication",
+      "sourceUrl": "https://www.sjds.net/a/518850.html",
+      "pagePublicationDate": "2026-11-03T09:54:56",
+      "titleSignal": "25年高一10月月考；列举的多数试卷为2025-2026学年",
+      "reason": "页面发布时间是2026-11-03，但学年与“25年”标识指向较早考试；不得作为2026-2027秋季新考。",
+      "state": "delayed_republication_or_year_mismatch_quarantined"
+    },
+    {
+      "id": "jingjing-xiangen-math-title-content-mismatch",
+      "sourceUrl": "https://www.51jiaoxi.com/doc-18922954.html",
+      "pagePublicationDate": "2026-10-30T13:05:41",
+      "titleSignal": "标题称湖北荆荆襄恩高三数学",
+      "contentSignal": "页面正文资源说明却列出河南许平济洛2026-2027高三10月质检数学文件",
+      "reason": "标题与正文资源实体不一致；不归入湖北事件、不计湖北卷。",
+      "state": "source_metadata_mismatch_quarantined"
+    }
+  ],
+  "deduplication": {
+    "regionalLeadUrls": 81,
+    "externalEventRecords": 7,
+    "externalSourceUrls": 12,
+    "uniqueExternalSourceUrls": 12,
+    "uniqueCombinedSourceUrls": 93,
+    "externalUrlOverlapWithRegionalIndex": [],
+    "eventGroupsAreNotPaperCounts": true
+  },
+  "latestSourcePublicationDate": "2026-11-02T00:17:29",
+  "collectionMetrics": {
+    "verifiedOriginalPapersAdded": 0,
+    "verifiedAnswerFilesAdded": 0,
+    "verifiedAudioFilesAdded": 0,
+    "archivedBytesAdded": 0,
+    "allPagesVerified": 0,
+    "trainableItemsAdded": 0,
+    "redistributionLicensedItemsAdded": 0,
+    "publishedItemsAdded": 0
+  },
+  "notice": "All entries are discovery/review leads. None is promoted to archived, complete, trainable, licensed, or published without original bytes and independent verification."
+}

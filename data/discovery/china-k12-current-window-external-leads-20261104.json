@@ -1,0 +1,382 @@
+{
+  "schemaVersion": 1,
+  "observedAtUtc": "2026-11-04T15:26:06+00:00",
+  "scope": "中国大陆K12校内考试当前窗口来源线索；海外新增采集为零。此文件仅记录公开出处与下载状态，不保存或分发第三方原卷。",
+  "records": [
+    {
+      "id": "hubei-shiyan-dongfeng-g12-biology-2026-10",
+      "eventGroupId": "hubei-shiyan-dongfeng-g12-2026-10-phase",
+      "queueClass": "paper_candidate",
+      "regionKey": "wuhan_hubei",
+      "province": "湖北省",
+      "city": "十堰市",
+      "school": "十堰市东风高级中学",
+      "schoolIdentityStatus": "third_party_title_only",
+      "grade": "高三（2027届）",
+      "subjects": [
+        "生物"
+      ],
+      "eventLabel": "2026—2027学年高三上学期10月阶段检测",
+      "actualExamDate": null,
+      "publicationDate": "2026-10-26T23:31:06",
+      "sourceType": "third_party_resource_platform",
+      "sourceUrls": [
+        "https://jx.panqjy.cn/doc-18912083.html"
+      ],
+      "evidence": {
+        "packageSizeLabel": "3.36 MB",
+        "listedFiles": 2,
+        "listedPaper": "生物试题 PDF",
+        "listedAnswer": "生物答案 PDF",
+        "paperPreviewCounter": "1/9",
+        "answerPreviewCounter": "1/9",
+        "pageCountCaveat": "平台正文页数描述与分文件预览计数口径不一致；不能据此确认原PDF完整页数。"
+      },
+      "downloadStatus": "membership_required_not_attempted",
+      "paperFileDownloaded": false,
+      "answerFileDownloaded": false,
+      "audioFileDownloaded": false,
+      "allPagesChecked": false,
+      "archiveStatus": "not_archived",
+      "archivedBytes": 0,
+      "rightsStatus": "unknown",
+      "state": "third_party_lead_only"
+    },
+    {
+      "id": "wuhan-city-g12-english-2026-10",
+      "eventGroupId": "wuhan-g12-2026-10-english-phase-possible-duplicate",
+      "queueClass": "paper_candidate",
+      "regionKey": "wuhan_hubei",
+      "province": "湖北省",
+      "city": "武汉市",
+      "school": null,
+      "schoolIdentityStatus": "not_identified",
+      "grade": "高三（2027届）",
+      "subjects": [
+        "英语"
+      ],
+      "eventLabel": "2026—2027学年高三上学期10月阶段检测",
+      "actualExamDate": null,
+      "publicationDate": "2026-10-19T18:33:44",
+      "sourceType": "third_party_resource_platform",
+      "sourceUrls": [
+        "https://jx.panqjy.cn/doc-18894684.html"
+      ],
+      "possibleDuplicateOf": [
+        "https://www.wh111.com/yingyu/jingxuanshiti/gaozhongyingyu/gaosanyingyuyuekao/2026-10-31/88564.html",
+        "https://www.wh111.com/yingyu/jingxuanshiti/gaozhongyingyu/gaosanyingyuyuekao/2026-10-31/88565.html"
+      ],
+      "evidence": {
+        "packageSizeLabel": "6.17 MB",
+        "listedFiles": 2,
+        "listedPaper": "英语试卷 PDF",
+        "listedAnswer": "英语答案 PDF",
+        "pageCountClaimInDescription": 7,
+        "previewCounterShown": "1/12",
+        "audioStatus": "title explicitly says listening text but no audio"
+      },
+      "downloadStatus": "membership_or_points_gate_not_attempted",
+      "paperFileDownloaded": false,
+      "answerFileDownloaded": false,
+      "audioFileDownloaded": false,
+      "allPagesChecked": false,
+      "archiveStatus": "not_archived",
+      "archivedBytes": 0,
+      "rightsStatus": "unknown",
+      "state": "third_party_lead_only",
+      "caution": "可能与武汉教育资源网2026-10-31的88564/88565同一考试事件；未证实前不得重复计卷。"
+    },
+    {
+      "id": "hubei-g12-english-stage-training-2026-10",
+      "eventGroupId": "hubei-g12-2026-10-english-stage-training-unresolved",
+      "queueClass": "paper_candidate",
+      "regionKey": "wuhan_hubei",
+      "province": "湖北省",
+      "city": null,
+      "school": null,
+      "schoolIdentityStatus": "not_identified",
+      "grade": "高三（2027届）",
+      "subjects": [
+        "英语"
+      ],
+      "eventLabel": "2026—2027学年高三年级10月阶段训练",
+      "actualExamDate": null,
+      "publicationDate": "2026-10-15T12:09:51",
+      "sourceType": "third_party_resource_platform",
+      "sourceUrls": [
+        "https://jx.panqjy.cn/doc-18883204.html"
+      ],
+      "evidence": {
+        "packageSizeLabel": "22.42 MB",
+        "listedFiles": 3,
+        "listedPaper": "DOCX 试卷",
+        "listedAnswer": "PDF答案及评分细则",
+        "listedAudio": "MP4听力音频",
+        "platformPaperPageClaim": 27,
+        "previewEvidence": "页面列出试卷、答案和视频三个文件；听力音频未取得，无法核时长、声道及内容。"
+      },
+      "downloadStatus": "membership_or_points_gate_not_attempted",
+      "paperFileDownloaded": false,
+      "answerFileDownloaded": false,
+      "audioFileDownloaded": false,
+      "allPagesChecked": false,
+      "archiveStatus": "not_archived",
+      "archivedBytes": 0,
+      "rightsStatus": "unknown",
+      "state": "third_party_lead_only",
+      "caution": "考试组织方、学校和实际考试日均未从原始卷头证实；与武汉市同月英语卷可能重叠。"
+    },
+    {
+      "id": "hubei-jingjing-xiangen-g12-2026-10",
+      "eventGroupId": "hubei-jingjing-xiangen-five-school-alliance-g12-2026-10",
+      "queueClass": "paper_candidate",
+      "regionKey": "wuhan_hubei",
+      "province": "湖北省",
+      "city": "荆州/荆门/襄阳/恩施（联盟名称线索，具体学校待核）",
+      "school": null,
+      "schoolIdentityStatus": "alliance_label_only",
+      "grade": "高三（2027届）",
+      "subjects": [
+        "地理",
+        "历史",
+        "生物",
+        "数学",
+        "物理",
+        "英语",
+        "思想政治"
+      ],
+      "eventLabel": "2026—2027学年高三上学期10月阶段检测",
+      "actualExamDate": null,
+      "publicationDate": "2026-11-02T00:17:29",
+      "sourceType": "third_party_resource_platform_and_public_education_article",
+      "sourceUrls": [
+        "https://www.51jiaoxi.com/album-158446.html",
+        "https://www.yeyulingfeng.com/a/1293767.html"
+      ],
+      "evidence": {
+        "albumUpdateDate": "2026-10-30",
+        "listedSubjectPackCount": 7,
+        "englishAudioStatus": "页面标题注明无听力音频",
+        "publicArticleRetrieval": "文章提供夸克分享链接；未打开网盘或下载文件。"
+      },
+      "possibleDuplicateOf": [
+        "https://www.wh111.com/yingyu/jingxuanshiti/gaozhongyingyu/gaosanyingyuyuekao/2026-10-31/88566.html"
+      ],
+      "downloadStatus": "membership_gate_on_resource_platform; public_article_has_cloud_share_link_not_fetched",
+      "paperFileDownloaded": false,
+      "answerFileDownloaded": false,
+      "audioFileDownloaded": false,
+      "allPagesChecked": false,
+      "archiveStatus": "not_archived",
+      "archivedBytes": 0,
+      "rightsStatus": "unknown",
+      "state": "third_party_lead_only",
+      "anomalies": [
+        "关联数学单科页的正文描述指向河南许平济洛考试，与标题湖北荆荆襄恩不一致；该数学页已单独隔离，不作湖北卷证据。"
+      ]
+    },
+    {
+      "id": "zhejiang-strong-foundation-alliance-g12-2026-10",
+      "eventGroupId": "zhejiang-strong-foundation-alliance-g12-2026-10-possible",
+      "queueClass": "paper_candidate",
+      "regionKey": "zhejiang",
+      "province": "浙江省",
+      "city": null,
+      "school": null,
+      "schoolIdentityStatus": "organizer_and_school_roster_unverified",
+      "grade": "高三（2027届）",
+      "subjects": [
+        "语文",
+        "数学",
+        "地理",
+        "技术"
+      ],
+      "eventLabel": "2026年10月高三联考（第三方页面指向浙江强基联盟，待核组织方）",
+      "actualExamDate": null,
+      "publicationDate": "2026-10-12",
+      "sourceType": "third_party_resource_platform",
+      "sourceUrls": [
+        "https://jx.panqjy.cn/doc-18868743.html",
+        "https://jx.panqjy.cn/doc-18868750.html",
+        "https://jx.panqjy.cn/doc-18864747.html",
+        "https://jx.panqjy.cn/doc-18863531.html"
+      ],
+      "evidence": {
+        "pagePublicationDates": [
+          "2026-10-09",
+          "2026-10-10",
+          "2026-10-11",
+          "2026-10-12"
+        ],
+        "subjectComponents": [
+          "数学",
+          "语文",
+          "技术",
+          "地理"
+        ],
+        "downloadGate": "membership_required",
+        "note": "四个学科页面可能属于同一考试事件，必须按事件+版本去重，不计为四场考试。"
+      },
+      "downloadStatus": "membership_required_not_attempted",
+      "paperFileDownloaded": false,
+      "answerFileDownloaded": false,
+      "audioFileDownloaded": false,
+      "allPagesChecked": false,
+      "archiveStatus": "not_archived",
+      "archivedBytes": 0,
+      "rightsStatus": "unknown",
+      "state": "third_party_lead_only"
+    },
+    {
+      "id": "guangzhou-ten-schools-g12-2026-10",
+      "eventGroupId": "guangzhou-ten-schools-g12-2026-10-joint-test",
+      "queueClass": "paper_candidate",
+      "regionKey": "guangdong",
+      "province": "广东省",
+      "city": "广州市",
+      "school": null,
+      "schoolIdentityStatus": "member_school_names_reported_not_independently_confirmed",
+      "grade": "高三（2027届）",
+      "subjects": [
+        "语文",
+        "数学",
+        "英语",
+        "物理",
+        "化学",
+        "生物",
+        "历史",
+        "思想政治",
+        "地理"
+      ],
+      "eventLabel": "2027届高三广州十校10月联考",
+      "actualExamDate": null,
+      "publicationDate": "2026-10-16T15:31:40",
+      "sourceType": "public_education_resource_article",
+      "sourceUrls": [
+        "https://www.yeyulingfeng.com/a/1193655.html"
+      ],
+      "evidence": {
+        "reportedMemberSchools": [
+          "华南师范大学附属中学",
+          "广东实验中学",
+          "广州市第二中学",
+          "广州大学附属中学",
+          "广州外国语学校",
+          "广州市执信中学",
+          "广州市第六中学",
+          "广州市铁一中学",
+          "广雅中学",
+          "清华附中湾区学校"
+        ],
+        "subjectsPlanned": 9,
+        "retrievalMethod": "公众号回复关键词“广州十校”",
+        "publicDirectFileUrl": false
+      },
+      "downloadStatus": "wechat_keyword_retrieval_required_no_public_file_url",
+      "paperFileDownloaded": false,
+      "answerFileDownloaded": false,
+      "audioFileDownloaded": false,
+      "allPagesChecked": false,
+      "archiveStatus": "not_archived",
+      "archivedBytes": 0,
+      "rightsStatus": "unknown",
+      "state": "third_party_lead_only",
+      "caution": "只确认公开文章列出的联考与学校名称线索，未取得任何科目原卷、答案或授权。"
+    },
+    {
+      "id": "wuhu-grade8-biology-practical-2026",
+      "eventGroupId": "wuhu-grade8-biology-practical-2026",
+      "queueClass": "official_attachment",
+      "regionKey": "other_domestic",
+      "province": "安徽省",
+      "city": "芜湖市",
+      "school": null,
+      "schoolIdentityStatus": "official_city_education_bureau_notice",
+      "grade": "初中八年级",
+      "subjects": [
+        "生物"
+      ],
+      "eventLabel": "2026年芜湖市初中学业水平生物实验操作考试",
+      "actualExamDate": null,
+      "scheduledExamDate": "2026-05-28/29",
+      "publicationDate": "2026-05-23T09:00:00",
+      "sourceType": "official_government_notice",
+      "sourceUrls": [
+        "https://jyj.wuhu.gov.cn/xwzx/tzgg/8931714.html",
+        "https://jyj.wuhu.gov.cn/group4/M00/07/9E/rBwdT2oQECiAS_duAANKFdBKWAc588.pdf"
+      ],
+      "sourceAuthorityStatus": "official_notice_confirmed",
+      "evidence": {
+        "attachmentLabel": "芜湖市2026年八年级生物学实验操作考试试题.pdf",
+        "attachmentHttpStatus": 403,
+        "attemptedMethod": "single normal public HTTPS GET from authorized Z890 device",
+        "failure": "HTTP 403; stopped without alternate host, credential, proxy or bypass."
+      },
+      "downloadStatus": "official_attachment_http_403_no_bypass",
+      "paperFileDownloaded": false,
+      "answerFileDownloaded": false,
+      "audioFileDownloaded": false,
+      "allPagesChecked": false,
+      "archiveStatus": "not_archived",
+      "archivedBytes": 0,
+      "rightsStatus": "not_stated",
+      "state": "official_source_confirmed_attachment_bytes_unavailable",
+      "policyReview": "八年级市级实验操作考核；需按2025年考试管理规定进一步确认分类，不冒充普通笔试卷或毕业年级统考。"
+    }
+  ],
+  "eventWatch": [
+    {
+      "id": "beijing-2026-autumn-midterm-schedule-watch",
+      "sourceUrl": "https://www.ysxiao.cn/zhongdianxiaoxue/223093.html",
+      "sourceType": "local_education_information_portal",
+      "publicationDate": "2026-09-30T10:56:00",
+      "reportedDates": {
+        "haidian": "2026-11-03/05",
+        "xicheng": "2026-11-06/07 and 2026-11-10/12",
+        "chaoyang_middle": "2026-10-27/31 with some schools 2026-11-04/05",
+        "chaoyang_high": "2026-11-03/07",
+        "dongcheng": "2026-11-first-week school-based tests; no district-wide unified exam reported"
+      },
+      "paperFilesFound": 0,
+      "state": "schedule_watch_only_not_exam_paper",
+      "verification": "third_party_schedule_summary; confirm against individual school notices"
+    }
+  ],
+  "quarantined": [
+    {
+      "id": "nanjing-high1-2025-2026-delayed-republication",
+      "sourceUrl": "https://www.sjds.net/a/518850.html",
+      "pagePublicationDate": "2026-11-03T09:54:56",
+      "titleSignal": "25年高一10月月考；列举的多数试卷为2025-2026学年",
+      "reason": "页面发布时间是2026-11-03，但学年与“25年”标识指向较早考试；不得作为2026-2027秋季新考。",
+      "state": "delayed_republication_or_year_mismatch_quarantined"
+    },
+    {
+      "id": "jingjing-xiangen-math-title-content-mismatch",
+      "sourceUrl": "https://www.51jiaoxi.com/doc-18922954.html",
+      "pagePublicationDate": "2026-10-30T13:05:41",
+      "titleSignal": "标题称湖北荆荆襄恩高三数学",
+      "contentSignal": "页面正文资源说明却列出河南许平济洛2026-2027高三10月质检数学文件",
+      "reason": "标题与正文资源实体不一致；不归入湖北事件、不计湖北卷。",
+      "state": "source_metadata_mismatch_quarantined"
+    }
+  ],
+  "collectionMetrics": {
+    "verifiedOriginalPapersAdded": 0,
+    "verifiedAnswerFilesAdded": 0,
+    "verifiedAudioFilesAdded": 0,
+    "archivedBytesAdded": 0,
+    "allPagesVerified": 0,
+    "trainableItemsAdded": 0,
+    "redistributionLicensedItemsAdded": 0,
+    "publishedItemsAdded": 0
+  },
+  "rules": [
+    "2027届别不等于2027年考试；必须分开记录学年、届别、实际考试日期和网页发布日期。",
+    "第三方预览页数、文件清单、标题均不是原件字节或完整性证明。",
+    "会员、点数、登录限制不绕过；只保留来源元数据。",
+    "同一考试事件多学科或多站转载不得按页面数重复计卷。",
+    "官方公告附件HTTP 403时停止，不用代理、换域名、截图OCR或其他方式绕过。",
+    "英语音频只有文件名线索时不得计为已取得音频。"
+  ]
+}
