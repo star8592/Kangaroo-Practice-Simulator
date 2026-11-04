@@ -6,10 +6,10 @@ import {gradeCodeWithQuickJS} from "../src/lib/code-lab-engine";
 import {ENGINEERING_TRACK_REFERENCE} from "./engineering_track_reference";
 async function main(){
  assert.deepEqual(validateEngineeringTracks(),[]);
- assert.equal(ENGINEERING_TRACK_LIST.length,3);
- assert.equal(ENGINEERING_CODE_CHALLENGES.length,12);
+ assert.equal(ENGINEERING_TRACK_LIST.length,4);
+ assert.equal(ENGINEERING_CODE_CHALLENGES.length,16);
  assert.equal(CODE_CHALLENGES.length,6,"legacy training cannot change");
- assert.equal(new Set([...CODE_CHALLENGES,...ENGINEERING_CODE_CHALLENGES].map(t=>t.id)).size,18);
+ assert.equal(new Set([...CODE_CHALLENGES,...ENGINEERING_CODE_CHALLENGES].map(t=>t.id)).size,22);
  const engine=await getQuickJS();
  for(const task of ENGINEERING_CODE_CHALLENGES){
   assert.equal(task.cases.length,4,task.id);
@@ -30,9 +30,13 @@ async function main(){
   ["be-webhook","function acceptedPaymentEventIds(events){return events.map(e=>e.eventId)}"],
   ["be-limit","function allowRequests(x){return x.timestamps.map(()=>true)}"],
   ["qa-slo","function countSloBreaches(x){return x.values.filter(v=>v<=x.minAvailability).length}"],
+  ["ag-contract","function validateTicket(v){return {valid:true,code:'OK'}}"],
+  ["ag-intents","function routeTicketIntent(t){return {category:'shipping',action:'draft_reply'}}"],
+  ["ag-permission","function authorizeTicketAction(x){return {allowed:x.user.role==='admin',reason:'OK'}}"],
+  ["ag-idempotency","function dedupeTicketDecisions(events){return events.map(e=>({ticketId:e.ticketId,decision:e.decision}))}"],
  ];
  for(const [id,source] of falseSolutions)
   assert.equal(gradeCodeWithQuickJS(engine,id,source).correct,false,"reject wrong rule "+id);
- console.log("ENGINEERING_TRACKS=PASS tracks=3 tasks=12 cases=48 QuickJS_WASM=YES legacy_unchanged=YES wrong_logic_rejected=YES");
+ console.log("ENGINEERING_TRACKS=PASS tracks=4 tasks=16 cases=64 QuickJS_WASM=YES legacy_unchanged=YES wrong_logic_rejected=YES");
 }
 main().catch(e=>{console.error(e);process.exitCode=1;});

@@ -9,6 +9,7 @@ import {CAREER_FORMAL_PAPERS} from "../src/lib/career-formal-bank";
 import {INTERVIEW_PROFILES} from "../src/lib/career-interview-scenarios";
 import {TECH_BOOKS} from "../src/lib/tech-books";
 import {CAREER_PATHS,careerPathForRole,validateCareerPaths} from "../src/lib/career-paths";
+import {ENGINEERING_TRACKS} from "../src/lib/engineering-code-tracks";
 
 assert.deepEqual(validateCareerRoleTaxonomy(),[]);
 assert.equal(CAREER_ROLE_GROUPS.length,13,"browse 13 customer-facing industries");
@@ -42,6 +43,11 @@ for(const careerPath of CAREER_PATHS){
   else if(href.startsWith("/career/guides/"))assert(liveGuideHrefs.has(href),"Only genuinely live guide: "+href);
   else if(href.startsWith("/career/interviews/"))assert(liveInterviewHrefs.has(href),"Only genuinely live interview: "+href);
   else if(href.startsWith("/skill-labs/books/"))assert(bookHrefs.has(href),"Only published tech book: "+href);
+  else if(href.startsWith("/skill-labs/engineering/")){
+   const track=href.slice("/skill-labs/engineering/".length);
+   assert(Object.prototype.hasOwnProperty.call(ENGINEERING_TRACKS,track),"Only registered runnable code track: "+href);
+   assert(fs.existsSync("src/app/skill-labs/engineering/[track]/page.tsx"));
+  }
   else assert(fs.existsSync("src/app"+href+"/page.tsx"),"Missing runnable learning entry: "+href);
  }
 }

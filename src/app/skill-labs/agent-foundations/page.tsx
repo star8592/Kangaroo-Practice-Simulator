@@ -63,6 +63,13 @@ export default function AgentFoundationsPage(){
       </article>)}
     </section>
     <AgentProjectCourse/>
+    <section className={s.run} aria-labelledby="agent-code-work-title">
+      <span className={s.eyebrow}>ENGINEERING CHECKPOINT · 真正执行代码</span>
+      <h2 id="agent-code-work-title">工程作业：亲手写出 Agent 的关键逻辑</h2>
+      <p>完成概念练习后，进入同一课程的代码作业。四项任务分别对应输入契约、混合意图、权限隔离与事件幂等，必须自己编写 JavaScript，使用 QuickJS WebAssembly 在独立浏览器 Worker 内运行并核对 16 组输入和输出。</p>
+      <p><strong>语言边界：</strong>这里是 JavaScript 版关键业务逻辑练习；上方的 Python 工单项目仍需在本地按其测试说明单独运行。浏览器实操不能证明整套 Python 项目已完成，也不产生雇主认证。</p>
+      <Link className={s.primary} href="/skill-labs/engineering/agent">开始真实代码作业 · 4项 / 16组测试</Link>
+    </section>
     <section className={s.run} aria-labelledby="run-title">
       <h2 id="run-title">可免费下载的基础实验</h2>
       <p>实验源码只依赖 Python 标准库。复制以下命令（下载后在文件所在目录执行）：</p>
