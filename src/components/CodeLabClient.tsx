@@ -127,6 +127,7 @@ export default function CodeLabClient({trackId}:{trackId?:EngineeringTrackId}={}
    <p className={styles.note}>成绩是本组原创题的完成情况，非企业招聘真题、职业证书或标准化人才选拔测验。项目源码中包含参考用例，不能用来监考或防作弊。</p>
    <label className={styles.consent}><input type="checkbox" checked={consent} onChange={e=>setConsent(e.target.checked)}/>我理解这是免费编程实训，代码仅在隔离环境中执行。</label>
    <button type="button" className={styles.primary} disabled={!consent} onClick={()=>setStage("practice")}>开始编程实操</button>
+   {trackId==="agent"&&<AgentCodeAccountSync taskId={task.id} source={source} feedback={null}/>}
   </section>}
   {stage==="practice"&&<div className={[styles.workspace,expanded?styles.workspaceExpanded:""].filter(Boolean).join(" ")}>
    <section className={[styles.panel,styles.editorPanel].join(" ")}>
@@ -201,6 +202,7 @@ export default function CodeLabClient({trackId}:{trackId?:EngineeringTrackId}={}
    <p className={styles.lead}>你在隔离JavaScript执行环境中完成了 <strong>{count}/{tasks.length}</strong> 项原创工程任务。各项结果基于实际代码运行与4组输入比对。</p>
    <div className={styles.reportGrid}>{tasks.map(c=><div key={c.id}><strong>{c.title}</strong><span>{solved[c.id]?"通过":"未通过"} · 运行 {attempts[c.id]??0} 次</span></div>)}</div>
    <p className={styles.note}>版本：{version}。不含常模、就业概率、正式专业能力证书，{trackId==="agent"?"未主动保存的记录仅保存在当前标签页；经服务器复测并保存的作业可在微信账号中跨设备查询。":"本标签页可恢复本次练习记录，但不跨设备同步。"}仅表示本次模拟任务完成情况。</p>
+   {trackId==="agent"&&<AgentCodeAccountSync taskId={task.id} source={source} feedback={null}/>}
    <div className={styles.toolbar}><button type="button" className={styles.secondary} onClick={reset}>重新练习</button><button type="button" className={styles.primary} onClick={()=>window.print()}>打印本次记录</button></div>
   </section>}
  </div>;
