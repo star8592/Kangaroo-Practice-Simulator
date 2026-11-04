@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "generatedAtUtc": "2026-11-01T02:48:18.671698+00:00",
+  "scope": "Chinese K12 education authority already published original PDFs; private archive only",
+  "sourceCount": 1,
+  "sourcePagesVerified": 1,
+  "attachmentCount": 1,
+  "newFileCount": 1,
+  "alreadyFileCount": 0,
+  "deferredOversize": 0,
+  "failureCount": 0,
+  "newPdfBytes": 157318946,
+  "newPdfPages": 82,
+  "papersIndividuallyStructured": 0,
+  "commercialSaleAllowed": 0,
+  "sources": [
+    {
+      "sourceId": "fujian_2026_main",
+      "province": "福建",
+      "year": 2026,
+      "sourcePage": "https://jyj.fuzhou.gov.cn/zwgk/cswz/fzygzz/tzgg/202606/t20260623_5337122.htm",
+      "sourceStatus": "public_html_verified",
+      "attachmentUrls": [
+        {
+          "label": "2026年福建中考合订本（无地理、生物）.pdf",
+          "url": "https://jyj.fuzhou.gov.cn/zwgk/cswz/fzygzz/tzgg/202606/P020260623455432491102.pdf"
+        }
+      ],
+      "error": null,
+      "sourceSha256": "ee900af618321bff67d947eb69811234807fcc50bae93e30861b7789a903416b",
+      "htmlBytes": 28176
+    }
+  ],
+  "files": [
+    {
+      "sourceId": "fujian_2026_main",
+      "province": "福建",
+      "year": 2026,
+      "sourcePage": "https://jyj.fuzhou.gov.cn/zwgk/cswz/fzygzz/tzgg/202606/t20260623_5337122.htm",
+      "originalLabel": "2026年福建中考合订本（无地理、生物）.pdf",
+      "originalUrl": "https://jyj.fuzhou.gov.cn/zwgk/cswz/fzygzz/tzgg/202606/P020260623455432491102.pdf",
+      "fileName": "fujian_2026_main_08639be4bf1b.pdf",
+      "status": "archived_verified",
+      "sha256": "fcc048ddaf9917ffc946746e2faeaf28ac41b38c744bfc2d9ec7b08dd5202f3b",
+      "bytes": 157318946,
+      "pages": 82,
+      "examKind": "provincial_zhongkao_original_bundle_or_individual_paper",
+      "rightsStatus": "published_government_pdf_redistribution_rights_unverified",
+      "commercialSaleAllowed": false,
+      "error": null
+    }
+  ]
+}
