@@ -1,6 +1,7 @@
 import type {QuickJSWASMModule} from "quickjs-emscripten";
 import {CODE_CHALLENGES} from "./code-lab";
 import {ENGINEERING_CODE_CHALLENGES} from "./engineering-code-tracks";
+import {AGENT_PROJECT_CODE_CHALLENGES} from "./agent-project-code";
 
 export type CodeCheck={
  taskId:string;correct:boolean;passed:number;total:number;message:string;
@@ -22,7 +23,7 @@ function stableSerialize(value:unknown):string{
  return JSON.stringify(normalize(value));
 }
 export function gradeCodeWithQuickJS(QuickJS:QuickJSWASMModule,taskId:string,source:string,options?:{collectAll?:boolean;sampleOnly?:boolean}):CodeCheck{
- const task=[...CODE_CHALLENGES,...ENGINEERING_CODE_CHALLENGES].find(t=>t.id===taskId);
+ const task=[...CODE_CHALLENGES,...ENGINEERING_CODE_CHALLENGES,...AGENT_PROJECT_CODE_CHALLENGES].find(t=>t.id===taskId);
  if(!task)throw new Error("UNKNOWN_CODE_TASK");
  if(typeof source!=="string"||!source.trim()||source.length>MAX_SOURCE_LENGTH)
   throw new Error("SOURCE_LENGTH_MUST_BE_1_TO_5000");
