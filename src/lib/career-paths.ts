@@ -31,10 +31,11 @@ export const CAREER_PATHS:readonly CareerPath[]=[
  recommendedFor:["大模型应用工程师","智能体开发工程师"],
  roleIds:["intelligence-01-03","intelligence-01-04"],
  requirements:"建议具备 Python 基础及 API/JSON 基本概念；无需自称已具备模型研究经验。",
- outcomes:["解释模型调用、工具 Schema、权限边界的区别","运行并修改 Python 工具调用实验，保留真实日志","完成 24 题 Agent 应用工程岗位模拟并复盘薄弱知识点"],
+ outcomes:["解释模型调用、工具 Schema、权限边界的区别","运行并修改 Python 工具调用实验，保留真实日志","完成四项可运行的 Agent 关键业务代码作业并核对16组输入输出","完成 24 题 Agent 应用工程岗位模拟并复盘薄弱知识点"],
  steps:[
   {id:"agent-learn",stage:"learn",name:"AI Agent 项目制工程课程",detail:"六节免费基础课程与六模块工单 Agent 项目试学，按阶段理解权限、测试、幂等和失败处理。",href:"/skill-labs/agent-foundations",status:"live",audience:"both"},
   {id:"agent-lab",stage:"lab",name:"运行可复验的 Agent 工具实验",detail:"下载 Python 原始实验源码，执行 self-test 和 demo，记录日志并修改一条失败处理逻辑。",href:"/skill-labs/agent-foundations#run-title",status:"live",audience:"both"},
+  {id:"agent-real-code",stage:"lab",name:"AI Agent 工程代码作业 · 真运行",detail:"JavaScript 版本的工单 Agent 关键业务：4项真实代码任务、16组输入输出测试；浏览器 QuickJS 隔离运行，不把它说成 Python 执行或账号认证。",href:"/skill-labs/engineering/agent",status:"live",audience:"both"},
   {id:"agent-exam",stage:"formal-exam",name:"AI Agent 工程 24 题正式模拟",detail:"45 分钟，100 分；原创岗位情境题，交卷后逐题复盘。",href:"/career/exams/agent-engineering-paper-2026q4-v1",status:"live",audience:"both"},
   {id:"agent-interview",stage:"interview",name:"校招软件项目结构化面试",detail:"可练项目真实性、工程排障、团队协作；这是通用软件研发面试，非专门的 Agent 面试。",href:"/career/interviews/campus-software",status:"live",audience:"campus",note:"专属 AI Agent 语义面试尚未发布。"},
  ],
