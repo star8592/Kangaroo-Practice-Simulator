@@ -4,13 +4,22 @@
  * Public learning cases, not licensed enterprise exam questions or hidden tests.
  */
 import type {CodeChallenge} from "./code-lab";
-export const ENGINEERING_TRACK_VERSION="engineering-tracks-20261102-v1";
-export type EngineeringTrackId="frontend"|"backend"|"qa";
+import {AGENT_CODE_CHALLENGES} from "./agent-code-challenges";
+export const ENGINEERING_TRACK_VERSION="engineering-tracks-20261104-v2";
+export type EngineeringTrackId="frontend"|"backend"|"qa"|"agent";
 export type EngineeringTrack={
  id:EngineeringTrackId;name:string;subtitle:string;summary:string;
  focus:string;challenges:readonly CodeChallenge[];
 };
 export const ENGINEERING_TRACKS:Record<EngineeringTrackId,EngineeringTrack>={
+ agent:{
+  id:"agent",
+  name:"AI Agent 工程 · 真实代码作业",
+  subtitle:"工单 Agent 关键逻辑的 JavaScript 版本",
+  summary:"与 Python 工单 Agent 教材对应的4项 JavaScript 编程作业：输入契约、混合意图、权限边界、事件幂等。QuickJS WebAssembly 独立运行，16组结果核验；当前仅本浏览器留存，无认证评分。",
+  focus:"Agent 工程",
+  challenges:AGENT_CODE_CHALLENGES,
+ },
  frontend:{
   id:"frontend",name:"前端工程师 · JavaScript实操",subtitle:"前端数据与交互逻辑",
   summary:"将真实交互需求转成可测试的JavaScript函数，涵盖搜索词处理、表单校验、商品列表和选择状态。只考当前独立函数，不假装已实现浏览器DOM或React项目题。",
