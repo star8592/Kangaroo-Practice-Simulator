@@ -35,3 +35,22 @@ test("Agent project course fits a narrow mobile screen",async({page})=>{
  const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth);
  expect(overflow).toBeLessThanOrEqual(1);
 });
+
+
+test("Agent project work sample really executes learner code, not just MCQ",async({page})=>{
+ const response=await page.goto("/skill-labs/agent-foundations");
+ expect(response?.status()).toBe(200);
+ await page.getByRole("link",{name:"开始代码实训"}).click();
+ const lab=page.locator("section#agent-code-lab");
+ await expect(lab.getByRole("heading",{level:2,name:"亲手编写工单 Agent 的核心规则"})).toBeVisible();
+ await expect(lab.locator("nav button")).toHaveCount(6);
+ await lab.getByRole("button",{name:"运行代码并检查"}).click();
+ await expect(lab.getByText("代码需要修改")).toBeVisible({timeout:20000});
+ await lab.getByRole("textbox",{name:"你的工单 Agent JavaScript 代码"}).fill(
+  "function validateTicketPayload(p){if(!p||typeof p!=='object'||Array.isArray(p)||Object.keys(p).sort().join(',')!=='text,ticket_id')return {ok:false,code:'FIELDS'};if(typeof p.ticket_id!=='string'||!/^T-[0-9]{4,8}$/.test(p.ticket_id))return {ok:false,code:'ID'};if(typeof p.text!=='string'||p.text.length<1||p.text.length>1000)return {ok:false,code:'TEXT'};return {ok:true,code:'OK'};}"
+ );
+ await lab.getByRole("button",{name:"运行代码并检查"}).click();
+ await expect(lab.getByText("实际代码测试通过")).toBeVisible({timeout:20000});
+ await expect(lab.getByText(/5\/5 组通过/)).toBeVisible();
+ await expect(lab.getByText(/不保存源码或真实工单数据/)).toBeVisible();
+});
