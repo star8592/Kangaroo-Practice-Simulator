@@ -52,3 +52,15 @@
 @media(max-width:850px){.content{grid-template-columns:1fr}.menu{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}.menuItem{min-height:83px;padding:9px}.menuText strong{font-size:13px}.num{font-size:12px}}
 @media(max-width:590px){.header{align-items:stretch;flex-direction:column;gap:13px}.progress{width:auto;min-width:0;display:grid;grid-template-columns:70px 1fr;align-items:center;column-gap:9px;padding:10px 13px}.progress strong{grid-row:span 2}.progressBar{margin:7px 0 0}.menu{grid-template-columns:repeat(2,minmax(0,1fr))}.menuItem{min-height:69px}.lesson{padding:18px 15px}.lesson h3{font-size:23px}.code{font-size:12px;padding:13px}.header h2{font-size:26px}}
 @media(prefers-reduced-motion:reduce){.progressBar i{transition:none}}
+
+/* Executable project work sample: no second design system. */
+.editor{box-sizing:border-box;display:block;width:100%;min-height:260px;resize:vertical;border:1px solid #bdd2dd;border-radius:10px;padding:15px;background:#112c40;color:#e4f6fa;font:13px/1.6 ui-monospace,SFMono-Regular,Consolas,monospace;tab-size:2}
+.editor:focus{outline:3px solid #99cee4;outline-offset:2px}
+.editor:disabled{opacity:.6}
+.editorMeta{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;color:#627b89;font-size:12px;margin:7px 0 14px}
+.workButtons{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.secondaryButton{min-height:46px;border:1px solid #bad2dc;border-radius:9px;color:#165b77;background:white;padding:10px 16px;font-weight:700;cursor:pointer;margin-top:14px}
+.secondaryButton:disabled{opacity:.45;cursor:not-allowed}
+.accountSummary{border:1px solid #d6e5eb;border-radius:12px;padding:14px 18px;background:#f4f8fa;margin-top:15px}
+.accountSummary strong{font-size:15px;color:#164d66}
+.accountSummary p{font-size:14px;line-height:1.65;margin:5px 0 0;color:#4f6c7c}
