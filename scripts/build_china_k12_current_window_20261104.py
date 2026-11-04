@@ -12,13 +12,15 @@ EXTERNAL = DISCOVERY / "china-k12-current-window-external-leads-20261104.json"
 LEGACY = DISCOVERY / "china-k12-school-exam-priority-20261101.json"
 OUTPUT = DISCOVERY / "china-k12-current-window-review-20261104.json"
 
+
 def main() -> None:
     regional = json.loads(REGIONAL.read_text(encoding="utf8"))
     external = json.loads(EXTERNAL.read_text(encoding="utf8"))
     legacy = json.loads(LEGACY.read_text(encoding="utf8"))
     assert len(regional["items"]) == 81
     assert legacy["totalKnownUniqueListingUrls"] == 433
-    assert len(external["records"]) == 7
+    assert len(external["records"]) >= 7
+    assert len({x["eventGroupId"] for x in external["records"]}) == len(external["records"])
 
     regional_leads = []
     url_owner = {}
@@ -45,21 +47,25 @@ def main() -> None:
 
     external_records = []
     external_urls = []
+    external_seen = set()
+    duplicate_external_urls = []
     overlap_urls = []
     for record in external["records"]:
-        urls = record["sourceUrls"]
-        for url in urls:
+        for url in record["sourceUrls"]:
             external_urls.append(url)
+            if url in external_seen:
+                duplicate_external_urls.append(url)
+            external_seen.add(url)
             if url in url_owner:
                 overlap_urls.append(url)
             else:
                 url_owner[url] = record["id"]
         external_records.append(record)
 
-    unique_external_urls = sorted(set(external_urls))
-    queue_dates = [x["publicationDate"] for x in regional_leads]
-    queue_dates += [x["publicationDate"] for x in external_records]
-    latest = max(queue_dates)
+    unique_external_urls = sorted(external_seen)
+    queue_dates = [x["publicationDate"] for x in regional_leads if x.get("publicationDate")]
+    queue_dates += [x["publicationDate"] for x in external_records if x.get("publicationDate")]
+    latest = max(queue_dates) if queue_dates else None
 
     output = {
         "schemaVersion": 1,
@@ -75,7 +81,7 @@ def main() -> None:
         "regionalIndexSource": str(REGIONAL.relative_to(ROOT)),
         "externalLeadSource": str(EXTERNAL.relative_to(ROOT)),
         "regionalThirdPartyLeads": sorted(regional_leads, key=lambda x: (x["publicationDate"], x["sourceUrl"]), reverse=True),
-        "externalEventCandidates": sorted(external_records, key=lambda x: (x["publicationDate"], x["id"]), reverse=True),
+        "externalEventCandidates": sorted(external_records, key=lambda x: (x.get("publicationDate") or "", x["id"]), reverse=True),
         "eventWatch": external["eventWatch"],
         "quarantined": external["quarantined"],
         "deduplication": {
@@ -83,6 +89,7 @@ def main() -> None:
             "externalEventRecords": len(external_records),
             "externalSourceUrls": len(external_urls),
             "uniqueExternalSourceUrls": len(unique_external_urls),
+            "duplicateExternalSourceUrls": sorted(set(duplicate_external_urls)),
             "uniqueCombinedSourceUrls": len(url_owner),
             "externalUrlOverlapWithRegionalIndex": sorted(set(overlap_urls)),
             "eventGroupsAreNotPaperCounts": True
@@ -96,9 +103,11 @@ def main() -> None:
           "regional", len(regional_leads),
           "external_events", len(external_records),
           "unique_urls", len(url_owner),
+          "external_duplicates", len(set(duplicate_external_urls)),
           "overlaps", len(set(overlap_urls)),
           "latest", latest)
     print("K12_CURRENT_WINDOW_ARCHIVED_BYTES=0 VERIFIED_PAPERS=0 VERIFIED_ANSWERS=0 VERIFIED_AUDIO=0")
+
 
 if __name__ == "__main__":
     main()
