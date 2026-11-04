@@ -154,3 +154,6 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+    # Keep the legacy 433-row queue intact, then build the current-window queue.
+    import runpy
+    runpy.run_path(str(ROOT / "scripts/build_china_k12_current_window_20261104.py"), run_name="__main__")

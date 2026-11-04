@@ -4,6 +4,10 @@ from pathlib import Path
 import json
 ROOT=Path(__file__).resolve().parents[1]
 d=json.loads((ROOT/"data/discovery/china-k12-school-exam-priority-20261101.json").read_text())
+cw=json.loads((ROOT/"data/discovery/china-k12-current-window-review-20261104.json").read_text())
+assert len(cw["regionalThirdPartyLeads"])==81
+assert len(cw["externalEventCandidates"])==7
+assert cw["collectionMetrics"]["verifiedOriginalPapersAdded"]==0
 xs=d["priorityQueue"]
 assert d["totalKnownUniqueListingUrls"]==433==len(xs)
 assert len({x["sourceUrl"] for x in xs})==433
