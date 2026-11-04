@@ -26,8 +26,12 @@ export default async function EngineeringTrackPage({params}:{params:Promise<{tra
  const track=id as EngineeringTrackId;
  return <div className={[styles.shell,workStyles.pageShell].join(" ")}>
   <nav className={styles.breadcrumb} aria-label="位置">
-   <Link href="/skill-labs">技能实训</Link><span> / </span>{ENGINEERING_TRACKS[track].name}
+   <Link href="/skill-labs">技能实训</Link><span> / </span>{track==="agent"?<Link href="/skill-labs/agent-foundations">Agent 项目课程</Link>:null}{track==="agent"?<span> / </span>:null}{ENGINEERING_TRACKS[track].name}
   </nav>
+  {track==="agent"&&<p style={{lineHeight:1.75,color:"#456173",padding:"14px 16px",background:"#f1f8fa",borderRadius:10}}>
+   这是 Agent 项目课程的 JavaScript 代码作业；你提交的函数将在浏览器 QuickJS WebAssembly 中真实执行，四项任务共16组输入输出。
+   原始 Python 工单 Agent 是另外一份离线项目，本页不执行 Python、不上传代码、不生成账号级可信成绩。
+  </p>}
   <CodeLabClient trackId={track}/>
  </div>;
 }
