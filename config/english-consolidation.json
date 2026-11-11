@@ -1,0 +1,57 @@
+{
+  "version": 1,
+  "publicOrigin": "https://socthink.cn",
+  "sourcePolicy": "keep-old-live-until-cutover",
+  "migrationStatus": "staging-not-cutover",
+  "releaseEnabled": false,
+  "apps": [
+    {
+      "id": "pronunciation",
+      "repo": "star8592/AccentLab",
+      "landingPath": "/english/pronunciation",
+      "appPrefix": "/english/pronunciation/app/",
+      "apiPrefix": "/english/pronunciation/api/",
+      "sourceUrl": "https://toktik.tech/accent-lab/",
+      "sourceApiPrefixes": ["/accent-lab-api/", "/accent-lab/account-api/"],
+      "runtime": "vite-static-plus-voice-services",
+      "database": "source-account-storage-to-audit",
+      "status": "source-live-target-staging"
+    },
+    {
+      "id": "vocabulary",
+      "repo": "star8592/VocabLearningPlatform",
+      "landingPath": "/english/vocabulary",
+      "appPrefix": "/english/vocabulary/app/",
+      "apiPrefix": "/english/vocabulary/api/",
+      "sourceUrl": "https://toktik.tech/vocab/",
+      "sourceApiPrefixes": ["/vocab/api/"],
+      "runtime": "vue-vite-rust",
+      "database": "postgresql-18-separate-instance",
+      "status": "source-live-target-staging"
+    },
+    {
+      "id": "reading",
+      "repo": "star8592/EnglishLeap",
+      "landingPath": "/english/reading",
+      "appPrefix": "/english/reading/app/",
+      "apiPrefix": "/english/reading/api/",
+      "sourceUrl": null,
+      "sourceApiPrefixes": [],
+      "runtime": "independent-local-reading-mvp",
+      "database": "to-audit",
+      "status": "local-mvp-not-yet-public"
+    },
+    {
+      "id": "aelos",
+      "repo": "star8592/aelos",
+      "landingPath": "/english/aelos",
+      "appPrefix": "/english/aelos/app/",
+      "apiPrefix": "/english/aelos/api/",
+      "sourceUrl": "https://toktik.tech/english/home",
+      "sourceApiPrefixes": ["/api/"],
+      "runtime": "react-vite-node",
+      "database": "postgresql-16-independent-db",
+      "status": "source-live-target-staging"
+    }
+  ]
+}
