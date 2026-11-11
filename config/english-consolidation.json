@@ -2,6 +2,7 @@
   "version": 1,
   "publicOrigin": "https://socthink.cn",
   "sourcePolicy": "keep-old-live-until-cutover",
+  "computePolicy": "single-business-server-external-ai-api",
   "migrationStatus": "staging-not-cutover",
   "releaseEnabled": false,
   "apps": [
