@@ -3,7 +3,7 @@ import styles from "./SocthinkPortal.module.css";
 
 const ENTRIES = [
  {id:"math",label:"数学",detail:"国际竞赛 · 口算训练",icon:"∑",href:"/math",status:"ready"},
- {id:"english",label:"英语",detail:"发音训练 · 英语学习",icon:"Aa",href:"https://toktik.tech/accent-lab/",status:"external"},
+ {id:"english",label:"英语",detail:"发音 · 单词 · 阅读 · 综合",icon:"Aa",href:"/english",status:"ready"},
  {id:"k12",label:"校内学科",detail:"语文 · 真题资料",icon:"课",href:"/resources",status:"ready"},
  {id:"career",label:"职业技能",detail:"课程 · 项目实训",icon:"技",href:"/learn",status:"ready"},
  {id:"assessment",label:"能力测评",detail:"推理 · 职业测评",icon:"测",href:"/assessment-center",status:"ready"},
@@ -24,19 +24,13 @@ export default function SocthinkPortal() {
   </section>
   <nav aria-label="学习与考试分类" className={styles.grid}>
    {ENTRIES.map(entry=> <div key={entry.id} className={styles.card}>
-    {entry.status==="external"
-      ? <a href={entry.href} className={styles.cardLink} rel="noopener noreferrer">
-          <span className={styles.icon} aria-hidden="true">{entry.icon}</span>
-          <strong>{entry.label}</strong><span>{entry.detail}</span>
-          <small>进入现有发音训练站 ↗</small>
-        </a>
-      : <Link href={entry.href} className={styles.cardLink}>
-          <span className={styles.icon} aria-hidden="true">{entry.icon}</span>
-          <strong>{entry.label}</strong><span>{entry.detail}</span>
-          <small>进入 →</small>
-        </Link>}
+    <Link href={entry.href} className={styles.cardLink}>
+    <span className={styles.icon} aria-hidden="true">{entry.icon}</span>
+    <strong>{entry.label}</strong><span>{entry.detail}</span>
+    <small>进入 →</small>
+   </Link>
    </div>)}
   </nav>
-  <p className={styles.note}>各学习馆保留自己的界面和内容。统一账号、支付及子目录接入将分阶段完成。</p>
+  <p className={styles.note}>各学习馆保留自己的界面和内容。跨应用登录和购买权益以实际开通状态为准。</p>
  </div>;
 }

@@ -17,7 +17,7 @@ export const PRIMARY_BUSINESS_NAV = [
  * own endpoint. It does not confer navigation, sales or search eligibility.
  */
 export type SiteBusinessId = "exams" | "resources" | "career" | "skills" |
-  "assessments" | "store" | "practice";
+  "assessments" | "store" | "practice" | "english";
 const LEGACY_BUSINESS_PATHS:readonly {id:SiteBusinessId;href:string}[]=[
   {id:"exams",href:"/assessments"},
   {id:"resources",href:"/resources"},
@@ -29,6 +29,7 @@ const LEGACY_BUSINESS_PATHS:readonly {id:SiteBusinessId;href:string}[]=[
 /** Public URLs that are outside their owner's URL prefix for legacy reasons. */
 export const BUSINESS_SUBROUTES:readonly {path:string;owner:SiteBusinessId;role:string}[] = [
   {path:"/arithmetic",owner:"exams",role:"school-math-practice"},
+  {path:"/english",owner:"english",role:"english-learning-hub"},
   {path:"/math",owner:"exams",role:"classroom-math-portal"},
   {path:"/math-practice",owner:"exams",role:"school-math-practice"},
   {path:"/competitions",owner:"exams",role:"competition-mocks"},

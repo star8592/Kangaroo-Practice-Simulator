@@ -14,6 +14,10 @@ export const dynamic = "force-dynamic";
 // No account, checkout, private exam session, or unreviewed paper URLs here.
 const publicPaths = [
   "/",
+  "/english",
+  "/english/pronunciation",
+  "/english/vocabulary",
+  "/english/reading",
   "/privacy",
   "/terms",
   "/digital-purchase-policy",

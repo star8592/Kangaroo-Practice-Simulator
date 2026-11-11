@@ -1,6 +1,6 @@
 # SOC THINK 全站逐页路由归属审计（代码扫描台账）
 
-审计基线：2026-11-04；源自 GitHub Next.js `src/app/**/page.tsx` 路由树，**80 个 Next.js 页面模板 + 1 个静态兼容 HTML 入口（共 81 个），非实际商品、试卷或动态 URL 实例数**。
+审计基线：2026-11-04；源自 GitHub Next.js `src/app/**/page.tsx` 路由树，**85 个 Next.js 页面模板 + 1 个静态兼容 HTML 入口（共 86 个），非实际商品、试卷或动态 URL 实例数**。
 
 > **地位**：本表是 [《全站信息架构总纲》](SOCTHINK_SITE_ARCHITECTURE_MASTER.md) 的逐页实施台账，不是另一套页面注册表、CMS、路由或授权来源。内容归属仍以 `src/lib/site-architecture.ts` 和现有业务权威目录为准。
 
@@ -17,6 +17,11 @@
 | 页面模板 | 主归属 | 父页面／所属流程 | 类型 | 入口与依据 |
 | --- | --- | --- | --- | --- |
 | `/` | 全站入口 | `—` | 首页 | 主导航品牌链接 |
+| `/english` | 英语学习 | `/` | 公开目录 | SOC THINK 首页英语分类与顶栏入口；四个独立产品集中展示 |
+| `/english/pronunciation` | 英语学习 | `/english` | 公开内容 | AccentLab 独立发音应用说明与已核验原站训练入口 |
+| `/english/vocabulary` | 英语学习 | `/english` | 公开内容 | 词语星球独立单词学习说明与已核验原站课堂入口 |
+| `/english/reading` | 英语学习 | `/english` | 公开内容 | EnglishLeap 独立阅读项目；公网尚未验收，不冒用其他阅读站点 |
+| `/english/aelos` | 英语学习 | `/english` | 公开内容 | AelOS 独立综合英语项目；已有公网界面，账户授权待接通 |
 | `/account` | 账户与权益 | `/` | 私有流程 | 页脚、会话导航 → 我的订单 |
 | `/admin` | 管理后台 | `/` | 管理员 | 管理员登录后的工作台（仅授权后可达） |
 | `/admin/activate` | 管理后台 | `/admin/login` | 邀请流程 | 仅一次性管理员邀请，不公开导航 |

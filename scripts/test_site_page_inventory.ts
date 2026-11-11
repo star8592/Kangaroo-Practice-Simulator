@@ -35,7 +35,7 @@ for(const raw of read(docPath).split(/\r?\n/)){
 assert.equal(rows.length,routes.length,"Every real page must have exactly one inventory entry");
 assert.deepEqual(rows.map(r=>r.route).sort(),[...routes].sort(),"New/deleted page requires inventory audit update");
 const labels:Record<string,string>={exams:"全部考试",resources:"真题资料",
- career:"职业岗位",skills:"技能实训",practice:"求职训练",assessments:"测评中心",store:"数字商城"};
+ career:"职业岗位",skills:"技能实训",practice:"求职训练",assessments:"测评中心",store:"数字商城",english:"英语学习"};
 const byRoute=new Map(rows.map(r=>[r.route,r]));
 const crossover=(route:string)=>{
  if(route==="/"||route==="/search")return "全站入口";

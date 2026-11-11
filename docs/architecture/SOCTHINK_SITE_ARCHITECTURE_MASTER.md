@@ -1,5 +1,7 @@
 # SOC THINK 全站信息架构总纲（转型定版 v2.1）
 
+> **2026-11-11 英语馆四独立产品新决策（优先于下文旧职业英语收缩方案）：** SOC THINK 设 `/english` 一级分类，下设 `/english/pronunciation`、`/english/vocabulary`、`/english/reading`、`/english/aelos` 四个独立产品目录，对应 AccentLab、VocabLearningPlatform、EnglishLeap、AelOS 四个仓库；主站统一发现、用户账户和计费/权益方案，子应用各自保留课程与私有数据，不得伪造已经完成跨站 SSO 或实收交易。状态、身份、计费及同域迁移详见 [英语馆四产品对接纲要](SOCTHINK_ENGLISH_FOUR_PRODUCTS_IDENTITY_BILLING_20261111.md)。
+
 > **2026-11-11 上层门户新决策（优先于本文的 11-03 职业主站定位）**：正式域名是 **https://socthink.cn/**，不是 ScoreSync.com。根首页 `/` 是“在线课程、考试、练习与测评超市”的简洁入口，用户首先选数学、英语、校内学科、职业技能、能力测评、考试升学之一。各业务拥有自己的首页、交互、数据和发布节奏；公共身份、微信支付订单与权益逐步服务化复用，不在各业务复制账本。原 `/career`、`/learn`、`/practice` 三项导航属于**职业馆内部**，不再定义站点根首页。经典橘黑色国际数学竞赛馆恢复到 `/math`，保留旧 `/competitions` 与试卷 URL。此次设计/开发证据详见 [门户与数学馆恢复](SOCTHINK_PORTAL_MATH_RECOVERY_20261111.md)；生产生效必须以公网 SHA 与浏览器验收为准。
 
 

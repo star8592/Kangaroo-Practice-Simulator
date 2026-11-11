@@ -8,7 +8,7 @@ test("homepage is a concise six-category course and exam portal",async({page})=>
  const nav=main.getByRole("navigation",{name:"学习与考试分类"});
  const cards=nav.locator("a");
  await expect(cards).toHaveCount(6);
- for(const href of ["/math","/resources","/learn","/assessment-center","/assessments"]){
+ for(const href of ["/math","/english","/resources","/learn","/assessment-center","/assessments"]){
   await expect(nav.locator('a[href="'+href+'"]')).toBeVisible();
  }
  await expect(nav.getByRole("link",{name:/数学/})).toContainText("国际竞赛");

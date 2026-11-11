@@ -24,7 +24,7 @@ const GROUPS=[
 export default function SiteFooter(){
  const lang=useSiteLanguage();
  const pathname=usePathname();
- if(pathname==="/"||pathname==="/math"||pathname==="/competitions"){
+ if(pathname==="/"||pathname==="/math"||pathname==="/competitions"||pathname==="/english"||pathname.startsWith("/english/")){
    return <footer className={portalChrome.footer}><div className={portalChrome.footerInner}>
     <span>© 2026 SOC THINK · 在线学习与考试</span>
     <nav aria-label="法律与账户"><Link href="/account">我的订单</Link><Link href="/membership">购买与权益</Link><Link href="/privacy">隐私</Link><Link href="/terms">条款</Link><a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer">鄂ICP备2026004372号</a></nav>

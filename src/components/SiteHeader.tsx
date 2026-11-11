@@ -35,7 +35,7 @@ export default function SiteHeader(){
     return()=>document.removeEventListener("keydown",onKey);
   },[mobileOpen]);
 
-  const isSocthinkPortal=pathname==="/"||pathname==="/math"||pathname==="/competitions";
+  const isSocthinkPortal=pathname==="/"||pathname==="/math"||pathname==="/competitions"||pathname==="/english"||pathname.startsWith("/english/");
   if(isSocthinkPortal)return <header className={portalChrome.header}>
     <div className={portalChrome.inner}>
       <Link href="/" className={portalChrome.brand} onClick={dismiss} aria-label="SOC THINK 首页">
@@ -44,6 +44,7 @@ export default function SiteHeader(){
       </Link>
       <nav className={portalChrome.links} aria-label="SOC THINK 导航">
         <Link href="/math">数学</Link>
+        <Link href="/english">英语</Link>
         <Link href="/learn">职业课程</Link>
         <Link href="/assessment-center">能力测评</Link>
       </nav>
