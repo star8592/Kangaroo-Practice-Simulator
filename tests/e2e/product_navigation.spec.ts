@@ -6,16 +6,16 @@ test.describe("SOC THINK unified public navigation", () => {
     const content=page.locator("main");
     // Mobile hides the duplicate service-card grid; the actual quick action
     // links remain visible on both mobile and desktop.
-    for(const href of ["/career","/learn","/practice"])
-      await expect(content.locator('a[class*="quickItem"][href="'+href+'"]')).toBeVisible();
-    await content.locator('a[class*="quickItem"][href="/learn"]').click();
+    for(const href of ["/math","/learn","/assessment-center"])
+      await expect(content.locator('a[class*="cardLink"][href="'+href+'"]')).toBeVisible();
+    await content.locator('a[class*="cardLink"][href="/learn"]').click();
     await expect(page).toHaveURL(/\/learn$/);
     await expect(page.getByRole("heading",{level:1,name:/岗位真正需要的技能/})).toBeVisible();
     await page.goto("/practice");
     await expect(page.getByRole("heading",{level:1,name:/模拟检验求职/})).toBeVisible();
 
     await page.goto("/math");
-    await expect(page.getByRole("heading",{level:1,name:"数学课堂"})).toBeVisible();
+    await expect(page.getByRole("heading",{level:1,name:/竞赛模拟/})).toBeVisible();
     await page.locator('main a[href="/exam-planner"]').first().click();
     await expect(page).toHaveURL(/\/exam-planner$/);
     await expect(page.getByRole("heading",{name:"我的考试管理"})).toBeVisible();

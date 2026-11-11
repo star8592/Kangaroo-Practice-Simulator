@@ -74,7 +74,7 @@ test("career homepage excludes school math while classroom events remain accessi
   await expect(main).not.toContainText("华罗庚金杯");
   await expect(main).not.toContainText("希望杯");
   await page.goto("/math");
-  await expect(page.getByRole("heading",{level:1,name:"数学课堂"})).toBeVisible();
+  await expect(page.getByRole("heading",{level:1,name:/竞赛模拟/})).toBeVisible();
   await page.locator('main a[href="/exam-planner"]').click();
   await expect(page).toHaveURL(/\/exam-planner$/);
   await page.getByRole("link",{name:/打开数学赛事管家/}).click();

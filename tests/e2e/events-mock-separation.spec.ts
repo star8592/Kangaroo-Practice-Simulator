@@ -6,7 +6,7 @@ test("math planner and events remain in the separate classroom directory",async(
  await expect(nav.locator('a[href="/assessments"]')).toHaveCount(0);
  await expect(nav.locator('a[href="/events"]')).toHaveCount(0);
  await page.goto("/math");
- await expect(page.getByRole("heading",{level:1,name:"数学课堂"})).toBeVisible();
+ await expect(page.getByRole("heading",{level:1,name:/竞赛模拟/})).toBeVisible();
  await page.locator('main a[href="/exam-planner"]').click();
  await expect(page).toHaveURL(/\/exam-planner$/);
  await page.getByRole("link",{name:/打开数学赛事管家/}).click();

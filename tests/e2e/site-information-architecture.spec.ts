@@ -1,19 +1,14 @@
 import {expect,test} from "@playwright/test";
 
-test("desktop career site has three primary tasks and separate math classroom",async({page})=>{
+test("desktop portal shows separate stores and authentic math competition interface",async({page})=>{
  await page.setViewportSize({width:1440,height:900});
  await page.goto("/");
- const nav=page.getByRole("navigation",{name:"主要导航"});
- for(const [href,label] of [["/career","岗位方向"],["/learn","学习与实训"],["/practice","模拟笔试与面试"]]){
-  await expect(nav.locator('a[href="'+href+'"]')).toHaveText(label);
- }
- await expect(nav.locator("a")).toHaveCount(3);
- for(const href of ["/assessments","/arithmetic","/competitions","/resources","/shop"]){
-  await expect(nav.locator('a[href="'+href+'"]')).toHaveCount(0);
- }
- await expect(page.locator('[aria-labelledby="exam-category-overview"]')).toHaveCount(0);
+ const nav=page.getByRole("navigation",{name:"学习与考试分类"});
+ await expect(nav.locator("a")).toHaveCount(6);
+ for(const href of ["/math","/learn","/assessment-center"])
+  await expect(nav.locator('a[href="'+href+'"]')).toBeVisible();
  await page.goto("/math");
- await expect(page.getByRole("heading",{level:1,name:"数学课堂"})).toBeVisible();
+ await expect(page.getByRole("heading",{level:1,name:/竞赛模拟/})).toBeVisible();
  await expect(page.locator('main a[href="/competitions"]')).toBeVisible();
  await expect(page.locator('main a[href="/arithmetic"]')).toBeVisible();
  await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content",/noindex/);
@@ -23,26 +18,20 @@ test("desktop career site has three primary tasks and separate math classroom",a
  await expect(directory.locator('a[href="/competitions"]').first()).toBeVisible();
 });
 
-test("mobile site promotes careers while keeping the math classroom usable",async({page})=>{
+test("mobile portal exposes categories and independent math classroom",async({page})=>{
  await page.setViewportSize({width:390,height:844});
  await page.goto("/");
- await page.getByRole("button",{name:"打开导航菜单"}).click();
- const nav=page.getByRole("navigation",{name:"移动端导航"});
- await expect(nav).toBeVisible();
- for(const href of ["/career","/learn","/practice"])
-  await expect(nav.locator('a[href="'+href+'"]')).toBeVisible();
- for(const href of ["/assessments","/arithmetic","/competitions"])
-  await expect(nav.locator('a[href="'+href+'"]')).toHaveCount(0);
- await nav.locator('a[href="/practice"]').click();
- await expect(page).toHaveURL(/\/practice$/);
- await expect(page.getByRole("heading",{level:1,name:/模拟/})).toBeVisible();
- await page.goto("/math");
- await expect(page.locator('main a[href="/exam-planner"]')).toBeVisible();
- await expect(page.locator('main a[href="/events"]')).toBeVisible();
- await expect(page.evaluate(()=>document.documentElement.scrollWidth-innerWidth)).resolves.toBeLessThanOrEqual(2);
+ const nav=page.getByRole("navigation",{name:"学习与考试分类"});
+ await expect(nav.locator("a")).toHaveCount(6);
+ await nav.locator('a[href="/math"]').click();
+ await expect(page).toHaveURL(/\/math$/);
+ await expect(page.getByRole("heading",{level:1,name:/竞赛模拟/})).toBeVisible();
+ for(const href of ["/competitions","/exam-planner","/events"])
+  await expect(page.locator('main a[href="'+href+'"]').first()).toBeVisible();
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth)).toBeLessThanOrEqual(2);
 });
 
-test("career headings, main tasks and search are readable across breakpoints",async({page})=>{
+test("portal headings, category cards and search are readable across breakpoints",async({page})=>{
  for(const width of [390,768,1280,1440]){
   await page.setViewportSize({width,height:880});
   await page.goto("/");
@@ -53,15 +42,13 @@ test("career headings, main tasks and search are readable across breakpoints",as
    };
    return {
     heroTitle:font("main h1"),
-    primaryAction:font("main [class*='quickItem'] strong"),
-    serviceTitle:font("main [class*='pathCard'] h3"),
+    categoryTitle:font('main [class*="cardLink"] strong'),
     searchInput:font('main input[name="q"]'),
     overflow:document.documentElement.scrollWidth-window.innerWidth,
    };
   });
   expect(metrics.heroTitle,'hero at '+width).toBeGreaterThanOrEqual(28);
-  expect(metrics.primaryAction,'main action at '+width).toBeGreaterThanOrEqual(18);
-  expect(metrics.serviceTitle,'service heading at '+width).toBeGreaterThanOrEqual(18);
+  expect(metrics.categoryTitle,'category at '+width).toBeGreaterThanOrEqual(18);
   expect(metrics.searchInput,'search at '+width).toBeGreaterThanOrEqual(16);
   expect(metrics.overflow,'horizontal overflow at '+width).toBeLessThanOrEqual(2);
  }

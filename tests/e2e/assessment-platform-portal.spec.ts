@@ -35,7 +35,7 @@ test("five exam-facing groups coexist with seven API assessment domains",async({
 
 test("home search, category links, live services and resource filters work on mobile and desktop",async({page})=>{
   await page.goto("/");
-  await expect(page.getByRole("heading",{level:1,name:/为下一份工作，练出真本事|Build skills for your next job/})).toBeVisible();
+  await expect(page.getByRole("heading",{level:1,name:"今天想学什么？"})).toBeVisible();
   const search=page.locator('main form[action="/search"] input[name="q"]');
   await expect(search).toBeVisible();
   await search.fill("SQL");
@@ -55,7 +55,7 @@ test("home search, category links, live services and resource filters work on mo
   // The public career homepage does not promote school mathematics.
   // Existing classroom material remains independently accessible.
   await page.goto("/math");
-  await expect(page.getByRole("heading",{level:1,name:"数学课堂"})).toBeVisible();
+  await expect(page.getByRole("heading",{level:1,name:/竞赛模拟/})).toBeVisible();
   await expect(page.locator('main a[href="/competitions"]')).toBeVisible();
   await page.goto("/resources");
   await expect(page.getByRole("heading",{level:1,name:"查找试卷，直接练习"})).toBeVisible();

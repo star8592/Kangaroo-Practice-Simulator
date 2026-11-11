@@ -54,7 +54,7 @@ test("date-only event remains an all-day milestone; no fake push promise",async(
 test("math classroom planner remains usable on mobile",async({page})=>{
  await page.setViewportSize({width:390,height:844});
  await page.goto("/math");
- await expect(page.getByRole("heading",{level:1,name:"数学课堂"})).toBeVisible();
+ await expect(page.getByRole("heading",{level:1,name:/竞赛模拟/})).toBeVisible();
  await page.locator('main a[href="/exam-planner"]').click();
  await expect(page).toHaveURL(/\/exam-planner$/);
  await expect(page.getByLabel("所属考试领域")).toBeVisible();

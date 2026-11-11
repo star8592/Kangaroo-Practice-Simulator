@@ -11,7 +11,7 @@ const ENTRIES = [
 ] as const;
 
 export default function SocthinkPortal() {
- return <div className={styles.shell} data-socthink-portal="true">
+ return <div className={styles.shell} data-socthink-portal="true" data-site-shell="content">
   <section className={styles.intro}>
    <span className={styles.kicker}>SOC THINK · LEARNING & ASSESSMENT</span>
    <h1>今天想学什么？</h1>
