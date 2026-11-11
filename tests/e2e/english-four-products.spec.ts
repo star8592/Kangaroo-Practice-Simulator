@@ -1,10 +1,10 @@
 import {expect,test} from "@playwright/test";
 
 const STUDIOS=[
- {slug:"pronunciation",title:"发音训练",target:"https://toktik.tech/accent-lab/practice-library"},
- {slug:"vocabulary",title:"单词学习",target:"https://toktik.tech/vocab/"},
- {slug:"reading",title:"英语阅读",target:null},
- {slug:"aelos",title:"综合英语",target:"https://toktik.tech/english/home"},
+ {slug:"pronunciation",title:"发音训练",target:"/english/pronunciation/app/practice-library"},
+ {slug:"vocabulary",title:"单词学习",target:"/english/vocabulary/app/"},
+ {slug:"reading",title:"英语阅读",target:"/english/reading/app/"},
+ {slug:"aelos",title:"综合英语",target:"/english/aelos/app/"},
 ] as const;
 
 test("homepage opens a single English hub containing four independent products",async({page})=>{
@@ -28,15 +28,11 @@ test("each studio page is live, correctly labeled and truthful about independent
   await expect(page.getByRole("heading",{level:1,name:studio.title})).toBeVisible();
   await expect(page.locator('nav[aria-label="英语学习路径"] a[href="/english"]')).toBeVisible();
   await expect(page.locator(`a[href="/login?next=${encodeURIComponent("/english/"+studio.slug)}"]`)).toBeVisible();
-  const target=page.locator("main .ignored, main a[href^='https://toktik.tech/']");
-  if(studio.target){
-    await expect(target).toHaveCount(1);
-    await expect(target).toHaveAttribute("href",studio.target);
-    await expect(page.locator("main")).toContainText("不会自动与本站互通");
-  }else{
-    await expect(target).toHaveCount(0);
-    await expect(page.locator("main")).toContainText("暂未开放");
-  }
+  const target=page.locator('main a[href="'+studio.target+'"]');
+  await expect(target).toHaveCount(1);
+  await expect(target).toHaveAttribute("href",studio.target);
+  await expect(page.locator("main a[href^='https://toktik.tech/']")).toHaveCount(0);
+  await expect(page.locator("main")).toContainText("尚未完成端到端验收");
   expect(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth)).toBeLessThanOrEqual(2);
  }
 });
