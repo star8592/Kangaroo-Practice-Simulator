@@ -13,6 +13,6 @@ export const metadata = {
 export default function ResourceLibraryPage() {
   // Reuse the same content gate and source inventory as the existing exam
   // launcher. No second index, copy of private questions or new exam path.
-  const rows = buildTrainingResourceCatalog(listTrainingExamProfiles());
+  const rows = buildTrainingResourceCatalog(listTrainingExamProfiles()).filter(row => row.paperType !== "smart");
   return <ResourceLibraryClient resources={rows} />;
 }

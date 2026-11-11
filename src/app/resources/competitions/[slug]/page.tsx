@@ -15,7 +15,7 @@ const getPageData = cache((slug: string) => {
   const hub = getResourceHub(slug);
   if (!hub) return null;
   const rows = buildTrainingResourceCatalog(listTrainingExamProfiles())
-    .filter((row) => row.competition === hub.id);
+    .filter((row) => row.competition === hub.id && row.paperType !== "smart");
   if (!rows.length) return null;
   return { hub, rows };
 });

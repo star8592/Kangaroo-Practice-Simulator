@@ -98,7 +98,7 @@ export default function ResourceLibraryClient({ resources }: { resources: Resour
         <label><span>{t.type}</span><select value={paperType}
           onChange={event => {setPaperType(event.target.value); setLimit(PAGE_SIZE);}}>
           <option value="">{t.type}</option>
-          {Object.entries(TYPE_LABELS[lang]).map(([id, label]) =>
+          {Object.entries(TYPE_LABELS[lang]).filter(([id]) => id !== "smart").map(([id, label]) =>
             <option value={id} key={id}>{label}</option>)}
         </select></label>
       </div>
