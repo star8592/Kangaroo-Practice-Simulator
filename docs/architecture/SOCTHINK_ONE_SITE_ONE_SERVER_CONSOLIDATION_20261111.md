@@ -81,3 +81,19 @@ SOC THINK 作为账户与付款唯一权威来源：用户统一账户、唯一�
 - 来源 `toktik.tech`：正在使用的 `TTS_PROVIDER=edge_tts` 是在线语音方案，DeepSeek Base URL 指向远程 API；没有发现在运行中的 Whisper/IndexTTS/Piper 大模型进程；存在模型路径和可选 TTS/ASR 配置项，但相关可执行文件/模型路径没有经验证为正在使用的本机推理服务。现有 `english-leap` 小型后端服务不应与大模型混淆。
 - 已检查的两个服务器相关业务目录没有发现大型推理模型权重。这是运行态证据，**不意味着所有调用代码都没有历史本地模型开关**；迁移时应以当前使用的在线 API 为准，不复制旧环境中未使用的本地模型配置。
 - 本期优先目标是把**所有普通网站和业务服务运行在一台服务器**，而不是为 AI 设计任何新的服务器、远程 GPU 系统或算法框架；保持单机部署简单可回退。
+
+
+## 九、2026-11-11 迁移实作回执（保持非公开）
+
+本轮仍处于同一台主站上的非公开预览阶段；正式学生数据库、单点登录、微信支付及四套课程完整切换均未验收。本记录避免将静态页面可打开误称为用户可以购买并完成学习。
+
+- SOC THINK 主机当前静态暂存：AccentLab、词语星球、原 AelOS 英语前端、原 /reading 旧阅读入口。注意原 /reading 是旧 AelOS 页面，不是独立 EnglishLeap；真正的 EnglishLeap 仓库 star8592/EnglishLeap 仍为本地 MVP。
+- AelOS 新版前端单独适配在 /srv/socthink/english-staging/aelos/releases/34cadeee34bcc4f814fe69304825d63683d2bef7/www；Node API 源码和运行依赖在 /srv/socthink/english-staging/aelos/releases/f68197e5befbd3fd9d172bcbfe798e1044a345b7/backend，尚未启动正式服务。
+- 两个现行 Rust 后端可执行程序位于 /srv/socthink/english-staging/rust-programs/（english-leap、vocab-platform-api），归档 SHA256 校验成功；PostgreSQL 18.6 原版运行文件复制到目标后能够运行版本查询，未恢复真实数据库。
+- Nginx 仅本机预览站 127.0.0.1:18581 可加载 /vocab/、/accent-lab/、/reading/、/english/aelos/app/，均返回 HTTP 200。真实 Chrome 验证词汇和 AccentLab 首页能运行前端脚本；AelOS 仅验证了 API 返回未登录时的资源及路由，不是有效登录验收。后台未开放，预览 API 故意返回 503。正式站 Next.js、数学题库和支付未被切换。
+- 原站 PostgreSQL16 AelOS 完整备份保存在源机 root 限制目录，155830165 字节，SHA256 846adf363c401ddc2021ef1a7a5398ecb96c23093e3432901e09a5e28ef7bced，pg_restore --list 校验通过。
+- 原站词语星球 PostgreSQL18 做了一次一致性冷备份并立即恢复服务，16425963 字节，SHA256 8a4a212359f6ded7c312a4f2401f9cd73e8611b8861803cebeba7c2e87cbdb9e。源站 DB、API 均 active，旧站 HTTP200。两份备份文件权限 600，未传出真实学生数据。
+- 远程控制工具的安全策略阻止加密密钥传递及数据库管理员权限操作，不应绕过。暂存的公开传输文件已经清理，原站备份仍保存在非公开位置。新机数据库未恢复、真账号和真实支付未通过，不能宣称迁移完毕。
+- 目标可运行 scripts/check_english_singlehost_staging.sh 验证只读暂存与公网主站基本健康，不触碰用户数据、账本、真实支付或账号。
+
+下次实施的明确先后顺序：获批准的安全数据传输与数据库恢复能力；AelOS PG16 及词汇 PG18 目标库的数据记录核对；音频内容资料与 Rust/Node API 真实学习验证；真正独立 EnglishLeap 服务；SOC THINK 统一账户关联和收费权益的真实正向与拒绝用例；逐产品正式路径切换与自动回退。只有上述成功，旧服务器才可释放作其他用途。
