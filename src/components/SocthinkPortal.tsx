@@ -1,5 +1,5 @@
 import Link from "next/link";
-import styles from "./ScoreSyncPortal.module.css";
+import styles from "./SocthinkPortal.module.css";
 
 const ENTRIES = [
  {id:"math",label:"数学",detail:"国际竞赛 · 口算训练",icon:"∑",href:"/math",status:"ready"},
@@ -10,15 +10,15 @@ const ENTRIES = [
  {id:"exams",label:"考试升学",detail:"模拟考试 · 备考",icon:"考",href:"/assessments",status:"ready"},
 ] as const;
 
-export default function ScoreSyncPortal() {
- return <div className={styles.shell} data-scoresync-portal="true">
+export default function SocthinkPortal() {
+ return <div className={styles.shell} data-socthink-portal="true">
   <section className={styles.intro}>
-   <span className={styles.kicker}>SCORESYNC · LEARNING & ASSESSMENT</span>
+   <span className={styles.kicker}>SOC THINK · LEARNING & ASSESSMENT</span>
    <h1>今天想学什么？</h1>
    <p>选择一个方向，直接进入。</p>
    <form action="/search" method="get" role="search" className={styles.search}>
-    <label htmlFor="scoresync-query" className={styles.srOnly}>搜索课程、考试或测评</label>
-    <input id="scoresync-query" type="search" name="q" placeholder="搜索课程、考试或测评" maxLength={100}/>
+    <label htmlFor="socthink-query" className={styles.srOnly}>搜索课程、考试或测评</label>
+    <input id="socthink-query" type="search" name="q" placeholder="搜索课程、考试或测评" maxLength={100}/>
     <button type="submit">搜索</button>
    </form>
   </section>

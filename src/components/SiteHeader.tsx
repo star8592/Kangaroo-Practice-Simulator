@@ -9,7 +9,7 @@ import {SITE_BRAND} from "@/lib/site-brand";
 import {useSiteLanguage} from "@/lib/site-language";
 import {PRIMARY_BUSINESS_NAV as TASK_LINKS} from "@/lib/site-architecture";
 import styles from "./SiteHeader.module.css";
-import portalChrome from "./ScoreSyncChrome.module.css";
+import portalChrome from "./SocthinkChrome.module.css";
 
 /* Main navigation is derived from the single site-architecture registry.
  * School mathematics is maintained separately; public navigation follows career tasks. */
@@ -35,14 +35,14 @@ export default function SiteHeader(){
     return()=>document.removeEventListener("keydown",onKey);
   },[mobileOpen]);
 
-  const isScoreSyncPortal=pathname==="/"||pathname==="/math"||pathname==="/competitions";
-  if(isScoreSyncPortal)return <header className={portalChrome.header}>
+  const isSocthinkPortal=pathname==="/"||pathname==="/math"||pathname==="/competitions";
+  if(isSocthinkPortal)return <header className={portalChrome.header}>
     <div className={portalChrome.inner}>
-      <Link href="/" className={portalChrome.brand} onClick={dismiss} aria-label="ScoreSync 首页">
+      <Link href="/" className={portalChrome.brand} onClick={dismiss} aria-label="SOC THINK 首页">
         <span className={portalChrome.mark}>S</span>
-        <span><strong>ScoreSync</strong><small>学习 · 考试 · 测评</small></span>
+        <span><strong>SOC THINK</strong><small>学习 · 考试 · 测评</small></span>
       </Link>
-      <nav className={portalChrome.links} aria-label="ScoreSync 导航">
+      <nav className={portalChrome.links} aria-label="SOC THINK 导航">
         <Link href="/math">数学</Link>
         <Link href="/learn">职业课程</Link>
         <Link href="/assessment-center">能力测评</Link>

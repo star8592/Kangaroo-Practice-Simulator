@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import {usePathname} from "next/navigation";
-import portalChrome from "./ScoreSyncChrome.module.css";
+import portalChrome from "./SocthinkChrome.module.css";
 import {useSiteLanguage} from "@/lib/site-language";
 const GROUPS=[
  {zh:"职业准备",en:"Career preparation",items:[
@@ -26,7 +26,7 @@ export default function SiteFooter(){
  const pathname=usePathname();
  if(pathname==="/"||pathname==="/math"||pathname==="/competitions"){
    return <footer className={portalChrome.footer}><div className={portalChrome.footerInner}>
-    <span>© 2026 ScoreSync · 在线学习与考试</span>
+    <span>© 2026 SOC THINK · 在线学习与考试</span>
     <nav aria-label="法律与账户"><Link href="/account">我的订单</Link><Link href="/privacy">隐私</Link><Link href="/terms">条款</Link><a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer">鄂ICP备2026004372号</a></nav>
    </div></footer>;
  }
