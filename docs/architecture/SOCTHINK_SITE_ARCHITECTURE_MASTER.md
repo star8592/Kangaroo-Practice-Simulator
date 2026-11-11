@@ -1,3 +1,5 @@
+> **2026-11-11 统一网站与主要业务服务器决策：** SOC THINK 继续只使用 `https://socthink.cn/` 对外；原有四套英语学习产品的独立仓库、运行进程和学员数据保持隔离，逐一重新发布到 SOC THINK 主业务服务器的 `/english/{产品}/app/`，而不是以外站跳转作为最终形态。主要网站、登录、付款统一，重型 ASR/TTS/GPU 工作可留在计算节点。旧 toktik 英语服务在真实授权、数据及应用迁移完成前不得停止。生产主站仅 2 vCPU/3.4 GiB，需先容量验收。路线、事实、阶段进度见 [统一主站迁移方案](SOCTHINK_ONE_SITE_ONE_SERVER_CONSOLIDATION_20261111.md)。
+
 # SOC THINK 全站信息架构总纲（转型定版 v2.1）
 
 > **2026-11-11 英语馆四独立产品新决策（优先于下文旧职业英语收缩方案）：** SOC THINK 设 `/english` 一级分类，下设 `/english/pronunciation`、`/english/vocabulary`、`/english/reading`、`/english/aelos` 四个独立产品目录，对应 AccentLab、VocabLearningPlatform、EnglishLeap、AelOS 四个仓库；主站统一发现、用户账户和计费/权益方案，子应用各自保留课程与私有数据，不得伪造已经完成跨站 SSO 或实收交易。状态、身份、计费及同域迁移详见 [英语馆四产品对接纲要](SOCTHINK_ENGLISH_FOUR_PRODUCTS_IDENTITY_BILLING_20261111.md)。
