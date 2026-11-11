@@ -1,0 +1,27 @@
+.classic{
+ --bg:#f4f6f1;--ink:#17231d;--muted:#6d786f;--line:#dbe1d9;--panel:#fff;
+ --surface-subtle:#f7f9f6;--surface-muted:#fbfcfa;--field-border:#d9dfda;--field-hover:#c5cec7;
+ --accent:#ff7a45;--accent-dark:#e85c25;--green:#225a42;--soft-green:#e8f1ea;
+ --focus-ring:0 0 0 3px rgba(255,122,69,.1);
+ --layout-standard:1200px;--layout-wide:1440px;
+ background:#f4f6f1;color:#17231d;min-height:75vh;isolation:isolate;
+}
+.quick{display:flex;align-items:center;gap:12px;flex-wrap:wrap;max-width:1440px;margin:0 auto;padding:18px 28px 0}
+.quick a{color:#364239;border:1px solid #d7dfd7;padding:9px 13px;border-radius:10px;font-size:14px;font-weight:750;background:white}
+.quick a:first-child{background:#17231d;color:#fff;border-color:#17231d}
+.quick a:hover{border-color:#ff7a45}
+.classic :is(a,button,input):focus-visible{outline:3px solid #ff7a45;outline-offset:3px}
+@media(max-width:640px){.quick{padding:13px 14px 0;gap:7px}.quick a{font-size:12px;padding:8px 10px}}
+
+/* Override the newer global blue competition redesign only inside the classic
+ * math shell. CSS variables alone are insufficient: the global stylesheet has
+ * explicit navy-gradient and white primary-button declarations. */
+.classic :global(.home-shell > .hero-card){background:#17231d;color:#fff}
+.classic :global(.home-shell > .hero-card .eyebrow){color:#ff7a45}
+.classic :global(.home-shell > .hero-card .hero-copy){color:#cbd4ce}
+.classic :global(.home-shell .eyebrow){color:#e85c25}
+.classic :global(.home-shell .primary-button),
+.classic :global(.home-shell > .hero-card .primary-button){background:#ff7a45;color:#1b1c18}
+.classic :global(.home-shell .primary-button:hover),
+.classic :global(.home-shell > .hero-card .primary-button:hover){background:#ff8b5b;color:#1b1c18}
+.classic :global(.competition-card.active){border-color:#ff7a45}

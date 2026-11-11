@@ -1,24 +1,9 @@
-import PublicHome from "@/components/PublicHome";
-import {homepageUpdates,homepageCounts} from "@/lib/site-discovery";
-import { SITE_BRAND } from "@/lib/site-brand";
+import ScoreSyncPortal from "@/components/ScoreSyncPortal";
 
-export const metadata = { alternates: { canonical: "/" } };
-
-// Only verified public facts; no fabricated organization details or social links.
-const organization = {
-  "@context": "https://schema.org",
-  "@type": "Organization",
-  "@id": "https://socthink.cn/#organization",
-  "name": SITE_BRAND.nameEn,
-  "url": "https://socthink.cn/",
-  "description": SITE_BRAND.description,
+export const metadata={
+ title:"ScoreSync｜在线学习、考试与能力测评",
+ description:"ScoreSync 在线课程与考试入口：数学竞赛、英语学习、校内学科、职业课程与能力测评。",
+ alternates:{canonical:"/"},
 };
 
-export default function Home() {
-  return <>
-    <script type="application/ld+json" dangerouslySetInnerHTML={{
-      __html: JSON.stringify(organization).replace(/</g, "\\u003c"),
-    }} />
-    <PublicHome updates={homepageUpdates()} counts={homepageCounts()}/>
-  </>;
-}
+export default function Home(){return <ScoreSyncPortal/>;}
