@@ -56,3 +56,5 @@
 .tile:has(a[data-direct-primary]):focus-within {box-shadow:0 0 0 3px #f9ab7060}
 .tile:has(a[data-direct-primary]) a[data-direct-primary]{margin-top:auto;min-height:32px;display:inline-flex;align-items:center}
 .entryNote{font-size:12px;color:#718074;margin:21px 1px 0}
+
+.tileAction{font-size:15px;font-weight:750;color:#a84d22;align-self:flex-start;margin-top:auto;display:inline-flex;gap:7px;min-height:28px;align-items:center}

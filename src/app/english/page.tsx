@@ -30,7 +30,7 @@ export default function EnglishHub(){
     {ENGLISH_DIRECT_ENTRIES.map(item=><article className={styles.tile+" direct-entry-card"} key={item.id}><Link className="direct-entry-hit" data-direct-primary href={item.href} aria-label={"直接打开"+item.name}/>
      <div className={styles.tileTop}><div className={styles.icon} aria-hidden="true">{item.icon}</div><div className={styles.tileMeta}><small>{item.product}</small><h3>{item.name}</h3></div></div>
      <p>{item.subtitle}</p><span className={styles.tileStatus}>{item.statusText}</span>
-     <Link href={item.href} aria-label={"立即使用"+item.name}>立即使用 <span aria-hidden="true">→</span></Link>
+     <span className={styles.tileAction} aria-hidden="true">立即使用 <span>→</span></span>
     </article>)}
    </nav>
   </section>

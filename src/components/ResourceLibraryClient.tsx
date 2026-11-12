@@ -117,7 +117,7 @@ export default function ResourceLibraryClient({ resources }: { resources: Resour
             row.durationMinutes ? `${row.durationMinutes} ${t.min}` : t.untimed]
             .filter(Boolean).join(" · ")}
         </p>
-        <Link href={row.examUrl} className={styles.open}>{t.start}<span aria-hidden="true"> →</span></Link>
+        <span className={styles.open} aria-hidden="true">{t.start}<span> →</span></span>
       </article>)}
     </section> : <p className={styles.empty}>{t.empty}</p>}
     {filtered.length > shown.length && <div className={styles.more}>
