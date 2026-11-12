@@ -1,0 +1,163 @@
+{
+  "schema": "socthink.module_inventory.audit.v1",
+  "observed_on": "2026-11-12",
+  "scope": "socthink.cn production and shared-host impact only",
+  "source": "live read-only route, process and source-tree audit; unknowns intentionally explicit",
+  "note": "snapshot evidence, NOT deployment configuration; do not delete or relocate based only on this file",
+  "modules": [
+    {
+      "id": "portal",
+      "category": "platform",
+      "url": "https://socthink.cn/",
+      "code_repo": "star8592/Kangaroo-Practice-Simulator",
+      "code_path": "src/app",
+      "runtime": "/opt/socthink-releases/current",
+      "service": "socthink-math.service",
+      "storage": "/opt/socthink-math/private",
+      "status": "live_verified"
+    },
+    {
+      "id": "wechat_identity",
+      "category": "shared",
+      "url": "https://socthink.cn/login",
+      "code_repo": "star8592/Kangaroo-Practice-Simulator",
+      "code_path": "src/lib/parent-auth.ts",
+      "runtime": "/opt/socthink-releases/current",
+      "service": "socthink-math.service",
+      "storage": "/opt/socthink-math/private/users (current JSON authority; PG migration proposed)",
+      "status": "live_verified"
+    },
+    {
+      "id": "billing",
+      "category": "shared",
+      "url": "https://socthink.cn",
+      "code_repo": "star8592/Kangaroo-Practice-Simulator",
+      "code_path": "src/app/api (specific endpoints require follow-up)",
+      "runtime": "/opt/socthink-releases/current",
+      "service": "socthink-math.service",
+      "storage": "PG16:5432/socthink_billing_prod",
+      "status": "existing_db_verified"
+    },
+    {
+      "id": "math_competitions",
+      "category": "product",
+      "url": "https://socthink.cn/competitions",
+      "code_repo": "star8592/Kangaroo-Practice-Simulator",
+      "code_path": "src/app/competitions,src/app/math,src/app/arithmetic",
+      "runtime": "/opt/socthink-releases/current",
+      "service": "socthink-math.service",
+      "storage": "mixed; full logical source map pending",
+      "status": "route_sources_verified"
+    },
+    {
+      "id": "pronunciation",
+      "category": "english",
+      "url": "https://socthink.cn/english/pronunciation/app/",
+      "code_repo": "star8592/AccentLab",
+      "code_path": "independent repo",
+      "runtime": "/var/www/socthink-english-public/current/english/pronunciation/app",
+      "service": "socthink-accent-api.service",
+      "storage": "PG16:5432/accent_lab plus private audio",
+      "status": "frontend_200; classroom_api_not_live"
+    },
+    {
+      "id": "vocabulary",
+      "category": "english",
+      "url": "https://socthink.cn/english/vocabulary/app/",
+      "code_repo": "independent vocabulary repo (exact name pending)",
+      "code_path": "independent repo",
+      "runtime": "/var/www/socthink-english-public/current/english/vocabulary/app",
+      "service": "socthink-vocab-api.service,socthink-vocab-postgres18.service",
+      "storage": "PG18:5433/vocab_classroom",
+      "status": "frontend_200; db_consolidation_pending"
+    },
+    {
+      "id": "reading",
+      "category": "english",
+      "url": "https://socthink.cn/english/reading/app/",
+      "code_repo": "independent English Leap repo (exact name pending)",
+      "code_path": "independent repo",
+      "runtime": "/var/www/socthink-english-public/current/english/reading/app",
+      "service": "not_verified",
+      "storage": "not_verified",
+      "status": "frontend_200"
+    },
+    {
+      "id": "aelos",
+      "category": "english",
+      "url": "https://socthink.cn/english/aelos/app/",
+      "code_repo": "independent AelOS repo (exact name pending)",
+      "code_path": "independent repo",
+      "runtime": "/var/www/socthink-english-public/current/english/aelos/app",
+      "service": "socthink-aelos-api.service",
+      "storage": "PG16:5432/aelos",
+      "status": "frontend_200; service_active"
+    },
+    {
+      "id": "kids_reading",
+      "category": "english",
+      "url": "https://socthink.cn/english/reading/kids/",
+      "code_repo": "pending",
+      "code_path": "pending",
+      "runtime": "/var/www/socthink-kids-formal/current",
+      "service": "nginx static",
+      "storage": "static media",
+      "status": "formal_release_detected"
+    },
+    {
+      "id": "kids_aelos_preview",
+      "category": "english_preview",
+      "url": "https://socthink.cn/english/aelos/kids-preview/",
+      "code_repo": "pending",
+      "code_path": "pending",
+      "runtime": "/var/www/socthink-kids-preview/current",
+      "service": "nginx static",
+      "storage": "static media",
+      "status": "preview_release_detected"
+    },
+    {
+      "id": "classroom",
+      "category": "adjacent",
+      "url": "https://socthink.cn/classroom-live/",
+      "code_repo": "pending",
+      "code_path": "separate deployment",
+      "runtime": "/opt/zoryvia-classroom",
+      "service": "nginx snippets: zoryvia-classroom-*",
+      "storage": "requires owner audit",
+      "status": "routes_detected; product independent of Zoria Control"
+    },
+    {
+      "id": "story_studio",
+      "category": "adjacent",
+      "url": "https://socthink.cn/story-studio/",
+      "code_repo": "pending",
+      "code_path": "separate deployment",
+      "runtime": "/opt/storyforge-studio",
+      "service": "nginx snippet: storyforge-studio.conf",
+      "storage": "requires owner audit",
+      "status": "route_detected"
+    },
+    {
+      "id": "seo_monitor",
+      "category": "operations",
+      "url": "https://socthink.cn/sitemap.xml",
+      "code_repo": "star8592/Kangaroo-Practice-Simulator",
+      "code_path": "scripts/seo_monitor_daily.mjs",
+      "runtime": "/opt/socthink-releases/current",
+      "service": "socthink-seo-monitor.service + timer",
+      "storage": "private/users/seo-monitor-snapshots.json",
+      "status": "12_NO_H1_failures"
+    },
+    {
+      "id": "cohost_commerceflow",
+      "category": "cohost_not_socthink",
+      "url": "https://lic.toktik.tech/",
+      "code_repo": "independent",
+      "code_path": "out_of_scope",
+      "runtime": "/opt/commerceflow-delivery,/srv/commerceflow-delivery",
+      "service": "commerceflow-delivery.service",
+      "storage": "separate billing/delivery",
+      "status": "separate_business_do_not_merge"
+    }
+  ]
+}
