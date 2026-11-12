@@ -11,7 +11,10 @@ export function userDataPath(name: string) {
 }
 
 export function ensureUserDataDir() {
-  fs.mkdirSync(USER_DATA_DIR, { recursive: true });
+  // The default umask is often 022. New identity/session data directories
+  // must not become searchable by unrelated operating-system accounts.
+  // Existing directories require a separate owner/permission migration.
+  fs.mkdirSync(USER_DATA_DIR, { recursive: true, mode: 0o700 });
 }
 
 export function readJsonArray<T>(file: string): T[] {
@@ -27,9 +30,24 @@ export function readJsonArray<T>(file: string): T[] {
 
 export function atomicWriteJson(file: string, value: unknown) {
   ensureUserDataDir();
-  const tmp = `${file}.tmp`;
-  fs.writeFileSync(tmp, JSON.stringify(value, null, 2));
-  fs.renameSync(tmp, file);
+  // A predictable `file.tmp` could collide between app processes. A unique
+  // exclusive 0600 temporary file prevents collisions and avoids briefly
+  // exposing parent accounts, session state or password hashes via umask 022.
+  const tmp = `${file}.${process.pid}.${crypto.randomBytes(8).toString("hex")}.tmp`;
+  try {
+    fs.writeFileSync(tmp, JSON.stringify(value, null, 2), {
+      mode: 0o600,
+      flag: "wx",
+    });
+    // Same-directory rename is atomic and preserves the temp file's 0600 mode.
+    fs.renameSync(tmp, file);
+  } finally {
+    try {
+      fs.unlinkSync(tmp);
+    } catch (error) {
+      if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
+    }
+  }
 }
 
 export function readOrCreateSecret(file: string, bytes = 48) {
