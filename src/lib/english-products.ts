@@ -22,7 +22,7 @@ export const ENGLISH_PRODUCTS = [
   detail:"独立 Rust / Vue / PostgreSQL 课堂已经部署；真实班级验收、监护与收费开通不等同于页面已可访问。",
  },
  {
-  id:"reading",name:"英语阅读",product:"EnglishLeap · 小小阅读星球",subtitle:"互动故事 · 进阶精读 · 阅读理解",
+  id:"reading",name:"英语阅读",product:"EnglishLeap · 小小阅读星球",subtitle:"互动故事 · 文章阅读 · 理解练习",
   summary:"小学低龄互动绘本与进阶精读分层提供，先按年龄选择适合的阅读路径。",
   href:"/english/reading",serviceUrl:"/english/reading/app/",
   serviceCta:"体验阅读课程",availability:"public-app",statusText:"少儿绘本正式开放 · 进阶精读体验",
@@ -30,12 +30,12 @@ export const ENGLISH_PRODUCTS = [
   detail:"少儿英语绘本已提供免费正式阅读入口；EnglishLeap 保留进阶精读。前者暂不生成正式成绩，后者的完整教学与付费尚待验收。",
  },
  {
-  id:"aelos",name:"综合英语",product:"AelOS",subtitle:"阅读能力 · 听说读写 · AI 学习规划",
-  summary:"以每日学习任务组织阅读、词汇、听说读写与能力图谱，并逐步调整个人学习路线。",
+  id:"aelos",name:"高阶阅读",product:"AelOS",subtitle:"复杂篇章 · 深度理解 · 阅读分析",
+  summary:"以高阶阅读为核心，通过篇章理解、词汇分析与能力图谱组织深入学习；其他训练工具作为辅助。",
   href:"/english/aelos",serviceUrl:"/english/aelos/app/",
-  serviceCta:"打开 AelOS",availability:"login-app",statusText:"主站综合英语已接入",
+  serviceCta:"进入高阶阅读",availability:"login-app",statusText:"AelOS 高阶阅读入口已接入",
   icon:"OS",capability:"english.aelos",
-  detail:"独立仓库 star8592/aelos。现有公网应用有阅读、词汇、目标、成长等页面；学习数据与 AI 功能需独立登录及运行态验收。分级难度参考不等于蓝思官方认证。",
+  detail:"AelOS 是偏高阶的阅读学习应用，阅读训练和分析是产品主线；词汇、目标与成长页面为辅助功能。学习数据与 AI 能力仍须登录及运行态验收，课程难度标识不是蓝思官方认证。",
  },
 ] as const;
 

@@ -27,9 +27,9 @@ export default function EnglishStudioPage({studio}:{studio:EnglishProductId}){
     <a className={styles.primaryAction} href="/english/reading/kids/">进入小小阅读星球</a>
    </article>
    <article className={styles.readingCard}>
-    <span className={styles.kidsKicker}>进阶阅读 · EnglishLeap</span>
-    <h2>青少年与成人精读</h2>
-    <p>逐段阅读、词汇积累、理解分析与深度精读。独立阅读应用已开放体验，部分书库及口音功能仍在完善。</p>
+    <span className={styles.kidsKicker}>阅读训练 · EnglishLeap</span>
+    <h2>文章阅读与理解</h2>
+    <p>从文章入手学习词汇、段落和理解分析，阅读过程中再展开进阶工具。独立应用已开放体验，部分书库及口音功能仍在完善。</p>
     <a className={styles.primaryAction} href="/english/reading/app/">进入 EnglishLeap</a>
    </article>
   </section> : <section className={styles.launch} aria-label="学习入口">

@@ -4,15 +4,15 @@ import {ENGLISH_PRODUCTS} from "@/lib/english-products";
 import styles from "./english.module.css";
 
 export const metadata:Metadata={
- title:"英语学习｜少儿英语绘本·发音·单词·英语精读｜SOC THINK",
- description:"SOC THINK 英语学习：小学一至六年级互动英语绘本、发音跟读、单词课堂、进阶英语精读与综合英语学习。",
+ title:"英语学习｜少儿绘本·发音·单词·英语阅读·高阶阅读｜SOC THINK",
+ description:"SOC THINK 英语学习：少儿互动绘本、发音跟读、单词课堂、EnglishLeap 阅读训练与 AelOS 高阶阅读。",
  alternates:{canonical:"/english"},
 };
 
 // English has four capabilities, but five direct product entry cards.
 const ENGLISH_DIRECT_ENTRIES=ENGLISH_PRODUCTS.flatMap(item=>item.id==="reading" ? [
  {id:"kids",name:"少儿英语绘本",product:"英语阅读 · 小小阅读星球",subtitle:"小学 1—6 年级 · 看图听故事 · 点触互动",statusText:"24 本故事 · 免费开放",href:"/english/reading/kids/",icon:"📖"},
- {id:"reading-pro",name:"英语精读",product:"英语阅读 · EnglishLeap",subtitle:"青少年及成人 · 词汇 · 精读理解",statusText:"进阶阅读体验已开放",href:item.serviceUrl,icon:"R"},
+ {id:"reading-pro",name:"英语阅读",product:"文章阅读 · EnglishLeap",subtitle:"青少年及成人 · 文章 · 词汇 · 阅读理解",statusText:"阅读训练体验已开放",href:item.serviceUrl,icon:"R"},
 ] : [
  {id:item.id,name:item.name,product:item.product,subtitle:item.subtitle,statusText:item.statusText,href:item.serviceUrl,icon:item.icon},
 ]);
@@ -22,7 +22,7 @@ export default function EnglishHub(){
   <header className={styles.hero}>
    <span className={styles.kicker}>SOC THINK · ENGLISH</span>
    <h1>英语学习</h1>
-   <p>按学习目标选择：少儿绘本、发音跟读、单词学习、进阶阅读与综合提升。</p>
+   <p>直接选择：发音、单词、少儿绘本、文章阅读或 AelOS 高阶阅读。</p>
   </header>
   <section aria-labelledby="english-choose">
    <div className={styles.headerRow}><h2 id="english-choose">选择学习内容</h2><p>四个方向 · 五个直接入口</p></div>
