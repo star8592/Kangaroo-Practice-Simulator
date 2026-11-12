@@ -15,10 +15,17 @@ const TIMEOUT_MS = 9000;
 const HISTORY_LIMIT = 365;
 const STORE_FILE = "seo-monitor-snapshots.json";
 
-function dataDirectory() {
-  return process.env.SOCTHINK_USER_DATA_DIR?.trim()
-    ? path.resolve(process.env.SOCTHINK_USER_DATA_DIR.trim())
-    : path.join(process.cwd(), "private", "users");
+// SEO probe history must not share an operating-system write boundary with
+// WeChat identities, sessions or paid entitlement records. During rollout,
+// accept the old variable only if the new SEO-only directory is unset.
+export function dataDirectory() {
+  if (process.env.SOCTHINK_SEO_DATA_DIR?.trim()) {
+    return path.resolve(process.env.SOCTHINK_SEO_DATA_DIR.trim());
+  }
+  if (process.env.SOCTHINK_USER_DATA_DIR?.trim()) {
+    return path.resolve(process.env.SOCTHINK_USER_DATA_DIR.trim());
+  }
+  return path.join(process.cwd(), "private", "seo");
 }
 
 function storePath() {
