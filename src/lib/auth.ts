@@ -2,7 +2,7 @@ import crypto from "node:crypto";
 import {activeParentSessionVersion,parentFromSessionToken,PARENT_SESSION_COOKIE} from "./parent-auth";
 import { DEFAULT_STUDENT_AVATAR, isStudentAvatarKey } from "./student-avatar";
 import { hashScryptSecret, readSignedJsonToken, signJsonToken, verifyScryptSecret } from "./auth-crypto";
-import { atomicWriteJson, readJsonArray, readOrCreateSecret, userDataPath } from "./user-data-store";
+import { atomicWriteJson, readJsonArray, readJsonArrayStrict, readOrCreateSecret, userDataPath } from "./user-data-store";
 
 export type StudentUser={
  id:string;username:string;candidateNo:string;name:string;grade:number;school?:string;avatarKey?:string;onboardingCompleted?:boolean;
@@ -16,7 +16,7 @@ function secret(){return readOrCreateSecret(SECRET)}
 function hashPin(pin:string){return hashScryptSecret(pin)}
 function verifyPin(pin:string,encoded:string){return verifyScryptSecret(pin,encoded)}
 function normalize(u:StudentUser):StudentUser{const role=u.role==="admin"?"admin":"student";return{...u,role,sessionVersion:Math.max(1,Number(u.sessionVersion)||1),avatarKey:role==="student"?(isStudentAvatarKey(u.avatarKey)?u.avatarKey:DEFAULT_STUDENT_AVATAR):u.avatarKey,onboardingCompleted:role==="student"?u.onboardingCompleted===true:u.onboardingCompleted}}
-export function loadUsers():StudentUser[]{return readJsonArray<StudentUser>(USERS).map(normalize)}
+export function loadUsers():StudentUser[]{return readJsonArrayStrict<StudentUser>(USERS).map(normalize)}
 function saveUsers(x:StudentUser[]){atomicWriteJson(USERS,x.map(normalize))}
 function pub(u:StudentUser):PublicStudent{const{pinHash,...x}=normalize(u);void pinHash;return x}
 export function authenticate(k0:string,pin:string){
