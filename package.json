@@ -137,10 +137,11 @@
     "test:career-directory": "tsx scripts/test_career_role_directory.ts && tsx scripts/test_agent_project_course.ts && tsx scripts/test_agent_code_account_api.ts",
     "test:career-formal-exams": "tsx scripts/test_career_formal_exams.ts",
     "test:career-semantic": "tsx scripts/test_career_semantic_followup.ts",
-    "test:site-architecture": "tsx scripts/test_site_architecture.ts && tsx scripts/test_site_page_inventory.ts && tsx scripts/test_seo_ssr_headings.ts",
+    "test:site-architecture": "tsx scripts/test_site_architecture.ts && tsx scripts/test_site_page_inventory.ts && tsx scripts/test_seo_ssr_headings.ts && npm run test:seo-storage",
     "test:career-guided": "tsx scripts/test_career_guided_interview.ts && python3 scripts/test_career_model_warm.py",
     "bench:career-local": "tsx scripts/benchmark_career_local_judge.ts",
-    "test:career-judge-dataset": "tsx scripts/test_career_judge_dataset.ts"
+    "test:career-judge-dataset": "tsx scripts/test_career_judge_dataset.ts",
+    "test:seo-storage": "node scripts/test_seo_storage_isolation.mjs"
   },
   "dependencies": {
     "next": "16.4.3",
