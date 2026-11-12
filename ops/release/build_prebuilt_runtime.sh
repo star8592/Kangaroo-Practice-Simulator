@@ -24,11 +24,9 @@ PY
 mkdir -p "$OUT/runtime/.next" "$OUT/runtime/public"
 
 cp -a .next/standalone/. "$OUT/runtime/"
-python3 - "$OUT/runtime/private" "$OUT/runtime/.git" "$OUT/runtime/.github" <<'PY'
-import shutil,sys
-for path in sys.argv[1:]:
-    shutil.rmtree(path,ignore_errors=True)
-PY
+# Next standalone copies may contain a plain-file .git worktree pointer,
+# not a directory. rmtree(ignore_errors=True) silently left those in releases.
+python3 "$ROOT/ops/release/sanitize_prebuilt_runtime.py" "$OUT/runtime"
 cp -a .next/static "$OUT/runtime/.next/static"
 
 # Keep only Git-tracked public assets inside the immutable release. Large
@@ -65,7 +63,12 @@ cp scripts/render_diagnostic_pdf_runtime.mjs "$OUT/runtime/scripts/"
   --log-level=warning
 node --check "$OUT/runtime/scripts/reconcile_wechat_native_orders.cjs"
 
-# No private/runtime user data may be embedded in a release artifact.
+# No private/runtime user data or Git worktree metadata in the release.
+for forbidden in private .git .github; do
+  if [ -e "$OUT/runtime/$forbidden" ] || [ -L "$OUT/runtime/$forbidden" ]; then
+    die "unwanted private or Git path remained in prebuilt runtime: $forbidden"
+  fi
+done
 if [ -e "$OUT/runtime/private" ]; then
   die "private data leaked into prebuilt runtime"
 fi
