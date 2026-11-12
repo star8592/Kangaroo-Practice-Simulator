@@ -61,11 +61,9 @@ export function atomicWriteJson(file: string, value: unknown) {
     fs.renameSync(tmp, file);
   } finally {
     if (staged) {
-      try {
-        fs.unlinkSync(tmp);
-      } catch (error) {
-        if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
-      }
+      // force suppresses only the absent-file case after a successful rename.
+      // Other file-system errors still surface without throwing inside finally.
+      fs.rmSync(tmp, { force: true });
     }
   }
 }
