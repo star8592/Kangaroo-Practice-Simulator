@@ -18,6 +18,7 @@ const publicPaths = [
   "/english/pronunciation",
   "/english/vocabulary",
   "/english/reading",
+  "/english/reading/kids/",
   "/privacy",
   "/terms",
   "/digital-purchase-policy",

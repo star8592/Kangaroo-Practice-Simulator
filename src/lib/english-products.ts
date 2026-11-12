@@ -22,12 +22,12 @@ export const ENGLISH_PRODUCTS = [
   detail:"独立 Rust / Vue / PostgreSQL 课堂已经部署；真实班级验收、监护与收费开通不等同于页面已可访问。",
  },
  {
-  id:"reading",name:"英语阅读",product:"EnglishLeap",subtitle:"分级阅读 · 精读 · 理解",
-  summary:"按文章阅读中英段落、积累词汇、梳理思维导图和完成理解练习。",
+  id:"reading",name:"英语阅读",product:"EnglishLeap · 小小阅读星球",subtitle:"儿童绘本 · 进阶精读 · 阅读理解",
+  summary:"小学低龄互动绘本与进阶精读分层提供，先按年龄选择适合的阅读路径。",
   href:"/english/reading",serviceUrl:"/english/reading/app/",
-  serviceCta:"体验阅读课程",availability:"public-app",statusText:"阅读体验入口已接入主站",
+  serviceCta:"体验阅读课程",availability:"public-app",statusText:"少儿绘本正式开放 · 进阶精读体验",
   icon:"R",capability:"english.reading",
-  detail:"EnglishLeap 已在 SOC THINK 主站提供阅读体验入口。课程列表可读取，但部分书库、口音接口尚待补齐，完整教学与付费流程未验收，不作为成熟付费课程宣传。",
+  detail:"少儿分级绘本已提供免费正式阅读入口；EnglishLeap 保留进阶精读。前者暂不生成正式成绩，后者的完整教学与付费尚待验收。",
  },
  {
   id:"aelos",name:"综合英语",product:"AelOS",subtitle:"阅读能力 · 听说读写 · AI 学习规划",

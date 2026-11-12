@@ -4,8 +4,8 @@ import {ENGLISH_PRODUCTS} from "@/lib/english-products";
 import styles from "./english.module.css";
 
 export const metadata:Metadata={
- title:"英语学习｜发音·单词·阅读·AelOS｜SOC THINK",
- description:"进入四个独立英语学习项目：发音跟读、单词记忆、英语精读、AelOS 综合英语学习。了解各应用的真实开放状态。",
+ title:"英语学习｜少儿分级阅读·发音·单词·英语精读｜SOC THINK",
+ description:"SOC THINK 英语学习：小学一至六年级互动分级绘本、发音跟读、单词课堂、进阶英语精读与综合英语学习。",
  alternates:{canonical:"/english"},
 };
 
@@ -15,8 +15,16 @@ export default function EnglishHub(){
   <header className={styles.hero}>
    <span className={styles.kicker}>SOC THINK · ENGLISH</span>
    <h1>英语学习</h1>
-   <p>发音、单词、阅读、综合提升。四个独立学习项目，按需要直接选择。</p>
+   <p>按学习目标选择：少儿绘本、发音跟读、单词学习、进阶阅读与综合提升。</p>
   </header>
+  <section className={styles.kidsFeature} aria-labelledby="kids-reading-feature">
+   <div>
+    <span className={styles.kidsKicker}>小学 G1—G6 · 免费正式开放</span>
+    <h2 id="kids-reading-feature">小小阅读星球</h2>
+    <p>24 本原创互动英语绘本。看图、触摸发音、听男女声讲故事，再做理解练习；暂不生成正式成绩。</p>
+   </div>
+   <a className={styles.primaryAction} href="/english/reading/kids/">开始读故事</a>
+  </section>
   <section aria-labelledby="english-choose">
    <div className={styles.headerRow}><h2 id="english-choose">选择学习方向</h2><p>4 个独立项目</p></div>
    <nav className={styles.grid} aria-label="英语四个独立学习项目">
