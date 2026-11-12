@@ -164,7 +164,7 @@ export default function CareerInterviewClient({profileId}:{profileId:string}){
   setStage("intro");
  }
  const report=buildInterviewReview(profile,entries);
- if(!hydrated)return <p className={styles.loading}>正在恢复本标签页面试练习…</p>;
+ if(!hydrated)return <div className={styles.root}><header className={styles.head}><h1>{profile.title}</h1></header><p className={styles.loading}>正在恢复本标签页面试练习…</p></div>;
  return <div className={styles.root}>
   <header className={styles.head}>
    <span className={styles.kicker}>SOCTHINK · CAREER INTERVIEW PRACTICE</span>

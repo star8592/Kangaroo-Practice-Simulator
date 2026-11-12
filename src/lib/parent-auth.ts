@@ -1,6 +1,6 @@
 import crypto from "node:crypto";
 import { hashScryptSecret, readSignedJsonToken, signJsonToken, verifyScryptSecret } from "./auth-crypto";
-import { atomicWriteJson, readJsonArray, readOrCreateSecret, userDataPath } from "./user-data-store";
+import { atomicWriteJson, readJsonArrayStrict, readOrCreateSecret, userDataPath } from "./user-data-store";
 
 export type ParentUser={
   id:string;
@@ -34,7 +34,7 @@ export function hashPassword(password:string){return hashScryptSecret(password)}
 function verifyPassword(password:string,encoded:string){return verifyScryptSecret(password,encoded)}
 function pub(u:ParentUser):PublicParent{const {passwordHash,...x}=u;void passwordHash;return x}
 
-function loadParents():ParentUser[]{return readJsonArray<ParentUser>(FILE).map(u=>({...u,email:normalizeEmail(u.email)||undefined,role:"parent",active:u.active!==false,sessionVersion:Math.max(1,Number(u.sessionVersion)||1)}))}
+function loadParents():ParentUser[]{return readJsonArrayStrict<ParentUser>(FILE).map(u=>({...u,email:normalizeEmail(u.email)||undefined,role:"parent",active:u.active!==false,sessionVersion:Math.max(1,Number(u.sessionVersion)||1)}))}
 function saveParents(rows:ParentUser[]){atomicWriteJson(FILE,rows)}
 export function parentByEmail(email:string){const k=normalizeEmail(email);return k?loadParents().find(x=>x.email===k):undefined}
 /** Internal check for independently scoped family practice sessions.

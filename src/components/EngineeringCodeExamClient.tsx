@@ -176,7 +176,7 @@ export default function EngineeringCodeExamClient(){
  function restart(){cleanup();submitting.current=false;setStage("intro");setConsent(false);setNotice("");setMarks([]);
   try{sessionStorage.removeItem(STORAGE_KEY)}catch{}
  }
- if(!hydrated)return <p className={styles.note}>正在读取本标签页考场记录…</p>;
+ if(!hydrated)return <div className={styles.root}><header className={styles.header}><h1>软件工程岗位 · 综合编程模拟笔试</h1></header><p className={styles.note}>正在读取本标签页考场记录…</p></div>;
  const report=stage==="report"?summarizeEngineeringMock(marks):null;
  return <div className={styles.root}>
   <header className={styles.header}>

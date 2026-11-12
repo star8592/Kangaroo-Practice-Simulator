@@ -1,10 +1,10 @@
 import crypto from "node:crypto";
 import {loadUsers} from "./auth";
-import {atomicWriteJson,readJsonArray,userDataPath} from "./user-data-store";
+import {atomicWriteJson,readJsonArrayStrict,userDataPath} from "./user-data-store";
 
 type FamilyRecord={id:string;parentId:string;studentIds:string[];createdAt:number};
 const FILE=userDataPath("families.json");
-function load():FamilyRecord[]{return readJsonArray<FamilyRecord>(FILE)}
+function load():FamilyRecord[]{return readJsonArrayStrict<FamilyRecord>(FILE)}
 function save(rows:FamilyRecord[]){atomicWriteJson(FILE,rows)}
 function familyForParent(parentId:string){return load().find(x=>x.parentId===parentId)||null}
 export function addStudentToFamily(parentId:string,studentId:string){const rows=load();
