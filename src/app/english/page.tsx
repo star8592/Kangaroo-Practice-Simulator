@@ -4,8 +4,8 @@ import {ENGLISH_PRODUCTS} from "@/lib/english-products";
 import styles from "./english.module.css";
 
 export const metadata:Metadata={
- title:"英语学习｜少儿分级阅读·发音·单词·英语精读｜SOC THINK",
- description:"SOC THINK 英语学习：小学一至六年级互动分级绘本、发音跟读、单词课堂、进阶英语精读与综合英语学习。",
+ title:"英语学习｜少儿英语绘本·发音·单词·英语精读｜SOC THINK",
+ description:"SOC THINK 英语学习：小学一至六年级互动英语绘本、发音跟读、单词课堂、进阶英语精读与综合英语学习。",
  alternates:{canonical:"/english"},
 };
 
@@ -15,11 +15,11 @@ export default function EnglishHub(){
   <header className={styles.hero}>
    <span className={styles.kicker}>SOC THINK · ENGLISH</span>
    <h1>英语学习</h1>
-   <p>按学习目标选择：少儿绘本、发音跟读、单词学习、进阶阅读与综合提升。</p>
+   <p>按学习目标选择：英语故事、发音跟读、单词学习、进阶阅读与综合提升。</p>
   </header>
   <section className={styles.kidsFeature} aria-labelledby="kids-reading-feature">
    <div>
-    <span className={styles.kidsKicker}>小学 G1—G6 · 免费正式开放</span>
+    <span className={styles.kidsKicker}>小学 1—6 年级 · 免费阅读</span>
     <h2 id="kids-reading-feature">小小阅读星球</h2>
     <p>24 本原创互动英语绘本。看图、触摸发音、听男女声讲故事，再做理解练习；暂不生成正式成绩。</p>
    </div>
