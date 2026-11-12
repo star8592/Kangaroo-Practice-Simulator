@@ -34,18 +34,22 @@ export function atomicWriteJson(file: string, value: unknown) {
   // exclusive 0600 temporary file prevents collisions and avoids briefly
   // exposing parent accounts, session state or password hashes via umask 022.
   const tmp = `${file}.${process.pid}.${crypto.randomBytes(8).toString("hex")}.tmp`;
+  let staged = false;
   try {
     fs.writeFileSync(tmp, JSON.stringify(value, null, 2), {
       mode: 0o600,
       flag: "wx",
     });
+    staged = true;
     // Same-directory rename is atomic and preserves the temp file's 0600 mode.
     fs.renameSync(tmp, file);
   } finally {
-    try {
-      fs.unlinkSync(tmp);
-    } catch (error) {
-      if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
+    if (staged) {
+      try {
+        fs.unlinkSync(tmp);
+      } catch (error) {
+        if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
+      }
     }
   }
 }
