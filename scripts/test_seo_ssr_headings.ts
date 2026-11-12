@@ -19,7 +19,7 @@ const cases: Array<{file:string;expected:string;pages:string[]}> = [
 let routeCount = 0;
 for(const item of cases){
   const code = fs.readFileSync(path.resolve(item.file),"utf8");
-  const start=code.indexOf("if(!hydrated)return");
+  const start=code.lastIndexOf("if(!hydrated)return");
   assert.ok(start >= 0,item.file+": SSR fallback missing");
   const next=code.indexOf(";\n",start);
   assert.ok(next > start,item.file+": SSR fallback boundary missing");
