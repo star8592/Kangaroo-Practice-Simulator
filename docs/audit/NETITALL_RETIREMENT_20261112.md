@@ -17,6 +17,17 @@
 
 `scripts/check_cohost_gateway.py` 不再要求独立游戏的 Nginx include 与 WebSocket HTTP 101；相反，默认检查教育相关 Nginx includes 不丢失，旧游戏配置没有重新激活，旧游戏链接必须继续返回 HTTP 410。回归测试纳入已有站点架构检查，不新增发布硬门槛。
 
-旧独立业务的源文件、运行记录或可能的游戏用户数据，只能在服务确实停止、无其它引用、受限备份完成且可恢复之后清理。**任何游戏数据都不写入英语/数学/微信身份/计费数据库。**
+**旧游戏程序目录已经清理**，有完整 root-only 备份。已先确认服务停用、端口无监听及旧路径 410，并将全部 `/opt/netitall` 目录（原约 553MB，包括 47 个历史 release、共享数据与配置）打包到：
+
+`/var/backups/socthink-site-audit-20261112/netitall-retired-full-20261112.tar.gz`
+
+- 压缩档大小 **414,342,254 字节**，文件为 `root:root 0600`。
+- `gzip -t` 成功、`tar -t` 可遍历 **4,317** 项，管理端和旧发布目录记录可见；`shared/netitall.env` 在源目录与压缩包内的 SHA256 一致。
+- 完整压缩档 SHA256：`5b264371d6c32ebe930266ef116b0328d043d4cbf51590ee2cd66763d38303a5`。
+- 复制了独立 Nginx snippet、两份 systemd unit 及网络隔离 drop-in 到同一 root 私有审计目录。
+- 在备份验证成功之后，移动旧树到待删除目录，复测 7 个教育入口 HTTP200 和游戏旧地址 HTTP410，然后删除原 553MB 程序树；删除了不再启用的 NetItAll unit 和 Nginx snippet；`systemctl daemon-reload`、`nginx -t` 均通过。
+- **没有删除归档**；全站微信、英语、数学、支付与 PostgreSQL 服务没有改变。
+
+旧游戏有可能涉及的用户数据只能存在于独立归档中，**不得导入教育站身份/计费数据库**。
 
 PostgreSQL 18 统一实例的 Issue #306 与账号身份降权的 Issue #308 均是独立任务，不能因为移除游戏就擅自对它们执行生产迁移。
