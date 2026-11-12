@@ -43,3 +43,18 @@
 **当前准确状态：备份与六库 PG18.6 真实恢复演练已经成功；正式实例合并、主站 5432 升级、统一用户主库迁移、计费及各应用生产切换均尚未完成。**
 
 关联：`star8592/AccentLab/docs/ACCENTLAB_HOMEWORK_E4_PG16_PRODUCTION_READINESS_20261112.md` 和统一微信交接 Issue #300。
+
+## 2026-11-12 20:15 补充：正式切换前的只读基础设施门禁
+
+实际生产机再次核实：`pg_lsclusters -h` 仅登记 `16 main 5432 online`；系统通过 `dpkg-query` 仅安装 `postgresql-16`，`apt-cache policy postgresql-18` 无可用候选项。词汇数据库的 PG18 二进制在 `/opt/vocab/pg18-native/root/usr/lib/postgresql/18/bin/postgres`，单独直接运行 `--version` 因 `liburing.so.2` 缺失而失败（生产词汇服务通过其特定运行环境仍在 5433 正常运行）。**不能把它误认为随时可移植、可包管理的全站正式 PG18。**
+
+新增只读脚本 `ops/db/pg18_infra_preflight.py`，只检查系统可见集群、受包管理 PG18 是否真正安装、5432/5433 就绪状态、10 个已有归档文件是否非空及权限；不连接数据库读取业务记录、不调用特殊用户或更改服务器。运行：
+
+```bash
+python3 ops/db/test_pg18_infra_preflight.py
+python3 ops/db/pg18_infra_preflight.py
+```
+
+`PG18_INFRA_READINESS=BLOCKED` 是当前正常且应予保留的状态。即使报告 `READY_FOR_REHEARSAL`，也**仅代表可开始独立恢复演练**，不能自动批准正式切换。必须另行核实受管理 PG18 的安装源、扩展与排序规则、离线恢复容量、最终写入冻结、微信主用户 `par_...` 映射、计费账本对账、各应用端到端测试和一键回滚。
+
+上述门禁属于 Issue #306 的统一实施，不新开第二套 PG 升级或 OAuth/支付权威。
