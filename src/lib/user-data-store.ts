@@ -28,6 +28,22 @@ export function readJsonArray<T>(file: string): T[] {
   }
 }
 
+/** Fail closed for durable identity/permission records.
+ * A parse error must never silently become [] and then overwrite real users.
+ */
+export function readJsonArrayStrict<T>(file: string): T[] {
+  ensureUserDataDir();
+  if (!fs.existsSync(file)) return [];
+  let value: unknown;
+  try {
+    value = JSON.parse(fs.readFileSync(file, "utf8"));
+  } catch {
+    throw new Error("PRIVATE_USERSTORE_JSON_INVALID");
+  }
+  if (!Array.isArray(value)) throw new Error("PRIVATE_USERSTORE_EXPECTED_ARRAY");
+  return value as T[];
+}
+
 export function atomicWriteJson(file: string, value: unknown) {
   ensureUserDataDir();
   // A predictable `file.tmp` could collide between app processes. A unique
