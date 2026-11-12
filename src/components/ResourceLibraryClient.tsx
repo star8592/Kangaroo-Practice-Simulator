@@ -105,7 +105,7 @@ export default function ResourceLibraryClient({ resources }: { resources: Resour
       <button type="button" className={styles.reset} onClick={reset}>{t.reset}</button>
     </section>
     {shown.length ? <section className={styles.grid} aria-live="polite">
-      {shown.map(row => <article className={styles.card+" direct-entry-card"} key={row.id}>
+      {shown.map(row => <article className={styles.card+" direct-entry-card"} key={row.id}><Link className="direct-entry-hit" data-direct-primary href={row.examUrl} aria-label="打开当前服务"/>
         <div className={styles.cardTop}>
           <span className={styles.competition}>{row.competitionZh}</span>
           <span className={styles.kind}>{TYPE_LABELS[lang][row.paperType]}</span>
@@ -117,7 +117,7 @@ export default function ResourceLibraryClient({ resources }: { resources: Resour
             row.durationMinutes ? `${row.durationMinutes} ${t.min}` : t.untimed]
             .filter(Boolean).join(" · ")}
         </p>
-        <Link data-direct-primary href={row.examUrl} className={styles.open}>{t.start}<span aria-hidden="true"> →</span></Link>
+        <Link href={row.examUrl} className={styles.open}>{t.start}<span aria-hidden="true"> →</span></Link>
       </article>)}
     </section> : <p className={styles.empty}>{t.empty}</p>}
     {filtered.length > shown.length && <div className={styles.more}>

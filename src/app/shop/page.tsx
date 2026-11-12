@@ -35,7 +35,7 @@ export default async function ShopPage(){
     </p>
     {products.length
       ?<div className={styles.grid}>
-        {products.map(p=><article key={p.id} className={styles.card+" direct-entry-card"}>
+        {products.map(p=><article key={p.id} className={styles.card+" direct-entry-card"}><Link className="direct-entry-hit" data-direct-primary href={"/shop/"+encodeURIComponent(p.id)} aria-label={"直接打开"+p.title}/>
           <Link href={"/shop/"+encodeURIComponent(p.id)} className={styles.cardPreviewLink}
             aria-label={p.title+" · 查看真实 PDF 首页样张"}>
             <Image src={"/shop/previews/"+p.id+".png"} width={620} height={880}
@@ -46,7 +46,7 @@ export default async function ShopPage(){
           <p>PDF 电子文档 · 付款确认后按账号交付</p>
           <p>文件：{p.fileName}</p>
           <div className={styles.price}>¥{(p.priceMinor/100).toFixed(2)}<small>一次购买</small></div>
-          <Link href={"/shop/"+encodeURIComponent(p.id)} className={styles.action} data-direct-primary>查看文件和商品详情</Link>
+          <Link href={"/shop/"+encodeURIComponent(p.id)} className={styles.action}>查看文件和商品详情</Link>
         </article>)}
       </div>
       :<p className={styles.empty}>资料正在整理上架，暂时没有可展示的已审核交付文件。</p>}

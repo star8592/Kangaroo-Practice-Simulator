@@ -27,10 +27,10 @@ export default function EnglishHub(){
   <section aria-labelledby="english-choose">
    <div className={styles.headerRow}><h2 id="english-choose">选择学习内容</h2><p>四个方向 · 五个直接入口</p></div>
    <nav className={styles.grid} aria-label="英语学习直达入口">
-    {ENGLISH_DIRECT_ENTRIES.map(item=><article className={styles.tile+" direct-entry-card"} key={item.id}>
+    {ENGLISH_DIRECT_ENTRIES.map(item=><article className={styles.tile+" direct-entry-card"} key={item.id}><Link className="direct-entry-hit" data-direct-primary href={item.href} aria-label={"直接打开"+item.name}/>
      <div className={styles.tileTop}><div className={styles.icon} aria-hidden="true">{item.icon}</div><div className={styles.tileMeta}><small>{item.product}</small><h3>{item.name}</h3></div></div>
      <p>{item.subtitle}</p><span className={styles.tileStatus}>{item.statusText}</span>
-     <Link data-direct-primary href={item.href} aria-label={"直接打开"+item.name}>立即使用 <span aria-hidden="true">→</span></Link>
+     <Link href={item.href} aria-label={"立即使用"+item.name}>立即使用 <span aria-hidden="true">→</span></Link>
     </article>)}
    </nav>
   </section>

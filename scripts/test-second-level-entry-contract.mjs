@@ -19,7 +19,7 @@ for(const [name,path] of hubPaths){
 }
 const english=read('src/app/english/page.tsx')
 assert.ok(!english.includes('进入目录'),'English hub must not show gateway buttons')
-assert.ok(!english.includes('<Link href={item.href}'),'English hub must not route to an intermediary')
+assert.ok(english.includes('href:item.serviceUrl'),'English hubs must point to product service URLs instead of legacy description pages')
 for(const direct of [
  '/english/pronunciation/app/practice-library',
  '/english/vocabulary/app/',
@@ -31,6 +31,6 @@ for(const direct of [
 }
 assert.ok(english.includes('ENGLISH_PRODUCTS.flatMap'),'Both reading products must be shown in level two')
 const css=read('src/app/direct-entry.css')
-assert.ok(css.includes('::after') && css.includes('z-index:2'),'Must support whole hit target and independent secondary actions')
+assert.ok(css.includes('>.direct-entry-hit') && css.includes('z-index:2'),'Must use a real full-size anchor with independent secondary actions')
 assert.ok(read('src/app/layout.tsx').includes('direct-entry.css'),'Global card rule not loaded')
 console.log('SECOND_LEVEL_DIRECT_ENTRY_CONTRACT=PASS',hubPaths.length,'hub templates',5,'English service entries')
