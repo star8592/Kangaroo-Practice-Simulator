@@ -3,7 +3,7 @@
 from pathlib import Path
 import tempfile
 import unittest
-from pg18_infra_preflight import BACKUP_NAMES, assess, inspect_backups, parse_clusters
+from pg18_infra_preflight import BACKUP_NAMES, assess, inspect_backups, parse_clusters, package_installed
 
 BASELINE = """16 main 5432 online postgres /var/lib/postgresql/16/main /var/log/postgresql/postgresql-16-main.log
 18 rehearsal 5434 down postgres /var/lib/postgresql/18/rehearsal /var/log/postgresql/postgresql-18-rehearsal.log
@@ -16,6 +16,11 @@ class PG18InfraPreflightTests(unittest.TestCase):
         self.assertEqual(len(x), 2)
         self.assertEqual(x[0]["port"], "5432")
         self.assertEqual(x[1]["version"], "18")
+
+    def test_managed_package_requires_installed_dpkg_status(self):
+        self.assertTrue(package_installed(0, "install ok installed"))
+        self.assertFalse(package_installed(0, "deinstall ok config-files"))
+        self.assertFalse(package_installed(1, "install ok installed"))
 
     def test_current_unmanaged_pg18_not_ready(self):
         x = assess(
