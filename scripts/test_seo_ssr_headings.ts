@@ -3,7 +3,7 @@ import fs from "node:fs";
 import path from "node:path";
 
 /**
- * Source-level SSR fallback contract: all five client-only exercise runners
+ * Source-level SSR fallback contract: all six client-only exercise runners
  * render one meaningful H1 before hydration, while preserving the interactive
  * H1 after hydration. The server may not access sessionStorage at render time.
  * This is deliberately a static regression guard; live HTML must be checked
@@ -15,6 +15,7 @@ const cases: Array<{file:string;expected:string;pages:string[]}> = [
   {file:"src/components/EngineeringCodeExamClient.tsx",expected:"软件工程岗位 · 综合编程模拟笔试",pages:["src/app/skill-labs/engineering-mock/page.tsx"]},
   {file:"src/components/AdvancedReasoningRunner.tsx",expected:"高级逻辑与批判性推理 · 40题",pages:["src/app/assessment-center/advanced-reasoning-40/page.tsx"]},
   {file:"src/components/CareerAptitudeRunner.tsx",expected:"招聘通用能力 · 40题",pages:["src/app/assessment-center/career-aptitude-40/page.tsx"]},
+  {file:"src/components/CareerInterviewClient.tsx",expected:"{profile.title}",pages:["src/app/career/interviews/[id]/page.tsx"]},
 ];
 let routeCount = 0;
 for(const item of cases){
@@ -36,4 +37,4 @@ for(const item of cases){
     routeCount++;
   }
 }
-console.log("SEO_SSR_HEADINGS_CONTRACT=PASS client_runners="+cases.length+" route_templates="+routeCount+" published_instances=12");
+console.log("SEO_SSR_HEADINGS_CONTRACT=PASS client_runners="+cases.length+" route_templates="+routeCount+" observed_live_failures=14");
