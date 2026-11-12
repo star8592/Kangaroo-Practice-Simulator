@@ -153,7 +153,7 @@ export default function CareerFormalExamRunner({paper}:{paper:CareerPracticeCase
     setIndex(Math.max(0,Math.min(questions.length-1,n)));setReview(false);
   }
 
-  if(!hydrated)return <div className={styles.boot}>正在读取模拟笔试会话…</div>;
+  if(!hydrated)return <div className={styles.boot}><h1>{paper.title}</h1><p>正在读取模拟笔试会话…</p></div>;
 
   if(!visibleAdmission&&!grade)return <>
     <div className={styles.admission}>
