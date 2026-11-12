@@ -93,7 +93,7 @@ export default function CareerAptitudeRunner(){
     (stage==="questions"&&index===i?" "+styles.current:"")}>
    {i+1}</button>)}
  </div>;
- if(!hydrated)return <div className={styles.runner}><p className={styles.smallNote}>正在读取本次模拟卷…</p></div>;
+ if(!hydrated)return <div className={styles.runner}><header className={styles.runnerHeader+" "+styles.compactHeader}><h1>招聘通用能力 · 40题</h1></header><p className={styles.smallNote}>正在读取本次模拟卷…</p></div>;
  return <div className={styles.runner}>
   <header className={styles.runnerHeader+" "+styles.compactHeader}>
    <span className={styles.eyebrowDark}>SOCTHINK · 原创招聘模拟卷 / 2026.11</span>
