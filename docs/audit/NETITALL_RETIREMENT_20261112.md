@@ -16,7 +16,7 @@
 
 退役时为保障安全，曾在 root-only 审计目录打包并验证程序全量归档 `netitall-retired-full-20261112.tar.gz`，包含 4,317 个条目。原归档大小 414,342,254 字节、SHA256 为 `5b264371d6c32ebe930266ef116b0328d043d4cbf51590ee2cd66763d38303a5`。备份检查完成、原程序已清理后，用户又明确允许删除游戏备份。
 
-**2026-11-12 已实际删除** `/var/backups/socthink-site-audit-20261112` 内所有 15 个 NetItAll 专属备份（完整压缩包、归档清单、旧游戏 Nginx/systemd/UFW 快照），合计 **414,633,167 字节**。删除后验证上述文件全部不存在，同目录其余 **7 个教育站、SEO、证书相关审计备份保留**。
+**2026-11-12 已实际删除** `/var/backups/socthink-site-audit-20261112` 内所有 15 个 NetItAll 专属备份（完整压缩包、归档清单、旧游戏 Nginx/systemd/UFW 快照），合计 **414,633,167 字节**。此外清理 `/opt/retired/netitall-admin-index-before-loopback-20260924.mjs`（26,108 字节），共 **16 个游戏备份文件、414,659,275 字节**。删除后再次扫描 `/var/backups`、`/opt/retired` 及 `/opt` 浅层目录，未发现具 NetItAll 名称的文件或目录。同一审计备份目录中其余 **7 个教育站、SEO、证书相关备份完整保留**。
 
 因此，不得再把旧 NetItAll 压缩包称为仍存在的备份，也不能承诺从这台服务器恢复该游戏或其私有数据。GitHub 留存的是历史审计事实，并非游戏可恢复资料。
 
