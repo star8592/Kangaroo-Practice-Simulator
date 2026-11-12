@@ -55,6 +55,14 @@ function clearOld(now: number) {
     }
   } catch { /* The issue/redeem path still enforces its own TTL. */ }
 }
+/** Same per-product subject for ticket redemption and active-session checks. */
+export function englishSsoSubject(product: EnglishSsoProduct, accountId: string): string {
+  if (!isEnglishSsoProduct(product) || !/^par_[a-f0-9]{18}$/.test(accountId))
+    throw new Error("invalid English SSO subject");
+  return "soc_" + crypto.createHmac("sha256", readOrCreateSecret(SUBJECT_KEY_FILE))
+    .update(product + ":" + accountId).digest("hex").slice(0, 40);
+}
+
 export function issueEnglishSsoTicket(product: EnglishSsoProduct, accountId: string,
   now = Date.now()): {ticket: string; expiresAt: number} {
   if (!isEnglishSsoProduct(product) || !/^par_[a-f0-9]{18}$/.test(accountId)) {
@@ -90,11 +98,8 @@ export function redeemEnglishSsoTicket(product: EnglishSsoProduct, ticket: strin
     if (!validEntry(finalEntry) || finalEntry.product !== product ||
       finalEntry.expiresAt <= now || finalEntry.expiresAt > now + ENGLISH_SSO_TTL_MS) return null;
 
-    // Stable, per-product pseudonymous subject. No WeChat OpenID, parent ID,
-    // student profile, payment data or permanent session token is exposed.
-    const subject = "soc_" + crypto.createHmac("sha256", readOrCreateSecret(SUBJECT_KEY_FILE))
-      .update(product + ":" + finalEntry.accountId).digest("hex").slice(0, 40);
-    return {subject, product};
+    // Pseudonymous product ID is consistent with the session verify endpoint.
+    return {subject: englishSsoSubject(product, finalEntry.accountId), product};
   } finally {
     try { fs.unlinkSync(claimed); } catch { /* Already consumed. */ }
   }

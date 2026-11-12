@@ -20,6 +20,7 @@ try {
     ENGLISH_SSO_TTL_MS} = await import("../src/lib/english-sso-ticket");
   const {POST: issue} = await import("../src/app/api/english/sso/ticket/route");
   const {POST: redeem} = await import("../src/app/api/english/sso/redeem/route");
+  const {POST: verify} = await import("../src/app/api/english/sso/verify/route");
 
   const user = authenticateOrCreateWechatParent({
     wechatId: "synthetic-only-sso-test-id", openId: "synthetic-only-sso-test-openid",
@@ -71,6 +72,30 @@ try {
   assert.ok(!JSON.stringify(result).includes(user.id));
   assert.ok(!JSON.stringify(result).includes("openid"));
   assert.equal((await redeem(redeemReq("reading", issued.ticket, keyReading))).status, 410);
+
+  const verifyReq = (whichCookie: string, key: string, origin?: string) =>
+    new NextRequest(base + "/api/english/sso/verify", {
+      method:"POST",
+      headers:{
+        "content-type":"application/json",
+        "authorization":"Bearer " + key,
+        ...(whichCookie ? {"cookie":whichCookie} : {}),
+        ...(origin ? {origin} : {}),
+      },
+      body:JSON.stringify({product:"reading"}),
+    });
+  assert.equal((await verify(verifyReq("",keyReading))).status,401);
+  assert.equal((await verify(verifyReq(cookie,"bad-key"))).status,401);
+  assert.equal((await verify(verifyReq(cookie,keyReading,"https://socthink.cn"))).status,403);
+  const verifiedSession = await verify(verifyReq(cookie,keyReading));
+  assert.equal(verifiedSession.status,200);
+  assert.equal((await verifiedSession.json() as {subject:string}).subject,result.subject);
+  // Account switching must not preserve the original product identity.
+  const other = authenticateOrCreateWechatParent({wechatId:"other-synthetic-wechat-id"});
+  const anotherCookie = PARENT_SESSION_COOKIE + "=" + createParentSessionToken(other.id);
+  const another = await verify(verifyReq(anotherCookie,keyReading));
+  assert.equal(another.status,200);
+  assert.notEqual((await another.json() as {subject:string}).subject,result.subject);
 
   const stable = issueEnglishSsoTicket("reading", user.id);
   const again = redeemEnglishSsoTicket("reading", stable.ticket);
