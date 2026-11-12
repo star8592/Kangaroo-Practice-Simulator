@@ -2,8 +2,8 @@
   "schema": "socthink.module_inventory.audit.v1",
   "observed_on": "2026-11-12",
   "scope": "socthink.cn production and shared-host impact only",
-  "source": "live read-only route/process audit plus verified 2026-11-12 repair receipts; unknowns explicit",
-  "note": "snapshot evidence, NOT deployment configuration. Every host-level Nginx change must preserve independent app includes; do not delete or relocate based only on this file",
+  "source": "2026-11-12 production probe plus owner-approved game retirement",
+  "note": "SOC THINK education-only production inventory. NetItAll game retired 2026-11-12 (two services disabled, legacy routes HTTP410); see docs/audit/NETITALL_RETIREMENT_20261112.md. Audit snapshot, not a deployment configuration; never delete unrelated cohost services based only on it.",
   "modules": [
     {
       "id": "portal",
@@ -158,18 +158,6 @@
       "service": "commerceflow-delivery.service",
       "storage": "separate billing/delivery",
       "status": "separate_business_do_not_merge"
-    },
-    {
-      "id": "netitall_game",
-      "category": "adjacent_cohost",
-      "url": "https://socthink.cn/NetItAll/",
-      "code_repo": "independent NetItAll project (exact GitHub repo not yet verified)",
-      "code_path": "separate deployment; /etc/nginx/snippets/netitall.conf",
-      "runtime": "/opt/netitall/current/frontend",
-      "service": "netitall-mp.service + netitall-admin.service; Nginx WSS /NetItAll/ws",
-      "storage": "independent game storage; not consolidated into SOC THINK identity",
-      "status": "2026-11-12 HTTP200 and WSS101 restored; UFW IPv4/v6 port3001 ALLOW removed; Rust still binds 0.0.0.0:3001; Origin/message auth pending",
-      "owner_note": "Do not merge, stop or alter NetItAll processes when releasing the education portal."
     }
   ]
 }
