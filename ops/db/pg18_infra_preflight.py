@@ -93,6 +93,12 @@ def capture(cmd: list[str]) -> tuple[int, str]:
         return 127, ""
 
 
+def package_installed(returncode: int, status: str) -> bool:
+    # A dpkg entry can exist in a removed/config-files state; only accept
+    # an actually installed package with its binaries managed by the OS.
+    return returncode == 0 and status.strip() == "install ok installed"
+
+
 def check_ready(port: int) -> bool:
     return capture(["pg_isready", "-h", "127.0.0.1", "-p", str(port)])[0] == 0
 
@@ -114,10 +120,10 @@ def main() -> None:
     )
     args = parser.parse_args()
     _, raw = capture(["pg_lsclusters", "-h"])
-    pkg_rc, _ = capture(["dpkg-query", "-W", "-f", "${Status}", "postgresql-18"])
+    pkg_rc, pkg_status = capture(["dpkg-query", "-W", "-f", "${Status}", "postgresql-18"])
     # Don't treat an unpacked third-party binary or apt-cache candidate as a
     # supported, installed and managed PG18 package.
-    package = pkg_rc == 0
+    package = package_installed(pkg_rc, pkg_status)
     checks, private = inspect_backups(Path(args.backup_dir))
     result = assess(
         parse_clusters(raw), package,
