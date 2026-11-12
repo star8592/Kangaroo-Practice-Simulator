@@ -10,7 +10,7 @@ async function main() {
   const prior = process.env.SOCTHINK_USER_DATA_DIR;
   process.env.SOCTHINK_USER_DATA_DIR = dataDir;
   try {
-    const { atomicWriteJson, ensureUserDataDir, readJsonArray, userDataPath } =
+    const { atomicWriteJson, ensureUserDataDir, readJsonArray, readJsonArrayStrict, userDataPath } =
       await import("../src/lib/user-data-store");
     ensureUserDataDir();
     if (process.platform !== "win32") {
@@ -27,6 +27,12 @@ async function main() {
     for (let i = 0; i < 5; i++) atomicWriteJson(file, [{ id: i }]);
     assert.deepEqual(readJsonArray(file), [{ id: 4 }]);
     assert.deepEqual(fs.readdirSync(dataDir), ["test-parents.json"]);
+    fs.writeFileSync(file, "{bad-json", { mode: 0o600 });
+    assert.throws(() => readJsonArrayStrict(file), /PRIVATE_USERSTORE_JSON_INVALID/);
+    fs.writeFileSync(file, JSON.stringify({ unexpected: true }), { mode: 0o600 });
+    assert.throws(() => readJsonArrayStrict(file), /PRIVATE_USERSTORE_EXPECTED_ARRAY/);
+    atomicWriteJson(file, [{ id: "restored" }]);
+    assert.deepEqual(readJsonArrayStrict(file), [{ id: "restored" }]);
     console.log("USER_DATA_STORE_PRIVATE_ATOMIC_PERMISSIONS_PASS");
   } finally {
     if (prior === undefined) delete process.env.SOCTHINK_USER_DATA_DIR;
