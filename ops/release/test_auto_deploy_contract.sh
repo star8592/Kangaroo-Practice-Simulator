@@ -56,6 +56,8 @@ fi
 grep -q 'render_arithmetic_pdf_runtime.mjs' "$BUILDER"
 grep -q 'render_diagnostic_pdf_runtime.mjs' "$BUILDER"
 grep -q 'NEXT_STANDALONE_BUILD=1 npm run build' "$BUILDER"
+grep -q 'sanitize_prebuilt_runtime.py' "$BUILDER"
+python3 "$ROOT/scripts/test_prebuilt_runtime_sanitizer.py"
 
 grep -q '^ExecStart=/usr/local/sbin/socthink-auto-deploy$' "$SERVICE"
 grep -q '^OnActiveSec=30s$' "$TIMER"
