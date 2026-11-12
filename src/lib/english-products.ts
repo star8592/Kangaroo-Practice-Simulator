@@ -22,12 +22,12 @@ export const ENGLISH_PRODUCTS = [
   detail:"独立 Rust / Vue / PostgreSQL 课堂已经部署；真实班级验收、监护与收费开通不等同于页面已可访问。",
  },
  {
-  id:"reading",name:"英语阅读",product:"EnglishLeap · 小小阅读星球",subtitle:"儿童绘本 · 进阶精读 · 阅读理解",
+  id:"reading",name:"英语阅读",product:"EnglishLeap · 小小阅读星球",subtitle:"互动故事 · 进阶精读 · 阅读理解",
   summary:"小学低龄互动绘本与进阶精读分层提供，先按年龄选择适合的阅读路径。",
   href:"/english/reading",serviceUrl:"/english/reading/app/",
   serviceCta:"体验阅读课程",availability:"public-app",statusText:"少儿绘本正式开放 · 进阶精读体验",
   icon:"R",capability:"english.reading",
-  detail:"少儿分级绘本已提供免费正式阅读入口；EnglishLeap 保留进阶精读。前者暂不生成正式成绩，后者的完整教学与付费尚待验收。",
+  detail:"少儿英语绘本已提供免费正式阅读入口；EnglishLeap 保留进阶精读。前者暂不生成正式成绩，后者的完整教学与付费尚待验收。",
  },
  {
   id:"aelos",name:"综合英语",product:"AelOS",subtitle:"阅读能力 · 听说读写 · AI 学习规划",

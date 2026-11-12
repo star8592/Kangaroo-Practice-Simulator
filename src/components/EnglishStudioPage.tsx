@@ -21,9 +21,9 @@ export default function EnglishStudioPage({studio}:{studio:EnglishProductId}){
   </header>
   {studio==="reading" ? <section className={styles.readingOptions} aria-label="按阅读阶段选择">
    <article className={styles.readingCard}>
-    <span className={styles.kidsKicker}>小学 1—6 年级 · 免费开放</span>
-    <h2>少儿分级阅读</h2>
-    <p>小小阅读星球：24 本互动绘本、逐句点读、预制男女声配音、阅读理解练习。暂不保存正式学习成绩。</p>
+    <span className={styles.kidsKicker}>少儿英语绘本 · 1—6 年级</span>
+    <h2>小小阅读星球</h2>
+    <p>24 本原创英语故事，点按会动、会说话；听自然配音，跟着故事做理解练习。暂不保存正式学习成绩。</p>
     <a className={styles.primaryAction} href="/english/reading/kids/">进入小小阅读星球</a>
    </article>
    <article className={styles.readingCard}>
