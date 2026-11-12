@@ -75,12 +75,12 @@ export default async function CareerDemandPage({searchParams}:{searchParams:Sear
         <span className={styles.commerceCount}>{CAREER_ORIGINAL_GUIDES.length} 份已完成原创资料</span>
       </div>
       <div className={styles.offerGrid}>
-        {CAREER_ORIGINAL_GUIDES.map(g=><article key={g.id} className={styles.offerCard}>
+        {CAREER_ORIGINAL_GUIDES.map(g=><article key={g.id} className={styles.offerCard+" direct-entry-card"}>
           <div className={styles.offerTop}><span>原创教程 / 数字文件</span><strong>免费完整领取</strong></div>
           <h3>{g.title}</h3><p>{g.summary}</p>
           <div className={styles.offerSpecs}><span>{g.sections.length} 个章节</span><span>Markdown 文件</span><span>可在线阅读</span></div>
           <div className={styles.offerActions}>
-            <Link href={"/career/guides/"+g.id}>阅读完整教程</Link>
+            <Link data-direct-primary href={"/career/guides/"+g.id}>阅读完整教程</Link>
             <a href={"/career/guides/"+g.id+"/download"}>下载资料</a>
           </div>
         </article>)}
@@ -94,34 +94,34 @@ export default async function CareerDemandPage({searchParams}:{searchParams:Sear
         <span className={styles.commerceCount}>{CAREER_FORMAL_PAPERS.length} 套完整模拟卷 · {CAREER_FORMAL_PAPERS.reduce((n,p)=>n+p.questions.length,0)}道原创题</span>
       </div>
       <div className={styles.quickTestRow} aria-label="通用能力与技术实操">
-        <div className={styles.quickTestItem}>
+        <div className={styles.quickTestItem+" direct-entry-card"}>
           <strong>招聘通用能力</strong><span>40题 · 45分钟</span>
-          <Link href="/assessment-center/career-aptitude-40">开始模拟</Link>
+          <Link data-direct-primary href="/assessment-center/career-aptitude-40">开始模拟</Link>
         </div>
-        <div className={styles.quickTestItem}>
+        <div className={styles.quickTestItem+" direct-entry-card"}>
           <strong>数据工程师 · SQL实操</strong><span>8项真实SQL任务</span>
-          <Link href="/skill-labs/sql-lab">进入实操</Link>
+          <Link data-direct-primary href="/skill-labs/sql-lab">进入实操</Link>
         </div>
-        <div className={styles.quickTestItem}>
+        <div className={styles.quickTestItem+" direct-entry-card"}>
           <strong>软件工程师 · 编程实操</strong><span>6项真实JavaScript任务</span>
-          <Link href="/skill-labs/code-lab">开始编程</Link>
+          <Link data-direct-primary href="/skill-labs/code-lab">开始编程</Link>
         </div>
-        <div className={styles.quickTestItem}>
+        <div className={styles.quickTestItem+" direct-entry-card"}>
           <strong>软件工程综合编程模拟</strong><span>6道代码题 · 60分钟 · 100分</span>
-          <Link href="/skill-labs/engineering-mock">进入模拟考场</Link>
+          <Link data-direct-primary href="/skill-labs/engineering-mock">进入模拟考场</Link>
         </div>
 
       </div>
       <p className={styles.sampleNote}><Link href="/career/interviews">体验校招／社招结构化模拟面试（免费体验版）</Link> · 当前提供岗位追问及真实回答复盘，尚未开放AI语义评分和收费。</p>
       <div className={styles.offerGrid}>
-        {CAREER_FORMAL_PAPERS.map(paper=><article className={styles.offerCard} key={paper.id}>
+        {CAREER_FORMAL_PAPERS.map(paper=><article className={styles.offerCard+" direct-entry-card"} key={paper.id}>
           <div className={styles.offerTop}><span>标准模拟笔试 / 限时考场</span><strong>免费完整体验</strong></div>
           <h3>{paper.title}</h3>
           <p>{paper.context}</p>
           <div className={styles.offerSpecs}><span>{paper.questions.length} 道题</span>
             <span>{paper.maxPoints} 分</span><span>{paper.durationMinutes} 分钟限时</span><span>2026 Q4 · 原创v{paper.revision}</span></div>
           <div className={styles.offerActions}>
-            <Link href={"/career/exams/"+paper.id}>进入考场 · 确认入场</Link>
+            <Link data-direct-primary href={"/career/exams/"+paper.id}>进入考场 · 确认入场</Link>
             <Link href={paper.family==="agent"?"/skill-labs/agent-foundations":"/career/guides/"+guideForFamily(paper.family)!.id}>考前复习资料</Link>
           </div>
         </article>)}

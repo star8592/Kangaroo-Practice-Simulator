@@ -9,35 +9,32 @@ export const metadata:Metadata={
  alternates:{canonical:"/english"},
 };
 
+// English has four capabilities, but five direct product entry cards.
+const ENGLISH_DIRECT_ENTRIES=ENGLISH_PRODUCTS.flatMap(item=>item.id==="reading" ? [
+ {id:"kids",name:"少儿英语绘本",product:"英语阅读 · 小小阅读星球",subtitle:"小学 1—6 年级 · 看图听故事 · 点触互动",statusText:"24 本故事 · 免费开放",href:"/english/reading/kids/",icon:"📖"},
+ {id:"reading-pro",name:"英语精读",product:"英语阅读 · EnglishLeap",subtitle:"青少年及成人 · 词汇 · 精读理解",statusText:"进阶阅读体验已开放",href:item.serviceUrl,icon:"R"},
+] : [
+ {id:item.id,name:item.name,product:item.product,subtitle:item.subtitle,statusText:item.statusText,href:item.serviceUrl,icon:item.icon},
+]);
 export default function EnglishHub(){
  return <div className={styles.shell}>
   <nav className={styles.breadcrumb} aria-label="英语学习路径"><Link href="/">SOC THINK</Link><span>/</span><span aria-current="page">英语学习</span></nav>
   <header className={styles.hero}>
    <span className={styles.kicker}>SOC THINK · ENGLISH</span>
    <h1>英语学习</h1>
-   <p>按学习目标选择：英语故事、发音跟读、单词学习、进阶阅读与综合提升。</p>
+   <p>按学习目标选择：少儿绘本、发音跟读、单词学习、进阶阅读与综合提升。</p>
   </header>
-  <section className={styles.kidsFeature} aria-labelledby="kids-reading-feature">
-   <div>
-    <span className={styles.kidsKicker}>小学 1—6 年级 · 免费阅读</span>
-    <h2 id="kids-reading-feature">小小阅读星球</h2>
-    <p>24 本原创互动英语绘本。看图、触摸发音、听男女声讲故事，再做理解练习；暂不生成正式成绩。</p>
-   </div>
-   <a className={styles.primaryAction} href="/english/reading/kids/">开始读故事</a>
-  </section>
   <section aria-labelledby="english-choose">
-   <div className={styles.headerRow}><h2 id="english-choose">选择学习方向</h2><p>4 个独立项目</p></div>
-   <nav className={styles.grid} aria-label="英语四个独立学习项目">
-    {ENGLISH_PRODUCTS.map(item=><article className={styles.tile} key={item.id}>
+   <div className={styles.headerRow}><h2 id="english-choose">选择学习内容</h2><p>四个方向 · 五个直接入口</p></div>
+   <nav className={styles.grid} aria-label="英语学习直达入口">
+    {ENGLISH_DIRECT_ENTRIES.map(item=><article className={styles.tile+" direct-entry-card"} key={item.id}>
      <div className={styles.tileTop}><div className={styles.icon} aria-hidden="true">{item.icon}</div><div className={styles.tileMeta}><small>{item.product}</small><h3>{item.name}</h3></div></div>
      <p>{item.subtitle}</p><span className={styles.tileStatus}>{item.statusText}</span>
-     <Link href={item.href} aria-label={`了解${item.name}`}>进入目录 <span aria-hidden="true">→</span></Link>
+     <Link data-direct-primary href={item.href} aria-label={"直接打开"+item.name}>立即使用 <span aria-hidden="true">→</span></Link>
     </article>)}
    </nav>
   </section>
-  <div className={styles.serviceNote}>
-   <strong>一个入口，独立学习</strong>
-   <p>各应用保留自己的课程、登录和学习记录。SOC THINK 统一账户与跨应用购买权益尚在接入，不把未验证的会员或收费服务标成已开通。</p>
-  </div>
+  <p className={styles.entryNote}>点击整张卡片即可打开。付费和学习记录以实际开通功能为准。</p>
+
  </div>
 }

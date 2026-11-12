@@ -17,25 +17,25 @@ export default function PracticeHome(){
   </header>
   <p><Link href="/career/paths">不知道该选择哪张卷？先选目标岗位和当前求职阶段 →</Link></p>
   <div className={styles.sectionHeading}><div><span className={styles.eyebrowDark}>FORMAL MOCKS</span><h2>已开放的岗位模拟笔试</h2></div></div>
-  <div className={styles.grid}>{CAREER_FORMAL_PAPERS.map(p=><article className={styles.tile} key={p.id}>
+  <div className={styles.grid}>{CAREER_FORMAL_PAPERS.map(p=><article className={styles.tile+" direct-entry-card"} key={p.id}>
     <div className={styles.tileTop}><span className={styles.tileNumber}>岗位模拟</span><span className={styles.previewBadge}>完整模拟卷</span></div>
     <h3>{p.title}</h3><p>{p.context}</p>
     <div className={styles.tileInfo}>{p.questions.length} 题 · {p.durationMinutes} 分钟 · {p.maxPoints} 分</div>
-    <Link className={styles.tileLink} href={"/career/exams/"+p.id}>进入模拟笔试 <span aria-hidden="true">→</span></Link>
+    <Link data-direct-primary className={styles.tileLink} href={"/career/exams/"+p.id}>进入模拟笔试 <span aria-hidden="true">→</span></Link>
   </article>)}</div>
   <div className={styles.sectionHeading}><div><span className={styles.eyebrowDark}>INTERVIEWS AND LABS</span><h2>面试与实操</h2></div></div>
   <div className={styles.grid}>
-   <article className={styles.tile}><div className={styles.tileTop}><span className={styles.tileNumber}>INTERVIEW</span><span className={styles.previewBadge}>免费结构化体验</span></div>
+   <article className={styles.tile+" direct-entry-card"}><div className={styles.tileTop}><span className={styles.tileNumber}>INTERVIEW</span><span className={styles.previewBadge}>免费结构化体验</span></div>
     <h3>校招与社招模拟面试</h3><p>按岗位情境提问、追问和复盘。当前为结构化体验，尚不宣传为正式 AI 语义评分。</p>
-    <Link className={styles.tileLink} href="/career/interviews">进入面试训练 <span aria-hidden="true">→</span></Link>
+    <Link data-direct-primary className={styles.tileLink} href="/career/interviews">进入面试训练 <span aria-hidden="true">→</span></Link>
    </article>
-   <article className={styles.tile}><div className={styles.tileTop}><span className={styles.tileNumber}>SQL</span><span className={styles.previewBadge}>可运行实操</span></div>
+   <article className={styles.tile+" direct-entry-card"}><div className={styles.tileTop}><span className={styles.tileNumber}>SQL</span><span className={styles.previewBadge}>可运行实操</span></div>
     <h3>数据工程 SQL 实操</h3><p>直接运行 SQL 查询并核验结果。</p>
-    <Link className={styles.tileLink} href="/skill-labs/sql-lab">开始实操 <span aria-hidden="true">→</span></Link>
+    <Link data-direct-primary className={styles.tileLink} href="/skill-labs/sql-lab">开始实操 <span aria-hidden="true">→</span></Link>
    </article>
-   <article className={styles.tile}><div className={styles.tileTop}><span className={styles.tileNumber}>CODE</span><span className={styles.previewBadge}>可运行实操</span></div>
+   <article className={styles.tile+" direct-entry-card"}><div className={styles.tileTop}><span className={styles.tileNumber}>CODE</span><span className={styles.previewBadge}>可运行实操</span></div>
     <h3>软件工程编程模拟</h3><p>真实代码执行判分，区别于选择题式模拟。</p>
-    <Link className={styles.tileLink} href="/skill-labs/engineering-mock">进入编程模拟 <span aria-hidden="true">→</span></Link>
+    <Link data-direct-primary className={styles.tileLink} href="/skill-labs/engineering-mock">进入编程模拟 <span aria-hidden="true">→</span></Link>
    </article>
   </div>
  </div>;

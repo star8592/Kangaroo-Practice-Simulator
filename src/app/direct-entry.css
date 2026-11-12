@@ -1,0 +1,11 @@
+
+/* Public hub: one large card = one true application action.
+ * CSS-only extended anchor, no fake onClick div or nested anchors. */
+.direct-entry-card{position:relative;isolation:isolate;cursor:pointer;transition:border-color .16s,box-shadow .16s,transform .16s}
+.direct-entry-card a[data-direct-primary]::after,
+.direct-entry-card button[data-direct-primary]::after{content:"";position:absolute;inset:0;z-index:1;cursor:pointer}
+.direct-entry-card :is(a,button)[data-direct-primary]:focus-visible::after{outline:3px solid #ea8750;outline-offset:3px;border-radius:inherit}
+.direct-entry-card :is(a:not([data-direct-primary]),button:not([data-direct-primary]),input,select,textarea,summary){position:relative;z-index:2}
+.direct-entry-card:hover{border-color:#92b9a0;box-shadow:0 13px 32px #183d2b19;transform:translateY(-2px)}
+.direct-entry-card:focus-within{border-color:#74a8a0}
+@media(prefers-reduced-motion:reduce){.direct-entry-card{transition:none}.direct-entry-card:hover{transform:none}}
