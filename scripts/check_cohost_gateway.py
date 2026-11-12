@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Read-only SOC THINK shared-host Nginx and HTTPS/WSS route audit.
+"""Read-only SOC THINK education gateway and retired-game route audit.
 
 This is not a deploy gate and never modifies services, firewall rules or site
 configuration. Run after changes to the shared socthink.cn Nginx vhost.
@@ -20,16 +20,16 @@ REQUIRED_INCLUDES = (
     "socthink-kids-formal.conf",
     "socthink-aelos-kids-preview.conf",
     "storyforge-studio.conf",
-    "netitall.conf",
 )
-REQUIRED_NETITALL_LOCATIONS = (
-    "location ^~ /NetItAll/ws",
-    "location ^~ /NetItAll/",
+# Site owner retired this standalone game; do not require its backends.
+RETIRED_GAME_ROUTES = ("/NetItAll", "/NetItAll/", "/NetItAll/ws")
+RETIRED_GAME_TOMBSTONES = (
+    "location = /NetItAll { return 410; }",
+    "location ^~ /NetItAll/ { return 410; }",
 )
 PUBLIC_PATHS = (
     "/",
     "/login",
-    "/NetItAll/",
     "/english/pronunciation/app/",
     "/english/vocabulary/app/",
     "/english/reading/app/",
@@ -61,12 +61,11 @@ def verify_nginx_includes(site_config: str, snippets: dict[str, str]) -> None:
             raise GatewayContractError("HTTPS vhost missing or duplicating " + name)
         if not snippets.get(name, "").strip():
             raise GatewayContractError("missing or empty installed snippet: " + name)
-    ws = snippets["netitall.conf"]
-    for line in REQUIRED_NETITALL_LOCATIONS:
-        if line not in ws:
-            raise GatewayContractError("NetItAll snippet lost location: " + line)
-    if "proxy_pass http://127.0.0.1:3001;" not in ws:
-        raise GatewayContractError("NetItAll websocket proxy target changed")
+    if re.search(r"(?m)^\s*include\s+/etc/nginx/snippets/netitall\.conf\s*;", site_config):
+        raise GatewayContractError("retired NetItAll include must not be enabled")
+    for line in RETIRED_GAME_TOMBSTONES:
+        if line not in site:
+            raise GatewayContractError("retired NetItAll 410 tombstone missing: " + line)
     print("GATEWAY_INCLUDE_CONTRACT=PASS modules=" + str(len(REQUIRED_INCLUDES)))
 
 
@@ -89,23 +88,17 @@ def verify_live(host: str = "socthink.cn", ip: str = "127.0.0.1", port: int = 44
             raw.close()
             raise
     print("GATEWAY_LIVE_HTTP=PASS paths=" + str(len(PUBLIC_PATHS)))
-    with socket.create_connection((ip, port), timeout=8) as raw:
-        with ctx.wrap_socket(raw, server_hostname=host) as sock:
-            sock.settimeout(8)
-            request = (
-                "GET /NetItAll/ws HTTP/1.1\r\n"
-                "Host: " + host + "\r\n"
-                "Origin: https://" + host + "\r\n"
-                "Upgrade: websocket\r\nConnection: Upgrade\r\n"
-                "Sec-WebSocket-Version: 13\r\n"
-                "Sec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ==\r\n\r\n"
-            )
-            sock.sendall(request.encode("ascii"))
-            line = _read_status_line(sock)
-            if not line.startswith("HTTP/1.1 101 "):
-                raise GatewayContractError("NetItAll WSS did not upgrade: " + line)
-    print("GATEWAY_LIVE_WSS=PASS route=/NetItAll/ws")
-
+    for route in RETIRED_GAME_ROUTES:
+        with socket.create_connection((ip, port), timeout=8) as raw:
+            with ctx.wrap_socket(raw, server_hostname=host) as sock:
+                sock.settimeout(8)
+                request = ("GET " + route + " HTTP/1.1\r\nHost: " + host +
+                           "\r\nConnection: close\r\n\r\n")
+                sock.sendall(request.encode("ascii"))
+                line = _read_status_line(sock)
+                if not line.startswith("HTTP/1.1 410 "):
+                    raise GatewayContractError("retired game URL must be HTTP 410: " + route + " " + line)
+    print("GATEWAY_RETIRED_GAME=PASS HTTP410=" + str(len(RETIRED_GAME_ROUTES)))
 
 def _read_status_line(sock: ssl.SSLSocket) -> str:
     data = bytearray()
