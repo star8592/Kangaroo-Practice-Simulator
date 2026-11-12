@@ -36,7 +36,11 @@ try {
   assert.equal(dataDirectory(), oldDir, "legacy fallback protects in-flight deployments");
   delete process.env.SOCTHINK_USER_DATA_DIR;
   assert.equal(dataDirectory(), path.join(process.cwd(), "private", "seo"));
-  console.log("SEO_STORAGE_ISOLATION=PASS no_identity_write=true modes=0700_0600 history_idempotent=true legacy_fallback=true");
+  const unit = fs.readFileSync(path.resolve("ops/seo/socthink-seo-monitor.service"), "utf8");
+  assert.match(unit, /Environment=SOCTHINK_SEO_DATA_DIR=\/opt\/socthink-math\/private\/seo/);
+  assert.match(unit, /ReadWritePaths=\/opt\/socthink-math\/private\/seo/);
+  assert.doesNotMatch(unit, /ReadWritePaths=.*private\/users/);
+  console.log("SEO_STORAGE_ISOLATION=PASS no_identity_write=true modes=0700_0600 history_idempotent=true legacy_fallback=true unit=SEO_ONLY");
 } finally {
   if (oldSeo === undefined) delete process.env.SOCTHINK_SEO_DATA_DIR;
   else process.env.SOCTHINK_SEO_DATA_DIR = oldSeo;
