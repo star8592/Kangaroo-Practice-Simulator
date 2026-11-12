@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react'
 import { Button, Input, Picker, Text, View } from '@tarojs/components'
-import Taro from '@tarojs/taro'
+import Taro, { useDidShow } from '@tarojs/taro'
+import { AI_ARITHMETIC_INTENT_KEY, readAIArithmeticIntent } from '../../services/ai-entry-intent'
 import { api, authStore } from '../../services/api'
 import ArithmeticAnswerPad from '../../components/ArithmeticAnswerPad'
 import { editMathAnswer, backspaceMathAnswer, type MathAnswerKind } from '../../services/math-answer-keypad'
@@ -13,6 +14,17 @@ export default function ArithmeticPage(){
   const isInstantIdentity=user?.candidateNo==='GUEST'||user?.username==='guest'||user?.candidateNo==='WECHAT'||user?.username==='wechat'
   const [grade,setGrade]=useState(Math.min(12,Math.max(1,Number(user?.grade)||1)))
   const [session,setSession]=useState<any>(null)
+  useDidShow(() => {
+    // switchTab discards query parameters; consume AI's explicitly stated grade once.
+    let intent: unknown
+    try {
+      intent = Taro.getStorageSync(AI_ARITHMETIC_INTENT_KEY)
+      Taro.removeStorageSync(AI_ARITHMETIC_INTENT_KEY)
+    } catch { intent = null }
+    const candidate = readAIArithmeticIntent(intent)
+    if (candidate !== null && !session) setGrade(candidate)
+    // Never start a training session from handoff: parent/student must press Start.
+  })
   const [idx,setIdx]=useState(0)
   const [raw,setRaw]=useState('')
   const cursor=useRef(0)

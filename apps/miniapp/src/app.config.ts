@@ -4,6 +4,7 @@ export default defineAppConfig({
     'pages/arithmetic/index',
     'pages/competitions/index',
     'pages/events/index',
+    'pages/ai-entry/index',
     'pages/profile/index',
     'pages/login/index',
     'pages/exam/index',
