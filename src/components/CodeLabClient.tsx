@@ -111,7 +111,7 @@ export default function CodeLabClient({trackId}:{trackId?:EngineeringTrackId}={}
    if(input.isConnected){input.focus();input.setSelectionRange(next.start,next.end);}
   });
  }
- if(!hydrated)return <div className={styles.root}><p className={styles.note}>正在读取本标签页的练习进度…</p></div>;
+ if(!hydrated)return <div className={styles.root}><header className={styles.header}><h1>{track?.name??"软件工程师 · 真实代码实操"}</h1></header><p className={styles.note}>正在读取本标签页的练习进度…</p></div>;
  return <div className={styles.root}>
   <header className={[styles.header,stage==="practice"?styles.headerPractice:""].filter(Boolean).join(" ")}>
    <span className={styles.eyebrow}>SOCTHINK · {track?"ENGINEERING TRACK":"SOFTWARE ENGINEERING LAB"}</span>
