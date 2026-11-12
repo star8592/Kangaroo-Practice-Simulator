@@ -2,8 +2,8 @@
   "schema": "socthink.module_inventory.audit.v1",
   "observed_on": "2026-11-12",
   "scope": "socthink.cn production and shared-host impact only",
-  "source": "live read-only route, process and source-tree audit; unknowns intentionally explicit",
-  "note": "snapshot evidence, NOT deployment configuration; do not delete or relocate based only on this file",
+  "source": "live read-only route/process audit plus verified 2026-11-12 repair receipts; unknowns explicit",
+  "note": "snapshot evidence, NOT deployment configuration. Every host-level Nginx change must preserve independent app includes; do not delete or relocate based only on this file",
   "modules": [
     {
       "id": "portal",
@@ -58,7 +58,7 @@
       "runtime": "/var/www/socthink-english-public/current/english/pronunciation/app",
       "service": "socthink-accent-api.service",
       "storage": "PG16:5432/accent_lab plus private audio",
-      "status": "frontend_200; classroom_api_not_live"
+      "status": "frontend_http200; static SEO H1 verified; PG18 migration pending"
     },
     {
       "id": "vocabulary",
@@ -97,19 +97,19 @@
       "id": "kids_reading",
       "category": "english",
       "url": "https://socthink.cn/english/reading/kids/",
-      "code_repo": "pending",
-      "code_path": "pending",
+      "code_repo": "star8592/aelos",
+      "code_path": "src/pages/KidsReading.tsx; scripts/finalize-kids-formal.mjs",
       "runtime": "/var/www/socthink-kids-formal/current",
       "service": "nginx static",
       "storage": "static media",
-      "status": "formal_release_detected"
+      "status": "formal_live_http200_ssr_h1_verified"
     },
     {
       "id": "kids_aelos_preview",
       "category": "english_preview",
       "url": "https://socthink.cn/english/aelos/kids-preview/",
-      "code_repo": "pending",
-      "code_path": "pending",
+      "code_repo": "star8592/aelos",
+      "code_path": "src/pages/KidsReading.tsx",
       "runtime": "/var/www/socthink-kids-preview/current",
       "service": "nginx static",
       "storage": "static media",
@@ -145,8 +145,8 @@
       "code_path": "scripts/seo_monitor_daily.mjs",
       "runtime": "/opt/socthink-releases/current",
       "service": "socthink-seo-monitor.service + timer",
-      "storage": "private/users/seo-monitor-snapshots.json",
-      "status": "12_NO_H1_failures"
+      "storage": "/opt/socthink-math/private/seo/seo-monitor-snapshots.json (separate from identity)",
+      "status": "production_73_of_73_healthy; dedicated UID1000 SEO storage"
     },
     {
       "id": "cohost_commerceflow",
@@ -158,6 +158,18 @@
       "service": "commerceflow-delivery.service",
       "storage": "separate billing/delivery",
       "status": "separate_business_do_not_merge"
+    },
+    {
+      "id": "netitall_game",
+      "category": "adjacent_cohost",
+      "url": "https://socthink.cn/NetItAll/",
+      "code_repo": "independent NetItAll project (exact GitHub repo not yet verified)",
+      "code_path": "separate deployment; /etc/nginx/snippets/netitall.conf",
+      "runtime": "/opt/netitall/current/frontend",
+      "service": "netitall-mp.service + netitall-admin.service; Nginx WSS /NetItAll/ws",
+      "storage": "independent game storage; not consolidated into SOC THINK identity",
+      "status": "2026-11-12 HTTP200 and WSS101 restored; UFW IPv4/v6 port3001 ALLOW removed; Rust still binds 0.0.0.0:3001; Origin/message auth pending",
+      "owner_note": "Do not merge, stop or alter NetItAll processes when releasing the education portal."
     }
   ]
 }
