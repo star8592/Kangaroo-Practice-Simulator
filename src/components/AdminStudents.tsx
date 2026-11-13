@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import AdminOperationsNav from "./AdminOperationsNav";
 import { FormEvent, useEffect, useState } from "react";
 import styles from "./AdminStudents.module.css";
 
@@ -128,7 +129,8 @@ export default function AdminStudents() {
   }
 
   return (
-    <div className={`admin-shell ${styles.shell}`}>
+    <div className={`admin-shell admin-review-shell ${styles.shell}`}>
+      <AdminOperationsNav/>
       <section className={styles.heading}>
         <div>
           <span className={styles.kicker}>学生管理</span>

@@ -135,7 +135,7 @@ for(const row of rows){
 assert.deepEqual(unreachable,[],"Public route with no static discovery reference");
 
 const proof=[
- ["src/components/AdminOperationsNav.tsx",'href="/admin/competition-source-watch"'],
+ ["src/components/AdminOperationsNav.tsx",'href: "/admin/competition-source-watch"'],
  ["src/app/math-practice/page.tsx",'href="/verification"'],
  ["src/components/ExamDirectory.tsx",'href="/math-practice"'],
  ["src/app/verification/page.tsx",'href="/math-practice"'],
@@ -145,6 +145,11 @@ const proof=[
  ["src/components/AssessmentPortalClient.tsx",'href="/exam-planner"'],
 ];
 for(const [p,needle] of proof)assert.ok(read(p).includes(needle),"Missing actual inbound/parent evidence: "+p+" "+needle);
+// Grouped admin navigation is now data-driven. It must still turn that
+// configuration into a real Next Link, rather than merely naming the route.
+assert.ok(read("src/components/AdminOperationsNav.tsx").includes("href={link.href}"),
+  "Admin navigation route data is not rendered as real links");
+
 assert.ok(!read("src/app/career/companies/page.tsx").includes('href="/assessments"'),
  "Employer research must not descend from exams");
 assert.ok(read("src/app/assessment-center/sql-lab/page.tsx").includes('permanentRedirect("/skill-labs/sql-lab")'),

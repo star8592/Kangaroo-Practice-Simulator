@@ -18,3 +18,6 @@
 .teacher{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:13px 0;border-top:1px solid #e5e9ef}
 .teacher p{color:#67758a;font-size:.88rem}
 @media(max-width:640px){.wrap{padding:18px 12px 50px}.header,.titleRow,.teacher{align-items:flex-start;flex-direction:column}.panel{padding:17px}.teacher button{width:100%}}
+
+
+@media(min-width:1101px){.wrap{width:100%;max-width:2400px;padding:30px 28px 76px 278px}}

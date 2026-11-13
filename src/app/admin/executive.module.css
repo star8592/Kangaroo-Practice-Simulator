@@ -96,3 +96,16 @@
 .cohortFoot span{padding:5px 0}
 @media(max-width:1050px){.cohortTiles{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:550px){.cohortSection{padding:15px}.cohortTiles{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.cohortTiles>div{padding:12px}.cohortFoot{display:grid;gap:5px}.cohortFoot span{padding:2px 0}}
+
+
+/* Widescreen operations: use available monitor space, retain the stable nav rail. */
+@media(min-width:1101px){
+.shell{max-width:2400px;padding:18px 28px 76px 278px}
+.hero{padding:23px 28px;margin:5px 0 22px;border-radius:18px}
+.heroBottom{margin-top:19px;padding-top:13px}
+.section{margin-top:26px}
+}
+@media(min-width:1650px){
+.financialGrid{grid-template-columns:minmax(0,1.6fr) repeat(3,minmax(0,1fr))}
+.discoveryLayout{grid-template-columns:minmax(0,.95fr) minmax(0,1.05fr)}
+}

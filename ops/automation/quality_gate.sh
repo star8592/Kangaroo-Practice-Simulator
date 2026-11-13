@@ -41,6 +41,7 @@ step "WeChat QR expiry" npm run test:native-qr-expiry
 step "Native checkout buyer scope" npm run test:wechat-native-flags
 step "release smoke and rollback wiring" npm run test:engineering-contract
 
+step "operations widescreen navigation contract" node scripts/test_admin_wide_navigation_contract.mjs
 step "lint" npm run lint -- --max-warnings=0
 # Build tools may retain deleted route types in the worktree.
 step "clear generated stale Next route types" rm -rf .next/types .next/dev/types
