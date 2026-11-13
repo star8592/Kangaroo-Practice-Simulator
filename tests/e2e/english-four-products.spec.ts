@@ -4,21 +4,53 @@ const STUDIOS=[
  {slug:"pronunciation",title:"发音训练",target:"/english/pronunciation/app/practice-library"},
  {slug:"vocabulary",title:"单词学习",target:"/english/vocabulary/app/"},
  {slug:"reading",title:"英语阅读",target:"/english/reading/app/"},
- {slug:"aelos",title:"综合英语",target:"/english/aelos/app/"},
+ {slug:"aelos",title:"高阶阅读",target:"/english/aelos/app/library"},
 ] as const;
 
-test("homepage opens a single English hub containing four independent products",async({page})=>{
+test("homepage English hub exposes all five direct apps in four learning directions",async({page})=>{
  await page.goto("/");
  await expect(page.getByRole("navigation",{name:"学习与考试分类"}).locator('a[href="/english"]')).toBeVisible();
  await page.getByRole("navigation",{name:"学习与考试分类"}).locator('a[href="/english"]').click();
  await expect(page).toHaveURL(/\/english$/);
  await expect(page.getByRole("heading",{level:1,name:"英语学习"})).toBeVisible();
- const nav=page.getByRole("navigation",{name:"英语四个独立学习项目"});
- await expect(nav.locator("article")).toHaveCount(4);
- for(const studio of STUDIOS)
-  await expect(nav.locator('a[href="/english/'+studio.slug+'"]')).toBeVisible();
+ const nav=page.getByRole("navigation",{name:"英语学习直达入口"});
+ await expect(nav.locator("article")).toHaveCount(5);
+ const direct=[
+  {title:"发音训练",target:"/english/pronunciation/app/practice-library"},
+  {title:"单词学习",target:"/english/vocabulary/app/"},
+  {title:"少儿英语绘本",target:"/english/reading/kids/"},
+  {title:"英语阅读",target:"/english/reading/app/"},
+  {title:"高阶阅读",target:"/english/aelos/app/library"},
+ ];
+ for(const entry of direct){
+  const card=nav.locator("article.direct-entry-card").filter({has:page.getByRole("heading",{name:entry.title,exact:true})});
+  await expect(card).toHaveCount(1);
+  const primary=card.locator("a.direct-entry-hit");
+  await expect(primary).toHaveAttribute("href",new RegExp("^"+entry.target.replace(/\/$/,"")+"\\/?$"));
+ }
+ await expect(nav).not.toContainText("进入目录");
  await expect(page.locator("main")).not.toContainText(/立即购买|付款成功|会员已开通/);
  expect(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth)).toBeLessThanOrEqual(2);
+});
+
+
+test("English second-level title and icon themselves open the learning app",async({page})=>{
+ for(const selected of [
+  {title:"发音训练",target:"/english/pronunciation/app/practice-library",click:"heading"},
+  {title:"少儿英语绘本",target:"/english/reading/kids/",click:"icon"},
+ ]){
+  await page.goto("/english");
+  const card=page.locator("article.direct-entry-card").filter({has:page.getByRole("heading",{name:selected.title,exact:true})});
+  await expect(card).toBeVisible();
+  const target=selected.click==="heading"
+   ?card.getByRole("heading",{name:selected.title,exact:true})
+   :card.locator('[aria-hidden="true"]').first();
+  await target.scrollIntoViewIfNeeded();
+  const rect=await target.boundingBox();
+  expect(rect).not.toBeNull();
+  await page.mouse.click(rect!.x+rect!.width/2,rect!.y+rect!.height/2);
+  await expect(page).toHaveURL(new RegExp(selected.target.replace(/\/$/,"")+"\\/?$"));
+ }
 });
 
 test("each studio page is live, correctly labeled and truthful about independent login",async({page})=>{

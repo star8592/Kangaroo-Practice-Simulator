@@ -1,0 +1,12 @@
+/*
+ * Second-level service tiles have a real, large native link or button.
+ * Do not expand a tiny link using ::after: in some browsers pseudo hit
+ * targets receive pointer events without a reliable navigation default.
+ */
+.direct-entry-card{position:relative;isolation:isolate;cursor:pointer;transition:border-color .16s,box-shadow .16s,transform .16s}
+.direct-entry-card>.direct-entry-hit{position:absolute!important;inset:0!important;width:100%;height:100%;z-index:1;display:block!important;margin:0!important;padding:0!important;border:0!important;border-radius:inherit;background:transparent;cursor:pointer}
+.direct-entry-card>.direct-entry-hit:focus-visible{outline:3px solid #ea8750;outline-offset:3px}
+.direct-entry-card :is(a:not(.direct-entry-hit),button:not(.direct-entry-hit),input,select,textarea,summary){position:relative;z-index:2}
+.direct-entry-card:hover{border-color:#92b9a0;box-shadow:0 13px 32px #183d2b19;transform:translateY(-2px)}
+.direct-entry-card:focus-within{border-color:#74a8a0}
+@media(prefers-reduced-motion:reduce){.direct-entry-card{transition:none}.direct-entry-card:hover{transform:none}}

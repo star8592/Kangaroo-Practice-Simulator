@@ -23,10 +23,10 @@ export default function LearnHome(){
   </header>
   <p><Link href="/career/paths">按目标岗位选择完整学习路线：AI Agent、数据分析、商品运营与软件研发 →</Link></p>
   <div className={styles.sectionHeading}><div><span className={styles.eyebrowDark}>CURRENTLY AVAILABLE</span><h2>目前可用的学习入口</h2></div></div>
-  <div className={styles.grid}>{COURSES.map(course=><article key={course.id} className={styles.tile}>
+  <div className={styles.grid}>{COURSES.map(course=><article key={course.id} className={styles.tile+" direct-entry-card"}><Link className="direct-entry-hit" data-direct-primary href={course.href} aria-label={"进入学习与实训："+course.name}/>
     <div className={styles.tileTop}><span className={styles.tileNumber}>{course.kind}</span><span className={styles.previewBadge}>可访问</span></div>
     <h3>{course.name}</h3><p>{course.summary}</p>
-    <Link className={styles.tileLink} href={course.href}>进入学习与实训 <span aria-hidden="true">→</span></Link>
+    <span className={styles.tileLink} aria-hidden="true">进入学习与实训 <span aria-hidden="true">→</span></span>
     <Link href={course.related}>{course.action} →</Link>
   </article>)}</div>
   <p>本页只展示已有实际入口。新抓取的 X/GitHub 项目只有完成来源、许可证、运行和教学质量核验后才会进入公开课程。</p>
