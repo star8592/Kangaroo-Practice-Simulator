@@ -3,7 +3,7 @@ import styles from "./SocthinkPortal.module.css";
 
 const ENTRIES = [
  {id:"math",label:"数学",detail:"国际竞赛 · 口算训练",icon:"∑",href:"/math",status:"ready"},
- {id:"english",label:"英语",detail:"发音 · 单词 · 阅读 · 综合",icon:"Aa",href:"/english",status:"ready"},
+ {id:"english",label:"英语",detail:"发音 · 单词 · 阅读 · 高阶阅读",icon:"Aa",href:"/english",status:"ready"},
  {id:"k12",label:"校内学科",detail:"语文 · 真题资料",icon:"课",href:"/resources",status:"ready"},
  {id:"career",label:"职业技能",detail:"课程 · 项目实训",icon:"技",href:"/learn",status:"ready"},
  {id:"assessment",label:"能力测评",detail:"推理 · 职业测评",icon:"测",href:"/assessment-center",status:"ready"},

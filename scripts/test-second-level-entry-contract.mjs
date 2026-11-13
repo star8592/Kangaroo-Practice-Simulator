@@ -30,6 +30,7 @@ for(const direct of [
  assert.ok(read('src/lib/english-products.ts').includes(direct) || english.includes(direct),direct+' missing')
 }
 assert.ok(english.includes('ENGLISH_PRODUCTS.flatMap'),'Both reading products must be shown in level two')
+assert.ok(read('src/components/SocthinkPortal.tsx').includes('发音 · 单词 · 阅读 · 高阶阅读'),'Homepage must show AelOS actual category')
 const css=read('src/app/direct-entry.css')
 assert.ok(css.includes('>.direct-entry-hit') && css.includes('z-index:2'),'Must use a real full-size anchor with independent secondary actions')
 assert.ok(read('src/app/layout.tsx').includes('direct-entry.css'),'Global card rule not loaded')
