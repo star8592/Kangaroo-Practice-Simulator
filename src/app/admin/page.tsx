@@ -2,6 +2,8 @@ import Link from "next/link";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { isAdmin, SESSION_COOKIE, userFromSessionToken } from "@/lib/auth";
+import { parentFromSessionToken, PARENT_SESSION_COOKIE } from "@/lib/parent-auth";
+import { isSiteOwner } from "@/lib/site-owner";
 import { adminOperationsSnapshot } from "@/lib/admin-operations";
 import { readCustomerFeedbackOverview } from "@/lib/customer-feedback-admin";
 import { readAdminRevenue, parseAdminPeriod, formatMinorUnits } from "@/lib/admin-business-metrics";
@@ -43,8 +45,8 @@ type Params = { searchParams: Promise<{ days?: string | string[] }> };
 export default async function AdminPage({ searchParams }: Params) {
   const session = await cookies();
   const user = userFromSessionToken(session.get(SESSION_COOKIE)?.value);
-  if (!user) redirect("/admin/login");
-  if (!isAdmin(user)) redirect("/");
+  const owner = isSiteOwner(parentFromSessionToken(session.get(PARENT_SESSION_COOKIE)?.value));
+  if (!isAdmin(user) && !owner) redirect("/admin/login");
 
   const period = parseAdminPeriod((await searchParams).days);
   const [revenue, accounts, feedback, seo, cohort, storefront] = await Promise.all([

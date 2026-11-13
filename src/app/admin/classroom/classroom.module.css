@@ -1,0 +1,20 @@
+.wrap{max-width:1120px;margin:0 auto;padding:30px 22px 72px}
+.header{display:flex;justify-content:space-between;gap:18px;align-items:center;margin-bottom:18px}
+.header h1{font-size:clamp(1.5rem,3vw,2rem);margin:6px 0}
+.header p{margin:4px 0;color:var(--color-muted,#667085)}
+.kicker{font-size:.75rem;letter-spacing:.13em;font-weight:700}
+.stack{display:grid;gap:18px;margin-top:24px}
+.panel{padding:24px;border:1px solid #dce2e9;border-radius:16px;background:#fff;color:#243047}
+.panel h2{font-size:1.18rem;margin:0 0 10px}
+.panel p{margin:8px 0;line-height:1.65}
+.titleRow{display:flex;align-items:center;justify-content:space-between;gap:16px}
+.form{max-width:480px;display:grid;gap:12px;margin-top:16px}
+.form label{display:grid;gap:7px}
+.form input{width:100%;padding:12px;border:1px solid #aab5c3;border-radius:9px;font:inherit}
+.panel button{border:0;padding:10px 16px;border-radius:9px;background:#174b8a;color:#fff;cursor:pointer;font:inherit}
+.panel button:disabled{opacity:.5;cursor:not-allowed}
+.ok{color:#176449}.warn{color:#a14c21}.tip{color:#5d6675}
+.list{display:grid;gap:10px}
+.teacher{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:13px 0;border-top:1px solid #e5e9ef}
+.teacher p{color:#67758a;font-size:.88rem}
+@media(max-width:640px){.wrap{padding:18px 12px 50px}.header,.titleRow,.teacher{align-items:flex-start;flex-direction:column}.panel{padding:17px}.teacher button{width:100%}}

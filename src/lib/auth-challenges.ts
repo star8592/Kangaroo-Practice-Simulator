@@ -1,10 +1,10 @@
 import crypto from "node:crypto";
 import {atomicWriteJson,readJsonArray,readOrCreateSecret,userDataPath} from "./user-data-store";
 
-export type AuthPurpose="register"|"reset-password";
+export type AuthPurpose="register"|"reset-password"|"site-owner"|"site-owner-email";
 type Challenge={
   id:string;purpose:AuthPurpose;email:string;codeHash:string;createdAt:number;expiresAt:number;resendAfter:number;attempts:number;
-  payload?:{name?:string;passwordHash?:string;termsAcceptedAt?:number;guardianConfirmedAt?:number};
+  payload?:{name?:string;passwordHash?:string;termsAcceptedAt?:number;guardianConfirmedAt?:number;ownerParentId?:string;ownerAdminId?:string};
 };
 const FILE=userDataPath("auth-challenges.json");
 const SECRET=userDataPath("auth-challenge-secret.txt");
