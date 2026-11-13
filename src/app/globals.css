@@ -5,7 +5,7 @@
  --portal-canvas:#f5f7fb;--portal-white:#fff;--portal-success:#11765b;
  --bg:var(--portal-canvas);--ink:var(--portal-text);--muted:var(--portal-muted);--line:var(--portal-border);--panel:#fff;--surface-subtle:#f4f8ff;--surface-muted:#f9fbff;--field-border:#cad8ea;--field-hover:#a7c4e7;
  --accent:var(--portal-blue);--accent-dark:var(--portal-blue-strong);--green:#11765b;--soft-green:#e8f6ee;--yellow:#f4c95d;--red:#b84437;
- --layout-standard:1440px;--layout-wide:1440px;--layout-focus:960px;--layout-auth:1040px;--layout-reading:820px;
+ --layout-standard:1600px;--layout-wide:1920px;--layout-focus:960px;--layout-auth:1040px;--layout-reading:820px;
  --page-gutter:28px;--page-gutter-tablet:20px;--page-gutter-mobile:14px;--page-top:48px;--page-top-tablet:36px;--page-top-compact:28px;--page-bottom:88px;
  --space-1:4px;--space-2:8px;--space-3:12px;--space-4:16px;--space-5:20px;--space-6:24px;--space-7:32px;--space-8:40px;--space-9:48px;--space-10:64px;
  --radius-control:11px;--radius-soft:14px;--radius-card:18px;--radius-panel:22px;--radius-hero:28px;--radius-pill:999px;
@@ -400,3 +400,10 @@
 .site-footer-group>div{display:grid;gap:9px}
 .site-footer-group a{font-size:13px;line-height:1.4}
 @media(max-width:760px){.site-footer-top nav{margin-top:24px;grid-template-columns:repeat(2,minmax(0,1fr));gap:27px 18px}}
+
+
+/* Operations-only wide workspace. Does not widen focused exam/reading text. */
+@media(min-width:1101px){
+body main .admin-review-shell{width:100%;max-width:2400px;margin-left:auto;margin-right:auto;padding:30px 28px 76px 278px}
+}
+@media(max-width:1100px){body main .admin-review-shell{max-width:100%}}

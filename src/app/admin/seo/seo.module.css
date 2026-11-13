@@ -33,3 +33,6 @@
 .next p{color:#506985;line-height:1.85;margin:0;font-size:14px}
 @media(max-width:1050px){.cards{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:700px){.page{padding:22px var(--page-gutter-mobile) 60px}.cards{grid-template-columns:1fr}.header{gap:15px}.actions{width:100%}.actions a{flex:1;text-align:center}.section{margin-top:24px}}
+
+
+@media(min-width:1101px){.page{max-width:2400px;padding:30px 28px 76px 278px}}

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import AdminOperationsNav from "./AdminOperationsNav";
 import type { Question } from "@/lib/types";
 import styles from "./AdminQuestions.module.css";
 
@@ -28,11 +29,15 @@ export default function AdminQuestions() {
   const verifiedCount = questions.filter((question) => question.verified).length;
 
   if (error) {
-    return <div className={styles.errorCard}><h2>题库读取失败</h2><p>{error}</p></div>;
+    return <div className="admin-shell admin-review-shell">
+      <AdminOperationsNav/>
+      <div className={styles.errorCard}><h2>题库读取失败</h2><p>{error}</p></div>
+    </div>;
   }
 
   return (
-    <div className={`admin-shell ${styles.shell}`}>
+    <div className={`admin-shell admin-review-shell ${styles.shell}`}>
+      <AdminOperationsNav/>
       <section className={styles.heading}>
         <div>
           <span className={styles.kicker}>题库审核</span>

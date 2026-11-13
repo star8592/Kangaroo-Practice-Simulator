@@ -1,6 +1,7 @@
 "use client";
 import {useEffect,useState} from "react";
 import Link from "next/link";
+import AdminOperationsNav from "./AdminOperationsNav";
 import styles from "./SourceReviewDashboard.module.css";
 type Source={id:string;label:string;eventId:string;region:string;url:string};
 type Health={sourceId:string;checkedAt:string;lastSuccessAt?:string;error?:string};
@@ -35,7 +36,7 @@ export default function SourceReviewDashboard(){
     }catch(e){setError(e instanceof Error?e.message:"保存失败");}
     finally{setSaving("");}
   };
-  return <div className={styles.page}>
+  return <div className={styles.page + " admin-review-shell"}><AdminOperationsNav/>
     <header className={styles.head}>
       <div><p className={styles.eyebrow}>OFFICIAL SOURCE MONITOR · REVIEW ONLY</p>
         <h1>赛事官方情报审核</h1>
