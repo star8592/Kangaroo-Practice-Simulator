@@ -75,12 +75,12 @@ export default async function CareerDemandPage({searchParams}:{searchParams:Sear
         <span className={styles.commerceCount}>{CAREER_ORIGINAL_GUIDES.length} 份已完成原创资料</span>
       </div>
       <div className={styles.offerGrid}>
-        {CAREER_ORIGINAL_GUIDES.map(g=><article key={g.id} className={styles.offerCard+" direct-entry-card"}><Link className="direct-entry-hit" data-direct-primary href={"/career/guides/"+g.id} aria-label={"直接打开"+g.title}/>
+        {CAREER_ORIGINAL_GUIDES.map(g=><article key={g.id} className={styles.offerCard+" direct-entry-card"}><Link className="direct-entry-hit" data-direct-primary href={"/career/guides/"+g.id} aria-label="阅读完整教程"/>
           <div className={styles.offerTop}><span>原创教程 / 数字文件</span><strong>免费完整领取</strong></div>
           <h3>{g.title}</h3><p>{g.summary}</p>
           <div className={styles.offerSpecs}><span>{g.sections.length} 个章节</span><span>Markdown 文件</span><span>可在线阅读</span></div>
           <div className={styles.offerActions}>
-            <Link href={"/career/guides/"+g.id}>阅读完整教程</Link>
+            <span aria-hidden="true">阅读完整教程</span>
             <a href={"/career/guides/"+g.id+"/download"}>下载资料</a>
           </div>
         </article>)}
@@ -114,14 +114,14 @@ export default async function CareerDemandPage({searchParams}:{searchParams:Sear
       </div>
       <p className={styles.sampleNote}><Link href="/career/interviews">体验校招／社招结构化模拟面试（免费体验版）</Link> · 当前提供岗位追问及真实回答复盘，尚未开放AI语义评分和收费。</p>
       <div className={styles.offerGrid}>
-        {CAREER_FORMAL_PAPERS.map(paper=><article className={styles.offerCard+" direct-entry-card"} key={paper.id}><Link className="direct-entry-hit" data-direct-primary href={"/career/exams/"+paper.id} aria-label={"直接打开"+paper.title}/>
+        {CAREER_FORMAL_PAPERS.map(paper=><article className={styles.offerCard+" direct-entry-card"} key={paper.id}><Link className="direct-entry-hit" data-direct-primary href={"/career/exams/"+paper.id} aria-label="进入考场 · 确认入场"/>
           <div className={styles.offerTop}><span>标准模拟笔试 / 限时考场</span><strong>免费完整体验</strong></div>
           <h3>{paper.title}</h3>
           <p>{paper.context}</p>
           <div className={styles.offerSpecs}><span>{paper.questions.length} 道题</span>
             <span>{paper.maxPoints} 分</span><span>{paper.durationMinutes} 分钟限时</span><span>2026 Q4 · 原创v{paper.revision}</span></div>
           <div className={styles.offerActions}>
-            <Link href={"/career/exams/"+paper.id}>进入考场 · 确认入场</Link>
+            <span aria-hidden="true">进入考场 · 确认入场</span>
             <Link href={paper.family==="agent"?"/skill-labs/agent-foundations":"/career/guides/"+guideForFamily(paper.family)!.id}>考前复习资料</Link>
           </div>
         </article>)}

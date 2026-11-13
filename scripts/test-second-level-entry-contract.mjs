@@ -33,15 +33,20 @@ assert.ok(english.includes('ENGLISH_PRODUCTS.flatMap'),'Both reading products mu
 const css=read('src/app/direct-entry.css')
 assert.ok(css.includes('>.direct-entry-hit') && css.includes('z-index:2'),'Must use a real full-size anchor with independent secondary actions')
 assert.ok(read('src/app/layout.tsx').includes('direct-entry.css'),'Global card rule not loaded')
-// Keep visible CTA labels as native links. Earlier replacement with aria-hidden
-// spans made desktop/mobile E2E fail despite the underlying full-card overlay.
-for(const [path,linkLabel] of [
+// The main destination must be one full-card anchor with an accessible CTA
+// name; a second same-href anchor breaks strict selectors and keyboard UX.
+for(const [path,label] of [
  ['src/app/career/page.tsx','阅读完整教程'],
  ['src/app/career/page.tsx','进入考场 · 确认入场'],
  ['src/app/skill-labs/page.tsx','进入技术书库'],
+ ['src/app/skill-labs/page.tsx','进入独立 SQL 实训台'],
+ ['src/app/skill-labs/page.tsx','进入编程实训台'],
 ]){
  const body=read(path)
- const matcher=new RegExp('<Link[^>]*>\\s*'+linkLabel)
- assert.ok(matcher.test(body),path+' lost accessible primary action '+linkLabel)
+ assert.ok(body.includes('aria-label="'+label+'"'),path+' must expose accessible primary '+label)
+}
+for(const path of ['src/app/skill-labs/page.tsx','src/app/practice/page.tsx','src/app/learn/page.tsx']){
+ const body=read(path)
+ assert.ok(!body.includes('<Link className={styles.tileLink} href='),path+' introduced duplicated primary anchor')
 }
 console.log('SECOND_LEVEL_DIRECT_ENTRY_CONTRACT=PASS',hubPaths.length,'hub templates',5,'English service entries')
