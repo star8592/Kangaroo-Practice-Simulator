@@ -25,6 +25,7 @@ for(const direct of [
  '/english/vocabulary/app/',
  '/english/reading/kids/',
  '/english/reading/app/',
+ '/english/reading/app/exams',
  '/english/aelos/app/library',
 ]){
  assert.ok(read('src/lib/english-products.ts').includes(direct) || english.includes(direct),direct+' missing')
@@ -50,4 +51,4 @@ for(const path of ['src/app/skill-labs/page.tsx','src/app/practice/page.tsx','sr
  const body=read(path)
  assert.ok(!body.includes('<Link className={styles.tileLink} href='),path+' introduced duplicated primary anchor')
 }
-console.log('SECOND_LEVEL_DIRECT_ENTRY_CONTRACT=PASS',hubPaths.length,'hub templates',5,'English service entries')
+console.log('SECOND_LEVEL_DIRECT_ENTRY_CONTRACT=PASS',hubPaths.length,'hub templates',6,'English service entries')
