@@ -18,7 +18,7 @@ export default async function ClassroomAdminPage() {
   const parent = parentFromSessionToken(jar.get(PARENT_SESSION_COOKIE)?.value);
   const owner = isSiteOwner(parent);
   if (!oldAdmin && !owner) redirect("/admin/login");
-  return <main className={styles.wrap}>
+  return <div className={styles.wrap}>
     <header className={styles.header}>
       <div><p className={styles.kicker}>SOC THINK · 统一运营后台</p>
         <h1>英语课堂与教师管理</h1>
@@ -35,5 +35,5 @@ export default async function ClassroomAdminPage() {
       legacyAdmin={oldAdmin}
       wechatLoggedIn={Boolean(parent?.wechatId || parent?.wechatOpenId)}
     />
-  </main>;
+  </div>;
 }
