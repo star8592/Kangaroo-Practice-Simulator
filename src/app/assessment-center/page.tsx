@@ -57,12 +57,12 @@ export default function MeasurementCenterPage(){
     {group.items.map((entry,index)=>{
      const evidence=lookup.get(entry.id);
      if(!evidence)return null;
-     return <article className={styles.catalogCard} key={entry.id}>
+     return <article className={styles.catalogCard+" direct-entry-card"} key={entry.id}><Link className="direct-entry-hit" data-direct-primary href={evidence.path} aria-label={"直接打开"+evidence.path}/>
       <div className={styles.catalogCardTop}>
        <span className={styles.catalogIndex}>{String(index+1).padStart(2,"0")}</span>
        <span className={styles.catalogType}>{entry.tag}</span>
       </div>
-      <h3><Link href={evidence.path}>{evidence.name}</Link></h3>
+      <h3>{evidence.name}</h3>
       <p className={styles.catalogFocus}>{entry.focus}</p>
       <div className={styles.catalogFacts}><span>{entry.time}</span><span>{evidence.audience}</span></div>
       <dl className={styles.catalogMethod}>
@@ -70,7 +70,7 @@ export default function MeasurementCenterPage(){
        <div><dt>验证状态</dt><dd>尚未建立适用人群的标准常模，结果限于训练或自我探索</dd></div>
       </dl>
       <div className={styles.catalogCardActions}>
-       <Link className={styles.catalogStart} href={evidence.path}>进入测评 <span aria-hidden="true">→</span></Link>
+       <span className={styles.catalogStart} aria-hidden="true">进入测评 <span>→</span></span>
        <Link className={styles.catalogEvidence} href={"/assessment-center/methodology#"+evidence.id}>技术档案</Link>
       </div>
      </article>;
