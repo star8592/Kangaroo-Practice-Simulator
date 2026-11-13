@@ -2,6 +2,8 @@ import Link from "next/link";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { isAdmin, SESSION_COOKIE, userFromSessionToken } from "@/lib/auth";
+import { parentFromSessionToken, PARENT_SESSION_COOKIE } from "@/lib/parent-auth";
+import { isSiteOwner } from "@/lib/site-owner";
 import AdminLoginClient from "@/components/AdminLoginClient";
 import styles from "@/components/AdminOperations.module.css";
 
@@ -10,7 +12,7 @@ export const metadata = { title: "管理员认证 · SOC THINK", robots: { index
 
 export default async function AdminLoginPage() {
   const jar = await cookies();
-  if (isAdmin(userFromSessionToken(jar.get(SESSION_COOKIE)?.value))) redirect("/admin");
+  if (isAdmin(userFromSessionToken(jar.get(SESSION_COOKIE)?.value)) || isSiteOwner(parentFromSessionToken(jar.get(PARENT_SESSION_COOKIE)?.value))) redirect("/admin");
   return <div className={styles.shell}>
     <header className={styles.head}>
       <div><span className={styles.eyebrow}>SOC THINK · 管理中心</span><h1>管理员认证</h1>
