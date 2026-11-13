@@ -70,7 +70,7 @@ export default function MeasurementCenterPage(){
        <div><dt>验证状态</dt><dd>尚未建立适用人群的标准常模，结果限于训练或自我探索</dd></div>
       </dl>
       <div className={styles.catalogCardActions}>
-       <span className={styles.catalogStart} aria-hidden="true">进入测评 <span>→</span></span>
+       <Link className={styles.catalogStart} href={evidence.path}>进入测评 <span aria-hidden="true">→</span></Link>
        <Link className={styles.catalogEvidence} href={"/assessment-center/methodology#"+evidence.id}>技术档案</Link>
       </div>
      </article>;

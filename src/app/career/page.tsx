@@ -80,7 +80,7 @@ export default async function CareerDemandPage({searchParams}:{searchParams:Sear
           <h3>{g.title}</h3><p>{g.summary}</p>
           <div className={styles.offerSpecs}><span>{g.sections.length} 个章节</span><span>Markdown 文件</span><span>可在线阅读</span></div>
           <div className={styles.offerActions}>
-            <span aria-hidden="true">阅读完整教程</span>
+            <Link href={"/career/guides/"+g.id}>阅读完整教程</Link>
             <a href={"/career/guides/"+g.id+"/download"}>下载资料</a>
           </div>
         </article>)}
@@ -121,7 +121,7 @@ export default async function CareerDemandPage({searchParams}:{searchParams:Sear
           <div className={styles.offerSpecs}><span>{paper.questions.length} 道题</span>
             <span>{paper.maxPoints} 分</span><span>{paper.durationMinutes} 分钟限时</span><span>2026 Q4 · 原创v{paper.revision}</span></div>
           <div className={styles.offerActions}>
-            <span aria-hidden="true">进入考场 · 确认入场</span>
+            <Link href={"/career/exams/"+paper.id}>进入考场 · 确认入场</Link>
             <Link href={paper.family==="agent"?"/skill-labs/agent-foundations":"/career/guides/"+guideForFamily(paper.family)!.id}>考前复习资料</Link>
           </div>
         </article>)}

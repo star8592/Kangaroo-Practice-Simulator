@@ -26,7 +26,7 @@ export default function LearnHome(){
   <div className={styles.grid}>{COURSES.map(course=><article key={course.id} className={styles.tile+" direct-entry-card"}><Link className="direct-entry-hit" data-direct-primary href={course.href} aria-label={"直接打开"+course.name}/>
     <div className={styles.tileTop}><span className={styles.tileNumber}>{course.kind}</span><span className={styles.previewBadge}>可访问</span></div>
     <h3>{course.name}</h3><p>{course.summary}</p>
-    <span className={styles.tileLink} aria-hidden="true">进入学习与实训 <span aria-hidden="true">→</span></span>
+    <Link className={styles.tileLink} href={course.href}>进入学习与实训 <span aria-hidden="true">→</span></Link>
     <Link href={course.related}>{course.action} →</Link>
   </article>)}</div>
   <p>本页只展示已有实际入口。新抓取的 X/GitHub 项目只有完成来源、许可证、运行和教学质量核验后才会进入公开课程。</p>
