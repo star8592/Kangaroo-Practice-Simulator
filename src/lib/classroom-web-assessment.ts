@@ -1,10 +1,9 @@
 import crypto from "node:crypto";
 import path from "node:path";
 import {mkdir,readFile,writeFile,unlink} from "node:fs/promises";
-import type {PoolClient} from "pg";
 import {NextRequest} from "next/server";
 import {
-  type Actor,ClassroomFailure,approved,teacher,enrolled,invite,
+  type Actor,ClassroomFailure,teacher,enrolled,invite,
   tx,id,txt,jsonBody,classForAssignment
 } from "@/lib/classroom-web-core";
 
