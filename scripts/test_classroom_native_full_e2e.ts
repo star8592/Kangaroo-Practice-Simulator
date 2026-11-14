@@ -20,8 +20,8 @@ const data=path.join(root,"data"),socket=path.join(root,"sock"),users=path.join(
 for(const p of [socket,users,recordings])fs.mkdirSync(p,{mode:0o700});
 process.env.SOCTHINK_USER_DATA_DIR=users;
 process.env.SOCTHINK_CLASSROOM_RECORDINGS_DIR=recordings;
-const migrationDir=process.env.ACCENTLAB_MIGRATIONS_DIR;
-const canaryPath=process.env.ACCENTLAB_E2E_CANARY;
+const migrationDir=process.env.ACCENTLAB_MIGRATIONS_DIR||"";
+const canaryPath=process.env.ACCENTLAB_E2E_CANARY||"";
 if(!migrationDir||!canaryPath||!fs.existsSync(canaryPath))throw Error("Provide isolated migration directory and existing synthetic WebM");
 const PG="/usr/lib/postgresql/18/bin",L="/usr/bin/psql";
 function run(bin:string,args:string[],opts:Record<string,unknown>={}):string{
