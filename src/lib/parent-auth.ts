@@ -95,3 +95,12 @@ export function parentFromSessionToken(token:string|undefined|null):PublicParent
   if(!x?.uid||!x.exp||x.exp<Math.floor(Date.now()/1000))return null;
   const u=loadParents().find(v=>v.id===x.uid&&v.active);if(!u||(u.sessionVersion||1)!==(x.ver??1))return null;return pub(u)
 }
+
+/** Admin-only consumers: displayable, already verified WeChat accounts.
+ * Never return WeChat OpenID, email, session token or password fields.
+ */
+export function listWechatParentCandidates():Array<{id:string;name:string;lastLoginAt:number|null}>{
+  return loadParents()
+    .filter(p=>p.active && Boolean(p.wechatId||p.wechatOpenId))
+    .map(p=>({id:p.id,name:p.name,lastLoginAt:p.lastLoginAt??null}));
+}
