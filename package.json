@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "test:classroom-embedded": "tsx scripts/test_classroom_embedded_contract_20261114.ts",
     "start": "next start",
     "lint": "eslint",
     "test:arithmetic": "tsx scripts/test_arithmetic_strategy_tree.ts && tsx scripts/test_arithmetic_symbolic.ts && tsx scripts/test_arithmetic_input.ts && tsx scripts/test_arithmetic_display.ts",
