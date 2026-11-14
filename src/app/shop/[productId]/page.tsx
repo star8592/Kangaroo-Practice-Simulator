@@ -135,7 +135,9 @@ export default async function StoreProductPage({params}:{
           <summary id="steps-title">付款与下载流程</summary>
           <ol className={styles.steps}>
             <li><span>1</span><div><strong>确认商品与价格</strong><p>查看文件名、题量、价格和售后规则。</p></div></li>
-            <li><span>2</span><div><strong>微信支付</strong><p>正式开放后，登录微信账号并扫码完成支付；以微信官方回执为准。</p></div></li>
+            <li><span>2</span><div><strong>微信支付</strong><p>{publicCheckoutReady
+              ?"微信登录后扫码完成支付；以微信官方回执为准。"
+              :"支付开放后，登录微信账号并扫码完成支付；以微信官方回执为准。"}</p></div></li>
             <li><span>3</span><div><strong>进入账号下载</strong><p>订单确认已支付后，在<Link href="/account">我的订单与权益</Link>下载原始 PDF。</p></div></li>
           </ol>
         </details>

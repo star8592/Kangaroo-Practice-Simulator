@@ -28,9 +28,9 @@ function qrDeadlineFromAcceptedResponse(ttl:number):number {
   return performance.now()+ttl*1000;
 }
 
-export default function NativeCheckoutPanel({offers,accountLoggedIn,compact=false,successHref}:{
+export default function NativeCheckoutPanel({offers,accountLoggedIn,compact=false,successHref,showPolicySummary=true}:{
   offers:readonly PublishedMembershipOffer[];accountLoggedIn:boolean;compact?:boolean;
-  successHref?:string;
+  successHref?:string;showPolicySummary?:boolean;
 }) {
   const en=useSiteLanguage()==="en";
   const [pendingId,setPendingId]=useState<string|null>(null);
@@ -123,12 +123,12 @@ export default function NativeCheckoutPanel({offers,accountLoggedIn,compact=fals
   return <section className={styles.checkout+" "+(compact?styles.checkoutCompact:"")} aria-label={en?"WeChat Native checkout":"微信扫码购买"}>
     {!compact&&<><h2>{en?"WeChat QR payment":"微信扫码购买"}</h2>
     <p>{en?"Only active offers from the live billing catalogue are shown. Confirm pricing before you pay.":"以下仅展示当前交易账本真实启用的商品，支付前请确认价格与交付内容。"}</p>
-    <div className={styles.purchasePolicyNotice} role="note">
+    {showPolicySummary&&<div className={styles.purchasePolicyNotice} role="note">
       <strong>{en?"Important: digital purchase terms":"重要提醒：数字内容不支持无理由退款"}</strong>
       <p>{en?DIGITAL_SALES_POLICY_SHORT_EN:DIGITAL_SALES_POLICY_SHORT_ZH}{" "}
         <Link href="/digital-purchase-policy">{en?"Read the full policy":"查看完整购买与售后规则"}</Link>
       </p>
-    </div></>}
+    </div>}</>}
     {!accountLoggedIn && <p>{en?"Sign in with WeChat to purchase.":"请先微信登录，再购买考试或资料。"} <Link href="/login?next=%2Fmembership">{en?"WeChat sign in":"微信登录"}</Link></p>}
     <div className={styles.checkoutOffers}>
       {offers.map(offer=><div id={"buy-"+offer.id} key={offer.id} className={styles.checkoutOffer}>

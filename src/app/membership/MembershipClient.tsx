@@ -83,7 +83,7 @@ export default function MembershipClient({
           </p>
       </details>
       <p className={styles.policyLink}><Link href="/digital-purchase-policy">{copy.full}</Link></p>
-      <NativeCheckoutPanel offers={offers} accountLoggedIn={accountLoggedIn}/>
+      <NativeCheckoutPanel offers={offers} accountLoggedIn={accountLoggedIn} showPolicySummary={false}/>
     </section>
     <section className={styles.services} aria-label={copy.servicesTitle}>
       <div className={styles.sectionHeading}><h2>{copy.servicesTitle}</h2></div>
