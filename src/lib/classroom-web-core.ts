@@ -20,7 +20,8 @@ export function token(v:string|undefined):string{
 export function txt(v:unknown,max=60,min=1):string{
   if(typeof v!=="string")throw new ClassroomFailure(400,"请填写有效名称");
   const s=v.trim();
-  if([...s].length<min||[...s].length>max||/[<>\x00-\x1f\x7f]/.test(s))
+  if([...s].length<min||[...s].length>max||/[<>]/.test(s)||
+    [...s].some(ch=>ch.charCodeAt(0)<32||ch.charCodeAt(0)===127))
     throw new ClassroomFailure(400,"名称不符合要求");
   return s;
 }
