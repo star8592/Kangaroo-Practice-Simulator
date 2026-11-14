@@ -3,7 +3,7 @@ import type {PoolClient} from "pg";
 import type {NextRequest} from "next/server";
 import {
   type Actor,ClassroomFailure,LESSONS,admin,approved,ensureAccount,id,
-  learnerId,workspaceId,teacher,tx,txt,jsonBody,newShareToken,digest,shareUrl,
+  workspaceId,teacher,tx,txt,jsonBody,newShareToken,digest,shareUrl,
   classForAssignment
 } from "@/lib/classroom-web-core";
 
