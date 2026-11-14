@@ -100,7 +100,7 @@ try {
     const req=new NextRequest(BASE+segments.join("/")+(search?"?q="+encodeURIComponent(search):""),{method,headers,body:wire});
     const response=method==="POST"?await POST(req,{params:Promise.resolve({path:segments})}):
       await GET(req,{params:Promise.resolve({path:segments})});
-    let json:any;
+    let json:ReturnType<typeof JSON.parse>;
     if(response.headers.get("content-type")?.includes("application/json")){
       json=await response.json();
     }else json=await response.arrayBuffer();
@@ -120,7 +120,7 @@ try {
   if(forbiddenSearch.code!==403)throw Error("Non-admin can search verified parent accounts");
   const candidates=ok(await api(owner,"GET",["admin","users"],undefined,{},"虚拟王"),200,
     "Owner searches verified WeChat users without an application");
-  if(!candidates.users.some((x:any)=>x.account_id===teacherAccount))
+  if(!candidates.users.some((x:{account_id:string})=>x.account_id===teacherAccount))
     throw Error("Teacher not found by admin WeChat lookup");
   const grant=ok(await api(owner,"POST",["admin","teachers","direct"],{
     account_id:teacherAccount,approve:true
@@ -165,7 +165,7 @@ try {
     }),200,"Student "+(i+1)+" applies");
     if(join.status!=="pending")throw Error("Student unexpectedly auto-approved");
     const pending=ok(await api(teacher,"GET",[...base,"join-requests"]),200,"Teacher sees join request "+(i+1));
-    const reqRow=pending.requests.find((x:any)=>x.student_name===name);
+    const reqRow=pending.requests.find((x:{student_name:string})=>x.student_name===name);
     if(!reqRow)throw Error("Missing pending student "+(i+1));
     ok(await api(teacher,"POST",[...base,"join-requests",reqRow.id,"decision"],{
       approve:true,assigned_class_id:cl
