@@ -41,6 +41,7 @@ async function freePort():Promise<number>{
 async function main(){
 const port=await freePort();
 let started=false,success=false;
+let closePool:(()=>Promise<void>)|null=null;
 try {
   run(PG+"/initdb",["-D",data,"--no-instructions","--auth-local=trust","--auth-host=reject","--locale=C"]);
   fs.writeFileSync(path.join(data,"pg_hba.conf"),[
@@ -69,7 +70,8 @@ try {
   const {GET,POST}=await import("../src/app/english/pronunciation/classroom-api/[...path]/route");
   const {createParentSessionToken,authenticateOrCreateWechatParent,PARENT_SESSION_COOKIE}=await import("../src/lib/parent-auth");
   const {bindSiteOwner}=await import("../src/lib/site-owner");
-  const {learnerId}=await import("../src/lib/classroom-web-core");
+  const {learnerId,classroomPool}=await import("../src/lib/classroom-web-core");
+  closePool=()=>classroomPool().end();
   const nonce=crypto.randomBytes(6).toString("hex");
   const owner=authenticateOrCreateWechatParent({wechatId:"test-owner-"+nonce,name:"虚拟管理员"});
   const teacher=authenticateOrCreateWechatParent({wechatId:"test-teacher-"+nonce,name:"虚拟王老师"});
@@ -196,6 +198,10 @@ try {
   console.log("SOCTHINK_NATIVE_WEB_CLASSROOM_SYNTHETIC_E2E_PASS teacher=1 classes=1 students=5 reports=5 real_scorer=true isolated_pg18=true");
   success=true;
 }finally {
+  if(closePool){
+    try{await closePool();console.log("ISOLATED_PG_POOL_CLOSED_PASS");}
+    catch(err){success=false;console.error("ISOLATED_PG_POOL_CLOSE_FAIL",String(err));}
+  }
   if(started){
     const stop=spawnSync(PG+"/pg_ctl",["-D",data,"-m","immediate","-w","stop"],
       {encoding:"utf8",timeout:20000});
