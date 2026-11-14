@@ -1,8 +1,9 @@
 import crypto from "node:crypto";
 import type {PoolClient} from "pg";
 import type {NextRequest} from "next/server";
+import {listWechatParentCandidates} from "@/lib/parent-auth";
 import {
-  type Actor,ClassroomFailure,LESSONS,admin,approved,ensureAccount,id,
+  type Actor,ClassroomFailure,LESSONS,admin,approved,ensureAccount,id,learnerId,
   workspaceId,teacher,tx,txt,jsonBody,newShareToken,digest,shareUrl,
   classForAssignment
 } from "@/lib/classroom-web-core";
@@ -30,6 +31,55 @@ export async function teacherHandler(req:NextRequest,p:string[],a:Actor):Promise
         [a.accountId,display]);
       const r=await db.query("SELECT state FROM accent.teacher_access_requests WHERE account_id=$1",[a.accountId]);
       return {status:r.rows[0]?.state,approved:r.rows[0]?.state==="approved"};
+    });
+  }
+  if(p[0]==="admin"&&p[1]==="users"&&p.length===2&&method==="GET"){
+    admin(a);
+    const q=(req.nextUrl.searchParams.get("q")||"").trim().toLocaleLowerCase();
+    if([...q].length<2)return {users:[]};
+    if([...q].length>60)throw new ClassroomFailure(400,"搜索内容过长");
+    // Search is owner-only; do not send the original parent ID or any WeChat identifier.
+    const found=listWechatParentCandidates()
+      .filter(x=>x.name.toLocaleLowerCase().includes(q))
+      .slice(0,20);
+    const ids=found.map(x=>learnerId(x.id));
+    return tx({account:a.accountId,isAdmin:true},async db=>{
+      const states=await db.query<{account_id:string;state:string}>(
+        "SELECT account_id,state FROM accent.teacher_access_requests WHERE account_id=ANY($1::uuid[])",[ids]);
+      const stateById=new Map(states.rows.map(x=>[x.account_id,x.state]));
+      return {users:found.map(x=>({
+        account_id:learnerId(x.id),name:x.name,
+        teacher_status:stateById.get(learnerId(x.id))||"not_requested",
+        last_login_at:x.lastLoginAt
+      }))};
+    });
+  }
+  if(p[0]==="admin"&&p[1]==="teachers"&&p[2]==="direct"&&p.length===3&&method==="POST"){
+    admin(a);
+    const body=await jsonBody(req),target=id(body.account_id as string);
+    if(typeof body.approve!=="boolean")throw new ClassroomFailure(400,"请选择授权或撤销");
+    // Only identities that really completed the existing main-site WeChat flow qualify.
+    const selected=listWechatParentCandidates().find(p=>learnerId(p.id)===target);
+    if(!selected)throw new ClassroomFailure(404,"未找到已绑定微信的有效用户");
+    const name=txt(selected.name,60);
+    return tx({account:a.accountId,isAdmin:true},async db=>{
+      if(body.approve){
+        const updated=await db.query([
+          "INSERT INTO accent.teacher_access_requests",
+          "(account_id,display_name,state,reviewed_by,reviewed_at)",
+          "VALUES($1,$2,'approved',$3,now())",
+          "ON CONFLICT(account_id) DO UPDATE SET",
+          "display_name=EXCLUDED.display_name,state='approved',reviewed_by=$3,reviewed_at=now()",
+          "RETURNING account_id,state AS status"
+        ].join(" "),[target,name,a.accountId]);
+        return {...updated.rows[0],direct:true};
+      }
+      const revoked=await db.query([
+        "UPDATE accent.teacher_access_requests SET state='revoked',reviewed_by=$2,reviewed_at=now()",
+        "WHERE account_id=$1 RETURNING account_id,state AS status"
+      ].join(" "),[target,a.accountId]);
+      if(!revoked.rows.length)throw new ClassroomFailure(404,"此用户尚未获得教师权限");
+      return {...revoked.rows[0],direct:true};
     });
   }
   if(p[0]==="admin"&&p[1]==="teachers"&&p.length===2&&method==="GET"){
