@@ -136,6 +136,26 @@ try {
   if(classes.classes.length!==1)throw Error("Expected exactly one class");
   const catalog=ok(await api(teacher,"GET",[...base,"catalog"]),200,"Teacher sees nine sentences");
   if(catalog.items.length!==9)throw Error("Catalog must contain 9 sentences");
+  // Guard against self-publishing, malformed uploads and duplicate material.
+  const outsider=await api(students[0],"POST",[...base,"materials"],{
+    title:"Malicious material",sentences:["Student must not create a teacher assignment."],
+    rights_confirmed:true
+  });
+  if(outsider.code!==403)throw Error("Non-teacher was able to upload classroom materials");
+  const invalidDuplicates=await api(teacher,"POST",[...base,"materials"],{
+    title:"Duplicate sentences",sentences:[
+      "The same sentence must not appear twice in one teacher upload.",
+      "The same sentence must not appear twice in one teacher upload."
+    ],rights_confirmed:true
+  });
+  if(invalidDuplicates.code!==400)throw Error("Duplicate teacher sentences were accepted");
+  const tooMany=await api(teacher,"POST",[...base,"materials"],{
+    title:"Too many sentences",sentences:Array.from({length:81},(_,i)=>
+      "This teacher sentence is numbered "+i+" for a batch size boundary check."),
+    rights_confirmed:true
+  });
+  if(tooMany.code!==400)throw Error("Above 80 sentence upload limit was accepted");
+  console.log("PASS Material role permission and input boundaries");
   const customText="My teacher wants every student to read this exact sentence aloud.";
   const rejected=await api(teacher,"POST",[...base,"materials"],{
     title:"Chapter 3",sentences:[customText],rights_confirmed:false
