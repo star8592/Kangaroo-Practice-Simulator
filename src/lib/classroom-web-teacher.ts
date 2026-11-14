@@ -160,6 +160,34 @@ export async function teacherHandler(req:NextRequest,p:string[],a:Actor):Promise
   }
   if(p[0]!=="tenants"||p[2]!=="classes"||p.length<5)return undefined;
   const tenant=id(p[1]),cl=id(p[3]);
+  if(p[4]==="materials"&&p.length===5&&method==="POST"){
+    const body=await jsonBody(req,90000);
+    const title=txt(body.title,160,2);
+    if(body.rights_confirmed!==true)
+      throw new ClassroomFailure(400,"请确认这些英语句子可用于你自己的课堂教学");
+    if(!Array.isArray(body.sentences)||body.sentences.length<1||body.sentences.length>80)
+      throw new ClassroomFailure(400,"每次请导入 1–80 句英语句子");
+    const sentences=body.sentences.map(x=>txt(x,350,12));
+    if(new Set(sentences.map(x=>x.toLowerCase().replace(/\s+/g," "))).size!==sentences.length)
+      throw new ClassroomFailure(400,"导入内容有重复句子，请先去重");
+    return tx({tenant,account:a.accountId},async db=>{
+      await teacher(db,a,tenant,cl);
+      const count=await db.query(
+        "SELECT count(*)::int AS n FROM accent.sentence_sets WHERE tenant_id=$1 AND owner_id=$2",
+        [tenant,a.accountId]);
+      if(count.rows[0]?.n>=100)throw new ClassroomFailure(409,"当前教师素材集已达到上限，请先整理已有素材");
+      const set=crypto.randomUUID();
+      await db.query(["INSERT INTO accent.sentence_sets",
+        "(tenant_id,id,owner_id,title,visibility,rights_holder,license_ref,permission_scope,content_status)",
+        "VALUES($1,$2,$3,$4,'classroom','Teacher-provided classroom material',",
+        "'teacher-declared-classroom-rights-v1','commercial_training','approved')"].join(" "),
+        [tenant,set,a.accountId,title]);
+      for(let i=0;i<sentences.length;i++)await db.query(
+        "INSERT INTO accent.sentence_items(tenant_id,id,set_id,ordinal,english_text) VALUES($1,$2,$3,$4,$5)",
+        [tenant,crypto.randomUUID(),set,i+1,sentences[i]]);
+      return {saved:true,set_id:set,title,count:sentences.length};
+    });
+  }
   if(p[4]==="catalog"&&p.length===5&&method==="GET")
     return tx({tenant,account:a.accountId},async db=>{
       await teacher(db,a,tenant,cl);
@@ -168,7 +196,7 @@ export async function teacherHandler(req:NextRequest,p:string[],a:Actor):Promise
         "JOIN accent.sentence_sets t ON t.tenant_id=s.tenant_id AND t.id=s.set_id",
         "WHERE s.tenant_id=$1 AND t.content_status='approved'",
         "AND t.permission_scope IN ('project_original','public_domain','commercial_training')",
-        "ORDER BY s.ordinal LIMIT 200"].join(" "),[tenant]);
+        "ORDER BY t.created_at DESC,s.ordinal LIMIT 1000"].join(" "),[tenant]);
       return {items:r.rows};
     });
   if(p[4]==="assignments"&&p[5]==="list"&&p.length===6&&method==="GET")
@@ -177,9 +205,21 @@ export async function teacherHandler(req:NextRequest,p:string[],a:Actor):Promise
       const r=await db.query(["SELECT a.id,a.title,a.lifecycle,a.created_at,",
         "(SELECT count(*)::int FROM accent.assignment_receipts x",
         "WHERE x.tenant_id=a.tenant_id AND x.assignment_id=a.id",
-        "AND x.status IN ('submitted','completed')) AS submitted",
+        "AND x.status IN ('submitted','completed')) AS submitted,",
+        "(SELECT count(*)::int FROM accent.class_enrollments e",
+        "WHERE e.tenant_id=a.tenant_id AND e.class_id=a.class_id",
+        "AND e.role='student') AS enrolled_total,",
+        "(SELECT count(*)::int FROM accent.assignment_receipts x",
+        "WHERE x.tenant_id=a.tenant_id AND x.assignment_id=a.id AND x.claimed_at IS NOT NULL)",
+        "AS claimed_total,",
+        "(SELECT round(avg(b.best_score)::numeric,1)::float8 FROM (",
+        "SELECT max(p.reference_score) AS best_score",
+        "FROM accent.assignment_attempt_links l",
+        "JOIN accent.pronunciation_assessments p ON p.tenant_id=l.tenant_id AND p.attempt_id=l.attempt_id",
+        "WHERE l.tenant_id=a.tenant_id AND l.assignment_id=a.id",
+        "GROUP BY l.student_id) b) AS average_best_score",
         "FROM accent.class_assignments a WHERE a.tenant_id=$1 AND a.class_id=$2",
-        "AND a.lifecycle IN ('published','closed') ORDER BY a.created_at DESC LIMIT 50"].join(" "),[tenant,cl]);
+        "AND a.lifecycle IN ('published','closed') ORDER BY a.created_at DESC LIMIT 100"].join(" "),[tenant,cl]);
       return {assignments:r.rows};
     });
   if(p[4]==="assignments"&&p.length===5&&method==="POST"){
@@ -196,8 +236,10 @@ export async function teacherHandler(req:NextRequest,p:string[],a:Actor):Promise
       const r=await db.query(["SELECT count(*)::int AS n FROM accent.sentence_items i",
         "JOIN accent.sentence_sets s ON s.tenant_id=i.tenant_id AND s.id=i.set_id",
         "WHERE i.tenant_id=$1 AND i.set_id=$2 AND i.id=ANY($3::uuid[])",
-        "AND s.content_status='approved' AND s.permission_scope='project_original'"].join(" "),
-        [tenant,setId,sentenceIds]);
+        "AND s.content_status='approved'",
+        "AND (s.permission_scope='project_original' OR",
+        "(s.permission_scope='commercial_training' AND s.owner_id=$4))"].join(" "),
+        [tenant,setId,sentenceIds,a.accountId]);
       if(r.rows[0]?.n!==sentenceIds.length)throw new ClassroomFailure(400,"练习内容不在已审核素材中");
       await db.query(["INSERT INTO accent.class_assignments",
         "(tenant_id,id,class_id,sentence_set_id,assigned_by,title,lifecycle,published_at)",
