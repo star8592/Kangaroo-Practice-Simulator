@@ -38,6 +38,7 @@ async function freePort():Promise<number>{
  await new Promise<void>((resolve,reject)=>s.close(err=>err?reject(err):resolve()));
  return port;
 }
+async function main(){
 const port=await freePort();
 let started=false,success=false;
 try {
@@ -203,3 +204,5 @@ try {
   fs.rmSync(root,{recursive:true,force:true,maxRetries:5,retryDelay:100});
   console.log("ISOLATED_TEST_STORAGE_CLEANED",success);
 }
+}
+main().catch(err=>{console.error("CLASSROOM_NATIVE_E2E_FAIL",err instanceof Error?err.message:String(err));process.exitCode=1});
