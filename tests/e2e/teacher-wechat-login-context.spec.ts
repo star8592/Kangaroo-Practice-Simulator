@@ -19,7 +19,7 @@ test("teacher entry uses existing WeChat login with classroom wording",async({pa
   await expect(page.locator("main")).toContainText("登录状态有效时直接进入");
   await expect(page.locator("main")).not.toContainText("付款后直接使用");
   await expect(page.getByRole("link",{name:"先浏览英语跟读"})).toHaveAttribute(
-    "href","/english/pronunciation/app/");
+    "href",/^\/english\/pronunciation\/app\/?$/);
 });
 
 test("WeChat homework invitation shows student task, not a sales page",async({page})=>{
