@@ -45,6 +45,9 @@ jobs:
       - name: WeChat payment readiness uses real runtime flags
         run: python3 scripts/test_payment_readiness.py
 
+      - name: Native classroom Web contracts
+        run: npm run test:classroom-embedded
+
       - name: Public quality gate
         run: npm run verify:public
 
