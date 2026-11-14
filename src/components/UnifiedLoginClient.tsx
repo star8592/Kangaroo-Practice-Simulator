@@ -12,6 +12,10 @@ const inWechat=()=>typeof navigator!=="undefined"&&/MicroMessenger/i.test(naviga
 export default function UnifiedLoginClient({nextPath}:{nextPath:string}) {
   const router=useRouter();
   const destination=nextPath.startsWith("/")&&!nextPath.startsWith("//")&&!nextPath.includes("\\")?nextPath:"/account";
+  // Same WeChat identity, contextual entry: no separate teacher/student passwords.
+  const teacherLogin=destination.startsWith("/english/pronunciation/app/teacher/");
+  const homeworkLogin=/^\/english\/pronunciation\/app\/a\//.test(destination);
+  const englishEntry=teacherLogin||homeworkLogin;
   const [mode,setMode]=useState<Mode>("checking");
   const [qrUrl,setQrUrl]=useState("");
   const [message,setMessage]=useState("");
@@ -101,22 +105,22 @@ export default function UnifiedLoginClient({nextPath}:{nextPath:string}) {
 
   return <div className={styles.unifiedShell}>
     <section className={styles.unifiedIntro}>
-      <span className={styles.formKicker}>SOC THINK · 考试与资料服务</span>
-      <h1>一个微信账号，直接使用</h1>
-      <p>微信登录后，选择考试或资料。购买、使用和已购记录都在同一个账号里。</p>
+      <span className={styles.formKicker}>{teacherLogin?"ENGLISH LEAP · 教师工作台":homeworkLogin?"ENGLISH LEAP · 跟读作业":"SOC THINK · 考试与资料服务"}</span>
+      <h1>{teacherLogin?"微信登录，进入教师工作台":homeworkLogin?"微信登录，完成英语作业":"一个微信账号，直接使用"}</h1>
+      <p>{teacherLogin?"使用 SOC THINK 统一微信账号。管理员授予教师权限后，直接管理班级、布置作业、查看成绩。无需单独的教师密码。":homeworkLogin?"用家长或学生的微信账号登录，自动返回老师布置的作业，完成跟读并提交成绩。":"微信登录后，选择考试或资料。购买、使用和已购记录都在同一个账号里。"}</p>
       <div className={styles.unifiedSteps}>
-        <span>微信登录</span><span>选择考试或资料</span><span>付款后直接使用</span>
+        <span>微信登录</span><span>{teacherLogin?"进入我的班级":homeworkLogin?"加入老师的班级":"选择考试或资料"}</span><span>{teacherLogin?"布置作业 · 查看成绩":homeworkLogin?"跟读 · 提交成绩":"付款后直接使用"}</span>
       </div>
-      <Link className="secondary-button" href="/assessments">先浏览考试与资料</Link>
+      <Link className="secondary-button" href={englishEntry?"/english/pronunciation/app/":"/assessments"}>{englishEntry?"先浏览英语跟读":"先浏览考试与资料"}</Link>
     </section>
     <section className={styles.unifiedLoginBox} aria-label="微信登录">
-      <h2>微信登录</h2>
-      <p>首次扫码自动创建账号，以后继续用同一个微信登录。</p>
+      <h2>{teacherLogin?"教师微信登录":homeworkLogin?"作业微信登录":"微信登录"}</h2>
+      <p>{englishEntry?"登录状态有效时直接进入；需要验证时才扫码，不必每天重新登录。":"首次扫码自动创建账号，以后继续用同一个微信登录。"}</p>
       {(mode==="checking"||mode==="loading")&&
         <div role="status" className={styles.unifiedLoading}>正在连接微信…</div>}
       {mode==="qr"&&qrUrl&&<div className={styles.unifiedQr}>
         <WechatWebsiteQr authorizeUrl={qrUrl}/>
-        <p>请用微信扫一扫；登录成功后自动进入。</p>
+        <p>{englishEntry?"用微信扫一扫；成功后自动返回"+(teacherLogin?"教师工作台。":"当前作业。"):"请用微信扫一扫；登录成功后自动进入。"}</p>
       </div>}
       {mobileExternal&&<div className={styles.unifiedMobileHint}>
         <p>手机浏览器中无法扫描自己的屏幕，请把本页分享到微信里打开。</p>
