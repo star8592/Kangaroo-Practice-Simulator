@@ -25,6 +25,14 @@ export default function EnglishHub(){
    <h1>英语学习</h1>
    <p>直接选择：发音、单词、少儿绘本、英语阅读、高阶阅读或考试训练。</p>
   </header>
+  <section className={styles.roleEntry} aria-labelledby="english-teacher-entry">
+    <div><h2 id="english-teacher-entry">英语跟读课堂</h2>
+      <p>学生从老师分享的微信作业链接直接练习；教师进入工作台管理班级、布置作业和查看成绩。共用 SOC THINK 微信登录，无需重复注册。</p></div>
+    <div className={styles.roleActions}>
+      <Link href="/english/pronunciation/app/teacher/homework">我是老师 · 管理作业</Link>
+      <Link href="/english/pronunciation/app/practice-library">我要练习发音</Link>
+    </div>
+  </section>
   <section aria-labelledby="english-choose">
    <div className={styles.headerRow}><h2 id="english-choose">选择学习内容</h2><p>四套应用 · 六个直接入口</p></div>
    <nav className={styles.grid} aria-label="英语学习直达入口">
@@ -35,7 +43,7 @@ export default function EnglishHub(){
     </article>)}
    </nav>
   </section>
-  <p className={styles.entryNote}>点击整张卡片即可打开。付费和学习记录以实际开通功能为准。</p>
+  <p className={styles.entryNote}>选择学习内容即可进入。学生的班级作业以老师分享的专属链接为准。</p>
 
  </div>
 }
