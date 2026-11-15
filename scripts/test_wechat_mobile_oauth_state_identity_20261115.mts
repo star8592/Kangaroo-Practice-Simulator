@@ -110,6 +110,40 @@ try {
  assert((badOut.headers.get("location")||"").includes("wechat=state_error"));
  assert(!badOut.cookies.get("socthink_parent_session"));
  console.log("OAUTH_CALLBACK_NO_REPLAY_AND_BAD_STATE_REJECT_PASS");
+ // Vocabulary teacher needs verified cross-app UnionID too, whereas a
+ // student opening a word classroom keeps the simpler silent WeChat scope.
+ const vocabTeacher="/english/vocabulary/app/teacher/access";
+ const vocabTeacherStart=await start(new NextRequest(
+  "https://socthink.cn/api/auth/parent/wechat/start?next="+encodeURIComponent(vocabTeacher)));
+ const vocabTeacherOAuth=new URL(vocabTeacherStart.headers.get("location")||"");
+ assert.equal(vocabTeacherOAuth.searchParams.get("scope"),"snsapi_userinfo");
+ assert.equal(vocabTeacherOAuth.searchParams.get("appid"),process.env.WECHAT_OPEN_APPID);
+ const vocabTeacherState=vocabTeacherOAuth.searchParams.get("state")||"";
+ const vocabTeacherCookie=vocabTeacherStart.cookies.get(NAME)?.value||"";
+ assert(vocabTeacherState&&vocabTeacherCookie);
+ const vocabTeacherReturn=await callback(new NextRequest(
+  "https://socthink.cn/api/auth/parent/wechat/callback?code=mock-1&state="+vocabTeacherState,
+  {headers:{cookie:NAME+"="+vocabTeacherCookie}}));
+ assert.equal(vocabTeacherReturn.status,307);
+ assert.equal(vocabTeacherReturn.headers.get("location"),
+  "https://socthink.cn"+vocabTeacher);
+ assert(vocabTeacherReturn.cookies.get("socthink_parent_session")?.value);
+ const vocabStudent="/english/vocabulary/app/app/classroom";
+ const vocabStudentStart=await start(new NextRequest(
+  "https://socthink.cn/api/auth/parent/wechat/start?next="+encodeURIComponent(vocabStudent)));
+ const vocabStudentOAuth=new URL(vocabStudentStart.headers.get("location")||"");
+ assert.equal(vocabStudentOAuth.searchParams.get("scope"),"snsapi_base");
+ assert.equal(vocabStudentOAuth.searchParams.get("appid"),process.env.WECHAT_OPEN_APPID);
+ const vocabStudentState=vocabStudentOAuth.searchParams.get("state")||"";
+ const vocabStudentCookie=vocabStudentStart.cookies.get(NAME)?.value||"";
+ assert(vocabStudentState&&vocabStudentCookie);
+ const vocabStudentReturn=await callback(new NextRequest(
+  "https://socthink.cn/api/auth/parent/wechat/callback?code=mock-2&state="+vocabStudentState,
+  {headers:{cookie:NAME+"="+vocabStudentCookie}}));
+ assert.equal(vocabStudentReturn.headers.get("location"),
+  "https://socthink.cn"+vocabStudent);
+ console.log("VOCAB_TEACHER_PROFILE_STUDENT_SILENT_AND_EXACT_RETURN_PASS");
+
  const web=authenticateOrCreateWechatParent({
   wechatId:"union-teacher-100",unionId:"union-teacher-100",openId:"web-oid-01",oauthMode:"website",
  });

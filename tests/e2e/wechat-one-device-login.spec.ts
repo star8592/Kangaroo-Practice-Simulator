@@ -104,3 +104,27 @@ test("failed WeChat callback displays error without automatic OAuth loop, preser
     await expect.poll(()=>oauthRequests).toBe(1);
   }finally{await context.close()}
 });
+
+
+test("Vocabulary student Android one-phone handoff keeps original classroom path",async({browser})=>{
+  const target="/english/vocabulary/app/app/classroom";
+  const context=await browser.newContext({
+    viewport:{width:393,height:852},
+    userAgent:"Mozilla/5.0 (Linux; Android 15; Pixel 9) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0 Mobile Safari/537.36",
+  });
+  try{
+    const page=await context.newPage();
+    let desktopQrCalls=0;
+    await page.route("**/api/auth/parent/me",unauthenticated);
+    await page.route("**/api/auth/parent/wechat/qr",route=>{
+      desktopQrCalls++;
+      return route.fulfill({status:503});
+    });
+    await page.goto("/login?next="+encodeURIComponent(target));
+    await expect(page.getByTestId("wechat-mobile-one-device")).toBeVisible();
+    await expect(page.getByRole("heading",{name:"微信登录，回到我的单词课堂"})).toBeVisible();
+    expect(desktopQrCalls).toBe(0);
+    const url=new URL(page.url());
+    expect(url.searchParams.get("next")).toBe(target);
+  }finally{await context.close();}
+});
