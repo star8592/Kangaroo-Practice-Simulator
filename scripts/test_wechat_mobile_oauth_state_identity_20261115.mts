@@ -130,6 +130,48 @@ try {
    wechatId:"another-union",unionId:"another-union",openId:"oa-oid-02",oauthMode:"official_account",
  }),/WECHAT_UNIONID_MISMATCH/);
  console.log("CROSS_APP_UNIONID_VERIFIED_NOT_OPENID_GUESS_PASS");
+ // Real production migration shape: website identity existed before UnionID
+ // was explicitly saved; a prior snsapi_base Official Account login created
+ // a second parent row. Re-authorization now proves they are one WeChat user.
+ const {createParentSessionToken,parentFromSessionToken}=await import("../src/lib/parent-auth");
+ const originalDesktop=authenticateOrCreateWechatParent({
+  wechatId:"union-legacy-teacher-001",openId:"web-legacy-teacher-001",name:"网站旧账号",
+ });
+ const originalMobile=authenticateOrCreateWechatParent({
+  wechatId:"oa-legacy-teacher-001",openId:"oa-legacy-teacher-001",
+  oauthMode:"official_account",name:"公众号旧账号",
+ });
+ assert.notEqual(originalDesktop.id,originalMobile.id);
+ const desktopCookie=createParentSessionToken(originalDesktop.id);
+ const mobileCookie=createParentSessionToken(originalMobile.id);
+ const unionLinked=authenticateOrCreateWechatParent({
+  wechatId:"union-legacy-teacher-001",unionId:"union-legacy-teacher-001",
+  openId:"oa-legacy-teacher-001",oauthMode:"official_account",
+ });
+ assert.equal(unionLinked.id,originalDesktop.id,
+  "Verified UnionID must preserve the original desktop account and teacher workspace ID");
+ const nextSilent=authenticateOrCreateWechatParent({
+  wechatId:"oa-legacy-teacher-001",openId:"oa-legacy-teacher-001",
+  oauthMode:"official_account",
+ });
+ assert.equal(nextSilent.id,originalDesktop.id,
+  "Future snsapi_base must prefer the already UnionID-verified owner");
+ const nextDesktop=authenticateOrCreateWechatParent({
+  wechatId:"union-legacy-teacher-001",unionId:"union-legacy-teacher-001",
+  openId:"web-legacy-teacher-001",oauthMode:"website",
+ });
+ assert.equal(nextDesktop.id,originalDesktop.id);
+ assert.equal(parentFromSessionToken(desktopCookie)?.id,originalDesktop.id);
+ assert.equal(parentFromSessionToken(mobileCookie)?.id,originalMobile.id,
+  "Do not invalidate existing mobile sessions or delete the old record");
+ const stored=JSON.parse(fs.readFileSync(path.join(dir,"parents.json"),"utf8")) as
+  Array<{id:string;wechatOpenId?:string;wechatOfficialOpenId?:string}>;
+ assert(stored.some(u=>u.id===originalMobile.id),"Preserve old account and student history");
+ const canonical=stored.find(u=>u.id===originalDesktop.id);
+ assert.equal(canonical?.wechatOpenId,"web-legacy-teacher-001",
+  "Never overwrite the legacy desktop OpenID with the Official Account OpenID");
+ assert.equal(canonical?.wechatOfficialOpenId,"oa-legacy-teacher-001");
+ console.log("HISTORIC_TWO_APP_ACCOUNTS_UNIONID_CANONICAL_NONDESTRUCTIVE_PASS");
  console.log("SOCTHINK_WECHAT_OAUTH_STATE_IDENTITY_ISOLATED_E2E_PASS");
 }finally{
  globalThis.fetch=originalFetch;
