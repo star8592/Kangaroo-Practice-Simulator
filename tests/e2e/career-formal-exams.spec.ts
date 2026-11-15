@@ -19,7 +19,10 @@ test("24-question career test has a real admission room, timed paper, marked car
   const exam=page.getByLabel("岗位正式模拟笔试考场");
   await expect(exam).toBeVisible();
   await expect(exam).toContainText("剩余时间");
-  await expect(exam).toContainText("45:");
+  // The clock starts on admission; a mobile CI browser may already show
+  // 44:5x by the time the first assertion executes. Check a real countdown
+  // rather than falsely requiring the first exact minute to remain frozen.
+  await expect(exam).toContainText(/剩余时间\s*(?:45|44):[0-5]\d/);
   await expect(page.getByRole("heading",{level:2,name:/某零部件需要490件预计合格品/})).toBeVisible();
   await page.getByRole("textbox",{name:/某零部件需要490件预计合格品/}).fill("500");
   await page.getByRole("button",{name:"标记待检查"}).click();
