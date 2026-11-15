@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://socthink.cn/schemas/english-learning-event.v1.schema.json",
+  "title": "SOC THINK English Suite — Server-Only Learning Evidence v1",
+  "description": "An append-only evidence envelope between authorized application servers. NEVER send this directly from an untrusted browser. Contains no raw audio, full text, email, WeChat openid or payment credentials.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "eventId", "productId", "productEventId", "subject", "kind", "content", "occurredAt", "status"],
+  "properties": {
+    "schemaVersion": {"const": 1},
+    "eventId": {"type": "string", "minLength": 16, "maxLength": 100},
+    "productId": {"enum": ["pronunciation", "vocabulary", "reading", "aelos"]},
+    "productEventId": {"type": "string", "minLength": 1, "maxLength": 160},
+    "subject": {"type": "string", "pattern": "^soc_[a-f0-9]{40}$", "description": "Product-scoped verified pseudonymous subject, obtained server-to-server"},
+    "learnerRef": {"type": ["string", "null"], "maxLength": 160, "description": "Product-local learner reference after explicit and revocable binding"},
+    "classRef": {"type": ["string", "null"], "maxLength": 160},
+    "assignmentRef": {"type": ["string", "null"], "maxLength": 160},
+    "kind": {"enum": ["attempt.completed", "assignment.submitted", "learning.progress", "review.completed"]},
+    "content": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["contentRef", "version"],
+      "properties": {
+        "contentRef": {"type": "string", "minLength": 1, "maxLength": 160},
+        "version": {"type": "string", "minLength": 1, "maxLength": 100}
+      }
+    },
+    "occurredAt": {"type": "string", "format": "date-time"},
+    "status": {"enum": ["completed", "submitted", "in-progress", "corrected", "invalidated"]},
+    "metric": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "required": ["name", "value", "scale"],
+      "properties": {
+        "name": {"type": "string", "maxLength": 100},
+        "value": {"type": "number"},
+        "scale": {"type": "string", "maxLength": 100},
+        "modelVersion": {"type": ["string", "null"], "maxLength": 100}
+      },
+      "description": "Never average unlike metrics; pronunciation scores, recall and reading proficiency are distinct"
+    },
+    "evidenceRef": {"type": ["string", "null"], "maxLength": 160, "description": "Opaque product-local evidence ID only, not a media URL"},
+    "consentRef": {"type": ["string", "null"], "maxLength": 160, "description": "Server-verified consent record covering this cross-product use"}
+  }
+}
