@@ -1,26 +1,26 @@
-.shell{max-width:1160px;margin:auto;padding:26px 22px 78px;color:#17231d}
-.breadcrumb{display:flex;align-items:center;gap:10px;font-size:13px;color:#6d796f;margin-bottom:25px;flex-wrap:wrap}
+.shell{max-width:1400px;margin:auto;padding:30px 28px 84px;color:#172b20}
+.breadcrumb{display:flex;align-items:center;gap:10px;font-size:14px;color:#506856;margin-bottom:25px;flex-wrap:wrap}
 .breadcrumb a{color:#4d6556;text-decoration:none}
 .breadcrumb a:hover{text-decoration:underline}
 .hero{padding:37px clamp(22px,5vw,58px);background:#17231d;color:#fff;border-radius:24px}
 .kicker{color:#c85d27;font-size:12px;letter-spacing:.1em;font-weight:800}
 .hero .kicker,.detailHero .kicker{color:#ff985e}
 .hero h1,.detailHero h1{font-size:clamp(35px,4.5vw,54px);line-height:1.15;margin:12px 0 14px;letter-spacing:-.035em}
-.hero p{max-width:650px;font-size:16px;line-height:1.7;color:#dce7de;margin:0}
+.hero p{max-width:800px;font-size:18px;line-height:1.72;color:#f0f5f0;margin:0}
 .headerRow{margin:29px 0 16px;display:flex;align-items:end;justify-content:space-between;gap:12px;flex-wrap:wrap}
 .headerRow h2{font-size:27px;margin:0}
-.headerRow p{font-size:13px;margin:0;color:#718074}
+.headerRow p{font-size:15px;margin:0;color:#536957}
 .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}
-.tile{padding:25px;border:1px solid #e1e8df;border-radius:19px;background:#fff;min-width:0;display:flex;flex-direction:column;gap:12px}
+.tile{padding:28px;border:1px solid #dce8dd;border-radius:20px;background:#fff;min-width:0;display:flex;flex-direction:column;gap:14px;box-shadow:0 5px 18px #243d2908}
 .tileTop{display:flex;gap:13px;align-items:center}
 .icon{background:#17231d;color:#ff9a6d;min-width:57px;height:57px;padding:0 8px;border-radius:15px;display:grid;place-items:center;font-size:23px;font-weight:850}
 .tileMeta{display:grid;gap:3px}
-.tileMeta small{color:#9a613f;font-size:12px;font-weight:700}
+.tileMeta small{color:#87502f;font-size:14px;font-weight:700}
 .tile h3{font-size:23px;line-height:1.35;margin:0}
-.tile p{font-size:14px;color:#59695e;line-height:1.7;margin:0;flex:1}
+.tile p{font-size:16px;color:#475e4c;line-height:1.72;margin:0;flex:1}
 .tile a{font-size:15px;font-weight:750;color:#a84d22;align-self:flex-start;margin-top:7px}
 .tile a:hover{text-decoration:underline}
-.tileStatus{font-size:12px;color:#69766b}
+.tileStatus{font-size:14px;color:#4d6553}
 .detailHero{display:flex;gap:24px;align-items:flex-start;background:#17231d;border-radius:24px;color:white;padding:clamp(25px,4.5vw,52px)}
 .detailHero>.icon{background:#ff8048;color:#17231d;min-width:69px;height:69px;font-size:26px}
 .detailHero p{color:#e0e7df;font-size:15px;line-height:1.75;max-width:725px;margin:7px 0 0}
@@ -34,7 +34,7 @@
 .unavailable{background:#f4f6f2;color:#66716b;padding:12px 18px;border-radius:11px;font-size:14px}
 .serviceNote{margin-top:20px;border-top:1px solid #e4ebe5;padding:24px 5px 0}
 .serviceNote strong{font-size:16px}
-.serviceNote p{font-size:13px;line-height:1.8;color:#68776c;max-width:820px;margin:7px 0 12px}
+.serviceNote p{font-size:15px;line-height:1.75;color:#506553;max-width:930px;margin:7px 0 12px}
 .serviceNote a,.back a{font-size:14px;color:#a84d22;text-decoration:underline;text-underline-offset:4px}
 .back{margin-top:28px}
 .shell :is(a,button):focus-visible{outline:3px solid #ff8048;outline-offset:4px}
@@ -55,6 +55,17 @@
 .tile:has(a[data-direct-primary]):hover {border-color:#a5beaa;background:#fbfdfb}
 .tile:has(a[data-direct-primary]):focus-within {box-shadow:0 0 0 3px #f9ab7060}
 .tile:has(a[data-direct-primary]) a[data-direct-primary]{margin-top:auto;min-height:32px;display:inline-flex;align-items:center}
-.entryNote{font-size:12px;color:#718074;margin:21px 1px 0}
+.entryNote{font-size:14px;color:#4e6654;margin:21px 1px 0}
 
 .tileAction{font-size:15px;font-weight:750;color:#a84d22;align-self:flex-start;margin-top:auto;display:inline-flex;gap:7px;min-height:28px;align-items:center}
+
+/* Shared task-first English/teacher entry: typography and spacing are aligned
+   with AccentLab, but not with its compact per-sentence scoring controls. */
+.roleEntry{display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap;margin-top:26px;padding:24px 28px;border-radius:18px;border:1px solid #d7e5da;background:#f1f7f0}
+.roleEntry h2{font-size:23px;color:#203a29;margin:0 0 5px}
+.roleEntry p{font-size:16px;color:#4c6252;line-height:1.7;margin:0;max-width:710px}
+.roleActions{display:flex;gap:10px;flex-wrap:wrap}
+.roleActions a{display:inline-flex;align-items:center;justify-content:center;min-height:46px;padding:10px 17px;border:1px solid #c6d9ca;border-radius:11px;background:#fff;text-decoration:none;font-weight:750;font-size:15px;color:#235d41}
+.roleActions a:first-child{color:#fff;background:#17664d;border-color:#17664d}
+.roleActions a:focus-visible{outline:3px solid #f4a26d;outline-offset:3px}
+@media(max-width:700px){.roleEntry{padding:20px;align-items:stretch}.roleActions{display:grid;grid-template-columns:1fr 1fr}.roleEntry h2{font-size:20px}.roleEntry p{font-size:15px}.shell{padding:20px 15px 56px}.tile{padding:22px}}
