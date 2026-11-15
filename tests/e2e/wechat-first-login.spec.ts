@@ -24,13 +24,16 @@ test("visitors see an automatic WeChat QR rather than a parent/student decision"
   }));
   await page.goto("/login");
   await expect(page.getByRole("heading",{name:"一个微信账号，直接使用"})).toBeVisible();
-  await expect(page.getByRole("group",{name:"使用手机微信扫描此二维码登录或注册"})).toBeVisible();
   if(test.info().project.name==="mobile-chromium") {
-    await expect(page.getByRole("button",{name:"发送到微信打开"})).toBeVisible();
+    await expect(page.getByTestId("wechat-mobile-one-device")).toBeVisible();
+    await expect(page.getByRole("group",{name:"使用手机微信扫描此二维码登录或注册"})).toHaveCount(0);
+    await expect(page.getByRole("button",{name:"分享／复制登录链接"})).toBeVisible();
+    expect(issued).toBe(0);
   } else {
-    await expect(page.getByRole("button",{name:"发送到微信打开"})).toHaveCount(0);
+    await expect(page.getByRole("group",{name:"使用手机微信扫描此二维码登录或注册"})).toBeVisible();
+    await expect(page.getByTestId("wechat-mobile-one-device")).toHaveCount(0);
+    expect(issued).toBe(1);
   }
-  expect(issued).toBe(1);
   await expect(page.getByLabel("学生 PIN")).toHaveCount(0);
   await expect(page.getByText("其他登录方式（已有账号）")).toHaveCount(0);
 });
@@ -64,11 +67,18 @@ test("slow session checks never authenticate a guest; QR appears after check com
   } finally {
     releaseChecks();
   }
-  await expect(page.getByRole("group", { name: "使用手机微信扫描此二维码登录或注册" })).toBeVisible();
-  expect(qrRequests).toBe(1);
+  if(test.info().project.name==="mobile-chromium"){
+    await expect(page.getByTestId("wechat-mobile-one-device")).toBeVisible();
+    expect(qrRequests).toBe(0);
+  }else{
+    await expect(page.getByRole("group", { name: "使用手机微信扫描此二维码登录或注册" })).toBeVisible();
+    expect(qrRequests).toBe(1);
+  }
 });
 
 test("approved website application QR uses the official WeChat iframe and matching callback", async ({ page }) => {
+  test.skip(test.info().project.name==="mobile-chromium",
+    "Official website QR remains for desktop only; mobile uses WeChat-in-app authorization");
   const ticket = "wqt_" + "a".repeat(48);
   const state = "wqs_" + "b".repeat(48);
   const callback = "https://socthink.cn/api/auth/parent/wechat/callback";
