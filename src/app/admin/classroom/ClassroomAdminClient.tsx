@@ -180,8 +180,11 @@ export default function ClassroomAdminClient({ ownerBound, ownerEmailVerified, o
     </section>
     <section className={styles.panel}>
       <div className={styles.titleRow}><div><h2>口音教练 · 教师申请</h2>
-        <p>老师微信申请，你审核后即可建班、布置跟读作业并查看学生成绩。</p></div>
+        <p>管理全部教师：申请审核、直接指定、撤销资格和重新启用。撤销仅取消授课权限，保留历史课堂资料。</p></div>
         <button type="button" disabled={!siteOwner || busy} onClick={()=>void refresh()}>刷新申请</button></div>
+      {siteOwner&&!listError&&<p className={styles.tip}>
+        当前有效教师 {teachers.filter(t=>t.status==="approved").length} 人 · 待审批 {teachers.filter(t=>t.status==="pending").length} 人 · 已撤销 {teachers.filter(t=>t.status==="revoked").length} 人
+      </p>}
       {!siteOwner
         ? <p className={styles.tip}>完成站点所有者绑定后，才可审批教师。</p>
         : listError
@@ -191,7 +194,7 @@ export default function ClassroomAdminClient({ ownerBound, ownerEmailVerified, o
             : <div className={styles.list}>{teachers.map(t=><div className={styles.teacher} key={t.account_id}>
                 <div><strong>{t.name}</strong><p>状态：{t.status==="pending"?"待审批":t.status==="approved"?"已批准":"已撤销"}</p></div>
                 <button type="button" disabled={busy} onClick={()=>void decision(t,t.status!=="approved")}>
-                  {t.status==="approved"?"撤销教师资格":"批准为教师"}
+                  {t.status==="approved"?"移除教师（撤销权限）":t.status==="revoked"?"恢复教师资格":"批准为教师"}
                 </button>
               </div>)}</div>}
     </section>
