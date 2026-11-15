@@ -69,6 +69,8 @@ export async function wechatUserInfo(code: string, forcedMode?: WechatLoginMode)
   if (!tokenScope.includes("snsapi_userinfo") && !tokenScope.includes("snsapi_login")) {
     return {
       wechatId: String(token.unionid || token.openid),
+      unionId: typeof token.unionid==="string"&&token.unionid?token.unionid:undefined,
+      oauthMode: mode,
       openId: String(token.openid),
       name: "微信用户",
     };
@@ -91,7 +93,10 @@ export async function wechatUserInfo(code: string, forcedMode?: WechatLoginMode)
   }
 
   return {
-    wechatId: String(info.unionid || info.openid),
+    wechatId: String(info.unionid || token.unionid || info.openid),
+    unionId: typeof info.unionid==="string"&&info.unionid?info.unionid:
+      typeof token.unionid==="string"&&token.unionid?token.unionid:undefined,
+    oauthMode: mode,
     openId: String(info.openid),
     name: String(info.nickname || "微信用户"),
     avatarUrl: typeof info.headimgurl === "string" ? info.headimgurl : undefined,

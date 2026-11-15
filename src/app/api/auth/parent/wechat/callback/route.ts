@@ -15,6 +15,8 @@ import {
   completeWechatQrLogin,
   pendingWechatQrState,
 } from "@/lib/wechat-qr-login";
+import {validateWechatMobileFlow,WECHAT_MOBILE_FLOW_COOKIE,safeReturnPath}
+ from "@/lib/wechat-mobile-oauth-state";
 
 function mobileResultPage(ok: boolean, message: string) {
   const title = ok ? "扫码成功" : "扫码失败";
@@ -42,14 +44,29 @@ export async function GET(req: NextRequest) {
   const code = req.nextUrl.searchParams.get("code") || "";
   const state = req.nextUrl.searchParams.get("state") || "";
   const qrFlow = /^wqs_[0-9a-f]{48}$/.test(state);
-  const nextCookie = req.cookies.get("socthink_parent_wechat_next")?.value || "/account";
-  const returnPath = nextCookie.startsWith("/") && !nextCookie.startsWith("//") &&
-    !nextCookie.includes("\\") ? nextCookie.slice(0,1024) : "/account";
-  const failedRedirect = (reason:"state_error"|"failed") =>
-    NextResponse.redirect(WECHAT_CALLBACK_ORIGIN+"/login?wechat="+reason+
-      "&next="+encodeURIComponent(returnPath));
+  const mobileFlow=qrFlow?null:validateWechatMobileFlow(
+    req.cookies.get(WECHAT_MOBILE_FLOW_COOKIE)?.value,state);
+  // Compat: requests initiated before this release used two single-flow cookies.
+  const legacyNext=req.cookies.get("socthink_parent_wechat_next")?.value;
+  const returnPath=mobileFlow?.next||safeReturnPath(legacyNext);
+  function completeCookie(response:NextResponse){
+    if(mobileFlow){
+      if(mobileFlow.remaining)
+        response.cookies.set(WECHAT_MOBILE_FLOW_COOKIE,mobileFlow.remaining,{
+          httpOnly:true,secure:true,sameSite:"lax",path:"/",
+          domain:".socthink.cn",maxAge:600,
+        });
+      else response.cookies.delete({
+        name:WECHAT_MOBILE_FLOW_COOKIE,path:"/",domain:".socthink.cn",
+      });
+    }
+    return response;
+  }
+  const failedRedirect=(reason:"state_error"|"failed")=>
+    completeCookie(NextResponse.redirect(WECHAT_CALLBACK_ORIGIN+
+      "/login?wechat="+reason+"&next="+encodeURIComponent(returnPath)));
 
-  if (!code || !state) {
+    if (!code || !state) {
     console.warn("[wechat-auth] callback_missing_oauth_parameters", {flow:qrFlow?"website-qr":"official-account-mobile"});
     return failedRedirect("state_error");
   }
@@ -60,21 +77,23 @@ export async function GET(req: NextRequest) {
     }
   } else {
     const expected = req.cookies.get(WECHAT_STATE_COOKIE)?.value || "";
-    if (!expected || state !== expected) {
+    if (!mobileFlow && (!expected || state !== expected)) {
       console.warn("[wechat-auth] mobile_oauth_state_mismatch", {flow:"official-account-mobile"});
       return failedRedirect("state_error");
     }
   }
 
   try {
-    const info = await wechatUserInfo(code, qrFlow ? "website" : undefined);
+    const info = await wechatUserInfo(code, qrFlow ? "website" : "official_account");
     const user = authenticateOrCreateWechatParent(info);
 
     if (qrFlow) {
       if (!completeWechatQrLogin(state, user.id)) {
         return mobileResultPage(false, "二维码已失效，请回到电脑重新生成。");
       }
-      console.info("[wechat-auth] callback_success", {flow:"website-qr"});
+      console.info("[wechat-auth] callback_success", {
+        flow:"website-qr", hasUnionId:Boolean(info.unionId),
+      });
       return mobileResultPage(true, "电脑端正在自动完成登录。你可以关闭此页面并返回电脑继续使用。");
     }
 
@@ -94,8 +113,10 @@ export async function GET(req: NextRequest) {
     }
     response.cookies.delete({ name: WECHAT_STATE_COOKIE, path: "/", domain: ".socthink.cn" });
     response.cookies.delete({ name: "socthink_parent_wechat_next", path: "/", domain: ".socthink.cn" });
-    console.info("[wechat-auth] callback_success", {flow:"official-account-mobile"});
-    return response;
+    console.info("[wechat-auth] callback_success", {
+      flow:"official-account-mobile", hasUnionId:Boolean(info.unionId),
+    });
+    return completeCookie(response);
   } catch (error) {
     // Never log OAuth code, token, AppSecret, OpenID, user ID or full URL.
     console.warn("[wechat-auth] callback_failed", {
