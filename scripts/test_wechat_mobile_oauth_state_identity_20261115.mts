@@ -33,7 +33,7 @@ try {
  const started1=await start(req1);
  const oa1=new URL(started1.headers.get("location")||"");
  assert.equal(oa1.pathname,"/connect/oauth2/authorize");
- assert.equal(oa1.searchParams.get("scope"),"snsapi_base");
+ assert.equal(oa1.searchParams.get("scope"),"snsapi_userinfo", "Teacher first login must request verified cross-app identity");
  assert.equal(oa1.searchParams.get("appid"),process.env.WECHAT_OPEN_APPID);
  const state1=oa1.searchParams.get("state")||"";
  const cookie1=started1.cookies.get(NAME)?.value||"";
@@ -44,6 +44,7 @@ try {
   {headers:{cookie:NAME+"="+cookie1}});
  const started2=await start(req2);
  const oa2=new URL(started2.headers.get("location")||"");
+ assert.equal(oa2.searchParams.get("scope"),"snsapi_base", "Student/general login remains silent");
  const state2=oa2.searchParams.get("state")||"";
  const cookie2=started2.cookies.get(NAME)?.value||"";
  assert.notEqual(state1,state2);
@@ -51,20 +52,36 @@ try {
    "/english/pronunciation/app/teacher/homework");
  assert.equal(validateWechatMobileFlow(cookie2,state2)?.next,
    "/english/pronunciation/app/a/teacher-assignment/abc");
+ const optIn=await start(new NextRequest(
+  "https://socthink.cn/api/auth/parent/wechat/start?profile=1&next=%2Faccount"));
+ const optInUrl=new URL(optIn.headers.get("location")||"");
+ assert.equal(optInUrl.searchParams.get("scope"),"snsapi_userinfo");
+ assert.equal(optInUrl.searchParams.get("appid"),process.env.WECHAT_OPEN_APPID);
+ assert(optIn.cookies.get(NAME)?.value);
  const redirect1=decodeURIComponent(oa1.searchParams.get("redirect_uri")||"");
  assert.equal(redirect1,"https://socthink.cn/api/auth/parent/wechat/callback");
+ let profileCalls=0;
  globalThis.fetch=async(input:RequestInfo|URL)=>{
    const uri=String(input);
+   if(uri.startsWith("https://api.weixin.qq.com/sns/userinfo")){
+     profileCalls++;
+     assert.equal(new URL(uri).searchParams.get("openid"),"oa-verified-openid-001");
+     return new Response(JSON.stringify({
+       openid:"oa-verified-openid-001", unionid:"union-same-user-001",
+       nickname:"微信测试教师",
+     }),{status:200,headers:{"content-type":"application/json"}});
+   }
    assert(uri.startsWith("https://api.weixin.qq.com/sns/oauth2/access_token"),
      "Unexpected provider request");
    const params=new URL(uri).searchParams;
    assert.equal(params.get("appid"),process.env.WECHAT_OPEN_APPID,
      "Used website AppID for official-account mobile login");
+   const isTeacher=params.get("code")==="mock-1";
    return new Response(JSON.stringify({
      access_token:"isolated-oa-access-token",
      openid:"oa-verified-openid-001",
-     unionid:"union-same-user-001",
-     scope:"snsapi_base",
+     ...(isTeacher?{}:{unionid:"union-same-user-001"}),
+     scope:isTeacher?"snsapi_userinfo":"snsapi_base",
    }),{status:200,headers:{"content-type":"application/json"}});
  };
  const cb1=new NextRequest("https://socthink.cn/api/auth/parent/wechat/callback?code=mock-1&state="+state1,
@@ -73,16 +90,19 @@ try {
  assert.equal(out1.status,307);
  assert.equal(out1.headers.get("location"),"https://socthink.cn/english/pronunciation/app/teacher/homework");
  assert(out1.cookies.get("socthink_parent_session")?.value);
+ assert.equal(profileCalls,1,"Teacher UnionID must come from official WeChat profile API");
  const remaining=out1.cookies.get(NAME)?.value||"";
  assert.equal(validateWechatMobileFlow(remaining,state1),null);
  assert.equal(validateWechatMobileFlow(remaining,state2)?.next,
    "/english/pronunciation/app/a/teacher-assignment/abc");
  console.log("OFFICIAL_ACCOUNT_FORCED_APPID_AND_TWO_JOURNEYS_PASS");
+ console.log("TEACHER_FIRST_LOGIN_USERINFO_AND_SILENT_STUDENT_SCOPE_PASS");
  const cb2=new NextRequest("https://socthink.cn/api/auth/parent/wechat/callback?code=mock-2&state="+state2,
   {headers:{cookie:NAME+"="+remaining}});
  const out2=await callback(cb2);
  assert.equal(out2.headers.get("location"),
   "https://socthink.cn/english/pronunciation/app/a/teacher-assignment/abc");
+ assert.equal(profileCalls,1,"Silent student login must not request profile info");
  const invalid=new NextRequest(
   "https://socthink.cn/api/auth/parent/wechat/callback?code=bad&state="+state1,
   {headers:{cookie:NAME+"="+cookie2.replace(/.$/,"x")}});
