@@ -143,7 +143,8 @@
     "bench:career-local": "tsx scripts/benchmark_career_local_judge.ts",
     "test:career-judge-dataset": "tsx scripts/test_career_judge_dataset.ts",
     "test:seo-storage": "node scripts/test_seo_storage_isolation.mjs",
-    "test:cohost-gateway": "python3 scripts/test_cohost_gateway.py"
+    "test:cohost-gateway": "python3 scripts/test_cohost_gateway.py",
+    "test:english-platform": "tsx scripts/test_english_platform_contract.ts"
   },
   "dependencies": {
     "next": "16.4.3",

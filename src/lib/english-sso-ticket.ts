@@ -7,9 +7,12 @@ import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 import {readOrCreateSecret, userDataPath} from "./user-data-store";
+import {ENGLISH_PRODUCTS, type EnglishProductId} from "./english-products";
 
-export const ENGLISH_SSO_PRODUCTS = ["pronunciation", "vocabulary", "reading", "aelos"] as const;
-export type EnglishSsoProduct = typeof ENGLISH_SSO_PRODUCTS[number];
+// No second handwritten list: the public catalog and SSO product allowlist
+// must never drift. This does NOT enable SSO in not-yet-federated products.
+export const ENGLISH_SSO_PRODUCTS: readonly EnglishProductId[] = ENGLISH_PRODUCTS.map(p=>p.id);
+export type EnglishSsoProduct = EnglishProductId;
 export const ENGLISH_SSO_TTL_MS = 75_000;
 const TICKET_PATTERN = /^[a-f0-9]{64}$/;
 const TICKET_DIR = userDataPath("english-sso-tickets");
