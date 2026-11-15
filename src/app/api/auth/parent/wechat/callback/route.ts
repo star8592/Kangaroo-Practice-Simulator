@@ -83,9 +83,12 @@ export async function GET(req: NextRequest) {
     }
   }
 
+  let callbackPhase: "wechat_userinfo"|"account_match"|"session_setup" = "wechat_userinfo";
   try {
     const info = await wechatUserInfo(code, qrFlow ? "website" : "official_account");
+    callbackPhase = "account_match";
     const user = authenticateOrCreateWechatParent(info);
+    callbackPhase = "session_setup";
 
     if (qrFlow) {
       if (!completeWechatQrLogin(state, user.id)) {
@@ -119,8 +122,17 @@ export async function GET(req: NextRequest) {
     return completeCookie(response);
   } catch (error) {
     // Never log OAuth code, token, AppSecret, OpenID, user ID or full URL.
+    const knownCodes = new Set([
+      "WECHAT_CROSS_APP_ACCOUNT_CONFLICT", "WECHAT_UNIONID_MISMATCH",
+      "PRIVATE_USERSTORE_JSON_INVALID", "PRIVATE_USERSTORE_EXPECTED_ARRAY",
+    ]);
+    const failureCode = error instanceof Error && knownCodes.has(error.message)
+      ? error.message : "UNCLASSIFIED";
+    // Fixed-label diagnostics only: NEVER log OAuth codes, tokens, secrets,
+    // OpenIDs, UnionIDs, names, URLs, provider bodies, or arbitrary messages.
     console.warn("[wechat-auth] callback_failed", {
       flow:qrFlow?"website-qr":"official-account-mobile",
+      phase:callbackPhase, failureCode,
       errorType:error instanceof Error?error.name:"unknown",
     });
     if (qrFlow) return mobileResultPage(false, "微信授权失败，请回到电脑重新扫码。");
