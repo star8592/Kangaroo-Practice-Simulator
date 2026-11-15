@@ -230,6 +230,48 @@ export async function teacherHandler(req:NextRequest,p:string[],a:Actor):Promise
         account_id:student,name:member.rows[0].display_name};
     });
   }
+  if(p[4]==="students"&&p[5]==="remove"&&p.length===6&&method==="POST"){
+    const body=await jsonBody(req),student=id(body.account_id as string);
+    return tx({tenant,account:a.accountId},async db=>{
+      await teacher(db,a,tenant,cl);
+      // This removes only membership in THIS class. It never deletes the
+      // verified WeChat account, tenant membership, homework or past grades.
+      const result=await db.query(["DELETE FROM accent.class_enrollments",
+        "WHERE tenant_id=$1 AND class_id=$2 AND account_id=$3 AND role='student'",
+        "RETURNING account_id"].join(" "),[tenant,cl,student]);
+      if(!result.rows.length)return {removed:false,already_absent:true,account_id:student};
+      // A previously approved invite must not continue claiming 'approved'
+      // after the actual enrollment has been removed. Applications for other
+      // classes remain unchanged, and a fresh application can be submitted.
+      await db.query(["UPDATE accent.class_join_requests SET status='rejected',",
+        "assigned_class_id=NULL,reviewed_by=$4,reviewed_at=now(),updated_at=now()",
+        "WHERE tenant_id=$1 AND student_id=$3 AND assigned_class_id=$2",
+        "AND status='approved'"].join(" "),[tenant,cl,student,a.accountId]);
+      await db.query(["INSERT INTO accent.audit_events",
+        "(tenant_id,actor_id,action,resource_kind,resource_id,details)",
+        "VALUES($1,$2,'student_removed_from_class','class_enrollment',$3,",
+        "jsonb_build_object('class_id',$4::text))"].join(" "),
+        [tenant,a.accountId,student,cl]);
+      return {removed:true,already_absent:false,account_id:student,
+        history_preserved:true,other_classes_unchanged:true};
+    });
+  }
+  if(p[4]==="expected-roster"&&p[5]==="remove"&&p.length===6&&method==="POST"){
+    const body=await jsonBody(req),name=txt(body.name,30);
+    return tx({tenant,account:a.accountId},async db=>{
+      await teacher(db,a,tenant,cl);
+      const r=await db.query(["DELETE FROM accent.class_expected_roster",
+        "WHERE tenant_id=$1 AND class_id=$2 AND lower(btrim(name))=lower(btrim($3))",
+        "RETURNING name"].join(" "),[tenant,cl,name]);
+      if(r.rows.length)await db.query(["INSERT INTO accent.audit_events",
+        "(tenant_id,actor_id,action,resource_kind,resource_id,details)",
+        "VALUES($1,$2,'planned_student_removed','class_expected_roster',$3,",
+        "jsonb_build_object('name',$4::text))"].join(" "),
+        [tenant,a.accountId,cl,r.rows[0].name]);
+      return {removed:r.rows.length>0,already_absent:r.rows.length===0,
+        name,verified_enrollment_unchanged:true};
+    });
+  }
   if(p[4]==="materials"&&p.length===5&&method==="POST"){
     const body=await jsonBody(req,90000);
     const title=txt(body.title,160,2);

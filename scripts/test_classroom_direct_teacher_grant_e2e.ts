@@ -66,7 +66,7 @@ try {
   const role="classroom_e2e_app";
   const password=crypto.randomBytes(18).toString("hex");
   adminCmd("CREATE ROLE "+role+" LOGIN PASSWORD '"+password+"' NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION NOBYPASSRLS");
-  adminCmd("GRANT USAGE ON SCHEMA accent TO "+role+"; GRANT SELECT,INSERT,UPDATE ON ALL TABLES IN SCHEMA accent TO "+role+"; GRANT DELETE ON accent.class_expected_roster TO "+role);
+  adminCmd("GRANT USAGE ON SCHEMA accent TO "+role+"; GRANT SELECT,INSERT,UPDATE ON ALL TABLES IN SCHEMA accent TO "+role+"; GRANT DELETE ON accent.class_expected_roster,accent.class_enrollments TO "+role);
   process.env.SOCTHINK_CLASSROOM_DATABASE_URL="postgresql://"+role+":"+password+"@127.0.0.1:"+port+"/postgres";
   const {NextRequest}=await import("next/server");
   const {GET,POST}=await import("../src/app/english/pronunciation/classroom-api/[...path]/route");
@@ -236,6 +236,60 @@ try {
   }),200,"Teacher writes feedback");
   const wall=ok(await api(students[0],"GET",["tenants",tenant,"a",share,"wall"]),200,"Student sees class wall");
   if(wall.submitted!==5)throw Error("Class wall must show five submissions");
+  // Student removal must revoke CURRENT access without destroying historic
+  // scores, and must not affect a second class or unrelated WeChat identity.
+  const removedSecond=ok(await api(teacher,"POST",[...secondBase,"students","remove"],
+    {account_id:selected}),200,"Teacher removes directly assigned student from second class");
+  if(!removedSecond.removed||!removedSecond.history_preserved)throw Error("Second class removal failed");
+  const secondAgain=ok(await api(teacher,"POST",[...secondBase,"students","remove"],
+    {account_id:selected}),200,"Second class removal is idempotent");
+  if(!secondAgain.already_absent)throw Error("Second removal must be no-op");
+  const firstUnchanged=ok(await api(teacher,"GET",[...base,"students"]),200,
+    "Removing second class student must not affect first class membership");
+  if(firstUnchanged.enrolled_total!==5)throw Error("Second class removal affected another class");
+  ok(await api(students[0],"GET",["tenants",tenant,"a",share]),200,
+    "Second class removal preserves original class access");
+  ok(await api(students[1],"POST",[...base,"students","remove"],{
+    account_id:learnerId(students[2].id)}),403,
+    "Student cannot remove a classmate even knowing account ID");
+  const removedOriginal=ok(await api(teacher,"POST",[...base,"students","remove"],
+    {account_id:learnerId(students[2].id)}),200,"Teacher removes student from first class");
+  if(!removedOriginal.removed)throw Error("First class removal failed");
+  const deniedAfterRemoval=await api(students[2],"GET",["tenants",tenant,"a",share]);
+  if(deniedAfterRemoval.code!==403)throw Error("Removed student retains access to old homework");
+  const afterRemoval=ok(await api(teacher,"GET",[...base,"students"]),200,
+    "Actual class enrollment shrinks after removal");
+  if(afterRemoval.enrolled_total!==4||afterRemoval.planned_total!==5)
+    throw Error("Removal incorrectly changed planned roster or count");
+  const preservedReport=ok(await api(teacher,"GET",["tenants",tenant,"assignments",assignmentId,"report"]),200,
+    "Teacher keeps original recorded marks after class removal");
+  if(preservedReport.attempt_history.length!==5||preservedReport.submitted!==4||
+     !preservedReport.attempt_history.some((x:{student_id:string})=>
+       x.student_id===learnerId(students[2].id)))
+    throw Error("Removal wiped historical scores or failed to update active class total");
+  const deletedPlanned=ok(await api(teacher,"POST",[...base,"expected-roster","remove"],
+    {name:roster[2]}),200,"Remove only one pre-entered roster name");
+  if(!deletedPlanned.removed||!deletedPlanned.verified_enrollment_unchanged)
+    throw Error("Planned roster deletion failed");
+  const afterPlanned=ok(await api(teacher,"GET",[...base,"students"]),200,
+    "Planned roster shrinks independently of actual enrollment");
+  if(afterPlanned.planned_total!==4||afterPlanned.enrolled_total!==4)
+    throw Error("Planned vs verified roster counters inconsistent");
+  const triedAgain=ok(await api(students[2],"POST",["tenants",tenant,"a",share,"join"],
+    {student_name:roster[2],grade_label:"五年级"}),200,
+    "Removed student may reapply without a new WeChat account");
+  if(triedAgain.status!=="pending")throw Error("Removed student must not auto-rejoin");
+  const needsApproval=ok(await api(teacher,"GET",[...base,"join-requests"]),200,
+    "Re-application requires fresh teacher approval");
+  const newRow=needsApproval.requests.find((x:{student_name:string})=>x.student_name===roster[2]);
+  if(!newRow)throw Error("Fresh join application missing");
+  ok(await api(teacher,"POST",[...base,"join-requests",newRow.id,"decision"],
+    {approve:true,assigned_class_id:cl}),200,"Teacher reapproves returning student");
+  const rejoined=ok(await api(teacher,"GET",[...base,"students"]),200,
+    "Verified enrollment restored after explicit approval");
+  if(rejoined.enrolled_total!==5||rejoined.planned_total!==4)
+    throw Error("Reapproval changed unverified roster or failed to enroll");
+  console.log("STUDENT_REMOVE_REAPPLY_HISTORY_PRESERVED_E2E_PASS");
   ok(await api(owner,"POST",["admin","teachers","direct"],{account_id:teacherAccount,approve:false}),200,
     "Owner revokes teacher");
   const denied=await api(teacher,"GET",["tenants",tenant,"assignments",assignmentId,"report"]);
