@@ -6,10 +6,17 @@ import {useRouter} from "next/navigation";
 import WechatWebsiteQr from "./WechatWebsiteQr";
 import styles from "./AuthExperience.module.css";
 
-type Mode="checking"|"loading"|"qr"|"error";
+type Mode="checking"|"loading"|"qr"|"mobile"|"error";
 const inWechat=()=>typeof navigator!=="undefined"&&/MicroMessenger/i.test(navigator.userAgent);
+const mobileOutsideWechat=()=>typeof navigator!=="undefined"&&
+  /Android|iPhone|iPad|Mobile/i.test(navigator.userAgent)&&!inWechat();
+const loginErrorText:Record<string,string>={
+  state_error:"微信授权状态已失效，请在当前微信页面重新登录。请勿复制旧的授权回调地址。",
+  failed:"微信授权没有完成。请重试；如果微信仍显示错误，请检查公众号网页授权域名及接口权限。",
+  unavailable:"当前公众号微信授权未配置，请联系网站管理员。",
+};
 
-export default function UnifiedLoginClient({nextPath}:{nextPath:string}) {
+export default function UnifiedLoginClient({nextPath,loginError}:{nextPath:string;loginError?:string}) {
   const router=useRouter();
   const destination=nextPath.startsWith("/")&&!nextPath.startsWith("//")&&!nextPath.includes("\\")?nextPath:"/account";
   // Same WeChat identity, contextual entry: no separate teacher/student passwords.
@@ -18,8 +25,7 @@ export default function UnifiedLoginClient({nextPath}:{nextPath:string}) {
   const englishEntry=teacherLogin||homeworkLogin;
   const [mode,setMode]=useState<Mode>("checking");
   const [qrUrl,setQrUrl]=useState("");
-  const [message,setMessage]=useState("");
-  const [mobileExternal,setMobileExternal]=useState(false);
+  const [message,setMessage]=useState(loginError?loginErrorText[loginError]||"微信登录未完成，请重新发起授权。":"");
   const timer=useRef<ReturnType<typeof setTimeout>|null>(null);
   const disposed=useRef(false);
   const ticket=useRef("");
@@ -28,6 +34,12 @@ export default function UnifiedLoginClient({nextPath}:{nextPath:string}) {
     stop();ticket.current="";setQrUrl("");setMessage("");setMode("loading");
     if(inWechat()){
       window.location.replace("/api/auth/parent/wechat/start?next="+encodeURIComponent(destination));
+      return;
+    }
+    // A mobile browser cannot scan its own QR code. Never generate a desktop
+    // ticket here; share the SAME destination into the WeChat in-app browser.
+    if(mobileOutsideWechat()){
+      setMode("mobile");
       return;
     }
     try{
@@ -69,9 +81,6 @@ export default function UnifiedLoginClient({nextPath}:{nextPath:string}) {
 
   useEffect(()=>{
     disposed.current=false;
-    const mobileTask=setTimeout(()=>{
-      setMobileExternal(/Android|iPhone|iPad|Mobile/i.test(navigator.userAgent)&&!inWechat());
-    },0);
     let canceled=false;
     void (async()=>{
       try{
@@ -89,10 +98,14 @@ export default function UnifiedLoginClient({nextPath}:{nextPath:string}) {
           }
         }
       }catch{/* Login is available even if the status endpoint fails. */}
-      if(!canceled)void start();
+      if(canceled)return;
+      // Explicit callback failures need a visible explanation, not an
+      // automatic redirect loop back to the same failing WeChat provider.
+      if(loginError){setMode("error");return;}
+      void start();
     })();
-    return()=>{canceled=true;disposed.current=true;ticket.current="";clearTimeout(mobileTask);stop();};
-  },[destination,router,start,stop]);
+    return()=>{canceled=true;disposed.current=true;ticket.current="";stop();};
+  },[destination,router,start,stop,loginError]);
 
   async function shareToWechat(){
     const url=window.location.href;
@@ -122,9 +135,13 @@ export default function UnifiedLoginClient({nextPath}:{nextPath:string}) {
         <WechatWebsiteQr authorizeUrl={qrUrl}/>
         <p>{englishEntry?"用微信扫一扫；成功后自动返回"+(teacherLogin?"教师工作台。":"当前作业。"):"请用微信扫一扫；登录成功后自动进入。"}</p>
       </div>}
-      {mobileExternal&&<div className={styles.unifiedMobileHint}>
-        <p>手机浏览器中无法扫描自己的屏幕，请把本页分享到微信里打开。</p>
-        <button className="secondary-button" type="button" onClick={()=>void shareToWechat()}>发送到微信打开</button>
+      {mode==="mobile"&&<div className={styles.unifiedMobileHint} data-testid="wechat-mobile-one-device">
+        <h3>一部手机即可完成微信登录</h3>
+        <p>当前页面在手机普通浏览器中。请分享到微信聊天或“文件传输助手”，然后<strong>在微信里点开链接</strong>，无需另一台设备扫码。</p>
+        <button className="primary-button" type="button" onClick={()=>void shareToWechat()}>
+          分享／复制登录链接
+        </button>
+        <p>从微信群、公众号菜单直接打开教师工作台或学生作业链接时，会自动使用微信网页授权，不显示二维码。</p>
       </div>}
       {message&&<p role="alert" className={styles.error}>{message}</p>}
       {(mode==="qr"||mode==="error")&&
