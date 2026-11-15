@@ -10,6 +10,9 @@ export type ParentUser={
   emailVerifiedAt?:number;
   wechatId?:string;
   wechatOpenId?:string;
+  wechatUnionId?:string;
+  wechatWebsiteOpenId?:string;
+  wechatOfficialOpenId?:string;
   wechatAvatarUrl?:string;
   termsAcceptedAt:number;
   guardianConfirmedAt:number;
@@ -19,7 +22,8 @@ export type ParentUser={
   sessionVersion:number;
   lastLoginAt?:number;
 };
-export type PublicParent=Omit<ParentUser,"passwordHash">;
+export type PublicParent=Omit<ParentUser,
+ "passwordHash"|"wechatUnionId"|"wechatWebsiteOpenId"|"wechatOfficialOpenId">;
 export const PARENT_SESSION_COOKIE="socthink_parent_session";
 export const PARENT_SESSION_TTL_SECONDS=30*24*60*60;
 
@@ -32,7 +36,11 @@ export function validEmail(email:string){return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.tes
 export function validatePassword(password:string){if(password.length<8)return "密码至少 8 位";if(password.length>128)return "密码过长";return null}
 export function hashPassword(password:string){return hashScryptSecret(password)}
 function verifyPassword(password:string,encoded:string){return verifyScryptSecret(password,encoded)}
-function pub(u:ParentUser):PublicParent{const {passwordHash,...x}=u;void passwordHash;return x}
+function pub(u:ParentUser):PublicParent{
+ const {passwordHash,wechatUnionId,wechatWebsiteOpenId,wechatOfficialOpenId,...x}=u;
+ void passwordHash;void wechatUnionId;void wechatWebsiteOpenId;void wechatOfficialOpenId;
+ return x;
+}
 
 function loadParents():ParentUser[]{return readJsonArrayStrict<ParentUser>(FILE).map(u=>({...u,email:normalizeEmail(u.email)||undefined,role:"parent",active:u.active!==false,sessionVersion:Math.max(1,Number(u.sessionVersion)||1)}))}
 function saveParents(rows:ParentUser[]){atomicWriteJson(FILE,rows)}
@@ -61,21 +69,50 @@ export function authenticateParent(email0:string,password:string){
   u.lastLoginAt=Date.now();saveParents(rows);return pub(u);
 }
 
-export function authenticateOrCreateWechatParent(input:{wechatId:string;openId?:string;name?:string;avatarUrl?:string}){
-  const rows=loadParents(),wechatId=input.wechatId.trim(),openId=input.openId?.trim();
-  if(!wechatId)throw new Error("微信用户标识缺失");
-  let u=rows.find(x=>x.wechatId===wechatId||(openId&&x.wechatOpenId===openId));
-  if(!u){
-    u={id:"par_"+crypto.randomBytes(9).toString("hex"),name:(input.name||"微信家长").trim().slice(0,60)||"微信家长",wechatId,wechatOpenId:openId,wechatAvatarUrl:input.avatarUrl?.trim()||undefined,termsAcceptedAt:Date.now(),guardianConfirmedAt:Date.now(),createdAt:Date.now(),lastLoginAt:Date.now(),active:true,role:"parent",sessionVersion:1};
-    rows.push(u);
-  }else{
-    u.wechatId=wechatId;
-    if(openId)u.wechatOpenId=openId;
-    if(input.name&&!u.name)u.name=input.name.trim().slice(0,60);
-    if(input.avatarUrl)u.wechatAvatarUrl=input.avatarUrl.trim();
-    u.lastLoginAt=Date.now();
-  }
-  saveParents(rows);return pub(u);
+export function authenticateOrCreateWechatParent(input:{
+ wechatId:string;openId?:string;unionId?:string;
+ oauthMode?:"website"|"official_account";name?:string;avatarUrl?:string;
+}){
+ const rows=loadParents();
+ const wechatId=input.wechatId.trim(),openId=input.openId?.trim(),unionId=input.unionId?.trim();
+ const mode=input.oauthMode;
+ if(!wechatId)throw new Error("微信用户标识缺失");
+ const matched=rows.filter(x=>
+   Boolean(unionId&&(x.wechatUnionId===unionId||x.wechatId===unionId))||
+   Boolean(openId&&(
+     (mode==="website"&&x.wechatWebsiteOpenId===openId)||
+     (mode==="official_account"&&x.wechatOfficialOpenId===openId)||
+     x.wechatOpenId===openId))||
+   x.wechatId===wechatId);
+ if(matched.length>1)throw new Error("WECHAT_CROSS_APP_ACCOUNT_CONFLICT");
+ let u=matched[0];
+ if(u&&unionId&&u.wechatUnionId&&u.wechatUnionId!==unionId)
+   throw new Error("WECHAT_UNIONID_MISMATCH");
+ if(!u){
+   u={id:"par_"+crypto.randomBytes(9).toString("hex"),
+     name:(input.name||"微信家长").trim().slice(0,60)||"微信家长",
+     wechatId:unionId||wechatId,wechatOpenId:openId,
+     wechatUnionId:unionId,
+     wechatWebsiteOpenId:mode==="website"?openId:undefined,
+     wechatOfficialOpenId:mode==="official_account"?openId:undefined,
+     wechatAvatarUrl:input.avatarUrl?.trim()||undefined,
+     termsAcceptedAt:Date.now(),guardianConfirmedAt:Date.now(),
+     createdAt:Date.now(),lastLoginAt:Date.now(),
+     active:true,role:"parent",sessionVersion:1};
+   rows.push(u);
+ }else{
+   // Never demote a verified UnionID back to one AppID-scoped OpenID.
+   if(unionId){u.wechatUnionId=unionId;u.wechatId=unionId}
+   if(openId){
+     u.wechatOpenId=openId;
+     if(mode==="website")u.wechatWebsiteOpenId=openId;
+     if(mode==="official_account")u.wechatOfficialOpenId=openId;
+   }
+   if(input.name&&!u.name)u.name=input.name.trim().slice(0,60);
+   if(input.avatarUrl)u.wechatAvatarUrl=input.avatarUrl.trim();
+   u.lastLoginAt=Date.now();
+ }
+ saveParents(rows);return pub(u);
 }
 
 export function resetParentPassword(email0:string,newPassword:string){
