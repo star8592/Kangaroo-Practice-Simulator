@@ -26,7 +26,10 @@ export function newWechatState() {
   return crypto.randomBytes(24).toString("hex");
 }
 
-export function wechatAuthorizeUrl(state: string, forcedMode?: WechatLoginMode) {
+export function wechatAuthorizeUrl(
+  state: string, forcedMode?: WechatLoginMode,
+  officialScope: "snsapi_base" | "snsapi_userinfo" = "snsapi_base",
+) {
   const mode = forcedMode || wechatLoginMode();
   const { appid } = wechatCredentials(mode);
   if (!appid) throw new Error("微信登录尚未配置");
@@ -34,7 +37,7 @@ export function wechatAuthorizeUrl(state: string, forcedMode?: WechatLoginMode) 
   const redirect = encodeURIComponent(`${WECHAT_CALLBACK_ORIGIN}/api/auth/parent/wechat/callback`);
 
   if (mode === "official_account") {
-    return `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${encodeURIComponent(appid)}&redirect_uri=${redirect}&response_type=code&scope=snsapi_base&state=${encodeURIComponent(state)}#wechat_redirect`;
+    return `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${encodeURIComponent(appid)}&redirect_uri=${redirect}&response_type=code&scope=${officialScope}&state=${encodeURIComponent(state)}#wechat_redirect`;
   }
 
   return `https://open.weixin.qq.com/connect/qrconnect?appid=${encodeURIComponent(appid)}&redirect_uri=${redirect}&response_type=code&scope=snsapi_login&state=${encodeURIComponent(state)}#wechat_redirect`;
