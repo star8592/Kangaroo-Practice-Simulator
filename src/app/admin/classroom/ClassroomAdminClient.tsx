@@ -6,6 +6,10 @@ type Teacher = {
   account_id: string; name: string; status: string;
   applied_at: string; reviewed_at?: string | null;
 };
+type Candidate={
+  account_id:string;name:string;
+  teacher_status:string;last_login_at:number|null;
+};
 const API = "/english/pronunciation/classroom-api";
 
 async function jsonResponse(url:string, init?:RequestInit) {
@@ -32,6 +36,9 @@ export default function ClassroomAdminClient({ ownerBound, ownerEmailVerified, o
   const [message,setMessage] = useState("");
   const [teachers,setTeachers] = useState<Teacher[]>([]);
   const [listError,setListError] = useState("");
+  const [userSearch,setUserSearch] = useState("");
+  const [candidates,setCandidates] = useState<Candidate[]>([]);
+  const [searchDone,setSearchDone] = useState(false);
 
   const refresh = useCallback(async () => {
     try {
@@ -84,6 +91,31 @@ export default function ClassroomAdminClient({ ownerBound, ownerEmailVerified, o
     } catch(e) {setMessage(e instanceof Error ? e.message : "操作失败");}
     finally {setBusy(false);}
   }
+  async function findExistingWechatUsers() {
+    if(!siteOwner||busy||[...userSearch.trim()].length<2)return;
+    setBusy(true);setMessage("");
+    try {
+      const found=await jsonResponse(API+"/admin/users?q="+encodeURIComponent(userSearch.trim().slice(0,60)));
+      setCandidates(Array.isArray(found.users)?found.users:[]);
+      setSearchDone(true);
+    } catch(e){setMessage(e instanceof Error?e.message:"微信用户搜索失败");}
+    finally{setBusy(false);}
+  }
+  async function directTeacher(candidate:Candidate,approve:boolean){
+    if(!window.confirm("确认"+(approve?"主动授予":"撤销")+"「"+candidate.name+"」的教师资格？"))return;
+    setBusy(true);setMessage("");
+    try {
+      await jsonResponse(API+"/admin/teachers/direct",{
+        method:"POST",headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({account_id:candidate.account_id,approve}),
+      });
+      setMessage("已更新「"+candidate.name+"」的教师资格");
+      const found=await jsonResponse(API+"/admin/users?q="+encodeURIComponent(userSearch.trim().slice(0,60)));
+      setCandidates(Array.isArray(found.users)?found.users:[]);
+      await refresh();
+    } catch(e){setMessage(e instanceof Error?e.message:"直接授权失败");}
+    finally{setBusy(false);}
+  }
   return <div className={styles.stack}>
     <section className={styles.panel}>
       <h2>网站所有者</h2>
@@ -123,6 +155,28 @@ export default function ClassroomAdminClient({ ownerBound, ownerEmailVerified, o
                   </div>}
             </>}
       {message && <p role="status" className={styles.tip}>{message}</p>}
+    </section>
+    <section className={styles.panel}>
+      <h2>管理员直接指定教师</h2>
+      <p>无需老师先申请：查找已经通过主站微信登录的用户，直接授予或撤销教师权限。昵称只是筛选，操作针对唯一的已验证账号。</p>
+      {siteOwner?<>
+        <form className={styles.form} onSubmit={e=>{e.preventDefault();void findExistingWechatUsers();}}>
+          <label>搜索微信用户昵称（至少 2 个字）
+            <input type="search" maxLength={60} value={userSearch}
+              onChange={e=>setUserSearch(e.target.value)} placeholder="输入老师微信昵称"/>
+          </label>
+          <button type="submit" disabled={busy||[...userSearch.trim()].length<2}>查找已登录用户</button>
+        </form>
+        {searchDone && !candidates.length && <p>没有找到符合条件的微信用户。</p>}
+        <div className={styles.list}>{candidates.map(c=><div className={styles.teacher} key={c.account_id}>
+          <div><strong>{c.name}</strong><p>账号尾号 {c.account_id.slice(-8)} · {c.teacher_status==="approved"?"已是教师":"普通用户／待授权"}</p></div>
+          <button type="button" disabled={busy}
+            onClick={()=>void directTeacher(c,c.teacher_status!=="approved")}>
+            {c.teacher_status==="approved"?"撤销教师资格":"指定为教师"}
+          </button>
+        </div>)}</div>
+      </>:<p className={styles.tip}>仅已绑定的站点所有者可以直接指定教师。</p>}
+      {message&&<p role="status" className={styles.tip}>{message}</p>}
     </section>
     <section className={styles.panel}>
       <div className={styles.titleRow}><div><h2>口音教练 · 教师申请</h2>

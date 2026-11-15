@@ -189,6 +189,42 @@ try {
   if(report.total!==5||report.submitted!==5||report.students.length!==5)
     throw Error("Expected exactly 5/5 completed, got "+JSON.stringify(report).slice(0,1000));
   console.log("NATIVE_CLASSROOM_FIVE_STUDENT_REPORT_PASS total="+report.total+" completed="+report.submitted);
+  // Bidirectional enrollment: first path was the student's verified WeChat
+  // application and teacher approval. Second path directly places the already
+  // authenticated member into another class without a new application.
+  const originalSummary=ok(await api(teacher,"GET",[...base,"students"]),200,
+    "Teacher sees real verified student count, separate from planned roster");
+  if(originalSummary.planned_total!==5||originalSummary.enrolled_total!==5||
+     originalSummary.pending_total!==0||originalSummary.students.length!==5)
+    throw Error("Wrong original class student counters");
+  const second=ok(await api(teacher,"POST",["teacher","classes","create"],
+    {class_name:"虚拟第二教学班"}),200,"Teacher creates another class for direct placement");
+  const secondBase=["tenants",tenant,"classes",second.class_id];
+  const preview=ok(await api(teacher,"GET",[...secondBase,"students"]),200,
+    "New class initially has no enrolled students");
+  if(preview.enrolled_total!==0||preview.planned_total!==0)throw Error("Unexpected pre-existing roster");
+  ok(await api(students[0],"GET",[...secondBase,"students"]),403,
+    "Student may not enumerate teacher roster");
+  const studentCandidates=ok(await api(teacher,"GET",[...secondBase,"students","candidates"],
+    undefined,{},"模拟学生"),200,"Teacher searches only own tenant's verified students");
+  if(studentCandidates.users.length!==5)throw Error("Expected five existing known students");
+  if(studentCandidates.users.some((x:{already_enrolled:boolean})=>x.already_enrolled))
+    throw Error("Candidate listed as enrolled in new class");
+  const selected=learnerId(students[0].id);
+  const assigned=ok(await api(teacher,"POST",[...secondBase,"students","direct"],{
+    account_id:selected
+  }),200,"Teacher directly enrolls known verified student without application");
+  if(!assigned.assigned||assigned.already_enrolled)throw Error("Direct student placement failed");
+  const secondAttempt=ok(await api(teacher,"POST",[...secondBase,"students","direct"],{
+    account_id:selected
+  }),200,"Direct placement is safely idempotent");
+  if(!secondAttempt.already_enrolled)throw Error("Duplicate direct student placement");
+  const after=ok(await api(teacher,"GET",[...secondBase,"students"]),200,
+    "Directly assigned student is counted as enrolled");
+  if(after.enrolled_total!==1||after.pending_total!==0||after.students[0]?.account_id!==selected)
+    throw Error("Student roster count differs from real enrollment");
+  console.log("STUDENT_APPLY_AND_TEACHER_DIRECT_ASSIGN_BIDIRECTIONAL_PASS");
+
   const forbidden=await api(students[1],"GET",["tenants",tenant,"recordings",studentAttempts[0]]);
   if(forbidden.code!==403)throw Error("Other student may access private recording: "+forbidden.code);
   console.log("PASS Recording private across students");
