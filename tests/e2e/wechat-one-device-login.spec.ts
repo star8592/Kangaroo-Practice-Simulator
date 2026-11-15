@@ -98,7 +98,7 @@ test("failed WeChat callback displays error without automatic OAuth loop, preser
       return route.fulfill({status:200,body:"OAuth retry fixture"});
     });
     await page.goto("/login?wechat=failed&next="+encodeURIComponent(teacher));
-    await expect(page.getByRole("alert")).toContainText("微信授权没有完成");
+    await expect(page.locator("p[role=alert]")).toContainText("微信授权没有完成");
     expect(oauthRequests).toBe(0);
     await page.getByRole("button",{name:"重新连接微信"}).click();
     await expect.poll(()=>oauthRequests).toBe(1);
