@@ -160,6 +160,76 @@ export async function teacherHandler(req:NextRequest,p:string[],a:Actor):Promise
   }
   if(p[0]!=="tenants"||p[2]!=="classes"||p.length<5)return undefined;
   const tenant=id(p[1]),cl=id(p[3]);
+  // Two paths to the same authoritative class enrollment:
+  // (1) student applies with a WeChat-authenticated assignment invitation and
+  // teacher approves (join-requests), or (2) teacher assigns an already verified
+  // student account belonging to this teacher's tenant. Unregistered names are
+  // pre-entered separately in expected-roster and NEVER impersonate an account.
+  if(p[4]==="students"&&p.length===5&&method==="GET")
+    return tx({tenant,account:a.accountId},async db=>{
+      await teacher(db,a,tenant,cl);
+      const counts=await db.query(["SELECT",
+        "(SELECT count(*)::int FROM accent.class_expected_roster WHERE tenant_id=$1 AND class_id=$2) AS planned_total,",
+        "(SELECT count(*)::int FROM accent.class_join_requests WHERE tenant_id=$1 AND requested_class_id=$2 AND status='pending') AS pending_total,",
+        "(SELECT count(*)::int FROM accent.class_enrollments e JOIN accent.memberships m",
+        "ON m.tenant_id=e.tenant_id AND m.account_id=e.account_id",
+        "WHERE e.tenant_id=$1 AND e.class_id=$2 AND e.role='student'",
+        "AND m.role='student' AND m.state='active') AS enrolled_total"].join(" "),[tenant,cl]);
+      const people=await db.query(["SELECT e.account_id,m.display_name AS name,e.enrolled_at",
+        "FROM accent.class_enrollments e JOIN accent.memberships m",
+        "ON m.tenant_id=e.tenant_id AND m.account_id=e.account_id",
+        "WHERE e.tenant_id=$1 AND e.class_id=$2 AND e.role='student'",
+        "AND m.role='student' AND m.state='active' ORDER BY e.enrolled_at,e.account_id LIMIT 100"].join(" "),[tenant,cl]);
+      return {...counts.rows[0],students:people.rows};
+    });
+  if(p[4]==="students"&&p[5]==="candidates"&&p.length===6&&method==="GET"){
+    const query=(req.nextUrl.searchParams.get("q")||"").trim();
+    if([...query].length<2||[...query].length>60)
+      throw new ClassroomFailure(400,"请输入至少两个字的已入校学生姓名");
+    return tx({tenant,account:a.accountId},async db=>{
+      await teacher(db,a,tenant,cl);
+      // Only accounts that previously joined this teacher's tenant are
+      // searchable. A teacher may not enumerate all SOC THINK children.
+      const people=await db.query(["SELECT m.account_id,m.display_name AS name,",
+        "EXISTS(SELECT 1 FROM accent.class_enrollments e",
+        "WHERE e.tenant_id=m.tenant_id AND e.account_id=m.account_id",
+        "AND e.class_id=$2 AND e.role='student') AS already_enrolled",
+        "FROM accent.memberships m WHERE m.tenant_id=$1 AND m.role='student'",
+        "AND m.state='active' AND strpos(lower(m.display_name),lower($3))>0",
+        "ORDER BY m.display_name,m.account_id LIMIT 20"].join(" "),[tenant,cl,query]);
+      return {users:people.rows};
+    });
+  }
+  if(p[4]==="students"&&p[5]==="direct"&&p.length===6&&method==="POST"){
+    const body=await jsonBody(req),student=id(body.account_id as string);
+    return tx({tenant,account:a.accountId},async db=>{
+      await teacher(db,a,tenant,cl);
+      // Verify actual tenant membership inside the same transaction; never
+      // enroll an arbitrary user ID or infer identity from a matching name.
+      const member=await db.query(["SELECT display_name FROM accent.memberships",
+        "WHERE tenant_id=$1 AND account_id=$2 AND role='student' AND state='active' FOR UPDATE"].join(" "),[tenant,student]);
+      if(!member.rows.length)
+        throw new ClassroomFailure(404,"未找到本教学空间内已验证的学生账号，请先录入花名册并分享微信作业链接");
+      const current=await db.query(["SELECT count(*)::int AS n FROM accent.class_enrollments",
+        "WHERE tenant_id=$1 AND class_id=$2 AND role='student'"].join(" "),[tenant,cl]);
+      const existing=await db.query(["SELECT 1 FROM accent.class_enrollments",
+        "WHERE tenant_id=$1 AND class_id=$2 AND account_id=$3 AND role='student'"].join(" "),
+        [tenant,cl,student]);
+      if(!existing.rows.length&&current.rows[0].n>=80)
+        throw new ClassroomFailure(409,"本班已经有80名学生，请先联系管理员调整班级安排");
+      const inserted=await db.query(["INSERT INTO accent.class_enrollments(tenant_id,class_id,account_id,role)",
+        "VALUES($1,$2,$3,'student') ON CONFLICT(tenant_id,class_id,account_id) DO NOTHING",
+        "RETURNING account_id"].join(" "),[tenant,cl,student]);
+      // A directly appointed student has no outstanding admission request
+      // for this exact class; preserve unrelated applications/classes.
+      await db.query(["UPDATE accent.class_join_requests SET status='approved',",
+        "assigned_class_id=$2,reviewed_by=$3,reviewed_at=now(),updated_at=now()",
+        "WHERE tenant_id=$1 AND requested_class_id=$2 AND student_id=$4 AND status='pending'"].join(" "),
+        [tenant,cl,a.accountId,student]);
+      return {assigned:true,already_enrolled:inserted.rows.length===0,
+        account_id:student,name:member.rows[0].display_name};
+    });
+  }
   if(p[4]==="materials"&&p.length===5&&method==="POST"){
     const body=await jsonBody(req,90000);
     const title=txt(body.title,160,2);
