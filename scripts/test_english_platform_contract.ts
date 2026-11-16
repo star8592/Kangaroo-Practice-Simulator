@@ -2,9 +2,28 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
 import {ENGLISH_PRODUCTS,englishPlatformCatalog,ENGLISH_PLATFORM_CATALOG_VERSION} from "../src/lib/english-products";
+import {englishRoleEntries} from "../src/lib/english-role-hubs";
 
 const ids=["pronunciation","vocabulary","reading","aelos"];
 const catalog=englishPlatformCatalog();
+for(const audience of ["teacher","student"] as const){
+ const entries=englishRoleEntries(audience);
+ assert.deepEqual(entries.map(e=>e.id),ids,"Role hub must reuse one four-product registry");
+ for(const entry of entries){
+  assert(entry.url.startsWith("/english/"+entry.id+"/"),
+   "Role hub must keep each product in its own same-origin path");
+  assert(!entry.url.startsWith("//")&&!entry.url.includes("\\"),
+   "Role hub must not redirect to a foreign site");
+ }
+}
+const teacherEntries=englishRoleEntries("teacher");
+assert.deepEqual(teacherEntries.filter(e=>e.classroomReady).map(e=>e.id),
+ ["pronunciation","vocabulary"],"No fake teacher backend for reading/AelOS");
+assert.equal(teacherEntries.find(e=>e.id==="vocabulary")?.url,
+ "/english/vocabulary/app/teacher/access");
+assert(englishRoleEntries("student").find(e=>e.id==="vocabulary")?.url
+ ==="/english/vocabulary/app/app/classroom");
+
 assert.equal(catalog.schemaVersion,ENGLISH_PLATFORM_CATALOG_VERSION);
 assert.deepEqual(catalog.products.map(p=>p.id),ids);
 assert.equal(new Set(catalog.products.map(p=>p.capability)).size,ids.length);

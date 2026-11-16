@@ -143,6 +143,28 @@ try {
  assert.equal(vocabStudentReturn.headers.get("location"),
   "https://socthink.cn"+vocabStudent);
  console.log("VOCAB_TEACHER_PROFILE_STUDENT_SILENT_AND_EXACT_RETURN_PASS");
+ // The new central role hubs use exactly the same official-account
+ // OAuth channel, with teacher verified UnionID and student silent scope.
+ for(const item of [
+  {next:"/english/teacher",scope:"snsapi_userinfo"},
+  {next:"/english/student",scope:"snsapi_base"},
+ ]){
+  const hub=await start(new NextRequest(
+   "https://socthink.cn/api/auth/parent/wechat/start?next="+encodeURIComponent(item.next)));
+  const oauth=new URL(hub.headers.get("location")||"");
+  assert.equal(oauth.searchParams.get("scope"),item.scope);
+  assert.equal(oauth.searchParams.get("appid"),process.env.WECHAT_OPEN_APPID);
+  const state=oauth.searchParams.get("state")||"";
+  const cookie=hub.cookies.get(NAME)?.value||"";
+  assert(state&&cookie);
+  const result=await callback(new NextRequest(
+   "https://socthink.cn/api/auth/parent/wechat/callback?code=mock-1&state="+state,
+   {headers:{cookie:NAME+"="+cookie}}));
+  assert.equal(result.headers.get("location"),"https://socthink.cn"+item.next);
+  assert(result.cookies.get("socthink_parent_session")?.value);
+ }
+ console.log("ENGLISH_ROLE_HUB_WECHAT_SCOPE_AND_EXACT_RETURN_PASS");
+
 
  const web=authenticateOrCreateWechatParent({
   wechatId:"union-teacher-100",unionId:"union-teacher-100",openId:"web-oid-01",oauthMode:"website",
