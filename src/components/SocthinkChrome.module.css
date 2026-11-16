@@ -16,3 +16,7 @@
 /* A scrollable real navigation on narrow displays; do not hide business entrypoints. */
 @media(max-width:900px){.links{gap:13px;font-size:13px}}
 @media(max-width:760px){.links{justify-content:flex-start;gap:17px;overflow-x:auto;white-space:nowrap;padding:0 1px 5px;scrollbar-width:thin}.links a{flex:0 0 auto}}
+
+/* One responsive footer for career, math, English, teaching and account screens. */
+.footerInner nav{flex:1;max-width:920px;flex-wrap:wrap;justify-content:flex-end;row-gap:11px}
+@media(max-width:760px){.footerInner nav{max-width:none;justify-content:flex-start;gap:11px 18px}.footerInner{align-items:flex-start;flex-direction:column}}
