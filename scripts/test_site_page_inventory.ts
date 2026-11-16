@@ -38,10 +38,10 @@ const labels:Record<string,string>={exams:"全部考试",resources:"真题资料
  career:"职业岗位",skills:"技能实训",practice:"求职训练",assessments:"测评中心",store:"数字商城",english:"英语学习"};
 const byRoute=new Map(rows.map(r=>[r.route,r]));
 const crossover=(route:string)=>{
- if(route==="/"||route==="/search")return "全站入口";
+ if(route==="/"||route==="/search"||route==="/subjects"||route==="/teach")return "全站入口";
  if(route.startsWith("/admin"))return "管理后台";
  if(route==="/privacy"||route==="/terms"||route.startsWith("/digital-purchase-policy"))return "政策与权益";
- if(route==="/workspace")return "账户与权益";
+ if(route==="/workspace"||route==="/my/learning")return "账户与权益";
  if(route==="/account"||route==="/login"||route==="/membership"||
     route.startsWith("/student")||route.startsWith("/parent"))return "账户与权益";
  return null;
