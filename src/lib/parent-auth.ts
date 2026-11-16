@@ -148,10 +148,22 @@ export function createParentSessionToken(uid:string,ttl=PARENT_SESSION_TTL_SECON
   return signJsonToken({uid,ver:u.sessionVersion||1,exp:Math.floor(Date.now()/1000)+ttl},sessionSecret());
 }
 
-export function parentFromSessionToken(token:string|undefined|null):PublicParent|null{
+function verifiedPrivateParentFromSession(token:string|undefined|null):ParentUser|null {
   const x=readSignedJsonToken<{uid?:string;ver?:number;exp?:number}>(token,sessionSecret());
   if(!x?.uid||!x.exp||x.exp<Math.floor(Date.now()/1000))return null;
-  const u=loadParents().find(v=>v.id===x.uid&&v.active);if(!u||(u.sessionVersion||1)!==(x.ver??1))return null;return pub(u)
+  const u=loadParents().find(v=>v.id===x.uid&&v.active);
+  if(!u||(u.sessionVersion||1)!==(x.ver??1))return null;
+  return u;
+}
+export function parentFromSessionToken(token:string|undefined|null):PublicParent|null{
+  const privateRecord=verifiedPrivateParentFromSession(token);
+  return privateRecord?pub(privateRecord):null;
+}
+/** Server-side JSAPI eligibility only: never serialize or log the OpenID.
+ * OpenIDs are AppID-scoped; a desktop Website OpenID cannot substitute.
+ */
+export function officialWechatOpenIdForSession(token:string|undefined|null):string|null{
+  return verifiedPrivateParentFromSession(token)?.wechatOfficialOpenId??null;
 }
 
 /** Admin-only consumers: displayable, already verified WeChat accounts.

@@ -13,7 +13,9 @@ import { billingPool,closeBillingPoolForTests,createBillingOrder,
   settleVerifiedOrder,refundVerifiedOrder,consumeUsage,verifiedGrantsForParent,hasVerifiedItemEntitlement,
   verifiedParentsForStudent,linkVerifiedFamilyMember,closeVerifiedNativeOrder,BillingConflictError,
   
-  BillingQuotaExceededError,recordVerifiedNativeNotification,type VerifiedPaymentReceipt } from "../src/lib/billing-ledger";
+  BillingQuotaExceededError,recordVerifiedNativeNotification,
+  attestVerifiedOrganizationOwner,verifiedVocabularyOrganizationEntitlements,
+  type VerifiedPaymentReceipt } from "../src/lib/billing-ledger";
 
 const testUrl = new URL(process.env.SOCTHINK_BILLING_DATABASE_URL || "postgres://invalid/invalid");
 if (!process.env.SOCTHINK_BILLING_DATABASE_URL ||
@@ -74,6 +76,19 @@ async function run() {
   await db.query(fs.readFileSync("ops/db/010_career_interview_service_sessions.sql","utf8"));
   await db.query(fs.readFileSync("ops/db/011_career_monthly_and_per_use.sql","utf8"));
   await db.query(fs.readFileSync("ops/db/011_career_monthly_and_per_use.sql","utf8"));
+  await db.query("CREATE ROLE socthink_billing NOLOGIN");
+  await db.query(fs.readFileSync("ops/db/015_platform_organization_seats.sql","utf8"));
+  await db.query(fs.readFileSync("ops/db/015_platform_organization_seats.sql","utf8"));
+  const orgRoleAccess=await db.query<{
+    read:boolean;insert:boolean;update:boolean;erase:boolean}>(
+    "SELECT has_table_privilege('socthink_billing','billing_organization_entitlements','SELECT') AS read,"+
+    "has_table_privilege('socthink_billing','billing_organization_entitlements','INSERT') AS insert,"+
+    "has_table_privilege('socthink_billing','billing_organization_entitlements','UPDATE') AS update,"+
+    "has_table_privilege('socthink_billing','billing_organization_entitlements','DELETE') AS erase");
+  assert.equal(orgRoleAccess.rows[0].read,true);
+  assert.equal(orgRoleAccess.rows[0].insert,true);
+  assert.equal(orgRoleAccess.rows[0].update,true);
+  assert.equal(orgRoleAccess.rows[0].erase,false);
   const consent={policyVersion:DIGITAL_SALES_POLICY_VERSION,acceptedAt:new Date()};
   // Native real orders are rejected without customer-initiated confirmation.
   await assert.rejects(()=>createBillingOrder("par_noconsent","plus_month","wechat_native"),
@@ -243,6 +258,19 @@ async function run() {
   assert.equal((await settleVerifiedOrder(verifiedReportReceipt)).created,true);
   assert.equal(await hasVerifiedItemEntitlement(owner.id,"report",reportInstrumentId),true);
   assert.equal(await hasVerifiedItemEntitlement(stranger.id,"report",reportInstrumentId),false);
+  const {GET:getUnifiedEntitlements}=await import("../src/app/api/platform/billing/me/route");
+  const billingSession=(id:string)=>getUnifiedEntitlements(new NextRequest(
+    "https://socthink.cn/api/platform/billing/me",
+    {headers:{cookie:parentAuth.PARENT_SESSION_COOKIE+"="+parentAuth.createParentSessionToken(id)}}));
+  const settledOwn=await billingSession(owner.id);
+  assert.equal(settledOwn.status,200);
+  const settledBody=await settledOwn.json() as {entitlements:{
+    platform:{items:Array<{kind:string;id:string}>};vocabulary:{state:string}}};
+  assert(settledBody.entitlements.platform.items.some(x=>x.kind==="report"&&x.id===reportInstrumentId));
+  assert.equal(settledBody.entitlements.vocabulary.state,"not-onboarded");
+  const settledOther=await (await billingSession(stranger.id)).json() as {
+    entitlements:{platform:{items:Array<{kind:string;id:string}>}}};
+  assert(!settledOther.entitlements.platform.items.some(x=>x.id===reportInstrumentId));
   const premiumResponse=await loadPremiumReport(premiumRequest(reportCookie));
   assert.equal(premiumResponse.status,200);
   const fullReport=await premiumResponse.json() as {report:{dimensions:unknown[];kind:string;version:string}};
@@ -257,8 +285,83 @@ async function run() {
     BillingConflictError);
   assert.equal((await refundVerifiedOrder({...verifiedReportReceipt,eventId:"report-refund-01"})).revoked,true);
   assert.equal(await hasVerifiedItemEntitlement(owner.id,"report",reportInstrumentId),false);
+  const refundedBody=await (await billingSession(owner.id)).json() as {
+    entitlements:{platform:{items:Array<{kind:string;id:string}>}}};
+  assert(!refundedBody.entitlements.platform.items.some(x=>x.id===reportInstrumentId),
+    "refund must revoke the same centralized module entitlement without manual sync");
   assert.equal((await loadPremiumReport(premiumRequest(reportCookie))).status,403,
     "refund revokes report content access");
+
+  // Central Vocabulary organization seats: no new merchant or forged org buyer.
+  // Nothing here can call WeChat: receipts are synthetic, DB isolated *_ci.
+  const orgId=crypto.randomUUID(),otherOrgId=crypto.randomUUID();
+  const sourceSku="vocab_seats_demo_30d";
+  await db.query(
+    "INSERT INTO billing_products(id,tier,period,product_kind,content_kind,content_id,"+
+    "title_zh,amount_minor,currency,enabled,rights_approved,delivery_verified,access_restricted,"+
+    "organization_seats,organization_days) VALUES($1,NULL,NULL,'organization','vocab_seats',"+
+    "'vocabulary','词语星球机构三十席隔离测试',3900,'CNY',true,true,true,true,30,30)",[sourceSku]);
+  assert.equal((await verifiedVocabularyOrganizationEntitlements(orgId)).length,0);
+  await assert.rejects(()=>createBillingOrder(owner.id,sourceSku,"wechat_native",consent,
+    {organizationId:orgId}),BillingConflictError,"organization checkout disabled by default");
+  const previousFlag=process.env.SOCTHINK_ORG_SEATS_CHECKOUT_ENABLED;
+  process.env.SOCTHINK_ORG_SEATS_CHECKOUT_ENABLED="1";
+  try {
+    await assert.rejects(()=>createBillingOrder(owner.id,sourceSku,"wechat_native",consent,
+      {organizationId:orgId}),BillingConflictError,"must attest current org owner");
+    await assert.rejects(()=>attestVerifiedOrganizationOwner({
+      buyerParentId:owner.id,organizationId:"not-a-uuid",verifiedSubject:"soc_"+"a".repeat(40),
+    }),BillingConflictError);
+    await attestVerifiedOrganizationOwner({buyerParentId:owner.id,organizationId:orgId,
+      verifiedSubject:"soc_"+"a".repeat(40)});
+    await assert.rejects(()=>attestVerifiedOrganizationOwner({
+      buyerParentId:stranger.id,organizationId:orgId,verifiedSubject:"soc_"+"b".repeat(40),
+    }),BillingConflictError,"another buyer cannot seize a live binding");
+    await assert.rejects(()=>createBillingOrder(stranger.id,sourceSku,"wechat_native",consent,
+      {organizationId:orgId}),BillingConflictError);
+    await assert.rejects(()=>createBillingOrder(owner.id,sourceSku,"wechat_native",consent,
+      {organizationId:otherOrgId}),BillingConflictError);
+    const orgOrder=await createBillingOrder(owner.id,sourceSku,"wechat_native",consent,
+      {organizationId:orgId});
+    await assert.rejects(()=>createBillingOrder(owner.id,sourceSku,"wechat_native",consent,
+      {organizationId:orgId}),BillingConflictError,"duplicate pending is rejected");
+    const snapshot=await db.query<{organization_seats_snapshot:number;organization_days_snapshot:number;
+      organization_id:string}>(
+      "SELECT organization_seats_snapshot,organization_days_snapshot,organization_id FROM billing_orders WHERE id=$1",
+      [orgOrder.id]);
+    assert.equal(snapshot.rows[0].organization_seats_snapshot,30);
+    assert.equal(snapshot.rows[0].organization_days_snapshot,30);
+    assert.equal(snapshot.rows[0].organization_id,orgId);
+    await db.query("UPDATE billing_products SET organization_seats=100,organization_days=90 WHERE id=$1",[sourceSku]);
+    const orgReceipt={...receipt(orgOrder.id,"org-paid-01","org-tx-01",3900),
+      provider:"wechat_native" as const};
+    await assert.rejects(()=>settleVerifiedOrder({...orgReceipt,amountMinor:1}),
+      BillingConflictError,"price cannot be supplied by client");
+    assert.equal((await verifiedVocabularyOrganizationEntitlements(orgId)).length,0);
+    assert.equal((await settleVerifiedOrder(orgReceipt)).created,true);
+    assert.equal((await settleVerifiedOrder(orgReceipt)).created,false,"duplicate callback must not add seats");
+    const activeOrg=await verifiedVocabularyOrganizationEntitlements(orgId);
+    await assert.rejects(()=>createBillingOrder(owner.id,sourceSku,"wechat_native",consent,
+      {organizationId:orgId}),BillingConflictError,"no duplicate active contract or overlapping renewal");
+    assert.equal(activeOrg.length,1);
+    assert.equal(activeOrg[0].seatLimit,30,"paid order snapshot controls purchased seats");
+    assert.equal((await verifiedVocabularyOrganizationEntitlements(otherOrgId)).length,0);
+    assert.equal((await refundVerifiedOrder({...orgReceipt,eventId:"org-refund-01"})).revoked,true);
+    assert.equal((await verifiedVocabularyOrganizationEntitlements(orgId)).length,0,
+      "verified refund must revoke org rights within the same payment ledger");
+    const afterRefund=await createBillingOrder(owner.id,sourceSku,"wechat_native",consent,
+      {organizationId:orgId});
+    assert.notEqual(afterRefund.id,orgOrder.id,"refunded organization may purchase anew");
+    assert.equal((await verifiedVocabularyOrganizationEntitlements(orgId)).length,0,
+      "pending replacement order cannot grant any seats");
+    assert.equal((await db.query(
+      "SELECT count(*)::int AS n FROM billing_organization_entitlements WHERE source_order_id=$1 AND revoked_at IS NOT NULL",
+      [orgOrder.id])).rows[0].n,1);
+    console.log("BILLING_ORGANIZATION_SEATS=PASS owner_bind, pending_idempotency, immutable_snapshot, verified_settle, refund_revoke");
+  } finally {
+    if(previousFlag===undefined)delete process.env.SOCTHINK_ORG_SEATS_CHECKOUT_ENABLED;
+    else process.env.SOCTHINK_ORG_SEATS_CHECKOUT_ENABLED=previousFlag;
+  }
 
   // A downloadable asset is NOT sellable merely because its SKU exists.
   // Exact private bytes, independent asset approval and settled order are required.

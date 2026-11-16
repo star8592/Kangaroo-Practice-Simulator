@@ -45,6 +45,12 @@ jobs:
       - name: WeChat payment readiness uses real runtime flags
         run: python3 scripts/test_payment_readiness.py
 
+      - name: Unified commerce registry and WeChat ownership contract
+        run: npx tsx scripts/test_platform_billing_contract.mts
+
+      - name: JSAPI same-phone protocol and RSA signing (offline)
+        run: npx tsx scripts/test_wechat_jsapi_pure.mts
+
       - name: Native classroom Web contracts
         run: npm run test:classroom-embedded
 
