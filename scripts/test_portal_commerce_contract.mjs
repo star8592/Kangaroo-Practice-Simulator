@@ -19,7 +19,7 @@ const loginClient=read("src/components/UnifiedLoginClient.tsx");
 for(const slug of ["/assessments","/resources","/career","/skill-labs","/assessment-center","/shop"]){
   assert.ok(architecture.includes(`href:"${slug}"`),`NAV_MISSING_${slug}`);
 }
-assert.ok(header.includes("PRIMARY_BUSINESS_NAV as TASK_LINKS"),
+assert.ok(header.includes("SITE_PORTAL_NAV"),
   "SINGLE_PRIMARY_NAVIGATION_SOURCE");
 assert.ok(!architecture.includes('href:"/exam-planner"'),"EXAM_PLANNER_IS_SECONDARY");
 for(const route of ["/arithmetic","/competitions","/review"]){
@@ -34,7 +34,7 @@ for(const route of ["/arithmetic","/competitions","/review","/exam-planner"]){
 assert.ok(accountNav.includes('href="/login?next=%2Faccount"')&&accountNav.includes('"/account"'),
   "ACCOUNT_ENTRY_MUST_HAVE_ONE_SESSION_NAV");
 assert.doesNotMatch(header,/EXAM_DIRECTORY\.map\(/,"Detailed exam taxonomy belongs in the assessments page, not the global navigation");
-assert.match(header,/<Link href="\/membership" onClick=\{dismiss\}>/,"Account entitlements remain accessible from mobile global navigation");
+assert.match(accountNav,/href="\/membership"/,"Account entitlements remain accessible from mobile global navigation");
 assert.ok(!header.includes('href:"/events"'),"Math-specific events must not be top-level tasks");
 assert.match(footer,/href:"\/membership"/);
 for(const slug of ["/assessments","/resources","/arithmetic","/account"]){
