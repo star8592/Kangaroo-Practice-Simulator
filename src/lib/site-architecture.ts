@@ -7,6 +7,23 @@
 /** Three user goals, not a list of internal businesses.
  * Legacy URLs remain classified for breadcrumbs; this is NOT a second nav.
  */
+/** Sole top-level educational portal navigation for ALL SOC THINK screens.
+ * Customer identity is a separate dimension: study and teaching use different
+ * workspaces but share these published subject/product catalogs.
+ */
+export const SITE_PORTAL_NAV = [
+  {id:"math",href:"/math",zh:"数学",en:"Math"},
+  {id:"english",href:"/english",zh:"英语",en:"English"},
+  {id:"subjects",href:"/subjects",zh:"校内学科",en:"School subjects"},
+  {id:"career",href:"/learn",zh:"职业课程",en:"Career learning"},
+  {id:"assessments",href:"/assessment-center",zh:"能力测评",en:"Assessments"},
+  {id:"exams",href:"/assessments",zh:"考试升学",en:"Exams"},
+  {id:"teacher",href:"/teach",zh:"教师与机构",en:"Teach & schools"},
+] as const;
+
+/** Career learning routes remain a SUBSYSTEM navigation, not a second
+ * site-wide header; preserve their stable endpoints.
+ */
 export const PRIMARY_BUSINESS_NAV = [
   {id:"career",href:"/career",zh:"岗位方向",en:"Roles"},
   {id:"skills",href:"/learn",zh:"学习与实训",en:"Learn"},
