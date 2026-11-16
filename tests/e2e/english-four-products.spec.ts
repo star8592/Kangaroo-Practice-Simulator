@@ -3,25 +3,23 @@ import {expect,test} from "@playwright/test";
 const STUDIOS=[
  {slug:"pronunciation",title:"发音训练",target:"/english/pronunciation/app/practice-library"},
  {slug:"vocabulary",title:"单词学习",target:"/english/vocabulary/app/"},
- {slug:"reading",title:"英语阅读",target:"/english/reading/app/"},
- {slug:"aelos",title:"高阶阅读",target:"/english/aelos/app/library"},
+ {slug:"reading",title:"历史阅读记录",target:"/english/reading/app/progress"},
+ {slug:"aelos",title:"英语阅读",target:"/english/aelos/app/library"},
 ] as const;
 
-test("homepage English hub exposes six direct entries in four independent apps",async({page})=>{
+test("homepage English hub exposes four useful direct entries without duplicate reading or fake exams",async({page})=>{
  await page.goto("/");
  await expect(page.getByRole("navigation",{name:"学习与考试分类"}).locator('a[href="/english"]')).toBeVisible();
  await page.getByRole("navigation",{name:"学习与考试分类"}).locator('a[href="/english"]').click();
  await expect(page).toHaveURL(/\/english$/);
  await expect(page.getByRole("heading",{level:1,name:"英语学习"})).toBeVisible();
  const nav=page.getByRole("navigation",{name:"英语学习直达入口"});
- await expect(nav.locator("article")).toHaveCount(6);
+ await expect(nav.locator("article")).toHaveCount(4);
  const direct=[
   {title:"发音训练",target:"/english/pronunciation/app/practice-library"},
   {title:"单词学习",target:"/english/vocabulary/app/"},
   {title:"少儿英语绘本",target:"/english/reading/kids/"},
-  {title:"英语阅读",target:"/english/reading/app/"},
-  {title:"英语考试中心",target:"/english/reading/app/exams"},
-  {title:"高阶阅读",target:"/english/aelos/app/library"},
+  {title:"英语阅读",target:"/english/aelos/app/library"},
  ];
  for(const entry of direct){
   const card=nav.locator("article.direct-entry-card").filter({has:page.getByRole("heading",{name:entry.title,exact:true})});
@@ -29,6 +27,8 @@ test("homepage English hub exposes six direct entries in four independent apps",
   const primary=card.locator("a.direct-entry-hit");
   await expect(primary).toHaveAttribute("href",new RegExp("^"+entry.target.replace(/\/$/,"")+"\\/?$"));
  }
+ await expect(nav.locator('a[href="/english/reading/app/"]')).toHaveCount(0);
+ await expect(nav.locator('a[href="/english/reading/app/exams"]')).toHaveCount(0);
  await expect(nav).not.toContainText("进入目录");
  await expect(page.locator("main")).not.toContainText(/立即购买|付款成功|会员已开通/);
  expect(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth)).toBeLessThanOrEqual(2);
@@ -49,7 +49,7 @@ test("English second-level title and icon themselves open the learning app",asyn
  for(const selected of [
   {title:"发音训练",target:"/english/pronunciation/app/practice-library",click:"heading"},
   {title:"少儿英语绘本",target:"/english/reading/kids/",click:"icon"},
-  {title:"英语考试中心",target:"/english/reading/app/exams",click:"heading"},
+  {title:"英语阅读",target:"/english/aelos/app/library",click:"heading"},
  ]){
   await page.goto("/english");
   const card=page.locator("article.direct-entry-card").filter({has:page.getByRole("heading",{name:selected.title,exact:true})});

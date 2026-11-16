@@ -19,18 +19,24 @@ export default function EnglishStudioPage({studio}:{studio:EnglishProductId}){
     <p>{item.summary}</p>
    </div>
   </header>
-  {studio==="reading" ? <section className={styles.readingOptions} aria-label="按阅读阶段选择">
+  {studio==="reading" ? <section className={styles.readingOptions} aria-label="阅读与历史记录">
    <article className={styles.readingCard}>
     <span className={styles.kidsKicker}>少儿英语绘本 · 1—6 年级</span>
     <h2>小小阅读星球</h2>
-    <p>72 篇原创英语故事，点按会动、会说话；听自然配音，跟着故事做理解练习。暂不保存正式学习成绩。</p>
+    <p>72 篇原创英语故事，点按互动、故事听读和理解练习。独立免费入口，暂不保存正式学习成绩。</p>
     <a className={styles.primaryAction} href="/english/reading/kids/">进入小小阅读星球</a>
    </article>
    <article className={styles.readingCard}>
-    <span className={styles.kidsKicker}>阅读训练 · EnglishLeap</span>
-    <h2>文章阅读与理解</h2>
-    <p>从文章入手学习词汇、段落和理解分析，阅读过程中再展开进阶工具。独立应用已开放体验，部分书库及口音功能仍在完善。</p>
-    <a className={styles.primaryAction} href="/english/reading/app/">进入 EnglishLeap</a>
+    <span className={styles.kidsKicker}>正式阅读主线 · AelOS</span>
+    <h2>文章精读与阅读成长</h2>
+    <p>AelOS 以文章、书库和分级阅读为主线，结合阅读理解、词汇和表达训练。旧 EnglishLeap 不再作为第二套阅读软件继续开发。</p>
+    <a className={styles.primaryAction} href="/english/aelos/app/library">进入 AelOS 阅读</a>
+   </article>
+   <article className={styles.readingCard}>
+    <span className={styles.kidsKicker}>历史兼容 · EnglishLeap</span>
+    <h2>旧学习记录与备份</h2>
+    <p>旧笔记、阅读进度和写作草稿可能只存在于此前使用的浏览器。先从原设备导出备份，不要在没有迁移验证前清除网站数据。</p>
+    <a className={styles.primaryAction} href="/english/reading/app/progress">导出历史学习记录</a>
    </article>
   </section> : <section className={styles.launch} aria-label="学习入口">
    <div className={styles.launchText}>
@@ -46,6 +52,6 @@ export default function EnglishStudioPage({studio}:{studio:EnglishProductId}){
    <p>学习应用已经部署在 SOC THINK 主站自己的目录下。各产品的学习数据仍独立管理；统一账号及跨产品购买权益尚未完成端到端验收，未经核验的付费功能不会提前收费。</p>
    <Link href={`/login?next=${encodeURIComponent(item.href)}`}>进入 SOC THINK 账号</Link>
   </section>
-  <div className={styles.back}><Link href="/english">查看全部四个英语项目</Link></div>
+  <div className={styles.back}><Link href="/english">返回英语学习入口</Link></div>
  </div>
 }
