@@ -92,8 +92,9 @@
 限制新邀请数，防止并发创建超额席位；中央账本不可用则拒绝
 新增付费席位，原有服务与学习数据不受影响。未启用时原行为不变。
 
-仍待正式验收：生产 PG18 执行 migration 015、受信服务器密钥
-配置、机构真实 owner 微信 E3、原有试用/免费政策与付费政策对齐、
+R181 编写时尚待执行的生产 PG18 migration 015 已在 R183 只读核查中
+确认为安装完成。仍待验收：受信服务器密钥配置、机构真实 owner
+微信 E3、原有试用/免费政策与付费政策对齐、
 学生已有学习权限在退费后的处理规则，以及新机构商品价格授权。
 
 ## JSAPI 同一手机准备（2026-11-16）
@@ -154,3 +155,29 @@ V1 不允许尚有效的付费机构合同叠加新购，以免先续期、后�
 和生产库分别检查两张新表的 SELECT、INSERT、UPDATE 全部授权，
 并证实机构权益表不具有 DELETE。隔离 PostgreSQL18 测试新增
 实际角色权限断言，付款/退款/幂等的账务回归全部 PASS。
+
+## R183 · 最新生产只读回执与备份证明防陈旧（2026-11-16）
+
+- 已通过 Z890 经授权 SSH **只读**核查生产主机 socthink.cn：PostgreSQL 18.7，
+  `socthink_billing_prod` 的 015 机构席位 schema **已实际安装**；
+  两张机构表与 `billing_one_pending_org` 唯一索引存在。
+- 受限 `socthink_billing` 角色对两张新表的 SELECT/INSERT/UPDATE
+  都为 true，DELETE 为 false；旧订单 2 条、商品 19 条；
+  新机构订单 0、机构商品 0、机构权益 0。
+- 生产最新备份 service `InvocationID=58b18fa2a9da4e14b1f20082cc62768e`
+  对应当次日志 `BILLING_BACKUP=PASS ISOLATED_RESTORE=PASS RESTORED_TABLES=15`，
+  `BILLING_ASSET_BACKUP=PASS ISOLATED_RESTORE=PASS`。
+  生产 `--plan` 回执：`PREFLIGHT=PASS`，`SCHEMA=ALREADY_INSTALLED`；
+  本轮**没有执行 --apply**。
+- 安装器修复「最近 35 行可能误认旧成功日志」：`--apply` 今后必须
+  检测新的 systemd `InvocationID`，并且两类备份/独立恢复证据都
+  来自这一**同次调用**。离线 5 项反例/成功测试在 Z890 全部 PASS，
+  已纳入主站 GitHub 质量 CI。
+- 词语星球真实有效学生席位按 `classroom_learners` 在读的
+  `COUNT(DISTINCT learner_id)` 计算：跨班只占一席、无旧邀请记录
+  的已入班学生照样计入、离班后释放，批量和单人加入共享
+  advisory transaction lock；Z890 完整 15 步本地 CI、PG18
+  课堂 HTTPS 流程全部 PASS。另加 PG18 专项 SQL 回归。
+- **收费边界仍不变**：机构 SKU/机构真实订单/付款/退款 E3 尚未完成，
+  JSAPI 实际付款与相关收费/席位开关继续关闭，不得将迁移已安装
+  表述为产品已经可售。真实微信同机 owner 授权也尚未验收。
