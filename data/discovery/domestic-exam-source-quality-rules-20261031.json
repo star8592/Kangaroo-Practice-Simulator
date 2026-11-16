@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "checkedAt": "2026-10-31",
+  "sources": [
+    {
+      "domain": "professional",
+      "issuer": "中华人民共和国司法部",
+      "examYear": 2026,
+      "officialUrl": "https://www.moj.gov.cn/jgsz/jgszzsdw/zsdwgjsfkszx/gjsfkszxdt/202606/t20260609_536221.html",
+      "officialStatement": "2026年国家统一法律职业资格考试不公布试题及参考答案",
+      "originalExamPapersOfficiallyPublished": false,
+      "commercialResaleAllowed": false,
+      "indexingRule": "Third-party reconstructions and coaching summaries must not be labelled official originals."
+    },
+    {
+      "domain": "school",
+      "issuer": "武汉教育资源网（第三方）",
+      "examYear": 2026,
+      "publicIndexUrl": "https://www.wh111.com/xiaoxue/liunianji/index_2.html",
+      "exemplarPage": "https://www.wh111.com/xiaoxue/liunianji/2026-02-10/84617.html",
+      "downloadGate": "explicit_points_required_for_example_page",
+      "pointsForPaper": 3,
+      "pointsForAnswers": 2,
+      "originalExamPapersOfficiallyPublished": null,
+      "commercialResaleAllowed": false,
+      "indexingRule": "Keep title/page URL only until legally accessible actual original and publisher rights are verified."
+    }
+  ],
+  "crossReferences": [
+    {
+      "primaryLeadId": "china-xhs-wuhan-donghu-g6-2025-26-001",
+      "candidatePageUrl": "https://www.wh111.com/xiaoxue/liunianji/2026-02-10/84617.html",
+      "assertSameExam": false,
+      "matchingFields": [
+        "地区",
+        "学年",
+        "年级",
+        "科目"
+      ],
+      "validationNeeded": "Page-by-page answer/question and provenance comparison against properly obtained complete original."
+    }
+  ]
+}

@@ -1,0 +1,99 @@
+{
+  "run": "2026-10-31-hour11",
+  "scope": "domestic-only",
+  "status": "source_page_leads_only",
+  "note": "仅公开页面搜索线索，未取回附件，未作页数/答案/版权校验；按URL与既有索引再去重后才升级新增统计",
+  "records": [
+    {
+      "lane": "school",
+      "exam_year": "2025",
+      "source_url": "https://www.tjrac.edu.cn/sxjxb/info/1340/3002.htm",
+      "description": "高校数学教学部公开2025考研数学一真题答案附件，属升学考试非中小学，需核附件",
+      "source_kind": "official_or_institution_page",
+      "original_bytes": 0,
+      "original_downloaded": false,
+      "ocr_status": "not_started",
+      "page_answer_status": "not_checked",
+      "rights_status": "unknown",
+      "sale_ready": false
+    },
+    {
+      "lane": "math-competition",
+      "exam_year": "2025",
+      "source_url": "https://math.mnnu.edu.cn/info/1091/23361.htm",
+      "description": "闽南师大2025数学建模竞赛试题ZIP官方发布，待核附件",
+      "source_kind": "official_or_institution_page",
+      "original_bytes": 0,
+      "original_downloaded": false,
+      "ocr_status": "not_started",
+      "page_answer_status": "not_checked",
+      "rights_status": "unknown",
+      "sale_ready": false
+    },
+    {
+      "lane": "language",
+      "exam_year": "2026",
+      "source_url": "https://www.neea.edu.cn/html1/report/2603/2-1.htm",
+      "description": "教育考试院2026上半年CET考试时间规则，不是真题",
+      "source_kind": "official_or_institution_page",
+      "original_bytes": 0,
+      "original_downloaded": false,
+      "ocr_status": "not_started",
+      "page_answer_status": "not_checked",
+      "rights_status": "unknown",
+      "sale_ready": false
+    },
+    {
+      "lane": "university",
+      "exam_year": "2024",
+      "source_url": "https://sist.shanghaitech.edu.cn/2025/0930/c7340a1115595/page.htm",
+      "description": "上海科技大学信息学院2024自命题电路原理/信号与系统PDF附件，待核原件",
+      "source_kind": "official_or_institution_page",
+      "original_bytes": 0,
+      "original_downloaded": false,
+      "ocr_status": "not_started",
+      "page_answer_status": "not_checked",
+      "rights_status": "unknown",
+      "sale_ready": false
+    },
+    {
+      "lane": "career",
+      "exam_year": "2025",
+      "source_url": "https://jtyst.fj.gov.cn/zwgk/tzgg/202510/t20251010_7019336.htm",
+      "description": "福建交通运输厅2025职业技能竞赛900题两类理论题库及技术文件，待核附件",
+      "source_kind": "official_or_institution_page",
+      "original_bytes": 0,
+      "original_downloaded": false,
+      "ocr_status": "not_started",
+      "page_answer_status": "not_checked",
+      "rights_status": "unknown",
+      "sale_ready": false
+    },
+    {
+      "lane": "professional",
+      "exam_year": "2026",
+      "source_url": "https://www.taixing.gov.cn/xwzx/tzgg/art/2026/art_feb87d2f864144d3a71d583aa7e7c97d.html",
+      "description": "江苏2026密码行业职业技能竞赛题库PDF官方通知，待核附件",
+      "source_kind": "official_or_institution_page",
+      "original_bytes": 0,
+      "original_downloaded": false,
+      "ocr_status": "not_started",
+      "page_answer_status": "not_checked",
+      "rights_status": "unknown",
+      "sale_ready": false
+    },
+    {
+      "lane": "interest",
+      "exam_year": "2025",
+      "source_url": "https://www.jsmm.gov.cn/xz/55530.jhtml",
+      "description": "江苏密码管理局2025职业技能竞赛题库PDF，技能能力测试用途，待核附件",
+      "source_kind": "official_or_institution_page",
+      "original_bytes": 0,
+      "original_downloaded": false,
+      "ocr_status": "not_started",
+      "page_answer_status": "not_checked",
+      "rights_status": "unknown",
+      "sale_ready": false
+    }
+  ]
+}

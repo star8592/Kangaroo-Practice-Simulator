@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "topic": "Chinese primary/middle/high school exams: midterm, final, district/city/province unified, zhongkao, gaokao",
+  "verificationMethod": "2026-11-01 public page/article inspection; source leads only; no examination document downloaded",
+  "entrances": [
+    {"title":"武汉教育云卷库","url":"https://res.wuhaneduyun.cn/examResListPage.html?periodId=cz&subjectId=jcsub01","sourceType":"education_bureau_resource_portal","examType":"all","description":"学段与学科、期中期末、月考及中考筛选入口，公开可见筛选显示0文档","papersDownloaded":0,"rightsStatus":"not_checked"},
+    {"title":"湖北省中考统一命题政策","url":"https://jyt.hubei.gov.cn/norms/202312/t20231222_5013119.shtml","sourceType":"official_policy_not_exam","examType":"zhongkao","description":"2026英语听说机考、物理化学/道法历史/生物地理合卷规则，不是试卷","papersDownloaded":0,"rightsStatus":"not_applicable_to_paper"},
+    {"title":"2026湖北中考多科来源目录","url":"https://www.hbjyzy.com/jiuxia/","sourceType":"third_party_education_resource","examType":"zhongkao","description":"包含2026语文数学英语理化生史地道法各科条目及答案声称","papersDownloaded":0,"rightsStatus":"unknown"},
+    {"title":"2026湖北中考数学条目","url":"https://www.hbjyzy.com/jiuxia/zkzt/2026-06-30/71241.html","sourceType":"third_party_education_resource","examType":"zhongkao","description":"网页宣称1.51MB PDF含标答、0点，尚未取得PDF实际字节","papersDownloaded":0,"rightsStatus":"unknown"},
+    {"title":"2026湖北中考语文条目","url":"https://www.hbjyzy.com/jiuxia/zkzt/2026-06-24/71234.html","sourceType":"third_party_education_resource","examType":"zhongkao","description":"网页宣称2.28MB PDF含标答、0点，尚未取得PDF实际字节","papersDownloaded":0,"rightsStatus":"unknown"},
+    {"title":"2026武汉高三四调九科","url":"https://app.gaokaozhitongche.com/newsexam/pc/Ew5L5nZM","sourceType":"third_party_exam_media","examType":"city_mock","description":"2026-04-27考试，媒体九学科试题与参考答案网页索引","papersDownloaded":0,"rightsStatus":"unknown"},
+    {"title":"2025-2026武汉高一下期中九科","url":"https://newtest.zqy.com/taoti/2120366.html","sourceType":"licensed_education_provider","examType":"midterm","description":"2026年4月考试，页面声称独家获校方授权，不得作为可复制原卷归档","papersDownloaded":0,"rightsStatus":"restricted"},
+    {"title":"2026武汉高一秋季期中动态","url":"https://jx.panqjy.cn/pack-4405.html","sourceType":"third_party_exam_marketplace","examType":"midterm","description":"网页明确说明2026期中资料征集，2025-26旧卷不能算本学期新卷","papersDownloaded":0,"rightsStatus":"unknown"}
+  ],
+  "sourceCount": 8,
+  "newExamFilesDownloaded": 0,
+  "newVerifiedOriginalFiles": 0
+}

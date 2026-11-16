@@ -1,0 +1,396 @@
+{
+  "batchId": "2026-10-31-domestic-sevenlines-hour2",
+  "createdAt": "2026-10-31T07:25:43+00:00",
+  "priorChinaBatchCount": 318,
+  "priorBatchReused": true,
+  "sourceRows": [
+    {
+      "category": "school",
+      "year": 2026,
+      "sourceName": "教育部2026高考命题评析",
+      "sourcePage": "https://www.moe.gov.cn/jyb_xwfb/xw_zt/moe_357/2026/2026_zt08/mtbd/202606/t20260610_1440059.html",
+      "kind": "official_analysis",
+      "verifiedAt": "2026-10-31T07:25:20+00:00",
+      "sourceStatus": "official_page_accessible",
+      "originals": [],
+      "rights": "not_verified",
+      "saleAllowed": false,
+      "ocrStatus": "not_attempted",
+      "pageSha256": "8f8147850f8febb549267ed9faf8843d6e8529201855283917fb6178dab61154",
+      "pageBytes": 22065,
+      "title": "铸魂育人 引领方向 科学选拔 - 中华人民共和国教育部政府门户网站",
+      "fileCandidates": []
+    },
+    {
+      "category": "math-competition",
+      "year": null,
+      "sourceName": "中国数学会",
+      "sourcePage": "https://www.cms.org.cn/",
+      "kind": "official_index",
+      "verifiedAt": "2026-10-31T07:25:20+00:00",
+      "sourceStatus": "official_page_accessible",
+      "originals": [],
+      "rights": "not_verified",
+      "saleAllowed": false,
+      "ocrStatus": "not_attempted",
+      "pageSha256": "2b9e75993f9ea2d13414705507b67be005c17bb5441d2fd571af8e9548cc6c30",
+      "pageBytes": 70307,
+      "title": "中国数学会",
+      "fileCandidates": []
+    },
+    {
+      "category": "language",
+      "year": 2026,
+      "sourceName": "中国教育考试网2026上半年CET",
+      "sourcePage": "https://cet.neea.edu.cn/html1/report/2603/2-1.htm",
+      "kind": "official_rules",
+      "verifiedAt": "2026-10-31T07:25:20+00:00",
+      "sourceStatus": "official_page_accessible",
+      "originals": [],
+      "rights": "not_verified",
+      "saleAllowed": false,
+      "ocrStatus": "not_attempted",
+      "pageSha256": "5aca4985695dd7503dfe464b01f85fbbbb5c05b261d87277a7fb3aaba97a98a2",
+      "pageBytes": 30123,
+      "title": "2026年上半年全国大学英语四、六级考试报名工作启动 - 中国教育考试网",
+      "fileCandidates": []
+    },
+    {
+      "category": "university",
+      "year": 2026,
+      "sourceName": "中国传媒大学2026研究生自命题大纲",
+      "sourcePage": "https://yz.cuc.edu.cn/2025/0929/c8549a260580/page.htm",
+      "kind": "official_syllabus",
+      "verifiedAt": "2026-10-31T07:25:20+00:00",
+      "sourceStatus": "official_page_accessible",
+      "originals": [
+        {
+          "url": "https://yz.cuc.edu.cn/_upload/article/files/5a/37/99492373440f975222f4c693517b/0a33ec70-750e-4c1b-b9be-3d4cf4afd0b8.pdf",
+          "label": "211翻译硕士（英语）.pdf",
+          "state": "downloaded",
+          "saleAllowed": false,
+          "sha256": "7f72ce5501446414d94da8d4a41dfd5d496db8f889798aefc102dce0c672a030",
+          "bytes": 201984,
+          "mime": "application/pdf",
+          "verifiedAt": "2026-10-31T07:25:29+00:00"
+        },
+        {
+          "url": "https://yz.cuc.edu.cn/_upload/article/files/5a/37/99492373440f975222f4c693517b/646aede3-a6ed-499a-98cb-d8aacb0cf4ac.pdf",
+          "label": "244二外法语.pdf",
+          "state": "downloaded",
+          "saleAllowed": false,
+          "sha256": "3807ac44930a3cb91b5250b6cf16088ccee7f4abd76e38783da6a778a8f8e755",
+          "bytes": 196312,
+          "mime": "application/pdf",
+          "verifiedAt": "2026-10-31T07:25:29+00:00"
+        },
+        {
+          "url": "https://yz.cuc.edu.cn/_upload/article/files/5a/37/99492373440f975222f4c693517b/f4ec25e9-b7f9-4c3b-be6b-0d75d1f88c3d.pdf",
+          "label": "245二外德语.pdf",
+          "state": "downloaded",
+          "saleAllowed": false,
+          "sha256": "4fc073d41314b4e7991258258566322cdae612bc9eb8a04791c3f6d042d99feb",
+          "bytes": 199471,
+          "mime": "application/pdf",
+          "verifiedAt": "2026-10-31T07:25:29+00:00"
+        },
+        {
+          "url": "https://yz.cuc.edu.cn/_upload/article/files/5a/37/99492373440f975222f4c693517b/1e6085c7-c89a-44f8-967b-f3601711b8fb.pdf",
+          "label": "334新闻与传播专业综合能力.pdf",
+          "state": "downloaded",
+          "saleAllowed": false,
+          "sha256": "40780416ae56b36229630c153448f8a72b455a1e0387e3bd1ff8e348067bf06a",
+          "bytes": 102725,
+          "mime": "application/pdf",
+          "verifiedAt": "2026-10-31T07:25:28+00:00"
+        },
+        {
+          "url": "https://yz.cuc.edu.cn/_upload/article/files/5a/37/99492373440f975222f4c693517b/d9e90ccc-5c2b-442c-9950-7f7846fc04f4.pdf",
+          "label": "335出版综合素质与能力.pdf",
+          "state": "downloaded",
+          "saleAllowed": false,
+          "sha256": "fa1af3ee5911895b6d142fc2eccde057a4af5dc9b0961ca0e93e395b2768b296",
+          "bytes": 102079,
+          "mime": "application/pdf",
+          "verifiedAt": "2026-10-31T07:25:31+00:00"
+        },
+        {
+          "url": "https://yz.cuc.edu.cn/_upload/article/files/5a/37/99492373440f975222f4c693517b/8b4c4b23-78a0-4436-8a12-2931c93c00fd.pdf",
+          "label": "354汉语基础.pdf",
+          "state": "downloaded",
+          "saleAllowed": false,
+          "sha256": "5b085338b5ecf68f811d6b841cf1bad393d5b63f9c047038c497ac601bd67ef9",
+          "bytes": 106066,
+          "mime": "application/pdf",
+          "verifiedAt": "2026-10-31T07:25:32+00:00"
+        },
+        {
+          "url": "https://yz.cuc.edu.cn/_upload/article/files/5a/37/99492373440f975222f4c693517b/934ce375-7e0f-48bb-9925-917bcaadd761.pdf",
+          "label": "357翻译基础（英语）.pdf",
+          "state": "downloaded",
+          "saleAllowed": false,
+          "sha256": "7b657a4d8862df730b8bece283787d6c6659ad7fe26f8eb796fcd4cf87e2f856",
+          "bytes": 201926,
+          "mime": "application/pdf",
+          "verifiedAt": "2026-10-31T07:25:33+00:00"
+        },
+        {
+          "url": "https://yz.cuc.edu.cn/_upload/article/files/5a/37/99492373440f975222f4c693517b/4af648a8-097a-4cca-8dbf-f30cf0e4204b.pdf",
+          "label": "434国际商务专业基础.pdf",
+          "state": "downloaded",
+          "saleAllowed": false,
+          "sha256": "11a01fef2eb160afc6ce7ce411fbfc68268187a405c6705134c491ce3cd91d0a",
+          "bytes": 208918,
+          "mime": "application/pdf",
+          "verifiedAt": "2026-10-31T07:25:34+00:00"
+        },
+        {
+          "url": "https://yz.cuc.edu.cn/_upload/article/files/5a/37/99492373440f975222f4c693517b/a0bccabe-cec3-40ff-a34a-d68abd61ba81.pdf",
+          "label": "440新闻与传播专业基础.pdf",
+          "state": "downloaded",
+          "saleAllowed": false,
+          "sha256": "3519bcfd3ef53e3a466f715a3b46d8981c1d7d0a8f61e9b8bc60d6d509d0dd0a",
+          "bytes": 123043,
+          "mime": "application/pdf",
+          "verifiedAt": "2026-10-31T07:25:34+00:00"
+        },
+        {
+          "url": "https://yz.cuc.edu.cn/_upload/article/files/5a/37/99492373440f975222f4c693517b/167ef52f-4887-4208-b7bd-0b225b145938.pdf",
+          "label": "441出版专业基础.pdf",
+          "state": "downloaded",
+          "saleAllowed": false,
+          "sha256": "45bea2dd7d71400068c604cc40f36e702715117905ad8faad99e78abdcc7bf8f",
+          "bytes": 206313,
+          "mime": "application/pdf",
+          "verifiedAt": "2026-10-31T07:25:37+00:00"
+        },
+        {
+          "url": "https://yz.cuc.edu.cn/_upload/article/files/5a/37/99492373440f975222f4c693517b/589ae2a3-0977-4407-a0a8-62c6a42253a9.pdf",
+          "label": "445汉语国际教育基础.pdf",
+          "state": "downloaded",
+          "saleAllowed": false,
+          "sha256": "51231c9c03251d85293823da4211324d24b06276e8fdd9b136178a175e3ad84d",
+          "bytes": 102028,
+          "mime": "application/pdf",
+          "verifiedAt": "2026-10-31T07:25:36+00:00"
+        },
+        {
+          "url": "https://yz.cuc.edu.cn/_upload/article/files/5a/37/99492373440f975222f4c693517b/f6d3ce3f-d93c-4b5a-bf91-ce6d00dc31ce.pdf",
+          "label": "448汉语写作与百科知识.pdf",
+          "state": "downloaded",
+          "saleAllowed": false,
+          "sha256": "3525c5112950d38af55d97685083e432700483ad11d01fe1e6846a5bda723f93",
+          "bytes": 101564,
+          "mime": "application/pdf",
+          "verifiedAt": "2026-10-31T07:25:38+00:00"
+        },
+        {
+          "url": "https://yz.cuc.edu.cn/_upload/article/files/5a/37/99492373440f975222f4c693517b/66d7540b-7a4c-4108-a864-464c2546e5b6.pdf",
+          "label": "783主题写作.pdf",
+          "state": "downloaded",
+          "saleAllowed": false,
+          "sha256": "8e2bea97ca8c02cdcab30eb7a41c952efccba720f9fd730ae6df24d4717b7b72",
+          "bytes": 122930,
+          "mime": "application/pdf",
+          "verifiedAt": "2026-10-31T07:25:37+00:00"
+        },
+        {
+          "url": "https://yz.cuc.edu.cn/_upload/article/files/5a/37/99492373440f975222f4c693517b/dc8d0736-1202-4a71-9720-3630c36defdc.pdf",
+          "label": "785艺术作品评论.pdf",
+          "state": "downloaded",
+          "saleAllowed": false,
+          "sha256": "8113a3799d73870f91ab97f66295dc484f82fce2aea14ebe77fd5c4baa682a25",
+          "bytes": 78986,
+          "mime": "application/pdf",
+          "verifiedAt": "2026-10-31T07:25:38+00:00"
+        },
+        {
+          "url": "https://yz.cuc.edu.cn/_upload/article/files/5a/37/99492373440f975222f4c693517b/6378f690-c581-477b-b405-c20bf3b71b9f.pdf",
+          "label": "790外国语言文化综合能力.pdf",
+          "state": "downloaded",
+          "saleAllowed": false,
+          "sha256": "91b41ea0fffbae6a8f4e60fb62198f86cb70024f6149b5af0d105a939820bb36",
+          "bytes": 129286,
+          "mime": "application/pdf",
+          "verifiedAt": "2026-10-31T07:25:41+00:00"
+        },
+        {
+          "url": "https://yz.cuc.edu.cn/_upload/article/files/5a/37/99492373440f975222f4c693517b/8142caaa-cd42-4fd1-8f37-74e7ef19506f.pdf",
+          "label": "823信号与系统.pdf",
+          "state": "downloaded",
+          "saleAllowed": false,
+          "sha256": "8ee01dfa6e4af8e7313b0a9ea8e400eb8e1a8835cd4557728e3c1f235845ae88",
+          "bytes": 124277,
+          "mime": "application/pdf",
+          "verifiedAt": "2026-10-31T07:25:41+00:00"
+        },
+        {
+          "url": "https://yz.cuc.edu.cn/_upload/article/files/5a/37/99492373440f975222f4c693517b/3abda4a4-ba6c-4fe2-89d9-4af9f27f3f3b.pdf",
+          "label": "883人文社科基础.pdf",
+          "state": "downloaded",
+          "saleAllowed": false,
+          "sha256": "a15de9986783b09b6fb48fd8d0fa70df1630b160bfa1fdb974d68bb2569c4dd7",
+          "bytes": 91621,
+          "mime": "application/pdf",
+          "verifiedAt": "2026-10-31T07:25:40+00:00"
+        },
+        {
+          "url": "https://yz.cuc.edu.cn/_upload/article/files/5a/37/99492373440f975222f4c693517b/6e9e6951-48cb-4e8a-8123-13f40f7455a3.pdf",
+          "label": "884概率论与数理统计.pdf",
+          "state": "downloaded",
+          "saleAllowed": false,
+          "sha256": "218b00ac1d87e438b3aee36274da8a6f681bcb358b54a4a64b8076c62793dd71",
+          "bytes": 124253,
+          "mime": "application/pdf",
+          "verifiedAt": "2026-10-31T07:25:41+00:00"
+        },
+        {
+          "url": "https://yz.cuc.edu.cn/_upload/article/files/5a/37/99492373440f975222f4c693517b/4fd3535b-c3f1-4207-bf66-e2afd0e1d347.pdf",
+          "label": "885人文艺术基础.pdf",
+          "state": "downloaded",
+          "saleAllowed": false,
+          "sha256": "cc497d9f4ce8b3fead7fda7fae3b831c8d87751ff6ecf5c45af7d69f443d59da",
+          "bytes": 91324,
+          "mime": "application/pdf",
+          "verifiedAt": "2026-10-31T07:25:43+00:00"
+        }
+      ],
+      "rights": "not_verified",
+      "saleAllowed": false,
+      "ocrStatus": "not_attempted",
+      "pageSha256": "3bfb7d4f495b0a363aca1d7d8df8a96829a0b3cdfa4b2f05dda68db2078cc545",
+      "pageBytes": 27509,
+      "title": "中国传媒大学2026年攻读硕士学位研究生招生初试自命题科目考试大纲",
+      "fileCandidates": [
+        {
+          "url": "https://yz.cuc.edu.cn/_upload/article/files/5a/37/99492373440f975222f4c693517b/0a33ec70-750e-4c1b-b9be-3d4cf4afd0b8.pdf",
+          "label": "211翻译硕士（英语）.pdf"
+        },
+        {
+          "url": "https://yz.cuc.edu.cn/_upload/article/files/5a/37/99492373440f975222f4c693517b/646aede3-a6ed-499a-98cb-d8aacb0cf4ac.pdf",
+          "label": "244二外法语.pdf"
+        },
+        {
+          "url": "https://yz.cuc.edu.cn/_upload/article/files/5a/37/99492373440f975222f4c693517b/f4ec25e9-b7f9-4c3b-be6b-0d75d1f88c3d.pdf",
+          "label": "245二外德语.pdf"
+        },
+        {
+          "url": "https://yz.cuc.edu.cn/_upload/article/files/5a/37/99492373440f975222f4c693517b/1e6085c7-c89a-44f8-967b-f3601711b8fb.pdf",
+          "label": "334新闻与传播专业综合能力.pdf"
+        },
+        {
+          "url": "https://yz.cuc.edu.cn/_upload/article/files/5a/37/99492373440f975222f4c693517b/d9e90ccc-5c2b-442c-9950-7f7846fc04f4.pdf",
+          "label": "335出版综合素质与能力.pdf"
+        },
+        {
+          "url": "https://yz.cuc.edu.cn/_upload/article/files/5a/37/99492373440f975222f4c693517b/8b4c4b23-78a0-4436-8a12-2931c93c00fd.pdf",
+          "label": "354汉语基础.pdf"
+        },
+        {
+          "url": "https://yz.cuc.edu.cn/_upload/article/files/5a/37/99492373440f975222f4c693517b/934ce375-7e0f-48bb-9925-917bcaadd761.pdf",
+          "label": "357翻译基础（英语）.pdf"
+        },
+        {
+          "url": "https://yz.cuc.edu.cn/_upload/article/files/5a/37/99492373440f975222f4c693517b/4af648a8-097a-4cca-8dbf-f30cf0e4204b.pdf",
+          "label": "434国际商务专业基础.pdf"
+        },
+        {
+          "url": "https://yz.cuc.edu.cn/_upload/article/files/5a/37/99492373440f975222f4c693517b/a0bccabe-cec3-40ff-a34a-d68abd61ba81.pdf",
+          "label": "440新闻与传播专业基础.pdf"
+        },
+        {
+          "url": "https://yz.cuc.edu.cn/_upload/article/files/5a/37/99492373440f975222f4c693517b/167ef52f-4887-4208-b7bd-0b225b145938.pdf",
+          "label": "441出版专业基础.pdf"
+        },
+        {
+          "url": "https://yz.cuc.edu.cn/_upload/article/files/5a/37/99492373440f975222f4c693517b/589ae2a3-0977-4407-a0a8-62c6a42253a9.pdf",
+          "label": "445汉语国际教育基础.pdf"
+        },
+        {
+          "url": "https://yz.cuc.edu.cn/_upload/article/files/5a/37/99492373440f975222f4c693517b/f6d3ce3f-d93c-4b5a-bf91-ce6d00dc31ce.pdf",
+          "label": "448汉语写作与百科知识.pdf"
+        },
+        {
+          "url": "https://yz.cuc.edu.cn/_upload/article/files/5a/37/99492373440f975222f4c693517b/66d7540b-7a4c-4108-a864-464c2546e5b6.pdf",
+          "label": "783主题写作.pdf"
+        },
+        {
+          "url": "https://yz.cuc.edu.cn/_upload/article/files/5a/37/99492373440f975222f4c693517b/dc8d0736-1202-4a71-9720-3630c36defdc.pdf",
+          "label": "785艺术作品评论.pdf"
+        },
+        {
+          "url": "https://yz.cuc.edu.cn/_upload/article/files/5a/37/99492373440f975222f4c693517b/6378f690-c581-477b-b405-c20bf3b71b9f.pdf",
+          "label": "790外国语言文化综合能力.pdf"
+        },
+        {
+          "url": "https://yz.cuc.edu.cn/_upload/article/files/5a/37/99492373440f975222f4c693517b/8142caaa-cd42-4fd1-8f37-74e7ef19506f.pdf",
+          "label": "823信号与系统.pdf"
+        },
+        {
+          "url": "https://yz.cuc.edu.cn/_upload/article/files/5a/37/99492373440f975222f4c693517b/3abda4a4-ba6c-4fe2-89d9-4af9f27f3f3b.pdf",
+          "label": "883人文社科基础.pdf"
+        },
+        {
+          "url": "https://yz.cuc.edu.cn/_upload/article/files/5a/37/99492373440f975222f4c693517b/6e9e6951-48cb-4e8a-8123-13f40f7455a3.pdf",
+          "label": "884概率论与数理统计.pdf"
+        },
+        {
+          "url": "https://yz.cuc.edu.cn/_upload/article/files/5a/37/99492373440f975222f4c693517b/4fd3535b-c3f1-4207-bf66-e2afd0e1d347.pdf",
+          "label": "885人文艺术基础.pdf"
+        }
+      ]
+    },
+    {
+      "category": "career",
+      "year": 2025,
+      "sourceName": "中国就业网职业技能等级评价",
+      "sourcePage": "https://chinajob.mohrss.gov.cn/h5/c/2025-06-20/440248.shtml",
+      "kind": "official_news",
+      "verifiedAt": "2026-10-31T07:25:20+00:00",
+      "sourceStatus": "official_page_accessible",
+      "originals": [],
+      "rights": "not_verified",
+      "saleAllowed": false,
+      "ocrStatus": "not_attempted",
+      "pageSha256": "a0f1f21260fe21eb13ab0eb5235ddb68716f400dc4b1d100a897a7c033da67b7",
+      "pageBytes": 30138,
+      "title": "福建厦门：“四个创新”推动企业技能人才质量提升 - 地方 - 中国就业网",
+      "fileCandidates": []
+    },
+    {
+      "category": "professional",
+      "year": 2025,
+      "sourceName": "司法部2025法考公告",
+      "sourcePage": "https://www.moj.gov.cn/pub/sfbgw/jgsz/jgszzsdw/zsdwgjsfkszx/gjsfkszxdt/202506/t20250609_520682.html",
+      "kind": "official_rules_no_public_exam",
+      "verifiedAt": "2026-10-31T07:25:20+00:00",
+      "sourceStatus": "failed",
+      "originals": [],
+      "rights": "not_verified",
+      "saleAllowed": false,
+      "ocrStatus": "not_attempted",
+      "error": "HTTPError:HTTP Error 302: The HTTP server returned a redirect error that would lead to an infinite loop.\nThe last 30x error message was:\nMoved Temporarily"
+    },
+    {
+      "category": "interest",
+      "year": null,
+      "sourceName": "国家职业技能标准与评价",
+      "sourcePage": "https://www.osta.org.cn/",
+      "kind": "official_index",
+      "verifiedAt": "2026-10-31T07:25:20+00:00",
+      "sourceStatus": "failed",
+      "originals": [],
+      "rights": "not_verified",
+      "saleAllowed": false,
+      "ocrStatus": "not_attempted",
+      "error": "URLError:<urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1081)>"
+    }
+  ],
+  "filesDownloaded": 19,
+  "bytesDownloaded": 2615106,
+  "shaVerified": 19,
+  "ocrCompleted": 0,
+  "rightsConfirmed": 0,
+  "saleableCount": 0,
+  "filesFailed": 0
+}

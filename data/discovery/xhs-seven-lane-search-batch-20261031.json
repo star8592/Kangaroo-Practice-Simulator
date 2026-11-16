@@ -1,0 +1,100 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-10-31",
+  "source": "S22 Ultra native Xiaohongshu public search UI",
+  "scope": "7 low-frequency public keyword searches; screenshot bytes only on private Z890 disk",
+  "queryCount": 7,
+  "entries": [
+    {
+      "lane": "school",
+      "query": "2026武汉六年级元调数学试卷",
+      "observedAtUtc": "2026-10-31T08:43:24+00:00",
+      "privateEvidenceFilename": "01_school_search_1.png",
+      "sha256": "ab7a542c38ac14d0ecb05d103d3370522c379e2f0d1eb459cd74701d95d74fc7",
+      "sizeBytes": 782187,
+      "state": "search_results_evidence_only",
+      "originalPaperDownloaded": false,
+      "ocrStatus": "not_attempted",
+      "commercialSaleAllowed": false,
+      "note": "One public search results screen; specific post URL, authenticity and completeness not independently verified."
+    },
+    {
+      "lane": "math-competition",
+      "query": "2025希望杯六年级数学真题答案",
+      "observedAtUtc": "2026-10-31T08:43:36+00:00",
+      "privateEvidenceFilename": "02_math-competition_search_1.png",
+      "sha256": "d5afd8c210f8f9675f6e9a97aacd3952e39b70ac8c87ec99466f0a16b5ec28ed",
+      "sizeBytes": 1171706,
+      "state": "search_results_evidence_only",
+      "originalPaperDownloaded": false,
+      "ocrStatus": "not_attempted",
+      "commercialSaleAllowed": false,
+      "note": "One public search results screen; specific post URL, authenticity and completeness not independently verified."
+    },
+    {
+      "lane": "language",
+      "query": "2026英语四级真题试卷答案",
+      "observedAtUtc": "2026-10-31T08:43:47+00:00",
+      "privateEvidenceFilename": "03_language_search_1.png",
+      "sha256": "1c94f0d381839f079d72bec3815f90b17b140b097b56a9fdafa4c89204254078",
+      "sizeBytes": 1172765,
+      "state": "search_results_evidence_only",
+      "originalPaperDownloaded": false,
+      "ocrStatus": "not_attempted",
+      "commercialSaleAllowed": false,
+      "note": "One public search results screen; specific post URL, authenticity and completeness not independently verified."
+    },
+    {
+      "lane": "university",
+      "query": "2026考研408真题试卷",
+      "observedAtUtc": "2026-10-31T08:43:59+00:00",
+      "privateEvidenceFilename": "04_university_search_1.png",
+      "sha256": "bb011d9f5e9121d2cbc26b72461cc1398626318a17aabcabd046170de25b22e1",
+      "sizeBytes": 886919,
+      "state": "search_results_evidence_only",
+      "originalPaperDownloaded": false,
+      "ocrStatus": "not_attempted",
+      "commercialSaleAllowed": false,
+      "note": "One public search results screen; specific post URL, authenticity and completeness not independently verified."
+    },
+    {
+      "lane": "career",
+      "query": "2026计算机二级Office真题实操",
+      "observedAtUtc": "2026-10-31T08:44:11+00:00",
+      "privateEvidenceFilename": "05_career_search_1.png",
+      "sha256": "e30fe59f1868c7d1f06912002cf89ab59e8a4370e7cbbdd562a873eb21d1501b",
+      "sizeBytes": 1247780,
+      "state": "search_results_evidence_only",
+      "originalPaperDownloaded": false,
+      "ocrStatus": "not_attempted",
+      "commercialSaleAllowed": false,
+      "note": "One public search results screen; specific post URL, authenticity and completeness not independently verified."
+    },
+    {
+      "lane": "professional",
+      "query": "2026湖北省考行测申论真题",
+      "observedAtUtc": "2026-10-31T08:44:22+00:00",
+      "privateEvidenceFilename": "06_professional_search_1.png",
+      "sha256": "d1f367be65a257f2f8b1cd6ae70e13cfa7299964109f6bdfe7c197dfcf3d36e6",
+      "sizeBytes": 950751,
+      "state": "search_results_evidence_only",
+      "originalPaperDownloaded": false,
+      "ocrStatus": "not_attempted",
+      "commercialSaleAllowed": false,
+      "note": "One public search results screen; specific post URL, authenticity and completeness not independently verified."
+    },
+    {
+      "lane": "interest",
+      "query": "霍兰德职业兴趣测评量表原版",
+      "observedAtUtc": "2026-10-31T08:44:34+00:00",
+      "privateEvidenceFilename": "07_interest_search_1.png",
+      "sha256": "13856407f501258e4b5f4ccdddccf7c901f4b684503a3cbd43fcb5f737dc5e2b",
+      "sizeBytes": 1296255,
+      "state": "search_results_evidence_only",
+      "originalPaperDownloaded": false,
+      "ocrStatus": "not_attempted",
+      "commercialSaleAllowed": false,
+      "note": "One public search results screen; specific post URL, authenticity and completeness not independently verified."
+    }
+  ]
+}

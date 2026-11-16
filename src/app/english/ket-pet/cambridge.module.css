@@ -1,0 +1,61 @@
+.page{min-height:100vh;background:linear-gradient(145deg,#f1f6ff 0%,#fff 42%,#eef8f5 100%);color:#173047;padding:36px 22px 80px;font-family:inherit}
+.container{max-width:1280px;margin:0 auto}
+.hero{padding:32px 8px 38px}
+.kicker{font-size:.74rem;font-weight:800;letter-spacing:.13em;color:#1178a2;text-transform:uppercase;margin:0 0 14px}
+.hero h1{font-size:clamp(2rem,4vw,3.55rem);line-height:1.12;letter-spacing:-.04em;margin:0 0 20px;font-weight:850;color:#10243b}
+.lead{font-size:clamp(1rem,1.5vw,1.22rem);max-width:750px;line-height:1.8;color:#496072;margin:0}
+.infoLine{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+.infoLine span{border:1px solid #cbdfe8;border-radius:999px;padding:7px 14px;font-weight:650;font-size:.86rem;color:#385165;background:#ffffffb0}
+.levelGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px;margin-bottom:28px}
+.levelCard,.practice,.roadmap{background:#fff;border:1px solid #dde8ee;border-radius:24px;box-shadow:0 12px 36px #18334f0b}
+.levelCard{padding:clamp(22px,2.8vw,34px)}
+.levelHeader{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
+.levelCard h2,.practice h2,.roadmap h2{font-size:clamp(1.3rem,2vw,1.7rem);letter-spacing:-.02em;font-weight:800;color:#10243b;margin:0 0 12px}
+.levelBadge{border-radius:14px;background:#e7f5fb;color:#137a9f;padding:11px 13px;font-weight:850;white-space:nowrap}
+.levelDescription{color:#607486;min-height:53px;line-height:1.6;margin:6px 0 18px}
+.stats{display:flex;gap:28px;border-block:1px solid #e4edf2;padding:18px 0;margin-bottom:6px}
+.stats>div{display:flex;flex-direction:column;gap:5px}
+.stats strong{font-size:1.4rem;color:#16344c}
+.stats span{font-size:.82rem;color:#708397}
+.paper{border-bottom:1px solid #ebf0f4;padding:13px 0}
+.paperHead{display:flex;justify-content:space-between;align-items:baseline;gap:10px;font-size:.94rem}
+.paperHead strong{color:#20435b}
+.paperHead>span{color:#73879b;font-size:.83rem;text-align:right}
+.paperParts{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
+.paperParts>span{font-size:.75rem;color:#5d7180;background:#f1f6f9;border-radius:6px;padding:5px 7px}
+.officialLinks{display:flex;flex-wrap:wrap;gap:14px;margin:20px 0 0}
+.officialLinks a{font-size:.87rem;font-weight:700;color:#136993;text-decoration:underline;text-underline-offset:3px}
+.practice{padding:clamp(22px,3vw,38px);margin-top:22px}
+.practiceIntro{display:flex;justify-content:space-between;gap:24px;align-items:flex-end}
+.practiceIntro p:not(.kicker){margin:0;line-height:1.65;max-width:750px;color:#617688}
+.switcher{display:flex;gap:5px;background:#f1f6f9;padding:5px;border-radius:12px;flex-shrink:0}
+.tab,.activeTab{border:0;background:transparent;padding:11px 15px;border-radius:9px;font:inherit;font-size:.87rem;cursor:pointer;color:#557083;font-weight:750}
+.activeTab{background:#fff;color:#12658d;box-shadow:0 2px 8px #0c234614}
+.progressRow{display:flex;justify-content:space-between;gap:10px;color:#5c7180;font-size:.82rem;margin:28px 0 10px}
+.progressTrack{height:6px;border-radius:30px;background:#ecf2f6;overflow:hidden}
+.progressTrack>div{height:100%;background:#1b8dba;transition:width .2s}
+.questions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:24px}
+.question{padding:22px;border:1px solid #e0eaf0;border-radius:16px;background:#fbfdff}
+.qHeader{display:flex;justify-content:space-between;gap:8px;align-items:center;margin-bottom:12px}
+.qIndex{font-size:.8rem;font-weight:900;color:#1b749e}
+.partLabel{font-size:.76rem;color:#758a9c}
+.notice{background:#eff6fa;border-left:3px solid #2b97b8;margin:0 0 16px;padding:13px 15px;border-radius:6px;line-height:1.7;font-size:.91rem;color:#24475e}
+.question h3{font-size:1rem;line-height:1.55;font-weight:750;margin:10px 0 15px;color:#183650}
+.options{display:flex;flex-direction:column;gap:9px}
+.option{width:100%;border:1px solid #dce8ef;border-radius:10px;padding:11px 13px;background:#fff;text-align:left;color:#29475b;line-height:1.4;font:inherit;cursor:pointer;transition:border-color .12s,background .12s}
+.option>span{font-weight:900;margin-right:6px;color:#63859b}
+.option:hover:not(:disabled){border-color:#438faf;background:#f4fafc}
+.selected{border-color:#1881aa!important;background:#eef8fd!important}
+.correct{border-color:#278a6a!important;background:#eaf9f1!important}
+.wrong{border-color:#cb5f59!important;background:#fff0ee!important}
+.explanation{font-size:.87rem;color:#326e55;line-height:1.6;margin:16px 0 0}
+.practiceFooter{margin-top:25px;border-top:1px solid #e3ecf2;padding-top:20px;display:flex;justify-content:space-between;align-items:center;gap:20px}
+.practiceFooter p{font-size:.8rem;color:#758a9c;margin:0}
+.footerActions{display:flex;align-items:center;flex-wrap:wrap;gap:10px}
+.reset,.submit{border:1px solid #c3d5df;padding:11px 16px;border-radius:11px;font:inherit;font-weight:750;cursor:pointer;background:#fff;color:#2b536c}
+.submit{background:#166f97;color:#fff;border-color:#166f97}
+.submit:disabled{opacity:.5;cursor:not-allowed}
+.roadmap{padding:30px;margin-top:24px}
+.roadmap p{line-height:1.8;color:#5e7486;margin:0 0 14px}
+@media(max-width:950px){.levelGrid,.questions{grid-template-columns:1fr}.levelDescription{min-height:0}.practiceIntro{flex-direction:column;align-items:flex-start}}
+@media(max-width:600px){.page{padding:16px 12px 48px}.hero{padding:22px 8px 25px}.levelCard,.practice,.roadmap{border-radius:16px}.practiceFooter{align-items:flex-start;flex-direction:column}.paperHead{flex-direction:column;gap:4px}.stats{gap:16px}.switcher{width:100%;justify-content:space-between}.switcher button{flex:1}}
