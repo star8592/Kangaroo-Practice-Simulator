@@ -7,6 +7,7 @@ process.env.SOCTHINK_USER_DATA_DIR=privateData;
 process.env.SOCTHINK_ENGLISH_SSO_KEY_VOCABULARY="isolated-test-secret-1234567890-abcdefghijklmnopqrstuvwxyz";
 
 const {platformCapability,PLATFORM_CAPABILITIES}=await import("../src/lib/platform-capabilities");
+const {ENGLISH_PRODUCTS,englishPlatformCatalog}=await import("../src/lib/english-products");
 const {validatedGrantChange,PlatformAuthError,activePlatformGrants,
   myAuthorizedModules}=await import("../src/lib/platform-grants");
 const {authenticateOrCreateWechatParent,createParentSessionToken}=await import("../src/lib/parent-auth");
@@ -22,6 +23,15 @@ try{
  assert.deepEqual(PLATFORM_CAPABILITIES.filter(x=>x.implemented).map(x=>x.id),
   ["english.pronunciation","english.vocabulary"]);
  assert.equal(platformCapability("math.competition")?.implemented,false);
+ for(const item of ENGLISH_PRODUCTS){
+  const cap=platformCapability(item.capability);
+  assert(cap,"Every public English product needs one platform capability registry entry");
+  assert.equal(cap.managementUrl,item.managementUrl);
+  assert.equal(cap.implemented,item.managementUrl!==null);
+ }
+ assert(englishPlatformCatalog().products.every(p=>!("managementUrl" in p)),
+  "Internal teacher routes must not become a public authorization promise");
+ console.log("PLATFORM_PRODUCT_REGISTRY_SINGLE_SOURCE_OF_TRUTH_PASS");
  const subject="par_"+"a".repeat(18);
  const valid={subject,capability:"english.pronunciation",role:"teacher",
   scopeKind:"product",scopeId:"",action:"grant"};

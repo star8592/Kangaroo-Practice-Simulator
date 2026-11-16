@@ -11,6 +11,7 @@ export const ENGLISH_PRODUCTS = [
   href:"/english/pronunciation",serviceUrl:"/english/pronunciation/app/practice-library",
   serviceCta:"打开发音练习",availability:"public-app",statusText:"主站发音训练已开放",
   icon:"Aa",capability:"english.pronunciation",
+  managementUrl:"/english/pronunciation/app/teacher/homework",
   authMode:"main-wechat",classroomMode:"main-classroom",federationStatus:"native",
   detail:"独立发音应用已提供语料书架、示范音与跟读界面。真人评分精度、多用户账号与付费权益仍待独立验收。",
  },
@@ -20,6 +21,7 @@ export const ENGLISH_PRODUCTS = [
   href:"/english/vocabulary",serviceUrl:"/english/vocabulary/app/",
   serviceCta:"打开单词课堂",availability:"login-app",statusText:"主站单词课堂已接入",
   icon:"W",capability:"english.vocabulary",
+  managementUrl:"/english/vocabulary/app/teacher/access",
   authMode:"product-native",classroomMode:"product-native",federationStatus:"not-integrated",
   detail:"独立 Rust / Vue / PostgreSQL 课堂已经部署；真实班级验收、监护与收费开通不等同于页面已可访问。",
  },
@@ -28,7 +30,7 @@ export const ENGLISH_PRODUCTS = [
   summary:"小学低龄互动绘本与进阶精读分层提供，先按年龄选择适合的阅读路径。",
   href:"/english/reading",serviceUrl:"/english/reading/app/",
   serviceCta:"体验阅读课程",availability:"public-app",statusText:"少儿绘本正式开放 · 进阶精读体验",
-  icon:"R",capability:"english.reading",
+  icon:"R",capability:"english.reading",managementUrl:null,
   authMode:"public-preview",classroomMode:"not-integrated",federationStatus:"not-integrated",
   detail:"少儿英语绘本已提供免费正式阅读入口；EnglishLeap 保留进阶精读。前者暂不生成正式成绩，后者的完整教学与付费尚待验收。",
  },
@@ -37,7 +39,7 @@ export const ENGLISH_PRODUCTS = [
   summary:"以高阶阅读为核心，通过篇章理解、词汇分析与能力图谱组织深入学习；其他训练工具作为辅助。",
   href:"/english/aelos",serviceUrl:"/english/aelos/app/library",
   serviceCta:"进入高阶阅读",availability:"login-app",statusText:"AelOS 高阶阅读入口已接入",
-  icon:"OS",capability:"english.aelos",
+  icon:"OS",capability:"english.aelos",managementUrl:null,
   authMode:"product-native",classroomMode:"not-integrated",federationStatus:"not-integrated",
   detail:"AelOS 是偏高阶的阅读学习应用，阅读训练和分析是产品主线；词汇、目标与成长页面为辅助功能。学习数据与 AI 能力仍须登录及运行态验收，课程难度标识不是蓝思官方认证。",
  },
@@ -52,6 +54,8 @@ export function englishProduct(id:EnglishProductId){
 
 /** This is the sole public registry for English products and their current
  * integration truth.  authMode/classroomMode are STATUS, never grants.
+ * managementUrl is internal UI routing metadata, NEVER a permission check;
+ * the product server independently verifies identity and class membership.
  * Product backends remain authoritative for their private records and roles.
  */
 export const ENGLISH_PLATFORM_CATALOG_VERSION = 1 as const;

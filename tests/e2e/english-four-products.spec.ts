@@ -35,6 +35,16 @@ test("homepage English hub exposes six direct entries in four independent apps",
 });
 
 
+
+test("teacher navigation goes to my authorized workspace, not a hardcoded subject",async({page})=>{
+ await page.goto("/english");
+ const teacher=page.getByRole("link",{name:"我是老师 · 我的管理工作台"});
+ await expect(teacher).toHaveAttribute("href","/workspace");
+ await teacher.click();
+ await expect(page).toHaveURL(/\/login\?next=%2Fworkspace$/);
+ await expect(page.getByRole("heading",{level:1,name:"微信登录，进入我的管理工作台"})).toBeVisible();
+});
+
 test("English second-level title and icon themselves open the learning app",async({page})=>{
  for(const selected of [
   {title:"发音训练",target:"/english/pronunciation/app/practice-library",click:"heading"},

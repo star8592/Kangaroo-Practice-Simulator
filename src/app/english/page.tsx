@@ -26,10 +26,10 @@ export default function EnglishHub(){
    <p>直接选择：发音、单词、少儿绘本、英语阅读、高阶阅读或考试训练。</p>
   </header>
   <section className={styles.roleEntry} aria-labelledby="english-teacher-entry">
-    <div><h2 id="english-teacher-entry">英语跟读课堂</h2>
-      <p>学生从老师分享的微信作业链接直接练习；教师进入工作台管理班级、布置作业和查看成绩。共用 SOC THINK 微信登录，无需重复注册。</p></div>
+    <div><h2 id="english-teacher-entry">英语课堂</h2>
+      <p>学生从老师分享的作业链接直接练习；教师统一微信登录后，仅看到自己获授权的管理模块。每个产品继续独立核验真实任课班级。</p></div>
     <div className={styles.roleActions}>
-      <Link href="/english/pronunciation/app/teacher/homework">我是老师 · 管理作业</Link>
+      <Link href="/workspace">我是老师 · 我的管理工作台</Link>
       <Link href="/english/pronunciation/app/practice-library">我要练习发音</Link>
     </div>
   </section>

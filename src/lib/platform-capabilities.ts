@@ -4,16 +4,11 @@ import {ENGLISH_PRODUCTS} from "./english-products";
 export type PlatformRole="teacher"|"module-admin";
 export type PlatformScopeKind="product"|"organization";
 
-const MANAGEMENT_LINKS={
-  pronunciation:"/english/pronunciation/app/teacher/homework",
-  vocabulary:"/english/vocabulary/app/teacher/access",
-} as const;
 export const PLATFORM_CAPABILITIES=[
   ...ENGLISH_PRODUCTS.map(item=>({
     id:item.capability, name:item.name, product:item.product,
-    managementUrl:item.id==="pronunciation"?MANAGEMENT_LINKS.pronunciation:
-      item.id==="vocabulary"?MANAGEMENT_LINKS.vocabulary:null,
-    implemented:item.id==="pronunciation"||item.id==="vocabulary",
+    managementUrl:item.managementUrl,
+    implemented:item.managementUrl!==null,
   })),
   {id:"math.competition",name:"数学竞赛",product:"SOC THINK · 数学",
     managementUrl:null,implemented:false},
