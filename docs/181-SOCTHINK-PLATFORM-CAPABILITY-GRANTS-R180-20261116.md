@@ -86,3 +86,13 @@ schema CREATE 和业务表所有者登录。
 3. postgres 管理角色：拒绝。
 此步骤是只读校验，不负责创建生产应用角色，也不会绕过现场操作的
 管理授权或安全检查。
+
+## 最小权限 SQL（已版本化）
+
+- ops/db/013_platform_capability_grants.sql：仅创建 schema 与两张新表。
+- ops/db/014_platform_app_privileges.sql：在生产维护方建立专用登录角色后，
+  由数据库所有者执行。只授予两张业务表必要 DML 权限以及 sequence 使用权。
+  该文件既不创建密码，也不变更其他系统的账户。
+- 两份 SQL 均不改变已有 parent / AccentLab / Vocabulary / billing 表。
+- 正式发布必须用 check_platform_db_preflight.mts 验证应用实际身份，
+  严禁用 postgres 用户连接生产 Web 进程。
