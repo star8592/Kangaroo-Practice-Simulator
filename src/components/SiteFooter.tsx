@@ -1,49 +1,31 @@
 "use client";
 import Link from "next/link";
-import {usePathname} from "next/navigation";
-import portalChrome from "./SocthinkChrome.module.css";
 import {useSiteLanguage} from "@/lib/site-language";
-const GROUPS=[
- {zh:"职业准备",en:"Career preparation",items:[
-  {href:"/career",zh:"岗位方向",en:"Roles"},
-  {href:"/learn",zh:"学习与实训",en:"Learning and labs"},
-  {href:"/practice",zh:"模拟笔试与面试",en:"Mock tests and interviews"},
- ]},
- {zh:"深入学习",en:"Learning resources",items:[
-  {href:"/skill-labs/books",zh:"技术资料与导学",en:"Technical library"},
-  {href:"/assessment-center/methodology",zh:"测评方法与来源",en:"Assessment methods"},
- ]},
- {zh:"账户与服务",en:"Account and services",items:[
-  {href:"/account",zh:"订单与下载",en:"Orders and downloads"},
-  {href:"/membership",zh:"购买与权益",en:"Membership"},
-  {href:"/privacy",zh:"隐私政策",en:"Privacy"},
-  {href:"/terms",zh:"服务条款",en:"Terms"},
-  {href:"/digital-purchase-policy",zh:"数字商品售后",en:"Digital purchase terms"},
- ]},
+import {SITE_PORTAL_NAV} from "@/lib/site-architecture";
+import styles from "./SocthinkChrome.module.css";
+
+// One site footer, including career subroutes and existing account/billing.
+const SERVICE_LINKS=[
+ {href:"/career",zh:"岗位方向",en:"Careers"},
+ {href:"/learn",zh:"学习实训",en:"Learning & labs"},
+ {href:"/practice",zh:"模拟笔试面试",en:"Practice"},
+ {href:"/my/learning",zh:"我的学习",en:"My learning"},
+ {href:"/workspace",zh:"教师工作台",en:"Teaching workspace"},
+ {href:"/account",zh:"我的订单",en:"Orders"},
+ {href:"/membership",zh:"购买与权益",en:"Purchases & access"},
+ {href:"/privacy",zh:"隐私",en:"Privacy"},
+ {href:"/terms",zh:"条款",en:"Terms"},
 ] as const;
 export default function SiteFooter(){
  const lang=useSiteLanguage();
- const pathname=usePathname();
- if(pathname==="/"||pathname==="/math"||pathname==="/competitions"||pathname==="/english"||pathname.startsWith("/english/")||pathname==="/subjects"||pathname==="/teach"||pathname==="/workspace"||pathname.startsWith("/my/")){
-   return <footer className={portalChrome.footer}><div className={portalChrome.footerInner}>
-    <span>© 2026 SOC THINK · 学习、教学与测评</span>
-    <nav aria-label="服务、法律与账户"><Link href="/teach">教师与机构</Link><Link href="/my/learning">个人学习中心</Link><Link href="/account">我的订单</Link><Link href="/membership">购买与权益</Link><Link href="/privacy">隐私</Link><Link href="/terms">条款</Link><a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer">鄂ICP备2026004372号</a></nav>
-   </div></footer>;
- }
- return <footer className="site-footer">
-  <div className="site-footer-inner">
-   <div className="site-footer-top">
-    <strong>SOCTHINK · {lang==="zh"?"职业能力学习与求职准备":"Career learning and preparation"}</strong>
-    <nav aria-label={lang==="zh"?"页脚导航":"Footer navigation"}>
-     {GROUPS.map(group=><div className="site-footer-group" key={group.zh}>
-      <b>{group[lang]}</b>
-      <div>{group.items.map(item=><Link href={item.href} key={item.href}>{item[lang]}</Link>)}</div>
-     </div>)}
-    </nav>
-   </div>
-   <p>{lang==="zh"?"独立开发的职业学习与求职模拟平台；非雇主招聘方，不承诺获得工作或通过招聘考试。":"An independent career learning and mock-interview platform; no hiring outcomes are guaranteed."}</p>
-   <p>{lang==="zh"?"© 2026 青梧未来（武汉）人工智能应用软件有限公司 · 版权所有":"© 2026 Qingwu Future (Wuhan) AI Application Software Co., Ltd. · All rights reserved"}</p>
-   <p><a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer">鄂ICP备2026004372号</a></p>
+ return <footer className={styles.footer}>
+  <div className={styles.footerInner}>
+   <span>© 2026 SOC THINK · {lang==="zh"?"多学科学习与教学":"All rights reserved · Learning and teaching"}</span>
+   <nav aria-label={lang==="zh"?"学科、服务和政策":"Subjects, services and policies"}>
+    {SITE_PORTAL_NAV.map(item=><Link key={item.id} href={item.href}>{item[lang]}</Link>)}
+    {SERVICE_LINKS.map(item=><Link key={item.href} href={item.href}>{item[lang]}</Link>)}
+    <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer">鄂ICP备2026004372号</a>
+   </nav>
   </div>
  </footer>;
 }
