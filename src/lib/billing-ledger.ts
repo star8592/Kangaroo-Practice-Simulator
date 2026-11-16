@@ -36,6 +36,50 @@ async function transaction<T>(fn:(c:PoolClient)=>Promise<T>):Promise<T>{
   catch(error){await c.query("ROLLBACK");throw error;}
   finally{c.release();}
 }
+const ORG_ID=/^[a-f0-9]{8}-[a-f0-9]{4}-[1-8][a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i;
+export async function attestVerifiedOrganizationOwner(input:{
+  buyerParentId:string;organizationId:string;verifiedSubject:string;
+}) {
+  if(!/^par_[a-f0-9]{18}$/.test(input.buyerParentId) ||
+     !ORG_ID.test(input.organizationId) ||
+     !/^soc_[a-f0-9]{40}$/.test(input.verifiedSubject))
+    throw new BillingConflictError("Invalid organization owner evidence");
+  return transaction(async c=>{
+    const r=await c.query<{organization_id:string}>(
+      "INSERT INTO billing_organization_owner_bindings "+
+      "(product,organization_id,buyer_parent_id,verified_subject,verified_at,expires_at) "+
+      "VALUES('vocabulary',$1,$2,$3,now(),now()+interval '5 minutes') "+
+      "ON CONFLICT(product,organization_id) DO UPDATE "+
+      "SET buyer_parent_id=EXCLUDED.buyer_parent_id,verified_subject=EXCLUDED.verified_subject,"+
+      "verified_at=now(),expires_at=EXCLUDED.expires_at "+
+      "WHERE billing_organization_owner_bindings.buyer_parent_id=EXCLUDED.buyer_parent_id "+
+      "OR billing_organization_owner_bindings.expires_at<=now() "+
+      "RETURNING organization_id",
+      [input.organizationId,input.buyerParentId,input.verifiedSubject]);
+    if(!r.rows[0])throw new BillingConflictError("Organization belongs to a different active buyer");
+    return {organizationId:r.rows[0].organization_id,validForSeconds:300};
+  });
+}
+export async function verifiedVocabularyOrganizationEntitlements(orgId:string,now=new Date()){
+  if(!ORG_ID.test(orgId)||!Number.isFinite(now.getTime()))
+    throw new BillingConflictError("Invalid organization entitlement scope");
+  const result=await billingPool().query<{
+    source_order_id:string;seat_limit:number;valid_from:Date;valid_until:Date;
+  }>(
+    "SELECT e.source_order_id,e.seat_limit,e.valid_from,e.valid_until "+
+    "FROM billing_organization_entitlements e "+
+    "JOIN billing_orders o ON o.id=e.source_order_id "+
+    "WHERE e.product='vocabulary' AND e.organization_id=$1 "+
+    "AND o.state='paid' AND e.revoked_at IS NULL "+
+    "AND e.valid_from<=$2 AND e.valid_until>$2 "+
+    "ORDER BY e.seat_limit DESC,e.valid_until DESC,e.source_order_id",
+    [orgId,now]);
+  return result.rows.map(r=>({
+    sourceOrderId:r.source_order_id,seatLimit:r.seat_limit,
+    validFrom:r.valid_from.toISOString(),validUntil:r.valid_until.toISOString(),
+  }));
+}
+
 const identifier=(id:string)=>{
   if(!id || id.length>256)throw new BillingConflictError("Invalid identifier");
   return id;
@@ -44,6 +88,7 @@ export async function createBillingOrder(
   parentId:string,productId:string,
   provider:"wechat_pay"|"wechat_native"="wechat_pay",
   consent?:{policyVersion:string;acceptedAt:Date},
+  organization?:{organizationId:string},
 ){
   if(!/^par_[a-zA-Z0-9_]+$/.test(parentId))throw new BillingConflictError("Invalid parent account");
   identifier(productId);
@@ -59,8 +104,8 @@ export async function createBillingOrder(
     throw new BillingConflictError("Digital sales policy confirmation required");
   return transaction(async c=>{
     const product=await c.query<{
-      amount_minor:string;currency:string;product_kind:"subscription"|"item"|"service";
-      content_kind:"exam"|"resource"|"report"|"career_interview"|null;content_id:string|null;
+      amount_minor:string;currency:string;product_kind:"subscription"|"item"|"service"|"organization";
+      content_kind:"exam"|"resource"|"report"|"career_interview"|"vocab_seats"|null;content_id:string|null;
       rights_approved:boolean;delivery_verified:boolean;access_restricted:boolean;title_zh:string|null;
     }>(
       "SELECT amount_minor,currency,product_kind,content_kind,content_id,rights_approved,delivery_verified,access_restricted,title_zh FROM billing_products WHERE id=$1 AND enabled=true",[productId]);
@@ -72,8 +117,56 @@ export async function createBillingOrder(
         !p.access_restricted || !p.content_kind || !p.content_id ||
         !p.title_zh?.trim()))
       throw new BillingConflictError("Item unavailable for sale");
-    if(p.product_kind!=="subscription" && p.product_kind!=="item" && p.product_kind!=="service")
+    if(p.product_kind!=="subscription" && p.product_kind!=="item" &&
+       p.product_kind!=="service" && p.product_kind!=="organization")
       throw new BillingConflictError("Unsupported product");
+    let orgSeats:number|null=null,orgDays:number|null=null;
+    if(p.product_kind==="organization"){
+      // The old item, plan and service SKUs must still check out normally
+      // before migration 015 is installed. New columns are queried ONLY
+      // for organization products, which do not exist in the old schema.
+      const orgProps=await c.query<{organization_seats:number|null;organization_days:number|null}>(
+        "SELECT organization_seats,organization_days FROM billing_products WHERE id=$1",
+        [productId]);
+      orgSeats=orgProps.rows[0]?.organization_seats??null;
+      orgDays=orgProps.rows[0]?.organization_days??null;
+      if(process.env.SOCTHINK_ORG_SEATS_CHECKOUT_ENABLED!=="1" ||
+        provider!=="wechat_native" || !organization?.organizationId ||
+        !ORG_ID.test(organization.organizationId) ||
+        p.content_kind!=="vocab_seats" || p.content_id!=="vocabulary" ||
+        !p.rights_approved || !p.delivery_verified || !p.access_restricted ||
+        !p.title_zh?.trim() || !Number.isInteger(orgSeats) ||
+        (orgSeats??0)<1 || (orgSeats??0)>10000 ||
+        !Number.isInteger(orgDays) ||
+        (orgDays??0)<1 || (orgDays??0)>366)
+        throw new BillingConflictError("Organization seat product not activated");
+      const authorized=await c.query<{buyer_parent_id:string}>(
+        "SELECT buyer_parent_id FROM billing_organization_owner_bindings "+
+        "WHERE product='vocabulary' AND organization_id=$1 "+
+        "AND buyer_parent_id=$2 AND expires_at>now()",
+        [organization.organizationId,parentId]);
+      if(!authorized.rows[0])throw new BillingConflictError("Organization owner verification required");
+      await c.query("SELECT pg_advisory_xact_lock(hashtextextended($1,0))",
+        ["vocabulary-org-seat:"+organization.organizationId]);
+      const pending=await c.query<{id:string}>(
+        "SELECT id FROM billing_orders WHERE organization_id=$1 "+
+        "AND product_kind='organization' AND state='pending' LIMIT 1",
+        [organization.organizationId]);
+      if(pending.rows[0])throw new BillingConflictError("Organization payment already pending");
+      // Version 1 does not sell concurrent upgrades/renewals. A paid grant
+      // must expire or be refunded before a replacement can be paid, avoiding
+      // shifted validity periods after refunds of overlapping licenses.
+      const active=await c.query<{yes:boolean}>(
+        "SELECT EXISTS(SELECT 1 FROM billing_organization_entitlements e "+
+        "JOIN billing_orders o ON o.id=e.source_order_id "+
+        "WHERE e.product='vocabulary' AND e.organization_id=$1 "+
+        "AND e.valid_until>now() AND e.revoked_at IS NULL "+
+        "AND o.state='paid') AS yes",
+        [organization.organizationId]);
+      if(active.rows[0]?.yes)
+        throw new BillingConflictError("Organization already has paid seats");
+    } else if(organization)
+      throw new BillingConflictError("Unexpected organization scope");
     let serviceSessions:number|null=null;
     let serviceMode:"per_use"|"monthly"|null=null;
     if(p.product_kind==="service"){
@@ -141,7 +234,15 @@ export async function createBillingOrder(
         active.rows[0].state==="pending"?"Item payment already pending":"Item already owned"
       );
     }
-    if(p.product_kind==="service"){
+    if(p.product_kind==="organization"){
+      await c.query("INSERT INTO billing_orders "+
+        "(id,payer_parent_id,product_id,price_minor,currency,provider,product_kind,content_kind,content_id,title_snapshot,"+
+        "sales_policy_version,sales_policy_accepted_at,organization_id,organization_seats_snapshot,organization_days_snapshot) "+
+        "VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15)",
+        [id,parentId,productId,p.amount_minor,p.currency,provider,p.product_kind,
+          p.content_kind,p.content_id,p.title_zh,consent?.policyVersion??null,
+          consent?.acceptedAt??null,organization!.organizationId,orgSeats,orgDays]);
+    }else if(p.product_kind==="service"){
       await c.query(`INSERT INTO billing_orders
         (id,payer_parent_id,product_id,price_minor,currency,provider,product_kind,content_kind,content_id,title_snapshot,
          sales_policy_version,sales_policy_accepted_at,service_sessions_snapshot,service_billing_mode_snapshot)
@@ -226,8 +327,10 @@ export async function settleVerifiedOrder(r:VerifiedPaymentReceipt){
       id:string;payer_parent_id:string;price_minor:string;currency:string;provider:string;
       provider_transaction_id:string|null;state:string;
       tier:"plus"|"pro"|null;period:"month"|"year"|null;
-      product_kind:"subscription"|"item"|"service";content_kind:"exam"|"resource"|"report"|"career_interview"|null;content_id:string|null;
+      product_kind:"subscription"|"item"|"service"|"organization";
+      content_kind:"exam"|"resource"|"report"|"career_interview"|"vocab_seats"|null;content_id:string|null;
       service_sessions_snapshot:number|null;service_billing_mode_snapshot:"per_use"|"monthly"|null;
+      organization_id:string|null;organization_seats_snapshot:number|null;organization_days_snapshot:number|null;
     }>("SELECT o.*,p.tier,p.period FROM billing_orders o JOIN billing_products p ON p.id=o.product_id WHERE o.id=$1 FOR UPDATE OF o",[r.orderId]);
     const o=result.rows[0];
     if(!o || o.provider!==r.provider || Number(o.price_minor)!==r.amountMinor || o.currency!==r.currency)
@@ -235,10 +338,12 @@ export async function settleVerifiedOrder(r:VerifiedPaymentReceipt){
     if(o.state==="paid"){
       if(o.provider_transaction_id!==r.transactionId)throw new BillingConflictError("Transaction already settled differently");
       const grantTable=o.product_kind==="item"?"billing_item_entitlements":o.product_kind==="service"?
-        "billing_career_session_grants":"billing_entitlements";
-      const e=await c.query<{id:string}>(o.product_kind==="service"?
-        "SELECT source_order_id AS id FROM billing_career_session_grants WHERE source_order_id=$1":
-        `SELECT id FROM ${grantTable} WHERE source_order_id=$1`,[o.id]);
+        "billing_career_session_grants":o.product_kind==="organization"?
+        "billing_organization_entitlements":"billing_entitlements";
+      const e=await c.query<{id:string}>(
+        o.product_kind==="service"||o.product_kind==="organization"?
+        "SELECT source_order_id AS id FROM "+grantTable+" WHERE source_order_id=$1":
+        "SELECT id FROM "+grantTable+" WHERE source_order_id=$1",[o.id]);
       if(!e.rows[0])throw new BillingConflictError("Paid order without grant");
       return {orderId:o.id,grantId:e.rows[0].id,tier:o.tier,created:false};
     }
@@ -247,6 +352,32 @@ export async function settleVerifiedOrder(r:VerifiedPaymentReceipt){
       [r.provider,r.eventId,o.id,r.transactionId,r.verifiedAt,r.payloadSha256]);
     await c.query("UPDATE billing_orders SET state='paid',paid_at=$2,provider_transaction_id=$3 WHERE id=$1",
       [o.id,r.verifiedAt,r.transactionId]);
+    if(o.product_kind==="organization"){
+      if(o.content_kind!=="vocab_seats"||o.content_id!=="vocabulary"||
+        !o.organization_id||!ORG_ID.test(o.organization_id)||
+        !Number.isInteger(o.organization_seats_snapshot)||
+        (o.organization_seats_snapshot??0)<1||(o.organization_seats_snapshot??0)>10000||
+        !Number.isInteger(o.organization_days_snapshot)||
+        (o.organization_days_snapshot??0)<1||(o.organization_days_snapshot??0)>366)
+        throw new BillingConflictError("Invalid immutable organization seat snapshot");
+      await c.query("SELECT pg_advisory_xact_lock(hashtextextended($1,0))",
+        ["vocabulary-org-renew:"+o.organization_id]);
+      const dates=await c.query<{valid_from:Date;valid_until:Date}>(
+        "SELECT GREATEST($2::timestamptz,COALESCE(MAX(e.valid_until),$2::timestamptz)) AS valid_from,"+
+        "GREATEST($2::timestamptz,COALESCE(MAX(e.valid_until),$2::timestamptz)) "+
+        "+ make_interval(days=>$3::integer) AS valid_until "+
+        "FROM billing_organization_entitlements e JOIN billing_orders prior "+
+        "ON prior.id=e.source_order_id WHERE e.product='vocabulary' "+
+        "AND e.organization_id=$1 AND prior.state='paid' AND e.revoked_at IS NULL",
+        [o.organization_id,r.verifiedAt,o.organization_days_snapshot]);
+      await c.query(
+        "INSERT INTO billing_organization_entitlements "+
+        "(source_order_id,product,organization_id,buyer_parent_id,seat_limit,valid_from,valid_until) "+
+        "VALUES($1,'vocabulary',$2,$3,$4,$5,$6)",
+        [o.id,o.organization_id,o.payer_parent_id,o.organization_seats_snapshot,
+          dates.rows[0].valid_from,dates.rows[0].valid_until]);
+      return {orderId:o.id,grantId:o.id,tier:null,created:true};
+    }
     if(o.product_kind==="item"){
       // Snapshot on the order, not mutable SKU metadata, controls delivery.
       if(!o.content_kind || !o.content_id)
@@ -309,7 +440,7 @@ export async function refundVerifiedOrder(r:VerifiedPaymentReceipt){
   return transaction(async c=>{
     const rows=await c.query<{
       id:string;provider:string;price_minor:string;currency:string;provider_transaction_id:string|null;state:string;
-      product_kind:"subscription"|"item"|"service";
+      product_kind:"subscription"|"item"|"service"|"organization";
     }>("SELECT * FROM billing_orders WHERE id=$1 FOR UPDATE",[r.orderId]);
     const o=rows.rows[0];
     if(!o || o.provider!==r.provider || Number(o.price_minor)!==r.amountMinor ||
@@ -324,6 +455,8 @@ export async function refundVerifiedOrder(r:VerifiedPaymentReceipt){
     await c.query("UPDATE billing_item_entitlements SET revoked_at=$2 WHERE source_order_id=$1 AND revoked_at IS NULL",[o.id,r.verifiedAt]);
     if(o.product_kind==="service")
       await c.query("UPDATE billing_career_session_grants SET revoked_at=$2 WHERE source_order_id=$1 AND revoked_at IS NULL",[o.id,r.verifiedAt]);
+    if(o.product_kind==="organization")
+      await c.query("UPDATE billing_organization_entitlements SET revoked_at=$2 WHERE source_order_id=$1 AND revoked_at IS NULL",[o.id,r.verifiedAt]);
     return {orderId:o.id,revoked:true};
   });
 }

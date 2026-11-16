@@ -26,6 +26,7 @@ export async function POST(req:NextRequest) {
   if (!parent || !parent.active || !(parent.wechatId||parent.wechatOpenId))
     return reply({error:"请先使用微信登录"},401);
   let productId:string;
+  let organizationId:string|undefined;
   let policyAccepted=false;
   try {
     const raw=await req.text();
@@ -34,6 +35,9 @@ export async function POST(req:NextRequest) {
     const obj=body && typeof body==="object"&&!Array.isArray(body)?
       body as Record<string,unknown>:null;
     productId=typeof obj?.productId==="string"?obj.productId:"";
+    organizationId=typeof obj?.organizationId==="string"?obj.organizationId:undefined;
+    if(obj?.organizationId!==undefined && typeof obj.organizationId!=="string")
+      return reply({code:"INVALID_ORGANIZATION"},400);
     policyAccepted=validDigitalSalesPolicyConsent(obj);
   } catch {return reply({error:"请求格式不正确"},400);}
   if (!/^[a-zA-Z0-9_.-]{4,80}$/.test(productId))
@@ -58,8 +62,10 @@ export async function POST(req:NextRequest) {
     // Product price and delivery tier come from a trusted server table.
     // Never trust a posted amount, name or entitlement.
     const product=await billingPool().query<{
-      id:string;amount_minor:string;currency:string;product_kind:"subscription"|"item"|"service";
-      content_kind:"exam"|"resource"|"report"|"career_interview"|null;content_id:string|null;title_zh:string|null;
+      id:string;amount_minor:string;currency:string;
+      product_kind:"subscription"|"item"|"service"|"organization";
+      content_kind:"exam"|"resource"|"report"|"career_interview"|"vocab_seats"|null;
+      content_id:string|null;title_zh:string|null;
       rights_approved:boolean;delivery_verified:boolean;access_restricted:boolean;
     }>(
       "SELECT id,amount_minor,currency,product_kind,content_kind,content_id,title_zh,rights_approved,delivery_verified,access_restricted FROM billing_products WHERE id=$1 AND enabled=true",[productId]);
@@ -90,6 +96,15 @@ export async function POST(req:NextRequest) {
       if(await hasVerifiedItemEntitlement(parent.id,p.content_kind,p.content_id))
         return reply({error:"已购买该商品，请在我的账号中使用",code:"ALREADY_OWNED"},409);
     }
+    if(p.product_kind==="organization"){
+      if(process.env.SOCTHINK_ORG_SEATS_CHECKOUT_ENABLED!=="1" ||
+         p.content_kind!=="vocab_seats" || p.content_id!=="vocabulary" ||
+         !organizationId ||
+         !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(organizationId))
+        return reply({code:"ORG_SEATS_CHECKOUT_NOT_READY"},409);
+    } else if(organizationId) {
+      return reply({code:"UNEXPECTED_ORGANIZATION"},400);
+    }
     if(p.product_kind==="service"){
       // A service credit cannot become payable until verified AI capacity,
       // a dedicated commercial activation, and the existing Native policy agree.
@@ -104,7 +119,7 @@ export async function POST(req:NextRequest) {
     }
     const order=await createBillingOrder(parent.id,productId,"wechat_native",{
       policyVersion:DIGITAL_SALES_POLICY_VERSION,acceptedAt:new Date(),
-    });
+    },organizationId?{organizationId}:undefined);
     orderCreated=true;
     createdOrderId=order.id;
     const orderExpiresAtSeconds=context.nowSeconds+NATIVE_ORDER_WINDOW_SECONDS;
@@ -125,6 +140,15 @@ export async function POST(req:NextRequest) {
       qrTtlSeconds:checkoutQrTtlSeconds(orderExpiresAtSeconds,Math.floor(Date.now()/1000)),
       status:"pending",note:"请以微信支付结果和服务端权益到账为准"},200);
   } catch(error) {
+    if(error instanceof BillingConflictError && error.message==="Organization payment already pending")
+      return reply({error:"本机构已有待支付订单，请先核对原订单",code:"ORG_PAYMENT_PENDING"},409);
+    if(error instanceof BillingConflictError && error.message==="Organization already has paid seats")
+      return reply({error:"本机构的付费席位合同仍有效；请在合同到期后再续购",
+        code:"ORG_LICENSE_ALREADY_ACTIVE"},409);
+    if(error instanceof BillingConflictError &&
+       (error.message==="Organization owner verification required" ||
+        error.message==="Organization seat product not activated"))
+      return reply({code:"ORG_OWNER_VERIFICATION_REQUIRED"},403);
     if(error instanceof BillingConflictError && error.message==="Service payment already pending")
       return reply({error:"此面试次数包已有待支付订单，请先查询原订单，避免重复扣款",
         code:"INTERVIEW_PAYMENT_PENDING"},409);

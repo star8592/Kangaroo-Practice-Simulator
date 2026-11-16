@@ -42,3 +42,81 @@
 尚未完成跨模块可售 SKU、机构支付与授权绑定、JSAPI 同机微信支付、
 小程序统一调起方式和真实支付/退款 E3。本批不开放新 SKU、
 不调价格，也不改真实支付记录。
+
+## 第二批：机构席位的中央结算模型（2026-11-16）
+
+在同一 PostgreSQL18 账本新增仅增量迁移
+`ops/db/015_platform_organization_seats.sql`，包含：
+- `billing_products` 新的 organization/vocab_seats 商品类型以及
+  合法的席位数量、购买期限；该迁移不插入也不启用任何商品。
+- `billing_orders` 不可变机构 UUID、席位及期限快照；保留原有
+  家长/个人购买者 ID、价格、币种及微信服务端对账规则。
+- `billing_organization_owner_bindings`：由独立词语星球 Rust 后端
+  在核验机构 owner、平台微信 SSO 及平台词汇管理模块授权后，
+  通过服务端 Bearer 密钥给当前微信账号登记一个 5 分钟
+  有效的机构购买绑定。浏览器不能直接伪造组织管理员。
+- `billing_organization_entitlements`：仅在官方支付状态独立核验后
+  与 `billing_orders.state=paid` 同事务写入，退款时同事务撤权；
+  不按用户提供的价格或购买后修改的 SKU 设置来发放权益。
+- 跨用户买单、错误机构、同一机构商品并发待付款、重复结算、
+  错误金额、退款撤权全部在真实独立 PostgreSQL18 `*_ci` 回归，
+  回执 `BILLING_ORGANIZATION_SEATS=PASS`。
+
+组织绑定接口：
+`POST /api/internal/commerce/vocabulary/organization-owner` 必须经
+真实服务端产品密钥 + 中央微信 cookie + SSO 匿名主体匹配 +
+有效平台模块授权；
+`POST /api/internal/commerce/vocabulary/organization-entitlements`
+仅响应带服务端产品密钥的词语星球后端请求，返回无个人识别信息
+的可用付费机构合同，不向普通网页用户公开。
+
+主站原 Native checkout 路由仅在
+`SOCTHINK_ORG_SEATS_CHECKOUT_ENABLED=1` 且独立机构绑定仍在有效期
+且 SKU 完整验收后才允许构建机构订单。该开关现在**保持关闭**，
+没有新增价格、商品或真实支付。
+
+## 双端交付及席位执行（2026-11-16）
+
+词语星球 Rust 新增 `platform_billing` 服务端适配器。机构所有者
+在独立后台完成真实任课/机构验证、与 SOC THINK 同微信账号绑定
+后才能向中央支付中心登记购买归属；不是任何教师都能为机构买单。
+
+付费机构合同由中央统一账本返回；机构管理页优先呈现已验证的
+中央合同，原本经核实的本地试用合同继续保留。**只控制新生席位的
+发放，不删除学生数据或阻断已有学生查看自己的历史记录**。
+在明确开启 `VOCAB_CENTRAL_BILLING_ENABLED=true` 和
+`VOCAB_CENTRAL_SEAT_ENFORCEMENT=true` 后，单个和批量学生邀请
+都用相同的机构数据库事务锁，按中央有效且未退款的席位数量
+限制新邀请数，防止并发创建超额席位；中央账本不可用则拒绝
+新增付费席位，原有服务与学习数据不受影响。未启用时原行为不变。
+
+仍待正式验收：生产 PG18 执行 migration 015、受信服务器密钥
+配置、机构真实 owner 微信 E3、原有试用/免费政策与付费政策对齐、
+学生已有学习权限在退费后的处理规则，以及新机构商品价格授权。
+
+## JSAPI 同一手机准备（2026-11-16）
+
+新增纯协议 `src/lib/wechat-jsapi-payment.ts`，复用主站现有
+微信商户私钥及 APIv3 RSA 请求签名。微信内下单必须使用当前
+公众号 AppID 对应的 OpenID，不能用 Website OpenID/UnionID。
+为前端生成独立的 RSA `paySign`；不误用微信通知验签或 Native QR
+参数。`GET /api/payments/wechat/jsapi/readiness` 只报告当前微信会话
+是否满足配置条件，不返回 OpenID、AppID、密钥，且**永远不创建订单**。
+离线 `JSAPI_PURE_PROTOCOL=PASS` 验证签名可验、公众号身份
+错配被拒绝、未批准不能开通。
+
+`SOCTHINK_WECHAT_JSAPI_APPROVED` 和
+`SOCTHINK_WECHAT_JSAPI_ENABLED` 默认关闭。小程序仍必须使用
+小程序支付，不通过网页 JSAPI 或 Native QR 混用。
+只有核实公众号与商户号的官方绑定、微信支付产品权限、
+真实手机 E3 以及后台可回执对账后，才适合新增真实 JSAPI 下单
+和开启新的机构售卖。此次是协议和权限边界准备，不是付费上线。
+
+### 并行付款的最后一层保护
+
+billing_one_pending_org 在机构级别阻止不同 SKU 的两个待付订单
+同时存在，配合统一的机构 advisory transaction lock。
+V1 不允许尚有效的付费机构合同叠加新购，以免先续期、后退款
+发生有效期错算；合同到期或退款确认后可重新购买。
+这是订单安全边界而非发布审批门槛。提前续期、机构席位升级和
+差额定价需要正式的商业规则，在此之前不面向用户销售。

@@ -22,4 +22,20 @@ test("one payment registry for all modules; private entitlements are never publi
   expect(owned.status()).toBe(401);
   expect(owned.headers()["cache-control"]).toContain("no-store");
   expect((await owned.json()).code).toBe("WECHAT_LOGIN_REQUIRED");
+
+  const jsapi=await request.get("/api/payments/wechat/jsapi/readiness");
+  expect(jsapi.status()).toBe(401);
+  expect(jsapi.headers()["cache-control"]).toContain("no-store");
+
+  const owner=await request.post(
+    "/api/internal/commerce/vocabulary/organization-owner",{
+      data:{organizationId:"a7111111-4444-4444-8888-bbbbbbbbbbbb"},
+    });
+  expect([401,403]).toContain(owner.status());
+
+  const grants=await request.post(
+    "/api/internal/commerce/vocabulary/organization-entitlements",{
+      data:{organizationId:"a7111111-4444-4444-8888-bbbbbbbbbbbb"},
+    });
+  expect([401,403]).toContain(grants.status());
 });
