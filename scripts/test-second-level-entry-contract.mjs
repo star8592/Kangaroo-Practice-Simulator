@@ -24,14 +24,15 @@ for(const direct of [
  '/english/pronunciation/app/practice-library',
  '/english/vocabulary/app/',
  '/english/reading/kids/',
- '/english/reading/app/',
- '/english/reading/app/exams',
+ '/english/reading/app/progress',
  '/english/aelos/app/library',
 ]){
  assert.ok(read('src/lib/english-products.ts').includes(direct) || english.includes(direct),direct+' missing')
 }
-assert.ok(english.includes('ENGLISH_PRODUCTS.flatMap'),'Both reading products must be shown in level two')
-assert.ok(read('src/components/SocthinkPortal.tsx').includes('发音 · 单词 · 阅读 · 高阶阅读'),'Homepage must show AelOS actual category')
+assert.ok(english.includes('ENGLISH_PRODUCTS.flatMap'),'English hub must render the curated English product registry')
+assert.ok(!english.includes('/english/reading/app/exams'),'Do not advertise a non-existent exam application')
+assert.ok(!english.includes('reading-pro'),'EnglishLeap must not appear as a second promoted reader')
+assert.ok(read('src/components/SocthinkPortal.tsx').includes('听说训练 · 词汇 · 分级阅读'),'Homepage must show AelOS actual category')
 const css=read('src/app/direct-entry.css')
 assert.ok(css.includes('>.direct-entry-hit') && css.includes('z-index:2'),'Must use a real full-size anchor with independent secondary actions')
 assert.ok(read('src/app/layout.tsx').includes('direct-entry.css'),'Global card rule not loaded')
@@ -51,4 +52,4 @@ for(const path of ['src/app/skill-labs/page.tsx','src/app/practice/page.tsx','sr
  const body=read(path)
  assert.ok(!body.includes('<Link className={styles.tileLink} href='),path+' introduced duplicated primary anchor')
 }
-console.log('SECOND_LEVEL_DIRECT_ENTRY_CONTRACT=PASS',hubPaths.length,'hub templates',6,'English service entries')
+console.log('SECOND_LEVEL_DIRECT_ENTRY_CONTRACT=PASS',hubPaths.length,'hub templates',6,'English active/legacy destinations')
