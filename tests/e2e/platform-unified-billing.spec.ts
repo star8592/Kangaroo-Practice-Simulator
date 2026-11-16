@@ -11,11 +11,11 @@ test("one payment registry for all modules; private entitlements are never publi
   expect(value.checkoutUrl).toBe("/membership");
   expect(value.accountUrl).toBe("/account");
   expect(value.modules.map(m=>m.id)).toEqual([
-    "platform","math","pronunciation","vocabulary","reading","aelos",
+    "platform","math","pronunciation","vocabulary","aelos",
   ]);
   expect(value.modules.every(m=>m.owner==="socthink")).toBe(true);
   expect(value.modules.filter(m=>m.fulfillment==="not-onboarded").map(m=>m.id))
-    .toEqual(["pronunciation","vocabulary","reading","aelos"]);
+    .toEqual(["pronunciation","vocabulary","aelos"]);
   expect(JSON.stringify(value)).not.toMatch(/payer_parent_id|out_trade_no|transaction_id|openid/i);
 
   const owned=await request.get("/api/platform/billing/me");

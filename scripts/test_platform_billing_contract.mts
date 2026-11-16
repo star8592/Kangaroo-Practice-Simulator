@@ -20,19 +20,21 @@ const {POST:orgPaidEntitlements}=await import("../src/app/api/internal/commerce/
 
 const c=publicPlatformBillingCatalog();
 assert.equal(c.model,"one-wechat-identity-one-payment-ledger");
-assert.equal(c.modules.length,6);
-assert.deepEqual(c.modules.map(x=>x.id),["platform","math","pronunciation","vocabulary","reading","aelos"]);
-assert.deepEqual(c.modules.map(x=>x.owner),Array(6).fill("socthink"));
+assert.equal(c.modules.length,5);
+assert.deepEqual(c.modules.map(x=>x.id),["platform","math","pronunciation","vocabulary","aelos"]);
+assert.deepEqual(c.modules.map(x=>x.owner),Array(5).fill("socthink"));
 assert.equal(c.modules.filter(x=>x.fulfillment==="central-settled-items").length,1);
 assert.equal(c.modules.filter(x=>x.fulfillment==="central-plan").length,1);
-assert.equal(c.modules.filter(x=>x.fulfillment==="not-onboarded").length,4);
+assert.equal(c.modules.filter(x=>x.fulfillment==="not-onboarded").length,3);
+assert.deepEqual(c.readOnlyLegacyModules,["reading"]);
+assert.equal(platformBillingModule("reading"),null);
 assert.equal(platformBillingModule("vocabulary")?.checkoutUrl,"/membership");
 assert.equal(platformBillingModule("unrecognized"),null);
 assert.equal(c.noNewProductMerchantIntegrations,true);
 const result=await catalog();
 assert.equal(result.status,200);
 assert.equal(result.headers.get("Cache-Control"),"public, max-age=300");
-assert.equal((await result.json()).modules.length,6);
+assert.equal((await result.json()).modules.length,5);
 
 const req=(cookie?:string)=>new NextRequest("https://socthink.cn/api/platform/billing/me",{
  headers:cookie?{cookie:PARENT_SESSION_COOKIE+"="+cookie}:{},
@@ -71,4 +73,4 @@ assert.equal(json.checkoutAvailable,false,"JSAPI readiness never creates real pa
 assert.equal(json.paymentMethod,"JSAPI");
 assert(!JSON.stringify(json).includes("o".repeat(28)),"Official OpenID must remain server-private");
 fs.rmSync(temp,{recursive:true,force:true});
-console.log("PLATFORM_BILLING_ONE_LEDGER_CONTRACT_PASS anonymous=401 unconfigured=503 modules=6 no_payment_writes");
+console.log("PLATFORM_BILLING_ONE_LEDGER_CONTRACT_PASS anonymous=401 unconfigured=503 modules=5 no_payment_writes");

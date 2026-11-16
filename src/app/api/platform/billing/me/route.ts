@@ -39,7 +39,7 @@ export async function GET(req:NextRequest){
         math:{plan:effectivePlan({kind:"parent",accountId:user.id,grants:plans})},
         // Teacher grants never masquerade as paid module subscriptions.
         pronunciation:{state:"not-onboarded"},vocabulary:{state:"not-onboarded"},
-        reading:{state:"not-onboarded"},aelos:{state:"not-onboarded"},
+        reading:{state:"retired-read-only"},aelos:{state:"not-onboarded"},
       },
     });
   }catch{return json({code:"PLATFORM_BILLING_UNAVAILABLE"},503)}

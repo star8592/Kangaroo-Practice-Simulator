@@ -24,7 +24,7 @@ const MATH: BillingModule = {
   accountUrl:"/account",owner:"socthink",fulfillment:"central-plan",
 };
 export const PLATFORM_BILLING_MODULES: ReadonlyArray<BillingModule> =
-  Object.freeze([CORE,MATH,...ENGLISH_PRODUCTS.map(item=>({
+  Object.freeze([CORE,MATH,...ENGLISH_PRODUCTS.filter(item=>item.id!=="reading").map(item=>({
     id:item.id,name:item.name,checkoutUrl:"/membership" as const,
     accountUrl:"/account" as const,owner:"socthink" as const,
     // No English module may claim a paid seat or plan until a *verified*
@@ -43,6 +43,7 @@ export function publicPlatformBillingCatalog() {
     accountUrl:"/account",
     // A published destination is not a live SKU or an authorization.
     modules:PLATFORM_BILLING_MODULES,
+    readOnlyLegacyModules:["reading"] as const,
     noNewProductMerchantIntegrations:true,
   } as const;
 }
