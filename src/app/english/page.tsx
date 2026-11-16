@@ -22,14 +22,14 @@ export default function EnglishHub(){
   <header className={styles.hero}>
    <span className={styles.kicker}>SOC THINK · ENGLISH</span>
    <h1>英语学习</h1>
-   <p>直接选择：少儿绘本、发音与听说训练、词汇学习或 AelOS 分级阅读。不同产品各自专注，避免重复工作台。</p>
+   <p>直接选择：少儿绘本、听说训练与免费原创试测、词汇学习或 AelOS 分级阅读。不同产品各自专注，避免重复工作台。</p>
   </header>
   <section className={styles.roleEntry} aria-labelledby="english-teacher-entry">
     <div><h2 id="english-teacher-entry">英语课堂</h2>
       <p>学生从老师分享的作业链接直接练习；教师统一微信登录后，仅看到自己获授权的管理模块。每个产品继续独立核验真实任课班级。</p></div>
     <div className={styles.roleActions}>
       <Link href="/workspace">我是老师 · 我的管理工作台</Link>
-      <Link href="/english/pronunciation/app/practice-library">我要练习发音</Link>
+      <Link href="/english/pronunciation/app/exam-trial">免费英语听说试测 · 9题</Link>
     </div>
   </section>
   <section aria-labelledby="english-choose">

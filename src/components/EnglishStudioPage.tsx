@@ -47,6 +47,10 @@ export default function EnglishStudioPage({studio}:{studio:EnglishProductId}){
      ? <a className={styles.primaryAction} href={item.serviceUrl}>{item.serviceCta}</a>
      : <span className={styles.unavailable}>暂未开放</span>}
   </section>}
+  {studio==="pronunciation" ? <p className={styles.entryNote}>
+    想先体验考试流程？<a href="/english/pronunciation/app/exam-trial">免费试测 · 5道听力+4道朗读</a>。
+    当前为原创教学训练，不是武汉2027等地区的官方考试卷，也不提供官方等值评分。
+   </p> : null}
   <section className={styles.serviceNote} aria-label="账号与权益">
    <strong>账号与课程权益</strong>
    <p>学习应用已经部署在 SOC THINK 主站自己的目录下。各产品的学习数据仍独立管理；统一账号及跨产品购买权益尚未完成端到端验收，未经核验的付费功能不会提前收费。</p>
