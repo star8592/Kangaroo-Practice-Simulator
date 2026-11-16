@@ -73,7 +73,7 @@ Next.js 使用 Node.js 运行 SSR、React Server Components、路由与静态生
 - `src/lib` 存在 `parent-auth.ts`、`auth.ts`、`user-data-store.ts`、`attempt-store.ts`、`exam-session.ts`、`grading.ts`、`student-analytics.ts`、`math-engine/signal-store.ts` 等业务权威。
 - 示例：`/api/grade` 直接判分和写作答；`/api/exam-sessions` 直接创建/锁定考试计时；`/api/arithmetic/next-session` 直接读取本地 `private/arithmetic/sessions.jsonl` 计算下一训练计划；`/api/math-engine/signals` 直接写学习信号；`/api/auth/parent/me` 在 Next 续签主站微信会话并判断 siteAdmin。
 - 用户与考试状态存在 `private/users/*.json` 及 `private/arithmetic/sessions.jsonl` 等本地持久化。这些迁到 Rust + PostgreSQL 后，不能再作为新的权威业务库。
-- 主站本仓库默认分支尚未发现已接管核心业务的 Rust Cargo 服务。Z890 的独立候选工作树 `.socthink-architecture-simplify-20261031/backend/socthink-core` 存在 Rust Axum **只读 Catalog 原型**；README 明确“R2 候选，未路由生产”，有局部数据等价测试与热更新样例。这是值得复用的早期资产，不能宣称生产 Rust 全面接管。
+- 主站最新 GitHub main 中**已经存在 backend/socthink-core Rust Cargo 工程**，但它目前只提供 loopback-only 只读 Catalog，并未承载登录、考试提交、支付和教学权限事务。Z890 的历史候选工作树 `.socthink-architecture-simplify-20261031/backend/socthink-core` 存在 Rust Axum **只读 Catalog 原型**；README 明确“R2 候选，未路由生产”，有局部数据等价测试与热更新样例。这是值得复用的早期资产，不能宣称生产 Rust 全面接管。
 - 既有 `docs/architecture/SOCTHINK_MODULAR_MONOLITH_20261031.md` 与 `SOCTHINK_PORTAL_DESIGN_RUST_MIGRATION_ADR_20261031.md` 早已确定“Next 前端 + Rust 业务核心 + PostgreSQL”；但未将其变成编码和部署的强制边界，故 Next 业务代码持续增长。
 - 统一计费、英语发音服务可能已有独立 Rust 能力；必须分别读取真实仓库、进程/端口与网关配置后记录。**不能因 Next 仓库无 Cargo，就断言整个主站没有 Rust 服务。**
 
@@ -137,3 +137,5 @@ SOC THINK repository
 **终版标准不是“用了 Rust”或“Next 文件减少了几个”，而是任何一个用户、支付、成绩或教学记录都能被清楚归属到唯一的 Rust 模块与 PostgreSQL 数据所有者。**
 
 **版本更正：** Z890 本地旧检出 87fe881 只有34个 API 文件，但 GitHub origin/main 当前 1c92b48b70cd 和 v3 开发分支均含91个 API 处理文件、54个修改类处理文件。本方案以远端最新代码为唯一迁移基线。
+
+**现有 Rust 代码验证：** GitHub origin/main 的 backend/socthink-core 包含 Cargo.toml、Cargo.lock、Axum lib/main 和只读 Catalog Fixture；2026-11-16 在 Z890 独立工作树运行 cargo test --locked，5 个单元测试通过。Rust 进程有 /healthz 和 /v1/catalog/resources，只允许 loopback 绑定。生产真正接管须先核实网关指向和数据库事务，**Rust 存在不等于 Rust 已是生产唯一业务后端**。
