@@ -31,7 +31,7 @@ test("unauthenticated platform APIs reject access, and server-only verifier requ
  expect([401,403]).toContain(server.status());
 });
 
-test("authenticated role dashboard isolates teacher A/B and removes revoked module immediately",async({browser,baseURL})=>{
+test("authorized teacher module list isolates, expands and revokes without re-login",async({browser,baseURL})=>{
  test.skip(process.env.PLATFORM_E2E_FIXTURE!=="1",
   "Requires an explicit disposable PostgreSQL 18 instance and synthetic user store");
  if(!baseURL)throw new Error("TEST_BASE_URL_REQUIRED");
@@ -71,6 +71,16 @@ test("authenticated role dashboard isolates teacher A/B and removes revoked modu
   await pageB.goto("/workspace");
   await expect(pageB.getByRole("heading",{level:3,name:"单词学习"})).toBeVisible();
   await expect(pageB.getByRole("heading",{level:3,name:"发音训练"})).toHaveCount(0);
+  // Same teacher receives an extra vocabulary module; it appears after the
+  // next server request without registration, role switching or redeploy.
+  await grants.updatePlatformGrant(testActor,{...grantB,subject:teacherA.id});
+  await pageA.reload();
+  await expect(pageA.getByRole("heading",{level:3,name:"发音训练"})).toBeVisible();
+  await expect(pageA.getByRole("heading",{level:3,name:"单词学习"})).toBeVisible();
+  await grants.updatePlatformGrant(testActor,{...grantB,subject:teacherA.id,action:"revoke"});
+  await pageA.reload();
+  await expect(pageA.getByRole("heading",{level:3,name:"单词学习"})).toHaveCount(0);
+  await expect(pageA.getByRole("heading",{level:3,name:"发音训练"})).toBeVisible();
   await grants.updatePlatformGrant(testActor,{...grantA,action:"revoke"});
   await pageA.reload();
   await expect(pageA.getByText("尚未获得项目管理权限")).toBeVisible();
@@ -81,6 +91,7 @@ test("authenticated role dashboard isolates teacher A/B and removes revoked modu
   await Promise.allSettled([
    grants.updatePlatformGrant(testActor,{...grantA,action:"revoke"}),
    grants.updatePlatformGrant(testActor,{...grantB,action:"revoke"}),
+   grants.updatePlatformGrant(testActor,{...grantB,subject:teacherA.id,action:"revoke"}),
   ]);
  }
 });
