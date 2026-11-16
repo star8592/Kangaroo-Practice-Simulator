@@ -2,9 +2,9 @@
  * SOC THINK public information architecture: one small source for business
  * navigation and page ownership. This is NOT a CMS, exam catalog, product
  * registry, permission rule, or payment authority.
- * Canonical design: docs/architecture/SOCTHINK_SITE_ARCHITECTURE_MASTER.md
+ * Canonical design: docs/architecture/SOCTHINK_KHAN_STYLE_MULTI_ROLE_PLATFORM_MASTER_20261116.md
  */
-/** Three user goals, not a list of internal businesses.
+/** Career SUBSYSTEM user goals (not the site's whole public nav).
  * Legacy URLs remain classified for breadcrumbs; this is NOT a second nav.
  */
 /** Sole top-level educational portal navigation for ALL SOC THINK screens.
