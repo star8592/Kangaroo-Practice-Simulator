@@ -86,16 +86,30 @@ def apply_sql(db: str) -> None:
 
 
 def verified_backup() -> None:
+    # The backup is a systemd one-shot service. A previous successful run
+    # must never satisfy today's migration preflight.
+    previous = run("systemctl", "show", BACKUP_UNIT,
+                   "-p", "InvocationID", "--value", capture=True)
     run("systemctl", "start", BACKUP_UNIT)
     status = run("systemctl", "show", BACKUP_UNIT,
-                 "-p", "Result", "-p", "ExecMainStatus", capture=True)
-    if "Result=success" not in status or "ExecMainStatus=0" not in status:
-        raise RuntimeError("Existing encrypted backup service failed")
-    recent = run("journalctl", "-u", BACKUP_UNIT, "-n", "35",
-                 "--no-pager", "-o", "cat", capture=True)
-    if ("BILLING_BACKUP=PASS ISOLATED_RESTORE=PASS" not in recent
-            or "BILLING_ASSET_BACKUP=PASS ISOLATED_RESTORE=PASS" not in recent):
-        raise RuntimeError("Backup/independent restore proof missing")
+                 "-p", "Result", "-p", "ExecMainStatus",
+                 "-p", "InvocationID", capture=True)
+    properties = dict(
+        line.split("=", 1) for line in status.splitlines() if "=" in line
+    )
+    invocation = properties.get("InvocationID", "")
+    if (properties.get("Result") != "success"
+            or properties.get("ExecMainStatus") != "0"
+            or not re.fullmatch(r"[a-f0-9]{32}", invocation)
+            or invocation == previous):
+        raise RuntimeError("Fresh encrypted backup service execution not proven")
+    # Scope receipts to this exact invocation, not an arbitrary recent
+    # journal tail containing success from a previous run.
+    current = run("journalctl", f"_SYSTEMD_INVOCATION_ID={invocation}",
+                  "--no-pager", "-o", "cat", capture=True)
+    if ("BILLING_BACKUP=PASS ISOLATED_RESTORE=PASS" not in current
+            or "BILLING_ASSET_BACKUP=PASS ISOLATED_RESTORE=PASS" not in current):
+        raise RuntimeError("Current backup/restore proof missing")
     print("BACKUP=PASS encrypted=YES isolated_restore=YES")
 
 
