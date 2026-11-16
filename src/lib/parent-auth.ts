@@ -162,3 +162,19 @@ export function listWechatParentCandidates():Array<{id:string;name:string;lastLo
     .filter(p=>p.active && Boolean(p.wechatId||p.wechatOpenId))
     .map(p=>({id:p.id,name:p.name,lastLoginAt:p.lastLoginAt??null}));
 }
+
+/** Owner-only administration lookup; never return raw OpenID or password data. */
+export function platformWechatAccountById(subject:string):PublicParent|null{
+ if(!/^par_[a-f0-9]{18}$/.test(subject))return null;
+ const u=loadParents().find(p=>p.id===subject&&p.active&&(p.wechatId||p.wechatOpenId));
+ return u?pub(u):null;
+}
+export function searchWechatAccountsForOwner(query:string,limit=40){
+ const q=query.trim().toLowerCase().slice(0,80);
+ if(!q)return [];
+ return loadParents().filter(p=>p.active&&(p.wechatId||p.wechatOpenId)&&
+   (p.id===q||p.name.toLowerCase().includes(q)||p.email?.toLowerCase().includes(q)))
+   .slice(0,Math.min(40,Math.max(1,limit)))
+   .map(p=>({subject:p.id,name:p.name,email:p.email||null,
+     lastLoginAt:p.lastLoginAt||null}));
+}

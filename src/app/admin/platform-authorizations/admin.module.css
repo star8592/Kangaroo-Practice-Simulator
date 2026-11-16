@@ -1,0 +1,28 @@
+.shell{width:min(1260px,100%);margin:auto;padding:24px 28px 70px;color:#203429}
+.breadcrumb{display:flex;gap:10px;align-items:center;font-size:14px;color:#607767}
+.breadcrumb a{color:#236046;text-underline-offset:3px}
+.shell h1{font-size:clamp(30px,4vw,44px);margin:27px 0 10px}
+.lead{font-size:16px;line-height:1.72;color:#53695a;max-width:900px}
+.wrap{display:grid;grid-template-columns:1fr 1fr;gap:19px;margin-top:24px}
+.panel{min-width:0;background:#fff;border:1px solid #dbe7db;border-radius:18px;padding:25px}
+.panel h2{font-size:22px;margin:0 0 9px}
+.panel p{font-size:14px;line-height:1.7;color:#52665a}
+.search label,.form label{display:grid;gap:7px;font-weight:750;font-size:14px}
+.search>div{display:flex;gap:9px;margin-top:9px}
+.search input{flex:1;min-width:0}
+.search input,.form input,.form select{border:1px solid #cddbd0;background:white;border-radius:10px;padding:12px;font-size:15px;min-height:46px}
+.search button,.form button{border:0;background:#1b634b;color:white;border-radius:10px;padding:12px 18px;font-weight:800;min-height:46px;cursor:pointer}
+.wrap button:disabled{opacity:.5;cursor:not-allowed}
+.users,.grants{list-style:none;padding:0;margin:17px 0 0;display:grid;gap:8px}
+.users li button{width:100%;text-align:left;border:1px solid #d7e3d7;background:#f8faf7;border-radius:11px;padding:11px 13px;cursor:pointer}
+.users li button[aria-pressed=true]{border-color:#286947;background:#e9f5ec}
+.users strong,.users small,.grants strong,.grants small{display:block}
+.users small,.grants small{font-size:12px;color:#607266;margin-top:5px;overflow-wrap:anywhere}
+.form{display:grid;gap:14px;margin:20px 0}
+.form button{justify-self:start}
+.grants li{display:flex;justify-content:space-between;gap:14px;align-items:center;border-top:1px solid #e5ece4;padding:12px 0}
+.grants button{border:1px solid #bc6e65;background:#fff7f4;color:#912b28;border-radius:9px;min-height:42px;padding:9px 14px;cursor:pointer}
+.error,.notice{grid-column:1/-1;border-radius:12px;padding:14px 17px;font-size:15px}
+.error{background:#fff1ef;color:#862c27}.notice{background:#eef7ee;color:#275b37}
+.shell :is(a,button,input,select):focus-visible{outline:3px solid #ee9d5b;outline-offset:2px}
+@media(max-width:800px){.wrap{grid-template-columns:1fr}.shell{padding:18px 15px 52px}.panel{padding:20px}.search>div{flex-direction:column}}

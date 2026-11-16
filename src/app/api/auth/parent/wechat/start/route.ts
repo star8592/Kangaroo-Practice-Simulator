@@ -17,7 +17,9 @@ export async function GET(req:NextRequest){
  // desktop permissions. Keep ordinary parents on silent snsapi_base login;
  // teacher entry may require a one-time in-WeChat profile consent instead of
  // creating an unrelated teacher identity from an AppID-scoped OpenID.
- const teacherJourney=destination.startsWith("/english/pronunciation/app/teacher/")||
+ const teacherJourney=destination==="/workspace"||
+   destination.startsWith("/admin/platform-authorizations")||
+   destination.startsWith("/english/pronunciation/app/teacher/")||
    destination.startsWith("/english/vocabulary/app/teacher/");
  const profile=req.nextUrl.searchParams.get("profile")==="1"||teacherJourney;
  const response=NextResponse.redirect(wechatAuthorizeUrl(issued.state,"official_account",

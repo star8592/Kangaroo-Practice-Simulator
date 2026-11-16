@@ -52,3 +52,21 @@ test("Vocabulary student returns to original classroom rather than sales funnel"
   await expect(page.locator("main")).toContainText("学习记录和复习进度全部保留");
   await expect(page.locator("main")).not.toContainText("付款后直接使用");
 });
+
+test("platform management workspace uses teacher-authorized WeChat context, not a sales page",async({page})=>{
+ await page.goto("/login?next=%2Fworkspace");
+ await expect(page.getByRole("heading",{level:1,name:"微信登录，进入我的管理工作台"})).toBeVisible();
+ await expect(page.getByRole("heading",{name:"管理工作台微信登录"})).toBeVisible();
+ await expect(page.locator("main")).toContainText("只显示已经获授权的管理模块");
+ await expect(page.locator("main")).not.toContainText("付款后直接使用");
+ await expect(page.getByRole("link",{name:"先查看我的账户"}))
+  .toHaveAttribute("href","/account");
+});
+
+test("platform owner grant page explains owner-only access during WeChat login",async({page})=>{
+ await page.goto("/login?next="+encodeURIComponent("/admin/platform-authorizations"));
+ await expect(page.getByRole("heading",{level:1,name:"微信登录，管理项目授权"})).toBeVisible();
+ await expect(page.getByRole("heading",{name:"平台授权管理微信登录"})).toBeVisible();
+ await expect(page.locator("main")).toContainText("只有已验证的站点所有者可以授予或撤销模块管理权限");
+ await expect(page.locator("main")).not.toContainText("付款后直接使用");
+});

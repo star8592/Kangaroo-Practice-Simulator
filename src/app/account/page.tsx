@@ -7,6 +7,8 @@ import {effectivePlan} from "@/lib/access-policy";
 import {billingConfigured,billingPool} from "@/lib/billing-ledger";
 import ParentLogoutButton from "@/components/ParentLogoutButton";
 import {PREVIOUS_DIGITAL_SALES_POLICY_VERSION} from "@/lib/digital-sales-policy";
+import {myAuthorizedModules} from "@/lib/platform-grants";
+import {isSiteOwner} from "@/lib/site-owner";
 import styles from "./AccountPage.module.css";
 
 export const dynamic="force-dynamic";
@@ -43,7 +45,13 @@ export default async function AccountPage(){
     }
   }catch{queryFailed=true;}
   const planLabel=plan==="free"?"免费账号":plan.toUpperCase();
+  const hasPlatformModules=await myAuthorizedModules(account.id)
+    .then(modules=>modules.length>0).catch(()=>false);
   const entries=[
+    ...(hasPlatformModules||isSiteOwner(account)?[
+      {href:"/workspace",title:"我的管理工作台",
+       desc:"只显示已授予的管理模块；班级权限由所属教学产品独立核验"},
+    ]:[]),
     {href:"/assessments",title:"选择考试或资料",desc:"查看考试大全，发现考试方向和已开放测评"},
     {href:"/resources",title:"试卷资料",desc:"检索已核查的在线练习资料"},
     {href:"/arithmetic",title:"数学训练",desc:"直接进入计算与巧算训练"},
