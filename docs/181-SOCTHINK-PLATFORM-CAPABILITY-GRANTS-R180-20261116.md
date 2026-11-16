@@ -160,3 +160,17 @@ OAuth 状态仍使用原签名和一次性校验，回调路径严格回到发�
   生产 --apply。
 - 运行生产版 R180 前仍必须完成 scripts/check_platform_db_preflight.mts
   的真实受限角色连通性验证，并在既有原子发布系统中有正常回退证据。
+
+## 自动发布器保持最小切换保护
+
+既有主站 auto_deploy_server.sh 仍只需要一次 GitHub CI 成功与原有
+原子切换、失败回滚流程；不增加额外用户审批，不影响旧版部署。
+对于**包含平台授权中心的新提交**，仅额外要求服务器已有专用
+/etc/socthink-math-platform.env 以及独立 systemd 连接配置
+72-platform-auth.conf。若文件缺失，输出
+AUTO_DEPLOY=SKIP reason=platform_auth_database_not_ready，
+不会下载编译、更换生产版本或关闭旧服务。
+
+这是防止未来 PR 意外合并后自动部署了不能使用的工作台的最小保护，
+不等于数据库内容、真实微信首次绑定或后端任课授权已经验证。
+主站 ops/release/test_auto_deploy_contract.sh 原有部署合同回归通过。
