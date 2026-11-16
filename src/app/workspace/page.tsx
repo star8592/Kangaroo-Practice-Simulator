@@ -16,7 +16,7 @@ export default async function Page(){
  let unavailable=false;
  try{modules=await myAuthorizedModules(me.id)}catch{unavailable=true}
  const owner=isSiteOwner(me);
- return <main className={styles.shell}>
+ return <div className={styles.shell}>
   <nav className={styles.breadcrumb}><Link href="/">SOC THINK</Link><span>/</span>我的工作台</nav>
   <header className={styles.hero}>
    <small>SOC THINK · WORKSPACE</small>
@@ -40,5 +40,5 @@ export default async function Page(){
    </article>)}</div>
   </section>}
   {owner&&<p className={styles.owner}><Link href="/admin/platform-authorizations">平台管理员 · 管理模块授权</Link></p>}
- </main>;
+ </div>;
 }

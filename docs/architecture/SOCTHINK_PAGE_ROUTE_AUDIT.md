@@ -23,10 +23,12 @@
 | `/english/reading` | 英语学习 | `/english` | 公开内容 | EnglishLeap 独立阅读项目；公网尚未验收，不冒用其他阅读站点 |
 | `/english/aelos` | 英语学习 | `/english` | 公开内容 | AelOS 独立综合英语项目；已有公网界面，账户授权待接通 |
 | `/account` | 账户与权益 | `/` | 私有流程 | 页脚、会话导航 → 我的订单 |
+| `/workspace` | 账户与权益 | `/account` | 私有流程 | 已授权账号进入动态工作台；无授权不展示管理模块 |
 | `/admin` | 管理后台 | `/` | 管理员 | 管理员登录后的工作台（仅授权后可达） |
 | `/admin/activate` | 管理后台 | `/admin/login` | 邀请流程 | 仅一次性管理员邀请，不公开导航 |
 | `/admin/competition-source-watch` | 管理后台 | `/admin` | 管理员 | AdminOperationsNav → 赛事来源审核 |
 | `/admin/classroom` | 管理后台 | `/admin` | 管理员 | AdminOperationsNav → 英语课堂与教师；网站所有者授权后审批老师 |
+| `/admin/platform-authorizations` | 管理后台 | `/admin` | 管理员 | 仅网站 Owner 可查询微信用户及授予、撤销模块管理权限 |
 | `/admin/families` | 管理后台 | `/admin` | 管理员 | 管理后台内的专用页面 |
 | `/admin/feedback` | 管理后台 | `/admin` | 管理员 | 管理后台内的专用页面 |
 | `/admin/login` | 管理后台 | `/admin` | 身份入口 | /admin 受限重定向 |

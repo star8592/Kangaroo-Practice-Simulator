@@ -41,6 +41,7 @@ const crossover=(route:string)=>{
  if(route==="/"||route==="/search")return "全站入口";
  if(route.startsWith("/admin"))return "管理后台";
  if(route==="/privacy"||route==="/terms"||route.startsWith("/digital-purchase-policy"))return "政策与权益";
+ if(route==="/workspace")return "账户与权益";
  if(route==="/account"||route==="/login"||route==="/membership"||
     route.startsWith("/student")||route.startsWith("/parent"))return "账户与权益";
  return null;
@@ -80,7 +81,7 @@ for(const route of htmlRoutes){
 assert.ok(!/<main\b/.test(read("src/components/SourceReviewDashboard.tsx")),
   "Admin source-review component must not nest a main landmark");
 const robots=read("src/app/robots.ts");
-for(const privatePrefix of ["/admin","/student","/parent","/account","/report/","/result","/review","/login","/exam/","/arithmetic/print"]){
+for(const privatePrefix of ["/admin","/student","/parent","/account","/workspace","/report/","/result","/review","/login","/exam/","/arithmetic/print"]){
  assert.ok(robots.includes('"'+privatePrefix+'"'),"Missing robots privacy protection: "+privatePrefix);
 }
 // Public verification evidence must not be in the same robots disallow list.
