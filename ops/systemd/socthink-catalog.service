@@ -1,0 +1,25 @@
+[Unit]
+Description=SOC THINK read-only Rust catalogue (internal)
+After=network.target
+ConditionPathExists=/var/lib/socthink/catalog/active.json
+
+[Service]
+Type=simple
+User=socthink-catalog
+Group=socthink-catalog
+WorkingDirectory=/var/lib/socthink/catalog
+Environment=SOCTHINK_CATALOG_SNAPSHOT=/var/lib/socthink/catalog/active.json
+Environment=SOCTHINK_RUST_BIND=127.0.0.1:37871
+ExecStart=/opt/socthink-catalog/current/socthink-catalog-api
+Restart=on-failure
+RestartSec=3
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectHome=true
+ProtectSystem=strict
+ReadOnlyPaths=/var/lib/socthink/catalog
+UMask=0077
+TimeoutStopSec=15
+
+[Install]
+WantedBy=multi-user.target

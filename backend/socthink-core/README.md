@@ -157,3 +157,35 @@ Full dataset local replay: 450 metadata rows / 419 visible on \`/resources\`,
 79 Rust query/filter cases, exact SSR read parity, mobile browser and outage
 fail-closed verification. See
 \`docs/architecture/SOCTHINK_RUST_CATALOG_RESOURCE_CUTOVER_B1_20261116.md\`.
+
+## B1 live generation proof and fail-safe promotion (2026-11-17)
+
+Rust now exposes **loopback-only** \`GET /internal/catalog/status\` with
+\`schemaVersion\`, \`generatedAt\` and \`rows\`, reflecting the immutable
+**in-memory** index, not merely the JSON file. It always returns
+\`cache-control: no-store\`. No users, answers, prices, or private paths.
+
+The single offline, event-driven publisher is
+\`scripts/refresh_rust_catalog.sh\`: it first runs the EXISTING public-
+metadata-only training-readiness gate into a private candidate file,
+then delegates to \`scripts/promote_rust_catalog_snapshot.ts\`. The
+latter rejects malformed, overly large, unsafe and shrinking snapshots
+by default, confirms the active Rust generation before changing the file,
+uses the EXISTING fsync+atomic snapshot writer, signals exactly one Rust
+process via systemd SIGHUP, and waits for the **new actual memory
+generation**. On any failure after replacement it rewrites the old
+last-good file, re-signals and verifies the old live generation.
+
+\`--pid\` is only for isolated owned-process testing; the production path
+is the existing single \`socthink-catalog.service\` systemd unit.
+Run \`python3 scripts/test_rust_catalog_promotion.py\` after
+\`cargo build --locked\` for positive and failure-injection receipts
+(2 -> 3, forbidden private field, accidental inventory shrink, lost
+refresh signal, rollback to last-good). This is separate from the
+existing \`scripts/test_rust_catalog_hot_reload.py\` low-level service test.
+
+Production-side standalone unit template:
+\`ops/systemd/socthink-catalog.service\`. **Do not activate the UI
+Next SSR change until the production service, signed release binary,
+private published snapshot, process network namespace, and one-shot
+rollback all pass on the target host.**
