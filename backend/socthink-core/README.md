@@ -127,3 +127,33 @@ public-metadata-only snapshot, verify compatibility and real query parity,
 then integrate one Rust Core service with the existing atomic release and
 rollback transaction. No production Rust traffic should be claimed until
 that actual promotion receives an exact-SHA public receipt.
+
+## B1 Next.js resource page read integration (2026-11-16, branch candidate)
+
+The server-rendered \`/resources\` page now uses \`src/lib/rust-catalog-read.ts\`
+to read the public, training-ready metadata **from this real Rust process**.
+The page does not call Next's private exam reader to rebuild a catalogue.
+A missing, invalid, or non-loopback \`SOCTHINK_RUST_CATALOG_INTERNAL_URL\`
+causes an explicit unavailable display; there is no permanent TypeScript
+fallback or second catalogue authority at request time.
+
+Local expected configuration (same network namespace, not a public listener):
+
+\`\`\`
+SOCTHINK_RUST_BIND=127.0.0.1:37871
+SOCTHINK_CATALOG_SNAPSHOT=/secure/approved-public-catalog.json
+SOCTHINK_RUST_CATALOG_INTERNAL_URL=http://127.0.0.1:37871
+\`\`\`
+
+These variables must be applied to **different processes** as appropriate:
+\`SOCTHINK_RUST_BIND\` and \`SOCTHINK_CATALOG_SNAPSHOT\` on Rust;
+\`SOCTHINK_RUST_CATALOG_INTERNAL_URL\` on Next SSR. Do not point Next to
+127.0.0.1 if Next and Rust live in different containers/network namespaces.
+The underlying read-only snapshot is currently exported during content
+publication by an existing TypeScript training-readiness gate, which is
+still a B2 migration debt; production cutover is pending.
+
+Full dataset local replay: 450 metadata rows / 419 visible on \`/resources\`,
+79 Rust query/filter cases, exact SSR read parity, mobile browser and outage
+fail-closed verification. See
+\`docs/architecture/SOCTHINK_RUST_CATALOG_RESOURCE_CUTOVER_B1_20261116.md\`.
