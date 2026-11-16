@@ -143,6 +143,27 @@ try {
  assert.equal(vocabStudentReturn.headers.get("location"),
   "https://socthink.cn"+vocabStudent);
  console.log("VOCAB_TEACHER_PROFILE_STUDENT_SILENT_AND_EXACT_RETURN_PASS");
+ // Platform-wide /workspace is the teacher's real starting page.
+ // It requires verified cross-AppID identity like each product teacher entry,
+ // but does not grant any teacher role without an explicit platform grant.
+ for(const platformPath of ["/workspace","/admin/platform-authorizations"]){
+  const started=await start(new NextRequest(
+   "https://socthink.cn/api/auth/parent/wechat/start?next="+encodeURIComponent(platformPath)));
+  const oauth=new URL(started.headers.get("location")||"");
+  assert.equal(oauth.searchParams.get("scope"),"snsapi_userinfo");
+  assert.equal(oauth.searchParams.get("appid"),process.env.WECHAT_OPEN_APPID);
+  const state=oauth.searchParams.get("state")||"";
+  const cookie=started.cookies.get(NAME)?.value||"";
+  assert(state&&cookie);
+  const result=await callback(new NextRequest(
+   "https://socthink.cn/api/auth/parent/wechat/callback?code=mock-1&state="+state,
+   {headers:{cookie:NAME+"="+cookie}}));
+  assert.equal(result.status,307);
+  assert.equal(result.headers.get("location"),"https://socthink.cn"+platformPath);
+  assert(result.cookies.get("socthink_parent_session")?.value);
+ }
+ console.log("PLATFORM_WORKSPACE_OWNER_WECHAT_VERIFIED_SCOPE_RETURN_PASS");
+
 
  const web=authenticateOrCreateWechatParent({
   wechatId:"union-teacher-100",unionId:"union-teacher-100",openId:"web-oid-01",oauthMode:"website",
