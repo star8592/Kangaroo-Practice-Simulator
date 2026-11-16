@@ -68,3 +68,21 @@ platform.role_grant_audit 两张新表。
 
 本轮不会改动词语星球 R177 的旧登录方式或已有成绩数据；
 新平台授权和真实任课权限是两个独立条件。
+
+## R180 发布前强制只读权限检查（新增）
+
+运行 npx tsx scripts/check_platform_db_preflight.mts。该脚本从
+SOCTHINK_PLATFORM_DATABASE_URL 读取已有服务端配置，不生成和打印密码。
+验证 PG18、platform 两张表、必要的 SELECT/INSERT/UPDATE 权限，
+拒绝 superuser、BYPASSRLS、CREATEDB/CREATEROLE、数据库 CREATE、
+schema CREATE 和业务表所有者登录。
+
+只有输出 PLATFORM_PREFLIGHT=PASS 才可以把平台授权服务加入
+正式发布候选。缺少连接配置时输出 DATABASE_URL_NOT_CONFIGURED；
+使用数据库超级用户时输出 UNSAFE_DATABASE_ROLE_OR_SCHEMA。
+在 Z890 隔离 PG18.6 中已验证三种状态：
+1. 缺少连接配置：拒绝；
+2. 受限授权应用账号：通过（初始授权记录 0）；
+3. postgres 管理角色：拒绝。
+此步骤是只读校验，不负责创建生产应用角色，也不会绕过现场操作的
+管理授权或安全检查。
