@@ -1,4 +1,4 @@
-.shell{max-width:1100px;margin:0 auto;padding:28px 22px 75px;color:#1c2f23}
+.shell{max-width:var(--layout-standard);margin:0 auto;padding:28px 22px 75px;color:#1c2f23}
 .breadcrumb{display:flex;align-items:center;gap:9px;color:#617267;font-size:12px;margin-bottom:22px}
 .breadcrumb a{color:#28684f;text-decoration:underline;text-underline-offset:3px}
 .hero{border-radius:24px;background:#173527;color:#fff;padding:clamp(26px,4.8vw,54px);display:grid;gap:16px}
