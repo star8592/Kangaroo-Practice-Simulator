@@ -57,6 +57,9 @@ jobs:
       - name: Platform authorization bootstrap installer regression
         run: python3 scripts/test_platform_runtime_installer.py
 
+      - name: Organization-seat backup invocation regression
+        run: python3 scripts/test_billing_org_installer.py
+
       - name: Public quality gate
         run: npm run verify:public
 
