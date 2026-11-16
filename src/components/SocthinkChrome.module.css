@@ -12,3 +12,7 @@
 .footerInner nav{display:flex;align-items:center;gap:17px}
 .footerInner a{text-decoration:underline;text-decoration-color:#e9b29a;text-underline-offset:3px}
 @media(max-width:760px){.inner{padding:10px 14px;gap:10px;flex-wrap:wrap}.brand strong{font-size:19px}.links{order:3;width:100%;justify-content:center;gap:23px}.brand small{font-size:10px}.footerInner{padding:18px 14px}}
+
+/* A scrollable real navigation on narrow displays; do not hide business entrypoints. */
+@media(max-width:900px){.links{gap:13px;font-size:13px}}
+@media(max-width:760px){.links{justify-content:flex-start;gap:17px;overflow-x:auto;white-space:nowrap;padding:0 1px 5px;scrollbar-width:thin}.links a{flex:0 0 auto}}
