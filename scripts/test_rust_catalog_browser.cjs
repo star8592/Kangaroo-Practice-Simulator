@@ -12,6 +12,16 @@ if(!/^http:\/\/127\.0\.0\.1:\d+$/.test(base||""))throw Error("local Next URL req
 (async()=>{
  const browser=await chromium.launch({executablePath:"/opt/google/chrome/chrome",headless:true,args:["--no-sandbox","--disable-dev-shm-usage"]});
  try{
+  if(process.env.SOCTHINK_RUST_CATALOG_EXPECT_DOWN==="1"){
+    const down=await browser.newPage({viewport:{width:390,height:844}});
+    const response=await down.goto(base+"/resources",{waitUntil:"domcontentloaded",timeout:30000});
+    assert.equal(response?.status(),500,"Rust failure must have non-success HTTP status");
+    await down.getByRole("heading",{name:"试卷目录暂时不可用"}).waitFor({timeout:12000});
+    assert(!(await down.locator("body").innerText()).includes("查找试卷，直接练习"));
+    console.log("RUST_CATALOG_REAL_BROWSER_DOWN=PASS http=500 user_message=yes no_legacy_data=true");
+    await down.close();
+    return;
+  }
   const page=await browser.newPage({viewport:{width:1280,height:900}});
   const response=await page.goto(base+"/resources",{waitUntil:"domcontentloaded",timeout:30000});
   assert.equal(response?.status(),200);

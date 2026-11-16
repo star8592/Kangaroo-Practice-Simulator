@@ -11,6 +11,8 @@ assert(page.includes('await readRustTrainingCatalog()'),'resource page must quer
 for(const forbidden of ['listTrainingExamProfiles','buildTrainingResourceCatalog','loadStoredExamBundle','private/exams'])
  assert(!page.includes(forbidden),'Node must not rebuild catalogue in resource route: '+forbidden);
 assert(!page.includes('legacy fallback')||page.includes('Never silently'),'must not silently reuse TypeScript data');
+assert(page.includes('throw new RustCatalogUnavailable'), 'Rust failure must reach Next error boundary');
+assert(read('src/app/resources/error.tsx').includes('试卷目录暂时不可用'));
 assert(reader.includes('SOCTHINK_RUST_CATALOG_INTERNAL_URL'));
 assert(reader.includes('127\\.0\\.0\\.1'),'SSRF reject non-loopback upstream');
 assert(reader.includes('no-store'),'do not silently serve stale catalog');

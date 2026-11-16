@@ -8,7 +8,7 @@
 - `src/app/resources/page.tsx` 不再导入 `listTrainingExamProfiles` 或 `buildTrainingResourceCatalog`，不在 Next.js 的请求处理过程中读取原始题库或重建业务目录。
 - Next.js SSR 通过 `src/lib/rust-catalog-read.ts` 从 `127.0.0.1` 上的 Rust/Axum 查询**已通过准备就绪筛选的公开资源元数据**。服务端最多读取 5000 条、每次最多 100 条、检查页数/总数/ID唯一性、返回内容格式和题目启动路径，拒绝任意上游 URL。
 - React `ResourceLibraryClient` 保留用户已熟悉的输入、筛选、18 条分页展示；它只改变当前屏幕显示，不承担原始题库、试卷准备就绪、真实权限和付费决定。
-- Rust 无法访问时，SSR 展示明确“试卷目录暂时不可用”，**不会悄悄使用旧 TS 目录绕过 Rust**。当前容错呈现是 HTTP 200 的维护提示，生产是否改为 503/专用错误页面属于必须额外验证项，不能以 200 代表服务健康。
+- Rust 无法访问时，SSR 展示明确“试卷目录暂时不可用”，**不会悄悄使用旧 TS 目录绕过 Rust**。本机 Next 16 Production 构建实测：Rust 停机后 SSR 返回 **HTTP 500**（不再伪装成健康 200）；真实 Chrome 完成客户端 hydration 后展示“试卷目录暂时不可用”并提供重试/返回入口。不把 500 当正常健康；后续生产前可再验收是否需要由网关返回语义更准确的 503。
 - 不增加任何 `src/app/api/**` 业务 Route Handler。已有 91 个 Next 旧 API、54 个含写方法文件的迁移清单继续严格执行。
 
 ## 2. 事实和局限
@@ -30,7 +30,7 @@
 - 拒绝指向非 loopback 上游、对不可用 Rust 返回明确异常；
 - Next 16 真实 build 通过；
 - 本机 Rust+Next 同时启动后真实 Chrome：桌面 `/resources` 显示 419、首屏 18 个卡片且筛选 2026 有效；390px 手机显示 419、横向溢出为 0；
-- Rust 进程停止后，网页改显示目录不可用，不返回旧试卷目录。
+- Rust 进程停止后，资源页真实返回 HTTP 500，Chrome 显示可读维护提示，不返回旧试卷目录。
 
 **以上仅为候选工作树和本机运行结果。生产服务是否启动、服务器隔离端口、对象存储刷新、全站 CI 和精确 SHA 尚需切换验收。**
 

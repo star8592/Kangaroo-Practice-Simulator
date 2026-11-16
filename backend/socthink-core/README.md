@@ -134,7 +134,7 @@ The server-rendered \`/resources\` page now uses \`src/lib/rust-catalog-read.ts\
 to read the public, training-ready metadata **from this real Rust process**.
 The page does not call Next's private exam reader to rebuild a catalogue.
 A missing, invalid, or non-loopback \`SOCTHINK_RUST_CATALOG_INTERNAL_URL\`
-causes an explicit unavailable display; there is no permanent TypeScript
+causes a non-success HTTP 500 and a browser-visible unavailable display; there is no permanent TypeScript
 fallback or second catalogue authority at request time.
 
 Local expected configuration (same network namespace, not a public listener):
