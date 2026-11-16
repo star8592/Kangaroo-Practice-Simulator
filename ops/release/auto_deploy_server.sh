@@ -101,6 +101,17 @@ PYCI
 esac
 
 PREV_SHA="${DEPLOYED_SHA:-$HEAD_SHA}"
+# R180+: never activate the new platform workbench without its own
+# server-side authorization DB connection. Old releases are unaffected.
+if git cat-file -e "$TARGET_SHA:src/lib/platform-grants.ts" 2>/dev/null; then
+  if [[ ! -r /etc/socthink-math-platform.env ||
+        ! -r "$SERVICE_DROPIN_DIR/72-platform-auth.conf" ]] ||
+     ! grep -q '^SOCTHINK_PLATFORM_DATABASE_URL=postgresql://' /etc/socthink-math-platform.env; then
+    log "AUTO_DEPLOY=SKIP reason=platform_auth_database_not_ready sha=$TARGET_SHA"
+    exit 0
+  fi
+fi
+
 PREV_CURRENT="$(readlink -f "$CURRENT" 2>/dev/null || true)"
 VERSION="$(git show "$TARGET_SHA:VERSION" 2>/dev/null | tr -d '\r\n' || true)"
 [[ -n "$VERSION" ]] || VERSION=dev
