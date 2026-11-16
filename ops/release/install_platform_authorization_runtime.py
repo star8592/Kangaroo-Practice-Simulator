@@ -68,6 +68,9 @@ def safe_atomic_write(path: Path, content: str, mode: int) -> None:
     path.parent.mkdir(mode=0o755, parents=True, exist_ok=True)
     try:
         fd = os.open(str(temp), os.O_CREAT | os.O_EXCL | os.O_WRONLY, mode)
+        # An inherited restrictive umask must not change the intended service
+        # drop-in mode; the secret environment file still stays at 0600.
+        os.fchmod(fd, mode)
         with os.fdopen(fd, "w", encoding="utf-8") as f:
             f.write(content)
             f.flush()
