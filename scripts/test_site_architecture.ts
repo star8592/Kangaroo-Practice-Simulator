@@ -53,8 +53,8 @@ const header=read("src/components/SiteHeader.tsx");
 const home=read("src/components/PublicHome.tsx");
 const footer=read("src/components/SiteFooter.tsx");
 const exam=read("src/components/AssessmentPortalClient.tsx");
-assert.ok(header.includes("PRIMARY_BUSINESS_NAV as TASK_LINKS"),
- "Header must use canonical primary navigation, not a local duplicate array");
+assert.ok(header.includes("SITE_PORTAL_NAV"),
+ "Site header must use the single whole-site subject/navigation registry");
 assert.ok(home.includes("PRIMARY_BUSINESS_NAV.flatMap"),
  "Homepage service cards must derive from canonical primary navigation");
 for(const item of PRIMARY_BUSINESS_NAV)
