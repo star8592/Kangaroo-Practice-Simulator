@@ -25,9 +25,9 @@ for(const [id,href] of [['math','/math'],['english','/english'],['k12','/subject
 assert.match(portal,/id="learning-catalog"/);
 assert.match(css,/\.audienceGrid/);
 assert.match(css,/@media\(max-width:760px\)/);
-assert.match(header,/href="\/teach"/);
-assert.match(header,/href="\/subjects"/);
-assert.match(footer,/href="\/my\/learning"/);
+assert.match(header,/SITE_PORTAL_NAV/);
+assert.match(read("src/lib/site-architecture.ts"),/href:"\/subjects"/);
+assert.match(footer,/SITE_PORTAL_NAV/);
 for(const id of ['teach','subjects']){
  const f=read('src/app/'+id+'/page.tsx');
  assert.match(f,/export const metadata/);
