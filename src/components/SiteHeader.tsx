@@ -35,18 +35,20 @@ export default function SiteHeader(){
     return()=>document.removeEventListener("keydown",onKey);
   },[mobileOpen]);
 
-  const isSocthinkPortal=pathname==="/"||pathname==="/math"||pathname==="/competitions"||pathname==="/english"||pathname.startsWith("/english/");
+  const isSocthinkPortal=pathname==="/"||pathname==="/math"||pathname==="/competitions"||pathname==="/english"||pathname.startsWith("/english/")||pathname==="/subjects"||pathname==="/teach"||pathname==="/workspace"||pathname.startsWith("/my/");
   if(isSocthinkPortal)return <header className={portalChrome.header}>
     <div className={portalChrome.inner}>
       <Link href="/" className={portalChrome.brand} onClick={dismiss} aria-label="SOC THINK 首页">
         <span className={portalChrome.mark}>S</span>
-        <span><strong>SOC THINK</strong><small>学习 · 考试 · 测评</small></span>
+        <span><strong>SOC THINK</strong><small>学习 · 教学 · 测评</small></span>
       </Link>
       <nav className={portalChrome.links} aria-label="SOC THINK 导航">
         <Link href="/math">数学</Link>
         <Link href="/english">英语</Link>
+        <Link href="/subjects">校内学科</Link>
         <Link href="/learn">职业课程</Link>
         <Link href="/assessment-center">能力测评</Link>
+        <Link href="/teach">教师与机构</Link>
       </nav>
       <div className={portalChrome.actions}><GlobalLanguageSwitch/><SessionNav/></div>
     </div>
