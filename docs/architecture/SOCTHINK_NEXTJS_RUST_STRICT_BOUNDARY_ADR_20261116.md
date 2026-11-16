@@ -69,7 +69,7 @@ Next.js 使用 Node.js 运行 SSR、React Server Components、路由与静态生
 
 源自 `star8592/Kangaroo-Practice-Simulator` 主分支代码扫描：
 
-- `src/app/api/**/route.ts` 共 **34 个**处理文件，其中 **20 个含 POST / PATCH 等修改接口**。这些是实际存在的 Next 服务端业务，不是纯前端项目。
+- `src/app/api/**/route.ts` 共 **91 个**处理文件，其中 **54 个含 POST / PATCH 等修改接口**。这些是实际存在的 Next 服务端业务，不是纯前端项目。
 - `src/lib` 存在 `parent-auth.ts`、`auth.ts`、`user-data-store.ts`、`attempt-store.ts`、`exam-session.ts`、`grading.ts`、`student-analytics.ts`、`math-engine/signal-store.ts` 等业务权威。
 - 示例：`/api/grade` 直接判分和写作答；`/api/exam-sessions` 直接创建/锁定考试计时；`/api/arithmetic/next-session` 直接读取本地 `private/arithmetic/sessions.jsonl` 计算下一训练计划；`/api/math-engine/signals` 直接写学习信号；`/api/auth/parent/me` 在 Next 续签主站微信会话并判断 siteAdmin。
 - 用户与考试状态存在 `private/users/*.json` 及 `private/arithmetic/sessions.jsonl` 等本地持久化。这些迁到 Rust + PostgreSQL 后，不能再作为新的权威业务库。
@@ -121,7 +121,7 @@ SOC THINK repository
 
 ## 8. 一轮施工必须拿到的证据
 
-- 新增 Next Route Handler 数量为零或明确受控的展示层例外。旧的 34 个 API 每完成一项 Rust 接管，库存必须下降而不是新增旧逻辑。详见独立边界审计清单。
+- 新增 Next Route Handler 数量为零或明确受控的展示层例外。旧的 91 个 API 每完成一项 Rust 接管，库存必须下降而不是新增旧逻辑。详见独立边界审计清单。
 - Rust API 返回标准状态码与机器可识别的错误；接口需要输入验证、会话撤销、租户权限、幂等和 requestId。对 Next SSR 提供最少只读 ViewModel，不让 React 读取业务表结构。
 - 单套 `Account / RoleGrant / Organization / Assignment / Attempt / Entitlement` 权威数据；Rust 专项评分进程也不另建学生或计费账本。
 - API 合同测试包含浏览器、微信小程序、跨端登录、跨班/跨机构拒绝、试卷重放和实付回调验签；另进行 390px 手机实际使用、真实评分性能。
@@ -131,7 +131,9 @@ SOC THINK repository
 ## 9. 三轮重新校正后的结论
 
 - **迭代 1：定义责任**：Next 是页面与体验，Rust 是全部业务，PG 是权威数据；Next SSR 存在不改变这个结论。
-- **迭代 2：清点现实差距**：34 个 Next API 与 JSON/JSONL 业务状态说明当前离目标仍有距离；Rust Catalog 原型仅仅是可复用的起点。
+- **迭代 2：清点现实差距**：91 个 Next API 与 JSON/JSONL 业务状态说明当前离目标仍有距离；Rust Catalog 原型仅仅是可复用的起点。
 - **迭代 3：设工程防回潮规则**：新增 Next 业务 Route Handler 默认禁止，先迁旧，再删旧；每阶段业务只有一个权威实现和可重复的实际运行验收。
 
 **终版标准不是“用了 Rust”或“Next 文件减少了几个”，而是任何一个用户、支付、成绩或教学记录都能被清楚归属到唯一的 Rust 模块与 PostgreSQL 数据所有者。**
+
+**版本更正：** Z890 本地旧检出 87fe881 只有34个 API 文件，但 GitHub origin/main 当前 1c92b48b70cd 和 v3 开发分支均含91个 API 处理文件、54个修改类处理文件。本方案以远端最新代码为唯一迁移基线。

@@ -10,7 +10,7 @@ const root=path.resolve(__dirname,'..');
 const inventory=require('../docs/architecture/SOCTHINK_LEGACY_NEXT_API_INVENTORY_20261116.json');
 const legacy=new Map(inventory.entries.map(row=>[row.file,new Set(row.methods)]));
 assert.equal(legacy.size,inventory.entries.length,'Duplicate inventory entries');
-assert.equal(legacy.size,34,'Audit baseline must remain the verified 2026-11-16 list; do not expand it');
+assert.equal(legacy.size,91,'Audit baseline must remain the verified 2026-11-16 list; do not expand it');
 const METHODS=['GET','POST','PUT','PATCH','DELETE','OPTIONS','HEAD'];
 function walk(dir){
  return fs.readdirSync(dir,{withFileTypes:true}).flatMap(x=>{
