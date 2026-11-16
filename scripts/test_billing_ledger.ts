@@ -243,6 +243,19 @@ async function run() {
   assert.equal((await settleVerifiedOrder(verifiedReportReceipt)).created,true);
   assert.equal(await hasVerifiedItemEntitlement(owner.id,"report",reportInstrumentId),true);
   assert.equal(await hasVerifiedItemEntitlement(stranger.id,"report",reportInstrumentId),false);
+  const {GET:getUnifiedEntitlements}=await import("../src/app/api/platform/billing/me/route");
+  const billingSession=(id:string)=>getUnifiedEntitlements(new NextRequest(
+    "https://socthink.cn/api/platform/billing/me",
+    {headers:{cookie:parentAuth.PARENT_SESSION_COOKIE+"="+parentAuth.createParentSessionToken(id)}}));
+  const settledOwn=await billingSession(owner.id);
+  assert.equal(settledOwn.status,200);
+  const settledBody=await settledOwn.json() as {entitlements:{
+    platform:{items:Array<{kind:string;id:string}>};vocabulary:{state:string}}};
+  assert(settledBody.entitlements.platform.items.some(x=>x.kind==="report"&&x.id===reportInstrumentId));
+  assert.equal(settledBody.entitlements.vocabulary.state,"not-onboarded");
+  const settledOther=await (await billingSession(stranger.id)).json() as {
+    entitlements:{platform:{items:Array<{kind:string;id:string}>}}};
+  assert(!settledOther.entitlements.platform.items.some(x=>x.id===reportInstrumentId));
   const premiumResponse=await loadPremiumReport(premiumRequest(reportCookie));
   assert.equal(premiumResponse.status,200);
   const fullReport=await premiumResponse.json() as {report:{dimensions:unknown[];kind:string;version:string}};
@@ -257,6 +270,10 @@ async function run() {
     BillingConflictError);
   assert.equal((await refundVerifiedOrder({...verifiedReportReceipt,eventId:"report-refund-01"})).revoked,true);
   assert.equal(await hasVerifiedItemEntitlement(owner.id,"report",reportInstrumentId),false);
+  const refundedBody=await (await billingSession(owner.id)).json() as {
+    entitlements:{platform:{items:Array<{kind:string;id:string}>}}};
+  assert(!refundedBody.entitlements.platform.items.some(x=>x.id===reportInstrumentId),
+    "refund must revoke the same centralized module entitlement without manual sync");
   assert.equal((await loadPremiumReport(premiumRequest(reportCookie))).status,403,
     "refund revokes report content access");
 
