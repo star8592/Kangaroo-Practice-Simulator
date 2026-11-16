@@ -43,6 +43,9 @@ def state(db: str) -> dict[str, str]:
     version = sql(db, "SHOW server_version_num")
     if int(version) < 180000:
         raise RuntimeError("Expected PostgreSQL 18 or newer")
+    role = sql(db, "SELECT EXISTS(SELECT 1 FROM pg_roles WHERE rolname='socthink_billing')::text")
+    if role != "true":
+        raise RuntimeError("Existing restricted billing runtime role missing")
     current = sql(db,
         "SELECT (to_regclass('public.billing_organization_entitlements') IS NOT NULL)::text")
     count = sql(db, "SELECT count(*) FROM billing_orders")
@@ -60,6 +63,21 @@ def validate_installed(db: str) -> None:
     """)
     if checks != "true":
         raise RuntimeError("Organization billing objects incomplete")
+    permission = sql(db,
+        "SELECT (" +
+        " AND ".join(
+            "has_table_privilege('socthink_billing', "
+            "'public." + table + "','" + grant + "')"
+            for table in (
+                "billing_organization_owner_bindings",
+                "billing_organization_entitlements",
+            )
+            for grant in ("SELECT", "INSERT", "UPDATE")
+        ) +
+        " AND NOT has_table_privilege('socthink_billing', "
+        "'public.billing_organization_entitlements','DELETE'))::text")
+    if permission != "true":
+        raise RuntimeError("Organization billing least-privilege grants missing")
 
 
 def apply_sql(db: str) -> None:

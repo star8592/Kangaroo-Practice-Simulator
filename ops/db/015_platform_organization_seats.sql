@@ -102,4 +102,13 @@ CREATE INDEX IF NOT EXISTS billing_org_active_idx
 CREATE UNIQUE INDEX IF NOT EXISTS billing_one_pending_org
  ON billing_orders(organization_id)
  WHERE product_kind='organization' AND state='pending';
+-- Runtime billing role already has DML on older tables, but new tables
+-- require explicit grants. Never grant DELETE to an app on entitlement evidence.
+DO $$
+BEGIN
+ IF EXISTS(SELECT 1 FROM pg_roles WHERE rolname='socthink_billing') THEN
+   GRANT SELECT, INSERT, UPDATE ON billing_organization_owner_bindings TO socthink_billing;
+   GRANT SELECT, INSERT, UPDATE ON billing_organization_entitlements TO socthink_billing;
+ END IF;
+END $$;
 COMMIT;

@@ -139,3 +139,16 @@ V1 不允许尚有效的付费机构合同叠加新购，以免先续期、后�
 与 English 产品主线 PR #341 同步：AelOS 是唯一新的阅读商业
 模块；EnglishLeap reading 为只读历史导出入口，不再列入可售
 模块清单，记录在 readOnlyLegacyModules。
+
+### 生产账本的最小权限修正
+
+新增机构权益和 5 分钟购买绑定两表需由已有 socthink_billing
+运行账号执行 SELECT/INSERT/UPDATE。旧账务角色对先前创建的
+13 张表虽有授权，DDL 不会自动授予新表权限，所以迁移 015
+仅当账务角色存在时，在相同事务内单独授予这两张表的必要权限。
+不授予 DELETE、不暴露任何客户数据，也不更改其他表的现有权限。
+
+安装器 --plan/--apply 检查低权限角色确实存在；--apply 在隔离库
+和生产库分别检查两张新表的 SELECT、INSERT、UPDATE 全部授权，
+并证实机构权益表不具有 DELETE。隔离 PostgreSQL18 测试新增
+实际角色权限断言，付款/退款/幂等的账务回归全部 PASS。

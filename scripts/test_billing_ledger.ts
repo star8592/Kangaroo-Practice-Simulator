@@ -76,8 +76,19 @@ async function run() {
   await db.query(fs.readFileSync("ops/db/010_career_interview_service_sessions.sql","utf8"));
   await db.query(fs.readFileSync("ops/db/011_career_monthly_and_per_use.sql","utf8"));
   await db.query(fs.readFileSync("ops/db/011_career_monthly_and_per_use.sql","utf8"));
+  await db.query("CREATE ROLE socthink_billing NOLOGIN");
   await db.query(fs.readFileSync("ops/db/015_platform_organization_seats.sql","utf8"));
   await db.query(fs.readFileSync("ops/db/015_platform_organization_seats.sql","utf8"));
+  const orgRoleAccess=await db.query<{
+    read:boolean;insert:boolean;update:boolean;erase:boolean}>(
+    "SELECT has_table_privilege('socthink_billing','billing_organization_entitlements','SELECT') AS read,"+
+    "has_table_privilege('socthink_billing','billing_organization_entitlements','INSERT') AS insert,"+
+    "has_table_privilege('socthink_billing','billing_organization_entitlements','UPDATE') AS update,"+
+    "has_table_privilege('socthink_billing','billing_organization_entitlements','DELETE') AS erase");
+  assert.equal(orgRoleAccess.rows[0].read,true);
+  assert.equal(orgRoleAccess.rows[0].insert,true);
+  assert.equal(orgRoleAccess.rows[0].update,true);
+  assert.equal(orgRoleAccess.rows[0].erase,false);
   const consent={policyVersion:DIGITAL_SALES_POLICY_VERSION,acceptedAt:new Date()};
   // Native real orders are rejected without customer-initiated confirmation.
   await assert.rejects(()=>createBillingOrder("par_noconsent","plus_month","wechat_native"),
