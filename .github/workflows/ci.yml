@@ -48,7 +48,7 @@ jobs:
       - name: Native classroom Web contracts
         run: npm run test:classroom-embedded
 
-      - name: Platform R180 operator install regression (mocked and unprivileged)
+      - name: Platform authorization bootstrap installer regression
         run: python3 scripts/test_platform_runtime_installer.py
 
       - name: Public quality gate
