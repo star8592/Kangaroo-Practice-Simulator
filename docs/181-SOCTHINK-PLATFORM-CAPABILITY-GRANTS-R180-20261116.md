@@ -96,3 +96,17 @@ schema CREATE 和业务表所有者登录。
 - 两份 SQL 均不改变已有 parent / AccentLab / Vocabulary / billing 表。
 - 正式发布必须用 check_platform_db_preflight.mts 验证应用实际身份，
   严禁用 postgres 用户连接生产 Web 进程。
+
+## R180 登录后的真实页面隔离回归
+
+新增 tests/e2e/platform-authorizations.spec.ts 中的可选 PG18 隔离案例。
+默认 CI 不准备真实数据库时安全跳过，只有管理员在本地隔离实例明确
+设置 PLATFORM_E2E_FIXTURE=1 并提供隔离
+SOCTHINK_PLATFORM_DATABASE_URL / SOCTHINK_USER_DATA_DIR 才运行。
+
+同一主站、同一授权数据库、两个不同有效微信模拟会话：
+- 账号 A 授予 english.pronunciation，工作台只显示发音管理；
+- 账号 B 授予 english.vocabulary，工作台只显示单词管理；
+- 撤销 A 后刷新，发音模块立即消失，B 仍只有单词模块；
+- 桌面 Chromium 和手机 Chromium 各通过一次，均无真实微信凭据、
+  生产数据库、真实儿童账号或课程历史参与。
