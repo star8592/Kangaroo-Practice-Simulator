@@ -8,15 +8,17 @@
 
 - 全站唯一平台收银入口 /membership；原统一购买订单入口 /account。
   不新增收款密钥、机构商户或支付 Webhook。
-- GET /api/platform/billing/modules：公开的六个产品归属清单，
-  包括平台通用商品、数学、发音、词语星球、阅读、AelOS。
+- GET /api/platform/billing/modules：公开的五个产品归属清单，
+  包括平台通用、数学、发音 AccentLab、词语星球、AelOS。
+  旧 EnglishLeap 阅读 reading 仅作为历史只读导出入口，
+  在 readOnlyLegacyModules 标记，不属于新售卖目录。
   每个产品均使用 SOC THINK 的收银与订单中心。
   注意：这是接口注册表，不是商品价格、付费开放许可或权限。
 - GET /api/platform/billing/me：现有受保护微信会话只查询本人
   付费权益。SQL 同时验证付款归属、订单 state=paid 和撤销状态，
   不接受客户端传入 userId、orderId 或自封的付费标志。
 - 历史通用报告/资料/试卷无法仅凭名称算作数学商品，因此放在
-  platform 购买池；数学套餐经现有访问策略继续兑现。四个英语
+  platform 购买池；数学套餐经现有访问策略继续兑现。三个现行英语
   模块在正式 SKU 和产品交付适配上线前返回 not-onboarded。
 - 订单入账、真实微信签名、独立官方查询、退款撤权、幂等结算
   仍由原 billing-ledger 与 Webhook 实现；不复制账本。
