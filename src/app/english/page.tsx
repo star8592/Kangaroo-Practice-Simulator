@@ -4,16 +4,15 @@ import {ENGLISH_PRODUCTS} from "@/lib/english-products";
 import styles from "./english.module.css";
 
 export const metadata:Metadata={
- title:"英语学习｜少儿绘本·发音·单词·阅读·高阶阅读·考试｜SOC THINK",
- description:"SOC THINK 英语学习：少儿绘本、发音跟读、单词课堂、英语阅读、AelOS 高阶阅读与英语考试中心。",
+ title:"英语学习｜少儿绘本·发音·词汇·分级阅读｜SOC THINK",
+ description:"SOC THINK 英语学习：少儿绘本、AccentLab 听说训练、单词课堂和 AelOS 阅读驱动学习。旧 EnglishLeap 保留备份入口。",
  alternates:{canonical:"/english"},
 };
 
-// Four independent English apps, with six task-first entry cards. Exam center is a reading app route.
+// The public hub presents three distinct learning products plus the free children's reader.
+// EnglishLeap is a legacy backup route, not a second reading product or a fake exam center.
 const ENGLISH_DIRECT_ENTRIES=ENGLISH_PRODUCTS.flatMap(item=>item.id==="reading" ? [
  {id:"kids",name:"少儿英语绘本",product:"英语阅读 · 小小阅读星球",subtitle:"小学 1—6 年级 · 看图听故事 · 点触互动",statusText:"72 篇原创故事 · 免费开放",href:"/english/reading/kids/",icon:"📖"},
- {id:"reading-pro",name:"英语阅读",product:"文章阅读 · EnglishLeap",subtitle:"青少年及成人 · 文章 · 词汇 · 阅读理解",statusText:"阅读训练体验已开放",href:item.serviceUrl,icon:"R"},
- {id:"exams",name:"英语考试中心",product:"KET · PET · IELTS · TOEFL",subtitle:"考试规则 · 雅思口语计时演练 · 完整模拟卷建设中",statusText:"雅思原创口语演练已开放",href:"/english/reading/app/exams",icon:"EX"},
 ] : [
  {id:item.id,name:item.name,product:item.product,subtitle:item.subtitle,statusText:item.statusText,href:item.serviceUrl,icon:item.icon},
 ]);
@@ -23,7 +22,7 @@ export default function EnglishHub(){
   <header className={styles.hero}>
    <span className={styles.kicker}>SOC THINK · ENGLISH</span>
    <h1>英语学习</h1>
-   <p>直接选择：发音、单词、少儿绘本、英语阅读、高阶阅读或考试训练。</p>
+   <p>直接选择：少儿绘本、发音与听说训练、词汇学习或 AelOS 分级阅读。不同产品各自专注，避免重复工作台。</p>
   </header>
   <section className={styles.roleEntry} aria-labelledby="english-teacher-entry">
     <div><h2 id="english-teacher-entry">英语课堂</h2>
@@ -34,7 +33,7 @@ export default function EnglishHub(){
     </div>
   </section>
   <section aria-labelledby="english-choose">
-   <div className={styles.headerRow}><h2 id="english-choose">选择学习内容</h2><p>四套应用 · 六个直接入口</p></div>
+   <div className={styles.headerRow}><h2 id="english-choose">选择学习内容</h2><p>三个专业产品 · 少儿绘本入口</p></div>
    <nav className={styles.grid} aria-label="英语学习直达入口">
     {ENGLISH_DIRECT_ENTRIES.map(item=><article className={styles.tile+" direct-entry-card"} key={item.id}><Link className="direct-entry-hit" data-direct-primary href={item.href} aria-label={"直接打开"+item.name}/>
      <div className={styles.tileTop}><div className={styles.icon} aria-hidden="true">{item.icon}</div><div className={styles.tileMeta}><small>{item.product}</small><h3>{item.name}</h3></div></div>
@@ -43,7 +42,7 @@ export default function EnglishHub(){
     </article>)}
    </nav>
   </section>
-  <p className={styles.entryNote}>选择学习内容即可进入。学生的班级作业以老师分享的专属链接为准。</p>
+  <p className={styles.entryNote}>选择学习内容即可进入。学生的班级作业以老师分享的专属链接为准。旧 EnglishLeap 用户可前往 <Link href="/english/reading">历史学习记录与备份入口</Link>，现有笔记不自动迁移。</p>
 
  </div>
 }
