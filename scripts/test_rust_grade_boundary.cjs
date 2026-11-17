@@ -1,0 +1,18 @@
+'use strict';
+const fs=require('node:fs');
+const assert=require('node:assert/strict');
+const root=require('node:path').resolve(__dirname,'..');
+const read=p=>fs.readFileSync(require('node:path').join(root,p),'utf8');
+const lib=read('backend/socthink-core/src/lib.rs');
+const grader=read('backend/socthink-core/src/grading.rs');
+const fixture=read('backend/socthink-core/src/bin/grade_fixture.rs');
+assert(lib.includes('pub mod grading;'));
+assert(grader.includes('pub fn grade('));
+assert(!grader.includes('TcpListener')&&!grader.includes('std::fs')&&!grader.includes('axum::'));
+assert(!lib.includes('.route("/v1/grade"'));
+assert(!lib.includes('.route("/api/grade"'));
+assert(fixture.includes('io::stdin()')&&!fixture.includes('TcpListener'));
+assert(fixture.includes('4 * 1024 * 1024')&&fixture.includes('questions.len() > 100'));
+assert(read('scripts/test_rust_grade_parity.ts').includes('gradeExam('));
+assert(read('scripts/test_rust_grade_real_stock_parity.ts').includes('loadTrainingExamBundle('));
+console.log('RUST_GRADE_B2_BOUNDARY=PASS pure_function=true fixture_offline=true no_public_score_endpoint=true');

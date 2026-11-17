@@ -144,7 +144,10 @@
     "test:career-judge-dataset": "tsx scripts/test_career_judge_dataset.ts",
     "test:seo-storage": "node scripts/test_seo_storage_isolation.mjs",
     "test:cohost-gateway": "python3 scripts/test_cohost_gateway.py",
-    "test:english-platform": "tsx scripts/test_english_platform_contract.ts"
+    "test:english-platform": "tsx scripts/test_english_platform_contract.ts",
+    "test:rust-grade-parity": "tsx scripts/test_rust_grade_parity.ts",
+    "test:rust-grade-real-stock": "tsx scripts/test_rust_grade_real_stock_parity.ts",
+    "test:rust-grade-boundary": "node scripts/test_rust_grade_boundary.cjs"
   },
   "dependencies": {
     "next": "16.4.3",
