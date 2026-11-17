@@ -72,6 +72,7 @@ with tempfile.TemporaryDirectory(prefix="socthink-rust-promotion-") as d:
         assert live(url)["generatedAt"] == after["generatedAt"]
         assert live(url)["rows"] == 3
         assert os.stat(active).st_mode & 0o777 == 0o600
+        assert os.stat(active).st_uid == os.getuid()
         print("RUST_CATALOG_PROMOTION_REAL=PASS 2_to_3 new_memory_generation_confirmed=true")
 
         unsafe = copy.deepcopy(after)
@@ -112,6 +113,8 @@ with tempfile.TemporaryDirectory(prefix="socthink-rust-promotion-") as d:
             assert undone.returncode != 0, undone.stdout + undone.stderr
             assert "RUST_CATALOG_PROMOTION=ROLLED_BACK" in undone.stderr, undone.stderr
             assert json.loads(active.read_text()) == after
+            assert os.stat(active).st_uid == os.getuid()
+            assert os.stat(active).st_mode & 0o777 == 0o600
             assert live(url)["rows"] == 3 and live(url)["generatedAt"] == after["generatedAt"]
             assert sorted(p.name for p in folder.iterdir()) == ["active.json","candidate.json"]
             print("RUST_CATALOG_POST_PUBLISH_FAILURE_ROLLBACK=PASS last_good_preserved=true")

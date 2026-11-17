@@ -123,6 +123,16 @@ function signalRust(o:Options){
 async function main(){
  const o=options();
  const before=readSnapshot(o.snapshot),after=readSnapshot(o.candidate);
+ // Rust uses an unprivileged service account while the publisher may run as root.
+ // Preserve the old active file owner/mode before signalling the reader.
+ const oldStat=fs.lstatSync(o.snapshot);
+ const owner={uid:oldStat.uid,gid:oldStat.gid,mode:oldStat.mode&0o777};
+ function restoreReaderPermissions(){
+   const current=fs.lstatSync(o.snapshot);
+   if(current.uid!==owner.uid||current.gid!==owner.gid)
+     fs.chownSync(o.snapshot,owner.uid,owner.gid);
+   fs.chmodSync(o.snapshot,owner.mode);
+ }
  if(after.generatedAt===before.generatedAt||Date.parse(after.generatedAt)<=Date.parse(before.generatedAt))
   throw new Error("Candidate must have newer generation timestamp");
  if(!o.allowShrink&&after.rows.length<before.rows.length)
@@ -132,6 +142,7 @@ async function main(){
  try{
   const result=writeCatalogSnapshotAtomic(o.snapshot,after);
   published=true;
+  restoreReaderPermissions();
   signalRust(o);
   await awaitActive(o.url,after);
   console.log("RUST_CATALOG_PROMOTION=PASS activeRows="+after.rows.length+
@@ -140,6 +151,7 @@ async function main(){
   if(published){
    try{
     const restored=writeCatalogSnapshotAtomic(o.snapshot,before);
+    restoreReaderPermissions();
     signalRust(o);
     await awaitActive(o.url,before);
     console.error("RUST_CATALOG_PROMOTION=ROLLED_BACK lastGoodRows="+before.rows.length+
