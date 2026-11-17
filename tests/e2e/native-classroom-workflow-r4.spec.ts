@@ -10,6 +10,7 @@ const join="77777777-7777-4777-8777-777777777777";
 const attempt="88888888-8888-4888-8888-888888888888";
 const token="a".repeat(64);
 const url="https://socthink.cn/english/pronunciation/app/a/"+tenant+"/"+token;
+const nativeUrl="https://socthink.cn/english/pronunciation/next-lab/assignments/"+tenant+"/"+token;
 const api="/english/pronunciation/classroom-api";
 const classBase=api+"/tenants/"+tenant+"/classes/"+classroom;
 const taskBase=api+"/tenants/"+tenant+"/a/"+token;
@@ -67,7 +68,7 @@ test("teacher can publish existing Rust-classroom sentences, approve student and
  await page.getByRole("textbox",{name:"作业名称"}).fill("周三跟读");
  await page.getByRole("checkbox",{name:sentenceText}).check();
  await page.getByRole("button",{name:/发布 1 句作业/}).click();
- await expect(page.getByRole("textbox",{name:"已生成作业链接"})).toHaveValue(url);
+ await expect(page.getByRole("textbox",{name:"已生成作业链接"})).toHaveValue(nativeUrl);
  await expect(page.getByText(/作业已发布，请复制真实分享链接/)).toBeVisible();
  await page.getByRole("button",{name:"批准入班"}).click();
  await expect(page.getByText(/已批准 学生甲 入班/)).toBeVisible();
@@ -119,9 +120,9 @@ test("student joins, waits for approval, claims, records WebM and receives real 
   }
   throw Error("Unexpected student route "+req.method()+" "+path);
  });
- await page.goto("/english/pronunciation/next-lab/assignments");
+ await page.goto("/english/pronunciation/next-lab/assignments/"+tenant+"/"+token);
  await expect(page.getByRole("region",{name:"学生领取和提交作业"})).toBeVisible();
- await page.getByRole("textbox",{name:"老师分享到微信群的完整作业链接"}).fill(url);
+ await expect(page.getByRole("textbox",{name:"老师分享到微信群的完整作业链接"})).toHaveValue(url);
  await page.getByRole("button",{name:"验证作业链接"}).click();
  await page.getByRole("textbox",{name:/学生姓名/}).fill("学生甲");
  await page.getByRole("button",{name:"提交入班申请"}).click();
