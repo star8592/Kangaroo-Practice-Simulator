@@ -50,6 +50,8 @@ export default function EnglishStudioPage({studio}:{studio:EnglishProductId}){
   {studio==="pronunciation" ? <p className={styles.entryNote}>
     发音练习后想检验学习效果？<Link href="/assessments/english-speaking">前往英语听说考试中心</Link>，选择原创9题试测或地区模拟卷。
     当前为原创教学训练，不是武汉2027等地区的官方考试卷，也不提供官方等值评分。
+    <br/>
+    迁移试用：<Link href="/english/pronunciation/next-lab">体验 Next.js 原生单句训练候选</Link>（旧 V3 保持不变）。
    </p> : null}
   <section className={styles.serviceNote} aria-label="账号与权益">
    <strong>账号与课程权益</strong>

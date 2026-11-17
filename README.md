@@ -1,8 +1,10 @@
-# SOC THINK · 职业能力学习、实训与求职准备平台
+# SOC THINK · 多学科学习、教师与机构统一平台
 
-**战略定版（2026-11-03 · v2.1）**：主站服务大学生校招与社招求职者；公开导航为「岗位方向、学习与实训、模拟笔试与面试」。K12/数学竞赛只作为独立课堂服务保留；目前通过 `/math` 进入过渡教学目录，真正独立部署与数据迁移仍需专项验收。英语学习产品保持独立，职业英语仅在有真实可交付课程后关联。
+**2026-11-17 现行产品架构（v3）**：SOC THINK 面向个人学生、独立老师、学校/培训机构及企业，按数学、英语、校内学科、能力测评、考试和实训提供服务。目标是全站统一微信身份/权限与计费的业务权威归 Rust，Next.js App Router 只负责前端页面、服务端渲染、受保护展示及 API 读适配；现存 Next 旧业务 API 尚在迁移；PG18 按域组织数据。具体迁移状态必须由生产回执而不是规划文档声明。
 
-**执行状态**：本分支已进行第一批 UI 与路由改造，未经过生产同 SHA 发布验收时不得描述为“已上线”。唯一主架构文档：[SOC THINK 全站信息架构总纲](docs/architecture/SOCTHINK_SITE_ARCHITECTURE_MASTER.md)，逐页及数学迁移依据：[路由归属审计](docs/architecture/SOCTHINK_PAGE_ROUTE_AUDIT.md)。
+**唯一开发标准**：[Next.js + Rust 唯一 Web/业务核心与旧 SPA 清理规范](docs/architecture/SOCTHINK_UNIFIED_NEXT_RUST_WEB_ARCHITECTURE_20261117.md)；[产品/前端框架/路由迁移清单](docs/architecture/SOCTHINK_UNIFIED_WEB_INVENTORY_20261117.json)；[多角色与多学科产品总纲](docs/architecture/SOCTHINK_KHAN_STYLE_MULTI_ROLE_PLATFORM_MASTER_20261116.md)；[Next/Rust 严格边界](docs/architecture/SOCTHINK_NEXTJS_RUST_STRICT_BOUNDARY_ADR_20261116.md)；[逐页归属台账](docs/architecture/SOCTHINK_PAGE_ROUTE_AUDIT.md)。
+
+**实施状态**：门户 Next.js + 已迁 Rust 资源目录在主站运行；Rust 评分核心已通过离线真实题库对照，但考试交卷/会话事务仍待完整 Rust 切换。已上线的 AccentLab、词语星球和旧 EnglishLeap 是 Vue/Vite SPA，AelOS 是 React/Vite；它们按模块迁移，不得在缺少逐项能力验证时删除生产前端或历史学习数据。原始 Rust API 在过渡期保留。第一套原生 Next.js 发音候选在 /english/pronunciation/next-lab，不代表旧 V3 已完成替换。
 
 ## 原六业务综合考试平台与数学竞赛工程（历史参考）
 

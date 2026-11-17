@@ -1,0 +1,82 @@
+{
+  "schemaVersion": 1,
+  "checkedOn": "2026-11-17",
+  "target": {
+    "webFramework": "Next.js App Router + React + TypeScript",
+    "businessRuntime": "Rust Axum",
+    "database": "PostgreSQL 18; schema per domain, shared identity/billing",
+    "onlyPublicWebHost": "socthink.cn",
+    "legacyWebCutover": "sequential module parity before Nginx routing change"
+  },
+  "modules": [
+    {
+      "id": "portal",
+      "source": "star8592/Kangaroo-Practice-Simulator",
+      "currentFramework": "next",
+      "currentRoute": "/",
+      "targetRoute": "/",
+      "frontendState": "canonical",
+      "apiAuthority": "mixed-legacy-next-rust",
+      "preserve": ["portal", "auth-and-billing-contracts", "working-learning-pages"]
+    },
+    {
+      "id": "accent",
+      "source": "star8592/AccentLab",
+      "currentFramework": "vue3-vite",
+      "currentRoute": "/english/pronunciation/app/",
+      "targetRoute": "/english/pronunciation/",
+      "frontendState": "migration-needed",
+      "apiAuthority": "rust",
+      "apiRoute": "/english/pronunciation/api/",
+      "preserve": ["real-pronunciation-score", "audio-cue-auto-record", "waveform", "word-correction", "teacher-assignments"],
+      "firstNativeRoute": "/english/pronunciation/next-lab"
+    },
+    {
+      "id": "vocabulary",
+      "source": "star8592/VocabLearningPlatform",
+      "currentFramework": "vue3-vite",
+      "currentRoute": "/english/vocabulary/app/",
+      "targetRoute": "/english/vocabulary/",
+      "frontendState": "migration-needed",
+      "apiAuthority": "rust",
+      "apiRoute": "/english/vocabulary/api/",
+      "preserve": ["student-work", "spelling", "teacher-classes", "parent-consent", "learning-report", "spaced-repetition"],
+      "note": "Legacy demo/state endpoint returned 404 on production audit; do not promote demonstration as real service."
+    },
+    {
+      "id": "reading-history",
+      "source": "star8592/EnglishLeap",
+      "currentFramework": "vue3-vite",
+      "currentRoute": "/english/reading/app/",
+      "targetRoute": "/english/reading/",
+      "frontendState": "archive-export-only",
+      "apiAuthority": "rust",
+      "apiRoute": "/english/reading/api/v1/",
+      "preserve": ["legacy-browser-progress-export"],
+      "note": "Already designated historical compatibility, do not rebuild this as a competing reading product."
+    },
+    {
+      "id": "aelos",
+      "source": "star8592/aelos",
+      "currentFramework": "react-vite",
+      "currentRoute": "/english/aelos/app/",
+      "targetRoute": "/english/aelos/",
+      "frontendState": "migration-needed",
+      "apiAuthority": "standalone-service-not-yet-federated",
+      "apiRoute": "/english/aelos/api/",
+      "preserve": ["article-library", "leveled-reading", "comprehension", "writing", "learning-history", "parents"],
+      "note": "React components can be adapted to Next.js, but original React Router/Vite runtime must be removed after parity."
+    },
+    {
+      "id": "kids-reading",
+      "source": "english-reading-kids-static-release",
+      "currentFramework": "static-web-unverified",
+      "currentRoute": "/english/reading/kids/",
+      "targetRoute": "/english/reading/kids/",
+      "frontendState": "migration-needed",
+      "apiAuthority": "public-story-content",
+      "preserve": ["72-kids-stories", "tap-and-listen", "story-audio", "comprehension"],
+      "note": "Actual framework, data rights and source ownership require verification before touching Nginx."
+    }
+  ]
+}
