@@ -85,3 +85,11 @@ npm run test:rust-resource-boundary
 - 这是一项**新增隔离只读服务**，没有替换主站页面、考试评分、微信登录、订单和支付事务，也没有修改原 Next 的发布 SHA。前端切换仍需独立的全链路回归、权限和一键回退。
 
 **生产原子刷新已实测通过（2026-11-17）**：正式 Rust 目录 `generatedAt` 从 2026-11-17T00:01:48.100Z 更新至 2026-11-17T00:09:14.454Z，450 条资源保持一致，发布快照 SHA256 `7221a64bc41904cef62d7b3fe021f0a201799739b76884b905c05bc545d26739`，文件属主仍为 `socthink-catalog` 且权限为 0600，Rust 真实内存确认更新、Next 公网 `/resources` 仍返回 200。`ops/data/promote_student_ready.sh` 已新增成功发布后自动刷新 Rust 目录，以及数据回滚后重新发布旧目录的事件钩子；新钩子尚在 PR，**没有擅自替换正在运行的生产数据发布脚本**。
+
+## 9. 生产 Next.js 到本机 Rust 的准备（2026-11-17）
+
+- 已在正式服务器安装 `/etc/systemd/system/socthink-math.service.d/20-rust-catalog.conf`，内容与仓库 `ops/systemd/socthink-math-rust-catalog.conf` 完全一致：`SOCTHINK_RUST_CATALOG_INTERNAL_URL=http://127.0.0.1:37871`。
+- 安装前校验 Rust 服务在本机正常运行且内存中拥有 450 条目录元数据；`systemctl daemon-reload` 后确认 systemd 能读取这条新环境变量。
+- **未重启原 Next.js 生产服务**：前后 `MainPID` 保持相同、服务仍 active。该 drop-in 将在后续正常发布重启时生效。
+- 新 Next 候选通过 SSH 本地转发直连正式 Rust 目录：桌面 1280px、手机 390px 均成功展示 419 条可用卷，美国 AMC 专题页 HTTP 200、无横向溢出。它没有改变公网流量。
+- 回退策略仍是最小操作：正常自动回退恢复之前 Next 版本；若需要彻底回到无 Rust 依赖模式，可删除上述独立 drop-in、`systemctl daemon-reload`，在旧版 Next 发布时正常重启。Rust Catalog 服务本身可保留为内部备用；禁止因网页发布失败而删除已验证的生产元数据快照。
