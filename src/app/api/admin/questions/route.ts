@@ -1,1 +1,10 @@
-import{NextRequest,NextResponse}from"next/server";import{loadQuestionBank}from"@/lib/question-bank";import{isAdmin,SESSION_COOKIE,userFromSessionToken}from"@/lib/auth";export async function GET(r:NextRequest){const u=userFromSessionToken(r.cookies.get(SESSION_COOKIE)?.value);if(!u)return NextResponse.json({error:"请先登录"},{status:401});if(!isAdmin(u))return NextResponse.json({error:"无管理员权限"},{status:403});try{return NextResponse.json({questions:loadQuestionBank()})}catch(e){return NextResponse.json({error:e instanceof Error?e.message:"Unable to load bank"},{status:500})}}
+import {NextRequest,NextResponse} from "next/server";
+import {loadQuestionBank} from "@/lib/question-bank";
+import {platformAdminPrincipal} from "@/lib/platform-admin-principal";
+export const dynamic="force-dynamic";
+export async function GET(req:NextRequest){
+ if(!platformAdminPrincipal(req.cookies))
+  return NextResponse.json({error:"无管理员权限"},{status:403,headers:{"Cache-Control":"no-store"}});
+ try{return NextResponse.json({questions:loadQuestionBank()},{headers:{"Cache-Control":"private, no-store"}})}
+ catch(e){return NextResponse.json({error:e instanceof Error?e.message:"Unable to load bank"},{status:500})}
+}
