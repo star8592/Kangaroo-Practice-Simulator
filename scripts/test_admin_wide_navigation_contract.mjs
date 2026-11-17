@@ -7,7 +7,7 @@ const globalCss = read("src/app/globals.css");
 const executiveCss = read("src/app/admin/executive.module.css");
 
 const routes=[
-  "/admin","/admin/families","/admin/students","/admin/classroom",
+  "/admin","/admin/users","/admin/families","/admin/students","/admin/classroom",
   "/admin/questions","/admin/competition-source-watch","/admin/feedback","/admin/seo",
 ];
 for(const route of routes) {
@@ -51,4 +51,4 @@ for(const file of [
 for(const file of ["src/app/admin/classroom/classroom.module.css","src/app/admin/seo/seo.module.css"]) {
   assert.match(read(file),/max-width:2400px/,file+" has old layout cap");
 }
-console.log("SOCTHINK_WIDE_ADMIN_NAV_CONTRACT_PASS routes=8 pages=9 breakpoints=3");
+console.log("SOCTHINK_WIDE_ADMIN_NAV_CONTRACT_PASS routes=9 pages=10 breakpoints=3");
