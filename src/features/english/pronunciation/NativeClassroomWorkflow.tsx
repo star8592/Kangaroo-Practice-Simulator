@@ -95,6 +95,8 @@ export default function NativeClassroomWorkflow(){
  const stream=useRef<MediaStream|null>(null);
  const timer=useRef<ReturnType<typeof setTimeout>|null>(null);
  const requestId=useRef("");
+ const recordUrlRef=useRef("");
+ const aliveRef=useRef(true);
  const classRequest=useRef(0);
  const studentRequest=useRef(0);
 
@@ -104,12 +106,14 @@ export default function NativeClassroomWorkflow(){
   stream.current?.getTracks().forEach(t=>t.stop());
   stream.current=null;
  };
- useEffect(()=>()=>{stopMedia()},[]);
- useEffect(()=>{
-  if(!recordBlob){setRecordUrl("");return;}
-  const url=URL.createObjectURL(recordBlob);setRecordUrl(url);
-  return ()=>URL.revokeObjectURL(url);
- },[recordBlob]);
+ function clearRecordedAudio(){
+  if(recordUrlRef.current){URL.revokeObjectURL(recordUrlRef.current);recordUrlRef.current="";}
+  setRecordBlob(null);setRecordUrl("");
+ }
+ useEffect(()=>()=>{
+  aliveRef.current=false;stopMedia();
+  if(recordUrlRef.current)URL.revokeObjectURL(recordUrlRef.current);
+ },[]);
 
  useEffect(()=>{
   let live=true;
@@ -253,7 +257,7 @@ export default function NativeClassroomWorkflow(){
    const response=await read<StudentTask>(root);
    if(request!==studentRequest.current)return;
    if(!Array.isArray(response.items)||!response.items.length)throw Error("作业暂时没有可练习的句子");
-   setTask(response);setItemIndex(0);setClaimed(false);setRecordBlob(null);setLatest(null);
+   setTask(response);setItemIndex(0);setClaimed(false);clearRecordedAudio();setLatest(null);
    const saved=await read<History>("/tenants/"+next.tenant+"/assignments/"+response.assignment_id+"/my-attempts");
    if(request===studentRequest.current)setHistory(saved);
   }catch(error){if(request===studentRequest.current)setStudentError(error instanceof Error?error.message:"无法读取本人作业");}
@@ -263,7 +267,7 @@ export default function NativeClassroomWorkflow(){
   event?.preventDefault();if(studentBusy||recording||uploading)return;
   const value=validateShare(shareInput);
   if(!value){setStudentError("请输入老师发来的 socthink.cn 原始作业链接");setInvitation(null);setTask(null);return;}
-  stopMedia();setRecordBlob(null);setTask(null);setHistory(null);setClaimed(false);setLatest(null);
+  stopMedia();clearRecordedAudio();setTask(null);setHistory(null);setClaimed(false);setLatest(null);
   setStudentError("");setStudentNotice("");setInvitation(value);setJoinState("idle");setStudentBusy(true);
   try{
    const response=await read<{status:string}>("/tenants/"+value.tenant+"/a/"+value.token+"/join-status");
@@ -311,12 +315,12 @@ export default function NativeClassroomWorkflow(){
  }
  function selectItem(index:number){
   if(!task||recording||uploading||index<0||index>=task.items.length)return;
-  stopMedia();setRecordBlob(null);requestId.current="";
+  stopMedia();clearRecordedAudio();requestId.current="";
   setItemIndex(index);setLatest(null);setStudentError("");setStudentNotice("");
  }
  async function startRecording(){
   if(!claimed||!currentItem||recording||uploading)return;
-  setStudentError("");setStudentNotice("");setRecordBlob(null);setLatest(null);requestId.current="";
+  setStudentError("");setStudentNotice("");clearRecordedAudio();setLatest(null);requestId.current="";
   if(!navigator.mediaDevices?.getUserMedia||typeof MediaRecorder==="undefined"){
    setStudentError("该浏览器不支持麦克风录制，请使用 Chrome、Edge 或支持录音的手机浏览器");return;
   }
@@ -337,9 +341,12 @@ export default function NativeClassroomWorkflow(){
     media.current=null;setRecording(false);
     const blob=new Blob(chunks,{type:mime.startsWith("audio/webm")?"audio/webm":"audio/mp4"});
     if(blob.size<1024||blob.size>2*1024*1024){
-     setRecordBlob(null);setStudentError("录音过短或超过课堂接口 2MB 限制，请重新录制");return;
+     clearRecordedAudio();setStudentError("录音过短或超过课堂接口 2MB 限制，请重新录制");return;
     }
+    if(!aliveRef.current)return;
     requestId.current=crypto.randomUUID();
+    const url=URL.createObjectURL(blob);
+    recordUrlRef.current=url;setRecordUrl(url);
     setRecordBlob(blob);setStudentNotice("录音已就绪。请先回听，确认后再提交评分。");
    };
    recorder.start(250);setRecording(true);
@@ -367,7 +374,7 @@ export default function NativeClassroomWorkflow(){
    }
    const result=data as {score:number;submitted?:boolean};
    setLatest({sentenceId:currentItem.sentence_id,score:result.score,submitted:result.submitted===true});
-   setRecordBlob(null);requestId.current="";
+   clearRecordedAudio();requestId.current="";
    setStudentNotice("Rust 已保存真实评分："+displayScore(result.score)+" 分");
    if(task){
     try{
