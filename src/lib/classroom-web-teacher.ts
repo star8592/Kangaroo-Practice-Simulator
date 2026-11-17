@@ -1,5 +1,8 @@
 import crypto from "node:crypto";
 import {classInvitationLink} from "./classroom-invitations";
+import {
+  INVITATION_TEMPLATE_KEYS, validateInvitationTemplate,
+} from "@/features/english/pronunciation/class-invitation-copy";
 import type {PoolClient} from "pg";
 import type {NextRequest} from "next/server";
 import {listWechatParentCandidates} from "@/lib/parent-auth";
@@ -202,10 +205,31 @@ export async function teacherHandler(req:NextRequest,p:string[],a:Actor):Promise
   if(p[4]==="invitation"&&p.length===5&&method==="GET")
     return tx({tenant,account:a.accountId},async db=>{
       await teacher(db,a,tenant,cl);
-      const r=await db.query("SELECT rotation,enabled FROM accent.class_invitations WHERE tenant_id=$1 AND class_id=$2",[tenant,cl]);
+      const r=await db.query(
+        "SELECT rotation,enabled,message_template,template_key FROM accent.class_invitations WHERE tenant_id=$1 AND class_id=$2",
+        [tenant,cl]);
       const v=r.rows[0];
-      return {enabled:Boolean(v?.enabled),url:v?.enabled?classInvitationLink(tenant,cl,v.rotation):null};
+      return {enabled:Boolean(v?.enabled),url:v?.enabled?classInvitationLink(tenant,cl,v.rotation):null,
+        message_template:v?.message_template??null,template_key:v?.template_key??"warm"};
     });
+  // Persist editable invitation words only; URLs remain generated server-side.
+  // Class teacher authorization and tenant RLS are enforced on every read/write.
+  if(p[4]==="invitation"&&p.length===6&&p[5]==="copy"&&method==="POST"){
+    const body=await jsonBody(req);
+    const message=body.message_template,style=body.template_key;
+    if(!validateInvitationTemplate(message))
+      throw new ClassroomFailure(400,"邀请文案需为35—1400字，且必须包含一次 {{邀请链接}} 占位符");
+    if(typeof style!=="string"||!INVITATION_TEMPLATE_KEYS.some(key=>key===style))
+      throw new ClassroomFailure(400,"邀请文案模板类型无效");
+    return tx({tenant,account:a.accountId},async db=>{
+      await teacher(db,a,tenant,cl);
+      const result=await db.query(
+        "UPDATE accent.class_invitations SET message_template=$3,template_key=$4,updated_at=now() WHERE tenant_id=$1 AND class_id=$2 RETURNING message_template,template_key",
+        [tenant,cl,message,style]);
+      if(!result.rows.length)throw new ClassroomFailure(404,"请先生成班级邀请，再保存文案");
+      return {saved:true,...result.rows[0]};
+    });
+  }
   if(p[4]==="invitation"&&p.length===6&&p[5]==="rotate"&&method==="POST")
     return tx({tenant,account:a.accountId},async db=>{
       await teacher(db,a,tenant,cl);

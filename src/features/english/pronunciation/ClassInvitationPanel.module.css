@@ -25,3 +25,12 @@
 .notice{color:#17633b!important;background:#ebf7ed}
 .error{color:#9b392d!important;background:#fff3ee}
 @media(max-width:650px){.header{padding:17px 14px;flex-wrap:wrap}.header h3{font-size:18px!important}.status{font-size:11px}.switcher{padding:10px 12px 0}.switcher button{padding:10px 7px!important;font-size:13px!important}.content{padding:12px}.message{font-size:13px;min-height:390px}.actions button{flex:1;min-width:128px}.poster{max-width:100%}.manage{padding:13px}.notice,.error{margin:10px 12px!important}}
+.editor{padding:18px 24px;border-top:1px solid #e5eee7;background:#fcfefc}
+.editor label{display:block;font-weight:750;font-size:14px;color:#255e46;margin:3px 0 8px}
+.editor select{display:block;width:100%;max-width:450px;border:1px solid #bdd9c5;border-radius:10px;padding:11px 12px;font:inherit;color:#234d38;background:white;margin-bottom:17px}
+.editor .message{min-height:335px;max-height:600px;margin:8px 0;line-height:1.8;font-size:14px!important}
+.saveState{font-size:12px;color:#61776b}
+.preview{margin-top:19px;border:1px solid #e0ede3;border-radius:12px;padding:12px;background:#fafdfa}
+.preview summary{cursor:pointer;font-size:13px;font-weight:750;color:#25664b}
+.previewMessage{display:block;box-sizing:border-box;width:100%;height:210px;resize:vertical;margin:10px 0 0;border:0;background:transparent;font:13px/1.8 sans-serif;color:#31523f}
+@media(max-width:650px){.editor{padding:14px}.editor .message{min-height:365px}.editor .actions button{flex:1}.saveState{display:block;width:100%}.previewMessage{height:200px}}
