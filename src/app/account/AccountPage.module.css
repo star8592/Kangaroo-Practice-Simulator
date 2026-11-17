@@ -40,3 +40,13 @@
 @media(max-width:440px){.serviceGrid{grid-template-columns:1fr}}
 
 .accountName{font-size:clamp(18px,2vw,24px);font-weight:800;color:#fff;margin:0 0 9px}
+
+/* Optional, user-initiated profile consent; silent sign-in remains unchanged. */
+.nicknameSync{margin-top:18px;padding:18px 21px;border:1px solid var(--portal-border);border-radius:13px;background:#fff;display:flex;align-items:center;gap:20px;justify-content:space-between}
+.nicknameSync strong{color:var(--portal-navy);font-size:16px}
+.nicknameSync p{color:var(--portal-muted);font-size:14px;line-height:1.7;margin:6px 0 0;max-width:730px}
+.nicknameActions{display:flex;flex-direction:column;align-items:flex-start;gap:8px;flex-shrink:0}
+.nicknameAction{border:0;border-radius:9px;padding:10px 16px;cursor:pointer;white-space:nowrap;color:#fff;background:var(--portal-blue);font-size:14px;font-weight:750;text-decoration:none}
+.nicknameAction:hover{filter:brightness(.92)}
+.nicknameHint,.nicknameActions small{font-size:12px;line-height:1.6;color:var(--portal-muted);max-width:300px}
+@media(max-width:760px){.nicknameSync{flex-direction:column;align-items:stretch;padding:17px}.nicknameActions{align-items:stretch}.nicknameAction{white-space:normal;text-align:center}}
