@@ -1,7 +1,8 @@
 import Link from "next/link";
 import {cookies} from "next/headers";
 import {redirect} from "next/navigation";
-import {parentFromSessionToken,PARENT_SESSION_COOKIE} from "@/lib/parent-auth";
+import {parentFromSessionToken,PARENT_SESSION_COOKIE,isWechatNicknamePlaceholder} from "@/lib/parent-auth";
+import WechatNicknameSync from "@/components/WechatNicknameSync";
 import {attachVerifiedBilling} from "@/lib/access-context-server";
 import {effectivePlan} from "@/lib/access-policy";
 import {billingConfigured,billingPool} from "@/lib/billing-ledger";
@@ -75,6 +76,13 @@ export default async function AccountPage(){
       </div>
       <div className={styles.logout}><ParentLogoutButton/></div>
     </section>
+
+    {isWechatNicknamePlaceholder(account.name) ? <section className={styles.nicknameSync} aria-label="同步微信昵称">
+      <div><strong>微信昵称尚未同步</strong>
+        <p>账号和登录已正常。手机微信的快捷登录不会读取昵称；本人可在微信内授权一次，补全真实昵称。不会重新注册，也不影响订单、教师授权和学习记录。</p>
+      </div>
+      <WechatNicknameSync/>
+    </section> : null}
 
     <section className={styles.section} aria-label="可用功能">
       <div className={styles.sectionHeading}>
