@@ -26,3 +26,9 @@
 .error{background:#fff1ef;color:#862c27}.notice{background:#eef7ee;color:#275b37}
 .shell :is(a,button,input,select):focus-visible{outline:3px solid #ee9d5b;outline-offset:2px}
 @media(max-width:800px){.wrap{grid-template-columns:1fr}.shell{padding:18px 15px 52px}.panel{padding:20px}.search>div{flex-direction:column}}
+
+/* Use the same responsive main canvas as the other operations pages. */
+.missingNickname{color:#975b20!important;font-weight:750}
+.panel .nicknameWarning{background:#fff9ed;border:1px solid #f4d6a3;border-radius:10px;color:#794b1d;padding:12px 13px}
+.nicknameWarning a{color:#1257a5;font-weight:750;text-underline-offset:3px}
+@media(min-width:1101px){.wrap{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}}
