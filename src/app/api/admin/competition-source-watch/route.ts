@@ -1,5 +1,6 @@
 import {NextRequest,NextResponse} from "next/server";
 import {platformAdminPrincipal} from "@/lib/platform-admin-principal";
+import {sameOriginMutation} from "@/lib/site-owner-bootstrap";
 import {loadWatchStore,reviewObservation,WATCH_SOURCES} from "@/lib/competition-source-watch";
 const headers={"Cache-Control":"private, no-store"};
 const denied=()=>NextResponse.json({error:"Admin access required"},{status:403,headers});
@@ -19,8 +20,7 @@ export async function GET(req:NextRequest){
 export async function PATCH(req:NextRequest){
   const principal=platformAdminPrincipal(req.cookies);
   if(!principal)return denied();
-  const origin=req.headers.get("origin");
-  if(!origin||origin!==new URL(req.url).origin)
+  if(!sameOriginMutation(req))
     return NextResponse.json({error:"Same-origin review required"},{status:403,headers});
   if(!req.headers.get("content-type")?.toLowerCase().startsWith("application/json"))
     return NextResponse.json({error:"JSON required"},{status:415,headers});
