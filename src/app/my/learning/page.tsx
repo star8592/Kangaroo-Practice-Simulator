@@ -44,7 +44,7 @@ export default async function PersonalLearning(){
       <b>马上开始学习 →</b></Link>
     <Link href="/teachers" className={styles.modeCard}>
       <span className={styles.modeNumber}>02 · WITH A TEACHER</span><strong>跟老师学</strong>
-      <span>选择愿意公开招生的老师或使用老师邀请，入班后接受作业与反馈，收费课程须经平台结算。</span>
+      <span>选择公开招生的老师或使用老师邀请。老师可独立安排课程费用，SOC THINK 教师工具目前免费且不代收学费。</span>
       <b>找老师与班级 →</b></Link>
     <Link href="#my-class-title" className={styles.modeCard}>
       <span className={styles.modeNumber}>03 · CLASSMATES</span><strong>和同学一起学</strong>
