@@ -25,3 +25,25 @@ Z890 隔离工作区，本轮代码已验证：
 Z890 对本机 127.0.0.1:18099 的只读健康探测返回拒绝连接，故不能宣称本轮已完成真实 OpenPronounce 端到端评分。生产真实 PostgreSQL 课堂权限、真实教师和学生微信会话、真实手机麦克风与评分准确性、录音留存/删除、跨学生拒绝访问、正式部署 SHA 和支付均另需核验。
 
 先完成 R3 PR #359，再审 R4 PR #360；两者目前为 Draft。旧 Vue 正式 /english/pronunciation/app/practice-library 及既有 /english/pronunciation/app/a/... 分享链接、学生历史和录音数据继续保留。只有现有 CI-green 自动发布、精准版本核对、真实业务 E3、自动回退均满足时才允许变更正式入口。
+
+
+## 2026-11-17 真实数据库 + 实际评分器第二阶段回执
+
+在 Z890 上，OpenPronounce 原服务监听本机 127.0.0.1:8099（/health HTTP 200）；主站生产机通过既有隧道，在它自己的回环 127.0.0.1:18099 上 /health 返回 HTTP 200。两机回环端口用途不同，不能依据 Z890 的 18099 空监听误判生产评分服务不可用。
+
+执行仓库既有隔离集成测试（非模拟成绩 API）：
+`ACCENTLAB_MIGRATIONS_DIR=/home/master/projects/accentlab-classroom-remove-20261115/migrations ACCENTLAB_E2E_CANARY=/home/master/projects/zoryvia-classroom/.local/wss-smoke/synthetic.webm npx tsx scripts/test_classroom_direct_teacher_grant_e2e.ts`
+
+实际回执：
+- `SOCTHINK_NATIVE_DIRECT_TEACHER_GRANT_E2E_PASS ... real_scorer=true isolated_pg18=true`
+- `NATIVE_CLASSROOM_FIVE_STUDENT_REPORT_PASS total=5 completed=5`
+- `STUDENT_OWN_TEACHER_FEEDBACK_PG18_RLS_PASS`，确认学生甲可以读到老师写给自己的反馈，同班学生乙读不到该反馈。
+- `STUDENT_APPLY_AND_TEACHER_DIRECT_ASSIGN_BIDIRECTIONAL_PASS`
+- `STUDENT_REMOVE_REAPPLY_HISTORY_PRESERVED_E2E_PASS`
+- `ISOLATED_PG_POOL_CLOSED_PASS` / `ISOLATED_TEST_STORAGE_CLEANED true`
+
+真实 PostgreSQL 18 由测试临时创建，采用最小特权用户与 FORCE RLS，使用合成微信会话签名、合成学生数据和合成音频；测试完成后销毁。没有往正式 accent_lab 或真实学生账户写入数据。
+
+公开站在该阶段的只读验证：`GET /english/pronunciation/classroom-api/health` = HTTP 200（`postgres-select-1-v1`）；匿名 `GET .../me` = HTTP 401，符合微信身份保护。主站 `/api/release` 当时仍报告 R2 旧 SHA，故本轮不宣称 R3 或 R4 生产已经部署，也不宣称真人学生实机评分通过。
+
+注意：上方“生产 E3”列表中 **隔离真实评分器及数据库联调已通过**，但 **生产真人微信与实体手机联动、生产音频留存清理、正式发布 SHA** 仍是独立未完成项。
