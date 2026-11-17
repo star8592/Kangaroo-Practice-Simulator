@@ -149,7 +149,8 @@
     "test:next-rust-boundary": "node scripts/test_next_rust_boundary.mjs",
     "test:rust-resource-boundary": "node scripts/test_rust_resource_boundary.mjs",
     "test:rust-catalog-ssr-parity": "tsx scripts/test_rust_catalog_ssr_parity.ts",
-    "test:rust-catalog-browser": "node scripts/test_rust_catalog_browser.mjs"
+    "test:rust-catalog-browser": "node scripts/test_rust_catalog_browser.mjs",
+    "test:rust-catalog-promotion": "python3 scripts/test_rust_catalog_promotion.py"
   },
   "dependencies": {
     "next": "16.4.3",

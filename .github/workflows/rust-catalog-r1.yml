@@ -11,6 +11,12 @@ on:
       - 'scripts/test_catalog_snapshot_atomic.ts'
       - 'scripts/test_rust_catalog_hot_reload.py'
       - 'scripts/check_rust_binary_abi.py'
+      - 'scripts/promote_rust_catalog_snapshot.ts'
+      - 'scripts/refresh_rust_catalog.sh'
+      - 'scripts/test_rust_catalog_promotion.py'
+      - 'scripts/test_rust_catalog_content_hook.py'
+      - 'ops/data/promote_student_ready.sh'
+      - 'ops/systemd/socthink-catalog.service'
       - '.github/workflows/rust-catalog-r1.yml'
   push:
     branches: [main]
@@ -23,6 +29,12 @@ on:
       - 'scripts/test_catalog_snapshot_atomic.ts'
       - 'scripts/test_rust_catalog_hot_reload.py'
       - 'scripts/check_rust_binary_abi.py'
+      - 'scripts/promote_rust_catalog_snapshot.ts'
+      - 'scripts/refresh_rust_catalog.sh'
+      - 'scripts/test_rust_catalog_promotion.py'
+      - 'scripts/test_rust_catalog_content_hook.py'
+      - 'ops/data/promote_student_ready.sh'
+      - 'ops/systemd/socthink-catalog.service'
       - '.github/workflows/rust-catalog-r1.yml'
 
 permissions:
@@ -50,10 +62,14 @@ jobs:
         run: npx tsx scripts/test_rust_catalog_snapshot.ts
       - name: Atomic metadata publication contract
         run: npx tsx scripts/test_catalog_snapshot_atomic.ts
+      - name: Ensure verified content promotion refreshes Rust on success and rollback
+        run: python3 scripts/test_rust_catalog_content_hook.py
       - name: Compile Rust service and verify event-triggered zero-downtime reload
         run: |
           cargo build --locked --manifest-path backend/socthink-core/Cargo.toml
           python3 scripts/test_rust_catalog_hot_reload.py
+      - name: Verify active generation and automatic snapshot rollback
+        run: python3 scripts/test_rust_catalog_promotion.py
 
       - name: Build an x86-64 production-compatible Rust release candidate
         run: |

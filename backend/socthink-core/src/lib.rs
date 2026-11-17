@@ -68,6 +68,14 @@ pub struct SearchQuery {
     pub offset: Option<usize>,
 }
 
+#[derive(Clone, Debug, Serialize, PartialEq, Eq)]
+#[serde(rename_all = "camelCase")]
+pub struct CatalogRuntimeStatus {
+    pub schema_version: u32,
+    pub generated_at: String,
+    pub rows: usize,
+}
+
 #[derive(Clone, Debug, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct SearchResult {
@@ -227,6 +235,17 @@ impl CatalogHandle {
         self.current.read().expect("catalog lock poisoned").len()
     }
 
+    /// Report the index actually held by Rust, not merely the on-disk file.
+    /// A publisher can prove that its SIGHUP was consumed before returning.
+    pub fn runtime_status(&self) -> CatalogRuntimeStatus {
+        let index = self.current.read().expect("catalog lock poisoned").clone();
+        CatalogRuntimeStatus {
+            schema_version: 1,
+            generated_at: index.generated_at.clone(),
+            rows: index.len(),
+        }
+    }
+
     pub fn is_empty(&self) -> bool {
         self.current
             .read()
@@ -251,6 +270,20 @@ async fn list_resources(
     Json(handle.search(&params))
 }
 
+async fn catalog_runtime_status(
+    State(handle): State<CatalogHandle>,
+) -> (
+    [(&'static str, &'static str); 1],
+    Json<CatalogRuntimeStatus>,
+) {
+    // This router is bound to loopback by the binary. No PII, answers, or SKU
+    // information escapes the endpoint. Explicitly disable proxy caching.
+    (
+        [("cache-control", "no-store")],
+        Json(handle.runtime_status()),
+    )
+}
+
 async fn health() -> &'static str {
     "ok"
 }
@@ -262,6 +295,7 @@ pub fn router(index: CatalogIndex) -> Router {
 pub fn router_with_handle(handle: CatalogHandle) -> Router {
     Router::new()
         .route("/healthz", get(health))
+        .route("/internal/catalog/status", get(catalog_runtime_status))
         .route("/v1/catalog/resources", get(list_resources))
         .with_state(handle)
 }
@@ -355,6 +389,19 @@ mod tests {
         assert_eq!(r.total, 2);
         assert_eq!(r.items.len(), 1);
         assert!(!r.has_more);
+    }
+
+    #[test]
+    fn runtime_status_reports_only_active_memory_snapshot() {
+        let handle = CatalogHandle::new(fixture());
+        let active = handle.runtime_status();
+        assert_eq!(active.schema_version, 1);
+        assert_eq!(active.rows, 2);
+        assert!(!active.generated_at.is_empty());
+        let raw = serde_json::to_string(&active).unwrap();
+        assert!(!raw.contains("answer"));
+        assert!(!raw.contains("sourceFile"));
+        assert!(!raw.contains("buyer"));
     }
 
     #[test]
