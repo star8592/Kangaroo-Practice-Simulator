@@ -152,6 +152,10 @@ while IFS= read -r f; do rm -f "$f"; done < "$LIST"
 tar -xzf "$BACKUP" -C "$APP"
 npm run build
 systemctl restart "$SERVICE"
+# Recreate the Rust metadata after restoring original exam bundles.
+if systemctl is-active --quiet socthink-catalog.service; then
+  SOCTHINK_CATALOG_SNAPSHOT=/var/lib/socthink/catalog/active.json SOCTHINK_RUST_CATALOG_INTERNAL_URL=http://127.0.0.1:37871 bash scripts/refresh_rust_catalog.sh
+fi
 REMOTE
   exit "$rc"
 }
@@ -217,6 +221,9 @@ if [[ ${#PUBLIC_ASSET_CHECK[@]} -ge 2 ]]; then
   [[ "$(sha256sum "$TMP/public-asset.bin" | awk '{print $1}')" == "$PUBLIC_ASSET_SHA" ]] \
     || die "public asset hash mismatch: $PUBLIC_ASSET_PATH"
 fi
+
+log "refresh Rust catalogue after verified exam publication"
+ssh -o BatchMode=yes "$REMOTE_HOST" "cd '$REMOTE_APP'; if systemctl is-active --quiet socthink-catalog.service; then SOCTHINK_CATALOG_SNAPSHOT=/var/lib/socthink/catalog/active.json SOCTHINK_RUST_CATALOG_INTERNAL_URL=http://127.0.0.1:37871 bash scripts/refresh_rust_catalog.sh; else echo RUST_CATALOG_REFRESH=SKIPPED; fi"
 
 log "write production data release receipt"
 ssh -o BatchMode=yes "$REMOTE_HOST" bash -s -- \
