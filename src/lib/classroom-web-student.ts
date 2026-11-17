@@ -145,9 +145,16 @@ export async function studentHandler(req:NextRequest,p:string[],a:Actor):Promise
         "WHERE tenant_id=$1 AND assignment_id=$2 AND student_id=$3"].join(" "),
         [tenant,assignment,a.accountId]);
       const state=receipt.rows[0]?.status||"in_progress";
+      // Only the authenticated student can read feedback addressed to this
+      // exact assignment and account; do not enumerate classmates or teachers.
+      const feedback=await db.query(["SELECT attempt_id,word_position,comment,created_at AS at",
+        "FROM accent.assignment_teacher_feedback",
+        "WHERE tenant_id=$1 AND assignment_id=$2 AND student_id=$3",
+        "ORDER BY created_at DESC LIMIT 100"].join(" "),
+        [tenant,assignment,a.accountId]);
       return {student_id:a.accountId,assignment_id:assignment,attempt_count:r.rows.length,
         receipt_status:state,submitted:["submitted","completed"].includes(state),
-        attempts:r.rows};
+        attempts:r.rows,teacher_feedback:feedback.rows};
     });
   }
   return undefined;
