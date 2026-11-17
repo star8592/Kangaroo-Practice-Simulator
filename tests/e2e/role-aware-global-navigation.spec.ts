@@ -26,9 +26,9 @@ test("site owner sees one-click admin center even if teacher authorization is un
  await expect(shortcut).toBeVisible();
  await expect(shortcut).toHaveAttribute("href","/admin");
  await page.getByRole("button",{name:/打开账户与工作空间菜单/}).click();
- await expect(page.getByRole("link",{name:"平台管理中心"})).toHaveAttribute("href","/admin");
- await expect(page.getByRole("link",{name:"浏览网站前台"})).toHaveAttribute("href","/");
- await expect(page.getByRole("link",{name:"模块与教师权限"})).toHaveAttribute("href","/admin/platform-authorizations");
+ await expect(page.getByRole("menuitem",{name:"平台管理中心"})).toHaveAttribute("href","/admin");
+ await expect(page.getByRole("menuitem",{name:"浏览网站前台"})).toHaveAttribute("href","/");
+ await expect(page.getByRole("menuitem",{name:"模块与教师权限"})).toHaveAttribute("href","/admin/platform-authorizations");
 });
 
 test("teacher workspace is visible only with a validated module grant",async({page})=>{
@@ -36,8 +36,8 @@ test("teacher workspace is visible only with a validated module grant",async({pa
  await page.goto("/english");
  await expect(page.getByRole("link",{name:"教学工作台",exact:true})).toHaveAttribute("href","/workspace");
  await page.getByRole("button",{name:/打开账户与工作空间菜单/}).click();
- await expect(page.getByRole("link",{name:"我的教学与项目工作台"})).toHaveAttribute("href","/workspace");
- await expect(page.getByRole("link",{name:"平台管理中心"})).toHaveCount(0);
+ await expect(page.getByRole("menuitem",{name:"我的教学与项目工作台"})).toHaveAttribute("href","/workspace");
+ await expect(page.getByRole("menuitem",{name:"平台管理中心"})).toHaveCount(0);
 });
 
 test("ordinary WeChat learner gets learner home, not hidden admin privileges",async({page})=>{
@@ -47,9 +47,9 @@ test("ordinary WeChat learner gets learner home, not hidden admin privileges",as
  await expect(page.getByRole("link",{name:"管理中心",exact:true})).toHaveCount(0);
  await expect(page.getByRole("link",{name:"教学工作台",exact:true})).toHaveCount(0);
  await page.getByRole("button",{name:/打开账户与工作空间菜单/}).click();
- await expect(page.getByRole("link",{name:"平台管理中心"})).toHaveCount(0);
- await expect(page.getByRole("link",{name:"我的教学与项目工作台"})).toHaveCount(0);
- await expect(page.getByRole("link",{name:"我的账号与订单"})).toHaveAttribute("href","/account");
+ await expect(page.getByRole("menuitem",{name:"平台管理中心"})).toHaveCount(0);
+ await expect(page.getByRole("menuitem",{name:"我的教学与项目工作台"})).toHaveCount(0);
+ await expect(page.getByRole("menuitem",{name:"我的账号与订单"})).toHaveAttribute("href","/account");
 });
 
 test("a 390px owner can reach management without sideways page scrolling",async({page})=>{
