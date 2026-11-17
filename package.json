@@ -144,7 +144,7 @@
     "test:career-judge-dataset": "tsx scripts/test_career_judge_dataset.ts",
     "test:seo-storage": "node scripts/test_seo_storage_isolation.mjs",
     "test:cohost-gateway": "python3 scripts/test_cohost_gateway.py",
-"test:english-platform": "tsx scripts/test_teacher_invitation_copy_20261117.ts && tsx scripts/test_english_platform_contract.ts && tsx scripts/test_classroom_owner_entitlement_20261117.ts && tsx scripts/test_classroom_candidate_subject_20261117.ts && node scripts/test_edu_admin_single_entry_contract_20261117.mjs",
+"test:english-platform": "tsx scripts/test_teacher_free_pilot_policy_20261117.ts && tsx scripts/test_teacher_invitation_copy_20261117.ts && tsx scripts/test_english_platform_contract.ts && tsx scripts/test_classroom_owner_entitlement_20261117.ts && tsx scripts/test_classroom_candidate_subject_20261117.ts && node scripts/test_edu_admin_single_entry_contract_20261117.mjs",
     "test:khan-platform": "node scripts/test_khan_multi_audience_portal.mjs",
     "test:next-rust-boundary": "node scripts/test_next_rust_boundary.mjs",
     "test:rust-resource-boundary": "node scripts/test_rust_resource_boundary.mjs",

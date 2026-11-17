@@ -6,9 +6,10 @@ import {
   INVITATION_LINK_FIELD, INVITATION_TEMPLATES, INVITATION_TEMPLATE_KEYS,
   type InvitationTemplateKey, renderInvitationTemplate, validateInvitationTemplate,
 } from "./class-invitation-copy";
+import {STUDENT_FEE_OPTIONS, type StudentFeeMode} from "@/lib/teacher-pilot-policy";
 import styles from "./ClassInvitationPanel.module.css";
 
-type Invitation = {enabled:boolean;url:string|null;message_template?:string|null;template_key?:InvitationTemplateKey;discoverable?:boolean;listing_intro?:string};
+type Invitation = {enabled:boolean;url:string|null;message_template?:string|null;template_key?:InvitationTemplateKey;discoverable?:boolean;listing_intro?:string;student_fee_mode?:StudentFeeMode};
 type InvitationFormat = "link" | "qr";
 const API = "/english/pronunciation/classroom-api";
 
@@ -107,6 +108,7 @@ export default function ClassInvitationPanel({tenant,classId,className}:{
   const [error,setError]=useState("");
   const [notice,setNotice]=useState("");
   const [listingIntro,setListingIntro]=useState("");
+  const [studentFeeMode,setStudentFeeMode]=useState<StudentFeeMode>("not_specified");
   const base=API+"/tenants/"+tenant+"/classes/"+classId+"/invitation";
 
   useEffect(()=>{
@@ -121,7 +123,10 @@ export default function ClassInvitationPanel({tenant,classId,className}:{
         validateInvitationTemplate(value.message_template)
         ?value.message_template:INVITATION_TEMPLATES[key].text;
       setEntry(value);setStyle(key);setSavedStyle(key);
-      setDraft(text);setSavedDraft(text);setListingIntro(value.listing_intro||"");setLoaded(true);
+      setDraft(text);setSavedDraft(text);setListingIntro(value.listing_intro||"");
+      setStudentFeeMode(STUDENT_FEE_OPTIONS.some(o=>o.id===value.student_fee_mode)?
+        value.student_fee_mode as StudentFeeMode:"not_specified");
+      setLoaded(true);
     }).catch(reason=>{if(live)setError(reason instanceof Error?reason.message:"无法读取班级邀请");});
     return()=>{live=false;};
   },[base]);
@@ -174,11 +179,11 @@ export default function ClassInvitationPanel({tenant,classId,className}:{
       const response=await fetch(base+"/discovery",{
         method:"POST",credentials:"same-origin",
         headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({publish,introduction:listingIntro.trim()})
+        body:JSON.stringify({publish,introduction:listingIntro.trim(),student_fee_mode:studentFeeMode})
       });
       const body=await response.json();
       if(!response.ok||body.saved!==true)throw Error(body.error||"招生设置保存失败");
-      setEntry(previous=>previous?{...previous,discoverable:Boolean(body.discoverable),listing_intro:body.listing_intro||""}:previous);
+      setEntry(previous=>previous?{...previous,discoverable:Boolean(body.discoverable),listing_intro:body.listing_intro||"",student_fee_mode:body.student_fee_mode||studentFeeMode}:previous);
       setNotice(publish?"已公开招生，学生可以在找老师页面发现这个班级":"已停止公开招生，原班级和私发邀请不受影响");
     }catch(reason){setError(reason instanceof Error?reason.message:"无法修改招生设置");}
     finally{setBusy(false);}
@@ -322,6 +327,15 @@ export default function ClassInvitationPanel({tenant,classId,className}:{
         <textarea id={"discovery-intro-"+classId} className={styles.discoveryIntro} aria-label="公开班级介绍"
           placeholder="介绍课程目标、适合的练习内容和教师指导方式。请不要填写学生姓名、私人联系方式或未开通的收费承诺。"
           maxLength={220} value={listingIntro} onChange={event=>setListingIntro(event.target.value)}/>
+        <label htmlFor={"student-fee-"+classId}>学生课程费用如何安排？</label>
+        <select id={"student-fee-"+classId} aria-label="学生课程费用安排"
+          className={styles.feeSelect} value={studentFeeMode}
+          onChange={event=>setStudentFeeMode(event.target.value as StudentFeeMode)}>
+          {STUDENT_FEE_OPTIONS.map(option=><option key={option.id} value={option.id}>
+            {option.label}
+          </option>)}
+        </select>
+        <p className={styles.tip}>这里说的是学生可能向老师支付的课程费用，不是老师使用本平台的费用。老师使用 SOC THINK 教学工具在试用阶段免费，无平台使用费、无教学抽成。老师可以自行与学生安排收费；平台不代收、不代付、不核验这类付款，也不因此阻止免费入班申请。</p>
         <div className={styles.actions}>
           <button type="button" className={styles.primary} disabled={busy}
             onClick={()=>void publishClass(true)}>{entry?.discoverable?"更新招生介绍":"公开招生"}</button>
@@ -329,7 +343,7 @@ export default function ClassInvitationPanel({tenant,classId,className}:{
             onClick={()=>void publishClass(false)}>停止公开招生</button>:null}
           <a href="/teachers" target="_blank" rel="noopener noreferrer">查看找老师目录</a>
         </div>
-        <p className={styles.tip}>公开目录目前支持真实入班申请，不包含尚未开通的付费订单。以后有收费课程时，须通过主站统一支付与权益核验。</p>
+        <p className={styles.tip}>当前公开目录只负责班级展示和入班申请，不产生平台收费订单。如果将来老师自愿选择平台统一收款，将另行开通、明确告知规则，不会自动收费。</p>
       </section>
       <details className={styles.manage}>
         <summary>邀请链接管理（更换 / 停用）</summary>

@@ -1,4 +1,5 @@
 import crypto from "node:crypto";
+import {validStudentFeeMode} from "./teacher-pilot-policy";
 import {classInvitationLink} from "./classroom-invitations";
 import {
   INVITATION_TEMPLATE_KEYS, validateInvitationTemplate,
@@ -206,12 +207,13 @@ export async function teacherHandler(req:NextRequest,p:string[],a:Actor):Promise
     return tx({tenant,account:a.accountId},async db=>{
       await teacher(db,a,tenant,cl);
       const r=await db.query(
-        "SELECT rotation,enabled,message_template,template_key,discoverable,listing_intro FROM accent.class_invitations WHERE tenant_id=$1 AND class_id=$2",
+        "SELECT rotation,enabled,message_template,template_key,discoverable,listing_intro,student_fee_mode FROM accent.class_invitations WHERE tenant_id=$1 AND class_id=$2",
         [tenant,cl]);
       const v=r.rows[0];
       return {enabled:Boolean(v?.enabled),url:v?.enabled?classInvitationLink(tenant,cl,v.rotation):null,
         message_template:v?.message_template??null,template_key:v?.template_key??"warm",
-        discoverable:Boolean(v?.discoverable),listing_intro:v?.listing_intro??""};
+        discoverable:Boolean(v?.discoverable),listing_intro:v?.listing_intro??"",
+        student_fee_mode:v?.student_fee_mode??"not_specified"};
     });
   // Public teacher discovery is OPT-IN. A public card exposes only a class
   // name, verified teacher display name and teacher-authored introduction.
@@ -219,6 +221,9 @@ export async function teacherHandler(req:NextRequest,p:string[],a:Actor):Promise
     const body=await jsonBody(req);
     if(typeof body.publish!=="boolean")
       throw new ClassroomFailure(400,"请选择是否公开班级");
+    const feeMode=body.student_fee_mode;
+    if(body.publish && !validStudentFeeMode(feeMode))
+      throw new ClassroomFailure(400,"请选择班级学生费用安排");
     const intro=body.publish?txt(
       typeof body.introduction==="string"?body.introduction.replace(/[\r\n\t]+/g," "):body.introduction,
       220,20):"";
@@ -227,14 +232,15 @@ export async function teacherHandler(req:NextRequest,p:string[],a:Actor):Promise
       const response=await db.query([
         "UPDATE accent.class_invitations i SET discoverable=$3,",
         "listing_intro=CASE WHEN $3 THEN $4 ELSE i.listing_intro END,",
-        "listing_class_name=c.title,listing_teacher_name=m.display_name,updated_at=now()",
+        "listing_class_name=c.title,listing_teacher_name=m.display_name,",
+        "student_fee_mode=CASE WHEN $3 THEN $5 ELSE i.student_fee_mode END,updated_at=now()",
         "FROM accent.classes c JOIN accent.memberships m",
         "ON m.tenant_id=c.tenant_id AND m.account_id=c.lead_teacher_id",
         "WHERE i.tenant_id=$1 AND i.class_id=$2 AND i.tenant_id=c.tenant_id",
         "AND i.class_id=c.id AND m.role='teacher' AND m.state='active'",
         "AND (NOT $3 OR i.enabled=true)",
-        "RETURNING i.discoverable,i.listing_intro"
-      ].join(" "),[tenant,cl,body.publish,intro]);
+        "RETURNING i.discoverable,i.listing_intro,i.student_fee_mode"
+      ].join(" "),[tenant,cl,body.publish,intro,validStudentFeeMode(feeMode)?feeMode:"not_specified"]);
       if(!response.rows.length)
         throw new ClassroomFailure(409,"请先生成并启用班级邀请，才能公开招收学生");
       return {saved:true,...response.rows[0]};

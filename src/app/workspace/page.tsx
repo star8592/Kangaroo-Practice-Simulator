@@ -24,6 +24,7 @@ export default async function Page(){
    <small>SOC THINK · WORKSPACE</small>
    <h1>我的教学工作台</h1>
    <p>{me.name}，今天从已有班级和授课项目开始。只显示你确实有权限管理的内容。</p>
+   <p>教师试用期间，班级教学工具免费使用，无平台使用费或教学佣金。学生课程费用由老师自主安排，平台不代收。</p>
   </header>
   {owner?<div className={styles.ownerAction}><Link href="/admin">平台管理中心</Link><Link href="/admin/platform-authorizations">授权教师和模块</Link></div>:null}
   {!unavailable&&modules.some(m=>m.id==="english.pronunciation")?<TeacherClassOverview/>:null}

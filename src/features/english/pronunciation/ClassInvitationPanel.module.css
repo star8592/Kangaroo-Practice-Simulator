@@ -43,3 +43,5 @@
 .discovery label{display:block;color:#2c6043;font-weight:750;font-size:13px;margin:2px 0 9px}
 .discoveryIntro{display:block;box-sizing:border-box;width:100%;min-height:105px;resize:vertical;padding:14px;border:1px solid #cddfd1;border-radius:11px;background:#fff;color:#244a34;font:14px/1.65 sans-serif}
 @media(max-width:650px){.discovery{padding:18px 12px}.discoveryHeader{display:block}.discoveryStatus{display:inline-flex;margin-bottom:12px}}
+
+.discovery .feeSelect{box-sizing:border-box;width:100%;min-height:44px;background:#fff;color:#24513b;border:1px solid #cddfd1;border-radius:10px;padding:10px 13px;font:14px sans-serif;margin:0 0 9px}
