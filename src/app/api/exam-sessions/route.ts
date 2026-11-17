@@ -1,5 +1,7 @@
 import { NextRequest,NextResponse } from "next/server";
 import { userFromRequest } from "@/lib/auth";
+import { marketplaceMode } from "@/lib/marketplace-entitlement";
+import { loadExamAttempts } from "@/lib/attempt-store";
 import { hasFullExamAccess } from "@/lib/exam-access";
 import { deniedItemExamResponse } from "@/lib/item-access-server";
 import { isExamBundleTrainingReady,loadTrainingExamBundle } from "@/lib/training-question-bank";
@@ -21,6 +23,7 @@ export async function POST(r:NextRequest){
     if(!hasFullExamAccess(u))return NextResponse.json({error:"请先登录正式考生账号"},{status:401});
     const b=await r.json(),id=String(b?.examId||"");
     const denied=await deniedItemExamResponse(r,id);if(denied)return denied;
+    if(marketplaceMode() && loadExamAttempts(u.id,1).length>0)return NextResponse.json({code:"EXAM_ALREADY_USED",error:"本单考试已交卷，请查看报告"},{status:409});
     const bundle=loadTrainingExamBundle(id);
     if(!isExamBundleTrainingReady(bundle))return NextResponse.json({error:"Exam is not training-ready"},{status:404});
     return NextResponse.json({

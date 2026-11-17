@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
+import { marketplaceMode, marketplaceAuthorizedExam } from "./marketplace-entitlement";
+import { userFromRequest } from "./auth";
 import { PARENT_SESSION_COOKIE, parentFromSessionToken } from "./parent-auth";
 import { billingConfigured, billingPool, hasVerifiedItemEntitlement } from "./billing-ledger";
 
@@ -42,6 +44,7 @@ export function verifiedBuyerIdForItem(req: NextRequest): string | null {
 }
 
 export async function deniedItemExamResponse(req: NextRequest, examId: string): Promise<NextResponse | null> {
+  if(marketplaceMode())return marketplaceAuthorizedExam(userFromRequest(req)?.id||"",examId)?null:NextResponse.json({code:"MARKETPLACE_EXAM_NOT_OWNED"},{status:403});
   try{
     const allowed=await canOpenItemExam(examId,verifiedBuyerIdForItem(req));
     if(allowed)return null;

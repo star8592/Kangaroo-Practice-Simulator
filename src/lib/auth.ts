@@ -1,4 +1,5 @@
 import crypto from "node:crypto";
+import { MARKETPLACE_COOKIE, marketplaceMode, marketplaceUserFromCookie } from "./marketplace-entitlement";
 import {activeParentSessionVersion,parentFromSessionToken,PARENT_SESSION_COOKIE} from "./parent-auth";
 import { DEFAULT_STUDENT_AVATAR, isStudentAvatarKey } from "./student-avatar";
 import { hashScryptSecret, readSignedJsonToken, signJsonToken, verifyScryptSecret } from "./auth-crypto";
@@ -10,7 +11,7 @@ export type StudentUser={
  sessionVersion?:number;lastLoginAt?:number;
 };
 export type PublicStudent=Omit<StudentUser,"pinHash">;
-export const SESSION_COOKIE="kangaroo_session";
+export const SESSION_COOKIE=marketplaceMode()?MARKETPLACE_COOKIE:"kangaroo_session";
 const USERS=userDataPath("users.json"),SECRET=userDataPath("session-secret.txt");
 function secret(){return readOrCreateSecret(SECRET)}
 function hashPin(pin:string){return hashScryptSecret(pin)}
@@ -106,6 +107,7 @@ export function miniappWechatUserFromSessionToken(t:string|undefined|null):Publi
 }
 export function guestUserFromSessionToken(t:string|undefined|null):PublicStudent|null{const x=readSignedJsonToken<{uid?:string;guest?:boolean;exp?:number}>(t,secret());if(!x?.guest||!x.uid?.startsWith("guest_")||!x.exp||x.exp<Math.floor(Date.now()/1000))return null;return{id:x.uid,username:"guest",candidateNo:"GUEST",name:"游客体验",grade:6,school:"Socthink",avatarKey:DEFAULT_STUDENT_AVATAR,onboardingCompleted:true,createdAt:Date.now(),active:true,role:"student",sessionVersion:1}}
 export function userFromSessionToken(t:string|undefined|null):PublicStudent|null{
+ if(marketplaceMode())return marketplaceUserFromCookie(t||undefined);
  const familyChild=familyChildUserFromSessionToken(t);if(familyChild)return familyChild;
  const family=familyPracticeUserFromSessionToken(t);if(family)return family;
  const wx=miniappWechatUserFromSessionToken(t);if(wx)return wx;
@@ -120,6 +122,7 @@ export function sessionTokenFromRequest(req:SessionRequestLike){
  return req.cookies?.get(SESSION_COOKIE)?.value;
 }
 export function userFromRequest(req:SessionRequestLike){
+ if(marketplaceMode())return marketplaceUserFromCookie(req.cookies?.get(SESSION_COOKIE)?.value);
  const token=sessionTokenFromRequest(req);
  const existing=userFromSessionToken(token);
  // Bearer identities (miniapp) and admin sessions remain strictly isolated.
