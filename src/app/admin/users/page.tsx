@@ -47,6 +47,8 @@ export default async function AdminUsersPage({ searchParams }: Params) {
   }
   const nextPage = (n: number) => `/admin/users?page=${n}&q=${encodeURIComponent(q)}`;
   const wechatCount = snapshot.families.filter(u => u.signIn === "微信").length;
+  const pendingWechatNames = snapshot.families.filter(u =>
+    u.signIn === "微信" && isWechatNicknamePlaceholder(u.name)).length;
   return <div className={styles.shell}>
     <header className={styles.head}>
       <div>
@@ -61,6 +63,7 @@ export default async function AdminUsersPage({ searchParams }: Params) {
     <div className={local.metrics}>
       <article><span>平台注册家庭账号</span><strong>{snapshot.totalFamilies}</strong></article>
       <article><span>其中微信账号</span><strong>{wechatCount}</strong></article>
+      <article><span>昵称待补全</span><strong>{pendingWechatNames}</strong></article>
       <article><span>今天新增账号</span><strong>{snapshot.createdToday}</strong></article>
       <article><span>近 7 天成功登录账号</span><strong>{snapshot.loggedInLast7Days}</strong></article>
       <article><span>学生档案</span><strong>{snapshot.studentProfiles}</strong></article>
@@ -69,7 +72,7 @@ export default async function AdminUsersPage({ searchParams }: Params) {
     <section className={styles.panel} aria-labelledby="user-directory-title">
       <div className={styles.panelHead}>
         <div><h2 id="user-directory-title">用户列表 · {result.total} 条</h2>
-          <p>按最近成功登录时间排序。每页 20 人，微信昵称可能重复，请通过账号编号确认。</p></div>
+          <p>按最近成功登录时间排序。每页 20 人；昵称待补全不影响账号登录。授权前请核对账号编号及登录时间。</p></div>
         {owner ? <Link href="/admin/platform-authorizations" className={local.secondaryLink}>批量查找 / 模块授权</Link> :
           <span className={local.readonly}>当前登录身份仅可查看，微信站点所有者才能修改角色</span>}
       </div>
