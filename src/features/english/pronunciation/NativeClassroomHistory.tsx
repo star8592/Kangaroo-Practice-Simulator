@@ -171,6 +171,6 @@ export default function NativeClassroomHistory(){
    </section>
   </>:null}
   <p className={styles.foot}>这是迁移中的只读页，只覆盖既有课堂作业历史，不代表个人自由跟读的全部记录已迁移。课堂 API 不可用时不显示任何模拟数据或假成绩。</p>
-  <div className={styles.links}><Link href="/english/pronunciation/next-lab">返回原生跟读</Link><Link href="/english/pronunciation/app/practice-library">使用正式 V3</Link></div>
+  <div className={styles.links}><Link href="/english/pronunciation/next-lab/assignments">进入原生作业操作候选</Link><Link href="/english/pronunciation/next-lab">返回原生跟读</Link><Link href="/english/pronunciation/app/practice-library">使用正式 V3</Link></div>
  </main>;
 }
