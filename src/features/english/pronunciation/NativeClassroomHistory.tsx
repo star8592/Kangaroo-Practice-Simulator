@@ -142,7 +142,7 @@ export default function NativeClassroomHistory(){
         <strong>{a.title}</strong><small>{a.lifecycle==="closed"?"已结束":"进行中"} · 已交 {a.submitted}/{a.enrolled_total} · 平均最佳分 {score(a.average_best_score)}</small>
        </button>)}</div>
       {teacherError?<p className={styles.error} role="alert">{teacherError}</p>:null}
-      {report&&activeAssignment?<div className={styles.section} aria-label="授权班级详细报告">
+      {report&&activeAssignment?<div className={styles.section} role="region" aria-label="授权班级详细报告">
        <h3>{activeAssignment.title} · 成绩统计</h3><p>提交人数 {report.submitted}/{report.total}</p>
        <div className={styles.scroll}><table><thead><tr><th>学生</th><th>练习次数</th><th>最佳分</th><th>状态</th></tr></thead>
        <tbody>{report.students.map((r,i)=><tr key={i}><th scope="row">{r.name}</th><td>{r.attempts}</td><td>{score(r.best_score)}</td><td>{r.submitted?"已提交":r.claimed?"练习中":"未领取"}</td></tr>)}</tbody></table></div>
@@ -162,7 +162,7 @@ export default function NativeClassroomHistory(){
      <button type="submit" disabled={historyBusy}>{historyBusy?"正在查询…":"查询我的历史"}</button>
     </form>
     {historyError?<p role="alert" className={styles.error}>{historyError}</p>:null}
-    {history?<div className={styles.section} aria-label="本人已保存评分">
+    {history?<div className={styles.section} role="region" aria-label="本人已保存评分">
      <h3>我的作业记录</h3>
      <p>{history.submitted?"已完成":history.receipt_status==="in_progress"?"练习中":"未提交"} · 评分记录 {history.attempt_count} 次</p>
      {history.attempts.length===0?<p>尚无已保存的评分记录。</p>:<div className={styles.scroll}><table><thead><tr><th>时间</th><th>成绩</th><th>评分引擎版本</th></tr></thead>
