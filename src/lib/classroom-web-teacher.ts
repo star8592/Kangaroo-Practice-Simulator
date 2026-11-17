@@ -3,10 +3,11 @@ import type {PoolClient} from "pg";
 import type {NextRequest} from "next/server";
 import {listWechatParentCandidates} from "@/lib/parent-auth";
 import {PLATFORM_SUBJECT_PATTERN} from "@/lib/platform-capabilities";
+import {activePlatformGrantsForSubjects} from "@/lib/platform-grants";
 import {
   type Actor,ClassroomFailure,LESSONS,admin,approved,ensureAccount,id,learnerId,
   workspaceId,teacher,tx,txt,jsonBody,newShareToken,digest,shareUrl,
-  classForAssignment
+  classForAssignment,teacherRoleAllowed
 } from "@/lib/classroom-web-core";
 
 async function classWorkspace(db:PoolClient,a:Actor,tenant:string){
@@ -40,8 +41,9 @@ export async function teacherHandler(req:NextRequest,p:string[],a:Actor):Promise
   if(p[0]==="teacher"&&p[1]==="access"&&p.length===2&&method==="GET")
     return tx({account:a.accountId},async db=>{
       const r=await db.query("SELECT state,display_name FROM accent.teacher_access_requests WHERE account_id=$1",[a.accountId]);
-      const row=r.rows[0],status=row?.state||"not_requested";
-      return {status,approved:a.admin||status==="approved",name:row?.display_name||a.name||null,is_admin:a.admin};
+      const row=r.rows[0],authorized=await teacherRoleAllowed(db,a);
+      return {status:authorized?"approved":row?.state||"not_requested",
+        approved:authorized,name:row?.display_name||a.name||null,is_admin:a.admin};
     });
   if(p[0]==="teacher"&&p[1]==="apply"&&p.length===2&&method==="POST"){
     const body=await jsonBody(req);const display=txt(body.display_name,60,2);
@@ -49,7 +51,8 @@ export async function teacherHandler(req:NextRequest,p:string[],a:Actor):Promise
       await db.query("INSERT INTO accent.teacher_access_requests(account_id,display_name) VALUES($1,$2) ON CONFLICT(account_id) DO NOTHING",
         [a.accountId,display]);
       const r=await db.query("SELECT state FROM accent.teacher_access_requests WHERE account_id=$1",[a.accountId]);
-      return {status:r.rows[0]?.state,approved:r.rows[0]?.state==="approved"};
+      const authorized=await teacherRoleAllowed(db,a);
+      return {status:authorized?"approved":r.rows[0]?.state,approved:authorized};
     });
   }
   if(p[0]==="admin"&&p[1]==="users"&&p.length===2&&method==="GET"){
@@ -59,13 +62,21 @@ export async function teacherHandler(req:NextRequest,p:string[],a:Actor):Promise
     const found=selectVerifiedClassroomCandidates(
       req.nextUrl.searchParams,listWechatParentCandidates());
     const ids=found.map(x=>learnerId(x.id));
+    // The admin directory must agree with the central workbench authorization.
+    const central=await activePlatformGrantsForSubjects(found.map(x=>x.id));
     return tx({account:a.accountId,isAdmin:true},async db=>{
       const states=await db.query<{account_id:string;state:string}>(
         "SELECT account_id,state FROM accent.teacher_access_requests WHERE account_id=ANY($1::uuid[])",[ids]);
       const stateById=new Map(states.rows.map(x=>[x.account_id,x.state]));
       return {users:found.map(x=>({
         account_id:learnerId(x.id),name:x.name,
-        teacher_status:stateById.get(learnerId(x.id))||"not_requested",
+        teacher_status:central.get(x.id)?.some(g=>
+          g.capability==="english.pronunciation"&&g.scopeKind==="product"&&
+          (g.role==="teacher"||g.role==="module-admin"))?"approved":
+          stateById.get(learnerId(x.id))||"not_requested",
+        authorization_source:central.get(x.id)?.some(g=>
+          g.capability==="english.pronunciation"&&g.scopeKind==="product"&&
+          (g.role==="teacher"||g.role==="module-admin"))?"platform":"classroom",
         last_login_at:x.lastLoginAt
       }))};
     });
