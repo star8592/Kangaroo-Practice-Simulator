@@ -109,6 +109,10 @@ export async function ensureAccount(db:PoolClient,a:Actor):Promise<void>{
   if(r.rows[0]?.auth_subject!==subject)throw new ClassroomFailure(403,"微信学习身份无法核验");
 }
 export async function approved(db:PoolClient,a:Actor):Promise<void>{
+  // Site owner is established by the main-site verified WeChat + owner binding,
+  // not by a second AccentLab teacher application. This bypasses ONLY the
+  // teaching-role gate; class ownership and tenant isolation remain enforced.
+  if(a.admin)return;
   const r=await db.query("SELECT 1 FROM accent.teacher_access_requests WHERE account_id=$1 AND state='approved'",[a.accountId]);
   if(!r.rows.length)throw new ClassroomFailure(403,"教师权限尚未获批准");
 }

@@ -144,7 +144,7 @@
     "test:career-judge-dataset": "tsx scripts/test_career_judge_dataset.ts",
     "test:seo-storage": "node scripts/test_seo_storage_isolation.mjs",
     "test:cohost-gateway": "python3 scripts/test_cohost_gateway.py",
-    "test:english-platform": "tsx scripts/test_english_platform_contract.ts"
+    "test:english-platform": "tsx scripts/test_english_platform_contract.ts && tsx scripts/test_classroom_owner_entitlement_20261117.ts"
   },
   "dependencies": {
     "next": "16.4.3",
