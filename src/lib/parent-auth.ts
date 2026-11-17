@@ -183,9 +183,9 @@ export function platformWechatAccountById(subject:string):PublicParent|null{
 }
 export function searchWechatAccountsForOwner(query:string,limit=40){
  const q=query.trim().toLowerCase().slice(0,80);
- if(!q)return [];
  return loadParents().filter(p=>p.active&&(p.wechatId||p.wechatOpenId)&&
-   (p.id===q||p.name.toLowerCase().includes(q)||p.email?.toLowerCase().includes(q)))
+   (!q||p.id===q||p.name.toLowerCase().includes(q)||p.email?.toLowerCase().includes(q)))
+   .sort((a,b)=>(b.lastLoginAt||b.createdAt||0)-(a.lastLoginAt||a.createdAt||0))
    .slice(0,Math.min(40,Math.max(1,limit)))
    .map(p=>({subject:p.id,name:p.name,email:p.email||null,
      lastLoginAt:p.lastLoginAt||null}));
