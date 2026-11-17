@@ -19,8 +19,9 @@ export default async function Page({searchParams}:{searchParams:Promise<{subject
   <header className={ops.head}>
    <div>
     <span className={ops.eyebrow}>SOC THINK / ROLE MANAGEMENT</span>
-    <h1>教师与模块授权</h1>
-    <p>为已登录的微信用户分配项目身份；班级、课程和学生资料仍由教学系统独立管理。</p>
+    <h1>模块工作台入口权限</h1>
+    <p>本页仅分配产品工作台入口，不授予实际任课资格、学生资料读取权。英语跟读任课请在「英语教务管理」单独开通。</p>
+    <p><Link href="/admin/classroom">进入英语教务管理 · 实际任课授权</Link></p>
    </div>
    <Link href="/admin/users" className="secondary-button">返回用户列表</Link>
   </header>

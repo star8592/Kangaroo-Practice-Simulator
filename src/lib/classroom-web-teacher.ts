@@ -2,6 +2,7 @@ import crypto from "node:crypto";
 import type {PoolClient} from "pg";
 import type {NextRequest} from "next/server";
 import {listWechatParentCandidates} from "@/lib/parent-auth";
+import {PLATFORM_SUBJECT_PATTERN} from "@/lib/platform-capabilities";
 import {
   type Actor,ClassroomFailure,LESSONS,admin,approved,ensureAccount,id,learnerId,
   workspaceId,teacher,tx,txt,jsonBody,newShareToken,digest,shareUrl,
@@ -16,6 +17,24 @@ async function classWorkspace(db:PoolClient,a:Actor,tenant:string){
   if(!rows.rows.length)throw new ClassroomFailure(403,"请先创建教师班级");
 }
 async function checkClassName(v:unknown):Promise<string>{return txt(v,60,2)}
+type WechatClassroomCandidate={id:string;name:string;lastLoginAt:number|null};
+/** Exact subject lookup is owner-only at the caller. This is how the unified
+ * user directory links to classroom teaching grants even for unnamed users.
+ * The response still uses the classroom UUID, never the WeChat parent ID. */
+export function selectVerifiedClassroomCandidates(
+  params:URLSearchParams,accounts:readonly WechatClassroomCandidate[]
+):WechatClassroomCandidate[]{
+  const subject=params.get("subject");
+  if(subject!==null){
+    if(!PLATFORM_SUBJECT_PATTERN.test(subject))
+      throw new ClassroomFailure(400,"非法平台用户编号");
+    return accounts.filter(x=>x.id===subject).slice(0,1);
+  }
+  const q=(params.get("q")||"").trim().toLocaleLowerCase();
+  if([...q].length<2)return [];
+  if([...q].length>60)throw new ClassroomFailure(400,"搜索内容过长");
+  return accounts.filter(x=>x.name.toLocaleLowerCase().includes(q)).slice(0,20);
+}
 export async function teacherHandler(req:NextRequest,p:string[],a:Actor):Promise<unknown|undefined>{
   const method=req.method;
   if(p[0]==="teacher"&&p[1]==="access"&&p.length===2&&method==="GET")
@@ -35,13 +54,10 @@ export async function teacherHandler(req:NextRequest,p:string[],a:Actor):Promise
   }
   if(p[0]==="admin"&&p[1]==="users"&&p.length===2&&method==="GET"){
     admin(a);
-    const q=(req.nextUrl.searchParams.get("q")||"").trim().toLocaleLowerCase();
-    if([...q].length<2)return {users:[]};
-    if([...q].length>60)throw new ClassroomFailure(400,"搜索内容过长");
-    // Search is owner-only; do not send the original parent ID or any WeChat identifier.
-    const found=listWechatParentCandidates()
-      .filter(x=>x.name.toLocaleLowerCase().includes(q))
-      .slice(0,20);
+    // Admin-only exact subject lookup comes directly from the main user table.
+    // The nickname fallback remains available for teachers found by name.
+    const found=selectVerifiedClassroomCandidates(
+      req.nextUrl.searchParams,listWechatParentCandidates());
     const ids=found.map(x=>learnerId(x.id));
     return tx({account:a.accountId,isAdmin:true},async db=>{
       const states=await db.query<{account_id:string;state:string}>(

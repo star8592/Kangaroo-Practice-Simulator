@@ -27,7 +27,9 @@ export default function UnifiedLoginClient({nextPath,loginError}:{nextPath:strin
   const vocabularyEntry=vocabTeacherLogin||vocabStudentLogin;
   const platformWorkspaceLogin=destination==="/workspace";
   const platformOwnerLogin=destination.startsWith("/admin/platform-authorizations");
-  const platformManagementEntry=platformWorkspaceLogin||platformOwnerLogin;
+  const platformAdminLogin=destination==="/admin"||destination.startsWith("/admin/");
+  const classroomAdminLogin=destination.startsWith("/admin/classroom");
+  const platformManagementEntry=platformWorkspaceLogin||platformAdminLogin;
   const englishEntry=teacherLogin||homeworkLogin||vocabularyEntry;
   const [mode,setMode]=useState<Mode>("checking");
   const [qrUrl,setQrUrl]=useState("");
@@ -124,16 +126,16 @@ export default function UnifiedLoginClient({nextPath,loginError}:{nextPath:strin
 
   return <div className={styles.unifiedShell}>
     <section className={styles.unifiedIntro}>
-      <span className={styles.formKicker}>{platformOwnerLogin?"SOC THINK · 平台授权管理":platformWorkspaceLogin?"SOC THINK · 我的管理工作台":vocabTeacherLogin?"词语星球 · 教师工作台":vocabStudentLogin?"词语星球 · 单词课堂":teacherLogin?"ENGLISH LEAP · 教师工作台":homeworkLogin?"ENGLISH LEAP · 跟读作业":"SOC THINK · 考试与资料服务"}</span>
-      <h1>{platformOwnerLogin?"微信登录，管理项目授权":platformWorkspaceLogin?"微信登录，进入我的管理工作台":vocabTeacherLogin?"微信登录，进入单词教学工作台":vocabStudentLogin?"微信登录，回到我的单词课堂":teacherLogin?"微信登录，进入教师工作台":homeworkLogin?"微信登录，完成英语作业":"一个微信账号，直接使用"}</h1>
-      <p>{platformOwnerLogin?"只有已验证的站点所有者可以授予或撤销模块管理权限。其他账号不会自动获得管理身份。":platformWorkspaceLogin?"使用 SOC THINK 统一微信账号。登录后只显示已经获授权的管理模块，实际任课和班级权限仍由教学系统核验。":vocabTeacherLogin?"第一次使用请先通过原教师账号确认身份并关联微信。以后可直接进入原教学工作台，班级、作业与成绩全部保留。":vocabStudentLogin?"第一次使用请先用原学生号进入单词课堂并关联微信。以后直接返回原课堂，学习记录和复习进度全部保留。":teacherLogin?"使用 SOC THINK 统一微信账号。管理员授予教师权限后，直接管理班级、布置作业、查看成绩。无需单独的教师密码。":homeworkLogin?"用家长或学生的微信账号登录，自动返回老师布置的作业，完成跟读并提交成绩。":"微信登录后，选择考试或资料。购买、使用和已购记录都在同一个账号里。"}</p>
+      <span className={styles.formKicker}>{platformOwnerLogin?"SOC THINK · 平台授权管理":platformWorkspaceLogin?"SOC THINK · 我的管理工作台":classroomAdminLogin?"SOC THINK · 英语教务管理":platformAdminLogin?"SOC THINK · 管理中心":vocabTeacherLogin?"词语星球 · 教师工作台":vocabStudentLogin?"词语星球 · 单词课堂":teacherLogin?"ENGLISH LEAP · 教师工作台":homeworkLogin?"ENGLISH LEAP · 跟读作业":"SOC THINK · 考试与资料服务"}</span>
+      <h1>{platformOwnerLogin?"微信登录，管理项目授权":platformWorkspaceLogin?"微信登录，进入我的管理工作台":classroomAdminLogin?"微信登录，进入英语教务管理":platformAdminLogin?"微信登录，进入平台管理中心":vocabTeacherLogin?"微信登录，进入单词教学工作台":vocabStudentLogin?"微信登录，回到我的单词课堂":teacherLogin?"微信登录，进入教师工作台":homeworkLogin?"微信登录，完成英语作业":"一个微信账号，直接使用"}</h1>
+      <p>{platformOwnerLogin?"只有已验证的站点所有者可以授予或撤销模块管理权限。其他账号不会自动获得管理身份。":platformWorkspaceLogin?"使用 SOC THINK 统一微信账号。登录后只显示已经获授权的管理模块，实际任课和班级权限仍由教学系统核验。":classroomAdminLogin?"登录已绑定的主站管理员微信，可直接管理英语课堂教师任课资格。无需登记老师姓名或重新申请权限。":platformAdminLogin?"使用已绑定的主站管理员微信登录。普通学习账号不会获得管理权限。":vocabTeacherLogin?"第一次使用请先通过原教师账号确认身份并关联微信。以后可直接进入原教学工作台，班级、作业与成绩全部保留。":vocabStudentLogin?"第一次使用请先用原学生号进入单词课堂并关联微信。以后直接返回原课堂，学习记录和复习进度全部保留。":teacherLogin?"使用 SOC THINK 统一微信账号。管理员授予教师权限后，直接管理班级、布置作业、查看成绩。无需单独的教师密码。":homeworkLogin?"用家长或学生的微信账号登录，自动返回老师布置的作业，完成跟读并提交成绩。":"微信登录后，选择考试或资料。购买、使用和已购记录都在同一个账号里。"}</p>
       <div className={styles.unifiedSteps}>
-        <span>微信登录</span><span>{platformOwnerLogin?"验证管理身份":platformWorkspaceLogin?"读取我的授权":vocabTeacherLogin?"返回原教师账号":vocabStudentLogin?"返回原学生账号":teacherLogin?"进入我的班级":homeworkLogin?"加入老师的班级":"选择考试或资料"}</span><span>{platformOwnerLogin?"授予 · 撤销模块":platformWorkspaceLogin?"管理获授权模块":vocabTeacherLogin?"管理班级 · 发布作业":vocabStudentLogin?"练单词 · 复习 · 进度":teacherLogin?"布置作业 · 查看成绩":homeworkLogin?"跟读 · 提交成绩":"付款后直接使用"}</span>
+        <span>微信登录</span><span>{platformOwnerLogin?"验证管理身份":platformWorkspaceLogin?"读取我的授权":platformAdminLogin?"核验管理员身份":vocabTeacherLogin?"返回原教师账号":vocabStudentLogin?"返回原学生账号":teacherLogin?"进入我的班级":homeworkLogin?"加入老师的班级":"选择考试或资料"}</span><span>{platformOwnerLogin?"授予 · 撤销模块":platformWorkspaceLogin?"管理获授权模块":classroomAdminLogin?"授权教师 · 查看课堂":platformAdminLogin?"管理平台服务":vocabTeacherLogin?"管理班级 · 发布作业":vocabStudentLogin?"练单词 · 复习 · 进度":teacherLogin?"布置作业 · 查看成绩":homeworkLogin?"跟读 · 提交成绩":"付款后直接使用"}</span>
       </div>
       <Link className="secondary-button" href={platformManagementEntry?"/account":vocabularyEntry?"/english/vocabulary/app/":englishEntry?"/english/pronunciation/app/":"/assessments"}>{platformManagementEntry?"先查看我的账户":vocabularyEntry?"先浏览词语星球":englishEntry?"先浏览英语跟读":"先浏览考试与资料"}</Link>
     </section>
     <section className={styles.unifiedLoginBox} aria-label="微信登录">
-      <h2>{platformOwnerLogin?"平台授权管理微信登录":platformWorkspaceLogin?"管理工作台微信登录":vocabTeacherLogin?"词语星球教师微信登录":vocabStudentLogin?"词语星球学生微信登录":teacherLogin?"教师微信登录":homeworkLogin?"作业微信登录":"微信登录"}</h2>
+      <h2>{platformOwnerLogin?"平台授权管理微信登录":platformWorkspaceLogin?"管理工作台微信登录":classroomAdminLogin?"英语教务管理员微信登录":platformAdminLogin?"平台管理员微信登录":vocabTeacherLogin?"词语星球教师微信登录":vocabStudentLogin?"词语星球学生微信登录":teacherLogin?"教师微信登录":homeworkLogin?"作业微信登录":"微信登录"}</h2>
       <p>{platformManagementEntry||englishEntry?"登录状态有效时直接进入；需要验证时才扫码，不必每天重新登录。":"首次扫码自动创建账号，以后继续用同一个微信登录。"}</p>
       {(mode==="checking"||mode==="loading")&&
         <div role="status" className={styles.unifiedLoading}>正在连接微信…</div>}
