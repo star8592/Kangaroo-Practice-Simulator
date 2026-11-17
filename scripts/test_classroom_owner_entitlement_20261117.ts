@@ -12,7 +12,7 @@ async function run(){
  }};
  await approved(noGrantDb as never,make(true));
  assert.equal(calls.length,0,"site owner never queries the teacher-approval table");
- await assert.rejects(approved(noGrantDb as never,make(false)),
+ await assert.rejects(approved(noGrantDb as never,make(false),async()=>false),
    (e:unknown)=>e instanceof ClassroomFailure&&e.status===403);
  assert.equal(calls.length,1,"ordinary teacher must check the approval table");
  calls=[];

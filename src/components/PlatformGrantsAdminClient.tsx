@@ -87,7 +87,7 @@ export default function PlatformGrantsAdminClient({initialSubject=""}:{initialSu
      encodeURIComponent(selected.subject));
    setGrants(latest.grants);
    setNotice(result.changed?(action==="grant"?
-     "模块入口权限已保存。英语跟读的实际任课资格请继续到英语教务管理开通。":
+     "模块教师权限已生效。英语跟读教师可直接进入工作台并创建自己的班级。":
     "该模块的身份授权已撤销。"):"授权状态无变化。");
   }catch(e){setError(e instanceof Error?e.message:"操作失败")}
   finally{setBusy(false)}
@@ -127,12 +127,12 @@ export default function PlatformGrantsAdminClient({initialSubject=""}:{initialSu
      </select></label>
     <label>身份
      <select value={role} onChange={e=>setRole(e.target.value as typeof role)}>
-      <option value="teacher">教师模块入口</option><option value="module-admin">模块管理员入口</option>
+      <option value="teacher">教师（进入工作台并创建本人班级）</option><option value="module-admin">模块管理员入口</option>
      </select></label>
-    <p>本操作只控制某个产品的工作台入口，不会授予该产品内部的班级、作业、学生录音和成绩权限。</p>
+    <p>授予英语发音教师身份后，可创建并管理本人班级与作业；不会获得其他教师、班级、学生录音或成绩的访问权限。其他模块仍按各自权限规则执行。</p>
     {capability==="english.pronunciation"&&
       <p><a href={"/admin/classroom?subject="+encodeURIComponent(selected.subject)}>
-        继续办理英语跟读实际任课资格（独立授权）
+        查看该老师的英语班级与历史授权
       </a></p>}
     <button disabled={busy} type="button" onClick={()=>void change("grant")}>
      {busy?"正在保存…":"保存模块入口权限"}

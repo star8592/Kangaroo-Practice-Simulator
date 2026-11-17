@@ -3,6 +3,7 @@ import {Pool,type PoolClient} from "pg";
 import {NextRequest} from "next/server";
 import {PARENT_SESSION_COOKIE,parentFromSessionToken} from "@/lib/parent-auth";
 import {isSiteOwner} from "@/lib/site-owner";
+import {activePlatformGrants} from "@/lib/platform-grants";
 
 /** Embedded in the existing SOC THINK Next.js server; no classroom daemon. */
 export class ClassroomFailure extends Error {
@@ -108,13 +109,32 @@ export async function ensureAccount(db:PoolClient,a:Actor):Promise<void>{
   const r=await db.query("SELECT auth_subject FROM accent.accounts WHERE id=$1",[a.accountId]);
   if(r.rows[0]?.auth_subject!==subject)throw new ClassroomFailure(403,"微信学习身份无法核验");
 }
-export async function approved(db:PoolClient,a:Actor):Promise<void>{
-  // Site owner is established by the main-site verified WeChat + owner binding,
-  // not by a second AccentLab teacher application. This bypasses ONLY the
-  // teaching-role gate; class ownership and tenant isolation remain enforced.
-  if(a.admin)return;
-  const r=await db.query("SELECT 1 FROM accent.teacher_access_requests WHERE account_id=$1 AND state='approved'",[a.accountId]);
-  if(!r.rows.length)throw new ClassroomFailure(403,"教师权限尚未获批准");
+/** The main-site role registry is the authority for new pronunciation teachers.
+ * Legacy AccentLab approvals remain valid for pre-migration classroom users.
+ * Neither grant gives access to classes belonging to another teacher. */
+export async function hasPlatformPronunciationRole(
+  masterId:string,readGrants:typeof activePlatformGrants=activePlatformGrants
+):Promise<boolean>{
+  const grants=await readGrants(masterId);
+  return grants.some(g=>g.capability==="english.pronunciation"&&
+    (g.role==="teacher"||g.role==="module-admin")&&g.scopeKind==="product");
+}
+export async function teacherRoleAllowed(
+  db:PoolClient,a:Actor,readRole:(masterId:string)=>Promise<boolean>=hasPlatformPronunciationRole
+):Promise<boolean>{
+  if(a.admin)return true;
+  const legacy=await db.query(
+    "SELECT 1 FROM accent.teacher_access_requests WHERE account_id=$1 AND state='approved'",
+    [a.accountId]);
+  if(legacy.rows.length>0)return true;
+  try{return await readRole(a.masterId)}
+  catch{throw new ClassroomFailure(503,"主站教师授权服务暂时无法核验");}
+}
+export async function approved(
+  db:PoolClient,a:Actor,readRole?:(masterId:string)=>Promise<boolean>
+):Promise<void>{
+  if(!await teacherRoleAllowed(db,a,readRole||hasPlatformPronunciationRole))
+    throw new ClassroomFailure(403,"教师权限尚未获批准");
 }
 export async function teacher(db:PoolClient,a:Actor,tenant:string,cl:string):Promise<void>{
   await approved(db,a);

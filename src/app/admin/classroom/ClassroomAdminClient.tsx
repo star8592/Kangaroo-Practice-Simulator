@@ -8,7 +8,7 @@ type Teacher = {
 };
 type Candidate={
   account_id:string;name:string;
-  teacher_status:string;last_login_at:number|null;
+  teacher_status:string;authorization_source?:"platform"|"classroom";last_login_at:number|null;
 };
 const API = "/english/pronunciation/classroom-api";
 
@@ -139,7 +139,7 @@ export default function ClassroomAdminClient({ initialSubject, ownerBound, owner
   return <div className={styles.stack}>
     <section className={styles.panel}>
       <h2>英语跟读 · 实际任课授权</h2>
-      <p>这里开通真实的英语课堂授课资格（建班、布置作业），与「模块工作台入口权限」不同。请从<a href="/admin/users">统一用户列表</a>选择微信账号，或按昵称搜索后核对账号尾号。</p>
+      <p>英语发音教师优先使用平台统一模块授权，即可创建本人班级。这里保留历史课堂单独审批记录。请从<a href="/admin/users">统一用户列表</a>选择微信账号，或按昵称搜索后核对账号尾号。</p>
       {siteOwner?<>
         <form className={styles.form} onSubmit={e=>{e.preventDefault();void findExistingWechatUsers();}}>
           <label>搜索微信用户昵称（至少 2 个字）
@@ -152,20 +152,22 @@ export default function ClassroomAdminClient({ initialSubject, ownerBound, owner
         {searchDone && !candidates.length && <p>没有找到符合条件的已验证微信账号，请从用户列表重新核对。</p>}
         <div className={styles.list}>{candidates.map(c=><div className={styles.teacher} key={c.account_id}>
           <div><strong>{c.name}</strong><p>账号尾号 {c.account_id.slice(-8)} · {c.teacher_status==="approved"?"英语任课已开通":"英语任课未开通"}</p></div>
-          <button type="button" disabled={busy}
-            onClick={()=>void directTeacher(c,c.teacher_status!=="approved")}>
-            {c.teacher_status==="approved"?"撤销英语任课":"开通英语任课"}
-          </button>
+          {c.authorization_source==="platform"
+            ? <a href="/admin/platform-authorizations">修改平台教师授权</a>
+            : <button type="button" disabled={busy}
+                onClick={()=>void directTeacher(c,c.teacher_status!=="approved")}>
+                {c.teacher_status==="approved"?"撤销原课堂任课":"开通原课堂任课"}
+              </button>}
         </div>)}</div>
       </>:<p className={styles.tip}>仅已绑定的站点所有者可以直接指定教师。</p>}
       {message&&<p role="status" className={styles.tip}>{message}</p>}
     </section>
     <section className={styles.panel}>
       <div className={styles.titleRow}><div><h2>英语跟读 · 任课教师名单</h2>
-        <p>管理全部教师：申请审核、直接指定、撤销资格和重新启用。撤销仅取消授课权限，保留历史课堂资料。</p></div>
+        <p>此处仅管理历史课堂独立审批记录。现在的新教师请统一到平台模块授权管理开通；授权撤销不删除历史课堂资料。</p></div>
         <button type="button" disabled={!siteOwner || busy} onClick={()=>void refresh()}>刷新申请</button></div>
       {siteOwner&&!listError&&<p className={styles.tip}>
-        当前可授课教师 {teachers.filter(t=>t.status==="approved").length} 人 · 待审批 {teachers.filter(t=>t.status==="pending").length} 人 · 已撤销 {teachers.filter(t=>t.status==="revoked").length} 人
+        原课堂独立审批记录：已批准 {teachers.filter(t=>t.status==="approved").length} 人 · 待审批 {teachers.filter(t=>t.status==="pending").length} 人 · 已撤销 {teachers.filter(t=>t.status==="revoked").length} 人
       </p>}
       {!siteOwner
         ? <p className={styles.tip}>完成站点所有者绑定后，才可审批教师。</p>
