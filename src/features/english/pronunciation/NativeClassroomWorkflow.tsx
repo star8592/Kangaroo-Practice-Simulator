@@ -66,6 +66,7 @@ export default function NativeClassroomWorkflow(){
  const [title,setTitle]=useState("");
  const [shareUrl,setShareUrl]=useState("");
  const [reportTitle,setReportTitle]=useState("");
+ const [reportId,setReportId]=useState("");
  const [report,setReport]=useState<Report|null>(null);
  const [feedbackStudent,setFeedbackStudent]=useState("");
  const [feedbackText,setFeedbackText]=useState("");
@@ -140,7 +141,7 @@ export default function NativeClassroomWorkflow(){
  async function loadClass(c:ClassRoom){
   const request=++classRequest.current;
   setTeacherBusy(true);setTeacherError("");setTeacherNotice("");setActiveClass(c);
-  setCatalog([]);setAssignments([]);setJoins([]);setShareUrl("");setSetId("");setSelected([]);setReport(null);setReportTitle("");
+  setCatalog([]);setAssignments([]);setJoins([]);setShareUrl("");setSetId("");setSelected([]);setReport(null);setReportTitle("");setReportId("");
   try{
    const base="/tenants/"+c.tenant_id+"/classes/"+c.id;
    const [items,records,pending]=await Promise.all([
@@ -204,7 +205,7 @@ export default function NativeClassroomWorkflow(){
  }
  async function showReport(a:Assignment){
   if(!activeClass||teacherBusy)return;
-  setTeacherBusy(true);setTeacherError("");setReport(null);setFeedbackStudent("");setReportTitle(a.title);
+  setTeacherBusy(true);setTeacherError("");setReport(null);setFeedbackStudent("");setReportTitle(a.title);setReportId(a.id);
   try{
    const data=await read<Report>("/tenants/"+activeClass.tenant_id+"/assignments/"+a.id+"/report");
    setReport(data);
@@ -213,11 +214,10 @@ export default function NativeClassroomWorkflow(){
  }
  async function addFeedback(event:FormEvent<HTMLFormElement>){
   event.preventDefault();if(!activeClass||!report||!feedbackStudent||teacherBusy)return;
-  const target=assignments.find(a=>a.title===reportTitle);
-  if(!target){setTeacherError("未找到当前作业，请重新打开报告");return;}
+  if(!reportId){setTeacherError("当前作业标识缺失，请重新打开报告");return;}
   setTeacherBusy(true);setTeacherError("");setTeacherNotice("");
   try{
-   const path="/tenants/"+activeClass.tenant_id+"/assignments/"+target.id;
+   const path="/tenants/"+activeClass.tenant_id+"/assignments/"+reportId;
    const result=await write<{saved:boolean}>(path+"/feedback",{
     student_id:feedbackStudent,attempt_id:null,word_position:null,comment:feedbackText.trim()
    });
@@ -234,7 +234,7 @@ export default function NativeClassroomWorkflow(){
   try{
    const result=await write<{share_url:string;old_links_revoked:boolean}>(
     "/tenants/"+activeClass.tenant_id+"/assignments/"+a.id+"/invite/renew",{});
-   if(!validateShare(result.share_url))throw Error("服务端未返回有效的邀请链接");
+   if(!validateShare(result.share_url)||result.old_links_revoked!==true)throw Error("服务器未确认旧链接撤销，不能宣称已经更新");
    setShareUrl(result.share_url);setTeacherNotice("新链接已生成；旧邀请链接已失效，请重新通知学生");
   }catch(error){setTeacherError(error instanceof Error?error.message:"未能重新生成链接");}
   finally{setTeacherBusy(false);}
@@ -370,8 +370,10 @@ export default function NativeClassroomWorkflow(){
    setRecordBlob(null);requestId.current="";
    setStudentNotice("Rust 已保存真实评分："+displayScore(result.score)+" 分");
    if(task){
-    const saved=await read<History>("/tenants/"+invitation.tenant+"/assignments/"+task.assignment_id+"/my-attempts");
-    setHistory(saved);
+    try{
+     const saved=await read<History>("/tenants/"+invitation.tenant+"/assignments/"+task.assignment_id+"/my-attempts");
+     setHistory(saved);
+    }catch{setStudentNotice("评分已经确认保存；历史列表刷新失败，请稍后查看。");}
    }
   }catch(error){
    setStudentError(error instanceof Error?error.message:"提交失败；录音已保留，可使用同一请求重试");
@@ -387,8 +389,8 @@ export default function NativeClassroomWorkflow(){
   </div>:null}
   {authentication==="ready"?<>
    <div className={styles.tabs} role="group" aria-label="选择课堂身份">
-    <button type="button" aria-pressed={mode==="student"} onClick={()=>setMode("student")}>我是学生 · 完成作业</button>
-    <button type="button" aria-pressed={mode==="teacher"} onClick={()=>setMode("teacher")}>我是老师 · 布置作业</button>
+    <button type="button" aria-pressed={mode==="student"} disabled={recording||uploading} onClick={()=>setMode("student")}>我是学生 · 完成作业</button>
+    <button type="button" aria-pressed={mode==="teacher"} disabled={recording||uploading} onClick={()=>setMode("teacher")}>我是老师 · 布置作业</button>
    </div>
    {mode==="teacher"?<section className={styles.panel} aria-label="教师布置作业">
     {teacherAccess==="loading"?<p role="status">正在校验教师权限…</p>:null}
@@ -464,7 +466,7 @@ export default function NativeClassroomWorkflow(){
        </div>:null}
       </div>:null}
      </div>:null}
-    </>}
+    </>:null}
     {teacherError&&teacherAccess!=="unavailable"?<p className={styles.alert} role="alert">{teacherError}</p>:null}
     {teacherNotice?<p className={styles.success} role="status">{teacherNotice}</p>:null}
     <Link href="/english/pronunciation/next-lab/classroom">查看旧版保留的课堂历史报告</Link>
