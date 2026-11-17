@@ -47,6 +47,21 @@ export async function activePlatformGrants(subject:string):Promise<PlatformGrant
       ORDER BY capability,role,scope_kind,scope_id`,[subject]);
   return q.rows.map(mapped);
 }
+/** Single read-only query for a page of user-directory role labels. */
+export async function activePlatformGrantsForSubjects(subjects:readonly string[]):Promise<Map<string,PlatformGrant[]>>{
+ const result=new Map<string,PlatformGrant[]>();
+ const ids=[...new Set(subjects)];
+ if(ids.length>50)throw new PlatformAuthError("TOO_MANY_SUBJECTS",400);
+ for(const id of ids){requireSubject(id);result.set(id,[])}
+ if(!ids.length)return result;
+ const rows=await platformPool().query<GrantRow>(
+   `SELECT subject,capability,role,scope_kind,scope_id,granted_at
+      FROM platform.role_grants WHERE subject=ANY($1::text[]) AND state='active'
+      ORDER BY subject,capability,role`,[ids]);
+ for(const row of rows.rows){result.get(row.subject)?.push(mapped(row))}
+ return result;
+}
+
 export async function myAuthorizedModules(subject:string):Promise<AuthorizedModule[]>{
   const grants=await activePlatformGrants(subject);
   return PLATFORM_CAPABILITIES.flatMap(cap=>{

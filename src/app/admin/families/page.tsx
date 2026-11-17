@@ -2,6 +2,8 @@ import Link from "next/link";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { isAdmin, SESSION_COOKIE, userFromSessionToken } from "@/lib/auth";
+import { PARENT_SESSION_COOKIE, parentFromSessionToken } from "@/lib/parent-auth";
+import { isSiteOwner } from "@/lib/site-owner";
 import { adminOperationsSnapshot, filterAdminFamilies } from "@/lib/admin-operations";
 import AdminOperationsNav from "@/components/AdminOperationsNav";
 import styles from "@/components/AdminOperations.module.css";
@@ -17,9 +19,9 @@ export default async function AdminFamiliesPage({
   searchParams,
 }: { searchParams: Promise<{ q?: string; page?: string }> }) {
   const jar = await cookies();
-  const admin = userFromSessionToken(jar.get(SESSION_COOKIE)?.value);
-  if (!admin) redirect("/admin/login");
-  if (!isAdmin(admin)) redirect("/");
+  const oldAdmin = isAdmin(userFromSessionToken(jar.get(SESSION_COOKIE)?.value));
+  const owner = isSiteOwner(parentFromSessionToken(jar.get(PARENT_SESSION_COOKIE)?.value));
+  if (!oldAdmin && !owner) redirect("/admin/login");
 
   const qs = await searchParams;
   const q = typeof qs.q === "string" ? qs.q.slice(0, 80) : "";
