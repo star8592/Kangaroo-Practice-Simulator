@@ -23,10 +23,11 @@ export default async function AdminSeoDashboard() {
   const jar = await cookies();
   if (!canManagePlatform(jar)) redirect("/admin/login");
 
-  const { latest, history, ageHours, siteStatus, providers } = getSeoMonitorDashboard();
+  const { latest, history, ageHours, siteStatus, sourceStatus, providers } = getSeoMonitorDashboard();
   const statusCopy = siteStatus === "healthy" ? "正常" :
     siteStatus === "issues" ? "发现异常" :
-    siteStatus === "stale" ? "数据过期" : "尚未采集";
+    siteStatus === "stale" ? "数据过期" :
+    siteStatus === "read_error" ? "历史读取失败" : "尚未采集";
 
   return (
     <div className={styles.page} data-site-shell="content">
@@ -70,10 +71,15 @@ export default async function AdminSeoDashboard() {
           <article className={styles.card}>
             <p>最近一次采集</p>
             <strong className={styles.timeValue}>{latest ? humanTime(latest.observedAt) : "未采集"}</strong>
-            <small>{ageHours !== null ? "距今约 " + ageHours + " 小时" : "定时采集启动后产生第一份记录"}</small>
+            <small>{ageHours !== null ? "距今约 " + ageHours + " 小时" :
+              siteStatus === "read_error" ? "采集文件存在格式或读取错误，请检查采集日志与文件权限" :
+              "尚无有效采集记录，请检查定时服务"}</small>
           </article>
         </div>
         <p className={styles.disclaimer}>
+          采集来源：本站 SEO 定时抓取任务；历史读取状态：{sourceStatus === "ok" ? "已读取持久化记录" :
+            sourceStatus === "missing" ? "尚无记录文件" :
+            sourceStatus === "invalid" ? "记录文件格式错误" : "记录文件读取失败"}。
           这里显示的是公开网址技术抽检（最多 200 个 URL），不是百度、Google 或 Bing 的已收录数量。
           已测数据超过 36 小时会标记过期，采集失败不会伪装成正常或 0。
         </p>
@@ -129,7 +135,9 @@ export default async function AdminSeoDashboard() {
               ))}</tbody>
             </table>
           </div>
-        ) : <p className={styles.empty}>尚无日度监测样本。监控任务第一次成功运行后会自动保留历史记录。</p>}
+        ) : <p className={styles.empty}>{siteStatus === "read_error" ?
+          "已有采集记录可能无法读取，请检查 SEO 专用数据目录、权限和 JSON 格式。" :
+          "尚无日度监测样本。监控任务第一次成功运行后会自动保留历史记录。"}</p>}
       </section>
 
       {latest?.failures.length ? (
