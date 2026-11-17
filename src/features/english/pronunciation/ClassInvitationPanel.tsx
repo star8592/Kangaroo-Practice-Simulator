@@ -181,6 +181,20 @@ export default function ClassInvitationPanel({tenant,classId,className}:{
     catch{setError("复制失败。可以打开下方预览并手动长按复制。");}
   }
 
+  async function shareText(){
+    if(!message)return;
+    if(typeof navigator.share==="function"){
+      try{
+        await navigator.share({title:className+" · 英语跟读班级邀请",text:message});
+        setNotice("已打开手机分享菜单，选择微信或联系人即可转发");
+        return;
+      }catch(reason){
+        if(reason instanceof Error && reason.name==="AbortError")return;
+      }
+    }
+    await copy(message,"邀请文案已复制，粘贴到微信群即可发送");
+  }
+
   function chooseTemplate(key:InvitationTemplateKey){
     if(dirty&&!window.confirm("切换模板会覆盖当前未保存的修改，是否继续？"))return;
     setStyle(key);setDraft(INVITATION_TEMPLATES[key].text);
@@ -248,6 +262,8 @@ export default function ClassInvitationPanel({tenant,classId,className}:{
           <p className={styles.modeHint}>适合微信群和私聊：复制完整导语、加入步骤及班级专属链接，无需自己拼接。</p>
           <div className={styles.actions}>
             <button className={styles.primary} type="button" disabled={!valid}
+              onClick={()=>void shareText()}>分享邀请 / 复制群公告</button>
+            <button type="button" disabled={!valid}
               onClick={()=>void copy(message,"完整邀请文案已复制，直接粘贴到微信群即可")}>复制完整邀请文案</button>
             <button type="button" onClick={()=>void copy(link,"班级专属链接已复制")}>只复制链接</button>
             <a href={link} target="_blank" rel="noopener noreferrer">预览学生入口</a>
