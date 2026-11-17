@@ -32,3 +32,12 @@
 - 未来统一收款只作为教师自愿选择的增值功能；上线前必须有双方约定、真实 SKU、服务交付、退款、结算及适当的监管与用户保护。不能默认给任何现有老师切换至平台代收。
 - 找老师目录不得显示未证实的收费金额或虚假的“现在付款”按钮。现有数学、考试及其他数字商品的统一平台支付不受影响。
 - 教师试用期的零费用契约位于 src/lib/teacher-pilot-policy.ts，学生课程费用标注只属于 accent.class_invitations.student_fee_mode。该信息字段不与支付订单表发生业务关联。
+
+
+## R3：学生真实班级作业和反馈（2026-11-17）
+
+新增学生只读接口 student/tenants/:tenant/classes/:classId/assignments 和 student/tenants/:tenant/assignments/:assignmentId/items。每次事务使用统一微信身份，并先经 enrolled 验证（包括 active membership）；PostgreSQL 原租户 RLS 继续生效。返回状态、最佳分、尝试次数和教师反馈仅针对本人、所选已加入班级。
+
+学生在 /my/learning 和 /english/pronunciation/my-classes 共用界面，查看真实作业、原句、本人评分和教师批注。无班级时仍可自主学习，跨班时重新读取所选班级数据，失败不伪造数字。
+
+原课堂分享链接继续承担领取、录音和评分的授权凭据。只读面板不存储可反推的分享 token，也不从其哈希重建过期链接。当前尚未实现无原始链接的正式课堂录音；后续如需在学生中心直接录音，必须先增加真正的学生身份授权评分入口及异常恢复，不能把自由跟读评分伪装为作业提交。

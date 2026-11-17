@@ -45,3 +45,26 @@
 .modeCard span:not(.modeNumber){line-height:1.7;font-size:13px;color:#657b69;flex:1}
 .modeCard b{font-size:13px;color:#206849}
 @media(max-width:850px){.modes{grid-template-columns:1fr}.modeCard{min-height:0}}
+.taskSection{margin-top:19px;background:#fff;border:1px solid #dde9e0;border-radius:14px;padding:18px}
+.taskHeader{display:flex;gap:12px;align-items:center;justify-content:space-between;margin-bottom:13px}
+.taskHeader h4{margin:0;color:#234a35;font-size:17px}
+.taskCounts{font-size:12px;color:#397a52;font-weight:750}
+.taskNotice{font-size:13px;color:#637d6b;padding:14px;background:#f6faf7;border-radius:9px}
+.taskList{display:grid;gap:10px}
+.taskCard{background:#f9fcfa;border:1px solid #e2eee4;border-radius:11px;padding:14px;display:flex;flex-direction:column;align-items:stretch;gap:10px}
+.taskCardBody{flex:1;min-width:0}
+.taskTitle{display:flex;align-items:center;flex-wrap:wrap;gap:9px}
+.taskTitle strong{color:#244630;font-size:15px;overflow-wrap:anywhere}
+.taskStatus{display:inline-flex;color:#296348;font-size:11px;border-radius:30px;background:#e3f2e6;padding:4px 9px;white-space:nowrap;font-weight:750}
+.taskCard p{font-size:12px;color:#647968;line-height:1.65;margin:5px 0}
+.taskCard>button{border:1px solid #bedcc5;background:#fff;color:#256f4b;border-radius:9px;font-weight:750;padding:10px 15px;cursor:pointer;align-self:flex-start;min-height:41px}
+.taskDetails{border-top:1px solid #dce8df;padding:13px 0 2px;font-size:14px;line-height:1.75;color:#405e4a;min-width:0}
+.taskDetails h5{font-size:14px;color:#31543d;margin:12px 0 5px}
+.taskDetails ol{padding-left:23px;margin:9px 0}
+.taskDetails li{padding:4px 0;overflow-wrap:anywhere}
+.taskDetails a{color:#176342;font-weight:750}
+.taskScores{display:flex;flex-wrap:wrap;gap:7px;margin-top:7px}
+.taskScores span{font-size:12px;border:1px solid #dce6db;border-radius:9px;padding:5px 9px}
+.taskDetails .taskInstruction{background:#edf6ee;border-radius:9px;padding:12px;font-size:12px;margin-top:14px}
+.taskFeedback{border-left:3px solid #6fa987;padding-left:11px;margin-top:15px}
+@media(max-width:600px){.taskSection{padding:14px 12px}.taskHeader{align-items:flex-start}.taskCard>button{align-self:stretch}}

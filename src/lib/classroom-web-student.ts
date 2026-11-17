@@ -26,6 +26,58 @@ export async function studentHandler(req:NextRequest,p:string[],a:Actor):Promise
       return {classes:result.rows};
     });
   }
+// Authenticated per-class task directory. Never query all teachers'
+  // tenant data at once; RLS requires the real class tenant context and the
+  // verified class enrollment before any assignments or feedback is read.
+  if(p[0]==="student"&&p[1]==="tenants"&&p[3]==="classes"&&
+    p[5]==="assignments"&&p.length===6&&req.method==="GET"){
+    const tenant=id(p[2]),cl=id(p[4]);
+    return tx({tenant,account:a.accountId},async db=>{
+      await enrolled(db,a,tenant,cl);
+      const rows=await db.query([
+        "SELECT x.id,x.title,x.lifecycle,x.published_at,",
+        "(SELECT count(*)::int FROM accent.class_assignment_items i",
+        "WHERE i.tenant_id=x.tenant_id AND i.assignment_id=x.id) AS sentence_count,",
+        "coalesce(r.status,'not_started') AS receipt_status,",
+        "(r.claimed_at IS NOT NULL) AS claimed,",
+        "(coalesce(r.status,'') IN ('submitted','completed')) AS submitted,",
+        "(SELECT count(*)::int FROM accent.assignment_attempt_links l",
+        "WHERE l.tenant_id=x.tenant_id AND l.assignment_id=x.id AND l.student_id=$3) AS attempt_count,",
+        "(SELECT max(z.reference_score)::float8 FROM accent.assignment_attempt_links l",
+        "JOIN accent.pronunciation_assessments z ON z.tenant_id=l.tenant_id AND z.attempt_id=l.attempt_id",
+        "WHERE l.tenant_id=x.tenant_id AND l.assignment_id=x.id AND l.student_id=$3) AS best_score,",
+        "(SELECT count(*)::int FROM accent.assignment_teacher_feedback f",
+        "WHERE f.tenant_id=x.tenant_id AND f.assignment_id=x.id AND f.student_id=$3) AS feedback_count",
+        "FROM accent.class_assignments x LEFT JOIN accent.assignment_receipts r",
+        "ON r.tenant_id=x.tenant_id AND r.assignment_id=x.id AND r.student_id=$3",
+        "WHERE x.tenant_id=$1 AND x.class_id=$2 AND x.lifecycle IN ('published','closed')",
+        "ORDER BY CASE WHEN x.lifecycle='published' THEN 0 ELSE 1 END,",
+        "x.published_at DESC NULLS LAST,x.id LIMIT 100"
+      ].join(" "),[tenant,cl,a.accountId]);
+      return {tenant_id:tenant,class_id:cl,assignments:rows.rows};
+    });
+  }
+  // Read the exact lesson sentences without requiring the temporary group
+  // share-token; no scoring/claim/receipt write privilege is granted here.
+  if(p[0]==="student"&&p[1]==="tenants"&&p[3]==="assignments"&&
+    p[5]==="items"&&p.length===6&&req.method==="GET"){
+    const tenant=id(p[2]),assignment=id(p[4]);
+    return tx({tenant,account:a.accountId},async db=>{
+      const cl=await classForAssignment(db,tenant,assignment);
+      await enrolled(db,a,tenant,cl);
+      const visible=await db.query(
+        "SELECT title,lifecycle FROM accent.class_assignments WHERE tenant_id=$1 AND id=$2 AND lifecycle IN ('published','closed')",
+        [tenant,assignment]);
+      if(!visible.rows.length)throw new ClassroomFailure(404,"作业不存在或尚未发布");
+      const entries=await db.query([
+        "SELECT i.ordinal,s.english_text AS sentence FROM accent.class_assignment_items i",
+        "JOIN accent.sentence_items s ON s.tenant_id=i.tenant_id AND s.id=i.sentence_id",
+        "WHERE i.tenant_id=$1 AND i.assignment_id=$2 ORDER BY i.ordinal LIMIT 30"
+      ].join(" "),[tenant,assignment]);
+      return {assignment_id:assignment, title:visible.rows[0].title,
+        lifecycle:visible.rows[0].lifecycle,items:entries.rows};
+    });
+  }
   // Standalone teacher class invitation. The token identifies ONLY the class;
   // actual membership requires the student's existing WeChat session,
   // a non-placeholder display name, and teacher approval.
