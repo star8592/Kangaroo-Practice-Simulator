@@ -1,13 +1,13 @@
 import { NextRequest,NextResponse } from "next/server";
-import { isAdmin,userFromRequest } from "@/lib/auth";
+import {platformAdminPrincipal} from "@/lib/platform-admin-principal";
 import { CASE_STATES, CaseTransitionError, updateFeedbackCase } from "@/lib/customer-feedback-workflow";
 
 export const runtime="nodejs";
 export const dynamic="force-dynamic";
 const headers={"Cache-Control":"private, no-store"};
 export async function PATCH(req:NextRequest) {
-  const user=userFromRequest(req);
-  if (!isAdmin(user)) return NextResponse.json({error:"管理员身份验证失败"},{status:403,headers});
+  const principal=platformAdminPrincipal(req.cookies);
+  if (!principal) return NextResponse.json({error:"管理员身份验证失败"},{status:403,headers});
   const origin=req.headers.get("origin");
   if(!origin) return NextResponse.json({error:"必须在本站操作"},{status:403,headers});
   try{
@@ -35,7 +35,7 @@ export async function PATCH(req:NextRequest) {
       feedbackId:body.feedbackId,expectedVersion:body.expectedVersion,
       to:body.to as typeof CASE_STATES[number],note:body.note,
       ...(typeof body.evidenceRef==="string"?{evidenceRef:body.evidenceRef}:{}),
-      reviewerId:user!.id,
+      reviewerId:principal.actorId,
     });
     return NextResponse.json({ok:true,item},{headers});
   }catch(e){
