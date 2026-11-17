@@ -1,3 +1,4 @@
+import {marketplaceExamAssetsReady} from "@/lib/marketplace-exam-assets";
 import {cookies} from "next/headers";
 import {notFound} from "next/navigation";
 import {marketplaceMode,verifyMarketplaceTicket,marketplaceUserFromCookie,MARKETPLACE_COOKIE} from "@/lib/marketplace-entitlement";
@@ -19,7 +20,7 @@ export default async function MarketplaceClaimPage({searchParams}:{searchParams:
     try {
       const verified=verifyMarketplaceTicket(query.ticket);
       const bundle=loadTrainingExamBundle(verified.examId);
-      if(!isExamBundleTrainingReady(bundle)||bundle.profile.formatId!=="maa-amc8")
+      if(!isExamBundleTrainingReady(bundle)||bundle.profile.formatId!=="maa-amc8"||!marketplaceExamAssetsReady(bundle.questions))
         throw Error("EXAM_NOT_READY");
       ticket=query.ticket;examId=verified.examId;title=bundle.profile.name;
       count=bundle.profile.questionCount;minutes=Math.ceil(bundle.profile.durationSeconds/60);

@@ -2,6 +2,8 @@ import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 import type { ExamTimingSection } from "./types";
+import { USER_DATA_DIR, atomicWriteJson } from "./user-data-store";
+import {marketplaceMode} from "./marketplace-entitlement";
 
 export type ExamSectionLock = {
   sectionIndex: number;
@@ -24,19 +26,23 @@ export type ExamSessionRecord = {
   sectionDrafts?: Record<string,{answers:Record<string,string>;updatedAt:number}>;
 };
 
-const D=path.join(process.cwd(),"private","users");
+const D=USER_DATA_DIR;
 const F=path.join(D,"exam-sessions.json");
 
 function all():ExamSessionRecord[]{
   if(!fs.existsSync(F))return[];
   try{
-    const x=JSON.parse(fs.readFileSync(F,"utf8"));
-    return Array.isArray(x)?x:[];
-  }catch{return[]}
+    const x:unknown=JSON.parse(fs.readFileSync(F,"utf8"));
+    if(Array.isArray(x))return x as ExamSessionRecord[];
+    if(marketplaceMode())throw new Error("EXAM_SESSION_STORE_CORRUPT");
+    return[];
+  }catch(cause){
+    if(marketplaceMode())throw new Error("EXAM_SESSION_STORE_CORRUPT",{cause});
+    return[];
+  }
 }
 function save(x:ExamSessionRecord[]){
-  fs.mkdirSync(path.dirname(F),{recursive:true});
-  fs.writeFileSync(F,JSON.stringify(x.filter(r=>r.startedAt>Date.now()-12096e5).slice(-2000),null,2));
+  atomicWriteJson(F,x.filter(r=>r.startedAt>Date.now()-12096e5).slice(-2000));
 }
 
 /** Read a particular session only for its authenticated owner. */

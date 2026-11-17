@@ -3,6 +3,8 @@ import fs from "node:fs";
 import path from "node:path";
 import type { Choice, ExamBundle, GradeResult, Question } from "./types";
 import type { PublicStudent } from "./auth";
+import { USER_DATA_DIR } from "./user-data-store";
+import { marketplaceMode } from "./marketplace-entitlement";
 
 export type ExamEvent = { type: string; questionId?: string; at: number; value?: string };
 
@@ -60,7 +62,7 @@ export type ExamAttemptRecord = {
   events: ExamEvent[];
 };
 
-const D = path.join(process.cwd(), "private", "users");
+const D = USER_DATA_DIR;
 const F = path.join(D, "exam-attempts.jsonl");
 const text = (value: unknown) => typeof value === "string" ? value.trim() : "";
 
@@ -176,7 +178,8 @@ export function loadExamAttempts(uid: string, limit = 300): ExamAttemptRecord[] 
     try {
       const x = JSON.parse(l) as ExamAttemptRecord;
       return x.userId === uid ? [x] : [];
-    } catch {
+    } catch (cause) {
+      if(marketplaceMode())throw new Error("EXAM_ATTEMPT_STORE_CORRUPT",{cause});
       return [];
     }
   }).slice(-limit);
@@ -196,7 +199,10 @@ export function findExamAttemptForSession(uid: string, examId: string, sessionId
     try {
       const attempt = JSON.parse(lines[i]) as ExamAttemptRecord;
       if (attempt.userId === uid && attempt.examId === examId && attempt.sessionId === sessionId) return attempt;
-    } catch { /* Corrupted unrelated line must not reveal or shadow another student's result. */ }
+    } catch(cause) {
+      if(marketplaceMode())throw new Error("EXAM_ATTEMPT_STORE_CORRUPT",{cause});
+      // Main-site compatibility: legacy unrelated corrupt lines stay nonblocking.
+    }
   }
   return null;
 }

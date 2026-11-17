@@ -16,9 +16,9 @@ import time
 import urllib.error
 import urllib.parse
 import urllib.request
-from contextlib import ExitStack
 
 PORT = 18742
+RUST_PORT = 18743
 ORIGIN = f"http://127.0.0.1:{PORT}"
 SECRET = "local_e2e_test_secret_not_real_paid_order_20261118_replace"
 EXAM_ID = "maa-amc8-2024-user-owned"
@@ -67,8 +67,25 @@ def main():
           "SOCTHINK_MARKETPLACE_DATA_DIR":str(base/"claims"),
           "SOCTHINK_USER_DATA_DIR":str(base/"users"),
           "PDF_INTERNAL_ORIGIN":ORIGIN,
+          "SOCTHINK_RUST_BIND":f"127.0.0.1:{RUST_PORT}",
+          "SOCTHINK_RUST_CATALOG_SNAPSHOT":"unused",
+          "SOCTHINK_CATALOG_SNAPSHOT":str(repo/"backend/socthink-core/tests/fixtures/catalog.json"),
+          "SOCTHINK_MARKETPLACE_RUST_INTERNAL_URL":f"http://127.0.0.1:{RUST_PORT}",
           "NEXT_TELEMETRY_DISABLED":"1",
         })
+        rust_log=open(base/"rust.log","w")
+        rust_binary=repo/"backend/socthink-core/target/debug/socthink-catalog-api"
+        assert rust_binary.is_file(), "cargo build --offline --manifest-path backend/socthink-core/Cargo.toml"
+        rust=subprocess.Popen([str(rust_binary)],cwd=repo,env=env,stdout=rust_log,stderr=subprocess.STDOUT,start_new_session=True)
+        for _ in range(45):
+            try:
+                with urllib.request.urlopen(f"http://127.0.0.1:{RUST_PORT}/healthz", timeout=1) as res:
+                    if res.status==200:break
+            except (OSError,TimeoutError):pass
+            time.sleep(.25)
+        else:
+            raise RuntimeError("Rust not ready: "+(base/"rust.log").read_text()[-1300:])
+        print("PASS Rust marketplace domain service ready",flush=True)
         logfile=open(base/"server.log","w")
         p=subprocess.Popen([str(repo/"node_modules/.bin/next"),"dev","--webpack","-H","127.0.0.1","-p",str(PORT)],
             cwd=repo,env=env,stdout=logfile,stderr=subprocess.STDOUT,start_new_session=True)
@@ -93,7 +110,7 @@ def main():
             print("PASS real 25-question AMC 8 claim SSR",flush=True)
             with request(browser,"/api/marketplace/claim",data={"ticket":proof},origin=ORIGIN) as r:
                 examhtml=r.read().decode()
-                assert r.status==200 and "/exam/"+EXAM_ID in r.geturl() and "2024" in examhtml and ("确认信息并开始考试" in examhtml or "开始考试" in examhtml), "post-claim url="+r.geturl()+" html="+examhtml[:1800]
+                assert r.status==200 and "/exam/"+EXAM_ID in r.geturl() and "2024" in examhtml and ("确认信息并开始考试" in examhtml or "正在准备考试" in examhtml or "开始考试" in examhtml), "post-claim url="+r.geturl()+" html="+examhtml[:1800]
             print("PASS claim binds browser and renders existing ExamClient",flush=True)
             status_,data=status(browser,"/api/exam-sessions",data={"examId":EXAM_ID})
             assert status_==200, (status_,data[:500])
@@ -105,7 +122,9 @@ def main():
             answer=json.loads(data)
             assert answer["attemptId"].startswith("att_")
             attempt=answer["attemptId"]
-            print("PASS real scoring and attempt persistence",flush=True)
+            assert (base/"users"/"exam-attempts.jsonl").is_file(), "attempt must be stored inside this isolated instance"
+            assert (base/"users"/"exam-sessions.json").is_file(), "session must be stored inside this isolated instance"
+            print("PASS original grading with isolated session + attempt storage",flush=True)
             with request(browser,"/report/"+urllib.parse.quote(attempt)) as r:
                 page=r.read().decode()
                 assert r.status==200 and "数学竞赛学习诊断报告" in page
@@ -129,7 +148,23 @@ def main():
                 pdf2=r.read()
                 assert pdf2.startswith(b"%PDF")
             print("PASS repeat PDF download without new exam",flush=True)
+            pdf_file=base/"validated-report.pdf"
+            pdf_file.write_bytes(pdf2)
+            info=subprocess.run(["pdfinfo",str(pdf_file)],capture_output=True,text=True,check=True,timeout=20)
+            pages=[line for line in info.stdout.splitlines() if line.startswith("Pages:")]
+            assert pages and int(pages[0].split(":",1)[1].strip())>=1, info.stdout
+            print("PASS report PDF parseable page count",pages[0],flush=True)
+            extracted=subprocess.run(["pdftotext",str(pdf_file),"-"],capture_output=True,text=True,check=True,timeout=25)
+            assert len(extracted.stdout.strip())>100, "report PDF needs searchable extracted text"
+            print("PASS report PDF searchable text characters",len(extracted.stdout.strip()),flush=True)
+            rendered=subprocess.run(["pdftoppm","-f","1","-l","1","-scale-to","900","-singlefile","-png",
+                str(pdf_file),str(base/"report-page-1")],capture_output=True,text=True,timeout=35)
+            assert rendered.returncode==0 and (base/"report-page-1.png").stat().st_size>6000,"PDF first-page render must succeed"
+            print("PASS PDF rendered first page to nonempty PNG",flush=True)
+
             print("RESULT 9/9 local full-chain checks passed, synthetic payment only",flush=True)
+            if os.environ.get("RUN_AMC8_MOBILE_BROWSER_QA")=="1":
+                subprocess.run(["node","scripts/test_marketplace_mobile_browser.mjs"],cwd=repo,env=env,check=True,timeout=200)
         finally:
             try:os.killpg(p.pid,signal.SIGTERM)
             except ProcessLookupError:pass
@@ -138,6 +173,10 @@ def main():
                 try:os.killpg(p.pid,signal.SIGKILL)
                 except ProcessLookupError:pass
             logfile.close()
+            try:os.killpg(rust.pid,signal.SIGTERM)
+            except ProcessLookupError:pass
+            rust.wait(timeout=8)
+            rust_log.close()
 
 if __name__=="__main__":
     main()

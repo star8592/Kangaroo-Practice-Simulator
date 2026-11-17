@@ -1,0 +1,38 @@
+import assert from "node:assert/strict";
+import fs from "node:fs";
+import os from "node:os";
+import path from "node:path";
+const root=fs.mkdtempSync(path.join(os.tmpdir(),"amc8-corruption-"));
+process.env.SOCTHINK_MARKETPLACE_EXAM_MODE="1";
+process.env.SOCTHINK_USER_DATA_DIR=path.join(root,"users");
+process.env.SOCTHINK_MARKETPLACE_DATA_DIR=path.join(root,"entitlements");
+const {startExamSession,activeExamSession}=await import("../src/lib/exam-session");
+const {loadExamAttempts,findExamAttemptForSession}=await import("../src/lib/attempt-store");
+const uid="market_"+ "a".repeat(64);
+const exam="maa-amc8-2024-user-owned";
+let count=0;
+const ok=(label:string,condition:boolean)=>{assert.ok(condition,label);count++;console.log("PASS "+label)};
+try{
+  const session=startExamSession(uid,exam,2400).session;
+  const file=path.join(root,"users","exam-sessions.json");
+  ok("session written to configured isolated directory",fs.existsSync(file));
+  ok("session readable before corruption",activeExamSession(uid,exam)?.id===session.id);
+  fs.writeFileSync(file,"{damaged-mid-write");
+  const before=fs.readFileSync(file,"utf8");
+  assert.throws(()=>activeExamSession(uid,exam),/EXAM_SESSION_STORE_CORRUPT/);
+  count++;console.log("PASS corrupted sessions fail closed");
+  assert.throws(()=>startExamSession(uid,exam,2400),/EXAM_SESSION_STORE_CORRUPT/);
+  count++;console.log("PASS corrupted sessions cannot silently open new exam");
+  ok("session corruption never overwritten",fs.readFileSync(file,"utf8")===before);
+  fs.writeFileSync(file,JSON.stringify([session]));
+  ok("restored legitimate session remains accessible",activeExamSession(uid,exam)?.id===session.id);
+  const attemptsFile=path.join(root,"users","exam-attempts.jsonl");
+  fs.writeFileSync(attemptsFile,"{bad-attempt-line\n");
+  assert.throws(()=>loadExamAttempts(uid,1),/EXAM_ATTEMPT_STORE_CORRUPT/);
+  count++;console.log("PASS corrupted attempts cannot enable fresh exam credit");
+  assert.throws(()=>findExamAttemptForSession(uid,exam,session.id),/EXAM_ATTEMPT_STORE_CORRUPT/);
+  count++;console.log("PASS corrupted attempts cannot hide committed prior session");
+  fs.writeFileSync(attemptsFile,"");
+  ok("empty clean attempt log accepted",loadExamAttempts(uid,1).length===0);
+  console.log("MARKETPLACE_CORRUPTION_TEST="+count+"/"+count+" PASS");
+}finally{fs.rmSync(root,{recursive:true,force:true})}

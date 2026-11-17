@@ -1,6 +1,6 @@
 # SOC THINK 全站逐页路由归属审计（代码扫描台账）
 
-审计基线：2026-11-04；源自 GitHub Next.js `src/app/**/page.tsx` 路由树，**103 个 Next.js 页面模板 + 1 个静态兼容 HTML 入口（共 104 个），非实际商品、试卷或动态 URL 实例数**。
+审计基线：2026-11-04；源自 GitHub Next.js `src/app/**/page.tsx` 路由树，**104 个 Next.js 页面模板 + 1 个静态兼容 HTML 入口（共 105 个），非实际商品、试卷或动态 URL 实例数**。
 
 > **地位**：本表是 [《全站信息架构总纲》](SOCTHINK_SITE_ARCHITECTURE_MASTER.md) 的逐页实施台账，不是另一套页面注册表、CMS、路由或授权来源。内容归属仍以 `src/lib/site-architecture.ts` 和现有业务权威目录为准。
 
@@ -90,6 +90,7 @@
 | `/login` | 账户与权益 | `/account` | 身份入口 | 受控路由/购买流程登录 |
 | `/math` | 全部考试 | `/` | 公开但不收录 | 课堂数学独立目录过渡入口；学生记录仍按既有鉴权 |
 | `/math-practice` | 全部考试 | `/assessments` | 公开指南 | 考试目录底部的分年级计算指南 |
+| `/marketplace/claim` | 全部考试 | `/` | 受控兑换 noindex | 仅独立闲鱼已付款 License 订单所签的短效兑换链接进入，主站模式默认不可用 |
 | `/membership` | 账户与权益 | `/account` | 权益流程 | 商城/账户/页脚购买与权益 |
 | `/parent` | 账户与权益 | `/account` | 历史重定向 | 旧家长入口 → 单一账户 |
 | `/parent/login` | 账户与权益 | `/login` | 历史重定向 | 旧家长登录 → 统一登录 |

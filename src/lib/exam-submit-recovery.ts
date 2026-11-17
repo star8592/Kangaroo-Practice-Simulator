@@ -4,8 +4,9 @@ import crypto from "node:crypto";
 import { findExamAttemptForSession } from "./attempt-store";
 import { completeExamSession, ownedExamSession } from "./exam-session";
 import type { ExamAttemptRecord } from "./attempt-store";
+import { USER_DATA_DIR } from "./user-data-store";
 
-const DIRECTORY = path.join(process.cwd(), "private", "users", ".exam-submit-locks");
+const DIRECTORY = path.join(USER_DATA_DIR, ".exam-submit-locks");
 
 export function recoveredExamResult(userId:string, examId:string, sessionId:string) {
   const session=ownedExamSession(sessionId,userId,examId);

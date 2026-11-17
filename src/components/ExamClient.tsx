@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect,useMemo,useRef,useState } from "react";
+import { useEffect,useMemo,useRef,useState,useSyncExternalStore } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import type { ExamProfile,PublicQuestion } from "@/lib/types";
@@ -56,6 +56,7 @@ export default function ExamClient({examId,user,initialProfile,initialQuestions}
  const[sessionId,setSessionId]=useState("");
  const[resumeSession,setResumeSession]=useState<ActiveSession|null>(null);
  const[starting,setStarting]=useState(false);
+ const hydrated=useSyncExternalStore(()=>()=>{},()=>true,()=>false);
  const[submitting,setSubmitting]=useState(false);
  const[showSubmit,setShowSubmit]=useState(false);
  const[navExpanded,setNavExpanded]=useState(false);
@@ -278,7 +279,7 @@ export default function ExamClient({examId,user,initialProfile,initialQuestions}
    :split?(lang==="zh"?"这是分段计时赛制。第一部分锁定后不可返回；中间休息不计入作答时间，点击开始下一部分后才重新计时。":"This exam uses section timing. Once Part 1 is locked it cannot be revisited. The break is not counted; Part 2 starts only when you explicitly begin it.")
    :profile.timingMode==="recommended"?(lang==="zh"?"这是一套官方样题，原文件未注明正式限时；本站计时仅作为训练建议。":"This is an official sample; the source does not state an official time limit. The site timer is for practice only.")
    :(lang==="zh"?"点击开始后由服务器记录正式开考时间。刷新或重新进入页面不会重置计时；未完成考试可以继续。":"The server records the official start time. Refreshing does not reset the timer; unfinished exams can be resumed.")}</div>
-  <button className="primary-button candidate-start" disabled={starting} onClick={()=>void beginExam()}>{starting?"正在进入…":resumeSession?ui.resume:ui.start}</button>
+  <button className="primary-button candidate-start" disabled={!hydrated||starting} onClick={()=>void beginExam()}>{!hydrated?"正在准备考试…":starting?"正在进入…":resumeSession?ui.resume:ui.start}</button>
  </section></div>;
 
  if(split&&!sectionStartedAt){
