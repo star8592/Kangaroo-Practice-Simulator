@@ -14,6 +14,7 @@ const nativeUrl="https://socthink.cn/english/pronunciation/next-lab/assignments/
 const api="/english/pronunciation/classroom-api";
 const classBase=api+"/tenants/"+tenant+"/classes/"+classroom;
 const taskBase=api+"/tenants/"+tenant+"/a/"+token;
+const classJoinUrl="https://socthink.cn/english/pronunciation/join/"+tenant+"/"+classroom+"/"+token;
 const sentenceText="An octopus learns from experience.";
 function respond(route:Route,body:unknown,status=200){
  return route.fulfill({status,contentType:"application/json",body:JSON.stringify(body)});
@@ -34,6 +35,10 @@ test("teacher can publish existing Rust-classroom sentences, approve student and
   if(path===api+"/me")return respond(route,{account_id:"teacher",is_admin:false});
   if(path===api+"/teacher/access")return respond(route,{approved:true});
   if(path===api+"/teacher/classes")return respond(route,{classes:[{id:classroom,tenant_id:tenant,name:"英语六年级"}]});
+  if(path===classBase+"/invitation"&&req.method()==="GET")
+    return respond(route,{enabled:false,url:null});
+  if(path===classBase+"/invitation/rotate"&&req.method()==="POST")
+    return respond(route,{enabled:true,url:classJoinUrl});
   if(path===classBase+"/catalog")return respond(route,{items:[{id:sentence,sentence_set_id:set,
    set_title:"自然科学英语",sentence:sentenceText,ordinal:1}]});
   if(path===classBase+"/assignments/list")return respond(route,{assignments:published?
@@ -64,6 +69,9 @@ test("teacher can publish existing Rust-classroom sentences, approve student and
  await page.goto("/english/pronunciation/next-lab/assignments");
  await expect(page.getByRole("region",{name:"教师布置作业"})).toBeVisible();
  await page.getByRole("button",{name:"英语六年级"}).click();
+ await page.getByRole("button",{name:"生成本班邀请二维码"}).click();
+ await expect(page.getByRole("textbox",{name:"班级专属邀请链接"})).toHaveValue(classJoinUrl);
+ await expect(page.getByAltText("本班微信邀请二维码")).toBeVisible();
  await expect(page.getByLabel(sentenceText)).toBeVisible();
  await page.getByRole("textbox",{name:"作业名称"}).fill("周三跟读");
  await page.getByRole("checkbox",{name:sentenceText}).check();

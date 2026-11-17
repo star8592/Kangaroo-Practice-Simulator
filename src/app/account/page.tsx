@@ -2,7 +2,7 @@ import Link from "next/link";
 import {cookies} from "next/headers";
 import {redirect} from "next/navigation";
 import {parentFromSessionToken,PARENT_SESSION_COOKIE,isWechatNicknamePlaceholder} from "@/lib/parent-auth";
-import WechatNicknameSync from "@/components/WechatNicknameSync";
+
 import {attachVerifiedBilling} from "@/lib/access-context-server";
 import {effectivePlan} from "@/lib/access-policy";
 import {billingConfigured,billingPool} from "@/lib/billing-ledger";
@@ -61,6 +61,7 @@ export default async function AccountPage(){
     {href:"/assessments",title:"选择考试或资料",desc:"查看考试大全，发现考试方向和已开放测评"},
     {href:"/resources",title:"试卷资料",desc:"检索已核查的在线练习资料"},
     {href:"/arithmetic",title:"数学训练",desc:"直接进入计算与巧算训练"},
+    {href:"/english/pronunciation/my-classes",title:"我的英语班级",desc:"查看已加入的老师班级与跟读安排"},
     {href:"/student",title:"学习报告",desc:"查看同一账号累积的练习记录"},
   ];
   return <div data-site-shell="content" className={styles.page}>
@@ -82,12 +83,12 @@ export default async function AccountPage(){
       <div className={styles.logout}><ParentLogoutButton/></div>
     </section>
 
-    {isWechatNicknamePlaceholder(account.name) ? <section className={styles.nicknameSync} aria-label="同步微信昵称">
-      <div><strong>微信昵称尚未同步</strong>
-        <p>账号和登录已正常。手机微信的快捷登录不会读取昵称；本人可在微信内授权一次，补全真实昵称。不会重新注册，也不影响订单、教师授权和学习记录。</p>
+    {isWechatNicknamePlaceholder(account.name) ? <section className={styles.nicknameSync} aria-label="完善显示名称">
+      <div><strong>请先完善姓名或昵称</strong>
+        <p>可在微信内授权同步昵称；如果微信未提供昵称，必须填写平台显示名称，便于老师准确识别学生。不会更换微信账号。</p>
       </div>
-      <WechatNicknameSync/>
-    </section> : null}
+      <Link href="/account/profile?next=%2Faccount">立即完善</Link>
+    </section> : <p><Link href="/account/profile?next=%2Faccount">修改我的显示名称</Link></p>}
 
     <section className={styles.section} aria-label="可用功能">
       <div className={styles.sectionHeading}>

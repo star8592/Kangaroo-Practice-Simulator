@@ -3,6 +3,7 @@ import { createFamilyPracticeSessionToken, SESSION_COOKIE, userFromSessionToken 
 import {
   authenticateOrCreateWechatParent,
   createParentSessionToken,
+  isWechatNicknamePlaceholder,
   PARENT_SESSION_COOKIE,
   PARENT_SESSION_TTL_SECONDS,
 } from "@/lib/parent-auth";
@@ -100,7 +101,9 @@ export async function GET(req: NextRequest) {
       return mobileResultPage(true, "电脑端正在自动完成登录。你可以关闭此页面并返回电脑继续使用。");
     }
 
-    const response = NextResponse.redirect(`${WECHAT_CALLBACK_ORIGIN}${returnPath}`);
+    const destination=isWechatNicknamePlaceholder(user.name) ?
+      "/account/profile?next="+encodeURIComponent(returnPath) : returnPath;
+    const response=NextResponse.redirect(WECHAT_CALLBACK_ORIGIN+destination);
     response.cookies.set(PARENT_SESSION_COOKIE, createParentSessionToken(user.id), {
       httpOnly: true,
       sameSite: "strict",

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import {useEffect,useMemo,useRef,useState,type FormEvent} from "react";
 import styles from "./NativeClassroomWorkflow.module.css";
+import ClassInvitationPanel from "./ClassInvitationPanel";
 
 const API="/english/pronunciation/classroom-api";
 type ClassRoom={id:string;tenant_id:string;name:string};
@@ -421,6 +422,7 @@ export default function NativeClassroomWorkflow({initialShare=""}:{initialShare?
       <button type="submit" disabled={teacherBusy}>{teacherBusy?"请稍候…":"创建班级"}</button>
      </form>
      {activeClass?<div className={styles.group}>
+      <ClassInvitationPanel key={activeClass.id} tenant={activeClass.tenant_id} classId={activeClass.id}/>
       <div className={styles.titleRow}><h2>2. 布置跟读作业 · {activeClass.name}</h2>
        <button type="button" className={styles.secondary} disabled={teacherBusy} onClick={()=>void refreshClass()}>刷新班级数据</button></div>
       <form onSubmit={e=>void publishAssignment(e)}>

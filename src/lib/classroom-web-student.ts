@@ -1,4 +1,5 @@
 import type {NextRequest} from "next/server";
+import {verifyClassInvitation} from "./classroom-invitations";
 import {
   type Actor,ClassroomFailure,enrolled,ensureAccount,id,invite,jsonBody,tx,txt,classForAssignment
 } from "@/lib/classroom-web-core";
@@ -10,6 +11,75 @@ function grade(v:unknown):string{
   return s;
 }
 export async function studentHandler(req:NextRequest,p:string[],a:Actor):Promise<unknown|undefined>{
+  // Student self-directory works across teachers without enumerating any
+  // other student's enrollment, protected by the explicit student RLS policy.
+  if(p[0]==="student"&&p[1]==="classes"&&p.length===2&&req.method==="GET"){
+    return tx({account:a.accountId},async db=>{
+      const result=await db.query(["SELECT c.tenant_id,c.id AS class_id,c.title AS class_name,t.display_name AS teacher_name",
+        "FROM accent.class_enrollments e JOIN accent.classes c",
+        "ON c.tenant_id=e.tenant_id AND c.id=e.class_id",
+        "JOIN accent.memberships m ON m.tenant_id=e.tenant_id AND m.account_id=e.account_id",
+        "JOIN accent.memberships t ON t.tenant_id=c.tenant_id AND t.account_id=c.lead_teacher_id",
+        "WHERE e.account_id=$1 AND e.role='student' AND m.role='student' AND m.state='active'",
+        "AND t.role='teacher' AND t.state='active'",
+        "ORDER BY e.enrolled_at DESC LIMIT 100"].join(" "),[a.accountId]);
+      return {classes:result.rows};
+    });
+  }
+  // Standalone teacher class invitation. The token identifies ONLY the class;
+  // actual membership requires the student's existing WeChat session,
+  // a non-placeholder display name, and teacher approval.
+  if(p[0]==="class-join"&&p.length===4){
+    const tenant=id(p[1]),cl=id(p[2]),token=p[3];
+    if(req.method!=="GET"&&req.method!=="POST")return undefined;
+    if(req.method==="POST"&&(!a.name||["微信用户","微信家长"].includes(a.name)))
+      throw new ClassroomFailure(409,"请先完善姓名或昵称后申请入班");
+    const body=req.method==="POST"?await jsonBody(req):null;
+    const studentName=body?txt(body.student_name,30,2):"";
+    const gradeLabel=body?grade(body.grade_label):"";
+    return tx({tenant,account:a.accountId},async db=>{
+      const invite=await db.query("SELECT rotation,enabled FROM accent.class_invitations WHERE tenant_id=$1 AND class_id=$2",[tenant,cl]);
+      const entry=invite.rows[0];
+      if(!entry?.enabled||!verifyClassInvitation(tenant,cl,entry.rotation,token))
+        throw new ClassroomFailure(404,"班级邀请码已停用或失效，请联系老师获取新链接");
+      const found=await db.query(["SELECT c.title AS class_name,c.lead_teacher_id,",
+        "m.display_name AS teacher_name FROM accent.classes c",
+        "JOIN accent.memberships m ON m.tenant_id=c.tenant_id AND m.account_id=c.lead_teacher_id",
+        "WHERE c.tenant_id=$1 AND c.id=$2 AND m.role='teacher' AND m.state='active'"].join(" "),[tenant,cl]);
+      if(!found.rows.length)throw new ClassroomFailure(404,"班级不存在");
+      const classInfo=found.rows[0];
+      const publicInfo={class_name:classInfo.class_name,teacher_name:classInfo.teacher_name};
+      if(classInfo.lead_teacher_id===a.accountId)
+        throw new ClassroomFailure(409,"老师不能使用自己的微信加入自己的学生班级");
+      const enrolled=await db.query(["SELECT 1 FROM accent.class_enrollments e",
+        "JOIN accent.memberships m ON m.tenant_id=e.tenant_id AND m.account_id=e.account_id",
+        "WHERE e.tenant_id=$1 AND e.class_id=$2 AND e.account_id=$3",
+        "AND e.role='student' AND m.role='student' AND m.state='active'"].join(" "),
+        [tenant,cl,a.accountId]);
+      if(enrolled.rows.length)return {...publicInfo,status:"approved",joined:true};
+      const old=await db.query(["SELECT status FROM accent.class_join_requests",
+        "WHERE tenant_id=$1 AND requested_class_id=$2 AND student_id=$3"].join(" "),
+        [tenant,cl,a.accountId]);
+      if(!body)return {...publicInfo,status:old.rows[0]?.status||"new",joined:false};
+      await ensureAccount(db,a);
+      await db.query(["INSERT INTO accent.memberships(tenant_id,account_id,role,state,display_name)",
+        "VALUES($1,$2,'student','invited',$3) ON CONFLICT(tenant_id,account_id) DO NOTHING"].join(" "),
+        [tenant,a.accountId,studentName]);
+      const m=await db.query("SELECT role,state FROM accent.memberships WHERE tenant_id=$1 AND account_id=$2 FOR UPDATE",
+        [tenant,a.accountId]);
+      if(m.rows[0]?.state==="paused"||m.rows[0]?.role!=="student")
+        throw new ClassroomFailure(403,"该账号不能作为本班学生入班");
+      await db.query(["INSERT INTO accent.class_join_requests",
+        "(tenant_id,requested_class_id,assignment_id,student_id,student_name,grade_label)",
+        "VALUES($1,$2,NULL,$3,$4,$5)",
+        "ON CONFLICT(tenant_id,requested_class_id,student_id) DO UPDATE SET",
+        "status='pending',student_name=EXCLUDED.student_name,",
+        "grade_label=EXCLUDED.grade_label,assigned_class_id=NULL,",
+        "reviewed_by=NULL,reviewed_at=NULL,updated_at=now()"].join(" "),
+        [tenant,cl,a.accountId,studentName,gradeLabel]);
+      return {...publicInfo,status:"pending",joined:false};
+    });
+  }
   if(p[0]!=="tenants"||p.length<4)return undefined;
   const tenant=id(p[1]),method=req.method;
   if(p[2]==="a"){

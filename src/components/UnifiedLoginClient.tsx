@@ -73,7 +73,15 @@ export default function UnifiedLoginClient({nextPath,loginError}:{nextPath:strin
           });
           const s=await r.json();
           if(disposed.current||ticket.current!==body.ticket)return;
-          if(s.status==="authenticated"){stop();router.replace(destination);router.refresh();return;}
+          if(s.status==="authenticated"){
+            stop();
+            const m=await fetch("/api/auth/parent/me",{credentials:"same-origin",cache:"no-store"});
+            if(!m.ok)throw new Error("微信身份验证尚未完成");
+            const v=await m.json();
+            const missing=!v.user?.name||["微信用户","微信家长"].includes(v.user.name);
+            router.replace(missing?"/account/profile?next="+encodeURIComponent(destination):destination);
+            router.refresh();return;
+          }
           if(s.status==="expired"){stop();setMode("error");setMessage("二维码已过期，请重新扫码。");return;}
         }catch{/* Temporary network loss must not falsely authenticate. */}
         if(!disposed.current)timer.current=setTimeout(()=>{void poll();},1800);
@@ -102,7 +110,9 @@ export default function UnifiedLoginClient({nextPath,loginError}:{nextPath:strin
         if(res.ok){
           const body=await res.json();
           if(body.user?.wechatId||body.user?.wechatOpenId){
-            router.replace(destination);router.refresh();return;
+            const missing=!body.user?.name||["微信用户","微信家长"].includes(body.user.name);
+            router.replace(missing?"/account/profile?next="+encodeURIComponent(destination):destination);
+            router.refresh();return;
           }
         }
       }catch{/* Login is available even if the status endpoint fails. */}
@@ -152,6 +162,9 @@ export default function UnifiedLoginClient({nextPath,loginError}:{nextPath:strin
         <p>从微信群、公众号菜单直接打开教师工作台或学生作业链接时，会自动使用微信网页授权，不显示二维码。</p>
       </div>}
       {message&&<p role="alert" className={styles.error}>{message}</p>}
+      {mode==="error"&&inWechat()?<a href={"/api/auth/parent/wechat/start?profile=0&next="+encodeURIComponent(destination)}>
+        微信资料授权未成功？使用基础微信登录后手动填写姓名
+      </a>:null}
       {(mode==="qr"||mode==="error")&&
         <button type="button" className="primary-button" onClick={()=>void start()}>
           {mode==="qr"?"刷新登录二维码":"重新连接微信"}
