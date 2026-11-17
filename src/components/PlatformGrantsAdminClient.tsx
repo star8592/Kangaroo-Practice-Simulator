@@ -4,6 +4,7 @@ import {PLATFORM_CAPABILITIES} from "@/lib/platform-capabilities";
 import styles from "@/app/admin/platform-authorizations/admin.module.css";
 
 type User={subject:string;name:string;email:string|null;lastLoginAt:number|null};
+const needsNickname=(name:string)=>!name.trim()||name==="微信用户"||name==="微信家长";
 type Grant={subject:string;capability:string;role:"teacher"|"module-admin";
  scopeKind:"product"|"organization";scopeId:string;grantedAt:string};
 
@@ -108,6 +109,7 @@ export default function PlatformGrantsAdminClient({initialSubject=""}:{initialSu
      <button type="button" disabled={busy} onClick={()=>void choose(u)}
       aria-pressed={selected?.subject===u.subject}>
       <strong>{u.name||"微信用户"}</strong>
+      {needsNickname(u.name)&&<small className={styles.missingNickname}>微信昵称待本人同步 · 请核对账号编号</small>}
       <small>{u.email||"未绑定邮箱"} · {u.subject}</small>
       <small>{u.lastLoginAt? "最近登录："+new Date(u.lastLoginAt).toLocaleString("zh-CN",{hour12:false}) : "暂无登录时间记录"}</small></button>
     </li>)}
@@ -117,6 +119,7 @@ export default function PlatformGrantsAdminClient({initialSubject=""}:{initialSu
   {selected&&<section className={styles.panel}>
    <h2>为 {selected.name} 设置管理身份</h2>
    <p>账号编号：{selected.subject}。同名微信昵称可能重复，请核对编号后再授权。</p>
+   {needsNickname(selected.name)&&<p className={styles.nicknameWarning}>此账号尚未同步微信昵称，无法凭“微信用户”辨认本人。授予教师身份前，请让对方在微信内打开 <a href="https://socthink.cn/account">我的账号</a> 点击“同步微信昵称”，或者通过最近登录时间与完整账号编号核对。</p>}
    <div className={styles.form}>
     <label>所属模块
      <select value={capability} onChange={e=>setCapability(e.target.value)}>
