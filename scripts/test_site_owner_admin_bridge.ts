@@ -65,6 +65,29 @@ async function run(){
   invalidFeedback,"http://localhost"));
  assert.notEqual(ownerResult.status,403,"The real owner principal must reach the guarded handler");
  assert.ok([404,409].includes(ownerResult.status));
+ // Every legacy admin tab reachable from the dashboard must recognize the
+ // same verified owner identity; a fixed top link alone is insufficient.
+ for(const file of [
+  "src/app/admin/competition-source-watch/page.tsx",
+  "src/app/admin/families/page.tsx",
+  "src/app/admin/feedback/page.tsx",
+  "src/app/admin/questions/page.tsx",
+  "src/app/admin/seo/page.tsx",
+  "src/app/admin/students/page.tsx",
+  "src/app/admin/students/[id]/page.tsx",
+ ]){
+  assert.ok(fs.readFileSync(file,"utf8").includes("canManagePlatform("),
+   "Admin page still requires legacy PIN-only identity: "+file);
+ }
+ for(const file of [
+  "src/app/api/admin/competition-source-watch/route.ts",
+  "src/app/api/admin/feedback-cases/route.ts",
+  "src/app/api/admin/questions/route.ts",
+  "src/app/api/admin/students/route.ts",
+ ]){
+  assert.ok(fs.readFileSync(file,"utf8").includes("platformAdminPrincipal("),
+   "Admin endpoint still excludes verified WeChat site owner: "+file);
+ }
  console.log("WECHAT_OWNER_ADMIN_BRIDGE=PASS legacy+owner+outsider+same-origin+student-mutation+audit-actor");
 }
 run().catch(e=>{console.error(e);process.exitCode=1})
