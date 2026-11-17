@@ -1,2 +1,2 @@
-import { cookies } from "next/headers";import { redirect } from "next/navigation";import AdminQuestions from "@/components/AdminQuestions";import { isAdmin,SESSION_COOKIE,userFromSessionToken } from "@/lib/auth";
-export default async function AdminQuestionsPage(){const jar=await cookies(),user=userFromSessionToken(jar.get(SESSION_COOKIE)?.value);if(!user)redirect('/admin/login');if(!isAdmin(user))redirect('/student');return <AdminQuestions/>}
+import { cookies } from "next/headers";import { redirect } from "next/navigation";import AdminQuestions from "@/components/AdminQuestions";import {canManagePlatform} from "@/lib/platform-admin-principal";
+export default async function AdminQuestionsPage(){const jar=await cookies();if(!canManagePlatform(jar))redirect('/admin/login');return <AdminQuestions/>}

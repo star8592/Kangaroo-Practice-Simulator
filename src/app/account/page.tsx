@@ -47,8 +47,13 @@ export default async function AccountPage(){
   const planLabel=plan==="free"?"免费账号":plan.toUpperCase();
   const hasPlatformModules=await myAuthorizedModules(account.id)
     .then(modules=>modules.length>0).catch(()=>false);
+  const siteOwner=isSiteOwner(account);
   const entries=[
-    ...(hasPlatformModules||isSiteOwner(account)?[
+    ...(siteOwner?[
+      {href:"/admin",title:"平台管理中心",
+       desc:"查看经营驾驶舱、用户与产品管理；使用当前已验证的微信管理员身份"},
+    ]:[]),
+    ...(hasPlatformModules||siteOwner?[
       {href:"/workspace",title:"我的管理工作台",
        desc:"只显示已授予的管理模块；班级权限由所属教学产品独立核验"},
     ]:[]),

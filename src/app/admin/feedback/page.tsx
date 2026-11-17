@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { isAdmin, SESSION_COOKIE, userFromSessionToken } from "@/lib/auth";
+import {canManagePlatform} from "@/lib/platform-admin-principal";
 import { readCustomerFeedbackOverview } from "@/lib/customer-feedback-admin";
 import { readCaseStates, type CaseStatus } from "@/lib/customer-feedback-workflow";
 import FeedbackCaseActions from "@/components/FeedbackCaseActions";
@@ -25,9 +25,7 @@ function time(value: string) {
 
 export default async function FeedbackPage() {
   const jar = await cookies();
-  const user = userFromSessionToken(jar.get(SESSION_COOKIE)?.value);
-  if (!user) redirect("/admin/login");
-  if (!isAdmin(user)) redirect("/");
+  if (!canManagePlatform(jar)) redirect("/admin/login");
   const data = readCustomerFeedbackOverview({ days: 30, limit: 100 });
   const cases = readCaseStates();
   const pending = data.items.filter(x => !["closed","dismissed"].includes(cases.get(x.id)?.status || "open")).length;

@@ -34,3 +34,20 @@
  .accountSkeleton{width:40px;height:38px}
 }
 @media(prefers-reduced-motion:reduce){.accountSkeleton{animation:none}}
+
+
+/* Account identity and management actions are context-aware without adding a
+   second global navigation. All links are independently guarded server-side. */
+.accountActions{display:flex;align-items:center;gap:9px;min-width:0}
+.roleShortcut{display:inline-flex;align-items:center;justify-content:center;min-height:43px;padding:9px 13px;border-radius:10px;border:1px solid #17664d;background:#17664d;color:#fff;font-size:13px;font-weight:800;text-decoration:none;white-space:nowrap}
+.roleShortcut:hover,.roleShortcut[aria-current="page"]{background:#0d523d;color:#fff}
+.accountActions :is(a,button):focus-visible{outline:3px solid #f5ad72;outline-offset:3px}
+.workspaceMenuTitle{font-size:11px;font-weight:800;color:#688070;letter-spacing:.05em;margin:10px 11px 4px}
+.accountMenu{width:min(330px,calc(100vw - 22px));max-height:min(76vh,620px);overflow-y:auto}
+.managementMenuLink{background:#eff8f2;color:#135c3d!important}
+.workspaceNotice{padding:7px 11px;font-size:12px;line-height:1.5;color:#8d5c30}
+@media(max-width:760px){
+ .accountActions{gap:7px}
+ .roleShortcut{min-height:40px;padding:7px 10px;font-size:12px}
+ .accountMenu{right:0}
+}
