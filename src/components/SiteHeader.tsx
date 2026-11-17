@@ -22,11 +22,11 @@ export default function SiteHeader(){
     <span className={styles.mark}>S</span>
     <span><strong>SOC THINK</strong><small>{lang==="zh"?"学习 · 教学 · 测评":"Learn · Teach · Assess"}</small></span>
    </Link>
-   <nav className={styles.links} aria-label={lang==="zh"?"全站学科及教师服务":"Subjects and teacher services"}>
+   <nav className={styles.links} aria-label="SOC THINK 导航">
     {SITE_PORTAL_NAV.map(item=><Link key={item.id} href={item.href}
       aria-current={pathname===item.href||pathname.startsWith(item.href+"/")?"page":undefined}>{item[lang]}</Link>)}
    </nav>
-   <div className={styles.actions}><GlobalLanguageSwitch/><SessionNav/></div>
+   <div className={styles.actions}><Link href="/membership" className={styles.membershipLink}>{lang==="zh"?"权益":"Plans"}</Link><GlobalLanguageSwitch/><SessionNav/></div>
   </div>
  </header>;
 }

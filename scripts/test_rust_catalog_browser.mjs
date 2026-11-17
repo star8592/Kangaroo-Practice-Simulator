@@ -1,10 +1,9 @@
-"use strict";
 /**
  * Run against a local Next process wired to a REAL local Rust catalogue.
  * Browser exercises the current resources UI, not fake HTTP-only snapshots.
  */
-const assert=require("node:assert/strict");
-const {chromium}=require("@playwright/test");
+import assert from "node:assert/strict";
+import {chromium} from "@playwright/test";
 
 const base=process.env.SOCTHINK_RUST_CATALOG_WEB_TEST_URL;
 if(!/^http:\/\/127\.0\.0\.1:\d+$/.test(base||""))throw Error("local Next URL required");

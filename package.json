@@ -145,11 +145,11 @@
     "test:seo-storage": "node scripts/test_seo_storage_isolation.mjs",
     "test:cohost-gateway": "python3 scripts/test_cohost_gateway.py",
     "test:english-platform": "tsx scripts/test_english_platform_contract.ts",
-    "test:khan-platform": "node scripts/test_khan_multi_audience_portal.cjs",
-    "test:next-rust-boundary": "node scripts/test_next_rust_boundary.cjs",
-    "test:rust-resource-boundary": "node scripts/test_rust_resource_boundary.cjs",
+    "test:khan-platform": "node scripts/test_khan_multi_audience_portal.mjs",
+    "test:next-rust-boundary": "node scripts/test_next_rust_boundary.mjs",
+    "test:rust-resource-boundary": "node scripts/test_rust_resource_boundary.mjs",
     "test:rust-catalog-ssr-parity": "tsx scripts/test_rust_catalog_ssr_parity.ts",
-    "test:rust-catalog-browser": "node scripts/test_rust_catalog_browser.cjs"
+    "test:rust-catalog-browser": "node scripts/test_rust_catalog_browser.mjs"
   },
   "dependencies": {
     "next": "16.4.3",

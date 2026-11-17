@@ -1,17 +1,21 @@
-'use strict';
-const assert=require('node:assert/strict');
-const fs=require('node:fs');
-const root=require('node:path').resolve(__dirname,'..');
-const read=p=>fs.readFileSync(require('node:path').join(root,p),'utf8');
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
+import {fileURLToPath} from 'node:url';
+const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
+const read=p=>fs.readFileSync(path.join(root,p),'utf8');
 const page=read('src/app/resources/page.tsx');
+const guide=read('src/app/resources/competitions/[slug]/page.tsx');
 const reader=read('src/lib/rust-catalog-read.ts');
 const client=read('src/components/ResourceLibraryClient.tsx');
 const rust=read('backend/socthink-core/src/lib.rs');
 assert(page.includes('await readRustTrainingCatalog()'),'resource page must query Rust SSR adapter');
+assert(guide.includes('await readRustTrainingCatalog()'),'competition guide must share Rust catalogue');
+assert(!guide.includes('listTrainingExamProfiles')&&!guide.includes('buildTrainingResourceCatalog'),'guide may not retain Node business catalog');
 for(const forbidden of ['listTrainingExamProfiles','buildTrainingResourceCatalog','loadStoredExamBundle','private/exams'])
  assert(!page.includes(forbidden),'Node must not rebuild catalogue in resource route: '+forbidden);
 assert(!page.includes('legacy fallback')||page.includes('Never silently'),'must not silently reuse TypeScript data');
-assert(page.includes('throw new RustCatalogUnavailable'), 'Rust failure must reach Next error boundary');
+assert(page.includes('throw e;'), 'Rust failure must reach Next error boundary');
 assert(read('src/app/resources/error.tsx').includes('试卷目录暂时不可用'));
 assert(reader.includes('SOCTHINK_RUST_CATALOG_INTERNAL_URL'));
 assert(reader.includes('127\\.0\\.0\\.1'),'SSRF reject non-loopback upstream');
