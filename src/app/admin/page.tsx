@@ -106,6 +106,7 @@ export default async function AdminPage({ searchParams }: Params) {
           <p>从真实收款到搜索获客、用户增长与内容供给，一屏掌握业务状态。</p>
         </div>
         <div className={styles.heroActions}>
+          <Link href="/admin/users">用户管理 · 设置教师</Link>
           <Link href="/admin/seo">搜索专项监控</Link>
           <Link href="/">返回网站</Link>
         </div>

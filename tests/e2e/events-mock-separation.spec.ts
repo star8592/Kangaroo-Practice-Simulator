@@ -2,8 +2,8 @@ import { test, expect } from "@playwright/test";
 
 test("math planner and events remain in the separate classroom directory",async({page})=>{
  await page.goto("/");
- const nav=page.getByRole("navigation",{name:"主要导航"});
- await expect(nav.locator('a[href="/assessments"]')).toHaveCount(0);
+ const nav=page.getByRole("navigation",{name:"SOC THINK 导航"});
+ await expect(nav.locator('a[href="/assessments"]')).toHaveCount(1);
  await expect(nav.locator('a[href="/events"]')).toHaveCount(0);
  await page.goto("/math");
  await expect(page.getByRole("heading",{level:1,name:/竞赛模拟/})).toBeVisible();

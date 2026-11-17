@@ -74,7 +74,7 @@ assert(!page.includes('href="/shop"'),"no unverified checkout link");
 const header=fs.readFileSync(path.join(process.cwd(),"src/components/SiteHeader.tsx"),"utf8");
 const discovery=fs.readFileSync(path.join(process.cwd(),"src/lib/site-discovery.ts"),"utf8");
 const portal=fs.readFileSync(path.join(process.cwd(),"src/components/AssessmentPortalClient.tsx"),"utf8");
-assert(header.includes("PRIMARY_BUSINESS_NAV as TASK_LINKS"),"Header must use canonical navigation");
+assert(header.includes("SITE_PORTAL_NAV"),"Header must use canonical navigation");
 assert(PRIMARY_BUSINESS_NAV.some(item=>item.id==="career"&&item.href==="/career"),"Career must remain a first-class public business");
 assert(discovery.includes('href:"/career"'),"career must remain searchable");
 assert(!portal.includes('href="/career"'),"career must not be misfiled under exams");

@@ -41,7 +41,7 @@ checks = {
         "max-width:var(--layout-reading)",
         ".verification-shell,.legal-page{padding-left:var(--page-gutter-mobile);padding-right:var(--page-gutter-mobile)}",
     ],
-    "src/components/SiteHeader.module.css": ["var(--layout-wide)", "var(--header-height)", "var(--page-gutter-mobile)", "@media(max-width:1080px)", "@media(max-width:760px)"],
+    "src/components/SiteHeader.module.css": [".accountMenu", ".guestParent", ".accountTrigger", "@media(max-width:760px)"],
     "src/components/AuthExperience.module.css": ["var(--layout-auth)", "var(--page-gutter-tablet)", "var(--page-gutter-mobile)", "var(--field-border)", "var(--focus-ring)"],
     "src/components/AdminQuestions.module.css": ["max-width: var(--layout-standard)", "padding-top: var(--page-top)", "var(--field-border)", "var(--focus-ring)", "var(--page-top-compact)", "var(--page-heading-rule)", "var(--table-head-height)", "var(--empty-min-height)"],
     "src/components/AdminStudents.module.css": ["max-width: var(--layout-standard)", "padding-top: var(--page-top)", "var(--radius-card)", "var(--page-top-compact)", "var(--page-heading-rule)", "var(--field-border)", "var(--focus-ring)", "var(--table-row-height)", "var(--control-height-compact)", "var(--empty-min-height)"],
@@ -49,7 +49,7 @@ checks = {
     "src/app/student/StudentDashboard.module.css": ["max-width: var(--layout-standard)", "padding-top: var(--page-top)", "var(--radius-card)", "var(--page-top-compact)"],
     "src/app/student/cards/CardsPage.module.css": ["max-width: var(--layout-standard)", "var(--page-gutter-mobile)"],
     "src/app/student/calendar/page.module.css": ["max-width:var(--layout-focus)", "var(--page-gutter-mobile)"],
-    "src/components/SiteFooter.tsx": ["site-footer-inner"],
+    "src/components/SiteFooter.tsx": ["SITE_PORTAL_NAV", "SERVICE_LINKS"],
 }
 
 errors = []

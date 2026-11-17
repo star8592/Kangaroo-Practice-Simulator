@@ -1,4 +1,4 @@
-.shell{max-width:1160px;margin:0 auto;padding:clamp(35px,5vw,70px) 22px 72px;color:#17231d}
+.shell{max-width:var(--layout-standard);margin:0 auto;padding:clamp(35px,5vw,70px) 22px 72px;color:#17231d}
 .intro{text-align:center;max-width:800px;margin:0 auto 34px}
 .kicker{color:#c25a24;font-size:12px;letter-spacing:.13em;font-weight:800}
 .intro h1{margin:15px 0 10px;font-size:clamp(36px,5vw,56px);line-height:1.16;letter-spacing:-.045em}
@@ -20,3 +20,21 @@
 .shell :is(a,button,input):focus-visible{outline:3px solid #ff7a45;outline-offset:4px}
 @media(max-width:760px){.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.cardLink{min-height:175px}.cardLink strong{font-size:20px}.icon{min-width:57px;height:57px;font-size:26px}}
 @media(max-width:380px){.shell{padding:30px 13px 50px}.cardLink{padding:16px 5px;min-height:155px}.cardLink strong{font-size:18px}.cardLink>span:not(.icon){font-size:12px}.search button{padding:0 14px}}
+
+/* Audience choice is separate from the six-subject learning catalogue. */
+.audienceSection{margin:0 0 35px}
+.catalogSection{scroll-margin-top:100px}
+.sectionHeading{display:flex;justify-content:space-between;align-items:baseline;gap:16px;margin:0 0 16px}
+.sectionHeading h2{font-size:clamp(20px,2.2vw,26px);margin:0;letter-spacing:-.025em;color:#17231d}
+.sectionHeading p{margin:0;color:#6b756e;font-size:13px}
+.audienceGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.audienceCard{display:flex;flex-direction:column;gap:8px;min-width:0;min-height:175px;padding:23px;border:1px solid #e0e6de;border-radius:19px;background:#fff;color:#23342b;text-decoration:none;transition:transform .15s,border-color .15s}
+.audienceCard:first-child{background:#172d23;color:#fff;border-color:#172d23}
+.audienceCard:nth-child(2){background:#fff7ee;border-color:#efdfc8}
+.audienceCard:last-child{background:#f2f6f5}
+.audienceCard:hover{transform:translateY(-2px);border-color:#bf6d40}
+.audienceCard small{font-size:11px;letter-spacing:.04em;font-weight:750;color:inherit;opacity:.75}
+.audienceCard strong{font-size:23px;line-height:1.2}
+.audienceCard>span{font-size:13px;line-height:1.75;opacity:.85;flex:1}
+.audienceCard b{display:inline-flex;gap:8px;align-items:center;font-size:13px;color:inherit;text-decoration:underline;text-underline-offset:4px}
+@media(max-width:760px){.audienceGrid{grid-template-columns:1fr;gap:10px}.audienceCard{min-height:0;padding:18px 20px}.audienceCard strong{font-size:21px}.sectionHeading{align-items:flex-start;flex-direction:column;gap:4px}.audienceSection{margin-bottom:28px}}

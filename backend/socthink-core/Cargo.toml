@@ -2,12 +2,16 @@
 name = "socthink-rust-core"
 version = "0.1.0"
 edition = "2024"
-description = "SOCTHINK Rust business-core migration: read-only training resource catalog R1"
+description = "SOC THINK Rust Core: read-only catalogue plus offline grade parity, no public grade API"
 publish = false
 
 [[bin]]
 name = "socthink-catalog-api"
 path = "src/main.rs"
+
+[[bin]]
+name = "grade-fixture"
+path = "src/bin/grade_fixture.rs"
 
 [dependencies]
 axum = { version = "0.8.9", features = ["json", "query", "http1", "tokio"] }

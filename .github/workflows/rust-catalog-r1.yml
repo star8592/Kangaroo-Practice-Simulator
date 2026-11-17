@@ -10,7 +10,16 @@ on:
       - 'scripts/publish_training_resource_snapshot.ts'
       - 'scripts/test_catalog_snapshot_atomic.ts'
       - 'scripts/test_rust_catalog_hot_reload.py'
+      - 'scripts/test_rust_grade_parity.ts'
+      - 'scripts/test_rust_grade_boundary.mjs'
+      - 'scripts/test_rust_grade_real_stock_parity.ts'
       - 'scripts/check_rust_binary_abi.py'
+      - 'scripts/promote_rust_catalog_snapshot.ts'
+      - 'scripts/refresh_rust_catalog.sh'
+      - 'scripts/test_rust_catalog_promotion.py'
+      - 'scripts/test_rust_catalog_content_hook.py'
+      - 'ops/data/promote_student_ready.sh'
+      - 'ops/systemd/socthink-catalog.service'
       - '.github/workflows/rust-catalog-r1.yml'
   push:
     branches: [main]
@@ -22,7 +31,16 @@ on:
       - 'scripts/publish_training_resource_snapshot.ts'
       - 'scripts/test_catalog_snapshot_atomic.ts'
       - 'scripts/test_rust_catalog_hot_reload.py'
+      - 'scripts/test_rust_grade_parity.ts'
+      - 'scripts/test_rust_grade_boundary.mjs'
+      - 'scripts/test_rust_grade_real_stock_parity.ts'
       - 'scripts/check_rust_binary_abi.py'
+      - 'scripts/promote_rust_catalog_snapshot.ts'
+      - 'scripts/refresh_rust_catalog.sh'
+      - 'scripts/test_rust_catalog_promotion.py'
+      - 'scripts/test_rust_catalog_content_hook.py'
+      - 'ops/data/promote_student_ready.sh'
+      - 'ops/systemd/socthink-catalog.service'
       - '.github/workflows/rust-catalog-r1.yml'
 
 permissions:
@@ -46,21 +64,31 @@ jobs:
         run: cargo test --locked --all-targets --manifest-path backend/socthink-core/Cargo.toml
       - name: Install TypeScript contract dependencies
         run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Verify offline grader has no public endpoint or storage authority
+        run: npm run test:rust-grade-boundary
+      - name: Offline Rust grading parity against TypeScript (synthetic only)
+        run: |
+          cargo build --locked --bin grade-fixture --manifest-path backend/socthink-core/Cargo.toml
+          SOCTHINK_GRADE_FIXTURE_BIN="$PWD/backend/socthink-core/target/debug/grade-fixture" npm run test:rust-grade-parity
       - name: Same metadata schema in TypeScript and Rust
         run: npx tsx scripts/test_rust_catalog_snapshot.ts
       - name: Atomic metadata publication contract
         run: npx tsx scripts/test_catalog_snapshot_atomic.ts
+      - name: Ensure verified content promotion refreshes Rust on success and rollback
+        run: python3 scripts/test_rust_catalog_content_hook.py
       - name: Compile Rust service and verify event-triggered zero-downtime reload
         run: |
           cargo build --locked --manifest-path backend/socthink-core/Cargo.toml
           python3 scripts/test_rust_catalog_hot_reload.py
+      - name: Verify active generation and automatic snapshot rollback
+        run: python3 scripts/test_rust_catalog_promotion.py
 
       - name: Build an x86-64 production-compatible Rust release candidate
         run: |
           # Ubuntu 24.04 provides the same glibc ABI ceiling as production.
           # Build only in the existing Rust-specific CI job, never on the
           # low-memory production server.
-          cargo build --locked --release --manifest-path backend/socthink-core/Cargo.toml
+          cargo build --locked --release --bin socthink-catalog-api --manifest-path backend/socthink-core/Cargo.toml
           python3 scripts/check_rust_binary_abi.py backend/socthink-core/target/release/socthink-catalog-api
           mkdir -p dist
           cp backend/socthink-core/target/release/socthink-catalog-api dist/

@@ -1,9 +1,10 @@
 import {NextRequest,NextResponse} from "next/server";
-import {isAdmin,userFromRequest} from "@/lib/auth";
+import {platformAdminPrincipal} from "@/lib/platform-admin-principal";
+import {sameOriginMutation} from "@/lib/site-owner-bootstrap";
 import {loadWatchStore,reviewObservation,WATCH_SOURCES} from "@/lib/competition-source-watch";
 const headers={"Cache-Control":"private, no-store"};
 const denied=()=>NextResponse.json({error:"Admin access required"},{status:403,headers});
-function authorized(req:NextRequest){return isAdmin(userFromRequest(req));}
+function authorized(req:NextRequest){return platformAdminPrincipal(req.cookies)!==null;}
 export async function GET(req:NextRequest){
   if(!authorized(req))return denied();
   try{
@@ -17,10 +18,9 @@ export async function GET(req:NextRequest){
   }catch{return NextResponse.json({error:"Source-watch evidence store unavailable"},{status:503,headers});}
 }
 export async function PATCH(req:NextRequest){
-  const u=userFromRequest(req);
-  if(!isAdmin(u))return denied();
-  const origin=req.headers.get("origin");
-  if(!origin||origin!==new URL(req.url).origin)
+  const principal=platformAdminPrincipal(req.cookies);
+  if(!principal)return denied();
+  if(!sameOriginMutation(req))
     return NextResponse.json({error:"Same-origin review required"},{status:403,headers});
   if(!req.headers.get("content-type")?.toLowerCase().startsWith("application/json"))
     return NextResponse.json({error:"JSON required"},{status:415,headers});
@@ -29,7 +29,7 @@ export async function PATCH(req:NextRequest){
     if(typeof body?.id!=="string"||!["reviewed","dismissed"].includes(body?.decision)||
       typeof body?.note!=="string"||!body.note.trim()||body.note.length>1000)
       return NextResponse.json({error:"Invalid review decision/note"},{status:400,headers});
-    const item=reviewObservation({id:body.id,decision:body.decision,note:body.note,reviewer:u!.id});
+    const item=reviewObservation({id:body.id,decision:body.decision,note:body.note,reviewer:principal.actorId});
     return NextResponse.json({item,promotion:false,message:"Review recorded; verified edition not modified"},{headers});
   }catch(e){
     if(e instanceof Error&&e.message.includes("already running"))

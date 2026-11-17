@@ -1,38 +1,16 @@
-/* Task-first navigation and seven-domain taxonomy are distinct layers.
- * SessionNav account styling remains in this module; no duplicate header. */
-.header{position:sticky;top:0;z-index:80;background:#fff;border-bottom:1px solid #dce5f0;box-shadow:0 3px 16px #0c2b4f0a;color:var(--portal-text)}
-.utility{background:var(--portal-navy);color:#dbe8fc}
-.utilityInner{max-width:var(--layout-wide);margin:0 auto;min-height:31px;padding:0 var(--page-gutter);display:flex;align-items:center;justify-content:space-between;gap:20px;font-size:12px;letter-spacing:.012em}
-.inner{width:100%;max-width:var(--layout-wide);margin:0 auto;padding:0 var(--page-gutter);min-height:68px;display:grid;grid-template-columns:minmax(195px,1fr) auto minmax(190px,1fr);align-items:center;gap:16px}
-.brand{min-width:0;display:inline-flex;align-items:center;gap:11px;justify-self:start}
-.brandMark{width:43px;height:43px;flex:0 0 43px;display:grid;place-items:center;background:var(--portal-blue);color:#fff;border-radius:11px;font-size:19px;font-weight:900;box-shadow:0 4px 16px #1454a82c}
-.brandCopy{min-width:0;display:grid;gap:3px}
-.brandCopy strong{color:var(--portal-navy);overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font-size:20px;font-weight:850;letter-spacing:-.03em}
-.brandCopy small{color:#64768f;font-size:12px;font-weight:700;letter-spacing:.01em;white-space:nowrap}
-.primaryNav{display:flex;align-items:center;justify-content:center;gap:2px}
-.primaryNav>a{display:inline-flex;justify-content:center;align-items:center;gap:5px;min-height:46px;white-space:nowrap;padding:0 13px;border:0;border-radius:9px;background:transparent;font-size:15px;font-weight:750;color:#344d6b;cursor:pointer}
-.primaryNav>a:hover{background:#f0f5fd;color:var(--portal-blue)}
-.primaryNav .activeNav{background:var(--portal-blue-soft);color:var(--portal-blue)}
-.actions{min-width:0;display:flex;justify-content:flex-end;align-items:center;gap:9px}
-.languageDesktop{display:block}
-.menuButton{width:44px;height:44px;display:none;place-items:center;padding:0;border:1px solid #d6e1ef;border-radius:10px;background:#fff;color:var(--portal-navy)}
-.menuButton svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round}
-.categoryBar{background:#f5f8fe;border-top:1px solid #e8eef8}
-.categoryInner{width:100%;max-width:var(--layout-wide);padding:0 var(--page-gutter);min-height:47px;display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 auto}
-.categoryLabel{font-size:12px;font-weight:850;color:#75869d;white-space:nowrap;border-right:1px solid #d7e3f2;padding-right:16px}
-.categoryInner a{display:inline-flex;align-items:center;min-height:39px;padding:6px 8px;border-radius:8px;font-size:14px;font-weight:700;line-height:1.35;color:#405c7e;white-space:nowrap}
-.categoryInner a:hover,.categoryInner a:focus-visible{background:var(--portal-blue-soft);color:var(--portal-blue)}
-.mobilePanel{display:none}
-.header :is(a,button):focus-visible{outline:3px solid #8eb4ea;outline-offset:2px}
-.accountSkeleton{height:43px;width:106px;display:inline-block;border-radius:10px;background:linear-gradient(90deg,#eef2f8,#f8faff,#eef2f8);background-size:200% 100%;animation:headerShimmer 1.4s linear infinite}
-@keyframes headerShimmer{to{background-position:-200% 0}}
+/* Shared authenticated account control only.
+ * The global site header lives in SocthinkChrome.module.css; the discarded
+ * career-only header, mobile menu and old primary navigation are gone.
+ */
+.accountSkeleton{height:43px;width:106px;display:inline-block;border-radius:10px;background:linear-gradient(90deg,#eef2f8,#f8faff,#eef2f8);background-size:200% 100%;animation:accountShimmer 1.4s linear infinite}
+@keyframes accountShimmer{to{background-position:-200% 0}}
 .guestActions{display:flex;align-items:center}
-.guestParent{min-height:43px;display:flex;align-items:center;gap:8px;background:#1454a8;color:#fff;border-radius:10px;padding:7px 14px;border:1px solid #1454a8}
+.guestParent{min-height:43px;display:flex;align-items:center;gap:8px;background:#1454a8;color:#fff;border-radius:10px;padding:7px 14px;border:1px solid #1454a8;text-decoration:none}
 .guestParent span{white-space:nowrap;font-size:13px;font-weight:800}
 .guestParent small{font-size:10px;color:#d7e6ff;white-space:nowrap;padding-left:9px;border-left:1px solid #ffffff55}
 .guestParent:hover{background:#0d448e}
 .accountRoot{position:relative}
-.accountTrigger{display:flex;align-items:center;gap:9px;min-height:43px;max-width:200px;border:1px solid #dbe4ef;border-radius:10px;background:#fff;padding:4px 10px 4px 5px;color:#14253d}
+.accountTrigger{display:flex;align-items:center;gap:9px;min-height:43px;max-width:200px;border:1px solid #dbe4ef;border-radius:10px;background:#fff;padding:4px 10px 4px 5px;color:#14253d;cursor:pointer}
 .accountTrigger:hover,.accountTrigger[aria-expanded="true"]{border-color:#91b4df;background:#f7faff}
 .accountAvatar,.accountAvatarLarge{display:grid;place-items:center;flex:0 0 auto;font-weight:850;border-radius:9px}
 .accountAvatar{width:33px;height:33px;font-size:14px}
@@ -45,49 +23,31 @@
 .accountIdentity small{font-size:10px;color:#78879b}
 .accountMenu{position:absolute;right:0;top:calc(100% + 10px);z-index:100;width:min(310px,90vw);padding:9px;border:1px solid #dce6f2;border-radius:13px;background:#fff;box-shadow:0 20px 58px #0e2a4d28}
 .accountMenuLinks{display:grid;gap:2px}
-.accountMenuLinks a{display:block;padding:13px 11px;border-radius:8px;font-weight:650;font-size:14px}
+.accountMenuLinks a{display:block;padding:13px 11px;border-radius:8px;font-weight:650;font-size:14px;text-decoration:none}
 .accountMenuLinks a:hover{background:#eef5ff;color:#1454a8}
 .accountSwitch{border-top:1px solid #e6ecf4;margin-top:8px;padding:8px 0 0}
-.accountSwitch button{width:100%;text-align:left;padding:11px;border:0;border-radius:8px;background:#fff;color:#8b3541;font-size:13px;font-weight:700}
+.accountSwitch button{width:100%;text-align:left;padding:11px;border:0;border-radius:8px;background:#fff;color:#8b3541;font-size:13px;font-weight:700;cursor:pointer}
 .accountSwitch button:hover{background:#fff4f6}
-
-@media(max-width:1240px){
- .inner{grid-template-columns:minmax(160px,1fr) auto minmax(150px,1fr);gap:8px}
- .primaryNav>a{padding:0 9px;font-size:14px}
- .brandCopy strong{font-size:18px}
- .categoryInner a{font-size:13px;padding-inline:4px}
-}
-@media(max-width:1180px){
- .inner{grid-template-columns:minmax(0,1fr) auto;gap:12px}
- .primaryNav{display:none}.menuButton{display:grid}.categoryBar{display:none}
- .mobilePanelOpen{display:block;position:absolute;left:0;right:0;top:100%;background:#fff;border-top:1px solid #e2e9f2;box-shadow:0 18px 28px #0c2a4b1d;max-height:calc(100dvh - 110px);overflow:auto}
- .mobilePanel nav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;padding:14px var(--page-gutter)}
- .mobilePanel nav>a{display:flex;align-items:center;justify-content:space-between;gap:5px;min-height:47px;padding:10px 14px;border-radius:9px;font-weight:700;font-size:15px;line-height:1.4;color:#354a65;border:1px solid #edf1f7}
- .mobilePanel nav>a:hover,.mobilePanel nav>a.mobileActive{background:var(--portal-blue-soft);color:var(--portal-blue)}
- .mobilePanel nav>a span{color:#8599b5}
- .mobileGroupTitle{grid-column:1/-1;margin:10px 0 3px;font-size:15px;font-weight:850;color:var(--portal-navy)}
- .mobileSubTitle{grid-column:1/-1;margin:11px 0 2px;font-size:13px;font-weight:750;color:var(--portal-muted)}
- .mobileLanguage{display:flex;align-items:center;justify-content:space-between;border-top:1px solid #e4ebf4;padding:13px var(--page-gutter)}
-}
 @media(max-width:760px){
- .utility{display:none}
- .inner{min-height:var(--header-height-mobile);padding:0 var(--page-gutter-mobile)}
- .brandMark{width:37px;height:37px;flex-basis:37px;font-size:16px}
- .brandCopy strong{font-size:16px}.brandCopy small{font-size:10px}
- .languageDesktop{display:none}
  .guestParent{min-height:40px;padding:6px 10px}.guestParent span{font-size:13px}.guestParent small{display:none}
  .accountTrigger{min-height:40px;padding:3px}.accountIdentity{display:none}
  .accountSkeleton{width:40px;height:38px}
- .menuButton{height:40px;width:40px}
- .actions{gap:7px}
- .mobilePanel nav{padding:12px var(--page-gutter-mobile)}
- .mobileLanguage{padding:13px var(--page-gutter-mobile)}
- .mobilePanelOpen{max-height:calc(100dvh - 64px)}
 }
-@media(max-width:420px){
- .mobilePanel nav{grid-template-columns:1fr}
- .mobilePanel nav>a{font-size:16px}
- .brandCopy small{display:none}
-}
-@media(max-width:375px){.brand{gap:7px}.brandCopy strong{font-size:15px}}
 @media(prefers-reduced-motion:reduce){.accountSkeleton{animation:none}}
+
+
+/* Account identity and management actions are context-aware without adding a
+   second global navigation. All links are independently guarded server-side. */
+.accountActions{display:flex;align-items:center;gap:9px;min-width:0}
+.roleShortcut{display:inline-flex;align-items:center;justify-content:center;min-height:43px;padding:9px 13px;border-radius:10px;border:1px solid #17664d;background:#17664d;color:#fff;font-size:13px;font-weight:800;text-decoration:none;white-space:nowrap}
+.roleShortcut:hover,.roleShortcut[aria-current="page"]{background:#0d523d;color:#fff}
+.accountActions :is(a,button):focus-visible{outline:3px solid #f5ad72;outline-offset:3px}
+.workspaceMenuTitle{font-size:11px;font-weight:800;color:#688070;letter-spacing:.05em;margin:10px 11px 4px}
+.accountMenu{width:min(330px,calc(100vw - 22px));max-height:min(76vh,620px);overflow-y:auto}
+.managementMenuLink{background:#eff8f2;color:#135c3d!important}
+.workspaceNotice{padding:7px 11px;font-size:12px;line-height:1.5;color:#8d5c30}
+@media(max-width:760px){
+ .accountActions{gap:7px}
+ .roleShortcut{min-height:40px;padding:7px 10px;font-size:12px}
+ .accountMenu{right:0}
+}

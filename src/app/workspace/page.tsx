@@ -27,9 +27,12 @@ export default async function Page(){
    <h2>权限服务暂时无法连接</h2>
    <p>为避免错误展示管理权限，已暂停加载模块；原产品工作台和学习记录没有被修改。</p>
   </section>:modules.length===0?<section className={styles.notice}>
-   <h2>尚未获得项目管理权限</h2>
-   <p>平台管理员授权后，这里才会出现相应模块。普通课程可以从学习首页打开。</p>
-   <Link href="/english">浏览学习课程</Link>
+   {owner?<><h2>平台管理权限已生效</h2>
+    <p>当前微信账号已获平台管理员授权。这里的教学项目仍按独立的模块权限展示，不会凭平台身份自动伪造教师或班级授权。</p>
+    <Link href="/admin">进入平台管理中心</Link></>:<>
+    <h2>尚未获得项目管理权限</h2>
+    <p>平台管理员授权后，这里才会出现相应模块。普通课程可以从学习首页打开。</p>
+    <Link href="/english">浏览学习课程</Link></>}
   </section>:<section aria-labelledby="my-modules">
    <h2 id="my-modules">我管理的模块</h2>
    <div className={styles.modules}>{modules.map(m=><article key={m.id} className={styles.module}>

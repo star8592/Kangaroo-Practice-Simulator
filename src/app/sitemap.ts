@@ -15,6 +15,8 @@ export const dynamic = "force-dynamic";
 const publicPaths = [
   "/",
   "/english",
+  "/subjects",
+  "/teach",
   "/english/pronunciation",
   "/english/vocabulary",
   "/english/reading",

@@ -36,6 +36,14 @@ export function validEmail(email:string){return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.tes
 export function validatePassword(password:string){if(password.length<8)return "密码至少 8 位";if(password.length>128)return "密码过长";return null}
 export function hashPassword(password:string){return hashScryptSecret(password)}
 function verifyPassword(password:string,encoded:string){return verifyScryptSecret(password,encoded)}
+/** Silent WeChat OAuth cannot provide a nickname. Distinguish a placeholder from
+ * a real user name so a later verified profile consent can repair that row.
+ * Never infer or fabricate a nickname from an OpenID. */
+export function isWechatNicknamePlaceholder(name:string|undefined|null):boolean{
+ const value=(name||"").trim();
+ return !value||value==="微信用户"||value==="微信家长";
+}
+
 function pub(u:ParentUser):PublicParent{
  const {passwordHash,wechatUnionId,wechatWebsiteOpenId,wechatOfficialOpenId,...x}=u;
  void passwordHash;void wechatUnionId;void wechatWebsiteOpenId;void wechatOfficialOpenId;
@@ -76,6 +84,10 @@ export function authenticateOrCreateWechatParent(input:{
  const rows=loadParents();
  const wechatId=input.wechatId.trim(),openId=input.openId?.trim(),unionId=input.unionId?.trim();
  const mode=input.oauthMode;
+ // Only an actual provider profile nickname may replace a placeholder. The
+ // silent snsapi_base flow sends a generic display label, not a real name.
+ const suppliedName=(input.name||"").trim().slice(0,60);
+ const verifiedNickname=!isWechatNicknamePlaceholder(suppliedName)?suppliedName:undefined;
  if(!wechatId)throw new Error("微信用户标识缺失");
  const matched=rows.filter(x=>
    Boolean(unionId&&(x.wechatUnionId===unionId||x.wechatId===unionId))||
@@ -109,7 +121,7 @@ export function authenticateOrCreateWechatParent(input:{
    throw new Error("WECHAT_UNIONID_MISMATCH");
  if(!u){
    u={id:"par_"+crypto.randomBytes(9).toString("hex"),
-     name:(input.name||"微信家长").trim().slice(0,60)||"微信家长",
+     name:verifiedNickname||"微信用户",
      wechatId:unionId||wechatId,wechatOpenId:openId,
      wechatUnionId:unionId,
      wechatWebsiteOpenId:mode==="website"?openId:undefined,
@@ -129,7 +141,7 @@ export function authenticateOrCreateWechatParent(input:{
      if(mode==="website")u.wechatWebsiteOpenId=openId;
      if(mode==="official_account")u.wechatOfficialOpenId=openId;
    }
-   if(input.name&&!u.name)u.name=input.name.trim().slice(0,60);
+   if(verifiedNickname&&isWechatNicknamePlaceholder(u.name))u.name=verifiedNickname;
    if(input.avatarUrl)u.wechatAvatarUrl=input.avatarUrl.trim();
    u.lastLoginAt=Date.now();
  }
@@ -183,9 +195,9 @@ export function platformWechatAccountById(subject:string):PublicParent|null{
 }
 export function searchWechatAccountsForOwner(query:string,limit=40){
  const q=query.trim().toLowerCase().slice(0,80);
- if(!q)return [];
  return loadParents().filter(p=>p.active&&(p.wechatId||p.wechatOpenId)&&
-   (p.id===q||p.name.toLowerCase().includes(q)||p.email?.toLowerCase().includes(q)))
+   (!q||p.id===q||p.name.toLowerCase().includes(q)||p.email?.toLowerCase().includes(q)))
+   .sort((a,b)=>(b.lastLoginAt||b.createdAt||0)-(a.lastLoginAt||a.createdAt||0))
    .slice(0,Math.min(40,Math.max(1,limit)))
    .map(p=>({subject:p.id,name:p.name,email:p.email||null,
      lastLoginAt:p.lastLoginAt||null}));

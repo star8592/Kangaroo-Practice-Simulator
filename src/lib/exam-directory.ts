@@ -50,6 +50,7 @@ export const EXAM_DIRECTORY:readonly ExamDirectoryGroup[]=[
     topic("international-olympiads","其他国际数学奥赛","Other international math contests"),
   ]},
   {domainId:"language",topics:[
+    topic("english-listening-speaking","英语听说原创模拟","Original English listening & speaking mocks","/assessments/english-speaking"),
     topic("ket-pet","剑桥 KET / PET","Cambridge KET / PET"),
     topic("ielts","雅思 IELTS","IELTS"),
     topic("toefl","托福 TOEFL","TOEFL"),
