@@ -26,7 +26,8 @@ test.use({permissions:["microphone"],launchOptions:{
 
 test("teacher can publish existing Rust-classroom sentences, approve student and save feedback",async({page})=>{
  const writes:{path:string;body:unknown}[]=[];
- let published=false,admitted=false;
+ let published=false,admitted=false,invitationEnabled=false;
+ let customText:string|null=null,customKey="warm";
  const feedback:{student_id:string;comment:string;at:string}[]=[];
  await page.route("**/english/pronunciation/classroom-api/**",route=>{
   const req=route.request(),path=new URL(req.url()).pathname;
@@ -36,9 +37,18 @@ test("teacher can publish existing Rust-classroom sentences, approve student and
   if(path===api+"/teacher/access")return respond(route,{approved:true});
   if(path===api+"/teacher/classes")return respond(route,{classes:[{id:classroom,tenant_id:tenant,name:"英语六年级"}]});
   if(path===classBase+"/invitation"&&req.method()==="GET")
-    return respond(route,{enabled:false,url:null});
-  if(path===classBase+"/invitation/rotate"&&req.method()==="POST")
+    return respond(route,{enabled:invitationEnabled,url:invitationEnabled?classJoinUrl:null,
+      message_template:customText,template_key:customKey});
+  if(path===classBase+"/invitation/rotate"&&req.method()==="POST"){
+    invitationEnabled=true;
     return respond(route,{enabled:true,url:classJoinUrl});
+  }
+  if(path===classBase+"/invitation/copy"&&req.method()==="POST"){
+    const body=req.postDataJSON();
+    customText=body.message_template;customKey=body.template_key;
+    expect(customText).toContain("{{邀请链接}}");
+    return respond(route,{saved:true,message_template:customText,template_key:customKey});
+  }
   if(path===classBase+"/catalog")return respond(route,{items:[{id:sentence,sentence_set_id:set,
    set_title:"自然科学英语",sentence:sentenceText,ordinal:1}]});
   if(path===classBase+"/assignments/list")return respond(route,{assignments:published?
@@ -70,17 +80,31 @@ test("teacher can publish existing Rust-classroom sentences, approve student and
  await expect(page.getByRole("region",{name:"教师布置作业"})).toBeVisible();
  await page.getByRole("button",{name:"英语六年级"}).click();
  await page.getByRole("button",{name:"生成本班邀请"}).click();
- const invitationText=page.getByRole("textbox",{name:"完整班级邀请文案"});
- await expect(invitationText).toHaveValue(new RegExp(classJoinUrl));
- await expect(invitationText).toHaveValue(/微信登录/);
- await expect(invitationText).toHaveValue(/审核通过/);
+ const editor=page.getByRole("textbox",{name:"编辑邀请文案"});
+ const preview=page.getByRole("textbox",{name:"完整班级邀请预览"});
+ await expect(editor).toHaveValue(/{{邀请链接}}/);
+ await expect(preview).toHaveValue(new RegExp(classJoinUrl));
+ await expect(preview).toHaveValue(/微信登录/);
+ await expect(preview).toHaveValue(/审核通过/);
+ await page.getByRole("combobox",{name:"邀请文案模板"}).selectOption("formal");
+ await expect(editor).toHaveValue(/尊敬的家长/);
+ const edited="各位同学、家长好！这是英语跟读学习班，欢迎加入。使用微信登录，填写姓名，等待老师审核。\n\n专属入口：{{邀请链接}}\n\n谢谢大家！";
+ await editor.fill(edited);
+ await expect(preview).toHaveValue(new RegExp(classJoinUrl));
+ await page.getByRole("button",{name:"保存修改"}).click();
+ await expect(page.getByText(/邀请文案已保存到班级/)).toBeVisible();
  await page.getByRole("button",{name:/二维码海报/}).click();
  const poster=page.getByRole("img",{name:/完整班级邀请海报/});
  await expect(poster).toBeVisible();
  await expect(poster).toHaveAttribute("src",/^data:image\/png;base64,/);
  await expect(page.getByRole("button",{name:"分享 / 保存邀请海报"})).toBeEnabled();
  await page.getByRole("button",{name:/链接邀请/}).click();
- await expect(invitationText).toHaveValue(new RegExp(classJoinUrl));
+ await expect(preview).toHaveValue(new RegExp(classJoinUrl));
+ await page.reload();
+ await page.getByRole("button",{name:"英语六年级"}).click();
+ await expect(page.getByRole("textbox",{name:"编辑邀请文案"})).toHaveValue(edited);
+ await expect(page.getByRole("combobox",{name:"邀请文案模板"})).toHaveValue("formal");
+ await expect(page.getByRole("textbox",{name:"完整班级邀请预览"})).toHaveValue(new RegExp(classJoinUrl));
  await expect(page.getByLabel(sentenceText)).toBeVisible();
  await page.getByRole("textbox",{name:"作业名称"}).fill("周三跟读");
  await page.getByRole("checkbox",{name:sentenceText}).check();
