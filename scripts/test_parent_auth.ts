@@ -30,7 +30,18 @@ async function main(){
   assert.equal(authenticateParent(email,"NewPass1234")?.id,p.id);
   const wx=authenticateOrCreateWechatParent({wechatId:"union_test_001",openId:"openid_test_001",name:"微信家长"});
   assert.equal(wx.email,undefined);
-  assert.equal(authenticateOrCreateWechatParent({wechatId:"union_test_001",openId:"openid_test_001",name:"新昵称"}).id,wx.id);
+  const repaired=authenticateOrCreateWechatParent({wechatId:"union_test_001",openId:"openid_test_001",name:"新昵称"});
+  assert.equal(repaired.id,wx.id,"Consent repairs the existing identity without a second account");
+  assert.equal(repaired.name,"新昵称","Verified provider nickname replaces the old placeholder");
+  assert.equal(authenticateOrCreateWechatParent({wechatId:"union_test_001",openId:"openid_test_001",name:"微信用户"}).name,"新昵称",
+    "Subsequent silent OAuth must not erase a verified nickname");
+  assert.equal(authenticateOrCreateWechatParent({wechatId:"union_test_001",openId:"openid_test_001",name:"新名字"}).name,"新昵称",
+    "A later provider profile must not silently overwrite an existing display name");
+  const pending=authenticateOrCreateWechatParent({wechatId:"union_test_pending",openId:"openid_test_pending",name:"微信用户"});
+  assert.equal(pending.name,"微信用户");
+  const completed=authenticateOrCreateWechatParent({wechatId:"union_test_pending",openId:"openid_test_pending",name:"老师🍎"});
+  assert.equal(completed.id,pending.id);
+  assert.equal(completed.name,"老师🍎");
   assert.equal(parentFromSessionToken(createParentSessionToken(wx.id))?.wechatId,"union_test_001");
   const s=createStudent({username:"family_test_"+Date.now(),candidateNo:"FT"+Date.now(),name:"Kid",grade:1,pin:"1234"});
   addStudentToFamily(p.id,s.id);
