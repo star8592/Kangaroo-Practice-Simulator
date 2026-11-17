@@ -7,7 +7,7 @@ const globalCss = read("src/app/globals.css");
 const executiveCss = read("src/app/admin/executive.module.css");
 
 const routes=[
-  "/admin","/admin/users","/admin/families","/admin/students","/admin/classroom",
+  "/admin","/admin/users","/admin/platform-authorizations","/admin/families","/admin/students","/admin/classroom",
   "/admin/questions","/admin/competition-source-watch","/admin/feedback","/admin/seo",
 ];
 for(const route of routes) {
@@ -30,6 +30,7 @@ assert.match(globalCss,/--layout-wide:1920px;--layout-focus:960px/);
 assert.match(executiveCss,/\.shell\{max-width:2400px;padding:18px 28px 76px 278px\}/);
 const pageNav = [
  "src/app/admin/page.tsx",
+ "src/app/admin/platform-authorizations/page.tsx",
  "src/app/admin/classroom/page.tsx",
  "src/app/admin/seo/page.tsx",
  "src/app/admin/families/page.tsx",
@@ -51,4 +52,6 @@ for(const file of [
 for(const file of ["src/app/admin/classroom/classroom.module.css","src/app/admin/seo/seo.module.css"]) {
   assert.match(read(file),/max-width:2400px/,file+" has old layout cap");
 }
-console.log("SOCTHINK_WIDE_ADMIN_NAV_CONTRACT_PASS routes=9 pages=10 breakpoints=3");
+assert.match(read("src/app/admin/users/page.tsx"),/昵称待补全/);
+assert.match(read("src/components/PlatformGrantsAdminClient.tsx"),/needsNickname\(selected.name\)/);
+console.log("SOCTHINK_WIDE_ADMIN_NAV_CONTRACT_PASS routes=10 pages=11 breakpoints=3 nickname_status=yes");
