@@ -62,3 +62,8 @@
 .provider{margin-top:12px;color:#596f69;font-size:12px;line-height:1.7}
 .provider summary{cursor:pointer;font-weight:800;color:#426b5e}
 .provider p{padding:8px 1px 3px;line-height:1.8}
+
+.reviewSection{margin:13px 0 0}
+.reviewToggle{display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer;width:100%;text-align:left;border:1px solid #c7ddd2;background:#eef7f1;color:#275e4b;padding:12px 15px;border-radius:12px;font-size:13px;font-weight:850}
+.reviewToggle span{font-size:21px;font-weight:500}
+.reviewToggle[aria-expanded=true]{background:#e4f0e9;border-color:#80ba97}
