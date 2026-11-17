@@ -272,10 +272,16 @@ async fn list_resources(
 
 async fn catalog_runtime_status(
     State(handle): State<CatalogHandle>,
-) -> ([(&'static str, &'static str); 1], Json<CatalogRuntimeStatus>) {
+) -> (
+    [(&'static str, &'static str); 1],
+    Json<CatalogRuntimeStatus>,
+) {
     // This router is bound to loopback by the binary. No PII, answers, or SKU
     // information escapes the endpoint. Explicitly disable proxy caching.
-    ([("cache-control", "no-store")], Json(handle.runtime_status()))
+    (
+        [("cache-control", "no-store")],
+        Json(handle.runtime_status()),
+    )
 }
 
 async fn health() -> &'static str {
