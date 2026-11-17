@@ -6,6 +6,8 @@
 //! adapter, never original questions, answers, users, scores or payment data.
 //! No new production endpoint is activated until a separate parity release.
 
+pub mod grading;
+
 use std::collections::HashSet;
 use std::error::Error;
 use std::fs;

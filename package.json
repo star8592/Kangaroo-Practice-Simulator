@@ -150,7 +150,10 @@
     "test:rust-resource-boundary": "node scripts/test_rust_resource_boundary.mjs",
     "test:rust-catalog-ssr-parity": "tsx scripts/test_rust_catalog_ssr_parity.ts",
     "test:rust-catalog-browser": "node scripts/test_rust_catalog_browser.mjs",
-    "test:rust-catalog-promotion": "python3 scripts/test_rust_catalog_promotion.py"
+    "test:rust-catalog-promotion": "python3 scripts/test_rust_catalog_promotion.py",
+    "test:rust-grade-parity": "tsx scripts/test_rust_grade_parity.ts",
+    "test:rust-grade-real-stock": "tsx scripts/test_rust_grade_real_stock_parity.ts",
+    "test:rust-grade-boundary": "node scripts/test_rust_grade_boundary.mjs"
   },
   "dependencies": {
     "next": "16.4.3",
