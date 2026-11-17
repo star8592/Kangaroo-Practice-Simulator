@@ -26,7 +26,7 @@ test.use({permissions:["microphone"],launchOptions:{
 
 test("teacher can publish existing Rust-classroom sentences, approve student and save feedback",async({page})=>{
  const writes:{path:string;body:unknown}[]=[];
- let published=false,admitted=false,invitationEnabled=false;
+ let published=false,admitted=false,invitationEnabled=false,publicListing=false;
  let customText:string|null=null,customKey="warm";
  const feedback:{student_id:string;comment:string;at:string}[]=[];
  await page.route("**/english/pronunciation/classroom-api/**",route=>{
@@ -42,6 +42,13 @@ test("teacher can publish existing Rust-classroom sentences, approve student and
   if(path===classBase+"/invitation/rotate"&&req.method()==="POST"){
     invitationEnabled=true;
     return respond(route,{enabled:true,url:classJoinUrl});
+  }
+  if(path===classBase+"/invitation/discovery"&&req.method()==="POST"){
+    const request=req.postDataJSON();
+    expect(typeof request.publish).toBe("boolean");
+    if(request.publish)expect(request.introduction.length).toBeGreaterThan(20);
+    publicListing=request.publish;
+    return respond(route,{saved:true,discoverable:publicListing,listing_intro:request.introduction});
   }
   if(path===classBase+"/invitation/copy"&&req.method()==="POST"){
     const body=req.postDataJSON();
@@ -93,6 +100,14 @@ test("teacher can publish existing Rust-classroom sentences, approve student and
  await expect(preview).toHaveValue(new RegExp(classJoinUrl));
  await page.getByRole("button",{name:"保存修改"}).click();
  await expect(page.getByText(/邀请文案已保存到班级/)).toBeVisible();
+ await page.getByRole("textbox",{name:"公开班级介绍"}).fill("这是一个针对小学英语发音与日常跟读的在线练习班。老师安排任务并提供反馈。");
+ await page.getByRole("button",{name:"公开招生",exact:true}).click();
+ await expect(page.getByText(/已公开招生，学生可以在找老师页面发现/)).toBeVisible();
+ expect(publicListing).toBe(true);
+ page.once("dialog",dialog=>void dialog.accept());
+ await page.getByRole("button",{name:"停止公开招生"}).click();
+ await expect(page.getByText(/已停止公开招生/)).toBeVisible();
+ expect(publicListing).toBe(false);
  await page.getByRole("button",{name:/二维码海报/}).click();
  const poster=page.getByRole("img",{name:/完整班级邀请海报/});
  await expect(poster).toBeVisible();

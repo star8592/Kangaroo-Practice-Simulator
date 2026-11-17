@@ -20,7 +20,10 @@ export default function SocthinkPortal(){
   <section className={styles.intro}>
    <span className={styles.kicker}>SOC THINK · LEARN · TEACH · TRAIN</span>
    <h1>今天想学什么？</h1>
-   <p>一个平台，连接个人学习、教师教学与机构培训。</p>
+   <p>自己学、跟老师学、和同学一起学，都由你决定。一个平台，连接个人学习、教师教学与机构培训。</p>
+   <div className={styles.studyChoices}>
+     <Link href="/english">立即自主学习</Link><Link href="/teachers">找老师 · 选班级</Link>
+   </div>
    <form action="/search" method="get" role="search" className={styles.search}>
     <label htmlFor="socthink-query" className={styles.srOnly}>搜索职业课程和技能资源</label>
     <input id="socthink-query" type="search" name="q" placeholder="搜索已收录的职业课程、技能或实训" maxLength={100}/>

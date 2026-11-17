@@ -17,3 +17,23 @@
 .owner{margin-top:24px;font-size:15px}
 .shell a:focus-visible{outline:3px solid #f59654;outline-offset:4px}
 @media(max-width:700px){.shell{padding:18px 15px 48px}.hero{padding:29px 23px}.modules{grid-template-columns:1fr}.module{padding:22px}}
+
+/* Learning-centered teacher home: real classes before product administration. */
+.hero{background:linear-gradient(120deg,#f1f8f2,#fff);border:1px solid #dfe9e0;color:#204931}
+.hero small{color:#387451}.hero p{color:#4f6b59}
+.ownerAction{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:22px}
+.ownerAction a{display:inline-flex;align-items:center;min-height:42px;border:1px solid #c9dccc;padding:9px 16px;border-radius:10px;color:#225c41;background:#fff;font-weight:750;text-decoration:none}
+.classSection{margin:22px 0 30px;border:1px solid #dce9de;border-radius:18px;padding:23px 25px;background:#fff}
+.headingRow{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:19px}
+.headingRow .kicker{font-size:11px;letter-spacing:.12em;font-weight:800;color:#3c8460}
+.headingRow h2{font-size:25px;margin:5px 0 7px;color:#214a35}
+.headingRow p{font-size:13px;color:#5d7463;line-height:1.6;margin:0}
+.headingRow>a{font-size:13px;color:#226548;font-weight:750;text-underline-offset:3px;white-space:nowrap}
+.classGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}
+.classCard{border:1px solid #dae8de;background:#f8fbf8;padding:19px;border-radius:13px;display:flex;flex-direction:column;gap:10px}
+.classBadge{font-size:11px;font-weight:800;color:#246448;background:#dff1e5;border-radius:50px;padding:5px 11px;align-self:flex-start}
+.classCard h3{font-size:20px;margin:0}.classCard p{font-size:13px;color:#637667;line-height:1.6;margin:0;flex:1}
+.classCard a,.emptyClasses a{color:#20684a;font-size:13px;font-weight:800;text-underline-offset:4px}
+.emptyClasses,.error{background:#f3f8f4;padding:18px;border-radius:12px}
+.error{color:#9a3d39;background:#fff0ec}.emptyClasses p{color:#5b7462}
+@media(max-width:760px){.headingRow{display:block}.headingRow>a{display:block;margin-top:10px}.classGrid{grid-template-columns:1fr}.classSection{padding:17px 15px}}
