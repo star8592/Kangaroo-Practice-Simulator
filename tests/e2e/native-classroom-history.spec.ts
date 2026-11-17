@@ -62,7 +62,7 @@ test("student history requires original invitation and displays only own saved s
  await expect(page.getByRole("region",{name:"本人已保存评分"})).toContainText("rust-test-fixture");
  await page.getByRole("textbox",{name:"作业链接"}).fill("https://attacker.example/english/pronunciation/app/a/"+tenant+"/"+token);
  await page.getByRole("button",{name:"查询我的历史"}).click();
- await expect(page.getByRole("alert")).toContainText("其他域名");
+ await expect(page.getByText(/其他域名和无效链接/)).toBeVisible();
  await expect(page.getByRole("region",{name:"本人已保存评分"})).toHaveCount(0);
 });
 
@@ -75,7 +75,7 @@ test("unauthenticated user sees no class or student history",async({page})=>{
   throw Error("Not signed in: other classroom endpoints must not be called");
  });
  await page.goto("/english/pronunciation/next-lab/classroom");
- await expect(page.getByRole("alert")).toContainText("请先登录主站");
+ await expect(page.getByRole("heading",{name:"请先登录主站"})).toBeVisible();
  await expect(page.getByRole("region",{name:"本人作业历史"})).toHaveCount(0);
  expect(reads).toBe(1);
 });
