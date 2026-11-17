@@ -28,6 +28,10 @@ function validateShare(text:string):Invite|null{
   return match?{tenant:match[1].toLowerCase(),token:match[2].toLowerCase()}:null;
  }catch{return null;}
 }
+function nativeShareUrl(value:string):string|null{
+ const parsed=validateShare(value);
+ return parsed?"https://socthink.cn/english/pronunciation/next-lab/assignments/"+parsed.tenant+"/"+parsed.token:null;
+}
 function validScore(value:unknown):value is number{
  return typeof value==="number"&&Number.isFinite(value)&&value>=0&&value<=100;
 }
@@ -50,7 +54,7 @@ async function write<T>(path:string,data:unknown):Promise<T>{
  return body as T;
 }
 
-export default function NativeClassroomWorkflow(){
+export default function NativeClassroomWorkflow({initialShare=""}:{initialShare?:string}){
  const [authentication,setAuthentication]=useState<"loading"|"ready"|"denied">("loading");
  const [identityError,setIdentityError]=useState("");
  const [mode,setMode]=useState<"teacher"|"student">("student");
@@ -74,7 +78,7 @@ export default function NativeClassroomWorkflow(){
  const [teacherError,setTeacherError]=useState("");
  const [teacherNotice,setTeacherNotice]=useState("");
 
- const [shareInput,setShareInput]=useState("");
+ const [shareInput,setShareInput]=useState(initialShare);
  const [invitation,setInvitation]=useState<Invite|null>(null);
  const [joinState,setJoinState]=useState<"idle"|"new"|"pending"|"approved"|"rejected">("idle");
  const [studentName,setStudentName]=useState("");
@@ -131,7 +135,7 @@ export default function NativeClassroomWorkflow(){
     const response=await read<{classes:ClassRoom[]}>("/teacher/classes");
     if(!live)return;
     setClasses(Array.isArray(response.classes)?response.classes:[]);
-    setMode("teacher");
+    if(!initialShare)setMode("teacher");
    }catch(error){
     if(live){setTeacherAccess("unavailable");setTeacherError(error instanceof Error?error.message:"教师授权服务不可用");}
    }
@@ -187,8 +191,9 @@ export default function NativeClassroomWorkflow(){
    const result=await write<{share_url:string;assignment_id:string}>(base+"/assignments",{
     title:title.trim(),sentence_set_id:setId,sentence_ids:selected
    });
-   if(!result.share_url||!validateShare(result.share_url))throw Error("已创建作业，但服务器未返回可验证的分享链接，请从正式工作台核对");
-   setShareUrl(result.share_url);setTitle("");setSelected([]);
+   const native=nativeShareUrl(result.share_url);
+   if(!native)throw Error("已创建作业，但服务器未返回可验证的分享链接，请从正式工作台核对");
+   setShareUrl(native);setTitle("");setSelected([]);
    const next=await read<{assignments:Assignment[]}>(base+"/assignments/list");
    setAssignments(next.assignments);
    setTeacherNotice("作业已发布，请复制真实分享链接到微信群");
@@ -238,8 +243,9 @@ export default function NativeClassroomWorkflow(){
   try{
    const result=await write<{share_url:string;old_links_revoked:boolean}>(
     "/tenants/"+activeClass.tenant_id+"/assignments/"+a.id+"/invite/renew",{});
-   if(!validateShare(result.share_url)||result.old_links_revoked!==true)throw Error("服务器未确认旧链接撤销，不能宣称已经更新");
-   setShareUrl(result.share_url);setTeacherNotice("新链接已生成；旧邀请链接已失效，请重新通知学生");
+   const native=nativeShareUrl(result.share_url);
+   if(!native||result.old_links_revoked!==true)throw Error("服务器未确认旧链接撤销，不能宣称已经更新");
+   setShareUrl(native);setTeacherNotice("新链接已生成；旧邀请链接已失效，请重新通知学生");
   }catch(error){setTeacherError(error instanceof Error?error.message:"未能重新生成链接");}
   finally{setTeacherBusy(false);}
  }
