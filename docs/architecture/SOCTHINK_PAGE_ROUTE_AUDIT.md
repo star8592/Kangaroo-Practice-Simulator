@@ -55,6 +55,7 @@
 | `/assessment-center/work-values-30` | 测评中心 | `/assessment-center` | 公开内容 | 所属业务目录或内容推荐 |
 | `/assessment-center/workplace-sjt-24` | 测评中心 | `/assessment-center` | 公开内容 | 所属业务目录或内容推荐 |
 | `/assessments` | 全部考试 | `/` | 历史业务目录 | 旧路径暂时可用，不再显示在顶级导航 |
+| `/assessments/english-speaking` | 全部考试 | `/assessments` | 公开内容 | 统一考试目录语言类 → 英语听说原创9题、北京、上海、综合模拟 → 发音复练 |
 | `/learn` | 技能实训 | `/` | 一级业务 | 职业学习主入口；真实实训链接复用原技能模块 |
 | `/practice` | 求职训练 | `/` | 一级业务 | 岗位模拟笔试/面试主入口；实际执行复用现有权威代码 |
 | `/career` | 职业岗位 | `/` | 一级业务 | 全站公共导航唯一注册表 |
