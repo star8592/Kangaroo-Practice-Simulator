@@ -2,7 +2,7 @@ import Link from "next/link";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { isAdmin, SESSION_COOKIE, userFromSessionToken } from "@/lib/auth";
-import { PARENT_SESSION_COOKIE, parentFromSessionToken } from "@/lib/parent-auth";
+import { PARENT_SESSION_COOKIE, parentFromSessionToken, isWechatNicknamePlaceholder } from "@/lib/parent-auth";
 import { isSiteOwner, readSiteOwner } from "@/lib/site-owner";
 import { adminOperationsSnapshot, filterAdminFamilies } from "@/lib/admin-operations";
 import { activePlatformGrantsForSubjects } from "@/lib/platform-grants";
@@ -94,7 +94,10 @@ export default async function AdminUsersPage({ searchParams }: Params) {
               grants.some(g => g.role === "module-admin") ? "项目管理员" :
               grants.some(g => g.role === "teacher") ? "教师" : "普通用户";
             return <tr key={user.id}>
-              <td><strong>{user.name || "微信用户"}</strong><small>{user.maskedEmail || user.id}</small></td>
+              <td><strong>{user.name || "微信用户"}</strong>
+                {user.signIn === "微信" && isWechatNicknamePlaceholder(user.name) ?
+                  <small>昵称待本人微信授权同步</small> : null}
+                <small>{user.maskedEmail || user.id}</small></td>
               <td><span className={styles.pill}>{user.signIn}</span></td>
               <td>{displayTime(user.createdAt)}</td>
               <td>{displayTime(user.lastLoginAt)}</td>
@@ -116,7 +119,7 @@ export default async function AdminUsersPage({ searchParams }: Params) {
         <span>第 {result.page} / {result.pages} 页</span>
         {result.page < result.pages ? <Link href={nextPage(result.page + 1)}>下一页</Link> : null}
       </nav>
-      <p className={styles.note}>用户数据从主站现有真实账号库实时读取；管理授权从 PostgreSQL 权限表读取。用户编号仅供管理确认，绝不显示微信 OpenID、密码或登录令牌。授权模块并不自动创建课堂任课关系。</p>
+      <p className={styles.note}>用户数据从主站现有真实账号库实时读取；管理授权从 PostgreSQL 权限表读取。显示“微信用户”的账号并非登录失败：请本人在微信内打开 /account 并点击“同步微信昵称”。用户编号仅供管理确认，绝不显示微信 OpenID、密码或登录令牌。授权模块并不自动创建课堂任课关系。</p>
     </section>
   </div>;
 }
