@@ -57,8 +57,9 @@ export const ASSESSMENT_DOMAINS: readonly AssessmentDomain[] = [
     navName:{zh:"语言考试",en:"Language exams"},
     summary:{zh:"阅读、听力、口语、写作与国际标准化考试。",en:"Reading, listening, speaking, writing and standardized exams."},
     audience:{zh:"英语学习者及留学申请者",en:"Language learners and applicants"},
-    readiness:"planned",formats:["single-choice","listening","speaking","essay"],
-    liveRoutes:[],nextProof:{zh:"先验证合法来源与口语/写作评分，再开放真实样卷。",en:"Prove source rights and speaking/writing rubrics before launch."},
+    readiness:"live",formats:["single-choice","listening","speaking","essay"],
+    liveRoutes:[{href:"/assessments/english-speaking",title:{zh:"原创英语听说试测与地区模拟",en:"Original English listening and speaking practice exams"}}],
+    nextProof:{zh:"仅原创听说试测与北京、上海、综合训练已开放；雅思、托福和官方中考真卷尚未上线。成绩目前保存在当次考试页面，跨模块持久化仍待验收。",en:"Only original listening-speaking trials and regional practice are live; IELTS, TOEFL and official papers are not. Cross-product score persistence is pending."},
   },
   {
     id:"university",name:{zh:"大学与考研",en:"University & postgraduate"},

@@ -13,6 +13,10 @@ assert.ok(topics.some(t=>t.title.zh.includes("小升初")),"K12 should include t
 assert.ok(topics.some(t=>t.title.zh.includes("法律职业资格")),"Professional exams must be represented");
 assert.ok(!topics.some(t=>t.title.zh.includes("SQL")),"SQL belongs to skill training");
 assert.ok(topics.some(t=>t.title.zh.includes("雅思")),"Language exams must be represented");
+assert.ok(topics.some(t=>t.id==="english-listening-speaking" && t.href==="/assessments/english-speaking"),"Working listening-speaking exams belong to the unified exam directory");
+assert.equal(ASSESSMENT_DOMAINS.find(d=>d.id==="language")?.readiness,"live","Language readiness must reflect the existing original mock exam engine");
+assert.ok(ASSESSMENT_DOMAINS.find(d=>d.id==="language")?.liveRoutes.some(x=>x.href==="/assessments/english-speaking"));
+assert.ok(topics.filter(t=>["ket-pet","ielts","toefl"].includes(t.id)).every(t=>t.status==="planned"),"Unimplemented international exams must not be marked live");
 assert.ok(topics.some(t=>t.title.zh.includes("考研")),"Postgraduate examinations must be represented");
 assert.ok(!topics.some(t=>t.title.zh.includes("职业兴趣")),"Career interest belongs to assessment center");
 assert.ok(topics.some(t=>t.id==="kangaroo" && t.href==="/competitions"),"Existing training remains reachable");
