@@ -138,7 +138,7 @@
     "test:career-directory": "tsx scripts/test_career_role_directory.ts && tsx scripts/test_agent_project_course.ts && tsx scripts/test_agent_code_account_api.ts",
     "test:career-formal-exams": "tsx scripts/test_career_formal_exams.ts",
     "test:career-semantic": "tsx scripts/test_career_semantic_followup.ts",
-    "test:site-architecture": "npm run test:rust-resource-boundary && npm run test:next-rust-boundary && npm run test:khan-platform && tsx scripts/test_site_architecture.ts && tsx scripts/test_site_owner_admin_bridge.ts && tsx scripts/test_site_page_inventory.ts && tsx scripts/test_seo_ssr_headings.ts && npm run test:seo-storage && npm run test:cohost-gateway",
+    "test:site-architecture": "npm run test:rust-resource-boundary && npm run test:next-rust-boundary && npm run test:khan-platform && tsx scripts/test_site_architecture.ts && tsx scripts/test_site_owner_admin_bridge.ts && tsx scripts/test_site_page_inventory.ts && tsx scripts/test_seo_ssr_headings.ts && npm run test:seo-storage && npm run test:cohost-gateway && npm run test:frontend-governance",
     "test:career-guided": "tsx scripts/test_career_guided_interview.ts && python3 scripts/test_career_model_warm.py",
     "bench:career-local": "tsx scripts/benchmark_career_local_judge.ts",
     "test:career-judge-dataset": "tsx scripts/test_career_judge_dataset.ts",
@@ -153,7 +153,8 @@
     "test:rust-catalog-promotion": "python3 scripts/test_rust_catalog_promotion.py",
     "test:rust-grade-parity": "tsx scripts/test_rust_grade_parity.ts",
     "test:rust-grade-real-stock": "tsx scripts/test_rust_grade_real_stock_parity.ts",
-    "test:rust-grade-boundary": "node scripts/test_rust_grade_boundary.mjs"
+    "test:rust-grade-boundary": "node scripts/test_rust_grade_boundary.mjs",
+    "test:frontend-governance": "node scripts/test_platform_frontend_governance.mjs"
   },
   "dependencies": {
     "next": "16.4.3",
