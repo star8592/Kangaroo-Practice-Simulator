@@ -1,0 +1,47 @@
+.shell{width:min(1440px,100%);margin:0 auto;padding:24px 28px 76px;color:#203e2d}
+.breadcrumb{display:flex;align-items:center;gap:10px;color:#637568;font-size:13px;margin:0 0 19px}
+.breadcrumb a{color:#286348}
+.hero{border:1px solid #deeadf;border-radius:21px;background:linear-gradient(120deg,#f0f7f1 0%,#fff 85%);padding:32px clamp(24px,3vw,46px);margin:0 0 26px}
+.kicker{font-weight:800;font-size:11px;letter-spacing:.12em;color:#397452}
+.hero h1{font-size:clamp(28px,3vw,40px);line-height:1.2;margin:10px 0;color:#193f2e}
+.hero p{color:#4b6655;line-height:1.7;margin:0;max-width:780px}
+.heroLinks{display:flex;gap:11px;flex-wrap:wrap;margin-top:22px}
+.heroLinks a,.classActions a,.classEmpty a{display:inline-flex;justify-content:center;align-items:center;min-height:44px;padding:9px 17px;border:1px solid #bdd5c2;border-radius:10px;color:#1d5a3d;background:#fff;font-weight:750;text-decoration:none}
+.heroLinks a:first-child,.classActions .primaryAction{background:#1a6647;border-color:#1a6647;color:#fff}
+.classPanel,.section{border:1px solid #dde8de;border-radius:18px;padding:25px 27px;background:#fff;margin:21px 0}
+.sectionHeading{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:18px}
+.sectionHeading h2{font-size:clamp(21px,2.5vw,26px);margin:4px 0 7px;color:#224c36}
+.sectionHeading p{color:#667a6b;font-size:13px;line-height:1.6;margin:0}
+.sectionHeading>a{font-size:13px;font-weight:750;color:#1b6746;text-underline-offset:4px;white-space:nowrap}
+.classState,.classError,.classEmpty{background:#f3f8f4;border-radius:12px;padding:19px;color:#486653;line-height:1.7}
+.classError{color:#a1443c;background:#fff3f0}
+.classEmpty strong{display:block;font-size:17px;color:#28563d}
+.classEmpty p{font-size:14px}
+.classSwitch label{display:block;color:#496a54;font-weight:750;font-size:13px;margin:0 0 7px}
+.classSwitch select{max-width:530px;width:100%;padding:11px;border:1px solid #c9dacd;border-radius:10px;color:#1d4d32;background:white;font:inherit}
+.classDetails{border:1px solid #d5e8d9;background:#f5faf6;border-radius:14px;padding:23px;margin-top:12px}
+.enrolled{display:inline-block;border-radius:40px;color:#236543;background:#d9f0df;padding:4px 11px;font-size:12px;font-weight:800}
+.classDetails h3{margin:11px 0;font-size:23px;color:#1b4731}
+.classDetails p{color:#53705e;margin:6px 0}
+.classDetails .classNote{font-size:13px;line-height:1.7;margin-top:12px}
+.classActions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+.courseGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.course{display:flex;flex-direction:column;gap:11px;min-height:143px;border:1px solid #e2e9e2;border-radius:14px;background:#fafdfa;padding:20px;text-decoration:none;color:#224530}
+.course strong{font-size:17px}.course span{font-size:13px;color:#617667;line-height:1.7;flex:1}.course b{color:#216d4b;font-size:13px}
+.course:hover{border-color:#76aa89;background:white}
+.notes{color:#647a68;font-size:13px;line-height:1.7}
+.notes a{color:#226447;font-weight:800}
+.footerLinks{display:flex;gap:16px;flex-wrap:wrap;margin-top:28px;font-size:14px}
+.footerLinks a{color:#256949}
+.shell :is(a,button,select):focus-visible{outline:3px solid #e2a36c;outline-offset:3px}
+@media(max-width:850px){.courseGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.shell{padding:18px 15px 55px}}
+@media(max-width:550px){.hero{padding:23px 18px}.section,.classPanel{padding:19px 16px}.sectionHeading{display:block}.sectionHeading>a{display:inline-block;margin-top:12px}.courseGrid{grid-template-columns:1fr}.classActions a,.heroLinks a{flex:1}.classDetails{padding:18px}}
+
+.modes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}
+.modeCard{padding:22px 20px;border:1px solid #dce8de;border-radius:14px;display:flex;flex-direction:column;gap:14px;text-decoration:none;color:#204530;background:#f7fbf8;min-height:205px}
+.modeCard:hover{background:#fff;border-color:#82b695}
+.modeCard .modeNumber{font-size:10px;letter-spacing:.11em;color:#43805b;font-weight:850}
+.modeCard strong{font-size:22px}
+.modeCard span:not(.modeNumber){line-height:1.7;font-size:13px;color:#657b69;flex:1}
+.modeCard b{font-size:13px;color:#206849}
+@media(max-width:850px){.modes{grid-template-columns:1fr}.modeCard{min-height:0}}

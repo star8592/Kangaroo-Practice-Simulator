@@ -1,6 +1,6 @@
 # SOC THINK 全站逐页路由归属审计（代码扫描台账）
 
-审计基线：2026-11-04；源自 GitHub Next.js `src/app/**/page.tsx` 路由树，**102 个 Next.js 页面模板 + 1 个静态兼容 HTML 入口（共 103 个），非实际商品、试卷或动态 URL 实例数**。
+审计基线：2026-11-04；源自 GitHub Next.js `src/app/**/page.tsx` 路由树，**103 个 Next.js 页面模板 + 1 个静态兼容 HTML 入口（共 104 个），非实际商品、试卷或动态 URL 实例数**。
 
 > **地位**：本表是 [《全站信息架构总纲》](SOCTHINK_SITE_ARCHITECTURE_MASTER.md) 的逐页实施台账，不是另一套页面注册表、CMS、路由或授权来源。内容归属仍以 `src/lib/site-architecture.ts` 和现有业务权威目录为准。
 
@@ -20,6 +20,7 @@
 | `/english` | 英语学习 | `/` | 公开目录 | SOC THINK 首页英语分类与顶栏入口；四个独立产品集中展示 |
 | `/subjects` | 全站入口 | `/` | 公开目录 | 真实可用的数学与英语等校内学科入口；不再将数学试卷检索冒充全部语文科学课程 |
 | `/teach` | 全站入口 | `/` | 公开指南 | 全站教师与学校机构服务说明；获授权教师使用统一 /workspace |
+| `/teachers` | 全站入口 | `/` | 公开目录 | 首页找老师入口；仅老师主动公开且邀请码有效的班级可展示，不含学生数据 |
 | `/english/teacher` | 英语学习 | `/english` | 历史重定向 | 旧英语教师汇总路径跳转至统一 /workspace；不再另设老师账号及授权后台 |
 | `/english/pronunciation` | 英语学习 | `/english` | 公开内容 | AccentLab 独立发音应用说明与已核验原站训练入口 |
 | `/english/pronunciation/classrooms` | 英语学习 | `/english/pronunciation` | 私有教师班级受控 noindex | 平台教师授权后从 /workspace 进入；生成班级独立邀请二维码、审核学生入班 |

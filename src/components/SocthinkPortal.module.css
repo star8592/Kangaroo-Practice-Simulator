@@ -38,3 +38,8 @@
 .audienceCard>span{font-size:13px;line-height:1.75;opacity:.85;flex:1}
 .audienceCard b{display:inline-flex;gap:8px;align-items:center;font-size:13px;color:inherit;text-decoration:underline;text-underline-offset:4px}
 @media(max-width:760px){.audienceGrid{grid-template-columns:1fr;gap:10px}.audienceCard{min-height:0;padding:18px 20px}.audienceCard strong{font-size:21px}.sectionHeading{align-items:flex-start;flex-direction:column;gap:4px}.audienceSection{margin-bottom:28px}}
+
+.studyChoices{display:flex;gap:11px;flex-wrap:wrap;margin-top:15px}
+.studyChoices a{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;min-height:43px;padding:10px 17px;border-radius:10px;font-size:13px;font-weight:850;background:#e8f4eb;color:#21603d;border:1px solid #bddcc7}
+.studyChoices a:first-child{background:#245e42;color:#fff;border-color:#245e42}
+@media(max-width:550px){.studyChoices a{flex:1}}

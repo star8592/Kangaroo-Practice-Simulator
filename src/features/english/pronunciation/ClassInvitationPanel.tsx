@@ -8,7 +8,7 @@ import {
 } from "./class-invitation-copy";
 import styles from "./ClassInvitationPanel.module.css";
 
-type Invitation = {enabled:boolean;url:string|null;message_template?:string|null;template_key?:InvitationTemplateKey};
+type Invitation = {enabled:boolean;url:string|null;message_template?:string|null;template_key?:InvitationTemplateKey;discoverable?:boolean;listing_intro?:string};
 type InvitationFormat = "link" | "qr";
 const API = "/english/pronunciation/classroom-api";
 
@@ -106,6 +106,7 @@ export default function ClassInvitationPanel({tenant,classId,className}:{
   const [busy,setBusy]=useState(false);
   const [error,setError]=useState("");
   const [notice,setNotice]=useState("");
+  const [listingIntro,setListingIntro]=useState("");
   const base=API+"/tenants/"+tenant+"/classes/"+classId+"/invitation";
 
   useEffect(()=>{
@@ -120,7 +121,7 @@ export default function ClassInvitationPanel({tenant,classId,className}:{
         validateInvitationTemplate(value.message_template)
         ?value.message_template:INVITATION_TEMPLATES[key].text;
       setEntry(value);setStyle(key);setSavedStyle(key);
-      setDraft(text);setSavedDraft(text);setLoaded(true);
+      setDraft(text);setSavedDraft(text);setListingIntro(value.listing_intro||"");setLoaded(true);
     }).catch(reason=>{if(live)setError(reason instanceof Error?reason.message:"无法读取班级邀请");});
     return()=>{live=false;};
   },[base]);
@@ -158,6 +159,28 @@ export default function ClassInvitationPanel({tenant,classId,className}:{
       setEntry(previous=>({...previous,...value}));
       setNotice(action==="rotate"?"新的有效邀请已生成；旧链接和二维码已失效":"班级邀请已停用");
     }catch(reason){setError(reason instanceof Error?reason.message:"操作失败");}
+    finally{setBusy(false);}
+  }
+
+  async function publishClass(publish:boolean){
+    if(busy)return;
+    if(publish&&([...listingIntro.trim()].length<20||[...listingIntro.trim()].length>220)){
+      setError("公开招生介绍请填写 20—220 字，说明教学内容和学习方式");
+      return;
+    }
+    if(!publish&&!window.confirm("停止公开招生？老师已经发出的原邀请链接不会失效。"))return;
+    setBusy(true);setError("");setNotice("");
+    try{
+      const response=await fetch(base+"/discovery",{
+        method:"POST",credentials:"same-origin",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({publish,introduction:listingIntro.trim()})
+      });
+      const body=await response.json();
+      if(!response.ok||body.saved!==true)throw Error(body.error||"招生设置保存失败");
+      setEntry(previous=>previous?{...previous,discoverable:Boolean(body.discoverable),listing_intro:body.listing_intro||""}:previous);
+      setNotice(publish?"已公开招生，学生可以在找老师页面发现这个班级":"已停止公开招生，原班级和私发邀请不受影响");
+    }catch(reason){setError(reason instanceof Error?reason.message:"无法修改招生设置");}
     finally{setBusy(false);}
   }
 
@@ -289,6 +312,25 @@ export default function ClassInvitationPanel({tenant,classId,className}:{
           <p className={styles.tip}>微信内若不支持系统图片分享，可长按上方海报保存到手机相册，再发送到班级群。</p>
         </>}
       </div>
+      <section className={styles.discovery} aria-labelledby={"discovery-title-"+classId}>
+        <div className={styles.discoveryHeader}>
+          <div><h4 id={"discovery-title-"+classId}>公开招生 · 让学生找到你</h4>
+            <p>默认不公开。只有你主动发布的班级才进入 SOC THINK 找老师目录；学生仍需微信登录和老师审核。</p></div>
+          <span className={styles.discoveryStatus}>{entry?.discoverable?"正在公开招生":"仅限私发邀请"}</span>
+        </div>
+        <label htmlFor={"discovery-intro-"+classId}>班级介绍（公开后展示）</label>
+        <textarea id={"discovery-intro-"+classId} className={styles.discoveryIntro} aria-label="公开班级介绍"
+          placeholder="介绍课程目标、适合的练习内容和教师指导方式。请不要填写学生姓名、私人联系方式或未开通的收费承诺。"
+          maxLength={220} value={listingIntro} onChange={event=>setListingIntro(event.target.value)}/>
+        <div className={styles.actions}>
+          <button type="button" className={styles.primary} disabled={busy}
+            onClick={()=>void publishClass(true)}>{entry?.discoverable?"更新招生介绍":"公开招生"}</button>
+          {entry?.discoverable?<button type="button" disabled={busy}
+            onClick={()=>void publishClass(false)}>停止公开招生</button>:null}
+          <a href="/teachers" target="_blank" rel="noopener noreferrer">查看找老师目录</a>
+        </div>
+        <p className={styles.tip}>公开目录目前支持真实入班申请，不包含尚未开通的付费订单。以后有收费课程时，须通过主站统一支付与权益核验。</p>
+      </section>
       <details className={styles.manage}>
         <summary>邀请链接管理（更换 / 停用）</summary>
         <p>更换邀请码会同时使旧链接与旧二维码失效，但已入班学生不受影响。</p>
