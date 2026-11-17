@@ -5,6 +5,6 @@ import SourceReviewDashboard from "@/components/SourceReviewDashboard";
 export const dynamic="force-dynamic";
 export default async function Page(){
   const cookie=await cookies();
-  if(!canManagePlatform(cookie))redirect("/admin/login");
+  if(!canManagePlatform(cookie))redirect("/login?next=/admin/competition-source-watch");
   return <SourceReviewDashboard/>;
 }
