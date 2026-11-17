@@ -1,5 +1,5 @@
 import fs from "node:fs";
-import { userDataPath } from "@/lib/user-data-store";
+import path from "node:path";
 
 export type SeoCrawlFailure = Readonly<{ path: string; ok: false; issue: string }>;
 export type SeoDailySnapshot = Readonly<{
@@ -31,15 +31,41 @@ export function validSeoSnapshot(x: unknown): x is SeoDailySnapshot {
       typeof (f as SeoCrawlFailure).issue === "string");
 }
 
-export function readSeoSnapshots(): SeoDailySnapshot[] {
-  const file = userDataPath(HISTORY_FILE);
+export type SeoHistorySourceStatus = "ok" | "missing" | "unreadable" | "invalid";
+
+/**
+ * Daily monitor and admin SSR must read the SAME SEO-only data directory.
+ * Never reuse the identity/session/WeChat USER_DATA_DIR for SEO reporting.
+ * The release's private/seo is a stable symlink to the persistent SEO store.
+ */
+export function seoMonitorHistoryPath(): string {
+  const explicit = process.env.SOCTHINK_SEO_DATA_DIR?.trim();
+  const directory = explicit ? path.resolve(explicit) : path.join(process.cwd(), "private", "seo");
+  return path.join(directory, HISTORY_FILE);
+}
+
+export function readSeoHistory(): {
+  history: SeoDailySnapshot[];
+  sourceStatus: SeoHistorySourceStatus;
+} {
   try {
-    const value = JSON.parse(fs.readFileSync(file, "utf8")) as unknown;
-    return Array.isArray(value) ? value.filter(validSeoSnapshot).slice(-MAX_HISTORY) : [];
-  } catch {
-    // Missing history or a disk/storage error is not a successful zero-count report.
-    return [];
+    const value: unknown = JSON.parse(fs.readFileSync(seoMonitorHistoryPath(), "utf8"));
+    if (!Array.isArray(value) || value.some(x => !validSeoSnapshot(x)))
+      return {history: [], sourceStatus: "invalid"};
+    return {history: value.slice(-MAX_HISTORY), sourceStatus: "ok"};
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === "ENOENT")
+      return {history: [], sourceStatus: "missing"};
+    // A permissions failure, malformed data or I/O error is not an empty
+    // successful collection. The admin UI must explicitly show read_error.
+    if (error instanceof SyntaxError)
+      return {history: [], sourceStatus: "invalid"};
+    return {history: [], sourceStatus: "unreadable"};
   }
+}
+
+export function readSeoSnapshots(): SeoDailySnapshot[] {
+  return readSeoHistory().history;
 }
 
 export type SeoProvider = Readonly<{
@@ -78,13 +104,14 @@ export const PROVIDERS: readonly SeoProvider[] = [
 ];
 
 export function getSeoMonitorDashboard() {
-  const history = readSeoSnapshots();
+  const {history, sourceStatus} = readSeoHistory();
   const latest = history.at(-1) || null;
   const ageHours = latest
     ? Math.max(0, Math.floor((Date.now() - Date.parse(latest.observedAt)) / 3_600_000))
     : null;
-  const siteStatus = !latest ? "not_measured" :
+  const siteStatus = sourceStatus === "unreadable" || sourceStatus === "invalid"
+    ? "read_error" : !latest ? "not_measured" :
     ageHours === null || ageHours > 36 ? "stale" :
     latest.robotsOk && latest.healthyCount === latest.checkedCount ? "healthy" : "issues";
-  return { latest, history: history.slice(-30), ageHours, siteStatus, providers: PROVIDERS };
+  return { latest, history: history.slice(-30), ageHours, siteStatus, sourceStatus, providers: PROVIDERS };
 }

@@ -95,7 +95,9 @@ export default async function AdminPage({ searchParams }: Params) {
     ...(!checkoutEnabled ? [{ title: "网站新付款入口当前未启用", detail: "这是收款配置开关状态，不代表已产生付款；需要核对商户授权、商品与正式支付验收。", type: "info" }] : []),
     ...(storefront.status === "unavailable" ? [{ title: "商城真实商品目录读取失败", detail: "不能把查询失败当作没有商品，请检查正式账本或交付资源文件。", type: "warning" }] : []),
     ...(storefront.status === "available" && storefront.visibleItems === 0 ? [{ title: "资料商城暂无可验证交付的展示商品", detail: "优先核对商品实际文件、商业使用权、价格和可下载交付，不把训练卷目录直接算为可售资料。", type: "info" }] : []),
-    ...(seo.siteStatus !== "healthy" ? [{ title: "SEO 监测需要检查", detail: seo.siteStatus === "not_measured" ? "还没有真实采集记录。" : seo.siteStatus === "stale" ? "最近的采集记录已超过 36 小时。" : "本轮检测存在 URL 或 robots 异常。", type: "warning" }] : []),
+    ...(seo.siteStatus !== "healthy" ? [{ title: "SEO 监测需要检查", detail: seo.siteStatus === "not_measured" ? "还没有真实采集记录。" :
+        seo.siteStatus === "read_error" ? "SEO 采集历史文件读取或格式校验失败。" :
+        seo.siteStatus === "stale" ? "最近的采集记录已超过 36 小时。" : "本轮检测存在 URL 或 robots 异常。", type: "warning" }] : []),
     ...(feedback.highPriority ? [{ title: `${feedback.highPriority} 条高优先级客户反馈`, detail: "包含题目错误或报告争议，优先进入客户反馈处理台。", type: "warning" }] : []),
     { title: "搜索引擎真实收录量待接入", detail: "百度、Google、Bing 的官方站长资产尚未验证，Sitemap 数量不能冒充收录量。", type: "info" },
   ];
