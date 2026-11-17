@@ -170,7 +170,7 @@ test("Rust upload failure retains audio and same idempotent request ID for retry
  await page.waitForTimeout(1100);
  await page.getByRole("button",{name:"结束录音"}).click();
  await page.getByRole("button",{name:"确认提交录音并评分"}).click();
- await expect(page.getByRole("alert")).toContainText("Rust 评分服务暂不可用");
+ await expect(page.getByText("Rust 评分服务暂不可用")).toBeVisible();
  await expect(page.getByText(/本句真实 Rust 评分/)).toHaveCount(0);
  await expect(page.getByLabel("本次录音回听")).toBeVisible();
  await page.getByRole("button",{name:"确认提交录音并评分"}).click();
@@ -178,7 +178,7 @@ test("Rust upload failure retains audio and same idempotent request ID for retry
  expect(ids).toHaveLength(2);expect(ids[0]).toBe(ids[1]);
 });
 
-test("unlogged visitor and foreign invitation cannot access protected work",async({page})=>{
+test("unlogged visitor cannot access protected work",async({page})=>{
  let reads=0;
  await page.route("**/english/pronunciation/classroom-api/**",route=>{
   reads++;const path=new URL(route.request().url()).pathname;
@@ -189,4 +189,22 @@ test("unlogged visitor and foreign invitation cannot access protected work",asyn
  await expect(page.getByText("需要登录 SOC THINK")).toBeVisible();
  await expect(page.getByRole("region",{name:"学生领取和提交作业"})).toHaveCount(0);
  expect(reads).toBe(1);
+});
+
+
+test("foreign invitation is rejected before classroom API read",async({page})=>{
+ let protectedReads=0;
+ await page.route("**/english/pronunciation/classroom-api/**",route=>{
+  const path=new URL(route.request().url()).pathname;
+  if(path===api+"/me")return respond(route,{account_id:student});
+  if(path===api+"/teacher/access")return respond(route,{approved:false});
+  protectedReads++;
+  throw Error("Foreign link must never trigger classroom API: "+path);
+ });
+ await page.goto("/english/pronunciation/next-lab/assignments");
+ await page.getByRole("textbox",{name:"老师分享到微信群的完整作业链接"})
+  .fill("https://not-socthink.example/english/pronunciation/app/a/"+tenant+"/"+token);
+ await page.getByRole("button",{name:"验证作业链接"}).click();
+ await expect(page.getByText("请输入老师发来的 socthink.cn 原始作业链接")).toBeVisible();
+ expect(protectedReads).toBe(0);
 });
