@@ -58,3 +58,7 @@
  .disclosure{margin-top:18px}
 }
 @media(prefers-reduced-motion:reduce){.shell *{scroll-behavior:auto;animation:none!important;transition:none!important}}
+
+.provider{margin-top:12px;color:#596f69;font-size:12px;line-height:1.7}
+.provider summary{cursor:pointer;font-weight:800;color:#426b5e}
+.provider p{padding:8px 1px 3px;line-height:1.8}

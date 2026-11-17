@@ -128,8 +128,9 @@ export default function NativePronunciationTrial(){
     throw Error("评分服务返回 HTTP "+response.status+(raw.length<200?"："+raw:""));
    }
    const result=await response.json() as ScoreResponse;
-   if(typeof result.score!=="number"||!Number.isFinite(result.score))
-    throw Error("服务端没有提供有效评分");
+   if(typeof result.score!=="number"||!Number.isFinite(result.score)
+      ||result.score<0||result.score>100)
+    throw Error("服务端没有提供 0—100 范围内的有效评分");
    if(mountedRef.current){setScore(result);setStatus("Rust 真实评分已返回");}
   }catch(e){
    if(mountedRef.current){
@@ -282,12 +283,16 @@ export default function NativePronunciationTrial(){
     </div>
    </div>
    {score?<section className={styles.result} aria-label="Rust 发音评分">
-    <strong>{Math.round(score.score)} <small> / 100 · Rust 评分</small></strong>
+    <strong>{Math.round(score.score)} <small> / 100 · Rust 实验评分（非正式考试成绩）</small></strong>
     {score.transcribe?<p>识别结果：{score.transcribe}</p>:null}
     {score.differences?.words_with_errors?.length
      ?<p>优先纠音：<b>{score.differences.words_with_errors[0]}</b></p>:<p>评分由服务端生成；未返回明确的优先纠音词。</p>}
    </section>:null}
-   <p className={styles.disclosure}>示范音：{current.voice_profile}。单词点读使用浏览器设备语音，不能当作标准参考音源。录音仅在点击跟读并同意麦克风授权后开始；后端评分不可用时不会生成假分数。</p>
+   <p className={styles.disclosure}>示范音：{current.voice_profile}。单词点读使用浏览器设备语音，不能当作标准参考音源。点击“一键听音 → 跟读 → 评分”并授权麦克风后，本次录音将在结束时自动发送至本站自托管实验评分服务；后端不可用时不会生成假分数。</p>
+   <details className={styles.provider}>
+    <summary>实验评分的准确性与录音处理说明</summary>
+    <p>{catalog?.scoring_message||"评分引擎的准确性和隐私处理以对应服务端公告为准。"}</p>
+   </details>
   </section>:<section className={styles.practice}><p>{loadError?"无法连接 Rust 服务，未展示虚构语料。":"正在读取真实句子…"}</p></section>}
   <footer className={styles.footer}>
    <strong>迁移验收状态</strong>
