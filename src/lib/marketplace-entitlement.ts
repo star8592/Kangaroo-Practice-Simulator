@@ -58,6 +58,9 @@ export function verifyMarketplaceTicket(value: string): Ticket {
 function readGrant(jobHash: string): Grant | null {
   try {
     const p = grantPath(jobHash);
+    const revokedFile = path.join(path.dirname(path.dirname(p)), "revocations", jobHash+".json");
+    // Tombstones remain authoritative across browser restarts and all reports.
+    if(fs.existsSync(revokedFile)) return null;
     const g = JSON.parse(fs.readFileSync(p, "utf8")) as Grant;
     if (g.jobHash !== jobHash || !/^[a-f0-9]{64}$/.test(g.sessionHash) ||
         typeof g.reportUntil !== "number" || typeof g.examId !== "string") return null;
@@ -72,6 +75,14 @@ function validateCookie(value: string | undefined, g: Grant) {
   const [jobHash, secret] = value.split(".");
   return jobHash === g.jobHash && safeEquals(sha(secret), g.sessionHash) && g.reportUntil > Date.now();
 }
+/** A cancelled order must display a useful message before the buyer starts. */
+export function marketplaceTicketRevoked(ticketValue: string): boolean {
+  const t=verifyMarketplaceTicket(ticketValue);
+  const hash=sha(t.job+"|"+t.sku+"|"+t.examId);
+  const {data}=configuration();
+  return fs.existsSync(path.join(data,"revocations",hash+".json"));
+}
+
 export function redeemMarketplaceTicket(ticketValue: string, oldCookie?: string) {
   const t = verifyMarketplaceTicket(ticketValue);
   const jobHash = sha(t.job + "|" + t.sku + "|" + t.examId);

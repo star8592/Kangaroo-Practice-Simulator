@@ -1,7 +1,7 @@
 import {marketplaceExamAssetsReady} from "@/lib/marketplace-exam-assets";
 import {cookies} from "next/headers";
 import {notFound} from "next/navigation";
-import {marketplaceMode,verifyMarketplaceTicket,marketplaceUserFromCookie,MARKETPLACE_COOKIE} from "@/lib/marketplace-entitlement";
+import {marketplaceMode,verifyMarketplaceTicket,marketplaceTicketRevoked,marketplaceUserFromCookie,MARKETPLACE_COOKIE} from "@/lib/marketplace-entitlement";
 import {loadTrainingExamBundle,isExamBundleTrainingReady} from "@/lib/training-question-bank";
 import {loadExamAttempts} from "@/lib/attempt-store";
 
@@ -19,12 +19,15 @@ export default async function MarketplaceClaimPage({searchParams}:{searchParams:
   if(query.ticket){
     try {
       const verified=verifyMarketplaceTicket(query.ticket);
+      if(marketplaceTicketRevoked(query.ticket))throw Error("ENTITLEMENT_REVOKED");
       const bundle=loadTrainingExamBundle(verified.examId);
       if(!isExamBundleTrainingReady(bundle)||bundle.profile.formatId!=="maa-amc8"||!marketplaceExamAssetsReady(bundle.questions))
         throw Error("EXAM_NOT_READY");
       ticket=query.ticket;examId=verified.examId;title=bundle.profile.name;
       count=bundle.profile.questionCount;minutes=Math.ceil(bundle.profile.durationSeconds/60);
-    }catch{error="兑换链接无效、已过期，或当前试卷暂不可用。请从闲鱼订单中重新打开交付链接。";}
+    }catch(e){error=e instanceof Error&&e.message==="ENTITLEMENT_REVOKED"?
+      "该订单的考试权益已经撤销。如有疑问，请从原闲鱼订单联系卖家。":
+      "兑换链接无效、已过期，或当前试卷暂不可用。请从闲鱼订单中重新打开交付链接。";}
   }
   return <section className="marketplace-claim">
     <div className="claim-eyebrow">SOC THINK · 数学测评服务</div>

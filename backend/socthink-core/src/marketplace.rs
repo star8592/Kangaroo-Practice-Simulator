@@ -2,7 +2,7 @@
 //! Returns a session cookie understood by the read-only SOC THINK exam frontend.
 //! Never trusts a client supplied paid flag. Caller must present License HMAC ticket.
 use axum::{
-    Form,
+    Form, Json,
     http::{HeaderMap, StatusCode, header},
     response::{IntoResponse, Response},
 };
@@ -69,6 +69,7 @@ enum RedemptionError {
     Invalid,
     AlreadyClaimed,
     Unavailable,
+    Revoked,
 }
 impl RedemptionError {
     fn response(&self) -> Response {
@@ -78,10 +79,12 @@ impl RedemptionError {
             Self::Invalid => (StatusCode::BAD_REQUEST, "INVALID_OR_EXPIRED_TICKET"),
             Self::AlreadyClaimed => (StatusCode::CONFLICT, "ALREADY_CLAIMED"),
             Self::Unavailable => (StatusCode::SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE"),
+            Self::Revoked => (StatusCode::GONE, "ENTITLEMENT_REVOKED"),
         };
         let body = serde_json::json!({"code":code,"error":match self {
             Self::AlreadyClaimed => "此权益已领取，请在原浏览器继续或联系卖家申请恢复",
             Self::Unavailable => "考试服务暂时不可用，请稍后重试",
+            Self::Revoked => "该订单权益已取消，如有疑问请联系原平台卖家",
             _ => "考试兑换暂不可用，请从闲鱼订单重新打开专属链接",
         }});
         (
@@ -256,6 +259,11 @@ fn redeem_core(
     let cfg = config()?;
     let t = verify_ticket(ticket, &cfg)?;
     let job_hash = sha(&format!("{}|{}|{}", t.job, t.sku, t.exam_id));
+    // The revocation tombstone is authoritative even when an existing buyer
+    // cookie or an old valid handoff ticket is presented.
+    if revoked_job(&cfg.data_dir, &job_hash)? {
+        return Err(RedemptionError::Revoked);
+    }
     let dir = cfg.data_dir.join("grants");
     fs::create_dir_all(&dir).map_err(|_| RedemptionError::Unavailable)?;
     let file = dir.join(format!("{job_hash}.json"));
@@ -299,10 +307,132 @@ fn redeem_core(
         }
         Err(_) => return Err(RedemptionError::Unavailable),
     }
+    // If revoke raced with the first claim, revoke wins. The new session
+    // can never access any report because the Node reader sees the tombstone.
+    if revoked_job(&cfg.data_dir, &job_hash)? {
+        return Err(RedemptionError::Revoked);
+    }
     Ok((
         cookie_for(&job_hash, &random),
         cfg.origin + "/exam/" + &t.exam_id,
     ))
+}
+
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
+pub struct RevokeMessage {
+    v: u8,
+    job: String,
+    sku: String,
+    exam_id: String,
+    reason: String,
+    observed_at: u64,
+    sig: String,
+}
+
+#[derive(Serialize, Deserialize)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
+struct Revocation {
+    job_hash: String,
+    reason: String,
+    revoked_at: u64,
+}
+
+fn revoked_job(dir: &Path, job_hash: &str) -> Result<bool, RedemptionError> {
+    let file = dir.join("revocations").join(format!("{job_hash}.json"));
+    match fs::read(&file) {
+        Ok(data) => {
+            let record: Revocation =
+                serde_json::from_slice(&data).map_err(|_| RedemptionError::Unavailable)?;
+            if record.job_hash != job_hash {
+                return Err(RedemptionError::Unavailable);
+            }
+            Ok(true)
+        }
+        Err(error) if error.kind() == std::io::ErrorKind::NotFound => Ok(false),
+        Err(_) => Err(RedemptionError::Unavailable),
+    }
+}
+
+fn revoke_core(event: RevokeMessage) -> Result<bool, RedemptionError> {
+    let cfg = config()?;
+    let secret = env::var("SOCTHINK_MARKETPLACE_REVOKE_SECRET").unwrap_or_default();
+    if secret.len() < 32 {
+        return Err(RedemptionError::Unavailable);
+    }
+    let current = now();
+    if event.v != 1
+        || !valid_id(&event.job)
+        || event.sku != SKU
+        || event.exam_id != cfg.exam_id
+        || !matches!(
+            event.reason.as_str(),
+            "ORDER_REFUNDED" | "CHARGEBACK" | "ADMIN_REVOKED"
+        )
+        || current.abs_diff(event.observed_at) > 600
+        || event.sig.len() != 64
+    {
+        return Err(RedemptionError::Invalid);
+    }
+    let signed = format!(
+        "v1|{}|{}|{}|{}|{}",
+        event.job, event.sku, event.exam_id, event.reason, event.observed_at
+    );
+    let decoded = hex::decode(&event.sig).map_err(|_| RedemptionError::Invalid)?;
+    let mut mac =
+        HmacSha256::new_from_slice(secret.as_bytes()).map_err(|_| RedemptionError::Unavailable)?;
+    mac.update(signed.as_bytes());
+    mac.verify_slice(&decoded)
+        .map_err(|_| RedemptionError::Invalid)?;
+    let job_hash = sha(&format!("{}|{}|{}", event.job, event.sku, event.exam_id));
+    let dir = cfg.data_dir.join("revocations");
+    fs::create_dir_all(&dir).map_err(|_| RedemptionError::Unavailable)?;
+    let file = dir.join(format!("{job_hash}.json"));
+    if revoked_job(&cfg.data_dir, &job_hash)? {
+        return Ok(false);
+    }
+    let record = Revocation {
+        job_hash,
+        reason: event.reason,
+        revoked_at: current,
+    };
+    let body = serde_json::to_vec(&record).map_err(|_| RedemptionError::Unavailable)?;
+    match OpenOptions::new()
+        .write(true)
+        .create_new(true)
+        .mode(0o600)
+        .open(file)
+    {
+        Ok(mut fd) => {
+            fd.write_all(&body)
+                .map_err(|_| RedemptionError::Unavailable)?;
+            fd.sync_all().map_err(|_| RedemptionError::Unavailable)?;
+            Ok(true)
+        }
+        Err(err) if err.kind() == std::io::ErrorKind::AlreadyExists => {
+            // Concurrent revokers are idempotent only if persisted record is valid.
+            if revoked_job(&cfg.data_dir, &record.job_hash)? {
+                Ok(false)
+            } else {
+                Err(RedemptionError::Unavailable)
+            }
+        }
+        Err(_) => Err(RedemptionError::Unavailable),
+    }
+}
+
+/// Internal Rust-only endpoint. The process must be bound to loopback;
+/// neither Nginx nor Next.js may proxy this route to the public internet.
+pub async fn revoke(Json(event): Json<RevokeMessage>) -> Response {
+    match revoke_core(event) {
+        Ok(created) => (
+            StatusCode::OK,
+            [(header::CACHE_CONTROL, "no-store")],
+            Json(serde_json::json!({"revoked":true,"created":created})),
+        )
+            .into_response(),
+        Err(error) => error.response(),
+    }
 }
 
 pub async fn claim(headers: HeaderMap, Form(input): Form<ClaimForm>) -> Response {

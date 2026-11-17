@@ -10,7 +10,8 @@ ROOT=pathlib.Path(__file__).resolve().parents[1]
 PORT=18843
 URL=f"http://127.0.0.1:{PORT}"
 EXAM="maa-amc8-2024-user-owned"
-SECRET="local_rust_http_qa_only_not_a_real_production_key_20261118"
+SECRET=os.urandom(32).hex()
+REVOKE_SECRET=os.urandom(32).hex()
 
 class NoRedirect(urllib.request.HTTPRedirectHandler):
     def redirect_request(self,*args,**kwargs):
@@ -49,6 +50,7 @@ def main():
             "SOCTHINK_RUST_BIND":f"127.0.0.1:{PORT}",
             "SOCTHINK_MARKETPLACE_EXAM_MODE":"1",
             "SOCTHINK_MARKETPLACE_HANDOFF_SECRET":SECRET,
+            "SOCTHINK_MARKETPLACE_REVOKE_SECRET":REVOKE_SECRET,
             "SOCTHINK_MARKETPLACE_AMC8_EXAM_ID":EXAM,
             "SOCTHINK_MARKETPLACE_PUBLIC_ORIGIN":URL,
             "SOCTHINK_MARKETPLACE_DATA_DIR":str(base/"claims"),
@@ -135,6 +137,35 @@ def main():
             check("restart preserves original buyer entitlement",code==303)
             code,_,_=post(ticket("job_owner001"))
             check("restart does not allow claim theft",code==409)
+            def refund(job, reason="ORDER_REFUNDED",at=None,signing_key=REVOKE_SECRET):
+                timestamp=int(time.time()) if at is None else at
+                message=f"v1|{job}|EDU-001|{EXAM}|{reason}|{timestamp}"
+                digest=hmac.new(signing_key.encode(),message.encode(),hashlib.sha256).hexdigest()
+                raw=json.dumps({"v":1,"job":job,"sku":"EDU-001","examId":EXAM,
+                               "reason":reason,"observedAt":timestamp,"sig":digest}).encode()
+                req=urllib.request.Request(URL+"/internal/marketplace/revoke",data=raw,
+                    headers={"Content-Type":"application/json"},method="POST")
+                try:
+                    with urllib.request.urlopen(req,timeout=15) as resp:return resp.status,resp.read()
+                except urllib.error.HTTPError as err:return err.code,err.read()
+            code,_=refund("job_owner001",signing_key="wrong_independent_secret_but_same_length_1234")
+            check("unauthenticated refund rejected",code==400)
+            code,_=refund("job_owner001",at=int(time.time())-3600)
+            check("stale refund event rejected",code==400)
+            code,_=refund("job_owner001")
+            check("valid refund revokes claimed buyer",code==200)
+            code,_=refund("job_owner001")
+            check("refund replay idempotent",code==200)
+            code,_,_=post(ticket("job_owner001"),cookie=cookie)
+            check("buyer cannot reopen after refund",code==410)
+            code,_=refund("job_never_claimed001")
+            check("refund before claiming is persisted",code==200)
+            code,_,_=post(ticket("job_never_claimed001"))
+            check("refund before claiming rejects first claim",code==410)
+            stop(rust,log)
+            rust,log=spawn()
+            code,_,_=post(ticket("job_owner001"),cookie=cookie)
+            check("restarts do not reactivate refunded buyer",code==410)
             print(f"RUST_FAULT_MATRIX={counter}/{counter} PASS",flush=True)
         finally:
             stop(rust,log)

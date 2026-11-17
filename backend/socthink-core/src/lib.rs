@@ -301,6 +301,7 @@ pub fn router_with_handle(handle: CatalogHandle) -> Router {
         .route("/internal/catalog/status", get(catalog_runtime_status))
         .route("/v1/catalog/resources", get(list_resources))
         .route("/api/marketplace/claim", post(marketplace::claim))
+        .route("/internal/marketplace/revoke", post(marketplace::revoke))
         .with_state(handle)
 }
 

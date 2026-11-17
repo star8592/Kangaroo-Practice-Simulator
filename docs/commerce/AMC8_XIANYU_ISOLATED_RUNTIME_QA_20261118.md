@@ -64,3 +64,12 @@
 
 **上线阻断**
 DevControl 的真实闲鱼卖家订单核验/独立签名观察者、真实平台消息发出与回读、退款与撤销权益同步、试卷商业权利审核、真实 S22/iOS Safari 真机交付、生产卷及 25 题图部署哈希核对、多进程并发事务化尚未完成。所有 PR 保留 draft/NOT_LIVE，未经真实付款回执不得自动发权益。原主站正常运行路径未被改变。
+## 2026-11-18 R3：撤销令牌 / 已兑报告失效 / 跨服务联调
+
+- Rust Core 新增内网 `POST /internal/marketplace/revoke`：单独 `SOCTHINK_MARKETPLACE_REVOKE_SECRET`，签名覆盖订单 job、SKU、试卷、撤销原因、时间戳（10分钟时效），拒绝篡改/过期；只接受 `ORDER_REFUNDED`、`CHARGEBACK`、`ADMIN_REVOKED`。不新增 Next.js 业务 API，原 Rust 二进制仍只绑定 loopback。外部前端和 Nginx 不得公开这一内部路径。
+- 原隔离 `SOCTHINK_MARKETPLACE_DATA_DIR/revocations/{jobHash}.json` 为不可逆撤销墓碑：Rust 领取前后均检查，买家旧 HMAC 票据立即返回 410；Node `marketplaceUserFromCookie` 检查墓碑，已登录身份/考试/报告/PDF 权限同步失效；领取页在真实 POST 前显示已撤销提示，不误导考生。
+- Rust 故障矩阵扩展 **31/31 PASS**：包含无效撤销签名、旧观察、已兑与未兑撤销、重复撤销、服务重启后仍拒绝；原有12并发唯一领取等保留。
+- Node 撤销身份 **7/7 PASS**，覆盖本人老Cookie与其他买家隔离。
+- CommerceFlow `scripts/test_amc8_license_rust_revoke_e2e.py` 在独立本地 FastAPI→原 Rust HTTP 服务下 **12/12 PASS**：License 真正生成交接票据、Rust领取、退款后令牌和 Cookie失效、License远端不可达时待同步、重试恢复。
+- 所有实单证据仍缺：Zoria Chrome CDP 页面语义不可用，S21 App当前仅规则页，无实单付款/退款回读，不具备自动开通真实订单条件。
+- 合成的管理员撤销仅用于验证协议和操作，不代表实单退款已核验。生产需接入独立 DevControl 订单/退款观察、可靠重试、官方真实页面发货及消息气泡回读，保证主站原有支付和身份不受干扰。
