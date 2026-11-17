@@ -8,13 +8,13 @@ process.env.SOCTHINK_USER_DATA_DIR=dir;
 try{
  const {authenticateOrCreateWechatParent,createParentSessionToken,
   parentFromSessionToken,PARENT_SESSION_COOKIE}=await import("../src/lib/parent-auth");
- const {POST}=await import("../src/app/api/auth/parent/profile/route");
+ const {PATCH}=await import("../src/app/api/auth/me/route");
  const user=authenticateOrCreateWechatParent({wechatId:"isolated-wechat-user-17",name:"微信用户"});
  const cookie=PARENT_SESSION_COOKIE+"="+createParentSessionToken(user.id);
  async function post(who:boolean,origin:string,name:unknown){
-  return POST(new NextRequest("https://socthink.cn/api/auth/parent/profile",{
-   method:"POST",headers:{"content-type":"application/json",host:"socthink.cn",origin,
-    ...(who?{cookie}:{})},body:JSON.stringify({name})
+  return PATCH(new NextRequest("https://socthink.cn/api/auth/me",{
+   method:"PATCH",headers:{"content-type":"application/json",host:"socthink.cn",origin,
+    ...(who?{cookie}:{})},body:JSON.stringify({profileAction:"set-wechat-display-name",name})
   }));
  }
  assert.equal((await post(false,"https://socthink.cn","虚拟学生")).status,401);

@@ -14,7 +14,7 @@
 
 ## 新端点及页面
 - 微信授权 /api/auth/parent/wechat/start，默认 userinfo + 显式 profile=0 回退；
-- /api/auth/parent/profile POST：本人唯一的名称修改接口；
+- /api/auth/me PATCH：复用已存在的账户资料更新方法，用 profileAction 精确路由到本人微信显示名，不新增 Next API；
 - /account/profile；
 - GET/POST /english/pronunciation/classroom-api/tenants/:tenant/classes/:class/invitation[/rotate|/disable]；
 - GET/POST /english/pronunciation/classroom-api/class-join/:tenant/:class/:token；

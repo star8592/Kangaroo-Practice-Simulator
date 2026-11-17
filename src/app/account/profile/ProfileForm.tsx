@@ -7,8 +7,8 @@ export default function ProfileForm({currentName,nextPath}:{currentName:string;n
  async function save(e:FormEvent){
   e.preventDefault();if(busy)return;setError("");setBusy(true);
   try{
-   const r=await fetch("/api/auth/parent/profile",{method:"POST",credentials:"same-origin",
-    headers:{"Content-Type":"application/json"},body:JSON.stringify({name:name.trim()})});
+   const r=await fetch("/api/auth/me",{method:"PATCH",credentials:"same-origin",
+    headers:{"Content-Type":"application/json"},body:JSON.stringify({profileAction:"set-wechat-display-name",name:name.trim()})});
    const data=await r.json();
    if(!r.ok)throw new Error(data.error||"保存失败");
    router.replace(nextPath.startsWith("/account/profile")?"/account":nextPath);
