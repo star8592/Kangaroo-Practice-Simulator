@@ -234,6 +234,23 @@ try {
   ok(await api(teacher,"POST",["tenants",tenant,"assignments",assignmentId,"feedback"],{
     student_id:learnerId(students[0].id),attempt_id:studentAttempts[0],word_position:0,comment:"音量稳定，继续练习。"
   }),200,"Teacher writes feedback");
+  // R4: feedback is readable by exactly the authenticated student.
+  // The same assignment ID is shared by classmates, so the API must filter
+  // by both tenant and student; checking only assignment would leak data.
+  const firstFeedback=ok(await api(students[0],"GET",
+    ["tenants",tenant,"assignments",assignmentId,"my-attempts"]),200,
+    "Student reads own real teacher feedback on isolated PG18");
+  if(!Array.isArray(firstFeedback.teacher_feedback)||firstFeedback.teacher_feedback.length!==1||
+     firstFeedback.teacher_feedback[0].comment!=="音量稳定，继续练习。" ||
+     firstFeedback.teacher_feedback[0].attempt_id!==studentAttempts[0])
+    throw Error("Student-own teacher feedback missing or mismatched");
+  const unrelatedFeedback=ok(await api(students[1],"GET",
+    ["tenants",tenant,"assignments",assignmentId,"my-attempts"]),200,
+    "Another student sees no classmate feedback");
+  if(!Array.isArray(unrelatedFeedback.teacher_feedback)||unrelatedFeedback.teacher_feedback.length!==0)
+    throw Error("Teacher feedback leaked across students");
+  console.log("STUDENT_OWN_TEACHER_FEEDBACK_PG18_RLS_PASS");
+
   const wall=ok(await api(students[0],"GET",["tenants",tenant,"a",share,"wall"]),200,"Student sees class wall");
   if(wall.submitted!==5)throw Error("Class wall must show five submissions");
   // Student removal must revoke CURRENT access without destroying historic

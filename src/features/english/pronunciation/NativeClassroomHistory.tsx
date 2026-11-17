@@ -10,7 +10,7 @@ type Assignment={id:string;title:string;lifecycle:string;submitted:number;enroll
 type StudentRow={name:string;attempts:number;best_score:number|null;claimed:boolean;submitted:boolean};
 type TeacherReport={total:number;submitted:number;students:StudentRow[]};
 type Attempt={attempt_id:string;time:string;score:number|null;model_version:string};
-type StudentHistory={submitted:boolean;receipt_status:string;attempt_count:number;attempts:Attempt[]};
+type StudentHistory={submitted:boolean;receipt_status:string;attempt_count:number;attempts:Attempt[];teacher_feedback?:{comment:string;at:string}[]};
 const UUID="[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}";
 const INVITE=new RegExp("^/english/pronunciation/app/a/("+UUID+")/([a-f0-9]{64})/?$","i");
 
@@ -165,12 +165,13 @@ export default function NativeClassroomHistory(){
     {history?<div className={styles.section} role="region" aria-label="本人已保存评分">
      <h3>我的作业记录</h3>
      <p>{history.submitted?"已完成":history.receipt_status==="in_progress"?"练习中":"未提交"} · 评分记录 {history.attempt_count} 次</p>
+     {history.teacher_feedback?.length?<div role="region" aria-label="老师给我的反馈"><h3>老师反馈</h3>{history.teacher_feedback.map((f,i)=><p key={i}>{f.comment}</p>)}</div>:null}
      {history.attempts.length===0?<p>尚无已保存的评分记录。</p>:<div className={styles.scroll}><table><thead><tr><th>时间</th><th>成绩</th><th>评分引擎版本</th></tr></thead>
       <tbody>{history.attempts.map(a=><tr key={a.attempt_id}><td>{date(a.time)}</td><td>{score(a.score)}</td><td>{a.model_version||"未提供"}</td></tr>)}</tbody></table></div>}
     </div>:null}
    </section>
   </>:null}
   <p className={styles.foot}>这是迁移中的只读页，只覆盖既有课堂作业历史，不代表个人自由跟读的全部记录已迁移。课堂 API 不可用时不显示任何模拟数据或假成绩。</p>
-  <div className={styles.links}><Link href="/english/pronunciation/next-lab">返回原生跟读</Link><Link href="/english/pronunciation/app/practice-library">使用正式 V3</Link></div>
+  <div className={styles.links}><Link href="/english/pronunciation/next-lab/assignments">进入原生作业操作候选</Link><Link href="/english/pronunciation/next-lab">返回原生跟读</Link><Link href="/english/pronunciation/app/practice-library">使用正式 V3</Link></div>
  </main>;
 }
