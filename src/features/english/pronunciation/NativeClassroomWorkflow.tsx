@@ -15,7 +15,7 @@ type Report={total:number;submitted:number;students:Student[];teacher_feedback:F
 type StudentItem={sentence_id:string;sentence:string;ordinal:number};
 type StudentTask={assignment_id:string;title:string;items:StudentItem[]};
 type Attempt={attempt_id:string;score:number|null;sentence_id:string;time:string};
-type History={submitted:boolean;receipt_status:string;attempt_count:number;attempts:Attempt[]};
+type History={submitted:boolean;receipt_status:string;attempt_count:number;attempts:Attempt[];teacher_feedback?:{comment:string;at:string}[]};
 type Invite={tenant:string;token:string};
 type Scored={sentenceId:string;score:number;submitted:boolean};
 const UUID="[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}";
@@ -512,7 +512,7 @@ export default function NativeClassroomWorkflow(){
       {currentItem?<div className={styles.practice} aria-label="当前录音句子">
        <span className={styles.count}>第 {itemIndex+1}/{task.items.length} 句</span>
        <p className={styles.english}>{currentItem.sentence}</p>
-       <p className={styles.hint}>先阅读句子，再点击麦克风开始录音。录音只会上传至本站现有课堂评分服务。</p>
+       <p className={styles.hint}>先阅读句子，再点击麦克风开始录音。录音只会上传至本站现有课堂评分服务，服务端按课堂规则保留录音最多 30 天。</p>
        <div className={styles.actions}>
         {!recording?<button type="button" className={styles.primary} disabled={studentBusy||uploading} onClick={()=>void startRecording()}>开始录音</button>:
          <button type="button" className={styles.stop} onClick={finishRecording}>结束录音</button>}
@@ -533,6 +533,10 @@ export default function NativeClassroomWorkflow(){
        </div>
       </div>:null}
      </>}
+     {history?.teacher_feedback?.length?<div className={styles.group} role="region" aria-label="老师给我的反馈">
+      <h3>老师给我的纠音建议</h3>
+      {history.teacher_feedback.map((f,i)=><p key={i} className={styles.info}>{f.comment}</p>)}
+     </div>:null}
      {history?.attempts.length?<div className={styles.group} aria-label="本人已保存成绩">
       <h3>我的真实评分记录</h3>
       <div className={styles.records}>{history.attempts.slice(0,20).map(a=><div key={a.attempt_id} className={styles.assignment}>
