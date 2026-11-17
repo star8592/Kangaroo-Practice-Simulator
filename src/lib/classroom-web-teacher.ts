@@ -22,7 +22,7 @@ export async function teacherHandler(req:NextRequest,p:string[],a:Actor):Promise
     return tx({account:a.accountId},async db=>{
       const r=await db.query("SELECT state,display_name FROM accent.teacher_access_requests WHERE account_id=$1",[a.accountId]);
       const row=r.rows[0],status=row?.state||"not_requested";
-      return {status,approved:status==="approved",name:row?.display_name||null,is_admin:a.admin};
+      return {status,approved:a.admin||status==="approved",name:row?.display_name||a.name||null,is_admin:a.admin};
     });
   if(p[0]==="teacher"&&p[1]==="apply"&&p.length===2&&method==="POST"){
     const body=await jsonBody(req);const display=txt(body.display_name,60,2);
