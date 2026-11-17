@@ -1,4 +1,4 @@
-.metrics{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;margin:0 0 22px}
+.metrics{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px;margin:0 0 22px}
 .metrics article{min-width:0;padding:18px 19px;border:1px solid #dce6f1;background:#fff;border-radius:14px}
 .metrics span{display:block;color:#536b84;font-size:12px;font-weight:700}
 .metrics strong{display:block;margin-top:12px;color:#183b63;font-size:clamp(21px,2.5vw,30px);font-weight:800;font-variant-numeric:tabular-nums}
