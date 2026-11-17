@@ -1,18 +1,28 @@
 import ResourceLibraryClient from "@/components/ResourceLibraryClient";
-import { listTrainingExamProfiles } from "@/lib/training-question-bank";
-import { buildTrainingResourceCatalog } from "@/lib/resource-catalog";
+import {readRustTrainingCatalog,RustCatalogUnavailable} from "@/lib/rust-catalog-read";
 
-export const dynamic = "force-dynamic";
-
-export const metadata = {
-  title: "试卷资料检索与在线练习 | SOCTHINK",
-  description: "按竞赛、年份与年级查找已核查的数学练习试卷；直接进入在线练习。未开放未经授权的商业下载或付费。",
-  alternates: { canonical: "/resources" },
+export const dynamic="force-dynamic";
+export const metadata={
+  title:"试卷资料检索与在线练习 | SOCTHINK",
+  description:"按竞赛、年份与年级查找已核查的数学练习试卷；直接进入在线练习。未开放未经授权的商业下载或付费。",
+  alternates:{canonical:"/resources"},
 };
 
-export default function ResourceLibraryPage() {
-  // Reuse the same content gate and source inventory as the existing exam
-  // launcher. No second index, copy of private questions or new exam path.
-  const rows = buildTrainingResourceCatalog(listTrainingExamProfiles()).filter(row => row.paperType !== "smart");
-  return <ResourceLibraryClient resources={rows} />;
+async function getResources(){
+  try{
+    // The catalogue is now read from the single Rust business-core authority.
+    // The React client may filter visible rows but cannot create approved papers.
+    const rows=await readRustTrainingCatalog();
+    return rows;
+  }catch(e){
+    // Never masquerade as a healthy 200 page when Rust has failed.
+    const code=e instanceof RustCatalogUnavailable?e.message:"RUST_CATALOG_UNEXPECTED";
+    console.error("[resources] read-only catalog unavailable",code);
+    throw e;
+  }
+}
+
+export default async function ResourceLibraryPage(){
+  const rows=await getResources();
+  return <ResourceLibraryClient resources={rows}/>;
 }

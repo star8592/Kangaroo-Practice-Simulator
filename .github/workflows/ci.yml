@@ -70,6 +70,8 @@ jobs:
     name: Browser E2E (${{ matrix.project }})
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    env:
+      SOCTHINK_RUST_CATALOG_INTERNAL_URL: http://127.0.0.1:37871
     strategy:
       fail-fast: false
       matrix:
@@ -84,6 +86,15 @@ jobs:
         run: npm ci
       - name: Install Chromium for actual button clicks
         run: npx playwright install --with-deps chromium
+      - name: Start isolated Rust catalog for browser tests (metadata fixture)
+        run: |
+          cargo build --locked --release --bin socthink-catalog-api --manifest-path backend/socthink-core/Cargo.toml
+          SOCTHINK_CATALOG_SNAPSHOT="$GITHUB_WORKSPACE/backend/socthink-core/tests/fixtures/catalog.json" SOCTHINK_RUST_BIND=127.0.0.1:37871 nohup backend/socthink-core/target/release/socthink-catalog-api >"$RUNNER_TEMP/rust-catalog-e2e.log" 2>&1 &
+          for i in $(seq 1 40); do
+            if curl -fsS http://127.0.0.1:37871/healthz; then break; fi
+            sleep 0.5
+          done
+          curl -fsS 'http://127.0.0.1:37871/v1/catalog/resources?limit=100' | python3 -c 'import json,sys; d=json.load(sys.stdin); assert d["total"]==2, "isolated metadata fixture must contain two rows"; print("RUST_CI_BROWSER_FIXTURE=PASS rows=2")'
       - name: Build candidate Web app
         run: npm run build
       - name: Browser click and login-gate E2E

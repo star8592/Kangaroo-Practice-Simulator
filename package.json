@@ -138,7 +138,7 @@
     "test:career-directory": "tsx scripts/test_career_role_directory.ts && tsx scripts/test_agent_project_course.ts && tsx scripts/test_agent_code_account_api.ts",
     "test:career-formal-exams": "tsx scripts/test_career_formal_exams.ts",
     "test:career-semantic": "tsx scripts/test_career_semantic_followup.ts",
-    "test:site-architecture": "npm run test:next-rust-boundary && npm run test:khan-platform && tsx scripts/test_site_architecture.ts && tsx scripts/test_site_page_inventory.ts && tsx scripts/test_seo_ssr_headings.ts && npm run test:seo-storage && npm run test:cohost-gateway",
+    "test:site-architecture": "npm run test:rust-resource-boundary && npm run test:next-rust-boundary && npm run test:khan-platform && tsx scripts/test_site_architecture.ts && tsx scripts/test_site_page_inventory.ts && tsx scripts/test_seo_ssr_headings.ts && npm run test:seo-storage && npm run test:cohost-gateway",
     "test:career-guided": "tsx scripts/test_career_guided_interview.ts && python3 scripts/test_career_model_warm.py",
     "bench:career-local": "tsx scripts/benchmark_career_local_judge.ts",
     "test:career-judge-dataset": "tsx scripts/test_career_judge_dataset.ts",
@@ -146,7 +146,10 @@
     "test:cohost-gateway": "python3 scripts/test_cohost_gateway.py",
     "test:english-platform": "tsx scripts/test_english_platform_contract.ts",
     "test:khan-platform": "node scripts/test_khan_multi_audience_portal.mjs",
-    "test:next-rust-boundary": "node scripts/test_next_rust_boundary.mjs"
+    "test:next-rust-boundary": "node scripts/test_next_rust_boundary.mjs",
+    "test:rust-resource-boundary": "node scripts/test_rust_resource_boundary.mjs",
+    "test:rust-catalog-ssr-parity": "tsx scripts/test_rust_catalog_ssr_parity.ts",
+    "test:rust-catalog-browser": "node scripts/test_rust_catalog_browser.mjs"
   },
   "dependencies": {
     "next": "16.4.3",

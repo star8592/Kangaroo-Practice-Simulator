@@ -1,0 +1,28 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
+import {fileURLToPath} from 'node:url';
+const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
+const read=p=>fs.readFileSync(path.join(root,p),'utf8');
+const page=read('src/app/resources/page.tsx');
+const guide=read('src/app/resources/competitions/[slug]/page.tsx');
+const reader=read('src/lib/rust-catalog-read.ts');
+const client=read('src/components/ResourceLibraryClient.tsx');
+const rust=read('backend/socthink-core/src/lib.rs');
+assert(page.includes('await readRustTrainingCatalog()'),'resource page must query Rust SSR adapter');
+assert(guide.includes('await readRustTrainingCatalog()'),'competition guide must share Rust catalogue');
+assert(!guide.includes('listTrainingExamProfiles')&&!guide.includes('buildTrainingResourceCatalog'),'guide may not retain Node business catalog');
+for(const forbidden of ['listTrainingExamProfiles','buildTrainingResourceCatalog','loadStoredExamBundle','private/exams'])
+ assert(!page.includes(forbidden),'Node must not rebuild catalogue in resource route: '+forbidden);
+assert(!page.includes('legacy fallback')||page.includes('Never silently'),'must not silently reuse TypeScript data');
+assert(page.includes('throw e;'), 'Rust failure must reach Next error boundary');
+assert(read('src/app/resources/error.tsx').includes('试卷目录暂时不可用'));
+assert(reader.includes('SOCTHINK_RUST_CATALOG_INTERNAL_URL'));
+assert(reader.includes('127\\.0\\.0\\.1'),'SSRF reject non-loopback upstream');
+assert(reader.includes('no-store'),'do not silently serve stale catalog');
+assert(reader.includes('MAX_ROWS'),'catalog must bound requested pages');
+assert(reader.includes('new Set(all.map(x=>x.id)).size'),'catalog must detect inconsistent page snapshots');
+assert(client.includes('filterTrainingResources'),'client-only filtering remains a presentation convenience');
+assert(rust.includes('.route("/v1/catalog/resources", get(list_resources))'),'Rust must own the read API');
+assert(rust.includes('pub fn search(&self, params: &SearchQuery)'),'Rust must perform authoritative catalog query');
+console.log('RUST_RESOURCE_PRESENTATION_BOUNDARY=PASS ssr_uses_rust=true no_next_catalog_data=true no_business_handler_added=true');

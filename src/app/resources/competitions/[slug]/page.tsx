@@ -2,8 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { cache } from "react";
-import { listTrainingExamProfiles } from "@/lib/training-question-bank";
-import { buildTrainingResourceCatalog } from "@/lib/resource-catalog";
+import { readRustTrainingCatalog } from "@/lib/rust-catalog-read";
 import { getResourceHub } from "@/lib/seo-resource-hubs";
 import styles from "../../resources.module.css";
 
@@ -11,18 +10,20 @@ export const dynamic = "force-dynamic";
 
 type Props = { params: Promise<{ slug: string }> };
 
-const getPageData = cache((slug: string) => {
+const getPageData = cache(async (slug: string) => {
   const hub = getResourceHub(slug);
   if (!hub) return null;
-  const rows = buildTrainingResourceCatalog(listTrainingExamProfiles())
-    .filter((row) => row.competition === hub.id && row.paperType !== "smart");
+  // One authoritative, already-verified Rust catalogue for both this guide
+  // and /resources. No independent Node training-ready catalogue remains here.
+  const rows = (await readRustTrainingCatalog())
+    .filter((row) => row.competition === hub.id);
   if (!rows.length) return null;
   return { hub, rows };
 });
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const page = getPageData(slug);
+  const page = await getPageData(slug);
   if (!page) return { robots: { index: false, follow: false } };
   return {
     title: page.hub.title + " | SOC THINK",
@@ -41,7 +42,7 @@ const typeLabels: Record<string, string> = {
 
 export default async function CompetitionResourceHub({ params }: Props) {
   const { slug } = await params;
-  const page = getPageData(slug);
+  const page = await getPageData(slug);
   if (!page) notFound();
 
   const { hub, rows } = page;
