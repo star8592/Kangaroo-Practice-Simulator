@@ -42,7 +42,7 @@ const crossover=(route:string)=>{
  if(route.startsWith("/admin"))return "管理后台";
  if(route==="/privacy"||route==="/terms"||route.startsWith("/digital-purchase-policy"))return "政策与权益";
  if(route==="/workspace"||route==="/my/learning")return "账户与权益";
- if(route==="/account"||route==="/login"||route==="/membership"||
+ if(route==="/account"||route.startsWith("/account/")||route==="/login"||route==="/membership"||
     route.startsWith("/student")||route.startsWith("/parent"))return "账户与权益";
  return null;
 };

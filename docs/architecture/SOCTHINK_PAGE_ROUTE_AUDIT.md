@@ -1,6 +1,6 @@
 # SOC THINK 全站逐页路由归属审计（代码扫描台账）
 
-审计基线：2026-11-04；源自 GitHub Next.js `src/app/**/page.tsx` 路由树，**97 个 Next.js 页面模板 + 1 个静态兼容 HTML 入口（共 98 个），非实际商品、试卷或动态 URL 实例数**。
+审计基线：2026-11-04；源自 GitHub Next.js `src/app/**/page.tsx` 路由树，**102 个 Next.js 页面模板 + 1 个静态兼容 HTML 入口（共 103 个），非实际商品、试卷或动态 URL 实例数**。
 
 > **地位**：本表是 [《全站信息架构总纲》](SOCTHINK_SITE_ARCHITECTURE_MASTER.md) 的逐页实施台账，不是另一套页面注册表、CMS、路由或授权来源。内容归属仍以 `src/lib/site-architecture.ts` 和现有业务权威目录为准。
 
@@ -22,6 +22,9 @@
 | `/teach` | 全站入口 | `/` | 公开指南 | 全站教师与学校机构服务说明；获授权教师使用统一 /workspace |
 | `/english/teacher` | 英语学习 | `/english` | 历史重定向 | 旧英语教师汇总路径跳转至统一 /workspace；不再另设老师账号及授权后台 |
 | `/english/pronunciation` | 英语学习 | `/english` | 公开内容 | AccentLab 独立发音应用说明与已核验原站训练入口 |
+| `/english/pronunciation/classrooms` | 英语学习 | `/english/pronunciation` | 私有教师班级受控 noindex | 平台教师授权后从 /workspace 进入；生成班级独立邀请二维码、审核学生入班 |
+| `/english/pronunciation/join/[tenant]/[classId]/[token]` | 英语学习 | `/english/pronunciation` | 私有班级申请受控 noindex | 学生通过本班邀请二维码；实名显示、微信身份校验、任课教师审批后才能加入 |
+| `/english/pronunciation/my-classes` | 英语学习 | `/english/pronunciation` | 私有学习记录受控 noindex | 微信账号中心可发现，仅展示当前学生已获批的班级及教师显示名 |
 | `/english/pronunciation/next-lab` | 英语学习 | `/english/pronunciation` | 技术预览 noindex | Next.js 原生单句训练候选；读取真实 Rust 目录、音频、评分，尚未代替旧 V3 |
 | `/english/pronunciation/next-lab/classroom` | 英语学习 | `/english/pronunciation/next-lab` | 私有课堂只读 noindex | 仅统一微信身份登录后，使用现有课堂 RLS API 读取自己班级报告或个人作业历史；非新业务入口 |
 | `/english/pronunciation/next-lab/assignments` | 英语学习 | `/english/pronunciation/next-lab` | 私有课堂操作预览 noindex | Next 原生教师发布、学生入班、录音评分与教师反馈候选；原课堂数据库与服务器权限为唯一权威 |
@@ -30,6 +33,7 @@
 | `/english/reading` | 英语学习 | `/english` | 公开内容 | EnglishLeap 独立阅读项目；公网尚未验收，不冒用其他阅读站点 |
 | `/english/aelos` | 英语学习 | `/english` | 公开内容 | AelOS 独立综合英语项目；已有公网界面，账户授权待接通 |
 | `/account` | 账户与权益 | `/` | 私有流程 | 页脚、会话导航 → 我的订单 |
+| `/account/profile` | 账户与权益 | `/account` | 私有实名显示受控 noindex | 微信资料昵称未返回时必填平台显示名；同一账号不重新注册 |
 | `/workspace` | 账户与权益 | `/account` | 私有流程 | 已授权账号进入动态工作台；无授权不展示管理模块 |
 | `/my/learning` | 账户与权益 | `/account` | 受控学习记录 | 主站统一登录后进入个人跨学科入口；专项历史成绩仍由原评分服务提供 |
 | `/admin` | 管理后台 | `/` | 管理员 | 管理员登录后的工作台（仅授权后可达） |
