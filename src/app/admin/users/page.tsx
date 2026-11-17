@@ -3,7 +3,7 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { isAdmin, SESSION_COOKIE, userFromSessionToken } from "@/lib/auth";
 import { PARENT_SESSION_COOKIE, parentFromSessionToken } from "@/lib/parent-auth";
-import { isSiteOwner } from "@/lib/site-owner";
+import { isSiteOwner, readSiteOwner } from "@/lib/site-owner";
 import { adminOperationsSnapshot, filterAdminFamilies } from "@/lib/admin-operations";
 import { activePlatformGrantsForSubjects } from "@/lib/platform-grants";
 import AdminOperationsNav from "@/components/AdminOperationsNav";
@@ -26,6 +26,7 @@ export default async function AdminUsersPage({ searchParams }: Params) {
   const jar = await cookies();
   const oldAdmin = isAdmin(userFromSessionToken(jar.get(SESSION_COOKIE)?.value));
   const owner = isSiteOwner(parentFromSessionToken(jar.get(PARENT_SESSION_COOKIE)?.value));
+  const siteOwnerId = readSiteOwner()?.parentId;
   if (!oldAdmin && !owner) redirect("/admin/login");
 
   const params = await searchParams;
@@ -87,6 +88,7 @@ export default async function AdminUsersPage({ searchParams }: Params) {
           <tbody>{result.rows.map(user => {
             const grants = roles?.get(user.id) ?? [];
             const roleText = !user.active ? "已停用" :
+              user.id === siteOwnerId ? "平台所有者" :
               user.signIn !== "微信" ? "尚未关联微信" :
               roles === null ? "权限数据暂不可用" :
               grants.some(g => g.role === "module-admin") ? "项目管理员" :
