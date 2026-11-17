@@ -422,7 +422,7 @@ export default function NativeClassroomWorkflow({initialShare=""}:{initialShare?
       <button type="submit" disabled={teacherBusy}>{teacherBusy?"请稍候…":"创建班级"}</button>
      </form>
      {activeClass?<div className={styles.group}>
-      <ClassInvitationPanel key={activeClass.id} tenant={activeClass.tenant_id} classId={activeClass.id}/>
+      <ClassInvitationPanel key={activeClass.id} tenant={activeClass.tenant_id} classId={activeClass.id} className={activeClass.name}/>
       <div className={styles.titleRow}><h2>2. 布置跟读作业 · {activeClass.name}</h2>
        <button type="button" className={styles.secondary} disabled={teacherBusy} onClick={()=>void refreshClass()}>刷新班级数据</button></div>
       <form onSubmit={e=>void publishAssignment(e)}>
