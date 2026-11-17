@@ -141,7 +141,7 @@ export default function NativeClassroomWorkflow({initialShare=""}:{initialShare?
    }
   })();
   return ()=>{live=false;};
- },[]);
+ },[initialShare]);
  const visibleSets=useMemo(()=>Array.from(new Map(catalog.map(x=>[x.sentence_set_id,x.set_title])).entries()),[catalog]);
  const visibleSentences=useMemo(()=>catalog.filter(x=>x.sentence_set_id===setId),[catalog,setId]);
  const currentItem=task?.items[itemIndex];
