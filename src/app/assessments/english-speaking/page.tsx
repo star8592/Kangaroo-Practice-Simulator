@@ -16,7 +16,7 @@ const papers=[
 ] as const;
 
 export default function EnglishSpeakingExamCenter(){
- return <main className={styles.page} data-testid="english-speaking-exam-center">
+ return <div className={styles.page} data-testid="english-speaking-exam-center">
   <nav className={styles.crumbs} aria-label="当前位置">
    <Link href="/">首页</Link><span>/</span><Link href="/assessments">考试中心</Link><span>/</span><span aria-current="page">英语听说</span>
   </nav>
@@ -47,5 +47,5 @@ export default function EnglishSpeakingExamCenter(){
    <Link href="/english/pronunciation/app/practice-library">进入专项复练</Link>
   </section>
   <p className={styles.note}>所有现有卷均为原创教学训练，并非北京、上海、武汉官方真题，不能当作官方等值成绩。武汉专项考试仍在开发中，不会伪装为已开放。</p>
- </main>;
+ </div>;
 }
