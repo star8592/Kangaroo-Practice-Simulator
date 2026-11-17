@@ -8,16 +8,21 @@ export const metadata={
   alternates:{canonical:"/resources"},
 };
 
-export default async function ResourceLibraryPage(){
+async function getResources(){
   try{
     // The catalogue is now read from the single Rust business-core authority.
     // The React client may filter visible rows but cannot create approved papers.
     const rows=await readRustTrainingCatalog();
-    return <ResourceLibraryClient resources={rows}/>;
+    return rows;
   }catch(e){
     // Never masquerade as a healthy 200 page when Rust has failed.
     const code=e instanceof RustCatalogUnavailable?e.message:"RUST_CATALOG_UNEXPECTED";
     console.error("[resources] read-only catalog unavailable",code);
-    throw new RustCatalogUnavailable("catalog-read-failed");
+    throw e;
   }
+}
+
+export default async function ResourceLibraryPage(){
+  const rows=await getResources();
+  return <ResourceLibraryClient resources={rows}/>;
 }

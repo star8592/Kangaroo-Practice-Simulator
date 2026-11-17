@@ -43,7 +43,7 @@ export default function SocthinkPortal(){
     <h2 id="catalog-title">探索学习方向</h2>
     <p>直接进入实际开放的课程、练习、考试与测评。</p>
    </div>
-   <nav aria-label="多学科学习与考试分类" className={styles.grid}>
+   <nav aria-label="学习与考试分类" className={styles.grid}>
     {ENTRIES.map(entry=><div key={entry.id} className={styles.card}>
       <Link href={entry.href} className={styles.cardLink}>
        <span className={styles.icon} aria-hidden="true">{entry.icon}</span>

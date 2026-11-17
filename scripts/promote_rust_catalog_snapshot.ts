@@ -15,9 +15,7 @@
  *
  * For isolated E2E tests, replace --service with --pid <owned Rust PID>.
  */
-import assert from "node:assert/strict";
 import {execFileSync} from "node:child_process";
-import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 import {writeCatalogSnapshotAtomic,type TrainingCatalogSnapshot} from "./lib/catalog-snapshot-atomic";
