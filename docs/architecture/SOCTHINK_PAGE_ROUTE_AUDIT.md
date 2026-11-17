@@ -39,6 +39,7 @@
 | `/admin/seo` | 管理后台 | `/admin` | 管理员 | 管理后台内的专用页面 |
 | `/admin/students` | 管理后台 | `/admin` | 管理员 | 管理后台内的专用页面 |
 | `/admin/students/[id]` | 管理后台 | `/admin/students` | 管理员 | 学生列表的单人画像（动态 ID） |
+| `/admin/users` | 管理后台 | `/admin` | 管理员 | 微信与家庭用户目录、搜索、分页和教师模块授权入口（Owner 可编辑） |
 | `/arithmetic` | 全部考试 | `/assessments` | 访客训练 | 考试中心计算训练入口 |
 | `/arithmetic/discovery/[grade]` | 全部考试 | `/arithmetic` | 受控训练 | 计算训练客户端按年级导航 |
 | `/arithmetic/print` | 全部考试 | `/arithmetic` | 受控训练 | 计算训练客户端 → 打印 |
@@ -163,6 +164,7 @@
 - `/admin/seo`：**管理后台**；按业务拆分；R2/R3 主站业务与数学教学分离。
 - `/admin/students`：**管理后台**；按业务拆分；R2/R3 主站业务与数学教学分离。
 - `/admin/students/[id]`：**管理后台**；按业务拆分；R2/R3 主站业务与数学教学分离。
+- `/admin/users`：**管理后台**；微信站点所有者及兼容管理员可查看账号目录，仅 Owner 可授权角色。
 - `/arithmetic`：**数学独立应用**；未来迁移；R2 保留原教学通路和数据后切换。
 - `/arithmetic/discovery/[grade]`：**数学独立应用**；未来迁移；R2 保留原教学通路和数据后切换。
 - `/arithmetic/print`：**数学独立应用**；未来迁移；R2 保留原教学通路和数据后切换。
