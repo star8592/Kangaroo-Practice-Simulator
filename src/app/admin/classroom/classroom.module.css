@@ -21,3 +21,5 @@
 
 
 @media(min-width:1101px){.wrap{width:100%;max-width:2400px;padding:30px 28px 76px 278px}}
+
+.panel summary{cursor:pointer;font-weight:700;min-height:32px}.panel summary:focus-visible{outline:3px solid #174b8a;outline-offset:3px}

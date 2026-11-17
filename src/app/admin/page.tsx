@@ -45,8 +45,13 @@ type Params = { searchParams: Promise<{ days?: string | string[] }> };
 export default async function AdminPage({ searchParams }: Params) {
   const session = await cookies();
   const user = userFromSessionToken(session.get(SESSION_COOKIE)?.value);
-  const owner = isSiteOwner(parentFromSessionToken(session.get(PARENT_SESSION_COOKIE)?.value));
-  if (!isAdmin(user) && !owner) redirect("/admin/login");
+  const parent = parentFromSessionToken(session.get(PARENT_SESSION_COOKIE)?.value);
+  const owner = isSiteOwner(parent);
+  if (!isAdmin(user) && !owner) {
+    // Ordinary WeChat users must not be sent to the retired admin-password form.
+    if (parent?.active && (parent.wechatId || parent.wechatOpenId)) redirect("/workspace");
+    redirect("/login?next=%2Fadmin");
+  }
 
   const period = parseAdminPeriod((await searchParams).days);
   const [revenue, accounts, feedback, seo, cohort, storefront] = await Promise.all([

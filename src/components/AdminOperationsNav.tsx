@@ -11,7 +11,7 @@ const groups: AdminGroup[] = [
   { title: "总览", links: [{ href: "/admin", label: "经营驾驶舱", glyph: "◫" }] },
   { title: "用户与教学", links: [
     { href: "/admin/users", label: "用户列表", glyph: "☷" },
-    { href: "/admin/platform-authorizations", label: "教师与模块授权", glyph: "◇" },
+    { href: "/admin/platform-authorizations", label: "模块入口权限", glyph: "◇" },
     { href: "/admin/families", label: "微信用户与家庭", glyph: "♧" },
     { href: "/admin/students", label: "学生与学习画像", glyph: "▤" },
     { href: "/admin/classroom", label: "英语课堂与教师", glyph: "▣" },

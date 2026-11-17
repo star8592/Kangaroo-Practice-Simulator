@@ -25,9 +25,13 @@ type Params = { searchParams: Promise<{ q?: string | string[]; page?: string | s
 export default async function AdminUsersPage({ searchParams }: Params) {
   const jar = await cookies();
   const oldAdmin = isAdmin(userFromSessionToken(jar.get(SESSION_COOKIE)?.value));
-  const owner = isSiteOwner(parentFromSessionToken(jar.get(PARENT_SESSION_COOKIE)?.value));
+  const parent = parentFromSessionToken(jar.get(PARENT_SESSION_COOKIE)?.value);
+  const owner = isSiteOwner(parent);
   const siteOwnerId = readSiteOwner()?.parentId;
-  if (!oldAdmin && !owner) redirect("/admin/login");
+  if (!oldAdmin && !owner) {
+    if (parent?.active && (parent.wechatId || parent.wechatOpenId)) redirect("/workspace");
+    redirect("/login?next=%2Fadmin%2Fusers");
+  }
 
   const params = await searchParams;
   const q = typeof params.q === "string" ? params.q.trim().slice(0, 80) : "";
@@ -86,7 +90,7 @@ export default async function AdminUsersPage({ searchParams }: Params) {
         <table className={styles.table}>
           <thead><tr>
             <th>账号</th><th>登录方式</th><th>加入时间</th><th>最近登录</th>
-            <th>学生关联</th><th>管理身份</th><th>操作</th>
+            <th>学生关联</th><th>模块入口</th><th>操作</th>
           </tr></thead>
           <tbody>{result.rows.map(user => {
             const grants = roles?.get(user.id) ?? [];
@@ -95,7 +99,7 @@ export default async function AdminUsersPage({ searchParams }: Params) {
               user.signIn !== "微信" ? "尚未关联微信" :
               roles === null ? "权限数据暂不可用" :
               grants.some(g => g.role === "module-admin") ? "项目管理员" :
-              grants.some(g => g.role === "teacher") ? "教师" : "普通用户";
+              grants.some(g => g.role === "teacher") ? "已获模块入口" : "普通用户";
             return <tr key={user.id}>
               <td><strong>{user.name || "微信用户"}</strong>
                 {user.signIn === "微信" && isWechatNicknamePlaceholder(user.name) ?
@@ -109,9 +113,14 @@ export default async function AdminUsersPage({ searchParams }: Params) {
                 {grants.length > 0 ? <small>{[...new Set(grants.map(g => g.capability))].length} 个模块</small> : null}
               </td>
               <td>{owner && user.signIn === "微信" && user.active ?
-                <Link className={local.grantLink} href={`/admin/platform-authorizations?subject=${encodeURIComponent(user.id)}`}>
-                  {grants.length ? "查看 / 修改权限" : "设为教师 / 授权"}
-                </Link> : <span className={local.noAction}>—</span>}</td>
+                <div className={local.grantActions}>
+                  <Link className={local.grantLink} href={`/admin/platform-authorizations?subject=${encodeURIComponent(user.id)}`}>
+                    管理模块入口
+                  </Link>
+                  <Link className={local.grantLink} href={`/admin/classroom?subject=${encodeURIComponent(user.id)}`}>
+                    英语课堂任课
+                  </Link>
+                </div> : <span className={local.noAction}>—</span>}</td>
             </tr>;
           })}</tbody>
         </table>
@@ -122,7 +131,7 @@ export default async function AdminUsersPage({ searchParams }: Params) {
         <span>第 {result.page} / {result.pages} 页</span>
         {result.page < result.pages ? <Link href={nextPage(result.page + 1)}>下一页</Link> : null}
       </nav>
-      <p className={styles.note}>用户数据从主站现有真实账号库实时读取；管理授权从 PostgreSQL 权限表读取。显示“微信用户”的账号并非登录失败：请本人在微信内打开 /account 并点击“同步微信昵称”。用户编号仅供管理确认，绝不显示微信 OpenID、密码或登录令牌。授权模块并不自动创建课堂任课关系。</p>
+      <p className={styles.note}>用户数据从主站现有真实账号库实时读取；管理授权从 PostgreSQL 权限表读取。显示“微信用户”的账号并非登录失败：请本人在微信内打开 /account 并点击“同步微信昵称”。用户编号仅供管理确认，绝不显示微信 OpenID、密码或登录令牌。模块入口授权仅决定工作台可见性。真正的英语跟读任课资格须在「英语教务管理」开通；两个权限不会被误标成同一状态。</p>
     </section>
   </div>;
 }

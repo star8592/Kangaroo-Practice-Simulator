@@ -10,3 +10,5 @@
 .clear{display:flex;align-items:center;color:#375e82;font-size:12px;padding:0 6px}
 @media(max-width:1100px){.metrics{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:700px){.metrics{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.metrics article{padding:13px}.metrics strong{margin-top:7px}}
+
+.grantActions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
