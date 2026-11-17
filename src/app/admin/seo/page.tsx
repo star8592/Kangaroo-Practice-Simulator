@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { isAdmin, SESSION_COOKIE, userFromSessionToken } from "@/lib/auth";
+import {canManagePlatform} from "@/lib/platform-admin-principal";
 import { getSeoMonitorDashboard } from "@/lib/seo-monitor-store";
 import AdminOperationsNav from "@/components/AdminOperationsNav";
 import styles from "./seo.module.css";
@@ -21,9 +21,7 @@ function humanTime(iso: string) {
 
 export default async function AdminSeoDashboard() {
   const jar = await cookies();
-  const user = userFromSessionToken(jar.get(SESSION_COOKIE)?.value);
-  if (!user) redirect("/admin/login");
-  if (!isAdmin(user)) redirect("/");
+  if (!canManagePlatform(jar)) redirect("/admin/login");
 
   const { latest, history, ageHours, siteStatus, providers } = getSeoMonitorDashboard();
   const statusCopy = siteStatus === "healthy" ? "正常" :
