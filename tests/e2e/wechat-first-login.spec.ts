@@ -134,9 +134,15 @@ test("approved website application QR uses the official WeChat iframe and matchi
 
 test("admin operations cannot be viewed by anonymous visitors", async ({ page }) => {
   await page.goto("/admin");
-  await expect(page).toHaveURL(/\/admin\/login/);
+  await expect(page).toHaveURL(/\/login\?next=%2Fadmin(?:$|&)/);
   await expect(page.getByText("运营总览", { exact: true })).toHaveCount(0);
 
+  for (const protectedPage of ["users","classroom"]) {
+    await page.goto("/admin/" + protectedPage);
+    await expect(page).toHaveURL(new RegExp("/login\\?next=%2Fadmin%2F" + protectedPage + "(?:$|&)"));
+  }
+  // Historical legacy-admin-only pages retain their recovery login until
+  // their owner-aware authorization paths are migrated as a separate change.
   await page.goto("/admin/families");
   await expect(page).toHaveURL(/\/admin\/login/);
   await expect(page.getByText("用户与家庭", { exact: true })).toHaveCount(0);
