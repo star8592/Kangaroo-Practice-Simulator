@@ -20,7 +20,7 @@ export type PlatformAdminPrincipal={
 const AUDIT_ADMIN_ID=/^adm_[0-9a-f]{16}$/;
 export function platformAdminPrincipal(cookies:CookieReader):PlatformAdminPrincipal|null{
  const legacy=userFromSessionToken(cookies.get(SESSION_COOKIE)?.value);
- if(isAdmin(legacy)&&AUDIT_ADMIN_ID.test(legacy.id))
+ if(legacy&&isAdmin(legacy)&&AUDIT_ADMIN_ID.test(legacy.id))
   return {source:"legacy-admin",actorId:legacy.id};
  const parent=parentFromSessionToken(cookies.get(PARENT_SESSION_COOKIE)?.value);
  if(!isSiteOwner(parent))return null;
