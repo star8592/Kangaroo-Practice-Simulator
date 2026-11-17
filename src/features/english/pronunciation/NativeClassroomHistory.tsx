@@ -148,7 +148,7 @@ export default function NativeClassroomHistory(){
        <tbody>{report.students.map((r,i)=><tr key={i}><th scope="row">{r.name}</th><td>{r.attempts}</td><td>{score(r.best_score)}</td><td>{r.submitted?"已提交":r.claimed?"练习中":"未领取"}</td></tr>)}</tbody></table></div>
       </div>:null}
      </div>:null}
-    </>}
+    </>:null}
     <p className={styles.hint}>建班、发作业、写反馈与录音提交仍在现有正式工作台进行；管理员也不能绕过班级归属读取其他教师的学生数据。</p>
     <Link href="/workspace">打开现有授权工作台</Link>
    </section>
