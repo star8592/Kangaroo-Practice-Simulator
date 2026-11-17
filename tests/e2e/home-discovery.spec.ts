@@ -8,10 +8,10 @@ test("homepage is a concise six-category course and exam portal",async({page})=>
  const nav=main.getByRole("navigation",{name:"学习与考试分类"});
  const cards=nav.locator("a");
  await expect(cards).toHaveCount(6);
- for(const href of ["/math","/english","/resources","/learn","/assessment-center","/assessments"]){
+ for(const href of ["/math","/english","/subjects","/learn","/assessment-center","/assessments"]){
   await expect(nav.locator('a[href="'+href+'"]')).toBeVisible();
  }
- await expect(nav.getByRole("link",{name:/数学/})).toContainText("国际竞赛");
+ await expect(nav.locator('a[href="/math"]')).toContainText("国际竞赛");
  await expect(main.locator('a[href="/exam-planner"]')).toHaveCount(0);
  const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth);
  expect(overflow).toBeLessThanOrEqual(2);
@@ -31,7 +31,7 @@ test("global search links books, labs and career products without old exam-only 
  await page.goto("/search?q=智能体开发工程师");
  await expect(page.locator('a[href="/career/roles/intelligence-01-04"]').first()).toBeVisible();
  await page.goto("/search?q=数学竞赛");
- await expect(page.locator('a[href="/assessments"]')).toHaveCount(0);
+ await expect(page.locator('main a[href="/assessments"]')).toHaveCount(0);
  await page.goto("/search?q=zzzznoresult2026");
  await expect(page.getByText(/暂时没有匹配的已开放内容/)).toBeVisible();
 });
@@ -44,5 +44,5 @@ test("the portal header is compact while all six business cards remain reachable
  await expect(header.locator('a[href="/exam-planner"]')).toHaveCount(0);
  const directory=page.getByRole("navigation",{name:"学习与考试分类"});
  await expect(directory.locator('a[href="/assessments"]')).toBeVisible();
- await expect(directory.locator('a[href="/resources"]')).toBeVisible();
+ await expect(directory.locator('a[href="/subjects"]')).toBeVisible();
 });

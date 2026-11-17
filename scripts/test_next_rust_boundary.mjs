@@ -1,13 +1,13 @@
-'use strict';
 // The sole fast boundary guard: existing Next handlers are migration DEBT,
 // not permission to add more Node business endpoints. Rust owns new APIs.
 // Removal of a legacy handler is always allowed.
-const assert=require('node:assert/strict');
-const fs=require('node:fs');
-const path=require('node:path');
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
+import {fileURLToPath} from 'node:url';
 
-const root=path.resolve(__dirname,'..');
-const inventory=require('../docs/architecture/SOCTHINK_LEGACY_NEXT_API_INVENTORY_20261116.json');
+const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
+const inventory=JSON.parse(fs.readFileSync(path.join(root,'docs/architecture/SOCTHINK_LEGACY_NEXT_API_INVENTORY_20261116.json'),'utf8'));
 const legacy=new Map(inventory.entries.map(row=>[row.file,new Set(row.methods)]));
 assert.equal(legacy.size,inventory.entries.length,'Duplicate inventory entries');
 assert.equal(legacy.size,91,'Audit baseline must remain the verified 2026-11-16 list; do not expand it');
