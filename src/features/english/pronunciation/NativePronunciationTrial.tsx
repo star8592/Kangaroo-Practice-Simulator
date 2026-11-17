@@ -2,6 +2,8 @@
 
 import {useEffect,useMemo,useRef,useState} from "react";
 import styles from "./NativePronunciationTrial.module.css";
+import SyncedAudioOverlay from "./SyncedAudioOverlay";
+import FocusedWordPractice from "./FocusedWordPractice";
 
 type Sentence={
  id:string;title:string;level:string;topic:string;sentence:string;
@@ -46,6 +48,9 @@ export default function NativePronunciationTrial(){
  const [error,setError]=useState("");
  const [wordHint,setWordHint]=useState("");
  const [elapsed,setElapsed]=useState(0);
+ const [recorded,setRecorded]=useState<Blob|null>(null);
+ const [waveOpen,setWaveOpen]=useState(false);
+ const [focusOpen,setFocusOpen]=useState(false);
  const audioRef=useRef<HTMLAudioElement|null>(null);
  const streamRef=useRef<MediaStream|null>(null);
  const recorderRef=useRef<MediaRecorder|null>(null);
@@ -91,6 +96,7 @@ export default function NativePronunciationTrial(){
  function selectIndex(index:number){
   if(!catalog||busy||index<0||index>=catalog.items.length)return;
   setCurrentIndex(index);setScore(null);setError("");setWordHint("");
+  setRecorded(null);setWaveOpen(false);setFocusOpen(false);
   setStatus("示范音 → 叮提示 → 自动朗读 → Rust 评分");
  }
  async function playReference(){
@@ -149,6 +155,7 @@ export default function NativePronunciationTrial(){
  async function beginPractice(){
   if(!current||!previewSrc||busy)return;
   setError("");setScore(null);setElapsed(0);setWordHint("");
+  setRecorded(null);setWaveOpen(false);setFocusOpen(false);
   setStage("reference");
   const itemId=current.id;
   try{
@@ -192,7 +199,10 @@ export default function NativePronunciationTrial(){
      return;
     }
     const blob=new Blob(chunks,{type:recorder.mimeType||"audio/webm"});
-    if(blob.size<1000){setStage("idle");setError("录音数据不足，请重试");return;}
+    if(blob.size<1000||blob.size>6*1024*1024){
+     setStage("idle");setError("录音数据不足或超过大小限制，请重试");return;
+    }
+    setRecorded(blob);
     void sendToRust(itemId,blob);
    };
    recorder.start(300);
@@ -288,7 +298,25 @@ export default function NativePronunciationTrial(){
     {score.differences?.words_with_errors?.length
      ?<p>优先纠音：<b>{score.differences.words_with_errors[0]}</b></p>:<p>评分由服务端生成；未返回明确的优先纠音词。</p>}
    </section>:null}
-   <p className={styles.disclosure}>示范音：{current.voice_profile}。单词点读使用浏览器设备语音，不能当作标准参考音源。点击“一键听音 → 跟读 → 评分”并授权麦克风后，本次录音将在结束时自动发送至本站自托管实验评分服务；后端不可用时不会生成假分数。</p>
+   {recorded?<section className={styles.reviewSection} aria-label="本人录音与参考示范对照">
+    <button type="button" className={styles.reviewToggle} aria-expanded={waveOpen}
+     onClick={()=>{setWaveOpen(x=>!x);if(focusOpen)setFocusOpen(false);}}>
+     {waveOpen?"收起双轨波形与录音回听":"展开双轨波形与录音回听"} <span aria-hidden="true">{waveOpen?"−":"+"}</span>
+    </button>
+    {waveOpen?<SyncedAudioOverlay referenceUrl={previewSrc} studentBlob={recorded}
+      onPlay={()=>{audioRef.current?.pause();window.speechSynthesis?.cancel();}}/>:null}
+   </section>:null}
+   {score?<section className={styles.reviewSection} aria-label="一个词重点纠音">
+    <button type="button" className={styles.reviewToggle} aria-expanded={focusOpen}
+     onClick={()=>{setFocusOpen(x=>!x);if(waveOpen)setWaveOpen(false);}}>
+     {focusOpen?"收起重点纠音":"展开重点纠音 · "+(score.differences?.words_with_errors?.[0]||"自主选词")}
+     <span aria-hidden="true">{focusOpen?"−":"+"}</span>
+    </button>
+    {focusOpen?<FocusedWordPractice key={current.id+"-"+score.score} itemId={current.id}
+      sentence={current.sentence} suggested={score.differences?.words_with_errors?.[0]}
+      onPlay={()=>{audioRef.current?.pause();window.speechSynthesis?.cancel();}}/>:null}
+   </section>:null}
+   <p className={styles.disclosure}>示范音：{current.voice_profile}。单词点读使用浏览器设备语音，不能当作标准参考音源。点击“一键听音 → 跟读 → 评分”并授权麦克风后，本次录音将在结束时自动发送至本站自托管实验评分服务；后端不可用时不会生成假分数。回听波形在浏览器本地解码，不另行上传；更换句子会清除页面中的上一次录音。</p>
    <details className={styles.provider}>
     <summary>实验评分的准确性与录音处理说明</summary>
     <p>{catalog?.scoring_message||"评分引擎的准确性和隐私处理以对应服务端公告为准。"}</p>
@@ -296,7 +324,7 @@ export default function NativePronunciationTrial(){
   </section>:<section className={styles.practice}><p>{loadError?"无法连接 Rust 服务，未展示虚构语料。":"正在读取真实句子…"}</p></section>}
   <footer className={styles.footer}>
    <strong>迁移验收状态</strong>
-   <p>这里是单句流程的第一套 Next.js 原生候选，并非原 V3 的全部能力。原版波形、对照、老师作业、详细纠音和全部记录在完整双端验收前继续保留。</p>
+   <p>本 Next.js 候选已接入真实 Rust 发音评分、双轨波形、分段回听和单词局部重练，仍需验证不同手机录音行为、评分稳定性及课堂作业。原 V3 的教师作业、详细记录与全功能版本在正式迁移验收前继续保留。</p>
    <a href="/english/pronunciation/app/practice-library">进入当前正式发音工作台</a>
   </footer>
  </section>;

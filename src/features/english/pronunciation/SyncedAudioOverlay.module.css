@@ -1,0 +1,18 @@
+.panel{margin:18px 0;border:1px solid #d8e7dd;border-radius:15px;background:#f6faf8;padding:15px 18px;color:#2a5145}
+.header{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.header strong{font-size:16px}
+.header span{display:flex;gap:6px;align-items:center;font-size:12px;color:#58746a}
+.refKey,.ownKey{height:12px;width:12px;display:inline-block;border-radius:3px;background:#2779d3}
+.ownKey{background:#de7945;margin-left:7px}
+.notice{font-size:12px;line-height:1.7;color:#56736c;margin:10px 0}
+.wave{display:block;width:100%;height:auto;border-radius:10px;background:#f7faf8;cursor:crosshair;touch-action:pan-y}
+.controls{margin-top:8px}
+.controls p{font-size:12px;color:#597469;margin:0 0 10px}
+.buttons{display:flex;flex-wrap:wrap;gap:10px}
+.buttons button,.shift button{font:inherit;font-size:13px;font-weight:800;border:1px solid #bfd9cc;border-radius:10px;color:#286751;background:white;padding:10px 13px;cursor:pointer}
+.buttons button[aria-pressed=true]{background:#daefe6;border-color:#73b99c}
+.shift{display:flex;align-items:center;gap:9px;margin:12px 0;flex-wrap:wrap;font-size:12px;font-weight:800;color:#597469}
+.shift input{min-width:120px;flex:1;max-width:370px;accent-color:#2779d3}
+.audio{width:100%;display:block;margin:11px 0 6px;max-height:52px}
+.caution{font-size:11px;color:#657c73;line-height:1.7;margin:11px 0 0}
+@media(max-width:650px){.panel{padding:12px 10px;border-radius:12px}.header strong{font-size:14px}.header span{font-size:11px}.buttons{display:grid;grid-template-columns:1fr 1fr;gap:7px}.buttons button{font-size:12px;padding:11px 6px}.shift button{padding:7px 10px}.notice{font-size:11px}.caution{font-size:10.5px}}
