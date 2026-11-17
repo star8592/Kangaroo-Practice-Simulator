@@ -1,0 +1,755 @@
+{
+  "schemaVersion": 1,
+  "auditDate": "2026-11-16",
+  "baselineBranch": "origin/main 1c92b48b70cd; whole-site v3 branch same API inventory",
+  "policy": "Only 91 pre-existing Next API route files and HTTP methods are transitional. New business handlers belong to Rust. Remove legacy handlers after Rust takes over; never re-introduce them.",
+  "entries": [
+    {
+      "file": "src/app/api/academic-events/enrollment/route.ts",
+      "methods": [
+        "GET",
+        "PATCH"
+      ],
+      "targetOwner": "organizations",
+      "state": "legacy-next-to-migrate"
+    },
+    {
+      "file": "src/app/api/access/catalog/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "targetOwner": "identity",
+      "state": "legacy-next-to-migrate"
+    },
+    {
+      "file": "src/app/api/access/me/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "targetOwner": "identity",
+      "state": "legacy-next-to-migrate"
+    },
+    {
+      "file": "src/app/api/admin/activate/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "targetOwner": "organizations",
+      "state": "legacy-next-to-migrate"
+    },
+    {
+      "file": "src/app/api/admin/competition-source-watch/route.ts",
+      "methods": [
+        "GET",
+        "PATCH"
+      ],
+      "targetOwner": "organizations",
+      "state": "legacy-next-to-migrate"
+    },
+    {
+      "file": "src/app/api/admin/feedback-cases/route.ts",
+      "methods": [
+        "PATCH"
+      ],
+      "targetOwner": "organizations",
+      "state": "legacy-next-to-migrate"
+    },
+    {
+      "file": "src/app/api/admin/login/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "targetOwner": "organizations",
+      "state": "legacy-next-to-migrate"
+    },
+    {
+      "file": "src/app/api/admin/questions/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "targetOwner": "organizations",
+      "state": "legacy-next-to-migrate"
+    },
+    {
+      "file": "src/app/api/admin/site-owner/claim/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "targetOwner": "organizations",
+      "state": "legacy-next-to-migrate"
+    },
+    {
+      "file": "src/app/api/admin/site-owner/confirm/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "targetOwner": "organizations",
+      "state": "legacy-next-to-migrate"
+    },
+    {
+      "file": "src/app/api/admin/site-owner/email/confirm/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "targetOwner": "organizations",
+      "state": "legacy-next-to-migrate"
+    },
+    {
+      "file": "src/app/api/admin/site-owner/email/start/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "targetOwner": "organizations",
+      "state": "legacy-next-to-migrate"
+    },
+    {
+      "file": "src/app/api/admin/site-owner/readiness/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "targetOwner": "organizations",
+      "state": "legacy-next-to-migrate"
+    },
+    {
+      "file": "src/app/api/admin/site-owner/start/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "targetOwner": "organizations",
+      "state": "legacy-next-to-migrate"
+    },
+    {
+      "file": "src/app/api/admin/students/route.ts",
+      "methods": [
+        "GET",
+        "POST",
+        "PATCH"
+      ],
+      "targetOwner": "organizations",
+      "state": "legacy-next-to-migrate"
+    },
+    {
+      "file": "src/app/api/arithmetic/next-session/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "targetOwner": "learning",
+      "state": "legacy-next-to-migrate"
+    },
+    {
+      "file": "src/app/api/arithmetic/print/pdf/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "targetOwner": "assessment",
+      "state": "legacy-next-to-migrate"
+    },
+    {
+      "file": "src/app/api/arithmetic/sessions/route.ts",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "targetOwner": "assessment",
+      "state": "legacy-next-to-migrate"
+    },
+    {
+      "file": "src/app/api/arithmetic/students/route.ts",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "targetOwner": "learning",
+      "state": "legacy-next-to-migrate"
+    },
+    {
+      "file": "src/app/api/assessment-reports/full/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "targetOwner": "learning",
+      "state": "legacy-next-to-migrate"
+    },
+    {
+      "file": "src/app/api/assessment-reports/offer/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "targetOwner": "learning",
+      "state": "legacy-next-to-migrate"
+    },
+    {
+      "file": "src/app/api/assessments/catalog/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "targetOwner": "assessment",
+      "state": "legacy-next-to-migrate"
+    },
+    {
+      "file": "src/app/api/auth/guest/start/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "targetOwner": "identity",
+      "state": "legacy-next-to-migrate"
+    },
+    {
+      "file": "src/app/api/auth/login/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "targetOwner": "identity",
+      "state": "legacy-next-to-migrate"
+    },
+    {
+      "file": "src/app/api/auth/logout/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "targetOwner": "identity",
+      "state": "legacy-next-to-migrate"
+    },
+    {
+      "file": "src/app/api/auth/me/route.ts",
+      "methods": [
+        "GET",
+        "PATCH"
+      ],
+      "targetOwner": "identity",
+      "state": "legacy-next-to-migrate"
+    },
+    {
+      "file": "src/app/api/auth/miniapp/guest/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "targetOwner": "identity",
+      "state": "legacy-next-to-migrate"
+    },
+    {
+      "file": "src/app/api/auth/miniapp/login/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "targetOwner": "identity",
+      "state": "legacy-next-to-migrate"
+    },
+    {
+      "file": "src/app/api/auth/miniapp/wechat/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "targetOwner": "identity",
+      "state": "legacy-next-to-migrate"
+    },
+    {
+      "file": "src/app/api/auth/parent/login/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "targetOwner": "identity",
+      "state": "legacy-next-to-migrate"
+    },
+    {
+      "file": "src/app/api/auth/parent/logout/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "targetOwner": "identity",
+      "state": "legacy-next-to-migrate"
+    },
+    {
+      "file": "src/app/api/auth/parent/me/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "targetOwner": "identity",
+      "state": "legacy-next-to-migrate"
+    },
+    {
+      "file": "src/app/api/auth/parent/password/forgot/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "targetOwner": "identity",
+      "state": "legacy-next-to-migrate"
+    },
+    {
+      "file": "src/app/api/auth/parent/password/reset/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "targetOwner": "identity",
+      "state": "legacy-next-to-migrate"
+    },
+    {
+      "file": "src/app/api/auth/parent/register/start/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "targetOwner": "identity",
+      "state": "legacy-next-to-migrate"
+    },
+    {
+      "file": "src/app/api/auth/parent/register/verify/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "targetOwner": "identity",
+      "state": "legacy-next-to-migrate"
+    },
+    {
+      "file": "src/app/api/auth/parent/status/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "targetOwner": "identity",
+      "state": "legacy-next-to-migrate"
+    },
+    {
+      "file": "src/app/api/auth/parent/wechat/callback/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "targetOwner": "identity",
+      "state": "legacy-next-to-migrate"
+    },
+    {
+      "file": "src/app/api/auth/parent/wechat/qr/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "targetOwner": "identity",
+      "state": "legacy-next-to-migrate"
+    },
+    {
+      "file": "src/app/api/auth/parent/wechat/qr/status/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "targetOwner": "identity",
+      "state": "legacy-next-to-migrate"
+    },
+    {
+      "file": "src/app/api/auth/parent/wechat/start/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "targetOwner": "identity",
+      "state": "legacy-next-to-migrate"
+    },
+    {
+      "file": "src/app/api/auth/pin/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "targetOwner": "identity",
+      "state": "legacy-next-to-migrate"
+    },
+    {
+      "file": "src/app/api/career/exam/[id]/grade/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "targetOwner": "assessment",
+      "state": "legacy-next-to-migrate"
+    },
+    {
+      "file": "src/app/api/career/exam/[id]/session/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "targetOwner": "assessment",
+      "state": "legacy-next-to-migrate"
+    },
+    {
+      "file": "src/app/api/career/exam/history/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "targetOwner": "assessment",
+      "state": "legacy-next-to-migrate"
+    },
+    {
+      "file": "src/app/api/career/interviews/followup/route.ts",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "targetOwner": "learning",
+      "state": "legacy-next-to-migrate"
+    },
+    {
+      "file": "src/app/api/career/interviews/offer/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "targetOwner": "learning",
+      "state": "legacy-next-to-migrate"
+    },
+    {
+      "file": "src/app/api/career/interviews/session/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "targetOwner": "learning",
+      "state": "legacy-next-to-migrate"
+    },
+    {
+      "file": "src/app/api/competition-companion/progress/route.ts",
+      "methods": [
+        "GET",
+        "PATCH"
+      ],
+      "targetOwner": "learning",
+      "state": "legacy-next-to-migrate"
+    },
+    {
+      "file": "src/app/api/competition-follow/route.ts",
+      "methods": [
+        "GET",
+        "PATCH"
+      ],
+      "targetOwner": "catalog",
+      "state": "legacy-next-to-migrate"
+    },
+    {
+      "file": "src/app/api/competition-intelligence/route.ts",
+      "methods": [
+        "GET",
+        "PATCH"
+      ],
+      "targetOwner": "catalog",
+      "state": "legacy-next-to-migrate"
+    },
+    {
+      "file": "src/app/api/english/catalog/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "targetOwner": "catalog",
+      "state": "legacy-next-to-migrate"
+    },
+    {
+      "file": "src/app/api/english/sso/redeem/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "targetOwner": "identity",
+      "state": "legacy-next-to-migrate"
+    },
+    {
+      "file": "src/app/api/english/sso/ticket/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "targetOwner": "identity",
+      "state": "legacy-next-to-migrate"
+    },
+    {
+      "file": "src/app/api/english/sso/verify/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "targetOwner": "identity",
+      "state": "legacy-next-to-migrate"
+    },
+    {
+      "file": "src/app/api/exam-sessions/recovery/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "targetOwner": "assessment",
+      "state": "legacy-next-to-migrate"
+    },
+    {
+      "file": "src/app/api/exam-sessions/route.ts",
+      "methods": [
+        "GET",
+        "POST",
+        "PATCH"
+      ],
+      "targetOwner": "assessment",
+      "state": "legacy-next-to-migrate"
+    },
+    {
+      "file": "src/app/api/exams/[examId]/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "targetOwner": "catalog",
+      "state": "legacy-next-to-migrate"
+    },
+    {
+      "file": "src/app/api/family/active-student/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "targetOwner": "organizations",
+      "state": "legacy-next-to-migrate"
+    },
+    {
+      "file": "src/app/api/family/students/route.ts",
+      "methods": [
+        "GET",
+        "POST",
+        "PUT",
+        "PATCH"
+      ],
+      "targetOwner": "organizations",
+      "state": "legacy-next-to-migrate"
+    },
+    {
+      "file": "src/app/api/grade/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "targetOwner": "assessment",
+      "state": "legacy-next-to-migrate"
+    },
+    {
+      "file": "src/app/api/internal/commerce/students/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "targetOwner": "identity",
+      "state": "legacy-next-to-migrate"
+    },
+    {
+      "file": "src/app/api/internal/commerce/vocabulary/organization-entitlements/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "targetOwner": "commerce",
+      "state": "legacy-next-to-migrate"
+    },
+    {
+      "file": "src/app/api/internal/commerce/vocabulary/organization-owner/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "targetOwner": "commerce",
+      "state": "legacy-next-to-migrate"
+    },
+    {
+      "file": "src/app/api/math-engine/cognition/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "targetOwner": "learning",
+      "state": "legacy-next-to-migrate"
+    },
+    {
+      "file": "src/app/api/math-engine/signals/route.ts",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "targetOwner": "learning",
+      "state": "legacy-next-to-migrate"
+    },
+    {
+      "file": "src/app/api/miniapp/arithmetic/session/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "targetOwner": "learning",
+      "state": "legacy-next-to-migrate"
+    },
+    {
+      "file": "src/app/api/miniapp/china-competitions/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "targetOwner": "catalog",
+      "state": "legacy-next-to-migrate"
+    },
+    {
+      "file": "src/app/api/miniapp/companions/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "targetOwner": "catalog",
+      "state": "legacy-next-to-migrate"
+    },
+    {
+      "file": "src/app/api/miniapp/exams/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "targetOwner": "catalog",
+      "state": "legacy-next-to-migrate"
+    },
+    {
+      "file": "src/app/api/miniapp/review/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "targetOwner": "catalog",
+      "state": "legacy-next-to-migrate"
+    },
+    {
+      "file": "src/app/api/miniapp/world-competitions/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "targetOwner": "catalog",
+      "state": "legacy-next-to-migrate"
+    },
+    {
+      "file": "src/app/api/parent/reports/[studentId]/[attemptId]/pdf/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "targetOwner": "learning",
+      "state": "legacy-next-to-migrate"
+    },
+    {
+      "file": "src/app/api/payments/wechat/checkout/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "targetOwner": "commerce",
+      "state": "legacy-next-to-migrate"
+    },
+    {
+      "file": "src/app/api/payments/wechat/jsapi/readiness/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "targetOwner": "commerce",
+      "state": "legacy-next-to-migrate"
+    },
+    {
+      "file": "src/app/api/payments/wechat/notify/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "targetOwner": "commerce",
+      "state": "legacy-next-to-migrate"
+    },
+    {
+      "file": "src/app/api/payments/wechat/orders/[orderId]/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "targetOwner": "commerce",
+      "state": "legacy-next-to-migrate"
+    },
+    {
+      "file": "src/app/api/platform/admin/accounts/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "targetOwner": "organizations",
+      "state": "legacy-next-to-migrate"
+    },
+    {
+      "file": "src/app/api/platform/admin/grants/route.ts",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "targetOwner": "organizations",
+      "state": "legacy-next-to-migrate"
+    },
+    {
+      "file": "src/app/api/platform/authorization/verify/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "targetOwner": "catalog",
+      "state": "legacy-next-to-migrate"
+    },
+    {
+      "file": "src/app/api/platform/billing/me/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "targetOwner": "commerce",
+      "state": "legacy-next-to-migrate"
+    },
+    {
+      "file": "src/app/api/platform/billing/modules/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "targetOwner": "commerce",
+      "state": "legacy-next-to-migrate"
+    },
+    {
+      "file": "src/app/api/platform/workspace/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "targetOwner": "catalog",
+      "state": "legacy-next-to-migrate"
+    },
+    {
+      "file": "src/app/api/release/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "targetOwner": "web-ops",
+      "state": "legacy-next-to-migrate"
+    },
+    {
+      "file": "src/app/api/reports/[attemptId]/pdf/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "targetOwner": "learning",
+      "state": "legacy-next-to-migrate"
+    },
+    {
+      "file": "src/app/api/resources/download/[resourceId]/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "targetOwner": "catalog",
+      "state": "legacy-next-to-migrate"
+    },
+    {
+      "file": "src/app/api/skill-labs/engineering/agent/attempts/route.ts",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "targetOwner": "catalog",
+      "state": "legacy-next-to-migrate"
+    },
+    {
+      "file": "src/app/api/solutions/[questionId]/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "targetOwner": "catalog",
+      "state": "legacy-next-to-migrate"
+    },
+    {
+      "file": "src/app/api/student/analytics/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "targetOwner": "learning",
+      "state": "legacy-next-to-migrate"
+    },
+    {
+      "file": "src/app/api/student/cards/result-state/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "targetOwner": "learning",
+      "state": "legacy-next-to-migrate"
+    },
+    {
+      "file": "src/app/api/student/feedback/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "targetOwner": "learning",
+      "state": "legacy-next-to-migrate"
+    }
+  ]
+}

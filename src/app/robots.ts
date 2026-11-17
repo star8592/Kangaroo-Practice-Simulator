@@ -11,6 +11,7 @@ export default function robots(): MetadataRoute.Robots {
         "/admin",
         "/account",
         "/workspace",
+        "/my/",
         "/student",
         "/parent",
         "/arithmetic/print",

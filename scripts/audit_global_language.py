@@ -4,10 +4,10 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 checks = {
     "src/app/layout.tsx": ["<SiteHeader/>", "<SiteFooter/>"],
-    "src/app/page.tsx": ["PublicHome"],
+    "src/app/page.tsx": ["SocthinkPortal"],
     "src/components/PublicHome.tsx": ["useSiteLanguage", "SOCTHINK · Exams and Learning Resources", "Find the exam. Start learning.", "Start math practice", "Try mock exams", "EXAM_DIRECTORY", "Available now", "Search exams"],
     "src/components/WorldCompetitionHub.tsx": ["World Math Competition Companion", "WORLD MATH COMPETITION COMPANION", "Filter events by region", "Open companion", "WORLD_REGION_OPTIONS"],
-    "src/components/SiteHeader.tsx": ["GlobalLanguageSwitch", "useSiteLanguage", "usePathname", "SITE_BRAND.nameEn", "All exams", "/assessments", "Resources", "/resources", "Competition practice", "Competition calendar", "My account", "mobilePanel", "FEATURED"],
+    "src/components/SiteHeader.tsx": ["GlobalLanguageSwitch", "SessionNav", "useSiteLanguage", "usePathname", "SITE_PORTAL_NAV", "Learn · Teach · Assess"],
     "src/components/SessionNav.tsx": ["useSiteLanguage", "WeChat sign in", "My account", "Exams & resources", "Sign out", "/api/auth/parent/me", "accountMenu"],
      "src/app/assessments/page.tsx": ["AssessmentPortalClient", "综合考试与测评中心"],
     "src/components/AssessmentPortalClient.tsx": ["useSiteLanguage", "ALL EXAMS", "Exams, papers, resources and practice", "考试、真题、资料与能力训练", "ExamDirectory"],
@@ -17,7 +17,7 @@ checks = {
     "src/components/GlobalLanguageSwitch.tsx": ["useSiteLanguage", "setSiteLanguage", "router.refresh()", ">中文</button>", ">EN</button>"],
     "src/lib/site-language.ts": ["useSyncExternalStore", "socthink.lang", "socthink_lang=", "socthink:language-change"],
     "src/components/GlobalLanguageSwitch.module.css": [".switcher", ".active", "background:var(--portal-blue-soft)"],
-    "src/components/SiteHeader.module.css": [".primaryNav", ".accountMenu", ".guestParent", ".mobilePanelOpen", "@media(max-width:1080px)", "@media(max-width:760px)"],
+    "src/components/SiteHeader.module.css": [".accountMenu", ".guestParent", ".accountTrigger", "@media(max-width:760px)"],
     "src/components/ReviewClient.tsx": ["useSiteLanguage", "const ui=UI[lang]", "Answer review", "中文题面", "Original English"],
     "src/components/ResultClient.tsx": ["useSiteLanguage", "const ui=UI[lang]", "Your result", "Review answers"],
     "src/app/student/page.tsx": ["socthink_lang", "Learning report", "Training readiness index", "Download PDF"],
