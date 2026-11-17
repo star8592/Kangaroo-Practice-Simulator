@@ -325,6 +325,7 @@ export default function NativePronunciationTrial(){
   <footer className={styles.footer}>
    <strong>迁移验收状态</strong>
    <p>本 Next.js 候选已接入真实 Rust 发音评分、双轨波形、分段回听和单词局部重练，仍需验证不同手机录音行为、评分稳定性及课堂作业。原 V3 的教师作业、详细记录与全功能版本在正式迁移验收前继续保留。</p>
+   <a href="/english/pronunciation/next-lab/classroom">查看原生课堂与学习历史候选</a>
    <a href="/english/pronunciation/app/practice-library">进入当前正式发音工作台</a>
   </footer>
  </section>;
