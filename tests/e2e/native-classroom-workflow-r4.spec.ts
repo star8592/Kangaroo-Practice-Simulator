@@ -46,9 +46,13 @@ test("teacher can publish existing Rust-classroom sentences, approve student and
   if(path===classBase+"/invitation/discovery"&&req.method()==="POST"){
     const request=req.postDataJSON();
     expect(typeof request.publish).toBe("boolean");
-    if(request.publish)expect(request.introduction.length).toBeGreaterThan(20);
+    if(request.publish){
+      expect(request.introduction.length).toBeGreaterThan(20);
+      expect(["not_specified","teacher_managed","free_for_students"]).toContain(request.student_fee_mode);
+    }
     publicListing=request.publish;
-    return respond(route,{saved:true,discoverable:publicListing,listing_intro:request.introduction});
+    return respond(route,{saved:true,discoverable:publicListing,
+      listing_intro:request.introduction,student_fee_mode:request.student_fee_mode});
   }
   if(path===classBase+"/invitation/copy"&&req.method()==="POST"){
     const body=req.postDataJSON();
@@ -101,6 +105,8 @@ test("teacher can publish existing Rust-classroom sentences, approve student and
  await page.getByRole("button",{name:"保存修改"}).click();
  await expect(page.getByText(/邀请文案已保存到班级/)).toBeVisible();
  await page.getByRole("textbox",{name:"公开班级介绍"}).fill("这是一个针对小学英语发音与日常跟读的在线练习班。老师安排任务并提供反馈。");
+ await expect(page.getByText(/教师试用期免费|试用阶段免费/)).toBeVisible();
+ await page.getByRole("combobox",{name:"学生课程费用安排"}).selectOption("teacher_managed");
  await page.getByRole("button",{name:"公开招生",exact:true}).click();
  await expect(page.getByText(/已公开招生，学生可以在找老师页面发现/)).toBeVisible();
  expect(publicListing).toBe(true);

@@ -15,6 +15,7 @@ export default function TeachLanding(){
    <span className={styles.eyebrow}>SOC THINK · FOR EDUCATORS</span>
    <h1>同一个平台，服务不同学科的教学</h1>
    <p>独立老师使用自己的教学工作空间；学校、机构与企业在统一教学能力上组织课程。无需为英语、数学、职业课程分别注册或购买重复后台。</p>
+   <p><strong>教师试用期免费：</strong>现阶段老师使用班级、作业、学生管理和招生工具不收平台使用费，也不抽取教学佣金。老师自己的课程收费可以独立安排，平台不参与收款或分账。</p>
    <div className={styles.actions}>
     <Link href="/workspace" className={styles.primary}>已授权教师进入工作台</Link>
     <Link href="#organizations" className={styles.secondary}>学校与企业培训</Link>
