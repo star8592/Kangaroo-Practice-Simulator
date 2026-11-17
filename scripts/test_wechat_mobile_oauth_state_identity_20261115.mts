@@ -44,7 +44,7 @@ try {
   {headers:{cookie:NAME+"="+cookie1}});
  const started2=await start(req2);
  const oa2=new URL(started2.headers.get("location")||"");
- assert.equal(oa2.searchParams.get("scope"),"snsapi_base", "Student/general login remains silent");
+ assert.equal(oa2.searchParams.get("scope"),"snsapi_userinfo", "Student login requests recognizable nickname first");
  const state2=oa2.searchParams.get("state")||"";
  const cookie2=started2.cookies.get(NAME)?.value||"";
  assert.notEqual(state1,state2);
@@ -96,7 +96,7 @@ try {
  assert.equal(validateWechatMobileFlow(remaining,state2)?.next,
    "/english/pronunciation/app/a/teacher-assignment/abc");
  console.log("OFFICIAL_ACCOUNT_FORCED_APPID_AND_TWO_JOURNEYS_PASS");
- console.log("TEACHER_FIRST_LOGIN_USERINFO_AND_SILENT_STUDENT_SCOPE_PASS");
+ console.log("ALL_WECHAT_ENTRIES_PROFILE_FIRST_PASS");
  const cb2=new NextRequest("https://socthink.cn/api/auth/parent/wechat/callback?code=mock-2&state="+state2,
   {headers:{cookie:NAME+"="+remaining}});
  const out2=await callback(cb2);
@@ -132,7 +132,7 @@ try {
  const vocabStudentStart=await start(new NextRequest(
   "https://socthink.cn/api/auth/parent/wechat/start?next="+encodeURIComponent(vocabStudent)));
  const vocabStudentOAuth=new URL(vocabStudentStart.headers.get("location")||"");
- assert.equal(vocabStudentOAuth.searchParams.get("scope"),"snsapi_base");
+ assert.equal(vocabStudentOAuth.searchParams.get("scope"),"snsapi_userinfo");
  assert.equal(vocabStudentOAuth.searchParams.get("appid"),process.env.WECHAT_OPEN_APPID);
  const vocabStudentState=vocabStudentOAuth.searchParams.get("state")||"";
  const vocabStudentCookie=vocabStudentStart.cookies.get(NAME)?.value||"";
@@ -142,7 +142,12 @@ try {
   {headers:{cookie:NAME+"="+vocabStudentCookie}}));
  assert.equal(vocabStudentReturn.headers.get("location"),
   "https://socthink.cn"+vocabStudent);
- console.log("VOCAB_TEACHER_PROFILE_STUDENT_SILENT_AND_EXACT_RETURN_PASS");
+ console.log("VOCAB_ALL_PROFILE_FIRST_AND_EXACT_RETURN_PASS");
+ const manual=await start(new NextRequest(
+  "https://socthink.cn/api/auth/parent/wechat/start?profile=0&next=%2Faccount"));
+ assert.equal(new URL(manual.headers.get("location")||"").searchParams.get("scope"),"snsapi_base",
+  "Provider consent fallback still authenticates before mandatory manual name completion");
+ console.log("PROVIDER_CONSENT_MANUAL_NAME_FALLBACK_PASS");
  // Platform-wide /workspace is the teacher's real starting page.
  // It requires verified cross-AppID identity like each product teacher entry,
  // but does not grant any teacher role without an explicit platform grant.

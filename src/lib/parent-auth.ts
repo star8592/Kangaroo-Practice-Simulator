@@ -202,3 +202,20 @@ export function searchWechatAccountsForOwner(query:string,limit=40){
    .map(p=>({subject:p.id,name:p.name,email:p.email||null,
      lastLoginAt:p.lastLoginAt||null}));
 }
+
+
+/** Verified WeChat identity is immutable; this is an editable public label only. */
+export function setWechatDisplayName(subject:string, raw:unknown):PublicParent{
+ if(typeof raw!=="string")throw new Error("INVALID_DISPLAY_NAME");
+ const name=raw.normalize("NFC").trim();
+ if([...name].length<2||[...name].length>30||
+   isWechatNicknamePlaceholder(name)||/[<>]/.test(name)||
+   [...name].some(c=>c.charCodeAt(0)<32||c.charCodeAt(0)===127))
+   throw new Error("INVALID_DISPLAY_NAME");
+ const people=loadParents();
+ const user=people.find(p=>p.id===subject&&p.active&&(p.wechatId||p.wechatOpenId));
+ if(!user)throw new Error("WECHAT_SESSION_REQUIRED");
+ user.name=name;
+ saveParents(people);
+ return pub(user);
+}

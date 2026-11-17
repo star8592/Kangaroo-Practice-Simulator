@@ -1,4 +1,5 @@
 import crypto from "node:crypto";
+import {classInvitationLink} from "./classroom-invitations";
 import type {PoolClient} from "pg";
 import type {NextRequest} from "next/server";
 import {listWechatParentCandidates} from "@/lib/parent-auth";
@@ -130,6 +131,8 @@ export async function teacherHandler(req:NextRequest,p:string[],a:Actor):Promise
     });
   }
   if(p[0]==="teacher"&&p[1]==="onboard"&&p.length===2&&method==="POST"){
+    if(!a.name||["微信用户","微信家长"].includes(a.name))
+      throw new ClassroomFailure(409,"请先完善微信姓名或昵称，再创建班级");
     const body=await jsonBody(req),className=await checkClassName(body.class_name);
     const tenant=workspaceId(a.masterId,"tenant"),classId=workspaceId(a.masterId,"class"),
       setId=workspaceId(a.masterId,"original-sentence-set");
@@ -139,8 +142,8 @@ export async function teacherHandler(req:NextRequest,p:string[],a:Actor):Promise
         [tenant,className+" · English Leap"]);
       await ensureAccount(db,a);
       await db.query(["INSERT INTO accent.memberships(tenant_id,account_id,role,display_name)",
-        "VALUES($1,$2,'teacher','授课老师') ON CONFLICT(tenant_id,account_id) DO NOTHING"].join(" "),
-        [tenant,a.accountId]);
+        "VALUES($1,$2,'teacher',$3) ON CONFLICT(tenant_id,account_id) DO NOTHING"].join(" "),
+        [tenant,a.accountId,a.name]);
       await db.query(["INSERT INTO accent.classes(tenant_id,id,title,lead_teacher_id)",
         "VALUES($1,$2,$3,$4) ON CONFLICT(tenant_id,id) DO NOTHING"].join(" "),
         [tenant,classId,className,a.accountId]);
@@ -173,6 +176,8 @@ export async function teacherHandler(req:NextRequest,p:string[],a:Actor):Promise
     });
   }
   if(p[0]==="teacher"&&p[1]==="classes"&&p[2]==="create"&&p.length===3&&method==="POST"){
+    if(!a.name||["微信用户","微信家长"].includes(a.name))
+      throw new ClassroomFailure(409,"请先完善微信姓名或昵称，再创建班级");
     const body=await jsonBody(req),className=await checkClassName(body.class_name);
     const tenant=workspaceId(a.masterId,"tenant"),classId=crypto.randomUUID();
     return tx({tenant,account:a.accountId},async db=>{
@@ -192,6 +197,29 @@ export async function teacherHandler(req:NextRequest,p:string[],a:Actor):Promise
   // teacher approves (join-requests), or (2) teacher assigns an already verified
   // student account belonging to this teacher's tenant. Unregistered names are
   // pre-entered separately in expected-roster and NEVER impersonate an account.
+  // Teacher-owned class invitation. The token is derived from a private
+  // server key + a rotating nonce, and never authorizes student data access.
+  if(p[4]==="invitation"&&p.length===5&&method==="GET")
+    return tx({tenant,account:a.accountId},async db=>{
+      await teacher(db,a,tenant,cl);
+      const r=await db.query("SELECT rotation,enabled FROM accent.class_invitations WHERE tenant_id=$1 AND class_id=$2",[tenant,cl]);
+      const v=r.rows[0];
+      return {enabled:Boolean(v?.enabled),url:v?.enabled?classInvitationLink(tenant,cl,v.rotation):null};
+    });
+  if(p[4]==="invitation"&&p.length===6&&p[5]==="rotate"&&method==="POST")
+    return tx({tenant,account:a.accountId},async db=>{
+      await teacher(db,a,tenant,cl);
+      const r=await db.query(["INSERT INTO accent.class_invitations(tenant_id,class_id) VALUES($1,$2)",
+        "ON CONFLICT(tenant_id,class_id) DO UPDATE SET rotation=gen_random_uuid(),",
+        "enabled=true,updated_at=now() RETURNING rotation"].join(" "),[tenant,cl]);
+      return {enabled:true,url:classInvitationLink(tenant,cl,r.rows[0].rotation)};
+    });
+  if(p[4]==="invitation"&&p.length===6&&p[5]==="disable"&&method==="POST")
+    return tx({tenant,account:a.accountId},async db=>{
+      await teacher(db,a,tenant,cl);
+      await db.query("UPDATE accent.class_invitations SET enabled=false,updated_at=now() WHERE tenant_id=$1 AND class_id=$2",[tenant,cl]);
+      return {enabled:false,url:null};
+    });
   if(p[4]==="students"&&p.length===5&&method==="GET")
     return tx({tenant,account:a.accountId},async db=>{
       await teacher(db,a,tenant,cl);

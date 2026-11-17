@@ -13,15 +13,10 @@ export async function GET(req:NextRequest){
  const destination=safeReturnPath(req.nextUrl.searchParams.get("next"));
  const issued=issueWechatMobileFlow(
   req.cookies.get(WECHAT_MOBILE_FLOW_COOKIE)?.value,destination);
- // Teachers need the verified cross-app UnionID to preserve their existing
- // desktop permissions. Keep ordinary parents on silent snsapi_base login;
- // teacher entry may require a one-time in-WeChat profile consent instead of
- // creating an unrelated teacher identity from an AppID-scoped OpenID.
- const teacherJourney=destination==="/workspace"||
-   destination.startsWith("/admin/platform-authorizations")||
-   destination.startsWith("/english/pronunciation/app/teacher/")||
-   destination.startsWith("/english/vocabulary/app/teacher/");
- const profile=req.nextUrl.searchParams.get("profile")==="1"||teacherJourney;
+ // A display name is mandatory for teaching; seek provider profile consent
+ // for every new mobile login. A missing/restricted nickname is handled by the
+ // first-party name completion page, never by inventing an identity.
+ const profile=req.nextUrl.searchParams.get("profile")!=="0";
  const response=NextResponse.redirect(wechatAuthorizeUrl(issued.state,"official_account",
   profile?"snsapi_userinfo":"snsapi_base"));
  response.headers.set("Cache-Control","no-store, max-age=0");

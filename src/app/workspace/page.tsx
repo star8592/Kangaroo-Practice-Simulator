@@ -1,7 +1,7 @@
 import Link from "next/link";
 import {cookies} from "next/headers";
 import {redirect} from "next/navigation";
-import {PARENT_SESSION_COOKIE,parentFromSessionToken} from "@/lib/parent-auth";
+import {PARENT_SESSION_COOKIE,parentFromSessionToken,isWechatNicknamePlaceholder} from "@/lib/parent-auth";
 import {isSiteOwner} from "@/lib/site-owner";
 import {myAuthorizedModules} from "@/lib/platform-grants";
 import styles from "./workspace.module.css";
@@ -12,6 +12,7 @@ export default async function Page(){
  const jar=await cookies();
  const me=parentFromSessionToken(jar.get(PARENT_SESSION_COOKIE)?.value);
  if(!me?.active||!(me.wechatId||me.wechatOpenId))redirect("/login?next=%2Fworkspace");
+ if(isWechatNicknamePlaceholder(me.name))redirect("/account/profile?next=%2Fworkspace");
  let modules:Awaited<ReturnType<typeof myAuthorizedModules>>=[];
  let unavailable=false;
  try{modules=await myAuthorizedModules(me.id)}catch{unavailable=true}
@@ -40,6 +41,7 @@ export default async function Page(){
     <p>{m.grants.some(g=>g.role==="module-admin")?"项目管理权限":"任课教师权限"} ·
       具体班级与学生数据由业务系统核验。</p>
     <Link href={m.managementUrl}>进入管理 <span aria-hidden="true">→</span></Link>
+    {m.id==="english.pronunciation"?<Link href="/english/pronunciation/classrooms">管理班级 · 邀请学生 →</Link>:null}
    </article>)}</div>
   </section>}
   {owner&&<p className={styles.owner}><Link href="/admin/platform-authorizations">平台管理员 · 管理模块授权</Link></p>}
