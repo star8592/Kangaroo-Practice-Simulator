@@ -19,7 +19,7 @@ function compare(test:number,lang:"zh"|"en",profile:ExamProfile,questions:Questi
  assert.equal(proc.status,0,"Rust grader failed: "+String(proc.stderr));
  const actual=JSON.parse(proc.stdout);
  try{assert.deepStrictEqual(actual,expected)}
- catch(e){throw new Error("Rust vs TS grading mismatch test="+test+" mode="+profile.wrongPenaltyMode+" competition="+profile.competitionId+" lang="+lang+"\n"+String(e))}
+ catch(e){throw new Error("Rust vs TS grading mismatch test="+test+" mode="+profile.wrongPenaltyMode+" competition="+profile.competitionId+" lang="+lang+"\n"+String(e),{cause:e})}
 }
 let total=0,questionsChecked=0;
 for(let t=0;t<120;t++){

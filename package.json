@@ -147,7 +147,7 @@
     "test:english-platform": "tsx scripts/test_english_platform_contract.ts",
     "test:rust-grade-parity": "tsx scripts/test_rust_grade_parity.ts",
     "test:rust-grade-real-stock": "tsx scripts/test_rust_grade_real_stock_parity.ts",
-    "test:rust-grade-boundary": "node scripts/test_rust_grade_boundary.cjs"
+    "test:rust-grade-boundary": "node scripts/test_rust_grade_boundary.mjs"
   },
   "dependencies": {
     "next": "16.4.3",

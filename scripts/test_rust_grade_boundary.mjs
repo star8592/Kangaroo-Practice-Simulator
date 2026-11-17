@@ -1,8 +1,9 @@
-'use strict';
-const fs=require('node:fs');
-const assert=require('node:assert/strict');
-const root=require('node:path').resolve(__dirname,'..');
-const read=p=>fs.readFileSync(require('node:path').join(root,p),'utf8');
+import fs from 'node:fs';
+import assert from 'node:assert/strict';
+import path from 'node:path';
+import {fileURLToPath} from 'node:url';
+const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
+const read=p=>fs.readFileSync(path.join(root,p),'utf8');
 const lib=read('backend/socthink-core/src/lib.rs');
 const grader=read('backend/socthink-core/src/grading.rs');
 const fixture=read('backend/socthink-core/src/bin/grade_fixture.rs');
