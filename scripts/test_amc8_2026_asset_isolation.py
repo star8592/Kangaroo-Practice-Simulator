@@ -35,7 +35,18 @@ def main() -> None:
             assert "PRIVATE_ASSET_ROOT_ESCAPED" in str(e)
         else:
             raise AssertionError("SYMLINK_TO_PUBLIC_NOT_BLOCKED")
-    print("AMC8_R18_PRIVATE_ASSET_ISOLATION=PASS synthetic-only")
+    # Static guard also runs in CI without the private 2026 reference booklet.
+    scripts = Path(__file__).resolve().parent
+    for filename in ("prepare_amc8_2026_us_internal.py",
+                     "build_amc8_2026_bilingual_review_pdf.py",
+                     "build_amc8_2026_offline_preview.py"):
+        source = (scripts / filename).read_text(encoding="utf-8")
+        if "public/local-assets/maa-amc/archive-amc8/2026-us-internal" in source:
+            raise AssertionError(f"PUBLIC_2026_SOURCE_REFERENCE_REGRESSION_{filename}")
+        if "private/assets/maa-amc8-2026-us-internal" not in source:
+            raise AssertionError(f"PRIVATE_SOURCE_NOT_REFERENCED_{filename}")
+    print("AMC8_R18_PRIVATE_ASSET_ISOLATION=PASS synthetic-and-static-guard")
+
 
 
 if __name__ == "__main__":
