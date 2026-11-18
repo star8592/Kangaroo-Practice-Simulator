@@ -4,6 +4,7 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import {canManagePlatform} from "@/lib/platform-admin-principal";
 import { getSeoMonitorDashboard } from "@/lib/seo-monitor-store";
+import { readVerifiedBotAudit } from "@/lib/seo-bot-audit-store";
 import AdminOperationsNav from "@/components/AdminOperationsNav";
 import styles from "./seo.module.css";
 
@@ -24,6 +25,7 @@ export default async function AdminSeoDashboard() {
   if (!canManagePlatform(jar)) redirect("/admin/login");
 
   const { latest, history, ageHours, siteStatus, sourceStatus, providerDataStatus, providers } = getSeoMonitorDashboard();
+  const botAudit = readVerifiedBotAudit();
   const statusCopy = siteStatus === "healthy" ? "正常" :
     siteStatus === "issues" ? "发现异常" :
     siteStatus === "stale" ? "数据过期" :
@@ -83,6 +85,54 @@ export default async function AdminSeoDashboard() {
           这里显示的是公开网址技术抽检（最多 200 个 URL），不是百度、Google 或 Bing 的已收录数量。
           已测数据超过 36 小时会标记过期，采集失败不会伪装成正常或 0。
         </p>
+      </section>
+
+      <section aria-labelledby="verified-crawlers" className={styles.section}>
+        <div className={styles.sectionHead}>
+          <h2 id="verified-crawlers">真实爬虫访问记录</h2>
+          <span className={botAudit.status === "ok" ? styles.successStatus : styles.unknownStatus}>
+            {botAudit.status === "ok" ? "已核验爬虫身份" :
+             botAudit.status === "missing" ? "尚未生成抓取证据" : "抓取证据读取异常"}
+          </span>
+        </div>
+        {botAudit.report ? (
+          <>
+            <div className={styles.tableScroll}>
+              <table className={styles.table}>
+                <thead>
+                  <tr><th>搜索引擎</th><th>最近经过验证的访问</th><th>成功读取公开页面</th>
+                  <th>不同公开页面</th><th>公开页面错误请求</th><th>近期访问页面举例</th></tr>
+                </thead>
+                <tbody>
+                  {(["google","bing","baidu"] as const).map((engine) => {
+                    const row = botAudit.report!.providers[engine];
+                    return <tr key={engine}>
+                      <td><strong>{engine === "google" ? "Google" : engine === "bing" ? "Bing" : "百度搜索"}</strong></td>
+                      <td>{row.lastVerifiedAt ? humanTime(row.lastVerifiedAt) : "核验窗口内未发现"}</td>
+                      <td className={styles.number}>{row.verifiedPublicPage200}</td>
+                      <td className={styles.number}>{row.distinctPublicPages200}</td>
+                      <td className={styles.number}>{row.publicPageErrors}</td>
+                      <td><div className={styles.source}>
+                        {row.samplePublicPaths.length ? row.samplePublicPaths.slice(0,3).map(p=>
+                          <div key={p}><code>{p}</code></div>) : "暂无公开页面访问"}
+                      </div></td>
+                    </tr>;
+                  })}
+                </tbody>
+              </table>
+            </div>
+            <p className={styles.disclaimer}>
+              核验时间：{humanTime(botAudit.report.observedAt)}；统计窗口：最近 {botAudit.report.windowDays} 天。
+              使用 Nginx 原始日志、爬虫域名反向 DNS 与正向解析一致性校验；
+              已排除仅伪装爬虫 User-Agent 的请求及本站模拟检查。
+              这里的次数是 HTTP 请求，页面数是被访问过的不同 Sitemap 页面，
+              均不是搜索引擎已收录页数，也不是搜索曝光和点击。
+            </p>
+          </>
+        ) : <p className={styles.empty}>
+          {botAudit.status === "missing" ? "爬虫身份核验任务还没有生成记录，不能断言没有搜索引擎访问。" :
+            "爬虫证据文件损坏或无法读取，具体情况请检查服务日志。"}
+        </p>}
       </section>
 
       <section aria-labelledby="index-source" className={styles.section}>

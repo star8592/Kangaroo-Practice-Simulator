@@ -1,0 +1,12 @@
+[Unit]
+Description=Every-six-hours verified Google Bing Baidu crawler status
+
+[Timer]
+OnCalendar=*-*-* 02,08,14,20:15:00
+RandomizedDelaySec=5min
+Persistent=true
+AccuracySec=1min
+Unit=socthink-seo-bot-audit.service
+
+[Install]
+WantedBy=timers.target

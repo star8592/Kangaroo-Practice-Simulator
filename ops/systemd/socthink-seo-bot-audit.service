@@ -1,0 +1,21 @@
+[Unit]
+Description=SOC THINK verified search crawler access audit
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/opt/socthink-math
+Environment=SOCTHINK_SEO_DATA_DIR=/opt/socthink-math/private/seo
+# Same numeric site/audit user as SEO monitor; adm GID 4 grants read-only access
+# to the existing Nginx access log, without modifying log file permissions.
+ExecStart=/usr/bin/setpriv --reuid=1000 --regid=1000 --groups=4 /usr/bin/python3 /opt/socthink-math/scripts/seo_verified_bot_audit.py
+TimeoutStartSec=180
+UMask=0077
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectHome=yes
+ProtectSystem=strict
+ReadOnlyPaths=/var/log/nginx
+ReadWritePaths=/opt/socthink-math/private/seo
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
