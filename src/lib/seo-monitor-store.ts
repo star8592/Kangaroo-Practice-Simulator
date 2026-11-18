@@ -1,5 +1,9 @@
 import fs from "node:fs";
 import path from "node:path";
+import {
+  readOfficialSeoReports, summarizeOfficialSeoProvider,
+  type OfficialSeoProviderStatus,
+} from "./seo-official-reports";
 
 export type SeoCrawlFailure = Readonly<{ path: string; ok: false; issue: string }>;
 export type SeoDailySnapshot = Readonly<{
@@ -75,7 +79,7 @@ export type SeoProvider = Readonly<{
   clicks: number | null;
   impressions: number | null;
   observedAt: string | null;
-  sourceStatus: "not_connected";
+  sourceStatus: OfficialSeoProviderStatus;
   source: string;
   dashboardUrl: string;
 }>;
@@ -86,19 +90,19 @@ export const PROVIDERS: readonly SeoProvider[] = [
   {
     id: "baidu", name: "百度搜索", indexCount: null, clicks: null, impressions: null,
     observedAt: null, sourceStatus: "not_connected",
-    source: "百度搜索资源平台 · 索引量（待站点验证授权）",
+    source: "百度搜索资源平台 · 索引量／流量与关键词（等待官方报表）",
     dashboardUrl: "https://ziyuan.baidu.com/indexs/",
   },
   {
     id: "google", name: "Google", indexCount: null, clicks: null, impressions: null,
     observedAt: null, sourceStatus: "not_connected",
-    source: "Google Search Console · 页面索引报告/URL Inspection（待授权）",
+    source: "Google Search Console · 页面索引／Search Analytics（等待官方报表）",
     dashboardUrl: "https://search.google.com/search-console",
   },
   {
     id: "bing", name: "Bing", indexCount: null, clicks: null, impressions: null,
     observedAt: null, sourceStatus: "not_connected",
-    source: "Bing Webmaster Tools · Site Explorer/URL Inspection（待授权）",
+    source: "Bing Webmaster Tools · 站点索引／搜索流量（等待官方报表）",
     dashboardUrl: "https://www.bing.com/webmasters",
   },
 ];
@@ -113,5 +117,13 @@ export function getSeoMonitorDashboard() {
     ? "read_error" : !latest ? "not_measured" :
     ageHours === null || ageHours > 36 ? "stale" :
     latest.robotsOk && latest.healthyCount === latest.checkedCount ? "healthy" : "issues";
-  return { latest, history: history.slice(-30), ageHours, siteStatus, sourceStatus, providers: PROVIDERS };
+  const official = readOfficialSeoReports();
+  const providers = PROVIDERS.map((provider) => {
+    const metrics = summarizeOfficialSeoProvider(provider.id, official.reports, official.status);
+    return {...provider, ...metrics, sourceStatus: metrics.status};
+  });
+  return {
+    latest, history: history.slice(-30), ageHours, siteStatus,
+    sourceStatus, providerDataStatus: official.status, providers,
+  };
 }
