@@ -1,0 +1,125 @@
+{
+  "research_date": "2026-11-18",
+  "status": "SOURCE_LOCATED_AND_STORED_FOR_INTERNAL_COMPARISON_ONLY",
+  "question": "Find the 2025 and 2026 AMC 8 past paper sources and whether we need to buy digital copies.",
+  "conclusion": "Six full public PDF references are available without buying Xianyu copies. No real Xianyu seller listing or price could be verified from web search.",
+  "edition_warning": "US past papers are not confirmed equivalent to 2025 or 2026 China-region sittings. Verify ASDAN and China Organizing Committee separately.",
+  "source_documents": [
+    {
+      "year": 2025,
+      "edition": "US",
+      "kind": "MAA-brand-booklet-plus-solution",
+      "filename": "2025-MAA-booklet-and-solutions-reference.pdf",
+      "url": "https://blog.thethinkacademy.com/wp-content/uploads/2025/06/2025_AMC8_Problems-and-Solutions-yx2cx8.pdf",
+      "bytes": 16252619,
+      "pages": 10,
+      "sha256": "6d33aa2f810b948c60814f105076130eab3247963500d9674cf6d9722d65a183",
+      "local_research_path": "/mnt/disk1/Research/AMC8/2025-2026-source-reference/2025-MAA-booklet-and-solutions-reference.pdf",
+      "content_quality": "pdf-readable; original vs retypeset distinction maintained",
+      "authenticity_compared_question_by_question": false,
+      "permission_to_republish_commercially": false,
+      "imported_to_paid_exam_service": false
+    },
+    {
+      "year": 2025,
+      "edition": "US",
+      "kind": "LIVE-licensed-retypeset-exam",
+      "filename": "2025-LIVE-licensed-reference.pdf",
+      "url": "https://live.poshenloh.com/images/past-contests/pdf/amc8-2025-exam.pdf",
+      "bytes": 228591,
+      "pages": 21,
+      "sha256": "fd93b34e53f6f2aa77b7c4efdf1266edd32251033364d0c268f92b4b4d8b17ab",
+      "local_research_path": "/mnt/disk1/Research/AMC8/2025-2026-source-reference/2025-LIVE-licensed-reference.pdf",
+      "content_quality": "pdf-readable; original vs retypeset distinction maintained",
+      "authenticity_compared_question_by_question": false,
+      "permission_to_republish_commercially": false,
+      "imported_to_paid_exam_service": false
+    },
+    {
+      "year": 2025,
+      "edition": "US",
+      "kind": "LIVE-licensed-answer-key",
+      "filename": "2025-LIVE-answer-key-reference.pdf",
+      "url": "https://live.poshenloh.com/images/past-contests/pdf/amc8-2025-answers.pdf",
+      "bytes": 39326,
+      "pages": 1,
+      "sha256": "31d310b794bdb004bf87ab9a0e4d032c2e17a845da4ed4cd17324f5cbf8dffb1",
+      "local_research_path": "/mnt/disk1/Research/AMC8/2025-2026-source-reference/2025-LIVE-answer-key-reference.pdf",
+      "content_quality": "pdf-readable; original vs retypeset distinction maintained",
+      "authenticity_compared_question_by_question": false,
+      "permission_to_republish_commercially": false,
+      "imported_to_paid_exam_service": false
+    },
+    {
+      "year": 2026,
+      "edition": "US",
+      "kind": "MAA-brand-original-booklet",
+      "filename": "2026-MAA-booklet-scan-reference.pdf",
+      "url": "https://ojhmathteam.org/wp-content/uploads/2026/02/2026-amc-8-.pdf",
+      "bytes": 621705,
+      "pages": 8,
+      "sha256": "70daec35c1ab2c0bfd16c97925a475d26dbb6c3cc31899bf3f91beee7d4b588f",
+      "local_research_path": "/mnt/disk1/Research/AMC8/2025-2026-source-reference/2026-MAA-booklet-scan-reference.pdf",
+      "content_quality": "pdf-readable; original vs retypeset distinction maintained",
+      "authenticity_compared_question_by_question": false,
+      "permission_to_republish_commercially": false,
+      "imported_to_paid_exam_service": false
+    },
+    {
+      "year": 2026,
+      "edition": "US",
+      "kind": "LIVE-licensed-retypeset-exam",
+      "filename": "2026-LIVE-licensed-reference.pdf",
+      "url": "https://live.poshenloh.com/images/past-contests/pdf/amc8-2026-exam.pdf",
+      "bytes": 156676,
+      "pages": 19,
+      "sha256": "08214d081a11cf751aa6140b26eb60ad0fd97083eb8dfe6d5286fa8b54d615ca",
+      "local_research_path": "/mnt/disk1/Research/AMC8/2025-2026-source-reference/2026-LIVE-licensed-reference.pdf",
+      "content_quality": "pdf-readable; original vs retypeset distinction maintained",
+      "authenticity_compared_question_by_question": false,
+      "permission_to_republish_commercially": false,
+      "imported_to_paid_exam_service": false
+    },
+    {
+      "year": 2026,
+      "edition": "US",
+      "kind": "LIVE-licensed-answer-key",
+      "filename": "2026-LIVE-answer-key-reference.pdf",
+      "url": "https://live.poshenloh.com/images/past-contests/pdf/amc8-2026-answers.pdf",
+      "bytes": 39386,
+      "pages": 1,
+      "sha256": "15030752bdf9f61f69e8131901ec37f6a9d85b90851debff9179e89091dca593",
+      "local_research_path": "/mnt/disk1/Research/AMC8/2025-2026-source-reference/2026-LIVE-answer-key-reference.pdf",
+      "content_quality": "pdf-readable; original vs retypeset distinction maintained",
+      "authenticity_compared_question_by_question": false,
+      "permission_to_republish_commercially": false,
+      "imported_to_paid_exam_service": false
+    }
+  ],
+  "china_edition_leads": [
+    {
+      "year": 2025,
+      "url": "https://amcclub.org.cn/news/3203/",
+      "edition": "Chinese bilingual; complete package behind QR",
+      "full_pdf_acquired": false
+    },
+    {
+      "year": 2026,
+      "url": "https://amcclub.org.cn/news/4043/",
+      "edition": "ASDAN bilingual; full package behind QR",
+      "full_pdf_acquired": false
+    },
+    {
+      "year": 2026,
+      "url": "https://amcclub.org.cn/news/4044/",
+      "edition": "China organizing committee bilingual; full package behind QR",
+      "full_pdf_acquired": false
+    }
+  ],
+  "production_contract": {
+    "do_not_claim_year_import_complete": true,
+    "do_not_charge_for_copyrighted_papers_without_permission": true,
+    "do_not_treat_third_party_licensed_host_as_our_license": true,
+    "do_not_promote_mock_paper_as_exact_original": true
+  }
+}
