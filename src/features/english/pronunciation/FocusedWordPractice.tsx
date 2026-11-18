@@ -68,24 +68,24 @@ export default function FocusedWordPractice({
    }
   }
  }
- function cleanup(){
-  generationRef.current++;
-  operationRef.current=false;
-  clearTimer();
-  requestRef.current?.abort();requestRef.current=null;
-  const rec=recRef.current;recRef.current=null;
-  if(rec){
-   rec.onstop=null;rec.ondataavailable=null;rec.onerror=null;
-   if(rec.state==="recording")try{rec.stop();}catch{/* Device already detached. */}
-  }
-  micRef.current?.getTracks().forEach(t=>t.stop());micRef.current=null;
-  if(ownUrlRef.current)URL.revokeObjectURL(ownUrlRef.current);
-  if(priorUrlRef.current)URL.revokeObjectURL(priorUrlRef.current);
-  ownUrlRef.current="";priorUrlRef.current="";
- }
  useEffect(()=>{
   mountedRef.current=true;
-  return ()=>{mountedRef.current=false;cleanup();};
+  return ()=>{
+   mountedRef.current=false;
+   generationRef.current++;
+   operationRef.current=false;
+   if(timerRef.current!==null){clearTimeout(timerRef.current);timerRef.current=null;}
+   requestRef.current?.abort();requestRef.current=null;
+   const rec=recRef.current;recRef.current=null;
+   if(rec){
+    rec.onstop=null;rec.ondataavailable=null;rec.onerror=null;
+    if(rec.state==="recording")try{rec.stop();}catch{/* Device already detached. */}
+   }
+   micRef.current?.getTracks().forEach(t=>t.stop());micRef.current=null;
+   if(ownUrlRef.current)URL.revokeObjectURL(ownUrlRef.current);
+   if(priorUrlRef.current)URL.revokeObjectURL(priorUrlRef.current);
+   ownUrlRef.current="";priorUrlRef.current="";
+  };
  },[]);
  const busy=stage!=="idle";
  function choose(next:string){
