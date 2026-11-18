@@ -11,11 +11,11 @@ from pathlib import Path
 
 from PIL import Image, ImageDraw, ImageFont
 
-from amc8_2026_editing import UNACCEPTABLE_STEM_MARKERS
+from amc8_2026_editing import UNACCEPTABLE_STEM_MARKERS, private_crop_directory
 
 ROOT = Path(__file__).resolve().parents[1]
 DRAFT = ROOT / "private/exams/maa-amc8-2026-us-reference-internal.json"
-CROPS = ROOT / "public/local-assets/maa-amc/archive-amc8/2026-us-internal"
+CROPS = ROOT / "private/assets/maa-amc8-2026-us-internal"
 OUTPUT = ROOT / "private/drafts/maa-amc8-2026-us-bilingual-internal-review.pdf"
 FONT = Path("/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc")
 PAGESIZE = (1240, 1754)
@@ -39,6 +39,8 @@ def wrap_zh(draw: ImageDraw.ImageDraw, text: str, font: ImageFont.FreeTypeFont, 
 
 
 def build() -> None:
+    if private_crop_directory(ROOT) != CROPS.resolve():
+        raise RuntimeError("PRIVATE_SOURCE_DIRECTORY_MISMATCH")
     if not FONT.is_file() or not DRAFT.is_file():
         raise RuntimeError("LOCAL_CJK_FONT_OR_DRAFT_MISSING")
     data = json.loads(DRAFT.read_text(encoding="utf-8"))
