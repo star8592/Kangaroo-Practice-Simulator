@@ -138,7 +138,10 @@ test("late microphone permission callback is cancelled on cancel, word change an
    },
   });
  });
- await focus.getByRole("button",{name:"录这个词并评分"}).click();
+ await focus.getByRole("button",{name:"录这个词并评分"}).evaluate(button=>{
+  // Two synchronous clicks before React can re-render must create one request.
+  (button as HTMLButtonElement).click();(button as HTMLButtonElement).click();
+ });
  await expect(focus.getByRole("button",{name:"取消等待麦克风"})).toBeVisible();
  await page.waitForFunction(()=>(window as unknown as {__lateMic:{pending:unknown[]}}).__lateMic.pending.length===1);
  await expect(focus.getByRole("button",{name:"curious",exact:true})).toBeDisabled();
