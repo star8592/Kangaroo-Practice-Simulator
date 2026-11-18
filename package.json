@@ -142,7 +142,7 @@
     "test:career-guided": "tsx scripts/test_career_guided_interview.ts && python3 scripts/test_career_model_warm.py",
     "bench:career-local": "tsx scripts/benchmark_career_local_judge.ts",
     "test:career-judge-dataset": "tsx scripts/test_career_judge_dataset.ts",
-    "test:seo-storage": "node scripts/test_seo_storage_isolation.mjs && tsx scripts/test_seo_monitor_dashboard_source.ts",
+    "test:seo-storage": "node scripts/test_seo_storage_isolation.mjs && tsx scripts/test_seo_monitor_dashboard_source.ts && tsx scripts/test_seo_official_report.ts",
     "test:cohost-gateway": "python3 scripts/test_cohost_gateway.py",
 "test:english-platform": "tsx scripts/test_student_class_assignments_r1.ts && tsx scripts/test_teacher_free_pilot_policy_20261117.ts && tsx scripts/test_teacher_invitation_copy_20261117.ts && tsx scripts/test_english_platform_contract.ts && tsx scripts/test_classroom_owner_entitlement_20261117.ts && tsx scripts/test_classroom_candidate_subject_20261117.ts && node scripts/test_edu_admin_single_entry_contract_20261117.mjs",
     "test:khan-platform": "node scripts/test_khan_multi_audience_portal.mjs",

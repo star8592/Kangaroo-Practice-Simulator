@@ -23,7 +23,7 @@ export default async function AdminSeoDashboard() {
   const jar = await cookies();
   if (!canManagePlatform(jar)) redirect("/admin/login");
 
-  const { latest, history, ageHours, siteStatus, sourceStatus, providers } = getSeoMonitorDashboard();
+  const { latest, history, ageHours, siteStatus, sourceStatus, providerDataStatus, providers } = getSeoMonitorDashboard();
   const statusCopy = siteStatus === "healthy" ? "正常" :
     siteStatus === "issues" ? "发现异常" :
     siteStatus === "stale" ? "数据过期" :
@@ -88,7 +88,7 @@ export default async function AdminSeoDashboard() {
       <section aria-labelledby="index-source" className={styles.section}>
         <div className={styles.sectionHead}>
           <h2 id="index-source">搜索引擎真实收录与自然搜索表现</h2>
-          <span className={styles.unknownStatus}>等待官方账号授权</span>
+          <span className={styles.unknownStatus}>{providers.some(p => p.sourceStatus === "reported" || p.sourceStatus === "stale") ? "已接入部分正式报表" : "等待官方报表接入"}</span>
         </div>
         <div className={styles.tableScroll}>
           <table className={styles.table}>
@@ -102,8 +102,14 @@ export default async function AdminSeoDashboard() {
                   <td className={styles.number}>{SHOW_DASH(provider.indexCount)}</td>
                   <td className={styles.number}>{SHOW_DASH(provider.impressions)}</td>
                   <td className={styles.number}>{SHOW_DASH(provider.clicks)}</td>
-                  <td><span className={styles.unknownStatus}>尚未接入</span>
+                  <td>
+                    <span className={provider.sourceStatus === "reported" ? styles.successStatus : styles.unknownStatus}>
+                      {provider.sourceStatus === "reported" ? "已有正式报表" :
+                       provider.sourceStatus === "stale" ? "报表待更新" :
+                       provider.sourceStatus === "read_error" ? "报表读取异常" : "暂无正式报表"}
+                    </span>
                     <div className={styles.source}>{provider.source}</div>
+                    {provider.observedAt ? <div className={styles.source}>最近导入：{humanTime(provider.observedAt)}</div> : null}
                     <a href={provider.dashboardUrl} target="_blank" rel="noopener noreferrer">官方站长后台</a>
                   </td>
                 </tr>
@@ -112,7 +118,10 @@ export default async function AdminSeoDashboard() {
           </table>
         </div>
         <p className={styles.disclaimer}>
-          只有来源于已验证站长资产的正式报表/API，才能成为真实收录数据；
+          报表存储状态：{providerDataStatus === "ok" ? "已读取" :
+            providerDataStatus === "missing" ? "未接入" :
+            providerDataStatus === "invalid" ? "格式错误" : "读取失败"}。
+          只有来自站长资产的正式报表/API，才能成为收录与搜索流量数据；
           Google Sitemap API 中已废弃的 indexed 字段、site: 搜索估计以及 IndexNow HTTP 200/202 回执均不计入收录。
         </p>
       </section>
@@ -157,8 +166,9 @@ export default async function AdminSeoDashboard() {
       <section className={styles.next}>
         <h2>下一步数据接入</h2>
         <p>
-          百度接入“索引量”官方报表，Google 接入 Search Console 页面索引与 Search Analytics，
-          Bing 接入 Webmaster Tools 的索引与流量报表。账号授权完成后才显示数字。
+          百度接入“索引量”与“流量关键词”官方报表，Google 接入 Search Console 页面索引与 Search Analytics，
+          Bing 接入 Webmaster Tools 的索引与搜索流量报表。正式报表按采集来源和统计区间归档；
+          没有正式数据时保持未知，不能把提交、抓取或 site: 估计当作收录。
           真正的购买收入应由独立收费账本统计，不能用自然搜索点击数来估算。
         </p>
       </section>
