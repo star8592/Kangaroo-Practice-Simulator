@@ -35,8 +35,8 @@ aside,article{border:1px solid #e0e6ef;background:white;border-radius:14px;paddi
 .zh{font-size:19px;line-height:1.85;white-space:pre-wrap;margin:18px 0}
 .original-label{font-size:13px;font-weight:600;color:#526b84;margin:22px 0 8px}
 img{display:block;width:100%;max-width:1050px;height:auto;border:1px solid #edf0f5;border-radius:8px}
-.answer{display:flex;gap:12px;flex-wrap:wrap;margin-top:24px}
-.answer button{min-width:74px;height:48px;border:1px solid #bac8d9;border-radius:10px;background:#fff;font-weight:600}
+.answer{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:24px}
+.answer button{min-height:48px;white-space:normal;text-align:left;padding:11px 14px;border:1px solid #bac8d9;border-radius:10px;background:#fff;font-weight:600}
 .answer button.selected{background:#224b82;color:#fff;border-color:#224b82}
 .actions{display:flex;justify-content:space-between;gap:10px;margin-top:25px}
 .actions button, #submit,#restart,#print{padding:11px 20px;border:1px solid #b9c9df;border-radius:9px;background:white;color:#203955}
@@ -47,7 +47,7 @@ button:disabled{opacity:.45;cursor:not-allowed}
 #report{display:none}.summary{font-size:44px;font-weight:750;margin:13px 0}.mistakes{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0}.mistakes button{border:1px solid #bdc9d9;border-radius:8px;padding:7px 12px;background:white}
 .warning{color:#856013;background:#fff9e8;border-radius:8px;padding:10px;margin-top:12px;font-size:13px}
 footer{font-size:11px;color:#6f7c8c;line-height:1.5;margin:20px auto;max-width:1260px;padding:0 20px}
-@media(max-width:760px){main{display:block;padding:0 12px}aside{margin-bottom:12px;padding:14px}article{padding:16px}.nav{grid-template-columns:repeat(10,1fr);margin-top:8px}.nav button{height:30px;font-size:12px}header{padding:15px}.zh{font-size:16px}.answer button{flex:1;min-width:40px}}
+@media(max-width:760px){main{display:block;padding:0 12px}aside{margin-bottom:12px;padding:14px}article{padding:16px}.nav{grid-template-columns:repeat(10,1fr);margin-top:8px}.nav button{height:30px;font-size:12px}header{padding:15px}.zh{font-size:16px}.answer{grid-template-columns:1fr}.answer button{width:100%}}
 @media print{header,aside,.actions,.answer,#submit,#restart,#print,footer,.warning{display:none!important}body{background:white}main{display:block}article{border:0}#report{display:block!important}#exam{display:none!important}}
 </style></head><body>
 <header><div><h1>2026 AMC 8 · 美国原卷中英对照</h1><div class="sub">本机校对演示 · 中文为参考译文，所有英文题目／公式／选项均以原卷图为准</div></div><div><span class="tag">非正式考试 · 不作销售</span> <span class="timer" id="timer">40:00</span></div></header>
@@ -77,7 +77,7 @@ function render(){
  byId("nav").innerHTML="";
  selected.forEach((v,i)=>{const b=document.createElement("button");b.textContent=String(i+1);b.className=(i===active?"active ":"")+(v?"answered":"");b.title="第"+(i+1)+"题";b.onclick=()=>{active=i;render()};byId("nav").appendChild(b)});
  byId("answers").innerHTML="";
- choices.forEach(x=>{const b=document.createElement("button");b.textContent=x;b.className=selected[active]===x?"selected":"";b.setAttribute("aria-label","选择 "+x);b.onclick=()=>{selected[active]=x;render()};byId("answers").appendChild(b)});
+ choices.forEach(x=>{const b=document.createElement("button");b.textContent=x+" · "+questions[active].options[x];b.className=selected[active]===x?"selected":"";b.setAttribute("aria-label","选择 "+x);b.onclick=()=>{selected[active]=x;render()};byId("answers").appendChild(b)});
  byId("prev").disabled=active===0;byId("next").disabled=active===24;
  const done=selected.filter(Boolean).length;
  byId("progress-text").textContent="　"+done+"/25 已作答";
@@ -116,11 +116,14 @@ def main() -> None:
             raise RuntimeError("UNREVIEWED_QUESTION_NOT_FAIL_CLOSED")
         if any(marker in row["stem"] for marker in UNACCEPTABLE_STEM_MARKERS):
             raise RuntimeError(f"Q{i}_EDITORIAL_NOTE_LEAKED_TO_EXAM")
+        if len(row.get("choices", [])) != 5 or any(not x.get("label") or x.get("label", "").startswith("参见原卷的") for x in row["choices"]):
+            raise RuntimeError(f"Q{i}_UNTRANSLATED_OPTIONS")
         image = ROOT / "private/assets/maa-amc8-2026-us-internal" / f"q{i:02}.png"
         if not image.is_file():
             raise RuntimeError("MISSING_ORIGINAL_IMAGE")
         items.append({
             "zh": row["stem"], "key": row["answer"],
+            "options": {c["key"]: c["label"] for c in row["choices"]},
             "image": IMAGE_BASE + f"/q{i:02}.png",
         })
     raw = json.dumps(items, ensure_ascii=False, separators=(",", ":"))
