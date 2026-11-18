@@ -57,7 +57,15 @@ export default function FocusedWordPractice({
   clearTimer();
   const rec=recRef.current;
   if(rec?.state==="recording"){
-   try{rec.stop();}catch{setFeedback("录音设备异常，未发送评分。");}
+   try{rec.stop();}catch{
+    // A detached recorder may throw instead of emitting onstop.
+    generationRef.current++;
+    rec.onstop=null;rec.ondataavailable=null;rec.onerror=null;
+    recRef.current=null;
+    micRef.current?.getTracks().forEach(t=>t.stop());micRef.current=null;
+    operationRef.current=false;
+    setStage("idle");setFeedback("录音设备异常，未发送评分；此前录音已保留。");
+   }
   }
  }
  function cleanup(){
