@@ -17,6 +17,7 @@ ROOT = Path(__file__).resolve().parents[1]
 DRAFT = ROOT / "private/exams/maa-amc8-2026-us-reference-internal.json"
 CROPS = ROOT / "private/assets/maa-amc8-2026-us-internal"
 OUTPUT = ROOT / "private/drafts/maa-amc8-2026-us-bilingual-internal-review.pdf"
+MATH_LEDGER = ROOT / "private/drafts/maa-amc8-2026-us-math-independent-ledger.json"
 FONT = Path("/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc")
 PAGESIZE = (1240, 1754)
 MARGIN = 68
@@ -45,6 +46,12 @@ def build() -> None:
         raise RuntimeError("LOCAL_CJK_FONT_OR_DRAFT_MISSING")
     data = json.loads(DRAFT.read_text(encoding="utf-8"))
     profile, questions = data["profile"], data["questions"]
+    math = json.loads(MATH_LEDGER.read_text(encoding="utf-8"))
+    calculations = math.get("calculations", {})
+    if (math.get("matches_private_reference_key") != 25 or
+            set(calculations) != {str(n) for n in range(1, 26)} or
+            any(calculations[str(n)]["answer"] != questions[n - 1]["answer"] for n in range(1, 26))):
+        raise RuntimeError("PRIVATE_MATH_AUDIT_NOT_25_REFERENCE_MATCHED")
     if len(questions) != 25 or profile["rightsPolicy"]["commercialUse"] is not False:
         raise RuntimeError("NOT_A_REVIEW_ONLY_25Q_BUNDLE")
     if any(q["examReady"] is not False or q["review"]["needsReview"] is not True for q in questions):
@@ -87,12 +94,18 @@ def build() -> None:
                 y += 34
             y += 12
         src = Image.open(source).convert("RGB")
-        max_h = PAGESIZE[1] - y - 120
+        max_h = PAGESIZE[1] - y - 185
         if max_h <= 200:
             raise RuntimeError(f"Q{n} NO_VERTICAL_SPACE")
         factor = min(MAX_CONTENT_W / src.width, max_h / src.height, 1)
         resized = src.resize((round(src.width * factor), round(src.height * factor)), Image.Resampling.LANCZOS)
         page.paste(resized, (MARGIN, y))
+        # Reviewer-only answer checkpoint, not part of student-facing questions.
+        draw.text(
+            (MARGIN, PAGESIZE[1] - 143),
+            f"数学核验答案：{q['answer']}  ·  中文/图形终审：待签核",
+            font=note_font, fill="#285a48",
+        )
         draw.line((MARGIN, PAGESIZE[1] - 85, PAGESIZE[0] - MARGIN, PAGESIZE[1] - 85),
                   fill="#d4dce4", width=2)
         draw.text((MARGIN, PAGESIZE[1] - 72),
