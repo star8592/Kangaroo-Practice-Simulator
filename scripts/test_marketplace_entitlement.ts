@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
+import {configureSyntheticMarketplaceRights} from "./marketplace_synthetic_rights_qa";
 import {
   signMarketplaceTicket,verifyMarketplaceTicket,redeemMarketplaceTicket,
   marketplaceUserFromCookie,marketplaceAuthorizedExam
@@ -11,12 +12,20 @@ const dir=fs.mkdtempSync(path.join(os.tmpdir(),"socthink-marketplace-qa-"));
 const isolated=path.join(dir,"market");
 const users=path.join(dir,"users");
 process.env.SOCTHINK_MARKETPLACE_EXAM_MODE="1";
+process.env.SOCTHINK_MARKETPLACE_PUBLIC_ORIGIN="http://127.0.0.1:18742";
 process.env.SOCTHINK_MARKETPLACE_HANDOFF_SECRET="test_only_64_char_secret_is_not_a_production_credential_replace_me";
-process.env.SOCTHINK_MARKETPLACE_AMC8_EXAM_ID="test-amc8-2024";
+const QA_EXAM="amc8-original-qa-entitlement";
+const qaPath=path.join(process.cwd(),"private","exams",QA_EXAM+".json");
+const fixture=JSON.parse(fs.readFileSync(path.join(process.cwd(),"tests","fixtures","marketplace-amc8-original-qa.json"),"utf8"));
+fixture.profile.id=QA_EXAM;
+fs.mkdirSync(path.dirname(qaPath),{recursive:true});
+fs.writeFileSync(qaPath,JSON.stringify(fixture),{flag:"wx",mode:0o600});
+configureSyntheticMarketplaceRights(QA_EXAM,qaPath,dir);
+process.env.SOCTHINK_MARKETPLACE_AMC8_EXAM_ID=QA_EXAM;
 process.env.SOCTHINK_MARKETPLACE_DATA_DIR=isolated;
 process.env.SOCTHINK_USER_DATA_DIR=users;
 const now=Math.floor(Date.now()/1000);
-const sample={v:1 as const,job:"job_20261118_12345678",sku:"EDU-001" as const,kind:"EXAM_REPORT_ONCE" as const,examId:"test-amc8-2024",exp:now+600};
+const sample={v:1 as const,job:"job_20261118_12345678",sku:"EDU-001" as const,kind:"EXAM_REPORT_ONCE" as const,examId:QA_EXAM,exp:now+600};
 let passed=0;
 function works(name:string,fn:()=>void){try{fn();passed++;process.stdout.write("PASS "+name+"\n")}catch(e){process.stdout.write("FAIL "+name+"\n");throw e}}
 try{
@@ -49,4 +58,5 @@ try{
  console.log("RESULT "+passed+"/"+passed+" passed");
 }finally{
  fs.rmSync(dir,{recursive:true,force:true});
+ fs.rmSync(qaPath,{force:true});
 }

@@ -1,8 +1,8 @@
-import {marketplaceExamAssetsReady} from "@/lib/marketplace-exam-assets";
+import {marketplacePaidExamReady} from "@/lib/marketplace-commercial-rights";
 import {cookies} from "next/headers";
 import {notFound} from "next/navigation";
 import {marketplaceMode,verifyMarketplaceTicket,marketplaceTicketRevoked,marketplaceUserFromCookie,MARKETPLACE_COOKIE} from "@/lib/marketplace-entitlement";
-import {loadTrainingExamBundle,isExamBundleTrainingReady} from "@/lib/training-question-bank";
+import {loadTrainingExamBundle} from "@/lib/training-question-bank";
 import {loadExamAttempts} from "@/lib/attempt-store";
 
 export const dynamic="force-dynamic";
@@ -21,7 +21,7 @@ export default async function MarketplaceClaimPage({searchParams}:{searchParams:
       const verified=verifyMarketplaceTicket(query.ticket);
       if(marketplaceTicketRevoked(query.ticket))throw Error("ENTITLEMENT_REVOKED");
       const bundle=loadTrainingExamBundle(verified.examId);
-      if(!isExamBundleTrainingReady(bundle)||bundle.profile.formatId!=="maa-amc8"||!marketplaceExamAssetsReady(bundle.questions))
+      if(!marketplacePaidExamReady(verified.examId))
         throw Error("EXAM_NOT_READY");
       ticket=query.ticket;examId=verified.examId;title=bundle.profile.name;
       count=bundle.profile.questionCount;minutes=Math.ceil(bundle.profile.durationSeconds/60);

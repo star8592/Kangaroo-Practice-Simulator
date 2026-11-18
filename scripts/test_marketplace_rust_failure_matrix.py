@@ -9,7 +9,7 @@ from concurrent.futures import ThreadPoolExecutor
 ROOT=pathlib.Path(__file__).resolve().parents[1]
 PORT=18843
 URL=f"http://127.0.0.1:{PORT}"
-EXAM="maa-amc8-2024-user-owned"
+EXAM="amc8-original-qa-smoke"
 SECRET=os.urandom(32).hex()
 REVOKE_SECRET=os.urandom(32).hex()
 
@@ -45,8 +45,32 @@ def main():
     assert binary.is_file(),"Build Rust binary before QA"
     with tempfile.TemporaryDirectory(prefix="socthink-rust-matrix-") as t:
         base=pathlib.Path(t)
+        fixture=ROOT/"tests/fixtures/marketplace-amc8-original-qa.json"
+        paper=json.loads(fixture.read_text())
+        assert paper["profile"]["id"]==EXAM
+        assert paper["profile"]["sourceLabel"]=="Generated synthetic QA arithmetic; never for sale"
+        exam_dir=base/"exams"
+        review_dir=base/"rights"
+        exam_dir.mkdir(mode=0o700)
+        review_dir.mkdir(mode=0o700)
+        raw=fixture.read_bytes()
+        (exam_dir/(EXAM+".json")).write_bytes(raw)
+        review_key=os.urandom(32).hex()
+        fingerprint=hashlib.sha256(raw).hexdigest()
+        approved_at=int(time.time()*1000)
+        review={"v":1,"examId":EXAM,"contentSha256":fingerprint,
+                "license":"synthetic-qa-original-only",
+                "approvedAt":approved_at,"reviewer":"qa-only"}
+        message="|".join(("v1",EXAM,fingerprint,review["license"],str(approved_at),"qa-only"))
+        review["signature"]=hmac.new(review_key.encode(),message.encode(),hashlib.sha256).hexdigest()
+        review_path=review_dir/(EXAM+".json")
+        review_path.write_text(json.dumps(review))
+        review_path.chmod(0o600)
         env=os.environ.copy()
-        env.update({"SOCTHINK_CATALOG_SNAPSHOT":str(ROOT/"backend/socthink-core/tests/fixtures/catalog.json"),
+        env.update({"SOCTHINK_MARKETPLACE_RIGHTS_REVIEW_SECRET":review_key,
+            "SOCTHINK_MARKETPLACE_RIGHTS_REVIEW_DIR":str(review_dir),
+            "SOCTHINK_MARKETPLACE_EXAMS_DIR":str(exam_dir),
+            "SOCTHINK_CATALOG_SNAPSHOT":str(ROOT/"backend/socthink-core/tests/fixtures/catalog.json"),
             "SOCTHINK_RUST_BIND":f"127.0.0.1:{PORT}",
             "SOCTHINK_MARKETPLACE_EXAM_MODE":"1",
             "SOCTHINK_MARKETPLACE_HANDOFF_SECRET":SECRET,
@@ -76,6 +100,11 @@ def main():
             proc.wait(timeout=8);log.close()
         rust,log=spawn()
         try:
+            # No claim is consumed while the rights approval is absent.
+            review_path.rename(review_path.with_suffix(".disabled"))
+            code,_,_=post(ticket("job_rights_missing"))
+            check("no signed review denies direct Rust claim",code==503)
+            review_path.with_suffix(".disabled").rename(review_path)
             code,headers,_=post(ticket("job_owner001"))
             check("first claim redirects",code==303)
             cookie=headers.get("Set-Cookie","").split(";",1)[0]

@@ -15,7 +15,7 @@ use std::{
     env,
     fs::{self, OpenOptions},
     io::Write,
-    os::unix::fs::OpenOptionsExt,
+    os::unix::fs::{OpenOptionsExt, PermissionsExt},
     path::{Path, PathBuf},
     time::{SystemTime, UNIX_EPOCH},
 };
@@ -252,12 +252,127 @@ fn read_grant(file: &Path) -> Result<Option<Grant>, RedemptionError> {
         Err(_) => Err(RedemptionError::Unavailable),
     }
 }
+/// Rust-side commercial review barrier. A buyer must not burn a real
+/// paid voucher by creating an unusable grant for a noncommercial paper.
+/// Verify the same separate operator HMAC + exact source bytes as Next.js.
+fn paid_exam_rights_ready(exam_id: &str) -> bool {
+    if !valid_id(exam_id) {
+        return false;
+    }
+    // Synthetic QA content must never accidentally be offered on HTTPS.
+    if exam_id.starts_with("amc8-original-qa-")
+        && !env::var("SOCTHINK_MARKETPLACE_PUBLIC_ORIGIN")
+            .map(|value| value.starts_with("http://127.0.0.1:"))
+            .unwrap_or(false)
+    {
+        return false;
+    }
+    let secret = env::var("SOCTHINK_MARKETPLACE_RIGHTS_REVIEW_SECRET").unwrap_or_default();
+    let dir = PathBuf::from(env::var("SOCTHINK_MARKETPLACE_RIGHTS_REVIEW_DIR").unwrap_or_default());
+    let exams = PathBuf::from(env::var("SOCTHINK_MARKETPLACE_EXAMS_DIR").unwrap_or_default());
+    if secret.len() < 32 || !dir.is_absolute() || !exams.is_absolute() {
+        return false;
+    }
+    let ok_dir = fs::symlink_metadata(&dir)
+        .map(|m| m.is_dir() && !m.file_type().is_symlink() && m.permissions().mode() & 0o077 == 0)
+        .unwrap_or(false);
+    if !ok_dir {
+        return false;
+    }
+    let file = exams.join(format!("{exam_id}.json"));
+    let review = dir.join(format!("{exam_id}.json"));
+    let ok_file = fs::symlink_metadata(&file)
+        .map(|m| m.is_file() && !m.file_type().is_symlink())
+        .unwrap_or(false);
+    let ok_review = fs::symlink_metadata(&review)
+        .map(|m| {
+            m.is_file()
+                && !m.file_type().is_symlink()
+                && m.permissions().mode() & 0o077 == 0
+                && m.len() <= 4096
+        })
+        .unwrap_or(false);
+    if !ok_file || !ok_review {
+        return false;
+    }
+    let (Ok(raw), Ok(approval)) = (fs::read(&file), fs::read(&review)) else {
+        return false;
+    };
+    let Ok(exam) = serde_json::from_slice::<serde_json::Value>(&raw) else {
+        return false;
+    };
+    let Ok(data) = serde_json::from_slice::<serde_json::Value>(&approval) else {
+        return false;
+    };
+    let profile = &exam["profile"];
+    let rights = &profile["rightsPolicy"];
+    if profile["id"].as_str() != Some(exam_id)
+        || profile["formatId"].as_str() != Some("maa-amc8")
+        || profile["questionCount"].as_u64() != Some(25)
+        || profile["durationSeconds"].as_u64() != Some(2400)
+        || rights["commercialUse"].as_bool() != Some(true)
+        || !matches!(
+            rights["rightsClass"].as_str(),
+            Some("original-verified" | "licensed-commercial")
+        )
+    {
+        return false;
+    }
+    let Some(license) = rights["license"].as_str() else {
+        return false;
+    };
+    if license.len() < 8 {
+        return false;
+    }
+    let content_sha256 = hex::encode(Sha256::digest(&raw));
+    let (
+        Some(review_id),
+        Some(review_sha),
+        Some(review_license),
+        Some(reviewer),
+        Some(sig),
+        Some(approved_at),
+    ) = (
+        data["examId"].as_str(),
+        data["contentSha256"].as_str(),
+        data["license"].as_str(),
+        data["reviewer"].as_str(),
+        data["signature"].as_str(),
+        data["approvedAt"].as_u64(),
+    )
+    else {
+        return false;
+    };
+    if data["v"].as_u64() != Some(1)
+        || review_id != exam_id || review_sha != content_sha256
+        || review_license != license
+        || !(3..=80).contains(&reviewer.len())
+        || !reviewer.bytes().all(|x| x.is_ascii_alphanumeric() || x == b'_' || x == b'-')
+        || approved_at < 1_767_225_600_000 // 2026-01-01 UTC
+        || approved_at > now().saturating_mul(1000).saturating_add(300_000)
+    {
+        return false;
+    }
+    let payload = format!("v1|{exam_id}|{content_sha256}|{license}|{approved_at}|{reviewer}");
+    let Ok(mut mac) = HmacSha256::new_from_slice(secret.as_bytes()) else {
+        return false;
+    };
+    mac.update(payload.as_bytes());
+    let Ok(decoded) = hex::decode(sig) else {
+        return false;
+    };
+    mac.verify_slice(&decoded).is_ok()
+}
+
 fn redeem_core(
     ticket: &str,
     existing_cookie: Option<String>,
 ) -> Result<(String, String), RedemptionError> {
     let cfg = config()?;
     let t = verify_ticket(ticket, &cfg)?;
+    if !paid_exam_rights_ready(&t.exam_id) {
+        return Err(RedemptionError::Unavailable);
+    }
     let job_hash = sha(&format!("{}|{}|{}", t.job, t.sku, t.exam_id));
     // The revocation tombstone is authoritative even when an existing buyer
     // cookie or an old valid handoff ticket is presented.

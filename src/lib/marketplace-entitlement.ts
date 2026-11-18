@@ -1,6 +1,7 @@
 import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
+import {marketplacePaidExamReady} from "./marketplace-commercial-rights";
 
 /** Separate runtime only. License issues HMAC-authenticated job handoff tickets. */
 export const MARKETPLACE_COOKIE = "socthink_marketplace_session";
@@ -106,7 +107,8 @@ export function marketplaceUserFromCookie(value:string|undefined) {
   if (!marketplaceMode() || !value || !/^[a-f0-9]{64}\.[a-f0-9]{64}$/.test(value)) return null;
   const [jobHash] = value.split(".");
   const g = readGrant(jobHash);
-  if (!g || !validateCookie(value,g)) return null;
+  // A valid paid HMAC never overrides the source paper's commercial license.
+  if (!g || !validateCookie(value,g) || !marketplacePaidExamReady(g.examId)) return null;
   return {id:"market_" + jobHash,username:"marketplace",candidateNo:"MARKET",
     name:"我的数学测评",grade:8,avatarKey:undefined,onboardingCompleted:true,createdAt:g.createdAt,
     active:true,role:"student" as const,sessionVersion:1};
@@ -116,5 +118,6 @@ export function marketplaceAuthorizedExam(userId: string, examId: string) {
   const matched = /^market_([a-f0-9]{64})$/.exec(userId);
   if (!matched) return false;
   const g = readGrant(matched[1]);
-  return !!g && g.examId === examId && g.reportUntil > Date.now();
+  return !!g && g.examId === examId && g.reportUntil > Date.now() &&
+    marketplacePaidExamReady(examId);
 }

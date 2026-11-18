@@ -2,6 +2,8 @@ import crypto from "node:crypto";
 import type {ExamBundle} from "./types";
 import {isExamBundleTrainingReady} from "./training-question-bank";
 import {marketplaceExamAssetsReady} from "./marketplace-exam-assets";
+import {marketplaceCommercialRightsReady} from "./marketplace-commercial-rights";
+import {marketplaceOperatorApprovalVerified} from "./marketplace-rights-review";
 
 /** No buyer entitlement is issued here: monthly is still NOT LIVE. */
 export const AMC8_MONTHLY_SKU = "EDU-002";
@@ -38,6 +40,7 @@ export function checkMonthlyExamInventory(
   papers:readonly MonthlyPaper[],
   resolve:(id:string)=>ExamBundle,
   assets:(questions:ExamBundle["questions"])=>boolean=marketplaceExamAssetsReady,
+  approval:(bundle:ExamBundle)=>boolean=marketplaceOperatorApprovalVerified,
 ):MonthlyReadiness {
   const fail=(code:MonthlyReadiness["code"]):MonthlyReadiness=>
     ({ready:false,code,examIds:[]});
@@ -59,6 +62,8 @@ export function checkMonthlyExamInventory(
        bundle.profile.durationSeconds!==2400||
        !isExamBundleTrainingReady(bundle))
       return fail("EXAM_INVALID");
+    if(!marketplaceCommercialRightsReady(bundle))return fail("RIGHTS_UNAPPROVED");
+    if(!approval(bundle))return fail("RIGHTS_UNAPPROVED");
     if(!assets(bundle.questions))return fail("QUESTION_IMAGES_MISSING");
     const fingerprint=paperFingerprint(bundle);
     if(fingerprints.has(fingerprint))return fail("DUPLICATE_CONTENT");

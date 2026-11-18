@@ -7,6 +7,7 @@ import hashlib
 import hmac
 import http.cookiejar
 import json
+import secrets
 import os
 import pathlib
 import signal
@@ -21,7 +22,7 @@ PORT = 18742
 RUST_PORT = 18743
 ORIGIN = f"http://127.0.0.1:{PORT}"
 SECRET = "local_e2e_test_secret_not_real_paid_order_20261118_replace"
-EXAM_ID = "maa-amc8-2024-user-owned"
+EXAM_ID = "amc8-original-qa-smoke"
 
 def request(opener, route, data=None, origin=None):
     headers = {}
@@ -55,13 +56,39 @@ def status(opener, route, data=None,origin=None):
 def main():
     repo=pathlib.Path(__file__).resolve().parents[1]
     paper=repo/"private/exams"/(EXAM_ID+".json")
-    assert paper.is_file(), "QA fixture paper absent: copy from authorized private library, never git-add it"
-    with tempfile.TemporaryDirectory(prefix="socthink-amc8-e2e-") as tmp:
+    fixture=repo/"tests/fixtures/marketplace-amc8-original-qa.json"
+    assert fixture.is_file(), "synthetic original QA fixture missing"
+    assert not paper.exists(), "QA synthetic exam would collide with an existing paper"
+    paper.parent.mkdir(parents=True,exist_ok=True)
+    paper.write_bytes(fixture.read_bytes())
+    try:
+      with tempfile.TemporaryDirectory(prefix="socthink-amc8-e2e-") as tmp:
         base=pathlib.Path(tmp)
+        # Fresh, isolated and signed approval is allowed ONLY for this
+        # synthetic QA arithmetic fixture, never historic AMC8 papers.
+        qa=json.loads(paper.read_text())
+        assert qa["profile"]["sourceLabel"]=="Generated synthetic QA arithmetic; never for sale"
+        assert qa["profile"]["rightsPolicy"]["license"]=="synthetic-qa-original-only"
+        rights_dir=base/"rights"
+        rights_dir.mkdir(mode=0o700)
+        review_secret=secrets.token_hex(32)
+        review_time=int(time.time()*1000)
+        fingerprint=hashlib.sha256(paper.read_bytes()).hexdigest()
+        review={"v":1,"examId":EXAM_ID,"contentSha256":fingerprint,
+                "license":"synthetic-qa-original-only","approvedAt":review_time,
+                "reviewer":"qa-only"}
+        message="|".join(("v1",EXAM_ID,fingerprint,review["license"],str(review_time),"qa-only"))
+        review["signature"]=hmac.new(review_secret.encode(),message.encode(),hashlib.sha256).hexdigest()
+        review_path=rights_dir/(EXAM_ID+".json")
+        review_path.write_text(json.dumps(review,separators=(",",":")))
+        review_path.chmod(0o600)
         env=os.environ.copy()
         env.update({
           "PORT":str(PORT),"SOCTHINK_MARKETPLACE_EXAM_MODE":"1",
           "SOCTHINK_MARKETPLACE_HANDOFF_SECRET":SECRET,
+          "SOCTHINK_MARKETPLACE_RIGHTS_REVIEW_SECRET":review_secret,
+          "SOCTHINK_MARKETPLACE_RIGHTS_REVIEW_DIR":str(rights_dir),
+          "SOCTHINK_MARKETPLACE_EXAMS_DIR":str(repo/"private/exams"),
           "SOCTHINK_MARKETPLACE_AMC8_EXAM_ID":EXAM_ID,
           "SOCTHINK_MARKETPLACE_PUBLIC_ORIGIN":ORIGIN,
           "SOCTHINK_MARKETPLACE_DATA_DIR":str(base/"claims"),
@@ -106,11 +133,11 @@ def main():
             proof=ticket("job_20261118_accepted_0001")
             with request(browser,"/marketplace/claim?ticket="+urllib.parse.quote(proof)) as r:
                 html=r.read().decode()
-                assert r.status==200 and "领取考试并继续" in html and "2024 MAA AMC 8" in html, "claim response status="+str(r.status)+" html="+html[:1300]
+                assert r.status==200 and "领取考试并继续" in html and "QA Synthetic AMC8 Practice" in html, "claim response status="+str(r.status)+" html="+html[:1300]
             print("PASS real 25-question AMC 8 claim SSR",flush=True)
             with request(browser,"/api/marketplace/claim",data={"ticket":proof},origin=ORIGIN) as r:
                 examhtml=r.read().decode()
-                assert r.status==200 and "/exam/"+EXAM_ID in r.geturl() and "2024" in examhtml and ("确认信息并开始考试" in examhtml or "正在准备考试" in examhtml or "开始考试" in examhtml), "post-claim url="+r.geturl()+" html="+examhtml[:1800]
+                assert r.status==200 and "/exam/"+EXAM_ID in r.geturl() and "QA Synthetic AMC8 Practice" in examhtml and ("确认信息并开始考试" in examhtml or "正在准备考试" in examhtml or "开始考试" in examhtml), "post-claim url="+r.geturl()+" html="+examhtml[:1800]
             print("PASS claim binds browser and renders existing ExamClient",flush=True)
             status_,data=status(browser,"/api/exam-sessions",data={"examId":EXAM_ID})
             assert status_==200, (status_,data[:500])
@@ -177,6 +204,9 @@ def main():
             except ProcessLookupError:pass
             rust.wait(timeout=8)
             rust_log.close()
+
+    finally:
+        paper.unlink(missing_ok=True)
 
 if __name__=="__main__":
     main()

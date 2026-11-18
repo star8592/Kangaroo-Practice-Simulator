@@ -1,0 +1,1637 @@
+{
+  "profile": {
+    "id": "amc8-original-qa-smoke",
+    "name": "QA Synthetic AMC8 Practice",
+    "nameZh": "QA 专用原创试卷（不可销售）",
+    "nameEn": "QA Synthetic AMC8 Practice",
+    "country": "Synthetic",
+    "year": 2026,
+    "grades": "7-8",
+    "durationSeconds": 2400,
+    "questionCount": 25,
+    "initialScore": 0,
+    "maxScore": 150,
+    "wrongPenaltyMode": "none",
+    "wrongPenaltyValue": 0,
+    "blankScoreValue": 0,
+    "language": "bilingual",
+    "studentReady": true,
+    "sourceLabel": "Generated synthetic QA arithmetic; never for sale",
+    "sourceLabelZh": "内部测试生成；禁止出售",
+    "competitionId": "maa-amc",
+    "formatId": "maa-amc8",
+    "paperType": "practice",
+    "timingMode": "recommended",
+    "rightsPolicy": {
+      "rightsClass": "original-verified",
+      "license": "synthetic-qa-original-only",
+      "commercialUse": true,
+      "publicQuestionDisplay": true,
+      "attributionRequired": false
+    },
+    "gradesEn": "7-8",
+    "gradesZh": "七至八年级"
+  },
+  "questions": [
+    {
+      "id": "amc8-original-qa-smoke-q01",
+      "questionNo": 1,
+      "year": 2026,
+      "level": "AMC8",
+      "grades": [
+        "7",
+        "8"
+      ],
+      "language": "bilingual",
+      "points": 6,
+      "answerMode": "choice",
+      "concept": "Arithmetic",
+      "stem": "一个机器人记录了13个蓝色标记和5个红色标记，一共有多少个标记？",
+      "stemEn": "A robot logs 13 blue markers and 5 red markers. How many markers in total?",
+      "choices": [
+        {
+          "key": "A",
+          "label": "13"
+        },
+        {
+          "key": "B",
+          "label": "16"
+        },
+        {
+          "key": "C",
+          "label": "18"
+        },
+        {
+          "key": "D",
+          "label": "20"
+        },
+        {
+          "key": "E",
+          "label": "23"
+        }
+      ],
+      "choicesEn": [
+        {
+          "key": "A",
+          "label": "13"
+        },
+        {
+          "key": "B",
+          "label": "16"
+        },
+        {
+          "key": "C",
+          "label": "18"
+        },
+        {
+          "key": "D",
+          "label": "20"
+        },
+        {
+          "key": "E",
+          "label": "23"
+        }
+      ],
+      "answer": "C",
+      "solution": "13+5=18。",
+      "verified": true,
+      "examReady": true
+    },
+    {
+      "id": "amc8-original-qa-smoke-q02",
+      "questionNo": 2,
+      "year": 2026,
+      "level": "AMC8",
+      "grades": [
+        "7",
+        "8"
+      ],
+      "language": "bilingual",
+      "points": 6,
+      "answerMode": "choice",
+      "concept": "Arithmetic",
+      "stem": "一个机器人记录了15个蓝色标记和6个红色标记，一共有多少个标记？",
+      "stemEn": "A robot logs 15 blue markers and 6 red markers. How many markers in total?",
+      "choices": [
+        {
+          "key": "A",
+          "label": "16"
+        },
+        {
+          "key": "B",
+          "label": "19"
+        },
+        {
+          "key": "C",
+          "label": "21"
+        },
+        {
+          "key": "D",
+          "label": "23"
+        },
+        {
+          "key": "E",
+          "label": "26"
+        }
+      ],
+      "choicesEn": [
+        {
+          "key": "A",
+          "label": "16"
+        },
+        {
+          "key": "B",
+          "label": "19"
+        },
+        {
+          "key": "C",
+          "label": "21"
+        },
+        {
+          "key": "D",
+          "label": "23"
+        },
+        {
+          "key": "E",
+          "label": "26"
+        }
+      ],
+      "answer": "C",
+      "solution": "15+6=21。",
+      "verified": true,
+      "examReady": true
+    },
+    {
+      "id": "amc8-original-qa-smoke-q03",
+      "questionNo": 3,
+      "year": 2026,
+      "level": "AMC8",
+      "grades": [
+        "7",
+        "8"
+      ],
+      "language": "bilingual",
+      "points": 6,
+      "answerMode": "choice",
+      "concept": "Arithmetic",
+      "stem": "一个机器人记录了17个蓝色标记和7个红色标记，一共有多少个标记？",
+      "stemEn": "A robot logs 17 blue markers and 7 red markers. How many markers in total?",
+      "choices": [
+        {
+          "key": "A",
+          "label": "19"
+        },
+        {
+          "key": "B",
+          "label": "22"
+        },
+        {
+          "key": "C",
+          "label": "24"
+        },
+        {
+          "key": "D",
+          "label": "26"
+        },
+        {
+          "key": "E",
+          "label": "29"
+        }
+      ],
+      "choicesEn": [
+        {
+          "key": "A",
+          "label": "19"
+        },
+        {
+          "key": "B",
+          "label": "22"
+        },
+        {
+          "key": "C",
+          "label": "24"
+        },
+        {
+          "key": "D",
+          "label": "26"
+        },
+        {
+          "key": "E",
+          "label": "29"
+        }
+      ],
+      "answer": "C",
+      "solution": "17+7=24。",
+      "verified": true,
+      "examReady": true
+    },
+    {
+      "id": "amc8-original-qa-smoke-q04",
+      "questionNo": 4,
+      "year": 2026,
+      "level": "AMC8",
+      "grades": [
+        "7",
+        "8"
+      ],
+      "language": "bilingual",
+      "points": 6,
+      "answerMode": "choice",
+      "concept": "Arithmetic",
+      "stem": "一个机器人记录了19个蓝色标记和8个红色标记，一共有多少个标记？",
+      "stemEn": "A robot logs 19 blue markers and 8 red markers. How many markers in total?",
+      "choices": [
+        {
+          "key": "A",
+          "label": "22"
+        },
+        {
+          "key": "B",
+          "label": "25"
+        },
+        {
+          "key": "C",
+          "label": "27"
+        },
+        {
+          "key": "D",
+          "label": "29"
+        },
+        {
+          "key": "E",
+          "label": "32"
+        }
+      ],
+      "choicesEn": [
+        {
+          "key": "A",
+          "label": "22"
+        },
+        {
+          "key": "B",
+          "label": "25"
+        },
+        {
+          "key": "C",
+          "label": "27"
+        },
+        {
+          "key": "D",
+          "label": "29"
+        },
+        {
+          "key": "E",
+          "label": "32"
+        }
+      ],
+      "answer": "C",
+      "solution": "19+8=27。",
+      "verified": true,
+      "examReady": true
+    },
+    {
+      "id": "amc8-original-qa-smoke-q05",
+      "questionNo": 5,
+      "year": 2026,
+      "level": "AMC8",
+      "grades": [
+        "7",
+        "8"
+      ],
+      "language": "bilingual",
+      "points": 6,
+      "answerMode": "choice",
+      "concept": "Arithmetic",
+      "stem": "一个机器人记录了21个蓝色标记和9个红色标记，一共有多少个标记？",
+      "stemEn": "A robot logs 21 blue markers and 9 red markers. How many markers in total?",
+      "choices": [
+        {
+          "key": "A",
+          "label": "25"
+        },
+        {
+          "key": "B",
+          "label": "28"
+        },
+        {
+          "key": "C",
+          "label": "30"
+        },
+        {
+          "key": "D",
+          "label": "32"
+        },
+        {
+          "key": "E",
+          "label": "35"
+        }
+      ],
+      "choicesEn": [
+        {
+          "key": "A",
+          "label": "25"
+        },
+        {
+          "key": "B",
+          "label": "28"
+        },
+        {
+          "key": "C",
+          "label": "30"
+        },
+        {
+          "key": "D",
+          "label": "32"
+        },
+        {
+          "key": "E",
+          "label": "35"
+        }
+      ],
+      "answer": "C",
+      "solution": "21+9=30。",
+      "verified": true,
+      "examReady": true
+    },
+    {
+      "id": "amc8-original-qa-smoke-q06",
+      "questionNo": 6,
+      "year": 2026,
+      "level": "AMC8",
+      "grades": [
+        "7",
+        "8"
+      ],
+      "language": "bilingual",
+      "points": 6,
+      "answerMode": "choice",
+      "concept": "Arithmetic",
+      "stem": "一个机器人记录了23个蓝色标记和10个红色标记，一共有多少个标记？",
+      "stemEn": "A robot logs 23 blue markers and 10 red markers. How many markers in total?",
+      "choices": [
+        {
+          "key": "A",
+          "label": "28"
+        },
+        {
+          "key": "B",
+          "label": "31"
+        },
+        {
+          "key": "C",
+          "label": "33"
+        },
+        {
+          "key": "D",
+          "label": "35"
+        },
+        {
+          "key": "E",
+          "label": "38"
+        }
+      ],
+      "choicesEn": [
+        {
+          "key": "A",
+          "label": "28"
+        },
+        {
+          "key": "B",
+          "label": "31"
+        },
+        {
+          "key": "C",
+          "label": "33"
+        },
+        {
+          "key": "D",
+          "label": "35"
+        },
+        {
+          "key": "E",
+          "label": "38"
+        }
+      ],
+      "answer": "C",
+      "solution": "23+10=33。",
+      "verified": true,
+      "examReady": true
+    },
+    {
+      "id": "amc8-original-qa-smoke-q07",
+      "questionNo": 7,
+      "year": 2026,
+      "level": "AMC8",
+      "grades": [
+        "7",
+        "8"
+      ],
+      "language": "bilingual",
+      "points": 6,
+      "answerMode": "choice",
+      "concept": "Arithmetic",
+      "stem": "一个机器人记录了25个蓝色标记和11个红色标记，一共有多少个标记？",
+      "stemEn": "A robot logs 25 blue markers and 11 red markers. How many markers in total?",
+      "choices": [
+        {
+          "key": "A",
+          "label": "31"
+        },
+        {
+          "key": "B",
+          "label": "34"
+        },
+        {
+          "key": "C",
+          "label": "36"
+        },
+        {
+          "key": "D",
+          "label": "38"
+        },
+        {
+          "key": "E",
+          "label": "41"
+        }
+      ],
+      "choicesEn": [
+        {
+          "key": "A",
+          "label": "31"
+        },
+        {
+          "key": "B",
+          "label": "34"
+        },
+        {
+          "key": "C",
+          "label": "36"
+        },
+        {
+          "key": "D",
+          "label": "38"
+        },
+        {
+          "key": "E",
+          "label": "41"
+        }
+      ],
+      "answer": "C",
+      "solution": "25+11=36。",
+      "verified": true,
+      "examReady": true
+    },
+    {
+      "id": "amc8-original-qa-smoke-q08",
+      "questionNo": 8,
+      "year": 2026,
+      "level": "AMC8",
+      "grades": [
+        "7",
+        "8"
+      ],
+      "language": "bilingual",
+      "points": 6,
+      "answerMode": "choice",
+      "concept": "Arithmetic",
+      "stem": "一个机器人记录了27个蓝色标记和12个红色标记，一共有多少个标记？",
+      "stemEn": "A robot logs 27 blue markers and 12 red markers. How many markers in total?",
+      "choices": [
+        {
+          "key": "A",
+          "label": "34"
+        },
+        {
+          "key": "B",
+          "label": "37"
+        },
+        {
+          "key": "C",
+          "label": "39"
+        },
+        {
+          "key": "D",
+          "label": "41"
+        },
+        {
+          "key": "E",
+          "label": "44"
+        }
+      ],
+      "choicesEn": [
+        {
+          "key": "A",
+          "label": "34"
+        },
+        {
+          "key": "B",
+          "label": "37"
+        },
+        {
+          "key": "C",
+          "label": "39"
+        },
+        {
+          "key": "D",
+          "label": "41"
+        },
+        {
+          "key": "E",
+          "label": "44"
+        }
+      ],
+      "answer": "C",
+      "solution": "27+12=39。",
+      "verified": true,
+      "examReady": true
+    },
+    {
+      "id": "amc8-original-qa-smoke-q09",
+      "questionNo": 9,
+      "year": 2026,
+      "level": "AMC8",
+      "grades": [
+        "7",
+        "8"
+      ],
+      "language": "bilingual",
+      "points": 6,
+      "answerMode": "choice",
+      "concept": "Arithmetic",
+      "stem": "一个机器人记录了29个蓝色标记和13个红色标记，一共有多少个标记？",
+      "stemEn": "A robot logs 29 blue markers and 13 red markers. How many markers in total?",
+      "choices": [
+        {
+          "key": "A",
+          "label": "37"
+        },
+        {
+          "key": "B",
+          "label": "40"
+        },
+        {
+          "key": "C",
+          "label": "42"
+        },
+        {
+          "key": "D",
+          "label": "44"
+        },
+        {
+          "key": "E",
+          "label": "47"
+        }
+      ],
+      "choicesEn": [
+        {
+          "key": "A",
+          "label": "37"
+        },
+        {
+          "key": "B",
+          "label": "40"
+        },
+        {
+          "key": "C",
+          "label": "42"
+        },
+        {
+          "key": "D",
+          "label": "44"
+        },
+        {
+          "key": "E",
+          "label": "47"
+        }
+      ],
+      "answer": "C",
+      "solution": "29+13=42。",
+      "verified": true,
+      "examReady": true
+    },
+    {
+      "id": "amc8-original-qa-smoke-q10",
+      "questionNo": 10,
+      "year": 2026,
+      "level": "AMC8",
+      "grades": [
+        "7",
+        "8"
+      ],
+      "language": "bilingual",
+      "points": 6,
+      "answerMode": "choice",
+      "concept": "Arithmetic",
+      "stem": "一个机器人记录了31个蓝色标记和14个红色标记，一共有多少个标记？",
+      "stemEn": "A robot logs 31 blue markers and 14 red markers. How many markers in total?",
+      "choices": [
+        {
+          "key": "A",
+          "label": "40"
+        },
+        {
+          "key": "B",
+          "label": "43"
+        },
+        {
+          "key": "C",
+          "label": "45"
+        },
+        {
+          "key": "D",
+          "label": "47"
+        },
+        {
+          "key": "E",
+          "label": "50"
+        }
+      ],
+      "choicesEn": [
+        {
+          "key": "A",
+          "label": "40"
+        },
+        {
+          "key": "B",
+          "label": "43"
+        },
+        {
+          "key": "C",
+          "label": "45"
+        },
+        {
+          "key": "D",
+          "label": "47"
+        },
+        {
+          "key": "E",
+          "label": "50"
+        }
+      ],
+      "answer": "C",
+      "solution": "31+14=45。",
+      "verified": true,
+      "examReady": true
+    },
+    {
+      "id": "amc8-original-qa-smoke-q11",
+      "questionNo": 11,
+      "year": 2026,
+      "level": "AMC8",
+      "grades": [
+        "7",
+        "8"
+      ],
+      "language": "bilingual",
+      "points": 6,
+      "answerMode": "choice",
+      "concept": "Arithmetic",
+      "stem": "一个机器人记录了33个蓝色标记和15个红色标记，一共有多少个标记？",
+      "stemEn": "A robot logs 33 blue markers and 15 red markers. How many markers in total?",
+      "choices": [
+        {
+          "key": "A",
+          "label": "43"
+        },
+        {
+          "key": "B",
+          "label": "46"
+        },
+        {
+          "key": "C",
+          "label": "48"
+        },
+        {
+          "key": "D",
+          "label": "50"
+        },
+        {
+          "key": "E",
+          "label": "53"
+        }
+      ],
+      "choicesEn": [
+        {
+          "key": "A",
+          "label": "43"
+        },
+        {
+          "key": "B",
+          "label": "46"
+        },
+        {
+          "key": "C",
+          "label": "48"
+        },
+        {
+          "key": "D",
+          "label": "50"
+        },
+        {
+          "key": "E",
+          "label": "53"
+        }
+      ],
+      "answer": "C",
+      "solution": "33+15=48。",
+      "verified": true,
+      "examReady": true
+    },
+    {
+      "id": "amc8-original-qa-smoke-q12",
+      "questionNo": 12,
+      "year": 2026,
+      "level": "AMC8",
+      "grades": [
+        "7",
+        "8"
+      ],
+      "language": "bilingual",
+      "points": 6,
+      "answerMode": "choice",
+      "concept": "Arithmetic",
+      "stem": "一个机器人记录了35个蓝色标记和16个红色标记，一共有多少个标记？",
+      "stemEn": "A robot logs 35 blue markers and 16 red markers. How many markers in total?",
+      "choices": [
+        {
+          "key": "A",
+          "label": "46"
+        },
+        {
+          "key": "B",
+          "label": "49"
+        },
+        {
+          "key": "C",
+          "label": "51"
+        },
+        {
+          "key": "D",
+          "label": "53"
+        },
+        {
+          "key": "E",
+          "label": "56"
+        }
+      ],
+      "choicesEn": [
+        {
+          "key": "A",
+          "label": "46"
+        },
+        {
+          "key": "B",
+          "label": "49"
+        },
+        {
+          "key": "C",
+          "label": "51"
+        },
+        {
+          "key": "D",
+          "label": "53"
+        },
+        {
+          "key": "E",
+          "label": "56"
+        }
+      ],
+      "answer": "C",
+      "solution": "35+16=51。",
+      "verified": true,
+      "examReady": true
+    },
+    {
+      "id": "amc8-original-qa-smoke-q13",
+      "questionNo": 13,
+      "year": 2026,
+      "level": "AMC8",
+      "grades": [
+        "7",
+        "8"
+      ],
+      "language": "bilingual",
+      "points": 6,
+      "answerMode": "choice",
+      "concept": "Arithmetic",
+      "stem": "一个机器人记录了37个蓝色标记和17个红色标记，一共有多少个标记？",
+      "stemEn": "A robot logs 37 blue markers and 17 red markers. How many markers in total?",
+      "choices": [
+        {
+          "key": "A",
+          "label": "49"
+        },
+        {
+          "key": "B",
+          "label": "52"
+        },
+        {
+          "key": "C",
+          "label": "54"
+        },
+        {
+          "key": "D",
+          "label": "56"
+        },
+        {
+          "key": "E",
+          "label": "59"
+        }
+      ],
+      "choicesEn": [
+        {
+          "key": "A",
+          "label": "49"
+        },
+        {
+          "key": "B",
+          "label": "52"
+        },
+        {
+          "key": "C",
+          "label": "54"
+        },
+        {
+          "key": "D",
+          "label": "56"
+        },
+        {
+          "key": "E",
+          "label": "59"
+        }
+      ],
+      "answer": "C",
+      "solution": "37+17=54。",
+      "verified": true,
+      "examReady": true
+    },
+    {
+      "id": "amc8-original-qa-smoke-q14",
+      "questionNo": 14,
+      "year": 2026,
+      "level": "AMC8",
+      "grades": [
+        "7",
+        "8"
+      ],
+      "language": "bilingual",
+      "points": 6,
+      "answerMode": "choice",
+      "concept": "Arithmetic",
+      "stem": "一个机器人记录了39个蓝色标记和18个红色标记，一共有多少个标记？",
+      "stemEn": "A robot logs 39 blue markers and 18 red markers. How many markers in total?",
+      "choices": [
+        {
+          "key": "A",
+          "label": "52"
+        },
+        {
+          "key": "B",
+          "label": "55"
+        },
+        {
+          "key": "C",
+          "label": "57"
+        },
+        {
+          "key": "D",
+          "label": "59"
+        },
+        {
+          "key": "E",
+          "label": "62"
+        }
+      ],
+      "choicesEn": [
+        {
+          "key": "A",
+          "label": "52"
+        },
+        {
+          "key": "B",
+          "label": "55"
+        },
+        {
+          "key": "C",
+          "label": "57"
+        },
+        {
+          "key": "D",
+          "label": "59"
+        },
+        {
+          "key": "E",
+          "label": "62"
+        }
+      ],
+      "answer": "C",
+      "solution": "39+18=57。",
+      "verified": true,
+      "examReady": true
+    },
+    {
+      "id": "amc8-original-qa-smoke-q15",
+      "questionNo": 15,
+      "year": 2026,
+      "level": "AMC8",
+      "grades": [
+        "7",
+        "8"
+      ],
+      "language": "bilingual",
+      "points": 6,
+      "answerMode": "choice",
+      "concept": "Arithmetic",
+      "stem": "一个机器人记录了41个蓝色标记和19个红色标记，一共有多少个标记？",
+      "stemEn": "A robot logs 41 blue markers and 19 red markers. How many markers in total?",
+      "choices": [
+        {
+          "key": "A",
+          "label": "55"
+        },
+        {
+          "key": "B",
+          "label": "58"
+        },
+        {
+          "key": "C",
+          "label": "60"
+        },
+        {
+          "key": "D",
+          "label": "62"
+        },
+        {
+          "key": "E",
+          "label": "65"
+        }
+      ],
+      "choicesEn": [
+        {
+          "key": "A",
+          "label": "55"
+        },
+        {
+          "key": "B",
+          "label": "58"
+        },
+        {
+          "key": "C",
+          "label": "60"
+        },
+        {
+          "key": "D",
+          "label": "62"
+        },
+        {
+          "key": "E",
+          "label": "65"
+        }
+      ],
+      "answer": "C",
+      "solution": "41+19=60。",
+      "verified": true,
+      "examReady": true
+    },
+    {
+      "id": "amc8-original-qa-smoke-q16",
+      "questionNo": 16,
+      "year": 2026,
+      "level": "AMC8",
+      "grades": [
+        "7",
+        "8"
+      ],
+      "language": "bilingual",
+      "points": 6,
+      "answerMode": "choice",
+      "concept": "Arithmetic",
+      "stem": "一个机器人记录了43个蓝色标记和20个红色标记，一共有多少个标记？",
+      "stemEn": "A robot logs 43 blue markers and 20 red markers. How many markers in total?",
+      "choices": [
+        {
+          "key": "A",
+          "label": "58"
+        },
+        {
+          "key": "B",
+          "label": "61"
+        },
+        {
+          "key": "C",
+          "label": "63"
+        },
+        {
+          "key": "D",
+          "label": "65"
+        },
+        {
+          "key": "E",
+          "label": "68"
+        }
+      ],
+      "choicesEn": [
+        {
+          "key": "A",
+          "label": "58"
+        },
+        {
+          "key": "B",
+          "label": "61"
+        },
+        {
+          "key": "C",
+          "label": "63"
+        },
+        {
+          "key": "D",
+          "label": "65"
+        },
+        {
+          "key": "E",
+          "label": "68"
+        }
+      ],
+      "answer": "C",
+      "solution": "43+20=63。",
+      "verified": true,
+      "examReady": true
+    },
+    {
+      "id": "amc8-original-qa-smoke-q17",
+      "questionNo": 17,
+      "year": 2026,
+      "level": "AMC8",
+      "grades": [
+        "7",
+        "8"
+      ],
+      "language": "bilingual",
+      "points": 6,
+      "answerMode": "choice",
+      "concept": "Arithmetic",
+      "stem": "一个机器人记录了45个蓝色标记和21个红色标记，一共有多少个标记？",
+      "stemEn": "A robot logs 45 blue markers and 21 red markers. How many markers in total?",
+      "choices": [
+        {
+          "key": "A",
+          "label": "61"
+        },
+        {
+          "key": "B",
+          "label": "64"
+        },
+        {
+          "key": "C",
+          "label": "66"
+        },
+        {
+          "key": "D",
+          "label": "68"
+        },
+        {
+          "key": "E",
+          "label": "71"
+        }
+      ],
+      "choicesEn": [
+        {
+          "key": "A",
+          "label": "61"
+        },
+        {
+          "key": "B",
+          "label": "64"
+        },
+        {
+          "key": "C",
+          "label": "66"
+        },
+        {
+          "key": "D",
+          "label": "68"
+        },
+        {
+          "key": "E",
+          "label": "71"
+        }
+      ],
+      "answer": "C",
+      "solution": "45+21=66。",
+      "verified": true,
+      "examReady": true
+    },
+    {
+      "id": "amc8-original-qa-smoke-q18",
+      "questionNo": 18,
+      "year": 2026,
+      "level": "AMC8",
+      "grades": [
+        "7",
+        "8"
+      ],
+      "language": "bilingual",
+      "points": 6,
+      "answerMode": "choice",
+      "concept": "Arithmetic",
+      "stem": "一个机器人记录了47个蓝色标记和22个红色标记，一共有多少个标记？",
+      "stemEn": "A robot logs 47 blue markers and 22 red markers. How many markers in total?",
+      "choices": [
+        {
+          "key": "A",
+          "label": "64"
+        },
+        {
+          "key": "B",
+          "label": "67"
+        },
+        {
+          "key": "C",
+          "label": "69"
+        },
+        {
+          "key": "D",
+          "label": "71"
+        },
+        {
+          "key": "E",
+          "label": "74"
+        }
+      ],
+      "choicesEn": [
+        {
+          "key": "A",
+          "label": "64"
+        },
+        {
+          "key": "B",
+          "label": "67"
+        },
+        {
+          "key": "C",
+          "label": "69"
+        },
+        {
+          "key": "D",
+          "label": "71"
+        },
+        {
+          "key": "E",
+          "label": "74"
+        }
+      ],
+      "answer": "C",
+      "solution": "47+22=69。",
+      "verified": true,
+      "examReady": true
+    },
+    {
+      "id": "amc8-original-qa-smoke-q19",
+      "questionNo": 19,
+      "year": 2026,
+      "level": "AMC8",
+      "grades": [
+        "7",
+        "8"
+      ],
+      "language": "bilingual",
+      "points": 6,
+      "answerMode": "choice",
+      "concept": "Arithmetic",
+      "stem": "一个机器人记录了49个蓝色标记和23个红色标记，一共有多少个标记？",
+      "stemEn": "A robot logs 49 blue markers and 23 red markers. How many markers in total?",
+      "choices": [
+        {
+          "key": "A",
+          "label": "67"
+        },
+        {
+          "key": "B",
+          "label": "70"
+        },
+        {
+          "key": "C",
+          "label": "72"
+        },
+        {
+          "key": "D",
+          "label": "74"
+        },
+        {
+          "key": "E",
+          "label": "77"
+        }
+      ],
+      "choicesEn": [
+        {
+          "key": "A",
+          "label": "67"
+        },
+        {
+          "key": "B",
+          "label": "70"
+        },
+        {
+          "key": "C",
+          "label": "72"
+        },
+        {
+          "key": "D",
+          "label": "74"
+        },
+        {
+          "key": "E",
+          "label": "77"
+        }
+      ],
+      "answer": "C",
+      "solution": "49+23=72。",
+      "verified": true,
+      "examReady": true
+    },
+    {
+      "id": "amc8-original-qa-smoke-q20",
+      "questionNo": 20,
+      "year": 2026,
+      "level": "AMC8",
+      "grades": [
+        "7",
+        "8"
+      ],
+      "language": "bilingual",
+      "points": 6,
+      "answerMode": "choice",
+      "concept": "Arithmetic",
+      "stem": "一个机器人记录了51个蓝色标记和24个红色标记，一共有多少个标记？",
+      "stemEn": "A robot logs 51 blue markers and 24 red markers. How many markers in total?",
+      "choices": [
+        {
+          "key": "A",
+          "label": "70"
+        },
+        {
+          "key": "B",
+          "label": "73"
+        },
+        {
+          "key": "C",
+          "label": "75"
+        },
+        {
+          "key": "D",
+          "label": "77"
+        },
+        {
+          "key": "E",
+          "label": "80"
+        }
+      ],
+      "choicesEn": [
+        {
+          "key": "A",
+          "label": "70"
+        },
+        {
+          "key": "B",
+          "label": "73"
+        },
+        {
+          "key": "C",
+          "label": "75"
+        },
+        {
+          "key": "D",
+          "label": "77"
+        },
+        {
+          "key": "E",
+          "label": "80"
+        }
+      ],
+      "answer": "C",
+      "solution": "51+24=75。",
+      "verified": true,
+      "examReady": true
+    },
+    {
+      "id": "amc8-original-qa-smoke-q21",
+      "questionNo": 21,
+      "year": 2026,
+      "level": "AMC8",
+      "grades": [
+        "7",
+        "8"
+      ],
+      "language": "bilingual",
+      "points": 6,
+      "answerMode": "choice",
+      "concept": "Arithmetic",
+      "stem": "一个机器人记录了53个蓝色标记和25个红色标记，一共有多少个标记？",
+      "stemEn": "A robot logs 53 blue markers and 25 red markers. How many markers in total?",
+      "choices": [
+        {
+          "key": "A",
+          "label": "73"
+        },
+        {
+          "key": "B",
+          "label": "76"
+        },
+        {
+          "key": "C",
+          "label": "78"
+        },
+        {
+          "key": "D",
+          "label": "80"
+        },
+        {
+          "key": "E",
+          "label": "83"
+        }
+      ],
+      "choicesEn": [
+        {
+          "key": "A",
+          "label": "73"
+        },
+        {
+          "key": "B",
+          "label": "76"
+        },
+        {
+          "key": "C",
+          "label": "78"
+        },
+        {
+          "key": "D",
+          "label": "80"
+        },
+        {
+          "key": "E",
+          "label": "83"
+        }
+      ],
+      "answer": "C",
+      "solution": "53+25=78。",
+      "verified": true,
+      "examReady": true
+    },
+    {
+      "id": "amc8-original-qa-smoke-q22",
+      "questionNo": 22,
+      "year": 2026,
+      "level": "AMC8",
+      "grades": [
+        "7",
+        "8"
+      ],
+      "language": "bilingual",
+      "points": 6,
+      "answerMode": "choice",
+      "concept": "Arithmetic",
+      "stem": "一个机器人记录了55个蓝色标记和26个红色标记，一共有多少个标记？",
+      "stemEn": "A robot logs 55 blue markers and 26 red markers. How many markers in total?",
+      "choices": [
+        {
+          "key": "A",
+          "label": "76"
+        },
+        {
+          "key": "B",
+          "label": "79"
+        },
+        {
+          "key": "C",
+          "label": "81"
+        },
+        {
+          "key": "D",
+          "label": "83"
+        },
+        {
+          "key": "E",
+          "label": "86"
+        }
+      ],
+      "choicesEn": [
+        {
+          "key": "A",
+          "label": "76"
+        },
+        {
+          "key": "B",
+          "label": "79"
+        },
+        {
+          "key": "C",
+          "label": "81"
+        },
+        {
+          "key": "D",
+          "label": "83"
+        },
+        {
+          "key": "E",
+          "label": "86"
+        }
+      ],
+      "answer": "C",
+      "solution": "55+26=81。",
+      "verified": true,
+      "examReady": true
+    },
+    {
+      "id": "amc8-original-qa-smoke-q23",
+      "questionNo": 23,
+      "year": 2026,
+      "level": "AMC8",
+      "grades": [
+        "7",
+        "8"
+      ],
+      "language": "bilingual",
+      "points": 6,
+      "answerMode": "choice",
+      "concept": "Arithmetic",
+      "stem": "一个机器人记录了57个蓝色标记和27个红色标记，一共有多少个标记？",
+      "stemEn": "A robot logs 57 blue markers and 27 red markers. How many markers in total?",
+      "choices": [
+        {
+          "key": "A",
+          "label": "79"
+        },
+        {
+          "key": "B",
+          "label": "82"
+        },
+        {
+          "key": "C",
+          "label": "84"
+        },
+        {
+          "key": "D",
+          "label": "86"
+        },
+        {
+          "key": "E",
+          "label": "89"
+        }
+      ],
+      "choicesEn": [
+        {
+          "key": "A",
+          "label": "79"
+        },
+        {
+          "key": "B",
+          "label": "82"
+        },
+        {
+          "key": "C",
+          "label": "84"
+        },
+        {
+          "key": "D",
+          "label": "86"
+        },
+        {
+          "key": "E",
+          "label": "89"
+        }
+      ],
+      "answer": "C",
+      "solution": "57+27=84。",
+      "verified": true,
+      "examReady": true
+    },
+    {
+      "id": "amc8-original-qa-smoke-q24",
+      "questionNo": 24,
+      "year": 2026,
+      "level": "AMC8",
+      "grades": [
+        "7",
+        "8"
+      ],
+      "language": "bilingual",
+      "points": 6,
+      "answerMode": "choice",
+      "concept": "Arithmetic",
+      "stem": "一个机器人记录了59个蓝色标记和28个红色标记，一共有多少个标记？",
+      "stemEn": "A robot logs 59 blue markers and 28 red markers. How many markers in total?",
+      "choices": [
+        {
+          "key": "A",
+          "label": "82"
+        },
+        {
+          "key": "B",
+          "label": "85"
+        },
+        {
+          "key": "C",
+          "label": "87"
+        },
+        {
+          "key": "D",
+          "label": "89"
+        },
+        {
+          "key": "E",
+          "label": "92"
+        }
+      ],
+      "choicesEn": [
+        {
+          "key": "A",
+          "label": "82"
+        },
+        {
+          "key": "B",
+          "label": "85"
+        },
+        {
+          "key": "C",
+          "label": "87"
+        },
+        {
+          "key": "D",
+          "label": "89"
+        },
+        {
+          "key": "E",
+          "label": "92"
+        }
+      ],
+      "answer": "C",
+      "solution": "59+28=87。",
+      "verified": true,
+      "examReady": true
+    },
+    {
+      "id": "amc8-original-qa-smoke-q25",
+      "questionNo": 25,
+      "year": 2026,
+      "level": "AMC8",
+      "grades": [
+        "7",
+        "8"
+      ],
+      "language": "bilingual",
+      "points": 6,
+      "answerMode": "choice",
+      "concept": "Arithmetic",
+      "stem": "一个机器人记录了61个蓝色标记和29个红色标记，一共有多少个标记？",
+      "stemEn": "A robot logs 61 blue markers and 29 red markers. How many markers in total?",
+      "choices": [
+        {
+          "key": "A",
+          "label": "85"
+        },
+        {
+          "key": "B",
+          "label": "88"
+        },
+        {
+          "key": "C",
+          "label": "90"
+        },
+        {
+          "key": "D",
+          "label": "92"
+        },
+        {
+          "key": "E",
+          "label": "95"
+        }
+      ],
+      "choicesEn": [
+        {
+          "key": "A",
+          "label": "85"
+        },
+        {
+          "key": "B",
+          "label": "88"
+        },
+        {
+          "key": "C",
+          "label": "90"
+        },
+        {
+          "key": "D",
+          "label": "92"
+        },
+        {
+          "key": "E",
+          "label": "95"
+        }
+      ],
+      "answer": "C",
+      "solution": "61+29=90。",
+      "verified": true,
+      "examReady": true
+    }
+  ]
+}
