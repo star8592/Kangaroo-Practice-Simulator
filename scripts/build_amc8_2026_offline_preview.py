@@ -9,6 +9,8 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+from amc8_2026_editing import UNACCEPTABLE_STEM_MARKERS
+
 ROOT = Path(__file__).resolve().parents[1]
 BUNDLE = ROOT / "private/exams/maa-amc8-2026-us-reference-internal.json"
 OUTPUT = ROOT / "private/drafts/maa-amc8-2026-us-bilingual-offline-preview.html"
@@ -57,7 +59,7 @@ footer{font-size:11px;color:#6f7c8c;line-height:1.5;margin:20px auto;max-width:1
 </article>
 <article id="report"><h2>校对练习结果</h2><p class="sub">这是本机自测结果，不代表官方考试成绩或商业服务报告。</p><div class="summary" id="score"></div><p id="detail"></p>
 <h3>需要复核的题目</h3><div class="mistakes" id="missed"></div><button id="restart">重做整卷</button><button id="print">打印结果</button></article></main>
-<footer>2026 AMC8 私有研究材料 · 英文原题由本机 PDF 裁图提供 · 中文译文为初稿 · 未完成逐题核验及商业权利审查。此HTML在本地file://下运行，不收集个人数据，不访问网络。</footer>
+<footer>2026 AMC8 私有研究材料 · 英文原题由本机 PDF 裁图提供 · 中文译文仍待正式审定 · 25道数学答案已独立核算 · 未获商业使用授权。此HTML在本地file://下运行，不收集个人数据，不访问网络。</footer>
 <script>
 "use strict";
 const questions = __DATA__;
@@ -111,6 +113,8 @@ def main() -> None:
     for i, row in enumerate(rows, 1):
         if row["questionNo"] != i or row["examReady"] is not False:
             raise RuntimeError("UNREVIEWED_QUESTION_NOT_FAIL_CLOSED")
+        if any(marker in row["stem"] for marker in UNACCEPTABLE_STEM_MARKERS):
+            raise RuntimeError(f"Q{i}_EDITORIAL_NOTE_LEAKED_TO_EXAM")
         image = ROOT / "public/local-assets/maa-amc/archive-amc8/2026-us-internal" / f"q{i:02}.png"
         if not image.is_file():
             raise RuntimeError("MISSING_ORIGINAL_IMAGE")
