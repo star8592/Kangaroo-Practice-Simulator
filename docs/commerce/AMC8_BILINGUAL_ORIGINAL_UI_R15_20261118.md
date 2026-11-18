@@ -30,3 +30,12 @@
 - 真正用户付费/30天¥19.90权益、首次¥1抵扣、闲鱼两规格实单回读、独立HTTPS与上线许可尚未交付，不得声称上线或给买家发货。
 
 开发分支只写入通用组件、受控合成测试、CI脚本和研发文档；实际2026原题图、翻译、PDF、HTML都保留在Z890 Git忽略的private路径。
+
+
+## R15.1 · 防止诊断PDF丢原卷图（新增）
+
+核查现有诊断PDF独立渲染器：它用临时 file:// 页面生成PDF；普通网站的 /local-assets/xxx.png 绝对路径无法自动从该临时文件找到源图。已在授权用户/家长的PDF响应路径中，先将站内真实、存在的 /local-assets/ 图片转为内嵌 data:image/*，然后交给原Chrome/PDF渲染器。完全无需新建公开下载API；原有权限校验位于调用此步骤之前。
+
+新增 src/lib/diagnostic-report-embed-assets.ts 的防护包括：仅允许local-assets固定根目录中真实PNG/JPEG/WEBP；拒绝dotdot/URL编码穿越/符号链接出根/缺图/错误文件类型/URL参数、单图超过12MiB及总图超过60MiB；相同图片复用编码，避免重复读取；不改变第三方外链，也不把本机路径写进PDF。正式原卷使用权审核仍独立执行，不会因为PDF嵌图就改变试卷是否可售。
+
+scripts/test_report_local_image_embedding_r15.ts **15/15合成图安全验收通过**。CI的 test:marketplace-bilingual 已加入该验证。此前单页PDF实际输出/重渲染合格；正式生产历史卷全套25页真实原卷内容仍未开放，也尚未完成整份30页诊断的真实实单验收。

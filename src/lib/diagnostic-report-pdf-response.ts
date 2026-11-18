@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { renderDiagnosticReportPdfFromHtml } from "@/lib/diagnostic-report-pdf";
+import {embedLocalReportImages} from "@/lib/diagnostic-report-embed-assets";
 
 function internalOrigin() {
   return process.env.PDF_INTERNAL_ORIGIN?.trim() || `http://127.0.0.1:${process.env.PORT?.trim() || "3000"}`;
@@ -22,7 +23,9 @@ export async function diagnosticReportPdfResponse(
       signal: AbortSignal.timeout(15000),
     });
     if (!page.ok) throw new Error(`report page ${page.status}`);
-    const pdf = renderDiagnosticReportPdfFromHtml(await page.text());
+    // Private PDF snapshots must use the exact locally held source pixels.
+    // Relative /local-assets URLs would be broken in a file:// renderer.
+    const pdf = renderDiagnosticReportPdfFromHtml(embedLocalReportImages(await page.text()));
     return new NextResponse(pdf, {
       headers: {
         "content-type": "application/pdf",
