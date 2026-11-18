@@ -96,21 +96,22 @@ test("sentence: permission denied unlocks stage and never fabricates a score",as
  expect(scoreCalls).toHaveLength(0);
 });
 
-test("sentence: unmount before permission resolves releases the late microphone stream",async({page})=>{
+test("sentence: stale permission resolution cannot hijack a newer recording request",async({page})=>{
  test.setTimeout(45000);
  const scoreCalls=await ready(page);
  await page.getByRole("button",{name:/一键听音/}).click();
  await page.waitForFunction(()=>(window as unknown as {__sentenceLateMic:LateMic}).__sentenceLateMic.pending.length===1);
- // Capture a track reference outside page scope so navigation doesn't lose it.
- const trackId=await page.evaluate(()=>(window as unknown as {__sentenceLateMic:LateMic}).__sentenceLateMic.pending[0].stream.getTracks()[0].id);
- expect(trackId).toBeTruthy();
- // Use the same Next route to unmount the component without a cross-document unload.
- await page.evaluate(()=>{
-  const state=(window as unknown as {__sentenceLateMic:LateMic}).__sentenceLateMic;
-  (window as unknown as {__savedLateStream:MediaStream}).__savedLateStream=state.pending[0].stream;
-  (window as unknown as {__releaseSentenceMic:()=>void}).__releaseSentenceMic=state.pending[0].release;
- });
- // This browser test intentionally navigates away: a pending permission must not upload.
- await page.goto("/competitions");
+ await page.getByRole("button",{name:"取消等待麦克风"}).click();
+ await page.getByRole("button",{name:/一键听音/}).click();
+ await page.waitForFunction(()=>(window as unknown as {__sentenceLateMic:LateMic}).__sentenceLateMic.pending.length===2);
+ expect(await micState(page)).toBe(2);
+ await page.evaluate(()=>(window as unknown as {__sentenceLateMic:LateMic}).__sentenceLateMic.pending[0].release());
+ await page.waitForFunction(()=>(window as unknown as {__sentenceLateMic:LateMic}).__sentenceLateMic.pending[0].stream.getTracks().every(t=>t.readyState==="ended"));
+ await expect(page.getByRole("button",{name:"取消等待麦克风"})).toBeVisible();
+ await page.getByRole("button",{name:"取消等待麦克风"}).click();
+ await page.evaluate(()=>(window as unknown as {__sentenceLateMic:LateMic}).__sentenceLateMic.pending[1].release());
+ await page.waitForFunction(()=>(window as unknown as {__sentenceLateMic:LateMic}).__sentenceLateMic.pending[1].stream.getTracks().every(t=>t.readyState==="ended"));
+ await expect(page.getByRole("button",{name:/一键听音/})).toBeEnabled();
+ await expect(page.getByRole("region",{name:"Rust 发音评分"})).toHaveCount(0);
  expect(scoreCalls).toHaveLength(0);
 });
