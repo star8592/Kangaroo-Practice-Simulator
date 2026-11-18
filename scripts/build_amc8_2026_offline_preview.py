@@ -9,12 +9,12 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from amc8_2026_editing import UNACCEPTABLE_STEM_MARKERS
+from amc8_2026_editing import UNACCEPTABLE_STEM_MARKERS, private_crop_directory
 
 ROOT = Path(__file__).resolve().parents[1]
 BUNDLE = ROOT / "private/exams/maa-amc8-2026-us-reference-internal.json"
 OUTPUT = ROOT / "private/drafts/maa-amc8-2026-us-bilingual-offline-preview.html"
-IMAGE_BASE = "../../public/local-assets/maa-amc/archive-amc8/2026-us-internal"
+IMAGE_BASE = "../assets/maa-amc8-2026-us-internal"
 
 HTML = r"""<!doctype html>
 <html lang="zh-CN"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
@@ -105,6 +105,7 @@ render();remaining();setInterval(remaining,1000);
 
 
 def main() -> None:
+    private_crop_directory(ROOT)
     data = json.loads(BUNDLE.read_text(encoding="utf-8"))
     rows = data["questions"]
     if len(rows) != 25 or data["profile"]["rightsPolicy"]["commercialUse"] is not False:
@@ -115,7 +116,7 @@ def main() -> None:
             raise RuntimeError("UNREVIEWED_QUESTION_NOT_FAIL_CLOSED")
         if any(marker in row["stem"] for marker in UNACCEPTABLE_STEM_MARKERS):
             raise RuntimeError(f"Q{i}_EDITORIAL_NOTE_LEAKED_TO_EXAM")
-        image = ROOT / "public/local-assets/maa-amc/archive-amc8/2026-us-internal" / f"q{i:02}.png"
+        image = ROOT / "private/assets/maa-amc8-2026-us-internal" / f"q{i:02}.png"
         if not image.is_file():
             raise RuntimeError("MISSING_ORIGINAL_IMAGE")
         items.append({
