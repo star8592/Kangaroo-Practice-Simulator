@@ -235,9 +235,10 @@ export default function NativePronunciationTrial(){
     if(recorder.state==="recording")try{recorder.stop();}catch{/* Already detached. */}
    };
    recorder.onstop=()=>{
+    // A stale recorder must never clear the newer generation's stream.
+    if(!active()){stream.getTracks().forEach(track=>track.stop());return;}
     clearCapture();
-    recorderRef.current=null;
-    if(!active())return;
+    if(recorderRef.current===recorder)recorderRef.current=null;
     if(recorderError){
      operationRef.current=false;setStage("idle");
      setStatus("录音设备异常，未生成评分");return;
