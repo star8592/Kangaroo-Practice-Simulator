@@ -2,7 +2,7 @@
 """Synthetic-only R17 test: internal reviewer remarks never appear as questions."""
 from __future__ import annotations
 
-from amc8_2026_editing import REVIEW_SUFFIXES, separate_editor_notes
+from amc8_2026_editing import REVIEW_SUFFIXES, separate_editor_notes, validate_zh_choice_drafts
 
 
 def main() -> None:
@@ -37,6 +37,21 @@ def main() -> None:
         assert "COVERAGE_INVALID" in str(exc)
     else:
         raise AssertionError("INCOMPLETE_TRANSLATIONS_ACCEPTED")
+    sample_choices = {
+        "year": 2026, "edition": "US", "humanApproved": False,
+        "choices": {str(i): {k: f"合成选项{i}-{k}" for k in "ABCDE"} for i in range(1, 26)}
+    }
+    assert len(validate_zh_choice_drafts(sample_choices)) == 25
+    bad_choices = {"year": 2026, "edition": "US", "humanApproved": False,
+                   "choices": {k: dict(v) for k, v in sample_choices["choices"].items()}}
+    bad_choices["choices"]["9"]["B"] = "审校提示：请核对"
+    try:
+        validate_zh_choice_drafts(bad_choices)
+    except ValueError:
+        pass
+    else:
+        raise AssertionError("EDITORIAL_NOTE_IN_OPTION_ACCEPTED")
+    print("AMC8_R18_SYNTHETIC_BILINGUAL_CHOICES=PASS 125/125")
     print("AMC8_R17_SYNTHETIC_EDITORIAL_SEPARATION=PASS 25/25")
 
 
