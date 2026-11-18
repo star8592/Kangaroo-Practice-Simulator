@@ -133,3 +133,52 @@ export function summarizeOfficialSeoProvider(
     source:label,
   };
 }
+
+export type SeoCollectionState = "imported" | "no_final_rows" | "missing_credentials" | "configured" | "error";
+export type SeoCollectorEntry = Readonly<{
+  state: SeoCollectionState;
+  checkedAt: string;
+  importedDays?: number;
+  lastPeriod?: string | null;
+  reason?: string;
+}>;
+
+const COLLECTION_STATES = new Set<SeoCollectionState>(["imported","no_final_rows","missing_credentials","configured","error"]);
+const SAFE_REASONS = /^[a-z0-9_]{1,80}$/;
+
+/** Read only narrow collector diagnostics; never ingest token fields. */
+export function readSeoCollectionStatus(): {status: OfficialSeoReadStatus; engines: Partial<Record<"google" | "bing", SeoCollectorEntry>>} {
+  const filename = path.join(path.dirname(seoOfficialReportsPath()),"seo-collection-status.json");
+  try {
+    if (fs.statSync(filename).size > 8192) return {status:"invalid",engines:{}};
+    const parsed: unknown = JSON.parse(fs.readFileSync(filename,"utf8"));
+    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed))
+      return {status:"invalid",engines:{}};
+    const entries = parsed as Record<string,unknown>;
+    if (Object.keys(entries).some(x=>x!=="google"&&x!=="bing"))
+      return {status:"invalid",engines:{}};
+    const engines: Partial<Record<"google" | "bing", SeoCollectorEntry>> = {};
+    for (const provider of ["google","bing"] as const) {
+      if (entries[provider]===undefined) continue;
+      const x = entries[provider];
+      if (!x || typeof x!=="object" || Array.isArray(x))
+        return {status:"invalid",engines:{}};
+      const row = x as Record<string,unknown>;
+      if (Object.keys(row).some(k=>!["state","checkedAt","importedDays","lastPeriod","reason"].includes(k)))
+        return {status:"invalid",engines:{}};
+      if (!COLLECTION_STATES.has(row.state as SeoCollectionState) ||
+          typeof row.checkedAt!=="string" ||
+          !/^\d{4}-\d{2}-\d{2}T/.test(row.checkedAt) ||
+          !Number.isFinite(Date.parse(row.checkedAt)) ||
+          (row.importedDays!==undefined && (!Number.isSafeInteger(row.importedDays)|| (row.importedDays as number)<0)) ||
+          (row.lastPeriod!==undefined && row.lastPeriod!==null && !validDay(row.lastPeriod)) ||
+          (row.reason!==undefined && (typeof row.reason!=="string"||!SAFE_REASONS.test(row.reason))))
+        return {status:"invalid",engines:{}};
+      engines[provider] = row as SeoCollectorEntry;
+    }
+    return {status:"ok",engines};
+  } catch(error) {
+    if ((error as NodeJS.ErrnoException).code==="ENOENT") return {status:"missing",engines:{}};
+    return {status:error instanceof SyntaxError?"invalid":"unreadable",engines:{}};
+  }
+}

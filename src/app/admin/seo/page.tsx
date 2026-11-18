@@ -110,6 +110,15 @@ export default async function AdminSeoDashboard() {
                     </span>
                     <div className={styles.source}>{provider.source}</div>
                     {provider.observedAt ? <div className={styles.source}>最近导入：{humanTime(provider.observedAt)}</div> : null}
+                    {provider.id === "baidu" ?
+                      <div className={styles.source}>自动读取未开通；支持导入官方报表</div> :
+                      <div className={styles.source}>自动采集：{!provider.collector ? "尚未运行" :
+                        provider.collector.state === "missing_credentials" ? "尚未配置官方授权" :
+                        provider.collector.state === "imported" ? "已采集正式数据" :
+                        provider.collector.state === "no_final_rows" ? "接口暂未返回已定稿数据" :
+                        provider.collector.state === "error" ? "采集失败，检查服务日志" : "授权已配置"}
+                        {provider.collector ? " · "+humanTime(provider.collector.checkedAt) : ""}
+                      </div>}
                     <a href={provider.dashboardUrl} target="_blank" rel="noopener noreferrer">官方站长后台</a>
                   </td>
                 </tr>

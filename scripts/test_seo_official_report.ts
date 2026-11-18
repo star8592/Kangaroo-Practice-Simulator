@@ -33,6 +33,19 @@ try {
   assert.equal(stats?.indexCount,null);
   assert.equal(stats?.sourceStatus,"reported");
   assert.ok(stats?.source.includes("Google Search Console"));
+  fs.writeFileSync(path.join(process.env.SOCTHINK_SEO_DATA_DIR!,"seo-collection-status.json"),JSON.stringify({
+    google:{state:"imported",checkedAt:now.toISOString(),importedDays:1,lastPeriod:"2026-11-17"},
+    bing:{state:"missing_credentials",checkedAt:now.toISOString()}
+  }),{mode:0o600});
+  const withCollector=getSeoMonitorDashboard();
+  assert.equal(withCollector.providers.find(p=>p.id==="google")?.collector?.state,"imported");
+  assert.equal(withCollector.providers.find(p=>p.id==="bing")?.collector?.state,"missing_credentials");
+  assert.equal(withCollector.providers.find(p=>p.id==="baidu")?.collector,null);
+  fs.writeFileSync(path.join(process.env.SOCTHINK_SEO_DATA_DIR!,"seo-collection-status.json"),JSON.stringify({
+    google:{state:"imported",checkedAt:now.toISOString(),access_token:"EXPOSE_ME_NOT"}
+  }),{mode:0o600});
+  assert.equal(getSeoMonitorDashboard().collectorDataStatus,"invalid");
+  fs.unlinkSync(path.join(process.env.SOCTHINK_SEO_DATA_DIR!,"seo-collection-status.json"));
   const again=importOfficialSeoReport(input,evidence,now);
   assert.equal(again.totalRecords,2);
   const stale=summarizeOfficialSeoProvider("google",readOfficialSeoReports().reports,"ok",new Date("2026-12-02T00:00:00Z"));
