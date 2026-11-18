@@ -79,9 +79,9 @@ export default function FocusedWordPractice({
   mountedRef.current=true;
   return ()=>{mountedRef.current=false;cleanup();};
  },[]);
- const busy=stage!=="idle"||operationRef.current;
+ const busy=stage!=="idle";
  function choose(next:string){
-  if(busy||!candidates.includes(next)||next===word)return;
+  if(busy||operationRef.current||!candidates.includes(next)||next===word)return;
   generationRef.current++;
   window.speechSynthesis?.cancel();
   setWord(next);setResult(null);setAttempts(0);setListeningNote(null);
@@ -89,7 +89,7 @@ export default function FocusedWordPractice({
   releaseUrls();
  }
  function listen(){
-  if(busy||!word)return;
+  if(busy||operationRef.current||!word)return;
   onPlay?.();
   if(!("speechSynthesis" in window)){
    setFeedback("设备暂不支持单词合成语音，请听整句参考音。");return;
