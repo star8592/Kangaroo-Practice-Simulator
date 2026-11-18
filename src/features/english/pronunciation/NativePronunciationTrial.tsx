@@ -285,6 +285,12 @@ export default function NativePronunciationTrial(){
   }catch(e){
    pendingStream?.getTracks().forEach(track=>track.stop());
    if(!active())return;
+   invalidateGeneration(generationRef);
+   const recorder=recorderRef.current;
+   if(recorder){
+    recorder.onstop=null;recorder.ondataavailable=null;recorder.onerror=null;
+    if(recorder.state==="recording")try{recorder.stop();}catch{/* Device failed. */}
+   }
    clearCapture();recorderRef.current=null;
    operationRef.current=false;
    if(mountedRef.current){
