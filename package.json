@@ -62,7 +62,7 @@
     "test:digital-sales-policy": "tsx scripts/test_digital_sales_policy.ts",
     "test:portal-commerce": "node scripts/test_portal_commerce_contract.mjs",
     "test:marketplace-monthly": "tsx scripts/test_marketplace_monthly_readiness.mts",
-    "test:marketplace-bilingual": "tsx scripts/test_bilingual_original_r15.tsx --ci-no-browser && tsx scripts/test_report_local_image_embedding_r15.ts && npm run test:exam-submit-recovery",
+    "test:marketplace-bilingual": "python3 scripts/verify_amc8_2026_independent_math.py && tsx scripts/test_bilingual_original_r15.tsx --ci-no-browser && tsx scripts/test_report_local_image_embedding_r15.ts && tsx scripts/test_amc8_2026_synthetic_full_report_r16.tsx && npm run test:exam-submit-recovery",
     "test:marketplace-rights": "tsx scripts/test_marketplace_rights_review.mts && tsx scripts/test_marketplace_entitlement.ts && tsx scripts/test_marketplace_revocation_cookie.mts",
     "test:rights": "python3 scripts/validate_competition_source_registry.py",
     "data:collection-plan": "python3 scripts/build_competition_collection_plan.py",

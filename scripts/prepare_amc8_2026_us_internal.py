@@ -100,6 +100,20 @@ def answers() -> list[str]:
     return [found[n] for n in range(1, 26)]
 
 
+def verified_math_results(keys: list[str]) -> dict[int, dict]:
+    # Independent numerical verifier is written separately from the PDF
+    # extraction and official answer-key parser.
+    from verify_amc8_2026_independent_math import independently_calculate
+    calculations = independently_calculate()
+    if sorted(calculations) != list(range(1, 26)):
+        raise RuntimeError("INDEPENDENT_MATH_QUESTION_COVERAGE_INVALID")
+    discrepancies = [n for n in range(1, 26)
+                     if keys[n-1] != calculations[n]["answer"]]
+    if discrepancies:
+        raise RuntimeError(f"INDEPENDENT_MATH_ANSWER_MISMATCH: {discrepancies}")
+    return calculations
+
+
 def original_crops(positions: list[tuple[int, int, float]], target: Path) -> list[dict]:
     target.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(prefix="amc8-2026-pixels-") as temp:
@@ -142,7 +156,7 @@ def original_crops(positions: list[tuple[int, int, float]], target: Path) -> lis
     return results
 
 
-def make_bundle(zh: dict, keys: list[str], crops: list[dict]) -> dict:
+def make_bundle(zh: dict, keys: list[str], crops: list[dict], math_checks: dict[int, dict]) -> dict:
     profile = {
         "id": EXAM_ID, "name": "2026 MAA AMC 8 · US original booklet · Internal bilingual draft",
         "nameZh": "2026 AMC 8 美国版原卷 · 中英双语校对草稿",
@@ -176,6 +190,8 @@ def make_bundle(zh: dict, keys: list[str], crops: list[dict]) -> dict:
             "studentAssetUrlZh": url, "verified": False, "examReady": False,
             "review": {
                 "translationStatus": "machine-draft-human-review-required",
+                "independentMathAnswerVerified": True,
+                "independentMathProofMethod": math_checks[n]["method"],
                 "visualStatus": "source-pdf-pixels-cropped-mathematical-visual-review-pending",
                 "verified": False, "visualVerified": False, "needsReview": True,
                 "notes": "Do not mark ready or issue paid license before Q-by-Q verification.",
@@ -192,7 +208,9 @@ def make_bundle(zh: dict, keys: list[str], crops: list[dict]) -> dict:
                               "answerKeySha256": REFERENCE_ANSWER_SHA256, "questionCrops": crops,
                               "readyForPaidRelease": False,
                               "originalityComparedIndependently": False,
-                              "rightsVerified": False}}
+                              "rightsVerified": False,
+                              "mathAnswersIndependentlyVerified": 25,
+                              "translationFullyReviewed": False}}
 
 
 def main() -> None:
@@ -202,11 +220,12 @@ def main() -> None:
     translations = preflight()
     positions = original_positions()
     key = answers()
+    checks = verified_math_results(key)
     if not args.write_local_draft:
-        print("AMC8_2026_PREFLIGHT_PASS questions=25 answers=25 pages=2..8")
+        print("AMC8_2026_PREFLIGHT_PASS questions=25 answers=25 independent_math=25 pages=2..8")
         return
     crops = original_crops(positions, ASSETS)
-    bundle = make_bundle(translations, key, crops)
+    bundle = make_bundle(translations, key, crops, checks)
     BUNDLE.parent.mkdir(parents=True, exist_ok=True)
     BUNDLE.write_text(json.dumps(bundle, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print("AMC8_2026_INTERNAL_DRAFT_READY: 25 English source crops + 25 Chinese drafts + 25 reference answers")
