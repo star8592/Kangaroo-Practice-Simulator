@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import tempfile
+import shutil
 from pathlib import Path
 
 from amc8_2026_editing import LEGACY_PUBLIC_CROP_DIR, PRIVATE_CROP_DIR, private_crop_directory
@@ -26,8 +27,7 @@ def main() -> None:
         else:
             raise AssertionError("PUBLIC_SOURCE_IMAGE_NOT_BLOCKED")
         (public / "q01.png").unlink()
-        expected.rmdir()
-        (root / "private").rmdir()
+        shutil.rmtree(root / "private")
         (root / "private").symlink_to(root / "public", target_is_directory=True)
         try:
             private_crop_directory(root)
