@@ -25,15 +25,23 @@ try{
     qa(width+" complete image loads",await page.locator("#source").evaluate(el=>el.complete && el.naturalWidth>1000));
     qa(width+" Chinese source correspondence",
        (await page.locator("#stem").innerText()).includes(paper.questions[0].stem.slice(0,8)));
+    qa(width+" actual translated options, not placeholders",
+       (await page.getByRole("button",{name:"选择 A"}).innerText()).includes(paper.questions[0].choices[0].label));
     qa(width+" no viewport overflow",await page.evaluate(()=>document.documentElement.scrollWidth <= innerWidth));
     qa(width+" 25 question navigation buttons",await page.locator(".nav button").count()===25);
     qa(width+" 40-minute start",await page.locator("#timer").innerText()==="40:00");
     const desktop=width===1280;
     if(desktop){
+      let optionMatches=0;
       for(let n=0;n<25;n++){
         await page.locator(".nav button").nth(n).click();
+        for(const choice of paper.questions[n].choices){
+          const label=await page.getByRole("button",{name:"选择 "+choice.key}).innerText();
+          if(label.includes(choice.label) && !label.includes("参见原卷的")) optionMatches++;
+        }
         await page.getByRole("button",{name:"选择 "+paper.questions[n].answer}).click();
       }
+      qa("125/125 Chinese choice labels genuinely visible",optionMatches===125);
       qa("25 answers registered", (await page.locator("#progress-text").innerText()).includes("25/25"));
       await page.locator("#submit").click();
       qa("perfect score 25/25",await page.locator("#score").innerText()==="25 / 25");
@@ -43,6 +51,11 @@ try{
       await page.locator("#restart").click();
       qa("restart resets attempts",await page.locator("#progress-text").innerText().then(t=>t.includes("0/25")));
     }else{
+      await page.locator(".nav button").nth(2).click();
+      qa("mobile long Chinese option labels visible",
+         (await page.getByRole("button",{name:"选择 E"}).innerText()).includes(paper.questions[2].choices[4].label));
+      qa("mobile long-choice question has no horizontal overflow",
+         await page.evaluate(()=>document.documentElement.scrollWidth <= innerWidth));
       await page.locator(".nav button").last().click();
       await page.waitForFunction(()=>{const img=document.querySelector("#source");return img&&img.complete&&img.naturalWidth>1000});
       qa("final problem image loads",await page.locator("#source").evaluate(el=>el.complete && el.naturalWidth>1000));
