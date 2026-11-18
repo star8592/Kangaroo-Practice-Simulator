@@ -1,0 +1,415 @@
+{
+  "scope": "AMC8 official named annual series 1999–2026 excluding 2021",
+  "notice": "Inventory metadata only. No official authenticity or commercial license is established.",
+  "summary": {
+    "expected_years": 27,
+    "local_full_year_candidates": 24,
+    "missing_years": [
+      1999,
+      2025,
+      2026
+    ],
+    "sample_years": [
+      2023
+    ],
+    "commercially_authorized_years_verified": 0,
+    "fragment_files": 8,
+    "corrupt_files": 0
+  },
+  "years": [
+    {
+      "year": 1999,
+      "status": "MISSING_LOCAL_FULL_PAPER",
+      "candidates": []
+    },
+    {
+      "year": 2000,
+      "status": "LOCAL_25Q_NEEDS_ORIGINAL_COMPARISON",
+      "candidates": [
+        {
+          "filename": "maa-amc8-2000-user-owned.json",
+          "exam_id": "maa-amc8-2000-user-owned",
+          "question_count": 25,
+          "commercial_use_declared": false,
+          "source_comparison_verified": false,
+          "rights_verified": false
+        }
+      ]
+    },
+    {
+      "year": 2001,
+      "status": "LOCAL_25Q_NEEDS_ORIGINAL_COMPARISON",
+      "candidates": [
+        {
+          "filename": "maa-amc8-2001-user-owned.json",
+          "exam_id": "maa-amc8-2001-user-owned",
+          "question_count": 25,
+          "commercial_use_declared": false,
+          "source_comparison_verified": false,
+          "rights_verified": false
+        }
+      ]
+    },
+    {
+      "year": 2002,
+      "status": "LOCAL_25Q_NEEDS_ORIGINAL_COMPARISON",
+      "candidates": [
+        {
+          "filename": "maa-amc8-2002-user-owned.json",
+          "exam_id": "maa-amc8-2002-user-owned",
+          "question_count": 25,
+          "commercial_use_declared": false,
+          "source_comparison_verified": false,
+          "rights_verified": false
+        }
+      ]
+    },
+    {
+      "year": 2003,
+      "status": "LOCAL_25Q_NEEDS_ORIGINAL_COMPARISON",
+      "candidates": [
+        {
+          "filename": "maa-amc8-2003-user-owned.json",
+          "exam_id": "maa-amc8-2003-user-owned",
+          "question_count": 25,
+          "commercial_use_declared": false,
+          "source_comparison_verified": false,
+          "rights_verified": false
+        }
+      ]
+    },
+    {
+      "year": 2004,
+      "status": "LOCAL_25Q_NEEDS_ORIGINAL_COMPARISON",
+      "candidates": [
+        {
+          "filename": "maa-amc8-2004-user-owned.json",
+          "exam_id": "maa-amc8-2004-user-owned",
+          "question_count": 25,
+          "commercial_use_declared": false,
+          "source_comparison_verified": false,
+          "rights_verified": false
+        }
+      ]
+    },
+    {
+      "year": 2005,
+      "status": "LOCAL_25Q_NEEDS_ORIGINAL_COMPARISON",
+      "candidates": [
+        {
+          "filename": "maa-amc8-2005-user-owned.json",
+          "exam_id": "maa-amc8-2005-user-owned",
+          "question_count": 25,
+          "commercial_use_declared": false,
+          "source_comparison_verified": false,
+          "rights_verified": false
+        }
+      ]
+    },
+    {
+      "year": 2006,
+      "status": "LOCAL_25Q_NEEDS_ORIGINAL_COMPARISON",
+      "candidates": [
+        {
+          "filename": "maa-amc8-2006-user-owned.json",
+          "exam_id": "maa-amc8-2006-user-owned",
+          "question_count": 25,
+          "commercial_use_declared": false,
+          "source_comparison_verified": false,
+          "rights_verified": false
+        }
+      ]
+    },
+    {
+      "year": 2007,
+      "status": "LOCAL_25Q_NEEDS_ORIGINAL_COMPARISON",
+      "candidates": [
+        {
+          "filename": "maa-amc8-2007-user-owned.json",
+          "exam_id": "maa-amc8-2007-user-owned",
+          "question_count": 25,
+          "commercial_use_declared": false,
+          "source_comparison_verified": false,
+          "rights_verified": false
+        }
+      ]
+    },
+    {
+      "year": 2008,
+      "status": "LOCAL_25Q_NEEDS_ORIGINAL_COMPARISON",
+      "candidates": [
+        {
+          "filename": "maa-amc8-2008-user-owned.json",
+          "exam_id": "maa-amc8-2008-user-owned",
+          "question_count": 25,
+          "commercial_use_declared": false,
+          "source_comparison_verified": false,
+          "rights_verified": false
+        }
+      ]
+    },
+    {
+      "year": 2009,
+      "status": "LOCAL_25Q_NEEDS_ORIGINAL_COMPARISON",
+      "candidates": [
+        {
+          "filename": "maa-amc8-2009-user-owned.json",
+          "exam_id": "maa-amc8-2009-user-owned",
+          "question_count": 25,
+          "commercial_use_declared": false,
+          "source_comparison_verified": false,
+          "rights_verified": false
+        }
+      ]
+    },
+    {
+      "year": 2010,
+      "status": "LOCAL_25Q_NEEDS_ORIGINAL_COMPARISON",
+      "candidates": [
+        {
+          "filename": "maa-amc8-2010-user-owned.json",
+          "exam_id": "maa-amc8-2010-user-owned",
+          "question_count": 25,
+          "commercial_use_declared": false,
+          "source_comparison_verified": false,
+          "rights_verified": false
+        }
+      ]
+    },
+    {
+      "year": 2011,
+      "status": "LOCAL_25Q_NEEDS_ORIGINAL_COMPARISON",
+      "candidates": [
+        {
+          "filename": "maa-amc8-2011-user-owned.json",
+          "exam_id": "maa-amc8-2011-user-owned",
+          "question_count": 25,
+          "commercial_use_declared": false,
+          "source_comparison_verified": false,
+          "rights_verified": false
+        }
+      ]
+    },
+    {
+      "year": 2012,
+      "status": "LOCAL_25Q_NEEDS_ORIGINAL_COMPARISON",
+      "candidates": [
+        {
+          "filename": "maa-amc8-2012-user-owned.json",
+          "exam_id": "maa-amc8-2012-user-owned",
+          "question_count": 25,
+          "commercial_use_declared": false,
+          "source_comparison_verified": false,
+          "rights_verified": false
+        }
+      ]
+    },
+    {
+      "year": 2013,
+      "status": "LOCAL_25Q_NEEDS_ORIGINAL_COMPARISON",
+      "candidates": [
+        {
+          "filename": "maa-amc8-2013-user-owned.json",
+          "exam_id": "maa-amc8-2013-user-owned",
+          "question_count": 25,
+          "commercial_use_declared": false,
+          "source_comparison_verified": false,
+          "rights_verified": false
+        }
+      ]
+    },
+    {
+      "year": 2014,
+      "status": "LOCAL_25Q_NEEDS_ORIGINAL_COMPARISON",
+      "candidates": [
+        {
+          "filename": "maa-amc8-2014-user-owned.json",
+          "exam_id": "maa-amc8-2014-user-owned",
+          "question_count": 25,
+          "commercial_use_declared": false,
+          "source_comparison_verified": false,
+          "rights_verified": false
+        }
+      ]
+    },
+    {
+      "year": 2015,
+      "status": "LOCAL_25Q_NEEDS_ORIGINAL_COMPARISON",
+      "candidates": [
+        {
+          "filename": "maa-amc8-2015-user-owned.json",
+          "exam_id": "maa-amc8-2015-user-owned",
+          "question_count": 25,
+          "commercial_use_declared": false,
+          "source_comparison_verified": false,
+          "rights_verified": false
+        }
+      ]
+    },
+    {
+      "year": 2016,
+      "status": "LOCAL_25Q_NEEDS_ORIGINAL_COMPARISON",
+      "candidates": [
+        {
+          "filename": "maa-amc8-2016-user-owned.json",
+          "exam_id": "maa-amc8-2016-user-owned",
+          "question_count": 25,
+          "commercial_use_declared": false,
+          "source_comparison_verified": false,
+          "rights_verified": false
+        }
+      ]
+    },
+    {
+      "year": 2017,
+      "status": "LOCAL_25Q_NEEDS_ORIGINAL_COMPARISON",
+      "candidates": [
+        {
+          "filename": "maa-amc8-2017-user-owned.json",
+          "exam_id": "maa-amc8-2017-user-owned",
+          "question_count": 25,
+          "commercial_use_declared": false,
+          "source_comparison_verified": false,
+          "rights_verified": false
+        }
+      ]
+    },
+    {
+      "year": 2018,
+      "status": "LOCAL_25Q_NEEDS_ORIGINAL_COMPARISON",
+      "candidates": [
+        {
+          "filename": "maa-amc8-2018-user-owned.json",
+          "exam_id": "maa-amc8-2018-user-owned",
+          "question_count": 25,
+          "commercial_use_declared": false,
+          "source_comparison_verified": false,
+          "rights_verified": false
+        }
+      ]
+    },
+    {
+      "year": 2019,
+      "status": "LOCAL_25Q_NEEDS_ORIGINAL_COMPARISON",
+      "candidates": [
+        {
+          "filename": "maa-amc8-2019-user-owned.json",
+          "exam_id": "maa-amc8-2019-user-owned",
+          "question_count": 25,
+          "commercial_use_declared": false,
+          "source_comparison_verified": false,
+          "rights_verified": false
+        }
+      ]
+    },
+    {
+      "year": 2020,
+      "status": "LOCAL_25Q_NEEDS_ORIGINAL_COMPARISON",
+      "candidates": [
+        {
+          "filename": "maa-amc8-2020-user-owned.json",
+          "exam_id": "maa-amc8-2020-user-owned",
+          "question_count": 25,
+          "commercial_use_declared": false,
+          "source_comparison_verified": false,
+          "rights_verified": false
+        }
+      ]
+    },
+    {
+      "year": 2022,
+      "status": "LOCAL_25Q_NEEDS_ORIGINAL_COMPARISON",
+      "candidates": [
+        {
+          "filename": "maa-amc8-2022-user-owned.json",
+          "exam_id": "maa-amc8-2022-user-owned",
+          "question_count": 25,
+          "commercial_use_declared": false,
+          "source_comparison_verified": false,
+          "rights_verified": false
+        }
+      ]
+    },
+    {
+      "year": 2023,
+      "status": "SAMPLE_NEEDS_ORIGINAL_COMPARISON",
+      "candidates": [
+        {
+          "filename": "maa-amc8-2023-sample.json",
+          "exam_id": "maa-amc8-2023-sample",
+          "question_count": 25,
+          "commercial_use_declared": false,
+          "source_comparison_verified": false,
+          "rights_verified": false
+        }
+      ]
+    },
+    {
+      "year": 2024,
+      "status": "LOCAL_25Q_NEEDS_ORIGINAL_COMPARISON",
+      "candidates": [
+        {
+          "filename": "maa-amc8-2024-user-owned.json",
+          "exam_id": "maa-amc8-2024-user-owned",
+          "question_count": 25,
+          "commercial_use_declared": false,
+          "source_comparison_verified": false,
+          "rights_verified": false
+        }
+      ]
+    },
+    {
+      "year": 2025,
+      "status": "MISSING_LOCAL_FULL_PAPER",
+      "candidates": []
+    },
+    {
+      "year": 2026,
+      "status": "MISSING_LOCAL_FULL_PAPER",
+      "candidates": []
+    }
+  ],
+  "fragments": [
+    {
+      "filename": "maa-amc8-practice-casework.json",
+      "year": 2026,
+      "question_count": 4
+    },
+    {
+      "filename": "maa-amc8-practice-equation.json",
+      "year": 2026,
+      "question_count": 5
+    },
+    {
+      "filename": "maa-amc8-practice-find-pattern.json",
+      "year": 2026,
+      "question_count": 4
+    },
+    {
+      "filename": "maa-amc8-practice-guess-check.json",
+      "year": 2026,
+      "question_count": 5
+    },
+    {
+      "filename": "maa-amc8-practice-ordered-list.json",
+      "year": 2026,
+      "question_count": 6
+    },
+    {
+      "filename": "maa-amc8-practice-simpler-problem.json",
+      "year": 2026,
+      "question_count": 4
+    },
+    {
+      "filename": "maa-amc8-practice-symmetry.json",
+      "year": 2026,
+      "question_count": 3
+    },
+    {
+      "filename": "maa-amc8-practice-work-backwards.json",
+      "year": 2026,
+      "question_count": 3
+    }
+  ],
+  "corrupt": []
+}
