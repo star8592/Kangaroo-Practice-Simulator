@@ -19,6 +19,8 @@ export const AMC8_MONTHLY_MIN_PAPERS=AMC8_OFFICIAL_ARCHIVE_YEARS.length;
 
 export type MonthlyPaper = {
   examId:string;
+  year:number;
+  officialSourceVerified:boolean;
   rightsApproved:boolean;
   deliveryVerified:boolean;
 };
