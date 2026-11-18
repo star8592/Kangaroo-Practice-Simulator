@@ -11,6 +11,8 @@ from pathlib import Path
 
 from PIL import Image, ImageDraw, ImageFont
 
+from amc8_2026_editing import UNACCEPTABLE_STEM_MARKERS
+
 ROOT = Path(__file__).resolve().parents[1]
 DRAFT = ROOT / "private/exams/maa-amc8-2026-us-reference-internal.json"
 CROPS = ROOT / "public/local-assets/maa-amc/archive-amc8/2026-us-internal"
@@ -45,6 +47,8 @@ def build() -> None:
         raise RuntimeError("NOT_A_REVIEW_ONLY_25Q_BUNDLE")
     if any(q["examReady"] is not False or q["review"]["needsReview"] is not True for q in questions):
         raise RuntimeError("DRAFT_ILLEGALLY_MARKED_READY")
+    if any(marker in q["stem"] for q in questions for marker in UNACCEPTABLE_STEM_MARKERS):
+        raise RuntimeError("EDITORIAL_COMMENT_LEAKED_IN_REVIEW_PDF_STEM")
     title_font = ImageFont.truetype(str(FONT), 39)
     body_font = ImageFont.truetype(str(FONT), 28)
     note_font = ImageFont.truetype(str(FONT), 22)
@@ -65,6 +69,12 @@ def build() -> None:
             draw.text((MARGIN, y), line, font=body_font, fill="#20334a")
             y += 43
         y += 24
+        editor_note = q["review"].get("reviewerNotes", "")
+        if editor_note:
+            for line in wrap_zh(draw, "审校备注（不属于题目）： " + editor_note, note_font, MAX_CONTENT_W):
+                draw.text((MARGIN, y), line, font=note_font, fill="#8a5d16")
+                y += 34
+            y += 12
         src = Image.open(source).convert("RGB")
         max_h = PAGESIZE[1] - y - 120
         if max_h <= 200:
@@ -75,7 +85,7 @@ def build() -> None:
         draw.line((MARGIN, PAGESIZE[1] - 85, PAGESIZE[0] - MARGIN, PAGESIZE[1] - 85),
                   fill="#d4dce4", width=2)
         draw.text((MARGIN, PAGESIZE[1] - 72),
-                  "本机内部校对用 · 未完成数学、翻译及授权核验 · 禁止公开销售",
+                  "本机内部校对 · 数学答案已核算 · 译文/图形/授权待审 · 禁止销售",
                   font=note_font, fill="#748092")
         pages.append(page)
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
