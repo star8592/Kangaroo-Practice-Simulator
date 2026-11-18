@@ -56,3 +56,23 @@ def separate_editor_notes(zh: dict[str, str]) -> tuple[dict[str, str], dict[str,
             raise ValueError(f"Q{index}_EDITORIAL_TEXT_LEAKAGE")
         cleaned[key] = text
     return cleaned, notes
+
+
+def validate_zh_choice_drafts(data: dict) -> dict[str, dict[str, str]]:
+    """Validate 25×ABCDE local editorial options; never implies source approval."""
+    if data.get("year") != 2026 or data.get("edition") != "US":
+        raise ValueError("TRANSLATED_OPTION_EDITION_MISMATCH")
+    if data.get("humanApproved") is not False:
+        raise ValueError("UNVERIFIED_OPTION_APPROVAL_NOT_ALLOWED")
+    options = data.get("choices")
+    if not isinstance(options, dict) or set(options) != {str(n) for n in range(1, 26)}:
+        raise ValueError("TRANSLATED_OPTION_COVERAGE_INVALID")
+    for number, values in options.items():
+        if not isinstance(values, dict) or set(values) != set("ABCDE"):
+            raise ValueError(f"Q{number}_OPTION_LABELS_INVALID")
+        for key, value in values.items():
+            if not isinstance(value, str) or not (1 <= len(value.strip()) <= 100):
+                raise ValueError(f"Q{number}_{key}_TRANSLATED_OPTION_EMPTY_OR_TOO_LONG")
+            if any(marker in value for marker in UNACCEPTABLE_STEM_MARKERS):
+                raise ValueError(f"Q{number}_{key}_EDITORIAL_NOTE_IN_OPTION")
+    return options
