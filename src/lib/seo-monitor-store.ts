@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import {
   readOfficialSeoReports, summarizeOfficialSeoProvider,
-  type OfficialSeoProviderStatus,
+  readSeoCollectionStatus, type OfficialSeoProviderStatus,
 } from "./seo-official-reports";
 
 export type SeoCrawlFailure = Readonly<{ path: string; ok: false; issue: string }>;
@@ -118,12 +118,15 @@ export function getSeoMonitorDashboard() {
     ageHours === null || ageHours > 36 ? "stale" :
     latest.robotsOk && latest.healthyCount === latest.checkedCount ? "healthy" : "issues";
   const official = readOfficialSeoReports();
+  const collector = readSeoCollectionStatus();
   const providers = PROVIDERS.map((provider) => {
     const metrics = summarizeOfficialSeoProvider(provider.id, official.reports, official.status);
-    return {...provider, ...metrics, sourceStatus: metrics.status};
+    const channel = provider.id === "baidu" ? null : collector.engines[provider.id] ?? null;
+    return {...provider, ...metrics, sourceStatus: metrics.status, collector: channel};
   });
   return {
     latest, history: history.slice(-30), ageHours, siteStatus,
-    sourceStatus, providerDataStatus: official.status, providers,
+    sourceStatus, providerDataStatus: official.status,
+    collectorDataStatus: collector.status, providers,
   };
 }

@@ -1,0 +1,23 @@
+[Unit]
+Description=SOC THINK official webmaster performance read-only collector
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=master
+Group=master
+WorkingDirectory=/opt/socthink-math
+UMask=0077
+Environment=SOCTHINK_SEO_DATA_DIR=/opt/socthink-math/private/seo
+# Credentials are optional: missing keys mean graceful "not connected".
+# File owned by root mode 0600, read by systemd manager.
+EnvironmentFile=-/etc/socthink/seo-official.env
+ExecStart=/usr/bin/python3 /opt/socthink-math/scripts/seo_official_auto_collect.py
+TimeoutStartSec=8min
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/opt/socthink-math/private/seo
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
