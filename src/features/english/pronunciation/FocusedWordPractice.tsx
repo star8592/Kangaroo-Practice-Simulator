@@ -13,6 +13,7 @@ const listeningLabels:Record<Exclude<ListeningNote,null>,string>={
  again:"我还想继续练习",
 };
 const clean=(word:string)=>word.replace(/[^a-zA-Z'-]/g,"");
+function invalidateGeneration(ref:{current:number}){ref.current++;}
 function recorderFor(stream:MediaStream):MediaRecorder{
  const mime=["audio/webm;codecs=opus","audio/webm","audio/mp4"].find(type=>MediaRecorder.isTypeSupported(type));
  return new MediaRecorder(stream,mime?{mimeType:mime}:undefined);
@@ -72,7 +73,7 @@ export default function FocusedWordPractice({
   mountedRef.current=true;
   return ()=>{
    mountedRef.current=false;
-   generationRef.current++;
+   invalidateGeneration(generationRef);
    operationRef.current=false;
    if(timerRef.current!==null){clearTimeout(timerRef.current);timerRef.current=null;}
    requestRef.current?.abort();requestRef.current=null;
