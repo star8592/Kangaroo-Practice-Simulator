@@ -311,10 +311,12 @@ fn paid_exam_rights_ready(exam_id: &str) -> bool {
         || profile["questionCount"].as_u64() != Some(25)
         || profile["durationSeconds"].as_u64() != Some(2400)
         || rights["commercialUse"].as_bool() != Some(true)
-        || !matches!(
-            rights["rightsClass"].as_str(),
-            Some("original-verified" | "licensed-commercial")
-        )
+        || !(rights["rightsClass"].as_str() == Some("licensed-commercial")
+            || (exam_id.starts_with("amc8-original-qa-")
+                && rights["rightsClass"].as_str() == Some("original-verified")
+                && rights["license"].as_str() == Some("synthetic-qa-original-only")
+                && profile["sourceLabel"].as_str()
+                    == Some("Generated synthetic QA arithmetic; never for sale")))
     {
         return false;
     }
