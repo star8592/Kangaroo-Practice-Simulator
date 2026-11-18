@@ -19,12 +19,13 @@ from pathlib import Path
 
 from PIL import Image
 
-from amc8_2026_editing import separate_editor_notes, private_crop_directory
+from amc8_2026_editing import separate_editor_notes, private_crop_directory, validate_zh_choice_drafts
 
 ROOT = Path(__file__).resolve().parents[1]
 SRC = Path("/mnt/disk1/Research/AMC8/2025-2026-source-reference/2026-MAA-booklet-scan-reference.pdf")
 KEY = Path("/mnt/disk1/Research/AMC8/2025-2026-source-reference/2026-LIVE-answer-key-reference.pdf")
 ZH = ROOT / "private/drafts/maa-amc8-2026-us-zh-draft.json"
+CHOICES_ZH = ROOT / "private/drafts/maa-amc8-2026-us-choices-zh-draft.json"
 BUNDLE = ROOT / "private/exams/maa-amc8-2026-us-reference-internal.json"
 ASSETS = ROOT / "private/assets/maa-amc8-2026-us-internal"
 EXAM_ID = "maa-amc8-2026-us-reference-internal"
@@ -158,7 +159,7 @@ def original_crops(positions: list[tuple[int, int, float]], target: Path) -> lis
     return results
 
 
-def make_bundle(zh: dict, keys: list[str], crops: list[dict], math_checks: dict[int, dict], reviewer_notes: dict[str, str]) -> dict:
+def make_bundle(zh: dict, keys: list[str], crops: list[dict], math_checks: dict[int, dict], reviewer_notes: dict[str, str], choices_zh: dict[str, dict[str, str]]) -> dict:
     profile = {
         "id": EXAM_ID, "name": "2026 MAA AMC 8 · US original booklet · Internal bilingual draft",
         "nameZh": "2026 AMC 8 美国版原卷 · 中英双语校对草稿",
@@ -185,7 +186,7 @@ def make_bundle(zh: dict, keys: list[str], crops: list[dict], math_checks: dict[
             "grades": "Grade 8 and below", "language": "zh/en",
             "questionNo": n, "points": 1, "answerMode": "choice", "concept": "official_original",
             "stem": zh[str(n)], "stemEn": "Original English wording, options and diagrams are shown in the source image below.",
-            "choices": [{"key": k, "label": f"参见原卷的 {k} 选项"} for k in "ABCDE"],
+            "choices": [{"key": k, "label": choices_zh[str(n)][k]} for k in "ABCDE"],
             "choicesEn": [{"key": k, "label": f"Choice {k} in the original source image"} for k in "ABCDE"],
             "answer": keys[n - 1], "solution": "参考答案：" + keys[n - 1] + "；详细解法待校对。",
             "sourceFile": str(SRC), "assetUrl": url, "assetUrlEn": url,
@@ -193,6 +194,7 @@ def make_bundle(zh: dict, keys: list[str], crops: list[dict], math_checks: dict[
             "studentAssetUrlZh": url, "verified": False, "examReady": False,
             "review": {
                 "translationStatus": "machine-draft-human-review-required",
+                "choiceTranslationStatus": "ai-draft-source-image-review-required",
                 "reviewerNotes": reviewer_notes.get(str(n), ""),
                 "independentMathAnswerVerified": True,
                 "independentMathProofMethod": math_checks[n]["method"],
@@ -215,7 +217,9 @@ def make_bundle(zh: dict, keys: list[str], crops: list[dict], math_checks: dict[
                               "originalityComparedIndependently": False,
                               "rightsVerified": False,
                               "mathAnswersIndependentlyVerified": 25,
-                              "translationFullyReviewed": False}}
+                              "translationFullyReviewed": False,
+                              "optionTranslationsPresent": 125,
+                              "optionsHumanApproved": False}}
 
 
 def main() -> None:
@@ -225,6 +229,7 @@ def main() -> None:
     if private_crop_directory(ROOT) != ASSETS.resolve():
         raise RuntimeError("INTERNAL_ASSET_DIRECTORY_MISMATCH")
     translations, reviewer_notes = separate_editor_notes(preflight())
+    choices_zh = validate_zh_choice_drafts(json.loads(CHOICES_ZH.read_text(encoding="utf-8")))
     positions = original_positions()
     key = answers()
     checks = verified_math_results(key)
@@ -232,7 +237,7 @@ def main() -> None:
         print("AMC8_2026_PREFLIGHT_PASS questions=25 answers=25 independent_math=25 pages=2..8")
         return
     crops = original_crops(positions, ASSETS)
-    bundle = make_bundle(translations, key, crops, checks, reviewer_notes)
+    bundle = make_bundle(translations, key, crops, checks, reviewer_notes, choices_zh)
     BUNDLE.parent.mkdir(parents=True, exist_ok=True)
     BUNDLE.write_text(json.dumps(bundle, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print("AMC8_2026_INTERNAL_DRAFT_READY: 25 English source crops + 25 Chinese drafts + 25 reference answers")
