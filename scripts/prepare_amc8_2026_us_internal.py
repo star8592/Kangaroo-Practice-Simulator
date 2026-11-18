@@ -19,6 +19,8 @@ from pathlib import Path
 
 from PIL import Image
 
+from amc8_2026_editing import separate_editor_notes
+
 ROOT = Path(__file__).resolve().parents[1]
 SRC = Path("/mnt/disk1/Research/AMC8/2025-2026-source-reference/2026-MAA-booklet-scan-reference.pdf")
 KEY = Path("/mnt/disk1/Research/AMC8/2025-2026-source-reference/2026-LIVE-answer-key-reference.pdf")
@@ -156,7 +158,7 @@ def original_crops(positions: list[tuple[int, int, float]], target: Path) -> lis
     return results
 
 
-def make_bundle(zh: dict, keys: list[str], crops: list[dict], math_checks: dict[int, dict]) -> dict:
+def make_bundle(zh: dict, keys: list[str], crops: list[dict], math_checks: dict[int, dict], reviewer_notes: dict[str, str]) -> dict:
     profile = {
         "id": EXAM_ID, "name": "2026 MAA AMC 8 · US original booklet · Internal bilingual draft",
         "nameZh": "2026 AMC 8 美国版原卷 · 中英双语校对草稿",
@@ -190,6 +192,7 @@ def make_bundle(zh: dict, keys: list[str], crops: list[dict], math_checks: dict[
             "studentAssetUrlZh": url, "verified": False, "examReady": False,
             "review": {
                 "translationStatus": "machine-draft-human-review-required",
+                "reviewerNotes": reviewer_notes.get(str(n), ""),
                 "independentMathAnswerVerified": True,
                 "independentMathProofMethod": math_checks[n]["method"],
                 "visualStatus": "source-pdf-pixels-cropped-mathematical-visual-review-pending",
@@ -217,7 +220,7 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--write-local-draft", action="store_true")
     args = parser.parse_args()
-    translations = preflight()
+    translations, reviewer_notes = separate_editor_notes(preflight())
     positions = original_positions()
     key = answers()
     checks = verified_math_results(key)
@@ -225,7 +228,7 @@ def main() -> None:
         print("AMC8_2026_PREFLIGHT_PASS questions=25 answers=25 independent_math=25 pages=2..8")
         return
     crops = original_crops(positions, ASSETS)
-    bundle = make_bundle(translations, key, crops, checks)
+    bundle = make_bundle(translations, key, crops, checks, reviewer_notes)
     BUNDLE.parent.mkdir(parents=True, exist_ok=True)
     BUNDLE.write_text(json.dumps(bundle, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print("AMC8_2026_INTERNAL_DRAFT_READY: 25 English source crops + 25 Chinese drafts + 25 reference answers")
