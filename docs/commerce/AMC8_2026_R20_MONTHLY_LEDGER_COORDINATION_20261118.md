@@ -16,7 +16,7 @@ SOC THINK PR #369 最新 R19 commit `aa6281f`，GitHub CI、Miniapp CI、Rust Ca
 - 新 SDK v3 HMAC 签名强绑定月卡SKU、买家、订单、实付金额，拒绝客户端伪造的已付款；
 - SQLite `BEGIN IMMEDIATE` 原子事务同时核销仅有的一张同买家100分体验券，订单重复事件可幂等、不同订单并发不能双抵扣；
 - 不完整订单或未能得到SDK真实月卡规格字段时直接拒绝，不会使用“商品标题像月卡”推断。
-- 合成专项：79项 Python通过、36项 Node.js卖家观察测试通过；Node测试已接入CommerceFlow原有 CI。
+- 合成专项：79项 Python通过、37项 Node.js卖家观察测试通过；Node测试已接入CommerceFlow原有 CI。
 - 代码与报告位于 CommerceFlow PR #379，`docs/AMC8_R20_MONTHLY_SETTLEMENT_V3_20261118.md`。
 
 ## 不能误解的进度
@@ -28,3 +28,6 @@ SOC THINK PR #369 最新 R19 commit `aa6281f`，GitHub CI、Miniapp CI、Rust Ca
 先在卖家登录只读观察中取得真实商品规格ID/金额完整证据，再在合规原卷内容可用的前提下，接入服务端实际结算回调、跨服务30天签名权益、取消退款即时撤销和买家IM发货确认。任何未完成不得修改 `commercialUse=false`、`examReady=false` 或 `offer_ready=false`。
 
 本文件不含 MAA 原题、原图及其完整译文。
+
+
+R20 后续补丁：现有卖家只读 CLI 已增加明确订单号的可选 `--verify-monthly-order`，需要真实月卡商品/规格ID及 SDK 账户参数。Z890 Agent 环境未配置这些变量，未产生真实店铺订单证明。最终 Node 本机观察测试为37项通过。
