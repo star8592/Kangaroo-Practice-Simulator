@@ -64,6 +64,7 @@ def build() -> None:
     body_font = ImageFont.truetype(str(FONT), 28)
     note_font = ImageFont.truetype(str(FONT), 22)
     pages: list[Image.Image] = []
+    review_panels = 0
     for n, q in enumerate(questions, 1):
         source = CROPS / f"q{n:02}.png"
         if not source.is_file():
@@ -100,6 +101,37 @@ def build() -> None:
         factor = min(MAX_CONTENT_W / src.width, max_h / src.height, 1)
         resized = src.resize((round(src.width * factor), round(src.height * factor)), Image.Resampling.LANCZOS)
         page.paste(resized, (MARGIN, y))
+        review_top = max(y + resized.height + 42, 875)
+        if review_top + 250 <= PAGESIZE[1] - 172:
+            review_panels += 1
+            draw.rounded_rectangle(
+                (MARGIN, review_top, PAGESIZE[0] - MARGIN, review_top + 245),
+                radius=14, fill="#f5f8fb", outline="#ccd7e3", width=2,
+            )
+            draw.text(
+                (MARGIN + 25, review_top + 16), "逐题校对工作区（仅审核人员填写）",
+                font=body_font, fill="#24435f",
+            )
+            draw.text(
+                (MARGIN + 25, review_top + 67),
+                "[ ] 译文准确    [ ] 5个选项一致    [ ] 公式与根号范围    [ ] 图形尺寸与标注",
+                font=note_font, fill="#334e69",
+            )
+            draw.text(
+                (MARGIN + 25, review_top + 103),
+                "[ ] 解题过程单独复核    [ ] 原卷版本与年份确认",
+                font=note_font, fill="#334e69",
+            )
+            draw.text(
+                (MARGIN + 25, review_top + 144),
+                "待改问题：____________________________________________________________",
+                font=note_font, fill="#61748a",
+            )
+            draw.text(
+                (MARGIN + 25, review_top + 189),
+                "审核人：________________  日期：________________   本题尚未签核",
+                font=note_font, fill="#61748a",
+            )
         # Reviewer-only answer checkpoint, not part of student-facing questions.
         draw.text(
             (MARGIN, PAGESIZE[1] - 143),
@@ -117,6 +149,7 @@ def build() -> None:
                   resolution=150.0, title="AMC8 2026 US bilingual internal review")
     print(f"AMC8_BILINGUAL_REVIEW_PDF_READY pages=25 path={OUTPUT}")
     print(f"PDF_BYTES={OUTPUT.stat().st_size}")
+    print(f"REVIEWER_CHECKLIST_PANELS={review_panels}/25; HUMAN_APPROVED=NO")
 
 
 if __name__ == "__main__":
