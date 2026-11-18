@@ -178,7 +178,7 @@ export default function FocusedWordPractice({
      const data=await response.json() as {score?:unknown};
      if(typeof data.score!=="number"||!Number.isFinite(data.score)||data.score<0||data.score>100)
       throw Error("Rust 未返回有效的单词评分");
-     if(active()){setResult(data.score);setFeedback("Rust 实验参考分已返回。请先听 A/B 录音，再判断自己的变化。");}
+     if(active()){setResult(data.score);setFeedback("Rust 已返回本次单词的评分结果；请先听 A/B 录音，再判断自己的变化。");}
     }catch(e){
      if(active()){
       setResult(null);
