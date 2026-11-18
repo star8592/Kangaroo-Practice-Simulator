@@ -51,6 +51,8 @@ def build() -> None:
         raise RuntimeError("DRAFT_ILLEGALLY_MARKED_READY")
     if any(marker in q["stem"] for q in questions for marker in UNACCEPTABLE_STEM_MARKERS):
         raise RuntimeError("EDITORIAL_COMMENT_LEAKED_IN_REVIEW_PDF_STEM")
+    if any(len(q.get("choices", [])) != 5 or any(not x.get("label") or x.get("label", "").startswith("参见原卷的") for x in q["choices"]) for q in questions):
+        raise RuntimeError("NOT_A_COMPLETE_BILINGUAL_OPTION_DRAFT")
     title_font = ImageFont.truetype(str(FONT), 39)
     body_font = ImageFont.truetype(str(FONT), 28)
     note_font = ImageFont.truetype(str(FONT), 22)
@@ -70,7 +72,14 @@ def build() -> None:
         for line in lines:
             draw.text((MARGIN, y), line, font=body_font, fill="#20334a")
             y += 43
-        y += 24
+        y += 18
+        for option in q["choices"]:
+            option_text = str(option["key"]) + ".  " + str(option["label"])
+            for option_line in wrap_zh(draw, option_text, note_font, MAX_CONTENT_W):
+                draw.text((MARGIN + 10, y), option_line, font=note_font, fill="#28465e")
+                y += 34
+            y += 4
+        y += 18
         editor_note = q["review"].get("reviewerNotes", "")
         if editor_note:
             for line in wrap_zh(draw, "审校备注（不属于题目）： " + editor_note, note_font, MAX_CONTENT_W):
@@ -87,7 +96,7 @@ def build() -> None:
         draw.line((MARGIN, PAGESIZE[1] - 85, PAGESIZE[0] - MARGIN, PAGESIZE[1] - 85),
                   fill="#d4dce4", width=2)
         draw.text((MARGIN, PAGESIZE[1] - 72),
-                  "本机内部校对 · 数学答案已核算 · 译文/图形/授权待审 · 禁止销售",
+                  "本机内部校对 · 数学已核算 · 中英选项/图形/授权待审 · 禁止销售",
                   font=note_font, fill="#748092")
         pages.append(page)
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
