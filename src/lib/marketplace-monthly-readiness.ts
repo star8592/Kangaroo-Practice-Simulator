@@ -9,7 +9,13 @@ import {marketplaceOperatorApprovalVerified} from "./marketplace-rights-review";
 export const AMC8_MONTHLY_SKU = "EDU-002";
 export const AMC8_MONTHLY_KIND = "AMC8_MONTH";
 export const AMC8_MONTHLY_TERM_DAYS = 30;
-export const AMC8_MONTHLY_MIN_PAPERS = 4;
+/** 1999–2026 official AMC 8 series; 2021 had no sitting.
+ * 1985–1998 are predecessor AJHSME and must be separately labeled.
+ * This is a target catalogue, not a claim that we already licensed the content.
+ */
+export const AMC8_OFFICIAL_ARCHIVE_YEARS:readonly number[] =
+  Object.freeze(Array.from({length:2026-1999+1},(_,i)=>1999+i).filter(y=>y!==2021));
+export const AMC8_MONTHLY_MIN_PAPERS=AMC8_OFFICIAL_ARCHIVE_YEARS.length;
 
 export type MonthlyPaper = {
   examId:string;
@@ -20,7 +26,8 @@ export type MonthlyPaper = {
 export type MonthlyReadiness = {
   ready:boolean;
   code: "READY"|"PAPERS_MISSING"|"DUPLICATE_PAPER"|"RIGHTS_UNAPPROVED"|
-    "EXAM_INVALID"|"QUESTION_IMAGES_MISSING"|"DUPLICATE_CONTENT";
+    "EXAM_INVALID"|"QUESTION_IMAGES_MISSING"|"DUPLICATE_CONTENT"|
+    "YEAR_COVERAGE_INCOMPLETE"|"ORIGINAL_PROVENANCE_UNVERIFIED";
   examIds:string[];
 };
 
@@ -46,6 +53,12 @@ export function checkMonthlyExamInventory(
     ({ready:false,code,examIds:[]});
   if(!Array.isArray(papers)||papers.length<AMC8_MONTHLY_MIN_PAPERS)
     return fail("PAPERS_MISSING");
+  const offeredYears=papers.map(p=>p?.year);
+  if(new Set(offeredYears).size!==AMC8_MONTHLY_MIN_PAPERS ||
+    AMC8_OFFICIAL_ARCHIVE_YEARS.some(y=>!offeredYears.includes(y)))
+    return fail("YEAR_COVERAGE_INCOMPLETE");
+  if(papers.some(p=>p.officialSourceVerified!==true))
+    return fail("ORIGINAL_PROVENANCE_UNVERIFIED");
   const ids=papers.map(p=>p?.examId);
   if(ids.some(id=>!goodId(id)))return fail("EXAM_INVALID");
   if(new Set(ids).size!==ids.length)return fail("DUPLICATE_PAPER");
@@ -57,12 +70,17 @@ export function checkMonthlyExamInventory(
     try{bundle=resolve(paper.examId)}
     catch{return fail("EXAM_INVALID")}
     if(bundle.profile.id!==paper.examId||
+       bundle.profile.year!==paper.year||
        bundle.profile.formatId!=="maa-amc8"||
        bundle.profile.questionCount!==25||
        bundle.profile.durationSeconds!==2400||
        !isExamBundleTrainingReady(bundle))
       return fail("EXAM_INVALID");
+    // A separately generated mock is never interchangeable with the official
+    // exact past paper. Commercial content must be licensed from rights holder.
     if(!marketplaceCommercialRightsReady(bundle))return fail("RIGHTS_UNAPPROVED");
+    if(bundle.profile.rightsPolicy?.rightsClass!=="licensed-commercial")
+      return fail("ORIGINAL_PROVENANCE_UNVERIFIED");
     if(!approval(bundle))return fail("RIGHTS_UNAPPROVED");
     if(!assets(bundle.questions))return fail("QUESTION_IMAGES_MISSING");
     const fingerprint=paperFingerprint(bundle);
@@ -79,13 +97,13 @@ export type MonthlyGrantState = {
   examIds:readonly string[];
 };
 
-/** Policy only: immutable 30-day interval, one complete paper per exam ID.
+/** Policy only: exact 30-day archive access; original official papers can be
+ * retried during the subscription, with each sitting stored as a new attempt.
  * A production handler must independently verify a signed paid entitlement.
  */
 export function checkMonthlyExamPermission(
   grant:MonthlyGrantState,
   examId:string,
-  finishedExamIds:readonly string[],
   now:number=Date.now(),
 ):{allowed:boolean;reason:string}{
   if(!Number.isSafeInteger(now)||!Number.isSafeInteger(grant.createdAt)||
@@ -95,6 +113,5 @@ export function checkMonthlyExamPermission(
   if(grant.revokedAt!==undefined)return {allowed:false,reason:"MONTHLY_REVOKED"};
   if(now<grant.createdAt||now>=grant.expiresAt)return {allowed:false,reason:"MONTHLY_EXPIRED"};
   if(!grant.examIds.includes(examId))return {allowed:false,reason:"EXAM_NOT_IN_PLAN"};
-  if(finishedExamIds.includes(examId))return {allowed:false,reason:"EXAM_ALREADY_USED"};
   return {allowed:true,reason:"AUTHORIZED"};
 }
