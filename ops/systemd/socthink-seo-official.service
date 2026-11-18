@@ -5,15 +5,15 @@ Wants=network-online.target
 
 [Service]
 Type=oneshot
-User=master
-Group=master
+# Same established numeric identity as socthink-seo-monitor.service.
+# UID/GID 1000 has no passwd entry on this production host.
 WorkingDirectory=/opt/socthink-math
 UMask=0077
 Environment=SOCTHINK_SEO_DATA_DIR=/opt/socthink-math/private/seo
 # Credentials are optional: missing keys mean graceful "not connected".
 # File owned by root mode 0600, read by systemd manager.
 EnvironmentFile=-/etc/socthink/seo-official.env
-ExecStart=/usr/bin/python3 /opt/socthink-math/scripts/seo_official_auto_collect.py
+ExecStart=/usr/bin/setpriv --reuid=1000 --regid=1000 --clear-groups /usr/bin/python3 /opt/socthink-math/scripts/seo_official_auto_collect.py
 TimeoutStartSec=8min
 NoNewPrivileges=true
 PrivateTmp=true

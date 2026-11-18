@@ -19,6 +19,17 @@ class OfficialCollectorTests(unittest.TestCase):
     def setUp(self):
         self.now = date(2026, 11, 18)
 
+    def test_systemd_deploy_reuses_existing_numeric_seo_identity(self):
+        root=Path(__file__).resolve().parent.parent
+        unit=(root/"ops/systemd/socthink-seo-official.service").read_text()
+        installer=(root/"ops/release/install_seo_official_collector.sh").read_text()
+        self.assertIn("--reuid=1000 --regid=1000 --clear-groups",unit)
+        self.assertIn("install -d -o 1000 -g 1000 -m 0700",installer)
+        self.assertNotIn("User=master",unit)
+        self.assertNotIn("-o master -g master",installer)
+        self.assertIn("EnvironmentFile=-/etc/socthink/seo-official.env",unit)
+        self.assertIn("NoNewPrivileges=true",unit)
+
     def test_google_final_rows_only_and_valid_integer(self):
         obj = {"rows": [
             {"keys":["2026-11-15"],"clicks":4.0,"impressions":99.0},

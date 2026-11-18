@@ -4,7 +4,7 @@ set -Eeuo pipefail
 APP="/opt/socthink-math"
 CONF="/etc/socthink/seo-official.env"
 install -d -m 0700 /etc/socthink
-install -d -o master -g master -m 0700 "$APP/private/seo"
+install -d -o 1000 -g 1000 -m 0700 "$APP/private/seo"
 if [[ ! -e "$CONF" ]]; then
   (umask 077; : > "$CONF")
 fi
