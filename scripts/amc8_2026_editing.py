@@ -15,6 +15,8 @@ LEGACY_PUBLIC_CROP_DIR = Path("public/local-assets/maa-amc/archive-amc8/2026-us-
 def private_crop_directory(root: Path) -> Path:
     root = root.resolve()
     private_root = (root / "private").resolve()
+    if private_root != root / "private":
+        raise RuntimeError("PRIVATE_ASSET_ROOT_ESCAPED")
     target = (root / PRIVATE_CROP_DIR).resolve()
     if not target.is_relative_to(private_root):
         raise RuntimeError("PRIVATE_ASSET_ROOT_ESCAPED")
