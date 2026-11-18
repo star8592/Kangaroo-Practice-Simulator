@@ -63,7 +63,7 @@ async function openFocusedWord(page:import("@playwright/test").Page,scoreCalls:{
 async function recordWord(focus:import("@playwright/test").Locator){
  await focus.getByRole("button",{name:"录这个词并评分"}).click();
  await focus.getByRole("button",{name:"停止单词录音"}).waitFor();
- await focus.page().waitForTimeout(1400);
+ await new Promise(resolve=>setTimeout(resolve,1400));
  await focus.getByRole("button",{name:"停止单词录音"}).click();
  await expect(focus.getByText(/Rust 实验参考分/)).toContainText("72");
 }
