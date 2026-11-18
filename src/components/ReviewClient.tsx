@@ -1,6 +1,8 @@
 "use client";
 
 import Image from "next/image";
+import BilingualOriginalQuestion from "@/components/BilingualOriginalQuestion";
+import {isStackedBilingualExam} from "@/lib/bilingual-original";
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import type { ReviewAttemptPayload } from "@/lib/review-attempt";
@@ -97,6 +99,7 @@ export default function ReviewClient({ initialAttempt = null }: { initialAttempt
 
   const solutionBook = useMemo(() => solutionBookForExam(a?.examId), [a?.examId]);
   const ui=UI[lang];
+  const stackedBilingual=isStackedBilingualExam(a?.profile);
   const hasBilingual = Boolean(a?.questions.some(q => Boolean(q.stemEn) || Boolean(q.choicesEn?.length)));
   const rows = useMemo(() => {
     if (!a) return [];
@@ -124,7 +127,7 @@ export default function ReviewClient({ initialAttempt = null }: { initialAttempt
           <button className={mode === "wrong" ? "active" : ""} onClick={() => setMode("wrong")}>{ui.wrongOnly}</button>
           <button className={mode === "all" ? "active" : ""} onClick={() => setMode("all")}>{ui.all}</button>
         </div>
-        {hasBilingual && <div className="segmented" style={{ marginTop: 8 }}>
+        {hasBilingual && !stackedBilingual && <div className="segmented" style={{ marginTop: 8 }}>
           <button className={questionLang === "zh" ? "active" : ""} onClick={() => setQuestionLang("zh")}>{ui.questionZh}</button>
           <button className={questionLang === "en" ? "active" : ""} onClick={() => setQuestionLang("en")}>{ui.questionEn}</button>
         </div>}
@@ -141,8 +144,9 @@ export default function ReviewClient({ initialAttempt = null }: { initialAttempt
     <div className="review-list">
       {rows.map(({ item, q }) => {
         const question = q!;
-        const stem = questionLang === "en" && question.stemEn ? question.stemEn : question.stem;
-        const choices = questionLang === "en" && question.choicesEn?.length ? question.choicesEn : question.choices;
+        const stem = stackedBilingual ? question.stem :
+          questionLang === "en" && question.stemEn ? question.stemEn : question.stem;
+        const choices = !stackedBilingual && questionLang === "en" && question.choicesEn?.length ? question.choicesEn : question.choices;
         const status = item.correct === true ? ui.correct : item.correct === false ? ui.wrong : ui.blank;
         const assetUrl = questionLang === "en"
           ? (question.assetUrlEn || question.assetUrl)
@@ -174,8 +178,16 @@ export default function ReviewClient({ initialAttempt = null }: { initialAttempt
             </div>
           </div>
 
-          <h2>{stem}</h2>
-          {assetUrl && <Image className="review-question-asset" src={assetUrl} alt={lang === "zh" ? `第 ${item.questionNo} 题图示` : `Diagram for question ${item.questionNo}`} width={900} height={520} unoptimized />}
+          {stackedBilingual
+            ? <BilingualOriginalQuestion chinese={question.stem} english={question.stemEn}
+                originalImage={question.assetUrlEn||question.assetUrl||question.assetUrlZh}
+                questionNo={item.questionNo} compact/>
+            : <>
+                <h2>{stem}</h2>
+                {assetUrl && <Image className="review-question-asset" src={assetUrl}
+                  alt={lang === "zh" ? "第 " + item.questionNo + " 题图示" : "Diagram for question " + item.questionNo}
+                  width={900} height={520} unoptimized />}
+              </>}
 
           {needsRetry && !isRevealed && <section className="review-retry-box">
             <div>

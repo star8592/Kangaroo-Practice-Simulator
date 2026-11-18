@@ -6,6 +6,8 @@ import Image from "next/image";
 import type { ExamProfile,PublicQuestion } from "@/lib/types";
 import MathVerificationBadge from "@/components/MathVerificationBadge";
 import ExamReadAloud from "@/components/ExamReadAloud";
+import BilingualOriginalQuestion from "@/components/BilingualOriginalQuestion";
+import {isStackedBilingualExam} from "@/lib/bilingual-original";
 import { lowerPrimaryGrade } from "@/lib/read-aloud-script";
 import type { PublicStudent } from "@/lib/auth";
 import { COMPETITION_BRAND,competitionStageBrand,type CompetitionBrandId } from "@/lib/competition-brand";
@@ -127,6 +129,7 @@ export default function ExamClient({examId,user,initialProfile,initialQuestions}
  },[started,split,sectionStartedAt,sessionId,submitting,sectionIndex,timingSections.length,answers,examId]);
 
  const q=questions[index],ui=UI[lang];
+ const stackedBilingual=isStackedBilingualExam(profile);
  const sectionStart=section?section.questionStart-1:0;
  const sectionEnd=section?section.questionEnd-1:Math.max(0,questions.length-1);
  const activeRows=split&&section?questions.slice(sectionStart,sectionEnd+1):questions;
@@ -331,10 +334,16 @@ export default function ExamClient({examId,user,initialProfile,initialQuestions}
    <div className="legend"><span><i className="dot answered"/>{ui.answered}</span><span><i className="dot flag"/>{ui.marked}</span>{split&&<span>🔒 {lang==="zh"?"已锁部分":"Locked part"}</span>}</div>
   </aside>
   <section className="question-card"><div className="question-meta"><div><span className="q-number">Question {index+1}</span><span className={`point-badge ${pointBand}`}>{q.points} {ui.points}</span>{sectionLabel&&<span className="section-chip">{sectionLabel}</span>}</div>
-   <div className="question-tools">{hasBilingual&&<button onClick={switchLang}>{lang==="zh"?"EN":"中"}</button>}<button onClick={toggleFlag}>{flagged[q.id]?`★ ${ui.marked}`:`☆ ${ui.marked}`}</button></div></div>
-   <div className="concept-label-row"><div className="concept-label">{concept}</div><MathVerificationBadge verification={q.mathVerification} lang={lang}/></div><h1 className="question-stem">{stem}</h1>
-   {lowerPrimaryGrade(String(profile.gradesEn||profile.grades||profile.gradesZh||""),profile.gradeBand)&&<ExamReadAloud key={q.id} questionId={q.id} audioZh={q.readingAudioZh} audioEn={q.readingAudioEn} chinese={q.stem} english={q.stemEn} chineseChoices={q.choices} englishChoices={q.choicesEn||[]} />}
-   {visualAsset&&<Image className="question-asset" src={visualAsset} alt={lang==="zh"?"题目图示":"Question diagram"} width={900} height={500} unoptimized/>}
+   <div className="question-tools">{hasBilingual&&!stackedBilingual&&<button onClick={switchLang}>{lang==="zh"?"EN":"中"}</button>}<button onClick={toggleFlag}>{flagged[q.id]?`★ ${ui.marked}`:`☆ ${ui.marked}`}</button></div></div>
+   <div className="concept-label-row"><div className="concept-label">{concept}</div><MathVerificationBadge verification={q.mathVerification} lang={lang}/></div>
+   {stackedBilingual
+    ? <BilingualOriginalQuestion chinese={q.stem} english={q.stemEn}
+        originalImage={q.assetUrlEn||q.assetUrl||q.assetUrlZh} questionNo={index+1}/>
+    : <>
+      <h1 className="question-stem">{stem}</h1>
+      {lowerPrimaryGrade(String(profile.gradesEn||profile.grades||profile.gradesZh||""),profile.gradeBand)&&<ExamReadAloud key={q.id} questionId={q.id} audioZh={q.readingAudioZh} audioEn={q.readingAudioEn} chinese={q.stem} english={q.stemEn} chineseChoices={q.choices} englishChoices={q.choicesEn||[]} />}
+      {visualAsset&&<Image className="question-asset" src={visualAsset} alt={lang==="zh"?"题目图示":"Question diagram"} width={900} height={500} unoptimized/>}
+     </>}
    {isInteger?<div className="integer-answer-box"><label>{lang==="zh"?"整数答案（0–999）":"Integer answer (0–999)"}</label><input inputMode="numeric" pattern="[0-9]*" maxLength={3} value={answers[q.id]||""} onChange={e=>enterInteger(e.target.value)} placeholder="0–999" /></div>
     :<div className="choice-list">{choices.map(c=><button key={c.key} onClick={()=>choose(c.key)} className={answers[q.id]===c.key?"choice selected":"choice"}><span className="choice-key">{c.key}</span><span>{c.label}</span></button>)}</div>}
    <footer className="question-footer"><button className="secondary-button" disabled={index===(split?sectionStart:0)} onClick={()=>go(index-1)}>{ui.previous}</button><div className="question-counter">{index+1} / {questions.length}</div><button className="primary-button" disabled={index===(split?sectionEnd:questions.length-1)} onClick={()=>go(index+1)}>{ui.next}</button></footer>

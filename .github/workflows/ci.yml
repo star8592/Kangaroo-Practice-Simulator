@@ -45,6 +45,9 @@ jobs:
       - name: AMC8 monthly content and entitlement policy (no seller payment)
         run: npm run test:marketplace-monthly
 
+      - name: AMC8 original bilingual rendering and persisted result mode
+        run: npm run test:marketplace-bilingual
+
       - name: WeChat payment readiness uses real runtime flags
         run: python3 scripts/test_payment_readiness.py
 

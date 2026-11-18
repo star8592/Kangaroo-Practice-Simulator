@@ -26,6 +26,10 @@ async function main(){
     const profile={
       id:examId,name:"Isolated recovery fixture",nameZh:"交卷恢复隔离测试",country:"Australia",
       year:2026,grades:"7–8",competitionId:"australian-amc",formatId:"amc8",
+      // A sample uses ordinary UI even if the optional language snapshot is
+      // set; this deliberately checks record persistence without licensing a
+      // historical bilingual original into the public training catalogue.
+      language:"zh-en-stacked",
       paperType:"sample",questionCount:5,durationSeconds:3600,initialScore:0,maxScore:25,
       wrongPenaltyMode:"fixed",wrongPenaltyValue:0,blankScoreValue:0,timingMode:"official"
     };
@@ -68,6 +72,16 @@ async function main(){
     const history=()=>attempts.loadExamAttempts(alice.id,100);
     assert.equal(history().length,1,"same exam session must never append again");
     assert.equal(history()[0].sessionId,original.id);
+    assert.equal(history()[0].profile.language,"zh-en-stacked",
+      "exam archive must persist bilingual display mode without relying on current source bundles");
+    const reviewModule=await import("../src/lib/review-attempt");
+    const reviewRecord=reviewModule.buildReviewAttempt(alice,first.attemptId);
+    assert.equal(reviewRecord?.profile?.language,"zh-en-stacked",
+      "review page must recover display mode from the immutable attempt");
+    const diagnosticModule=await import("../src/lib/diagnostic-report");
+    const diagnostic=diagnosticModule.buildDiagnosticReport(alice,first.attemptId);
+    assert.equal(diagnostic?.exam.language,"zh-en-stacked",
+      "report PDF must retain bilingual display mode from the attempt");
     assert.equal((await POST(req("/api/grade",bobAccess,payload))).status,409,"another student must never replay Alice's ticket");
     assert.equal(history().length,1);
 

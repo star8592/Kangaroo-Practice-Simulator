@@ -53,6 +53,7 @@ export type ExamAttemptRecord = {
     competitionId?: string;
     formatId?: string;
     paperType?: string;
+    language?: string;
   };
   startedAt: number;
   submittedAt: number;
@@ -159,6 +160,7 @@ export function appendExamAttempt(a: {
       competitionId: a.bundle.profile.competitionId,
       formatId: a.bundle.profile.formatId,
       paperType: a.bundle.profile.paperType,
+      language: a.bundle.profile.language,
     },
     startedAt: a.startedAt,
     submittedAt: a.submittedAt,

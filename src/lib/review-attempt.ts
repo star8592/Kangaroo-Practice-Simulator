@@ -5,6 +5,7 @@ import type { GradeResult, PublicQuestion } from "./types";
 
 export type ReviewAttemptPayload = {
   examId: string;
+  profile?: {language?: string; paperType?: string};
   grade: GradeResult;
   answers: Record<string, string>;
   questions: PublicQuestion[];
@@ -54,5 +55,7 @@ export function buildReviewAttempt(user: PublicStudent, attemptId: string): Revi
   const answers = Object.fromEntries(
     attempt.questions.flatMap(row => row.selected ? [[row.questionId, row.selected] as const] : []),
   );
-  return { examId: attempt.examId, grade: attempt.grade, answers, questions };
+  return { examId: attempt.examId,
+    profile: {language: attempt.profile.language, paperType: attempt.profile.paperType},
+    grade: attempt.grade, answers, questions };
 }
