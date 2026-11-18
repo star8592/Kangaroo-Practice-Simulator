@@ -19,14 +19,14 @@ from pathlib import Path
 
 from PIL import Image
 
-from amc8_2026_editing import separate_editor_notes
+from amc8_2026_editing import separate_editor_notes, private_crop_directory
 
 ROOT = Path(__file__).resolve().parents[1]
 SRC = Path("/mnt/disk1/Research/AMC8/2025-2026-source-reference/2026-MAA-booklet-scan-reference.pdf")
 KEY = Path("/mnt/disk1/Research/AMC8/2025-2026-source-reference/2026-LIVE-answer-key-reference.pdf")
 ZH = ROOT / "private/drafts/maa-amc8-2026-us-zh-draft.json"
 BUNDLE = ROOT / "private/exams/maa-amc8-2026-us-reference-internal.json"
-ASSETS = ROOT / "public/local-assets/maa-amc/archive-amc8/2026-us-internal"
+ASSETS = ROOT / "private/assets/maa-amc8-2026-us-internal"
 EXAM_ID = "maa-amc8-2026-us-reference-internal"
 ENGLISH_SHA = "70daec35c1ab2c0bfd16c97925a475d26dbb6c3cc31899bf3f91beee7d4b588f"
 REFERENCE_ANSWER_SHA256 = ("15030752bdf9f61f69e8131901ec37f6"
@@ -178,7 +178,8 @@ def make_bundle(zh: dict, keys: list[str], crops: list[dict], math_checks: dict[
     }
     questions = []
     for n in range(1, 26):
-        url = f"/local-assets/maa-amc/archive-amc8/2026-us-internal/q{n:02}.png"
+        # No HTTP path exists for unlicensed internal source material.
+        url = ""
         questions.append({
             "id": f"maa-amc8-2026-us-q{n:02}", "year": 2026, "level": "AMC 8",
             "grades": "Grade 8 and below", "language": "zh/en",
@@ -202,6 +203,7 @@ def make_bundle(zh: dict, keys: list[str], crops: list[dict], math_checks: dict[
             "sourceMeta": {
                 "sourcePdfSha256": ENGLISH_SHA, "sourcePdfPage": crops[n - 1]["sourcePdfPage"],
                 "sourcePngSha256": crops[n - 1]["pngSha256"],
+                "privateCropRelativePath": f"private/assets/maa-amc8-2026-us-internal/q{n:02}.png",
                 "answerKeySha256": REFERENCE_ANSWER_SHA256, "edition": "US",
                 "translationStatus": "draft", "internalOnly": True,
             },
@@ -220,6 +222,8 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--write-local-draft", action="store_true")
     args = parser.parse_args()
+    if private_crop_directory(ROOT) != ASSETS.resolve():
+        raise RuntimeError("INTERNAL_ASSET_DIRECTORY_MISMATCH")
     translations, reviewer_notes = separate_editor_notes(preflight())
     positions = original_positions()
     key = answers()
