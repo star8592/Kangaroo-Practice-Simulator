@@ -71,10 +71,12 @@ test("R7A: 0.3x selects pre-rendered pitch-preserved track; each word can be tap
  await page.getByRole("button",{name:"octopus",exact:true}).click();
  await expect(page.getByText(/正在读 octopus/)).toBeVisible();
  const said=await page.evaluate(()=>(window as unknown as {__r7aWords:{text:string;rate:number}[]}).__r7aWords);
- expect(said).toEqual([{text:"octopus",rate:.3}]);
+ expect(said.map(x=>x.text)).toEqual(["octopus"]);
+ expect(said[0].rate).toBeCloseTo(.3,5); // Web Speech stores rate as float32.
  await page.getByRole("button",{name:"curious.",exact:true}).click();
- expect(await page.evaluate(()=>(window as unknown as {__r7aWords:{text:string;rate:number}[]}).__r7aWords))
-  .toEqual([{text:"octopus",rate:.3},{text:"curious",rate:.3}]);
+ const words=await page.evaluate(()=>(window as unknown as {__r7aWords:{text:string;rate:number}[]}).__r7aWords);
+ expect(words.map(x=>x.text)).toEqual(["octopus","curious"]);
+ for(const word of words)expect(word.rate).toBeCloseTo(.3,5);
  await speed.selectOption("0.5");
  await expect(audio).toHaveAttribute("src",/follow-along\/octopus-flexibility\.mp3$/);
  expect(await audio.evaluate(el=>(el as HTMLAudioElement).playbackRate)).toBe(.5);
