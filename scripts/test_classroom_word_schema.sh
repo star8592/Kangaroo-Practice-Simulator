@@ -34,7 +34,7 @@ psql_local -f "$ROOT/ops/db/20261120_accent_word_homework.sql" >/dev/null
 word_schema="$(psql_local -Atc "SELECT count(*) FROM pg_class WHERE oid IN ('accent.word_assignments'::regclass,'accent.word_assignment_items'::regclass,'accent.word_assignment_attempts'::regclass,'accent.word_assignment_receipts'::regclass) AND relrowsecurity AND relforcerowsecurity")"
 test "$word_schema" = 4 || { echo "R57_RLS_FAILED=$word_schema"; exit 1; }
 echo "R57_PG18_WORD_HOMEWORK_MIGRATION_RLS_PASS=YES"
-granted="$(psql_local -Atc "SELECT count(*) FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname='accent' AND c.relname IN ('word_assignments','word_assignment_items','word_assignment_attempts','word_assignment_receipts') AND c.relrowsecurity AND c.relforcerowsecurity AND has_table_privilege('accentclass',c.oid,'SELECT') AND has_table_privilege('accentclass',c.oid,'INSERT') AND has_table_privilege('accentclass',c.oid,'UPDATE')")"
+granted="$(psql_local -Atc "SELECT count(*) FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname='accent' AND c.relname IN ('word_assignments','word_assignment_items','word_assignment_attempts','word_assignment_receipts') AND c.relrowsecurity AND c.relforcerowsecurity AND EXISTS(SELECT 1 FROM pg_roles WHERE rolname='accentclass' AND NOT rolsuper AND NOT rolbypassrls AND oid<>c.relowner) AND has_table_privilege('accentclass',c.oid,'SELECT') AND has_table_privilege('accentclass',c.oid,'INSERT') AND has_table_privilege('accentclass',c.oid,'UPDATE')")"
 test "$granted" = 4 || { echo "R57_APP_ROLE_GRANT_FAILED=$granted"; exit 1; }
 echo "R57_UNPRIVILEGED_APP_ROLE_GRANT_PASS=4/4"
 

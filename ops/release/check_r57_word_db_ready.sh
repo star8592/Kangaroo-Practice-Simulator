@@ -15,7 +15,7 @@ FROM required r
 JOIN pg_namespace n ON n.nspname='accent'
 JOIN pg_class c ON c.relnamespace=n.oid AND c.relname=r.name AND c.relkind='r'
 WHERE c.relrowsecurity AND c.relforcerowsecurity
-  AND EXISTS(SELECT 1 FROM pg_roles WHERE rolname='accentclass')
+  AND EXISTS(SELECT 1 FROM pg_roles WHERE rolname='accentclass' AND NOT rolsuper AND NOT rolbypassrls AND oid<>c.relowner)
   AND has_table_privilege('accentclass',c.oid,'SELECT')
   AND has_table_privilege('accentclass',c.oid,'INSERT')
   AND has_table_privilege('accentclass',c.oid,'UPDATE')
