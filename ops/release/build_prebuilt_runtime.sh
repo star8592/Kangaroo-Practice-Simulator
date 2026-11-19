@@ -45,6 +45,9 @@ printf '%s\n' "$VERSION" > "$OUT/runtime/.release/deployed_version"
 date -Iseconds > "$OUT/runtime/.release/deployed_at"
 printf '%s\n' "$VERSION" > "$OUT/runtime/VERSION"
 cp scripts/smoke_test.py "$OUT/runtime/scripts/"
+# Classroom audio expiry must follow the immutable deployed SHA, not depend on Git checkout state.
+cp scripts/cleanup_classroom_recordings.py "$OUT/runtime/scripts/"
+python3 -c "import ast,pathlib,sys; ast.parse(pathlib.Path(sys.argv[1]).read_text())" "$OUT/runtime/scripts/cleanup_classroom_recordings.py"
 # Independent SEO monitoring probe: read-only public URLs; daily history stored outside releases.
 cp scripts/seo_monitor_daily.mjs "$OUT/runtime/scripts/"
 cp scripts/smoke_exam_access_live.mjs "$OUT/runtime/scripts/"
