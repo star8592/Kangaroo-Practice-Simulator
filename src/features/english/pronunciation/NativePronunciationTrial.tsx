@@ -31,6 +31,7 @@ function audioSrc(url:string|null):string{
 function getWords(sentence:string){
  return sentence.split(/(\s+)/).filter(Boolean);
 }
+function invalidateGeneration(ref:{current:number}){ref.current++;}
 function createRecorder(stream:MediaStream):MediaRecorder{
  const types=["audio/webm;codecs=opus","audio/webm","audio/mp4"];
  const supported=types.find(type=>MediaRecorder.isTypeSupported(type));
@@ -43,7 +44,7 @@ export default function NativePronunciationTrial(){
  const [currentIndex,setCurrentIndex]=useState(0);
  const [speed,setSpeed]=useState(1);
  const [status,setStatus]=useState("正在连接现有 Rust 句子目录…");
- const [stage,setStage]=useState<"idle"|"reference"|"cue"|"recording"|"scoring">("idle");
+ const [stage,setStage]=useState<"idle"|"requesting"|"reference"|"cue"|"recording"|"scoring">("idle");
  const [score,setScore]=useState<ScoreResponse|null>(null);
  const [error,setError]=useState("");
  const [wordHint,setWordHint]=useState("");
@@ -60,6 +61,9 @@ export default function NativePronunciationTrial(){
  const startedTalkingRef=useRef(false);
  const lastTalkingRef=useRef(0);
  const mountedRef=useRef(true);
+ const operationRef=useRef(false);
+ const generationRef=useRef(0);
+ const requestRef=useRef<AbortController|null>(null);
 
  useEffect(()=>{
   mountedRef.current=true;
@@ -82,12 +86,20 @@ export default function NativePronunciationTrial(){
   const playbackAudio=audioRef.current;
   return ()=>{
    mountedRef.current=false;
+   invalidateGeneration(generationRef);
+   operationRef.current=false;
    controller.abort();
+   requestRef.current?.abort();requestRef.current=null;
    if(rafRef.current!==undefined)cancelAnimationFrame(rafRef.current);
-   if(recorderRef.current?.state==="recording")recorderRef.current.stop();
+   const recorder=recorderRef.current;
+   if(recorder){
+    recorder.onstop=null;recorder.ondataavailable=null;recorder.onerror=null;
+    if(recorder.state==="recording")try{recorder.stop();}catch{/* Detached device. */}
+   }
    streamRef.current?.getTracks().forEach(track=>track.stop());
    void audioContextRef.current?.close();
    playbackAudio?.pause();
+   if(playbackAudio){playbackAudio.onended=null;playbackAudio.onerror=null;}
   };
  },[]);
  const current=catalog?.items[currentIndex];
@@ -123,11 +135,15 @@ export default function NativePronunciationTrial(){
   streamRef.current=null;
   if(audioContextRef.current){void audioContextRef.current.close();audioContextRef.current=null;}
  }
- async function sendToRust(itemId:string,blob:Blob){
+ async function sendToRust(itemId:string,blob:Blob,generation:number){
+  const active=()=>mountedRef.current&&generationRef.current===generation;
+  if(!active())return;
   setStage("scoring");setStatus("录音已结束，正在等待 Rust 返回真实评分");
+  const controller=new AbortController();requestRef.current=controller;
   try{
    const response=await fetch(API+"/follow-along/items/"+encodeURIComponent(itemId)+"/score",{
     method:"POST",headers:{"content-type":blob.type||"audio/webm"},body:blob,
+    signal:controller.signal,
    });
    if(!response.ok){
     const raw=await response.text();
@@ -137,34 +153,56 @@ export default function NativePronunciationTrial(){
    if(typeof result.score!=="number"||!Number.isFinite(result.score)
       ||result.score<0||result.score>100)
     throw Error("服务端没有提供 0—100 范围内的有效评分");
-   if(mountedRef.current){setScore(result);setStatus("Rust 真实评分已返回");}
+   if(active()){setScore(result);setStatus("Rust 真实评分已返回");}
   }catch(e){
-   if(mountedRef.current){
+   if(active()){
     setError(e instanceof Error?e.message:"真实评分暂不可用");
     setStatus("未生成分数；请稍后重试");
    }
   }finally{
-   if(mountedRef.current)setStage("idle");
+   if(requestRef.current===controller)requestRef.current=null;
+   if(active()){operationRef.current=false;setStage("idle");}
   }
+ }
+ function cancelPending(){
+  if(stage!=="requesting")return;
+  invalidateGeneration(generationRef);
+  operationRef.current=false;
+  clearCapture();
+  setStage("idle");setStatus("已取消等待麦克风授权；未开始录音，也未发送评分");
  }
  function stopRecording(){
   const recorder=recorderRef.current;
-  if(recorder?.state==="recording")recorder.stop();
+  if(recorder?.state==="recording"){
+   try{recorder.stop();}catch{
+    invalidateGeneration(generationRef);
+    operationRef.current=false;
+    clearCapture();recorderRef.current=null;
+    setStage("idle");setError("录音设备异常，未发送评分，请重试");
+   }
+  }
  }
 
  async function beginPractice(){
-  if(!current||!previewSrc||busy)return;
+  if(!current||!previewSrc||busy||operationRef.current)return;
+  operationRef.current=true; // Lock synchronously before permission prompt can yield.
+  const generation=++generationRef.current;
+  const active=()=>mountedRef.current&&generationRef.current===generation;
   setError("");setScore(null);setElapsed(0);setWordHint("");
   setRecorded(null);setWaveOpen(false);setFocusOpen(false);
-  setStage("reference");
+  setStage("requesting");setStatus("正在等待麦克风授权，可取消本次等待");
   const itemId=current.id;
+  let pendingStream:MediaStream|null=null;
   try{
    if(!navigator.mediaDevices?.getUserMedia||typeof MediaRecorder==="undefined")
     throw Error("此浏览器暂不支持麦克风录音，请使用 Chrome 或 Edge");
-   const stream=await navigator.mediaDevices.getUserMedia({
+   pendingStream=await navigator.mediaDevices.getUserMedia({
     audio:{echoCancellation:true,noiseSuppression:true,channelCount:1},
    });
+   if(!active()){pendingStream.getTracks().forEach(track=>track.stop());return;}
+   const stream=pendingStream;
    streamRef.current=stream;
+   setStage("reference");
    const player=audioRef.current;
    if(!player)throw Error("参考音频未就绪");
    player.pause();player.currentTime=0;player.playbackRate=speed;
@@ -174,6 +212,7 @@ export default function NativePronunciationTrial(){
     player.onerror=()=>{player.onended=null;player.onerror=null;reject(Error("标准示范音无法播放"));};
     void player.play().catch(reject);
    });
+   if(!active())return;
    setStage("cue");setStatus("第 2 步：叮声提示，即将自动开始录音");
    const cue=new Audio(CUE);
    await new Promise<void>((resolve,reject)=>{
@@ -181,29 +220,42 @@ export default function NativePronunciationTrial(){
     cue.onerror=()=>reject(Error("提示音未就绪；未启动录音"));
     void cue.play().catch(reject);
    });
+   if(!active())return;
    const chunks:BlobPart[]=[];
    const recorder=createRecorder(stream);
    recorderRef.current=recorder;
    startedTalkingRef.current=false;
    lastTalkingRef.current=Date.now();
    startTimeRef.current=Date.now();
-   recorder.ondataavailable=(ev)=>{if(ev.data.size)chunks.push(ev.data);};
-   recorder.onerror=()=>setError("录音发生异常，请重新开始");
+   let recorderError=false;
+   recorder.ondataavailable=(ev)=>{if(active()&&ev.data.size)chunks.push(ev.data);};
+   recorder.onerror=()=>{
+    recorderError=true;
+    if(active())setError("录音发生异常，未发送评分，请重新开始");
+    if(recorder.state==="recording")try{recorder.stop();}catch{/* Already detached. */}
+   };
    recorder.onstop=()=>{
+    // A stale recorder must never clear the newer generation's stream.
+    if(!active()){stream.getTracks().forEach(track=>track.stop());return;}
     clearCapture();
-    recorderRef.current=null;
-    if(!mountedRef.current)return;
+    if(recorderRef.current===recorder)recorderRef.current=null;
+    if(recorderError){
+     operationRef.current=false;setStage("idle");
+     setStatus("录音设备异常，未生成评分");return;
+    }
     setElapsed(Math.round((Date.now()-startTimeRef.current)/1000));
     if(!startedTalkingRef.current){
+     operationRef.current=false;
      setStage("idle");setStatus("没有检测到清晰朗读");setError("请稍微靠近麦克风，重读一次");
      return;
     }
     const blob=new Blob(chunks,{type:recorder.mimeType||"audio/webm"});
     if(blob.size<1000||blob.size>6*1024*1024){
+     operationRef.current=false;
      setStage("idle");setError("录音数据不足或超过大小限制，请重试");return;
     }
     setRecorded(blob);
-    void sendToRust(itemId,blob);
+    void sendToRust(itemId,blob,generation);
    };
    recorder.start(300);
    setStage("recording");setStatus("第 3 步：正在自动录音，停顿约 1.75 秒后自动结束");
@@ -231,7 +283,16 @@ export default function NativePronunciationTrial(){
    };
    rafRef.current=requestAnimationFrame(watch);
   }catch(e){
+   pendingStream?.getTracks().forEach(track=>track.stop());
+   if(!active())return;
+   invalidateGeneration(generationRef);
+   const recorder=recorderRef.current;
+   if(recorder){
+    recorder.onstop=null;recorder.ondataavailable=null;recorder.onerror=null;
+    if(recorder.state==="recording")try{recorder.stop();}catch{/* Device failed. */}
+   }
    clearCapture();recorderRef.current=null;
+   operationRef.current=false;
    if(mountedRef.current){
     setStage("idle");
     setStatus("本次跟读没有完成");
@@ -283,6 +344,8 @@ export default function NativePronunciationTrial(){
      ?<button type="button" className={styles.stop} onClick={stopRecording}>
        停止并评分 · {elapsed} 秒
       </button>
+     :stage==="requesting"
+      ?<button type="button" className={styles.stop} onClick={cancelPending}>取消等待麦克风</button>
      :<button type="button" className={styles.primary} disabled={busy||!previewSrc||catalog?.scoring_status!=="connected"}
        onClick={()=>void beginPractice()}>
        {busy?stage==="scoring"?"Rust 正在评分…":"跟读进行中…":"一键听音 → 跟读 → 评分"}
