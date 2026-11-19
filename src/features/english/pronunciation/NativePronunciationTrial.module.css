@@ -91,7 +91,7 @@
 .modeSelected{background:#17694e;color:#fff;border-color:#17694e}
 .modeButton:disabled,.modeSelected:disabled{opacity:.6;cursor:not-allowed}
 .modeButton:focus-visible,.modeSelected:focus-visible{outline:3px solid #bbd9c9;outline-offset:2px}
-.wordMode{display:grid;gap:12px;padding-top:7px}
+.wordMode{display:block;padding-top:0}
 .wordMode .switch{justify-content:space-between}
 @media(max-width:650px){.modePicker{gap:7px;margin:14px 0 8px}.modeButton,.modeSelected{font-size:14px;min-height:48px;padding:10px 5px}}
 
