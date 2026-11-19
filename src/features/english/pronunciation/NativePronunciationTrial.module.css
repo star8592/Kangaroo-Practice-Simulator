@@ -85,7 +85,7 @@
 }
 
 /* R7B student mode selector: two honest, usable entry points, no inactive AI tab. */
-.modePicker{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:20px 0 8px}
+.modePicker{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin:20px 0 8px}
 .modeButton,.modeSelected{min-height:48px;border:1px solid #cadbd2;border-radius:12px;padding:11px 14px;font:inherit;font-size:15px;font-weight:800;cursor:pointer}
 .modeButton{background:#f8fbf9;color:#3c6054}
 .modeSelected{background:#17694e;color:#fff;border-color:#17694e}
@@ -94,3 +94,29 @@
 .wordMode{display:grid;gap:12px;padding-top:7px}
 .wordMode .switch{justify-content:space-between}
 @media(max-width:650px){.modePicker{gap:7px;margin:14px 0 8px}.modeButton,.modeSelected{font-size:14px;min-height:48px;padding:10px 5px}}
+
+/* R7C guided question-and-answer: clear child-facing chat, not a technical dashboard. */
+.dialoguePanel{display:grid;gap:15px;padding-top:15px}
+.dialogueMessage{border:1px solid #d8e8df;border-radius:18px;padding:17px 19px;background:#f7fbf8;line-height:1.7}
+.dialogueMessage p{margin:7px 0 11px}
+.speaker{color:#27654d;font-size:13px;font-weight:850}
+.questionText{font-size:clamp(19px,2.9vw,27px);line-height:1.5;font-weight:800;color:#172e36}
+.answerText{font-size:clamp(18px,2.4vw,23px);line-height:1.65;font-weight:750;color:#172e36}
+.dialogueSecondary{display:inline-flex;align-items:center;justify-content:center;min-height:43px;border:1px solid #aacdbb;color:#245b44;background:#fff;border-radius:10px;padding:10px 14px;font:inherit;font-size:14px;font-weight:800;cursor:pointer}
+.dialogueSecondary:disabled{opacity:.48;cursor:not-allowed}
+.dialogueHint{background:#fff9eb;border:1px solid #f0ddb1;border-radius:13px;padding:10px 16px;color:#765325;font-size:15px}
+.dialogueHint p{margin:5px 0}
+.dialogueActions{display:flex;flex-wrap:wrap}
+.dialogueActions .primary,.dialogueActions .stop{min-width:220px}
+.dialogueScore{font-weight:900;font-size:42px;color:#176249;line-height:1.2}
+.dialogueScore small{font-size:16px;color:#487762}
+.dialogueNote{font-size:12px;color:#526b61}
+@media(max-width:650px){
+ .modePicker{grid-template-columns:repeat(3,minmax(0,1fr));gap:5px}
+ .modeButton,.modeSelected{font-size:12px;padding:11px 3px}
+ .dialoguePanel{gap:12px;padding-top:10px}
+ .dialogueMessage{padding:13px 14px}
+ .dialogueActions{display:block}
+ .dialogueActions .primary,.dialogueActions .stop{width:100%}
+ .dialogueSecondary{font-size:13px}
+}
