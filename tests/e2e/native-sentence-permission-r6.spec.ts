@@ -89,7 +89,7 @@ test("sentence: permission denied unlocks stage and never fabricates a score",as
   });
  });
  await page.getByRole("button",{name:/一键听音/}).click();
- await expect(page.getByRole("alert").filter({hasText:"Permission denied"})).toHaveCount(1);
+ await expect(page.getByRole("alert").filter({hasText:"没有获得麦克风权限"})).toHaveCount(1);
  await expect(page.getByRole("button",{name:/一键听音/})).toBeEnabled();
  await expect(page.getByRole("button",{name:"下一句"})).toBeEnabled();
  await expect(page.getByRole("region",{name:"本次得分"})).toHaveCount(0);
