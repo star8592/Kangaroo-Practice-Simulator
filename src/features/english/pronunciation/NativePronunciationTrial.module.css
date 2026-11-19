@@ -123,3 +123,19 @@
 
 .dialogueHelpers{display:flex;flex-wrap:wrap;gap:9px;margin-top:10px}
 .dialogueSample{border-top:1px solid #d8e8df;margin-top:15px;padding-top:8px}
+
+/* R8: a low-friction difficulty choice above the unchanged three training modes. */
+.levelPicker{display:flex;gap:9px;justify-content:flex-start;flex-wrap:wrap;margin:0 0 17px;
+ padding-bottom:17px;border-bottom:1px solid #e4eee8}
+.levelButton,.levelSelected{font:inherit;font-size:14px;font-weight:850;padding:10px 15px;
+ border:1px solid #c4d9cf;border-radius:12px;min-height:45px;cursor:pointer}
+.levelButton{background:#f7faf8;color:#366552}
+.levelSelected{background:#e3f3e8;color:#155a3f;border-color:#80b69c}
+.levelButton:disabled,.levelSelected:disabled{cursor:not-allowed;opacity:.52}
+.levelButton:focus-visible,.levelSelected:focus-visible{outline:3px solid #9dd4af;outline-offset:2px}
+.beginnerTip{margin:0 0 14px;font-size:14px;line-height:1.65;color:#326f55}
+@media(max-width:650px){
+ .levelPicker{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;padding-bottom:14px}
+ .levelButton,.levelSelected{font-size:13px;padding:10px 6px;min-width:0}
+ .beginnerTip{font-size:13px}
+}

@@ -174,7 +174,9 @@ export default function FocusedWordPractice({
     const controller=new AbortController();requestRef.current=controller;
     try{
      const response=await fetch(API+encodeURIComponent(itemId)+"/score-word/"+encodeURIComponent(selected),{
-      method:"POST",headers:{"content-type":blob.type},body:blob,signal:controller.signal,
+      method:"POST",headers:{"content-type":blob.type,
+       ...(itemId==="private-session"?{"x-english-leap-expected-sentence":encodeURIComponent(sentence)}:{})},
+       body:blob,signal:controller.signal,
      });
      if(!response.ok)throw Error("评分接口 HTTP "+response.status);
      const data=await response.json() as {score?:unknown};
