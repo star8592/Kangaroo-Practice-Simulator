@@ -51,6 +51,7 @@ export const BUSINESS_SUBROUTES:readonly {path:string;owner:SiteBusinessId;role:
   {path:"/math-practice",owner:"exams",role:"school-math-practice"},
   {path:"/competitions",owner:"exams",role:"competition-mocks"},
   {path:"/review",owner:"exams",role:"mistake-review"},
+  {path:"/marketplace/claim",owner:"exams",role:"paid-order-claim-entry"},
   {path:"/exam-planner",owner:"exams",role:"personal-exam-calendar"},
   {path:"/events",owner:"exams",role:"competition-companion"},
   {path:"/verification",owner:"exams",role:"math-proof-records"},
