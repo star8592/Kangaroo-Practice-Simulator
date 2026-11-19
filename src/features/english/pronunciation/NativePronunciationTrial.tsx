@@ -513,6 +513,7 @@ export default function NativePronunciationTrial(){
        onClick={()=>playWord(token)} title={"点一下听 "+token}>{token}</button>)}
    </div>
    <p className={styles.translation}>{current.translation}</p>
+   {current.beginner&&current.tip?<p className={styles.beginnerTip}>练习提示：{current.tip}</p>:null}
    {wordHint?<p className={styles.wordTip} role="status">{wordHint}</p>:null}
    <div className={styles.speed}>
     <label htmlFor="native-pronun-speed">听整句的速度</label>
