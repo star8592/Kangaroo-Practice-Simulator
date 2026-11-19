@@ -1,0 +1,87 @@
+{
+  "generated_by": "ffmpeg rubberband tempo=0.3 transients=smooth detector=soft; libmp3lame -q:a 3",
+  "source": "SOC THINK original follow-along audio as of 2026-11-19",
+  "assets": [
+    {
+      "id": "octopus-flexibility",
+      "source": "/app/audio/follow-along/octopus-flexibility.mp3",
+      "source_sha256": "3e4f54f150a5f7a53a30a61db3aaba232129254b2817d47e0ffef24f9c254265",
+      "source_seconds": 5.875,
+      "slow_seconds": 19.58,
+      "slow_bytes": 126860,
+      "ratio": 3.333
+    },
+    {
+      "id": "octopus-remarkable-abilities",
+      "source": "/app/audio/follow-along/octopus-remarkable-abilities.mp3",
+      "source_sha256": "ac62c60116056d309f22528f8ef29dd3bfeef545a015f8f7ca9541fe41c99ceb",
+      "source_seconds": 4.6,
+      "slow_seconds": 15.326,
+      "slow_bytes": 95756,
+      "ratio": 3.332
+    },
+    {
+      "id": "octopus-learn-from-experience",
+      "source": "/app/audio/follow-along/octopus-learn-from-experience.mp3",
+      "source_sha256": "6ffe6630d6dafbc0cd8cf04ae6c618e0f4ae4f0d1d612616442fcbfef1adfa03",
+      "source_seconds": 5.625,
+      "slow_seconds": 18.746,
+      "slow_bytes": 121988,
+      "ratio": 3.333
+    },
+    {
+      "id": "bees-rich-patch",
+      "source": "/app/audio/follow-along/bees-rich-patch.mp3",
+      "source_sha256": "2dc239721962fff1b0ee27cd070a645b339621e632f3e54d8a03036c360644ea",
+      "source_seconds": 7.35,
+      "slow_seconds": 24.493,
+      "slow_bytes": 165500,
+      "ratio": 3.332
+    },
+    {
+      "id": "bees-short-dance",
+      "source": "/app/audio/follow-along/bees-short-dance.mp3",
+      "source_sha256": "e66105c6e180bca407f871e99f0d5db23250d3b530477d92bec39db368d261b9",
+      "source_seconds": 6.626,
+      "slow_seconds": 22.082,
+      "slow_bytes": 148292,
+      "ratio": 3.333
+    },
+    {
+      "id": "bees-direction-and-distance",
+      "source": "/app/audio/follow-along/bees-direction-and-distance.mp3",
+      "source_sha256": "14399d1ae04645bb5d915ad6ff3b686331c3476a7d1385fcd6367c41bdcfb389",
+      "source_seconds": 9.4,
+      "slow_seconds": 31.328,
+      "slow_bytes": 218276,
+      "ratio": 3.333
+    },
+    {
+      "id": "trees-cooler-pavement",
+      "source": "/app/audio/follow-along/trees-cooler-pavement.mp3",
+      "source_sha256": "93d4c6c0e9042e114edd4338715b861c6c43c5d215be7e83de5741e8fff0e4a0",
+      "source_seconds": 7.275,
+      "slow_seconds": 24.245,
+      "slow_bytes": 160508,
+      "ratio": 3.333
+    },
+    {
+      "id": "trees-leaves-and-water",
+      "source": "/app/audio/follow-along/trees-leaves-and-water.mp3",
+      "source_sha256": "eb938d522e1d03917ebd55dd6ff93e139a3404e00d6d24721748e24d0afca8b6",
+      "source_seconds": 6.1,
+      "slow_seconds": 20.33,
+      "slow_bytes": 132380,
+      "ratio": 3.333
+    },
+    {
+      "id": "trees-slow-rainwater",
+      "source": "/app/audio/follow-along/trees-slow-rainwater.mp3",
+      "source_sha256": "d5a8b6fdc6cd6544724981205cb9335f9cf9fca088c9303d18c0b695439900c3",
+      "source_seconds": 4.2,
+      "slow_seconds": 13.996,
+      "slow_bytes": 85076,
+      "ratio": 3.332
+    }
+  ]
+}
