@@ -134,9 +134,16 @@ export async function wordHomeworkHandler(req:NextRequest,p:string[],actor:Actor
     "WHERE i.tenant_id=$1 AND i.assignment_id=$2",
     "GROUP BY i.id,i.target_word,i.ordinal ORDER BY i.ordinal"
    ].join(" "),[tenant,assignment]);
+   const history=await db.query([
+    "SELECT a.id AS attempt_id,a.student_id,i.target_word AS word,",
+    "a.score,a.model_version,a.recorded_at AS at FROM accent.word_assignment_attempts a",
+    "JOIN accent.word_assignment_items i ON i.tenant_id=a.tenant_id AND i.id=a.item_id",
+    "WHERE a.tenant_id=$1 AND a.assignment_id=$2",
+    "ORDER BY a.recorded_at DESC LIMIT 300"
+   ].join(" "),[tenant,assignment]);
    return {assignment_id:assignment,title:r.rows[0].title,
     total:students.rows.length,submitted:students.rows.filter(x=>x.submitted).length,
-    students:students.rows,items:items.rows};
+    students:students.rows,items:items.rows,attempt_history:history.rows};
   });
  }
  if(p[2]==="w"&&(p.length===4||p.length===5||p.length===7)){

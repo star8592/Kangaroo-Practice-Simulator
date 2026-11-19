@@ -279,7 +279,8 @@ try {
     ["tenants",tenant,"word-assignments",wordAssignmentId,"report"]),200,
     "Teacher views a separate 5-student word-score report");
   if(wordsReport.submitted!==5||wordsReport.total!==5||
-      wordsReport.items.length!==2||wordsReport.students.some((x:{completed_words:number})=>x.completed_words!==2))
+      wordsReport.items.length!==2||wordsReport.attempt_history.length!==10||
+      wordsReport.students.some((x:{completed_words:number})=>x.completed_words!==2))
     throw Error("Teacher word report inconsistent");
   const foreignAudio=await api(students[1],"GET",["tenants",tenant,"word-recordings",firstWordAttempt]);
   if(foreignAudio.code!==403&&foreignAudio.code!==503)
