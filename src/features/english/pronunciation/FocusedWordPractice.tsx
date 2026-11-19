@@ -179,7 +179,7 @@ export default function FocusedWordPractice({
      if(typeof data.score!=="number"||!Number.isFinite(data.score)||data.score<0||data.score>100)
       throw Error("没有收到有效分数");
      if(active()){setResult(data.score);setFeedback("得分出来啦！再听听两次录音，看看有没有变化。");}
-    }catch(e){
+    }catch{
      if(active()){
       setResult(null);
       setFeedback("这次没能打分，先听听录音，再读一次。");
