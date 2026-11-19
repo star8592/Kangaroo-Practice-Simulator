@@ -43,6 +43,7 @@ test("R7B: choose direct word mode without full sentence score, record and retur
  await wordMode.locator("#native-word-mode-speed").selectOption("0.3");
  await expect(wordMode.getByText(/不需要先读完整句/)).toBeVisible();
  const focus=wordMode.getByTestId("native-focused-word");
+ await focus.getByRole("button",{name:"octopus",exact:true}).click();
  await expect(focus.getByRole("button",{name:"octopus",exact:true})).toHaveAttribute("aria-pressed","true");
  await focus.getByRole("button",{name:"录这个词并评分"}).click();
  await focus.getByRole("button",{name:"停止单词录音"}).waitFor();
