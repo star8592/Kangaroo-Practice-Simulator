@@ -21,7 +21,7 @@ test("Next-native pronunciation trial reads Rust catalog and keeps a compact mob
  expect(response?.status()).toBe(200);
  await expect(page.getByRole("heading",{name:"听一句，跟读一句"})).toBeVisible();
  await expect(page.getByText("章鱼很好奇。")).toBeVisible();
- await expect(page.getByText("2 句原创语料")).toBeVisible();
+ await expect(page.getByText("2 句练习")).toBeVisible();
  await expect(page.getByRole("button",{name:/一键听音/})).toBeEnabled();
  await expect(page.locator('audio')).toHaveAttribute("src",
   "/english/pronunciation/app/audio/follow-along/octopus-flexibility.mp3");
