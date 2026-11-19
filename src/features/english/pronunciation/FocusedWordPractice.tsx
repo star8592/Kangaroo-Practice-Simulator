@@ -20,16 +20,16 @@ function recorderFor(stream:MediaStream):MediaRecorder{
 }
 
 export default function FocusedWordPractice({
- itemId,sentence,suggested,onPlay,
+ itemId,sentence,suggested,onPlay,speed=0.7,
 }:{
- itemId:string;sentence:string;suggested?:string|null;onPlay?:()=>void;
+ itemId:string;sentence:string;suggested?:string|null;onPlay?:()=>void;speed?:number;
 }){
  const candidates=useMemo(()=>[...new Set(sentence.split(/\s+/).map(clean).filter(Boolean))],[sentence]);
  const initial=useMemo(()=>candidates.find(w=>w.toLowerCase()===clean(suggested||"").toLowerCase())||candidates[0]||"",[candidates,suggested]);
  const [word,setWord]=useState(initial);
  const [stage,setStage]=useState<Stage>("idle");
  const [result,setResult]=useState<number|null>(null);
- const [feedback,setFeedback]=useState("选择一个需要纠正的词，仅录这一个词约四秒。");
+ const [feedback,setFeedback]=useState("选一个词，先听发音，再自己读一次。");
  const [attempts,setAttempts]=useState(0);
  const [ownUrl,setOwnUrl]=useState("");
  const [priorUrl,setPriorUrl]=useState("");
@@ -94,7 +94,7 @@ export default function FocusedWordPractice({
   generationRef.current++;
   window.speechSynthesis?.cancel();
   setWord(next);setResult(null);setAttempts(0);setListeningNote(null);
-  setFeedback("重点练习 "+next+"，先听一遍，再只读这个词。");
+  setFeedback("我们来练 "+next+"。先点「听单词」，再自己读一遍。");
   releaseUrls();
  }
  function listen(){
@@ -106,10 +106,10 @@ export default function FocusedWordPractice({
   window.speechSynthesis.cancel();
   const generation=generationRef.current;
   const voice=new SpeechSynthesisUtterance(word);
-  voice.lang="en-US";voice.rate=.78;voice.volume=1;
+  voice.lang="en-US";voice.rate=speed;voice.volume=1;
   voice.onerror=()=>{if(mountedRef.current&&generationRef.current===generation)setFeedback("浏览器单词试听暂不可用，请回听原声。");};
   window.speechSynthesis.speak(voice);
-  setFeedback("试听为设备合成单词声音，不是 Rust 评分参考音轨。");
+  setFeedback("正在读 "+word+"。可以多听几遍，再试着自己读。");
  }
  function cancelPending(){
   if(stage!=="requesting")return;
@@ -118,7 +118,7 @@ export default function FocusedWordPractice({
   generationRef.current++;
   operationRef.current=false;
   setStage("idle");
-  setFeedback("已取消本次录音；此前的录音仍可回听。");
+  setFeedback("已取消，之前录好的声音还能听。");
  }
  async function record(){
   if(operationRef.current||stage!=="idle"||!word||!candidates.includes(word)||!/^[-a-z0-9]{2,120}$/.test(itemId))return;
@@ -168,7 +168,7 @@ export default function FocusedWordPractice({
     setPriorUrl(priorUrlRef.current);setOwnUrl(url);
     setAttempts(x=>x+1);
     setListeningNote(null);
-    setStage("scoring");setFeedback("已录好，可回听；正在请求 Rust 单词评分…");
+    setStage("scoring");setFeedback("录好了，正在打分。也可以听听刚才的录音。");
     const controller=new AbortController();requestRef.current=controller;
     try{
      const response=await fetch(API+encodeURIComponent(itemId)+"/score-word/"+encodeURIComponent(selected),{
@@ -177,12 +177,12 @@ export default function FocusedWordPractice({
      if(!response.ok)throw Error("评分接口 HTTP "+response.status);
      const data=await response.json() as {score?:unknown};
      if(typeof data.score!=="number"||!Number.isFinite(data.score)||data.score<0||data.score>100)
-      throw Error("Rust 未返回有效的单词评分");
-     if(active()){setResult(data.score);setFeedback("Rust 已返回本次单词的评分结果；请先听 A/B 录音，再判断自己的变化。");}
+      throw Error("没有收到有效分数");
+     if(active()){setResult(data.score);setFeedback("得分出来啦！再听听两次录音，看看有没有变化。");}
     }catch(e){
      if(active()){
       setResult(null);
-      setFeedback(e instanceof Error?"单词评分暂不可用："+e.message:"评分暂不可用，请回听录音。");
+      setFeedback("这次没能打分，先听听录音，再读一次。");
      }
     }finally{
      if(requestRef.current===controller)requestRef.current=null;
@@ -191,7 +191,7 @@ export default function FocusedWordPractice({
    };
    rec.start(200);
    setStage("recording");
-   setFeedback("正在录音，只读 "+selected+"；4.2 秒后自动结束并送往本站实验评分服务。");
+   setFeedback("正在录音，只读 "+selected+" 这个词。最长约四秒。");
    timerRef.current=setTimeout(stopRecording,MAX_WORD_MS);
   }catch(e){
    stream?.getTracks().forEach(t=>t.stop());
@@ -203,10 +203,10 @@ export default function FocusedWordPractice({
  }
  return <section className={styles.panel} data-testid="native-focused-word" aria-label="单词重点纠音">
   <div className={styles.header}>
-   <h3>一个词，专注纠音</h3>
-   <span>{suggested?"根据 Rust 评分优先建议":"手动选择重点词"}</span>
+   <h3>单词再练一次</h3>
+   <span>{suggested?"建议先练这个词":"你可以自己选词"}</span>
   </div>
-  <p className={styles.instructions}>可以选择任意句中单词。单词试听、真实录音 A/B 回听和 Rust 实验评分彼此独立，不会覆盖整句评分。</p>
+  <p className={styles.instructions}>点一个词，听一遍，再录一次。也能对比自己前后两次的声音。</p>
   <div className={styles.words} role="group" aria-label="选择重点单词">
    {candidates.map((candidate,i)=><button type="button" key={candidate+"-"+i}
     className={candidate===word?styles.selected:styles.word}
@@ -223,7 +223,7 @@ export default function FocusedWordPractice({
       </button>}
   </div>
   <p className={styles.feedback} role="status">{feedback}</p>
-  {result!==null?<p className={styles.score}>第 {attempts} 次 · Rust 实验参考分 <strong>{Math.round(result)}</strong> / 100（非考试成绩）</p>:null}
+  {result!==null?<p className={styles.score}>第 {attempts} 次 · 单词得分 <strong>{Math.round(result)}</strong> / 100 分</p>:null}
   {ownUrl?<div className={styles.compare} aria-label="单词录音 A/B 听辨">
    <div className={styles.recordingCard}>
     <strong>{priorUrl?"A · 上一次真实录音":"本次真实录音"}</strong>
@@ -244,6 +244,6 @@ export default function FocusedWordPractice({
     {listeningNote?<p role="status">我的听感：{listeningLabels[listeningNote]}。这是自我判断，并非 AI 验证的发音进步。</p>:null}
    </div>:null}
   </div>:null}
-  <p className={styles.disclosure}>仅主动点击并授权麦克风后开始录音；最长 4.2 秒，录音结束后发送至原 Rust 评分接口。仅在本页内保留同一单词最近两次录音，换词或离开页面即释放，不持久化 A/B 反馈。自我听辨不等于模型判分，实验评分也不等于正式考试成绩。</p>
+  <details className={styles.disclosure}><summary>录音和评分说明</summary><p>点击录音并允许使用麦克风后才开始录。最长约四秒。录音结束后发送本站评分服务；最近两次录音只在当前页面留存，换词或离开就清除。你觉得自己有进步是自我判断，不等于系统验证；分数仅供练习参考。</p></details>
  </section>;
 }
