@@ -54,6 +54,7 @@ export default function NativePronunciationTrial(){
  const [speed,setSpeed]=useState(0.7);
  const [studyMode,setStudyMode]=useState<"sentence"|"word"|"dialogue">("sentence");
  const [dialogueHintOpen,setDialogueHintOpen]=useState(false);
+ const [dialogueAnswerOpen,setDialogueAnswerOpen]=useState(false);
  const [slowTrackFailed,setSlowTrackFailed]=useState(false);
  const [activeWord,setActiveWord]=useState("");
  const [status,setStatus]=useState("正在打开练习…");
@@ -133,7 +134,7 @@ export default function NativePronunciationTrial(){
   audioRef.current?.pause();window.speechSynthesis?.cancel();
   setStudyMode(mode);setScore(null);setRecorded(null);
   setError("");setWordHint("");setActiveWord("");setFocusOpen(false);setWaveOpen(false);
-  setDialogueHintOpen(false);
+  setDialogueHintOpen(false);setDialogueAnswerOpen(false);
   setStatus(mode==="dialogue"?"先听问题，想一想；不会回答时可以看提示。":mode==="word"
    ?"选一个词，听示范，读一次，再看得分。":"先听整句，也可以点词单独听。");
  }
@@ -155,7 +156,7 @@ export default function NativePronunciationTrial(){
   audioRef.current?.pause();window.speechSynthesis?.cancel();
   setCurrentIndex(index);setScore(null);setError("");setWordHint("");setActiveWord("");
   setFocusOpen(false);
-  setSlowTrackFailed(false);setDialogueHintOpen(false);
+  setSlowTrackFailed(false);setDialogueHintOpen(false);setDialogueAnswerOpen(false);
   setRecorded(null);setWaveOpen(false);setFocusOpen(false);
   setStatus("先听示范，也可以点任何一个单词单独听。");
  }
@@ -436,11 +437,20 @@ export default function NativePronunciationTrial(){
       <p>{dialogueQuestion.translation}</p><p>{dialogueQuestion.hint}</p>
      </div>:null}
      <div className={styles.dialogueMessage}>
-      <span className={styles.speaker}>可以参考这样回答</span>
-      <p className={styles.answerText}>{current.sentence}</p>
-      <p className={styles.translation}>{current.translation}</p>
-      <button type="button" disabled={busy||!previewSrc} className={styles.dialogueSecondary}
-       onClick={()=>void playReference()}>▶ 听参考答案</button>
+      <span className={styles.speaker}>不会回答？可以一步步求助</span>
+      <p>先试着想一想。如果需要帮助，可以听示范或查看文字。</p>
+      <div className={styles.dialogueHelpers}>
+       <button type="button" disabled={busy||!previewSrc} className={styles.dialogueSecondary}
+        onClick={()=>void playReference()}>▶ 听参考答案</button>
+       <button type="button" disabled={busy} className={styles.dialogueSecondary}
+        aria-expanded={dialogueAnswerOpen} onClick={()=>setDialogueAnswerOpen(x=>!x)}>
+        {dialogueAnswerOpen?"收起参考答句":"看参考答句"}
+       </button>
+      </div>
+      {dialogueAnswerOpen?<div className={styles.dialogueSample}>
+       <p className={styles.answerText}>{current.sentence}</p>
+       <p className={styles.translation}>{current.translation}</p>
+      </div>:null}
      </div>
      <audio ref={audioRef} src={referenceSrc||undefined} preload="none"
       aria-label="情景问答参考答案音频" className={styles.audio}
