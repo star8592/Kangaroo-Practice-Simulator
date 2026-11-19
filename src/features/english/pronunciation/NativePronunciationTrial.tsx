@@ -400,7 +400,7 @@ export default function NativePronunciationTrial(){
      <button type="button" disabled={busy||currentIndex===0} onClick={()=>selectIndex(currentIndex-1)}>上一句</button>
      <button type="button" disabled={busy||currentIndex===(catalog?.items.length??1)-1} onClick={()=>selectIndex(currentIndex+1)}>下一句</button>
     </div>
-:studyMode==="dialogue"?<section className={styles.dialoguePanel} data-testid="native-guided-dialogue" aria-label="引导式情景问答">
+   </div>:studyMode==="dialogue"?<section className={styles.dialoguePanel} data-testid="native-guided-dialogue" aria-label="引导式情景问答">
     {dialogueQuestion?<>
      <div className={styles.dialogueMessage}>
       <span className={styles.speaker}>英语老师问</span>
