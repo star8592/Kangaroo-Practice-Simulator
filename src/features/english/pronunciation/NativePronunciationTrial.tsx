@@ -22,6 +22,14 @@ const CUE="/english/pronunciation/app/audio/ui/ready-ding-single.wav";
 const SILENCE_STOP_MS=1750;
 const NO_SPEECH_TIMEOUT_MS=15000;
 const MAX_RECORD_MS=45000;
+// Original reference tracks with a pre-rendered 0.3x pitch-preserved variant.
+// Unknown future items automatically use browser playbackRate instead.
+const SLOW_03_IDS=new Set([
+ "octopus-flexibility","octopus-remarkable-abilities","octopus-learn-from-experience",
+ "bees-rich-patch","bees-short-dance","bees-direction-and-distance",
+ "trees-cooler-pavement","trees-leaves-and-water","trees-slow-rainwater",
+]);
+const cleanWord=(word:string)=>word.replace(/[^a-zA-Z'-]/g,"");
 
 function audioSrc(url:string|null):string{
  if(!url||!/^\/app\/audio\/[a-zA-Z0-9/_-]+\.(?:mp3|wav)$/.test(url)||url.includes(".."))
@@ -42,7 +50,9 @@ export default function NativePronunciationTrial(){
  const [catalog,setCatalog]=useState<Catalog|null>(null);
  const [loadError,setLoadError]=useState("");
  const [currentIndex,setCurrentIndex]=useState(0);
- const [speed,setSpeed]=useState(1);
+ const [speed,setSpeed]=useState(0.7);
+ const [slowTrackFailed,setSlowTrackFailed]=useState(false);
+ const [activeWord,setActiveWord]=useState("");
  const [status,setStatus]=useState("正在连接现有 Rust 句子目录…");
  const [stage,setStage]=useState<"idle"|"requesting"|"reference"|"cue"|"recording"|"scoring">("idle");
  const [score,setScore]=useState<ScoreResponse|null>(null);
@@ -104,30 +114,49 @@ export default function NativePronunciationTrial(){
  },[]);
  const current=catalog?.items[currentIndex];
  const previewSrc=useMemo(()=>audioSrc(current?.audio_url??null),[current?.audio_url]);
+ const useSlowTrack=speed===0.3&&Boolean(current?.id&&SLOW_03_IDS.has(current.id))&&!slowTrackFailed;
+ const referenceSrc=useSlowTrack&&current?"/english/pronunciation/next-lab/audio/slow-03/"+current.id+".mp3":previewSrc;
+ const referenceRate=useSlowTrack?1:speed;
+ useEffect(()=>{
+  const player=audioRef.current;
+  if(player){player.preservesPitch=true;player.defaultPlaybackRate=referenceRate;player.playbackRate=referenceRate;}
+ },[referenceRate,referenceSrc]);
  const busy=stage!=="idle";
+ const suggestedWord=score?.differences?.words_with_errors?.find(candidate=>
+  getWords(current?.sentence||"").some(token=>cleanWord(token).toLowerCase()===cleanWord(candidate).toLowerCase()));
  function selectIndex(index:number){
   if(!catalog||busy||index<0||index>=catalog.items.length)return;
-  setCurrentIndex(index);setScore(null);setError("");setWordHint("");
+  audioRef.current?.pause();window.speechSynthesis?.cancel();
+  setCurrentIndex(index);setScore(null);setError("");setWordHint("");setActiveWord("");
+  setSlowTrackFailed(false);
   setRecorded(null);setWaveOpen(false);setFocusOpen(false);
-  setStatus("示范音 → 叮提示 → 自动朗读 → Rust 评分");
+  setStatus("先听示范，也可以点任何一个单词单独听。");
  }
  async function playReference(){
   if(!audioRef.current||!previewSrc||busy)return;
   setError("");
+  window.speechSynthesis?.cancel();setActiveWord("");
   audioRef.current.pause();audioRef.current.currentTime=0;
-  audioRef.current.playbackRate=speed;
-  try{await audioRef.current.play();setStatus("播放示范音");}
-  catch{setError("音频播放被浏览器拦截；请点击页面后重试");}
+  audioRef.current.preservesPitch=true;
+  audioRef.current.playbackRate=referenceRate;
+  try{await audioRef.current.play();setStatus(speed===0.3?"正在播放极慢速示范，可以反复听。":"正在播放示范，可以反复听。");}
+  catch{setError("音频没能播放，轻点「听整句」再试一次。");}
  }
  function playWord(word:string){
-  if(busy||typeof window==="undefined"||!window.speechSynthesis)return;
-  const clean=word.replace(/[^a-zA-Z'-]/g,"");
+  if(busy||typeof window==="undefined")return;
+  const clean=cleanWord(word);
   if(!clean)return;
+  audioRef.current?.pause();
+  if(!window.speechSynthesis){
+   setWordHint("这台设备暂不支持单词点读，请先听整句。");return;
+  }
   window.speechSynthesis.cancel();
+  setActiveWord(clean);
   const speech=new SpeechSynthesisUtterance(clean);
   speech.lang="en-US";speech.rate=speed;
+  speech.onerror=()=>{if(mountedRef.current)setWordHint("这个单词暂时没有播放出来，请再点一次。");};
   window.speechSynthesis.speak(speech);
-  setWordHint(clean+"：单词试听使用设备语音，不作为标准评分音源");
+  setWordHint("正在读 "+clean+"。可以反复点，也可以点下一个词。");
  }
  function clearCapture(){
   if(rafRef.current!==undefined){cancelAnimationFrame(rafRef.current);rafRef.current=undefined;}
