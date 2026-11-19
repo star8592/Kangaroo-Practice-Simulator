@@ -23,6 +23,7 @@ export default function robots(): MetadataRoute.Robots {
         "/review",
         "/login",
         "/exam/",
+        "/marketplace/",
         "/arithmetic/session/",
         "/arithmetic/discovery/",
       ],

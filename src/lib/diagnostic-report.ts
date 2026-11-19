@@ -9,7 +9,7 @@ export type DiagnosticFindingKind = "strength" | "priority" | "watch";
 export type DiagnosticReport = {
   meta: { reportId: string; reportVersion: string; engineVersion: string; generatedAt: number; submittedAt: number; attemptId: string };
   student: { name: string; candidateNo: string; grade: number; school?: string };
-  exam: { id: string; name: string; country?: string; year?: number; grades: string; competitionId?: string; paperType?: string; questionCount: number; maxScore: number };
+  exam: { id: string; name: string; country?: string; year?: number; grades: string; language?: string; competitionId?: string; paperType?: string; questionCount: number; maxScore: number };
   summary: { score: number; maxScore: number; scorePct: number; correct: number; wrong: number; blank: number; accuracy: number; completion: number; elapsedSeconds: number; avgQuestionSeconds: number; medianQuestionSeconds: number; confidenceLabel: DiagnosticConfidence; confidenceText: string };
   skills: Array<{ name: string; rawName: string; count: number; correct: number; accuracy: number; avgSeconds: number; confidence: DiagnosticConfidence }>;
   difficulty: Array<{ label: string; count: number; correct: number; accuracy: number }>;
@@ -149,7 +149,7 @@ export function buildDiagnosticReport(user: PublicStudent, attemptId: string): D
   return {
     meta: { reportId: `RPT-${attempt.id.replace(/^att_/, "").slice(0, 12).toUpperCase()}`, reportVersion: "1.0", engineVersion: "diagnostic-engine-1.0.0", generatedAt: Date.now(), submittedAt: attempt.submittedAt, attemptId: attempt.id },
     student: { name: user.name, candidateNo: user.candidateNo, grade: user.grade, school: user.school },
-    exam: { id: attempt.examId, name: attempt.profile.name, country: attempt.profile.country, year: attempt.profile.year, grades: attempt.profile.grades, competitionId: attempt.profile.competitionId, paperType: attempt.profile.paperType, questionCount: attempt.profile.questionCount, maxScore: attempt.profile.maxScore },
+    exam: { id: attempt.examId, name: attempt.profile.name, country: attempt.profile.country, year: attempt.profile.year, grades: attempt.profile.grades, language: attempt.profile.language, competitionId: attempt.profile.competitionId, paperType: attempt.profile.paperType, questionCount: attempt.profile.questionCount, maxScore: attempt.profile.maxScore },
     summary: { score: attempt.grade.score, maxScore: attempt.grade.maxScore, scorePct, correct, wrong, blank, accuracy, completion, elapsedSeconds: attempt.elapsedSeconds, avgQuestionSeconds: qs.length ? attempt.elapsedSeconds / qs.length : 0, medianQuestionSeconds: typicalMs / 1000, confidenceLabel, confidenceText },
     skills, difficulty, phases,
     behavior: { answerChanges: qs.reduce((n, q) => n + q.answerChanges, 0), changedQuestions: changed.length, correctToWrong: correctToWrong.length, wrongToCorrect: wrongToCorrect.length, rushedWrong: rushedWrong.length, stuckWrong: stuckWrong.length, slowCorrect: slowCorrect.length, tabAwayCount: qs.reduce((n, q) => n + q.tabAwayCount, 0), unanswered: blank },

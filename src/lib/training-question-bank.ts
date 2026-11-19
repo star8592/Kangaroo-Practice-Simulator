@@ -2,6 +2,7 @@ import type { ExamBundle, PublicQuestion, Question } from "./types";
 import { mathVerificationForQuestion } from "./math-verification";
 import { availableExamSpeech } from "./exam-audio";
 import { listStoredExamProfiles, loadStoredExamBundle } from "./exam-bundle-store";
+import {isStackedBilingualExam} from "./bilingual-original";
 
 const text = (value: unknown) => typeof value === "string" ? value.trim() : "";
 
@@ -34,6 +35,12 @@ export function isTrainingReadyQuestion(q: Question) {
 }
 
 export function isExamBundleTrainingReady(bundle: ExamBundle) {
+  if (isStackedBilingualExam(bundle.profile) && bundle.questions.some(q =>
+    !(q.studentAssetUrlEn || q.assetUrlEn || q.studentAssetUrl || q.assetUrl))) {
+    // No fallback from a missing original English page to a synthetic English
+    // sentence: the source images must exist for stacked original-paper mode.
+    return false;
+  }
   return Boolean(bundle.profile.id && bundle.profile.questionCount > 0 && bundle.questions.length === bundle.profile.questionCount && bundle.questions.every(isTrainingReadyQuestion));
 }
 

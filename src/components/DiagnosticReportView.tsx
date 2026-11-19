@@ -1,4 +1,6 @@
 import Image from "next/image";
+import BilingualOriginalQuestion from "@/components/BilingualOriginalQuestion";
+import {isStackedBilingualExam,questionsPerDiagnosticPage} from "@/lib/bilingual-original";
 import type { DiagnosticReport } from "@/lib/diagnostic-report";
 
 const pct=(v:number)=>`${Math.round(v*100)}%`;
@@ -14,7 +16,10 @@ function SectionHead({title,desc}:{title:string;desc?:string}){return <div class
 function Bar({name,value,count,extra}:{name:string;value:number;count:number;extra?:string}){return <div className="dr-bar-row"><div className="name">{name}</div><div className="dr-bar"><i style={{width:`${Math.max(2,Math.round(value*100))}%`}}/></div><div className="value"><strong>{pct(value)}</strong><small>{extra||`${count}题`}</small></div></div>}
 
 export default function DiagnosticReportView({report}:{report:DiagnosticReport}){
-  const qPages=chunks(report.questions,3);
+  // Original bilingual pages carry complete diagrams: one question per
+  // report page avoids clipping the source text in print/PDF export.
+  const stackedBilingual=isStackedBilingualExam(report.exam);
+  const qPages=chunks(report.questions,questionsPerDiagnosticPage(report.exam));
   const total=5+qPages.length;
   const topFindings=[...report.findings].sort((a,b)=>({priority:0,watch:1,strength:2}[a.kind]-{priority:0,watch:1,strength:2}[b.kind])).slice(0,3);
   let p=1;
@@ -47,8 +52,14 @@ export default function DiagnosticReportView({report}:{report:DiagnosticReport})
       <div className="dr-kicker">逐题证据 · 逐题复盘</div><h1 className="dr-title">完整题目与作答证据{qPages.length>1?` · ${chunkIndex+1}/${qPages.length}`:""}</h1><p className="dr-subtitle">复盘必须回到原题：重新读取题干与选项，再对照当时作答、正确答案、用时和修改轨迹。</p>
       <div className="dr-section dr-review-list">{rows.map(q=><article className="dr-review-card" key={q.questionId}>
         <div className="dr-review-head"><div><strong>Q{q.no}</strong><span className={`dr-result ${q.result==="正确"?"ok":q.result==="错误"?"bad":"blank"}`}>{q.result}</span></div><div><span>{q.concept}</span><span>{q.points} 分</span><span className="dr-pattern">{q.pattern}</span></div></div>
-        <h3 className="dr-review-stem">{q.stem}</h3>
-        {q.assetUrlZh&&<Image className="dr-review-asset" src={q.assetUrlZh} alt={`第 ${q.no} 题图示`} width={900} height={500} unoptimized/>}
+        {stackedBilingual
+          ? <BilingualOriginalQuestion chinese={q.stem} english={q.stemEn}
+              originalImage={q.assetUrlEn||q.assetUrlZh||q.assetUrl} questionNo={q.no} compact/>
+          : <>
+              <h3 className="dr-review-stem">{q.stem}</h3>
+              {q.assetUrlZh&&<Image className="dr-review-asset" src={q.assetUrlZh}
+                alt={"第 " + q.no + " 题图示"} width={900} height={500} unoptimized/>}
+            </>}
         {q.choices.length>0?<div className="dr-review-choices">{q.choices.map(choice=>{
           const picked=q.selected===choice.key,correct=q.correctAnswer===choice.key;
           return <div className={["dr-review-choice",picked?"picked":"",correct?"correct":""].filter(Boolean).join(" ")} key={choice.key}>

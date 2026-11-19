@@ -60,7 +60,7 @@ export const BUSINESS_SUBROUTES:readonly {path:string;owner:SiteBusinessId;role:
  * The account/student dashboard remains a cross-cutting facility, not a new
  * learning business. An exam result is not a product and cannot be indexed.
  */
-export const EXAM_EXECUTION_PREFIXES = ["/exam", "/result", "/report"] as const;
+export const EXAM_EXECUTION_PREFIXES = ["/exam", "/result", "/report", "/marketplace"] as const;
 
 /** Classification is for breadcrumbs/navigation, never for access control. */
 export function businessForPublicPath(rawPath:string):SiteBusinessId|null {
