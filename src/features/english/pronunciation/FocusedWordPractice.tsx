@@ -20,11 +20,13 @@ function recorderFor(stream:MediaStream):MediaRecorder{
 }
 
 export default function FocusedWordPractice({
- itemId,sentence,suggested,onPlay,speed=0.7,
+ itemId,sentence,suggested,onPlay,speed=0.7,direct=false,translation,onSpeedChange,
 }:{
  itemId:string;sentence:string;suggested?:string|null;onPlay?:()=>void;speed?:number;
+ direct?:boolean;translation?:string;onSpeedChange?:(value:number)=>void;
 }){
  const candidates=useMemo(()=>[...new Set(sentence.split(/\s+/).map(clean).filter(Boolean))],[sentence]);
+ const displayTokens=useMemo(()=>sentence.split(/(\s+)/).filter(Boolean),[sentence]);
  const initial=useMemo(()=>candidates.find(w=>w.toLowerCase()===clean(suggested||"").toLowerCase())||candidates[0]||"",[candidates,suggested]);
  const [word,setWord]=useState(initial);
  const [stage,setStage]=useState<Stage>("idle");
@@ -203,17 +205,37 @@ export default function FocusedWordPractice({
     :"这次没能开始录音，请检查麦克风后重试。");
   }
  }
- return <section className={styles.panel} data-testid="native-focused-word" aria-label="单词重点纠音">
-  <div className={styles.header}>
+ return <section className={direct?`${styles.panel} ${styles.panelDirect}`:styles.panel} data-testid="native-focused-word" aria-label="单词重点纠音">
+  {!direct?<><div className={styles.header}>
    <h3>单词再练一次</h3>
    <span>{suggested?"建议先练这个词":"你可以自己选词"}</span>
   </div>
-  <p className={styles.instructions}>点一个词，听一遍，再录一次。也能对比自己前后两次的声音。</p>
-  <div className={styles.words} role="group" aria-label="选择重点单词">
-   {candidates.map((candidate,i)=><button type="button" key={candidate+"-"+i}
-    className={candidate===word?styles.selected:styles.word}
-    aria-pressed={candidate===word} disabled={busy} onClick={()=>choose(candidate)}>{candidate}</button>)}
+  <p className={styles.instructions}>点一个词，听一遍，再录一次。也能对比自己前后两次的声音。</p></>:null}
+  <div className={direct?styles.wordsDirect:styles.words} role="group" aria-label="选择重点单词">
+   {direct
+    ?displayTokens.map((token,i)=>/^\s+$/.test(token)
+     ?<span key={i}>{token}</span>
+     :<button type="button" key={i}
+       className={clean(token)===word?styles.selectedDirect:styles.wordDirect}
+       aria-pressed={clean(token)===word} disabled={busy}
+       onClick={()=>choose(clean(token))}>{token}</button>)
+    :candidates.map((candidate,i)=><button type="button" key={candidate+"-"+i}
+      className={candidate===word?styles.selected:styles.word}
+      aria-pressed={candidate===word} disabled={busy} onClick={()=>choose(candidate)}>{candidate}</button>)}
   </div>
+  {direct&&translation?<p className={styles.translationDirect}>{translation}</p>:null}
+  {direct&&onSpeedChange?<div className={styles.speedDirect}>
+   <label htmlFor="native-word-mode-speed">听示范的速度</label>
+   <select id="native-word-mode-speed" disabled={busy} value={speed}
+    onChange={event=>onSpeedChange(Number(event.target.value))}>
+    <option value={0.3}>0.3 × 极慢</option>
+    <option value={0.5}>0.5 × 很慢</option>
+    <option value={0.7}>0.7 × 慢速</option>
+    <option value={0.85}>0.85 × 稍慢</option>
+    <option value={1}>1.0 × 正常</option>
+    <option value={1.15}>1.15 × 稍快</option>
+   </select>
+  </div>:null}
   <div className={styles.actions}>
    <button type="button" disabled={busy||!word} onClick={listen}>▶ 听 {word||"单词"} 示范</button>
    {stage==="recording"
