@@ -110,7 +110,7 @@ test("A/B uses two independent real microphone Blobs, rotates only after success
   });
  });
  await focus.getByRole("button",{name:"录这个词并评分"}).click();
- await expect(focus.getByText(/Permission denied/)).toBeVisible();
+ await expect(focus.getByText(/没有获得麦克风权限/)).toBeVisible();
  await expect(focus.getByLabel("上一次单词录音（A）")).toHaveAttribute("src",second!);
  await expect(focus.getByLabel("我的单词录音回听")).toHaveAttribute("src",third!);
  await focus.getByRole("button",{name:"curious",exact:true}).click();
