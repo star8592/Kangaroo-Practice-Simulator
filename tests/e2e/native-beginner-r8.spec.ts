@@ -153,3 +153,21 @@ test("R8: all 10 pre-rendered 0.3x tracks match their SHA manifest and exposed U
   expect(web.headers()["content-type"]).toContain("audio/mpeg");
  }
 });
+
+test("R8: optional cue audio outage cannot block a consented beginner recording",async({page})=>{
+ test.setTimeout(60000);
+ const calls=await setup(page,84);
+ await page.route("**/english/pronunciation/app/audio/ui/ready-ding-single.wav",route=>
+  route.fulfill({status:404,body:"missing cue"}));
+ await page.getByRole("button",{name:/入门短句/}).click();
+ await page.getByRole("button",{name:"情景问答",exact:true}).click();
+ const q=page.getByTestId("native-guided-dialogue");
+ await q.getByRole("button",{name:"我来回答并评分"}).click();
+ await q.getByRole("button",{name:/停止回答并评分/}).waitFor();
+ await expect(page.getByText(/提示音没响，但录音已经开始/)).toBeVisible();
+ await page.waitForTimeout(1400);
+ await q.getByRole("button",{name:/停止回答并评分/}).click();
+ await expect(q.getByLabel("问答发音结果")).toContainText("84");
+ expect(calls).toHaveLength(1);
+ expect(decodeURIComponent(calls[0].header||"")).toBe("The cat is sleeping.");
+});
