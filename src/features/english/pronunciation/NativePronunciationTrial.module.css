@@ -11,7 +11,10 @@
 .practice{border:1px solid #dbe5df;border-radius:22px;padding:26px 30px;background:#fff;box-shadow:0 10px 34px rgba(33,64,51,.045)}
 .rail{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:12px;font-weight:850;color:#506763;letter-spacing:.02em}
 .sentence{font-size:clamp(23px,3.7vw,34px);line-height:1.7;font-weight:750;letter-spacing:-.025em;color:#172e36;margin:28px 0 12px;min-height:94px}
-.word{display:inline;color:inherit;font:inherit;border:0;background:none;padding:0;cursor:pointer;border-radius:5px}
+.word,.wordActive{display:inline;color:inherit;font:inherit;border:0;border-bottom:2px dotted #77b89e;background:#f6fbf8;padding:1px 3px;cursor:pointer;border-radius:5px;touch-action:manipulation}
+.wordActive{color:#07573c;background:#e2f2e8;border-bottom:2px solid #0b7551}
+.wordGuide{font-size:14px;font-weight:750;color:#326e58;margin:20px 0 0}
+.word:focus-visible,.wordActive:focus-visible{outline:2px solid #1a845d;outline-offset:2px}
 .word:hover,.word:focus-visible{color:#08795c;background:#e5f5ed;outline:2px solid transparent}
 .word:disabled{cursor:default;color:#52666c}
 .translation{font-size:16px;line-height:1.8;color:#536769;margin:0 0 19px}
@@ -67,3 +70,16 @@
 .reviewToggle{display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer;width:100%;text-align:left;border:1px solid #c7ddd2;background:#eef7f1;color:#275e4b;padding:12px 15px;border-radius:12px;font-size:13px;font-weight:850}
 .reviewToggle span{font-size:21px;font-weight:500}
 .reviewToggle[aria-expanded=true]{background:#e4f0e9;border-color:#80ba97}
+
+/* R7A child-first feedback: point to words, read a score, do one clear next step. */
+.result .resultLabel{margin:0 0 1px;font-size:15px;font-weight:850;color:#1c6549}
+.result .practiceTip{font-size:16px;line-height:1.65;color:#1d5040;margin:10px 0 0}
+.scoreDetails{margin-top:13px;color:#58756b;font-size:13px}
+.scoreDetails summary{cursor:pointer;min-height:30px}
+.footer details summary{font-weight:850;font-size:13px;cursor:pointer;color:#34524c;min-height:24px}
+.footer details a{display:inline-block;margin:6px 15px 0 0}
+@media(max-width:650px){
+ .wordGuide{font-size:13px;margin:12px 0 0}
+ .word,.wordActive{padding:2px 4px}
+ .result .practiceTip{font-size:15px}
+}
