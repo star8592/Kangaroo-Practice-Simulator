@@ -5,11 +5,13 @@ import styles from "./NativePronunciationTrial.module.css";
 import SyncedAudioOverlay from "./SyncedAudioOverlay";
 import FocusedWordPractice from "./FocusedWordPractice";
 import {GUIDED_QUESTIONS} from "./GuidedDialogueCards";
+import {BEGINNER_SHORT_ITEMS,BEGINNER_GUIDED_QUESTIONS,BEGINNER_SLOW_PREFIX} from "./BeginnerShortData";
 
 type Sentence={
  id:string;title:string;level:string;topic:string;sentence:string;
  translation:string;audio_available:boolean;audio_url:string|null;
  voice_profile:string;disclosure:string;content_origin:string;
+ beginner?:boolean;tip?:string;
 };
 type Catalog={
  items:Sentence[];scoring_status:"connected"|"not_connected";scoring_message:string;
@@ -37,6 +39,14 @@ function audioSrc(url:string|null):string{
   return "";
  return "/english/pronunciation"+url;
 }
+const BEGINNER_SENTENCES:ReadonlyArray<Sentence>=BEGINNER_SHORT_ITEMS.map(item=>({
+ id:item.id,title:"入门短句",level:"基础",topic:"生活表达",
+ sentence:item.text,translation:item.translation,audio_available:true,
+ audio_url:item.audioUrl.replace(/^\/english\/pronunciation/,""),
+ voice_profile:"Kokoro AI 示范音（非真人录音）",
+ disclosure:"AI 合成美式英语近似示范音；评分只比较指定参考句。",
+ content_origin:"original",beginner:true,tip:item.tip,
+}));
 function getWords(sentence:string){
  return sentence.split(/(\s+)/).filter(Boolean);
 }
@@ -51,6 +61,7 @@ export default function NativePronunciationTrial(){
  const [catalog,setCatalog]=useState<Catalog|null>(null);
  const [loadError,setLoadError]=useState("");
  const [currentIndex,setCurrentIndex]=useState(0);
+ const [courseLevel,setCourseLevel]=useState<"existing"|"beginner">("existing");
  const [speed,setSpeed]=useState(0.7);
  const [studyMode,setStudyMode]=useState<"sentence"|"word"|"dialogue">("sentence");
  const [dialogueHintOpen,setDialogueHintOpen]=useState(false);
@@ -116,11 +127,15 @@ export default function NativePronunciationTrial(){
    if(playbackAudio){playbackAudio.onended=null;playbackAudio.onerror=null;}
   };
  },[]);
- const current=catalog?.items[currentIndex];
- const dialogueQuestion=current?GUIDED_QUESTIONS[current.id]:undefined;
+ const courseItems=courseLevel==="beginner"?BEGINNER_SENTENCES:(catalog?.items??[]);
+ const current=courseItems[currentIndex];
+ const dialogueQuestion=current?(current.beginner?BEGINNER_GUIDED_QUESTIONS[current.id]:GUIDED_QUESTIONS[current.id]):undefined;
  const previewSrc=useMemo(()=>audioSrc(current?.audio_url??null),[current?.audio_url]);
- const useSlowTrack=speed===0.3&&Boolean(current?.id&&SLOW_03_IDS.has(current.id))&&!slowTrackFailed;
- const referenceSrc=useSlowTrack&&current?"/english/pronunciation/next-lab/audio/slow-03/"+current.id+".mp3":previewSrc;
+ const useSlowTrack=speed===0.3&&Boolean(current&&(current.beginner||SLOW_03_IDS.has(current.id)))&&!slowTrackFailed;
+ const referenceSrc=useSlowTrack&&current
+  ?current.beginner?BEGINNER_SLOW_PREFIX+"/"+current.id+".mp3"
+   :"/english/pronunciation/next-lab/audio/slow-03/"+current.id+".mp3"
+  :previewSrc;
  const referenceRate=useSlowTrack?1:speed;
  useEffect(()=>{
   const player=audioRef.current;
@@ -129,6 +144,16 @@ export default function NativePronunciationTrial(){
  const busy=stage!=="idle";
  const suggestedWord=score?.differences?.words_with_errors?.find(candidate=>
   getWords(current?.sentence||"").some(token=>cleanWord(token).toLowerCase()===cleanWord(candidate).toLowerCase()));
+ function switchCourseLevel(level:"existing"|"beginner"){
+  if(busy||level===courseLevel)return;
+  audioRef.current?.pause();window.speechSynthesis?.cancel();
+  setCourseLevel(level);setCurrentIndex(0);setScore(null);setRecorded(null);
+  setSlowTrackFailed(false);setError("");setWordHint("");setActiveWord("");
+  setFocusOpen(false);setWaveOpen(false);setDialogueHintOpen(false);setDialogueAnswerOpen(false);
+  setStatus(level==="beginner"
+   ?"先用短句练习。听不清就选 0.3 倍速，每个单词都可以点读。"
+   :"已切回原来的句子训练；原有三种方式保持不变。");
+ }
  function switchStudyMode(mode:"sentence"|"word"|"dialogue"){
   if(busy||mode===studyMode)return;
   audioRef.current?.pause();window.speechSynthesis?.cancel();
@@ -152,7 +177,7 @@ export default function NativePronunciationTrial(){
   setStatus("正在读问题。听不清可以调整速度，再听一次。");
  }
  function selectIndex(index:number){
-  if(!catalog||busy||index<0||index>=catalog.items.length)return;
+  if(!catalog||busy||index<0||index>=courseItems.length)return;
   audioRef.current?.pause();window.speechSynthesis?.cancel();
   setCurrentIndex(index);setScore(null);setError("");setWordHint("");setActiveWord("");
   setFocusOpen(false);
@@ -192,14 +217,15 @@ export default function NativePronunciationTrial(){
   streamRef.current=null;
   if(audioContextRef.current){void audioContextRef.current.close();audioContextRef.current=null;}
  }
- async function sendToRust(itemId:string,blob:Blob,generation:number){
+ async function sendToRust(itemId:string,blob:Blob,generation:number,expectedText?:string){
   const active=()=>mountedRef.current&&generationRef.current===generation;
   if(!active())return;
   setStage("scoring");setStatus("录好了，正在给你打分…");
   const controller=new AbortController();requestRef.current=controller;
   try{
    const response=await fetch(API+"/follow-along/items/"+encodeURIComponent(itemId)+"/score",{
-    method:"POST",headers:{"content-type":blob.type||"audio/webm"},body:blob,
+    method:"POST",headers:{"content-type":blob.type||"audio/webm",
+      ...(expectedText?{"x-english-leap-expected-sentence":encodeURIComponent(expectedText)}:{})},body:blob,
     signal:controller.signal,
    });
    if(!response.ok){
@@ -249,7 +275,8 @@ export default function NativePronunciationTrial(){
   audioRef.current?.pause();window.speechSynthesis?.cancel();
   setRecorded(null);setWaveOpen(false);setFocusOpen(false);
   setStage("requesting");setStatus("正在等待麦克风授权，可取消本次等待");
-  const itemId=current.id;
+  const itemId=current.beginner?"private-session":current.id;
+  const scoreText=current.beginner?current.sentence:undefined;
   let pendingStream:MediaStream|null=null;
   try{
    if(!navigator.mediaDevices?.getUserMedia||typeof MediaRecorder==="undefined")
@@ -315,7 +342,7 @@ export default function NativePronunciationTrial(){
      setStage("idle");setError("录音数据不足或超过大小限制，请重试");return;
     }
     setRecorded(blob);
-    void sendToRust(itemId,blob,generation);
+    void sendToRust(itemId,blob,generation,scoreText);
    };
    recorder.start(300);
    setStage("recording");setStatus("第 3 步：轮到你读啦。读完稍作停顿就会自动结束。");
@@ -370,16 +397,22 @@ export default function NativePronunciationTrial(){
     <h1>{studyMode==="sentence"?"听一句，跟读一句":studyMode==="word"?"选一个词，读准确":"听个问题，试着回答"}</h1>
     <p>{studyMode==="sentence"?"听不清就放慢，单词不会就点它。听一句、读一句、拿到分数，再练一次。":studyMode==="word"?"先听一个词，再跟读并打分。不会读完整句，也可以直接练单词。":"先听问题，不会就看提示；听参考答案后，自己回答并得到发音分数。"}</p>
    </div>
-   <span className={styles.counter}>{catalog?.items.length??"—"} 句练习</span>
+   <span className={styles.counter}>{courseItems.length||"—"} 句练习</span>
   </header>
   <div className={styles.stage} role="status" aria-live="polite">
    <span className={styles.statusDot}/>{status}
   </div>
   {currentError?<p className={styles.error} role="alert">{currentError}</p>:null}
   {current?<section className={styles.practice} aria-label="当前练习">
+   <div className={styles.levelPicker} role="group" aria-label="选择练习难度">
+    <button type="button" className={courseLevel==="existing"?styles.levelSelected:styles.levelButton}
+     aria-pressed={courseLevel==="existing"} disabled={busy} onClick={()=>switchCourseLevel("existing")}>原有句子</button>
+    <button type="button" className={courseLevel==="beginner"?styles.levelSelected:styles.levelButton}
+     aria-pressed={courseLevel==="beginner"} disabled={busy} onClick={()=>switchCourseLevel("beginner")}>入门短句 · 10句</button>
+   </div>
    <div className={styles.rail}>
     <span>{current.title} · {current.topic} · {current.level}</span>
-    <span>{currentIndex+1} / {catalog?.items.length}</span>
+    <span>{currentIndex+1} / {courseItems.length}</span>
    </div>
    <div className={styles.modePicker} role="group" aria-label="选择练习方式">
     <button type="button" className={studyMode==="sentence"?styles.modeSelected:styles.modeButton}
@@ -391,14 +424,14 @@ export default function NativePronunciationTrial(){
    </div>
    {studyMode==="word"?<div className={styles.wordMode} data-testid="native-direct-word-mode">
     <p className={styles.wordGuide}>点下面的任意单词，先听示范，再跟读评分。不需要先读完整句。</p>
-    <FocusedWordPractice key={"direct-"+current.id} itemId={current.id}
+    <FocusedWordPractice key={"direct-"+current.id} itemId={current.beginner?"private-session":current.id}
      sentence={current.sentence} suggested={suggestedWord} speed={speed}
      direct translation={current.translation}
      onSpeedChange={value=>{audioRef.current?.pause();window.speechSynthesis?.cancel();setSpeed(value);}}
      onPlay={()=>{audioRef.current?.pause();window.speechSynthesis?.cancel();}}/>
     <div className={styles.switch}>
      <button type="button" disabled={busy||currentIndex===0} onClick={()=>selectIndex(currentIndex-1)}>上一句</button>
-     <button type="button" disabled={busy||currentIndex===(catalog?.items.length??1)-1} onClick={()=>selectIndex(currentIndex+1)}>下一句</button>
+     <button type="button" disabled={busy||currentIndex===(courseItems.length??1)-1} onClick={()=>selectIndex(currentIndex+1)}>下一句</button>
     </div>
    </div>:studyMode==="dialogue"?<section className={styles.dialoguePanel} data-testid="native-guided-dialogue" aria-label="引导式情景问答">
     {dialogueQuestion?<>
@@ -464,7 +497,7 @@ export default function NativePronunciationTrial(){
      </div>:null}
      <div className={styles.switch}>
       <button type="button" disabled={busy||currentIndex===0} onClick={()=>selectIndex(currentIndex-1)}>上一问</button>
-      <button type="button" disabled={busy||currentIndex===(catalog?.items.length??1)-1}
+      <button type="button" disabled={busy||currentIndex===(courseItems.length??1)-1}
        onClick={()=>selectIndex(currentIndex+1)}>下一问</button>
      </div>
      <details className={styles.provider}><summary>这种问答能做什么？</summary>
@@ -510,7 +543,7 @@ export default function NativePronunciationTrial(){
       </button>}
     <div className={styles.switch}>
      <button type="button" disabled={busy||currentIndex===0} onClick={()=>selectIndex(currentIndex-1)}>上一句</button>
-     <button type="button" disabled={busy||currentIndex===(catalog?.items.length??1)-1} onClick={()=>selectIndex(currentIndex+1)}>下一句</button>
+     <button type="button" disabled={busy||currentIndex===(courseItems.length??1)-1} onClick={()=>selectIndex(currentIndex+1)}>下一句</button>
     </div>
    </div>
    {score?<section className={styles.result} aria-label="本次得分">
@@ -535,7 +568,7 @@ export default function NativePronunciationTrial(){
      {focusOpen?"收起单词练习":"只练一个词 · "+(suggestedWord||"自己选词")}
      <span aria-hidden="true">{focusOpen?"−":"+"}</span>
     </button>
-    {focusOpen?<FocusedWordPractice key={current.id+"-"+score.score} itemId={current.id}
+    {focusOpen?<FocusedWordPractice key={current.id+"-"+score.score} itemId={current.beginner?"private-session":current.id}
       sentence={current.sentence} suggested={suggestedWord} speed={speed}
       onPlay={()=>{audioRef.current?.pause();window.speechSynthesis?.cancel();}}/>:null}
    </section>:null}
