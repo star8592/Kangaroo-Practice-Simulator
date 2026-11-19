@@ -32,3 +32,31 @@
 .chosenNote{background:#d3ecdc;border-color:#258251;font-weight:750}
 .note:focus-visible,.chosenNote:focus-visible{outline:2px solid #177252;outline-offset:2px}
 @media(max-width:650px){.compare{grid-template-columns:1fr}.listeningOptions{display:grid;grid-template-columns:1fr}.note,.chosenNote{width:100%}}
+
+/* R7D: the direct-word training view shares the original sentence's visual
+ * hierarchy instead of shrinking the whole English sentence into tiny chips. */
+.panelDirect{display:flow-root;margin:0;border:0;border-radius:0;padding:0;background:transparent}
+.wordsDirect{font-size:clamp(23px,3.7vw,34px);line-height:1.7;font-weight:750;
+ letter-spacing:-.025em;color:#172e36;margin:28px 0 12px;min-height:94px;
+ overflow-wrap:break-word;word-break:normal}
+.wordDirect,.selectedDirect{display:inline;color:inherit;font:inherit;border:0;
+ border-bottom:2px dotted #77b89e;background:#f6fbf8;padding:1px 3px;
+ cursor:pointer;border-radius:5px;touch-action:manipulation;line-height:inherit}
+.selectedDirect{color:#07573c;background:#e2f2e8;border-bottom:2px solid #0b7551}
+.wordDirect:focus-visible,.selectedDirect:focus-visible{outline:2px solid #1a845d;outline-offset:2px}
+.wordDirect:hover{color:#08795c;background:#e5f5ed}
+.wordDirect:disabled,.selectedDirect:disabled{cursor:default;color:#52666c}
+.translationDirect{font-size:16px;line-height:1.8;color:#536769;margin:0 0 19px}
+.speedDirect{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:18px 0}
+.speedDirect label{font-size:13px;font-weight:800;color:#4e6864}
+.speedDirect select{border:1px solid #cbdad5;border-radius:11px;padding:9px 13px;
+ color:#234039;background:#fafffc;font:inherit;min-width:140px}
+.panelDirect .actions button{font-size:14px}
+.panelDirect .feedback{font-size:13px}
+@media(max-width:650px){
+ .wordsDirect{margin:15px 0 9px;min-height:70px;font-size:26px;line-height:1.7}
+ .panelDirect .actions{grid-template-columns:1fr 1fr}
+ .panelDirect .actions button{font-size:13px;min-height:48px}
+ .speedDirect{margin:15px 0}
+ .translationDirect{font-size:15px}
+}

@@ -390,21 +390,11 @@ export default function NativePronunciationTrial(){
      aria-pressed={studyMode==="dialogue"} disabled={busy} onClick={()=>switchStudyMode("dialogue")}>情景问答</button>
    </div>
    {studyMode==="word"?<div className={styles.wordMode} data-testid="native-direct-word-mode">
-    <p className={styles.wordGuide}>不需要先读完整句。直接选下面任意单词练习。</p>
-    <p className={styles.translation}>{current.translation}</p>
-    <div className={styles.speed}>
-     <label htmlFor="native-word-mode-speed">听示范的速度</label>
-     <select id="native-word-mode-speed" disabled={busy} value={speed} onChange={event=>setSpeed(Number(event.target.value))}>
-      <option value={0.3}>0.3 × 极慢</option>
-      <option value={0.5}>0.5 × 很慢</option>
-      <option value={0.7}>0.7 × 慢速</option>
-      <option value={0.85}>0.85 × 稍慢</option>
-      <option value={1}>1.0 × 正常</option>
-      <option value={1.15}>1.15 × 稍快</option>
-     </select>
-    </div>
+    <p className={styles.wordGuide}>点下面的任意单词，先听示范，再跟读评分。不需要先读完整句。</p>
     <FocusedWordPractice key={"direct-"+current.id} itemId={current.id}
      sentence={current.sentence} suggested={suggestedWord} speed={speed}
+     direct translation={current.translation}
+     onSpeedChange={value=>{audioRef.current?.pause();window.speechSynthesis?.cancel();setSpeed(value);}}
      onPlay={()=>{audioRef.current?.pause();window.speechSynthesis?.cancel();}}/>
     <div className={styles.switch}>
      <button type="button" disabled={busy||currentIndex===0} onClick={()=>selectIndex(currentIndex-1)}>上一句</button>
