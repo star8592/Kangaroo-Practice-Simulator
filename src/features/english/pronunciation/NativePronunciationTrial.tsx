@@ -370,6 +370,7 @@ export default function NativePronunciationTrial(){
    };
    rafRef.current=requestAnimationFrame(watch);
   }catch(e){
+   console.warn("AccentLab recorder setup",e instanceof Error?e.name+": "+e.message:"unknown failure");
    pendingStream?.getTracks().forEach(track=>track.stop());
    if(!active())return;
    invalidateGeneration(generationRef);
