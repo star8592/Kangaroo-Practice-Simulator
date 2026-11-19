@@ -1,8 +1,8 @@
 # SOC THINK × AccentLab｜英语听说与中高考机考统一研发索引（2026-11-19）
 
-**唯一完整总纲**：https://github.com/star8592/AccentLab/blob/docs/unified-listening-speaking-exam-20261119/docs/architecture/ACCENTLAB_UNIFIED_LISTENING_SPEAKING_EXAMS_20261119.md
+**唯一完整总纲**：https://github.com/star8592/AccentLab/blob/main/docs/architecture/ACCENTLAB_UNIFIED_LISTENING_SPEAKING_EXAMS_20261119.md
 
-本文件只做主站归口索引，不复制全部研究/考试数据，也不创建第二个发音评分器、账号系统、支付系统或考试模拟器。该总纲整合了2026-11-18已完成的AccentLab R41—R51儿童音素证据、WhisperX/Parakeet/Whisper研究、学生两遍真录音A/B与自评、北京/上海/广州及武汉2027的地区考试模拟、主站Next R5/R6原生录音，以及¥19.90个人月卡的开发状态。后续如果总纲进入AccentLab main，本文件链接应随之改为固定main路径。
+本文件只做主站归口索引，不复制全部研究/考试数据，也不创建第二个发音评分器、账号系统、支付系统或考试模拟器。该总纲整合了2026-11-18已完成的AccentLab R41—R51儿童音素证据、WhisperX/Parakeet/Whisper研究、学生两遍真录音A/B与自评、北京/上海/广州及武汉2027的地区考试模拟、主站Next R5/R6原生录音，以及¥19.90个人月卡的开发状态。总纲已于2026-11-19合并入 AccentLab main（PR #138）。
 
 ## 主站负责的可执行工作单元
 
