@@ -4,6 +4,7 @@ import {useEffect,useMemo,useRef,useState} from "react";
 import styles from "./NativePronunciationTrial.module.css";
 import SyncedAudioOverlay from "./SyncedAudioOverlay";
 import FocusedWordPractice from "./FocusedWordPractice";
+import {GUIDED_QUESTIONS} from "./GuidedDialogueCards";
 
 type Sentence={
  id:string;title:string;level:string;topic:string;sentence:string;
@@ -51,7 +52,9 @@ export default function NativePronunciationTrial(){
  const [loadError,setLoadError]=useState("");
  const [currentIndex,setCurrentIndex]=useState(0);
  const [speed,setSpeed]=useState(0.7);
- const [studyMode,setStudyMode]=useState<"sentence"|"word">("sentence");
+ const [studyMode,setStudyMode]=useState<"sentence"|"word"|"dialogue">("sentence");
+ const [dialogueHintOpen,setDialogueHintOpen]=useState(false);
+ const [dialogueAnswerOpen,setDialogueAnswerOpen]=useState(false);
  const [slowTrackFailed,setSlowTrackFailed]=useState(false);
  const [activeWord,setActiveWord]=useState("");
  const [status,setStatus]=useState("正在打开练习…");
@@ -114,6 +117,7 @@ export default function NativePronunciationTrial(){
   };
  },[]);
  const current=catalog?.items[currentIndex];
+ const dialogueQuestion=current?GUIDED_QUESTIONS[current.id]:undefined;
  const previewSrc=useMemo(()=>audioSrc(current?.audio_url??null),[current?.audio_url]);
  const useSlowTrack=speed===0.3&&Boolean(current?.id&&SLOW_03_IDS.has(current.id))&&!slowTrackFailed;
  const referenceSrc=useSlowTrack&&current?"/english/pronunciation/next-lab/audio/slow-03/"+current.id+".mp3":previewSrc;
@@ -125,12 +129,34 @@ export default function NativePronunciationTrial(){
  const busy=stage!=="idle";
  const suggestedWord=score?.differences?.words_with_errors?.find(candidate=>
   getWords(current?.sentence||"").some(token=>cleanWord(token).toLowerCase()===cleanWord(candidate).toLowerCase()));
+ function switchStudyMode(mode:"sentence"|"word"|"dialogue"){
+  if(busy||mode===studyMode)return;
+  audioRef.current?.pause();window.speechSynthesis?.cancel();
+  setStudyMode(mode);setScore(null);setRecorded(null);
+  setError("");setWordHint("");setActiveWord("");setFocusOpen(false);setWaveOpen(false);
+  setDialogueHintOpen(false);setDialogueAnswerOpen(false);
+  setStatus(mode==="dialogue"?"先听问题，想一想；不会回答时可以看提示。":mode==="word"
+   ?"选一个词，听示范，读一次，再看得分。":"先听整句，也可以点词单独听。");
+ }
+ function playDialogueQuestion(){
+  if(busy||!dialogueQuestion||typeof window==="undefined")return;
+  audioRef.current?.pause();
+  if(!window.speechSynthesis||typeof SpeechSynthesisUtterance==="undefined"){
+   setStatus("这个设备不能朗读问题，请先看英文和中文提示。");return;
+  }
+  window.speechSynthesis.cancel();
+  const voice=new SpeechSynthesisUtterance(dialogueQuestion.question);
+  voice.lang="en-US";voice.rate=speed;voice.volume=1;
+  voice.onerror=()=>{if(mountedRef.current)setStatus("问题没有播放出来，请直接读题或看中文提示。");};
+  window.speechSynthesis.speak(voice);
+  setStatus("正在读问题。听不清可以调整速度，再听一次。");
+ }
  function selectIndex(index:number){
   if(!catalog||busy||index<0||index>=catalog.items.length)return;
   audioRef.current?.pause();window.speechSynthesis?.cancel();
   setCurrentIndex(index);setScore(null);setError("");setWordHint("");setActiveWord("");
   setFocusOpen(false);
-  setSlowTrackFailed(false);
+  setSlowTrackFailed(false);setDialogueHintOpen(false);setDialogueAnswerOpen(false);
   setRecorded(null);setWaveOpen(false);setFocusOpen(false);
   setStatus("先听示范，也可以点任何一个单词单独听。");
  }
@@ -234,18 +260,20 @@ export default function NativePronunciationTrial(){
    if(!active()){pendingStream.getTracks().forEach(track=>track.stop());return;}
    const stream=pendingStream;
    streamRef.current=stream;
-   setStage("reference");
-   const player=audioRef.current;
-   if(!player)throw Error("示范音没准备好，请再试一次");
-   player.pause();player.currentTime=0;player.preservesPitch=true;player.playbackRate=referenceRate;
-   setStatus("第 1 步：先听清楚这一句");
-   await new Promise<void>((resolve,reject)=>{
-    player.onended=()=>{player.onended=null;player.onerror=null;resolve();};
-    player.onerror=()=>{player.onended=null;player.onerror=null;reject(Error("标准示范音无法播放"));};
-    void player.play().catch(reject);
-   });
+   if(studyMode!=="dialogue"){
+    setStage("reference");
+    const player=audioRef.current;
+    if(!player)throw Error("示范音没准备好，请再试一次");
+    player.pause();player.currentTime=0;player.preservesPitch=true;player.playbackRate=referenceRate;
+    setStatus("第 1 步：先听清楚这一句");
+    await new Promise<void>((resolve,reject)=>{
+     player.onended=()=>{player.onended=null;player.onerror=null;resolve();};
+     player.onerror=()=>{player.onended=null;player.onerror=null;reject(Error("标准示范音无法播放"));};
+     void player.play().catch(reject);
+    });
+   }
    if(!active())return;
-   setStage("cue");setStatus("第 2 步：提示音后开始跟读");
+   setStage("cue");setStatus(studyMode==="dialogue"?"提示音后，请说出参考句的回答。":"第 2 步：提示音后开始跟读");
    const cue=new Audio(CUE);
    await new Promise<void>((resolve,reject)=>{
     cue.onended=()=>resolve();
@@ -339,8 +367,8 @@ export default function NativePronunciationTrial(){
   <div className={styles.eyebrow}>ENGLISH · PRONUNCIATION <span>口语练习</span></div>
   <header className={styles.hero}>
    <div>
-    <h1>{studyMode==="sentence"?"听一句，跟读一句":"选一个词，读准确"}</h1>
-    <p>{studyMode==="sentence"?"听不清就放慢，单词不会就点它。听一句、读一句、拿到分数，再练一次。":"先听一个词，再跟读并打分。不会读完整句，也可以直接练单词。"}</p>
+    <h1>{studyMode==="sentence"?"听一句，跟读一句":studyMode==="word"?"选一个词，读准确":"听个问题，试着回答"}</h1>
+    <p>{studyMode==="sentence"?"听不清就放慢，单词不会就点它。听一句、读一句、拿到分数，再练一次。":studyMode==="word"?"先听一个词，再跟读并打分。不会读完整句，也可以直接练单词。":"先听问题，不会就看提示；听参考答案后，自己回答并得到发音分数。"}</p>
    </div>
    <span className={styles.counter}>{catalog?.items.length??"—"} 句练习</span>
   </header>
@@ -355,11 +383,11 @@ export default function NativePronunciationTrial(){
    </div>
    <div className={styles.modePicker} role="group" aria-label="选择练习方式">
     <button type="button" className={studyMode==="sentence"?styles.modeSelected:styles.modeButton}
-     aria-pressed={studyMode==="sentence"} disabled={busy}
-     onClick={()=>{if(studyMode!=="sentence"){window.speechSynthesis?.cancel();setStudyMode("sentence");setStatus("先听整句，也可以点词单独听。");}}}>基础跟读</button>
+     aria-pressed={studyMode==="sentence"} disabled={busy} onClick={()=>switchStudyMode("sentence")}>基础跟读</button>
     <button type="button" className={studyMode==="word"?styles.modeSelected:styles.modeButton}
-     aria-pressed={studyMode==="word"} disabled={busy}
-     onClick={()=>{if(studyMode!=="word"){audioRef.current?.pause();window.speechSynthesis?.cancel();setStudyMode("word");setFocusOpen(false);setStatus("选一个词，听示范，读一次，再看得分。");}}}>单词专项</button>
+     aria-pressed={studyMode==="word"} disabled={busy} onClick={()=>switchStudyMode("word")}>单词专项</button>
+    <button type="button" className={studyMode==="dialogue"?styles.modeSelected:styles.modeButton}
+     aria-pressed={studyMode==="dialogue"} disabled={busy} onClick={()=>switchStudyMode("dialogue")}>情景问答</button>
    </div>
    {studyMode==="word"?<div className={styles.wordMode} data-testid="native-direct-word-mode">
     <p className={styles.wordGuide}>不需要先读完整句。直接选下面任意单词练习。</p>
@@ -382,7 +410,78 @@ export default function NativePronunciationTrial(){
      <button type="button" disabled={busy||currentIndex===0} onClick={()=>selectIndex(currentIndex-1)}>上一句</button>
      <button type="button" disabled={busy||currentIndex===(catalog?.items.length??1)-1} onClick={()=>selectIndex(currentIndex+1)}>下一句</button>
     </div>
-   </div>:<>
+   </div>:studyMode==="dialogue"?<section className={styles.dialoguePanel} data-testid="native-guided-dialogue" aria-label="引导式情景问答">
+    {dialogueQuestion?<>
+     <div className={styles.dialogueMessage}>
+      <span className={styles.speaker}>英语老师问</span>
+      <p className={styles.questionText}>{dialogueQuestion.question}</p>
+      <button type="button" disabled={busy} className={styles.dialogueSecondary} onClick={playDialogueQuestion}>▶ 听问题</button>
+     </div>
+     <div className={styles.speed}>
+      <label htmlFor="native-dialogue-speed">播放速度</label>
+      <select id="native-dialogue-speed" value={speed} disabled={busy}
+       onChange={event=>{audioRef.current?.pause();window.speechSynthesis?.cancel();setSpeed(Number(event.target.value));}}>
+       <option value={0.3}>0.3 × 极慢</option>
+       <option value={0.5}>0.5 × 很慢</option>
+       <option value={0.7}>0.7 × 慢速</option>
+       <option value={0.85}>0.85 × 稍慢</option>
+       <option value={1}>1.0 × 正常</option>
+       <option value={1.15}>1.15 × 稍快</option>
+      </select>
+      <button type="button" className={styles.dialogueSecondary} disabled={busy}
+       onClick={()=>setDialogueHintOpen(v=>!v)} aria-expanded={dialogueHintOpen}>
+       {dialogueHintOpen?"收起中文帮助":"我没听懂 · 看提示"}
+      </button>
+     </div>
+     {dialogueHintOpen?<div className={styles.dialogueHint}>
+      <p>{dialogueQuestion.translation}</p><p>{dialogueQuestion.hint}</p>
+     </div>:null}
+     <div className={styles.dialogueMessage}>
+      <span className={styles.speaker}>不会回答？可以一步步求助</span>
+      <p>先试着想一想。如果需要帮助，可以听示范或查看文字。</p>
+      <div className={styles.dialogueHelpers}>
+       <button type="button" disabled={busy||!previewSrc} className={styles.dialogueSecondary}
+        onClick={()=>void playReference()}>▶ 听参考答案</button>
+       <button type="button" disabled={busy} className={styles.dialogueSecondary}
+        aria-expanded={dialogueAnswerOpen} onClick={()=>setDialogueAnswerOpen(x=>!x)}>
+        {dialogueAnswerOpen?"收起参考答句":"看参考答句"}
+       </button>
+      </div>
+      {dialogueAnswerOpen?<div className={styles.dialogueSample}>
+       <p className={styles.answerText}>{current.sentence}</p>
+       <p className={styles.translation}>{current.translation}</p>
+      </div>:null}
+     </div>
+     <audio ref={audioRef} src={referenceSrc||undefined} preload="none"
+      aria-label="情景问答参考答案音频" className={styles.audio}
+      onError={()=>{if(useSlowTrack){setSlowTrackFailed(true);setStatus("已切换为设备慢速播放，试着再听一遍参考答案。");}}}/>
+     <div className={styles.dialogueActions}>
+      {stage==="recording"
+       ?<button type="button" className={styles.stop} onClick={stopRecording}>停止回答并评分 · {elapsed} 秒</button>
+       :stage==="requesting"
+        ?<button type="button" className={styles.stop} onClick={cancelPending}>取消等待麦克风</button>
+        :<button type="button" className={styles.primary} disabled={busy||catalog?.scoring_status!=="connected"||!previewSrc}
+          onClick={()=>void beginPractice()}>{busy?"正在处理你的回答…":"我来回答并评分"}</button>}
+     </div>
+     {score?<div className={styles.dialogueMessage} aria-label="问答发音结果">
+      <span className={styles.speaker}>英语老师的反馈</span>
+      <p className={styles.dialogueScore}>{Math.round(score.score)} <small>/ 100 分</small></p>
+      {suggestedWord
+       ?<p>试着把 <b>{suggestedWord}</b> 读清楚。先点「听参考答案」，再试一次。</p>
+       :<p>听听参考答案，再读一遍。读清楚以后，可以试试下一问。</p>}
+      {score.transcribe?<details className={styles.scoreDetails}><summary>看看这次听到什么</summary><p>{score.transcribe}</p></details>:null}
+      <p className={styles.dialogueNote}>本分数只评价与参考答案的发音匹配情况，不判断其他说法的内容是否正确。</p>
+     </div>:null}
+     <div className={styles.switch}>
+      <button type="button" disabled={busy||currentIndex===0} onClick={()=>selectIndex(currentIndex-1)}>上一问</button>
+      <button type="button" disabled={busy||currentIndex===(catalog?.items.length??1)-1}
+       onClick={()=>selectIndex(currentIndex+1)}>下一问</button>
+     </div>
+     <details className={styles.provider}><summary>这种问答能做什么？</summary>
+      <p>这是固定问题与参考答案的引导练习，不是自由聊天。朗读问题使用设备语音，听参考答案使用本站示范音；只对照现有参考句评发音分，不自动评判自由回答的内容。</p>
+     </details>
+    </>:<p>这句话暂时没有配套问题。请选择上一问或下一问，或先练基础跟读。</p>}
+   </section>:<>
    <p className={styles.wordGuide}>每个英文单词都能点，点一下就读给你听</p>
    <div className={styles.sentence} aria-label="点击任意单词听发音">
     {getWords(current.sentence).map((token,i)=>/^\s+$/.test(token)
