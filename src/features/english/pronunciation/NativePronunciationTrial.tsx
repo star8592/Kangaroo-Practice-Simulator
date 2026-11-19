@@ -51,6 +51,7 @@ export default function NativePronunciationTrial(){
  const [loadError,setLoadError]=useState("");
  const [currentIndex,setCurrentIndex]=useState(0);
  const [speed,setSpeed]=useState(0.7);
+ const [studyMode,setStudyMode]=useState<"sentence"|"word">("sentence");
  const [slowTrackFailed,setSlowTrackFailed]=useState(false);
  const [activeWord,setActiveWord]=useState("");
  const [status,setStatus]=useState("正在打开练习…");
@@ -128,6 +129,7 @@ export default function NativePronunciationTrial(){
   if(!catalog||busy||index<0||index>=catalog.items.length)return;
   audioRef.current?.pause();window.speechSynthesis?.cancel();
   setCurrentIndex(index);setScore(null);setError("");setWordHint("");setActiveWord("");
+  setFocusOpen(false);
   setSlowTrackFailed(false);
   setRecorded(null);setWaveOpen(false);setFocusOpen(false);
   setStatus("先听示范，也可以点任何一个单词单独听。");
@@ -333,12 +335,12 @@ export default function NativePronunciationTrial(){
   }
  }
  const currentError=error||loadError;
- return <section className={styles.shell} aria-label="英语逐句跟读">
-  <div className={styles.eyebrow}>ENGLISH · PRONUNCIATION <span>基础跟读</span></div>
+ return <section className={styles.shell} aria-label="英语发音训练">
+  <div className={styles.eyebrow}>ENGLISH · PRONUNCIATION <span>口语练习</span></div>
   <header className={styles.hero}>
    <div>
-    <h1>听一句，跟读一句</h1>
-    <p>听不清就放慢，单词不会就点它。听一句、读一句、拿到分数，再练一次。</p>
+    <h1>{studyMode==="sentence"?"听一句，跟读一句":"选一个词，读准确"}</h1>
+    <p>{studyMode==="sentence"?"听不清就放慢，单词不会就点它。听一句、读一句、拿到分数，再练一次。":"先听一个词，再跟读并打分。不会读完整句，也可以直接练单词。"}</p>
    </div>
    <span className={styles.counter}>{catalog?.items.length??"—"} 句练习</span>
   </header>
@@ -351,6 +353,36 @@ export default function NativePronunciationTrial(){
     <span>{current.title} · {current.topic} · {current.level}</span>
     <span>{currentIndex+1} / {catalog?.items.length}</span>
    </div>
+   <div className={styles.modePicker} role="group" aria-label="选择练习方式">
+    <button type="button" className={studyMode==="sentence"?styles.modeSelected:styles.modeButton}
+     aria-pressed={studyMode==="sentence"} disabled={busy}
+     onClick={()=>{if(studyMode!=="sentence"){window.speechSynthesis?.cancel();setStudyMode("sentence");setStatus("先听整句，也可以点词单独听。");}}}>基础跟读</button>
+    <button type="button" className={studyMode==="word"?styles.modeSelected:styles.modeButton}
+     aria-pressed={studyMode==="word"} disabled={busy}
+     onClick={()=>{if(studyMode!=="word"){audioRef.current?.pause();window.speechSynthesis?.cancel();setStudyMode("word");setFocusOpen(false);setStatus("选一个词，听示范，读一次，再看得分。");}}}>单词专项</button>
+   </div>
+   {studyMode==="word"?<div className={styles.wordMode} data-testid="native-direct-word-mode">
+    <p className={styles.wordGuide}>不需要先读完整句。直接选下面任意单词练习。</p>
+    <p className={styles.translation}>{current.translation}</p>
+    <div className={styles.speed}>
+     <label htmlFor="native-word-mode-speed">听示范的速度</label>
+     <select id="native-word-mode-speed" disabled={busy} value={speed} onChange={event=>setSpeed(Number(event.target.value))}>
+      <option value={0.3}>0.3 × 极慢</option>
+      <option value={0.5}>0.5 × 很慢</option>
+      <option value={0.7}>0.7 × 慢速</option>
+      <option value={0.85}>0.85 × 稍慢</option>
+      <option value={1}>1.0 × 正常</option>
+      <option value={1.15}>1.15 × 稍快</option>
+     </select>
+    </div>
+    <FocusedWordPractice key={"direct-"+current.id} itemId={current.id}
+     sentence={current.sentence} suggested={suggestedWord} speed={speed}
+     onPlay={()=>{audioRef.current?.pause();window.speechSynthesis?.cancel();}}/>
+    <div className={styles.switch}>
+     <button type="button" disabled={busy||currentIndex===0} onClick={()=>selectIndex(currentIndex-1)}>上一句</button>
+     <button type="button" disabled={busy||currentIndex===(catalog?.items.length??1)-1} onClick={()=>selectIndex(currentIndex+1)}>下一句</button>
+    </div>
+   </div>:<>
    <p className={styles.wordGuide}>每个英文单词都能点，点一下就读给你听</p>
    <div className={styles.sentence} aria-label="点击任意单词听发音">
     {getWords(current.sentence).map((token,i)=>/^\s+$/.test(token)
@@ -418,6 +450,7 @@ export default function NativePronunciationTrial(){
       sentence={current.sentence} suggested={suggestedWord} speed={speed}
       onPlay={()=>{audioRef.current?.pause();window.speechSynthesis?.cancel();}}/>:null}
    </section>:null}
+   </>}
    <details className={styles.provider}>
     <summary>录音、示范音和评分说明</summary>
     <p>整句示范音：{current.voice_profile}。0.3 倍速优先使用预先处理的保音高音轨；如果音轨暂时不可用，自动回退到设备变速播放。单词点读使用设备语音，可能与整句发音人不同。</p>
