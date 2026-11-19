@@ -7,7 +7,7 @@ import {
   tx,id,txt,jsonBody,classForAssignment
 } from "@/lib/classroom-web-core";
 
-const recorderRoot=()=>process.env.SOCTHINK_CLASSROOM_RECORDINGS_DIR?.trim()||
+export const classroomRecordingRoot=()=>process.env.SOCTHINK_CLASSROOM_RECORDINGS_DIR?.trim()||
   "/var/lib/socthink/accent-classroom/recordings";
 function int(v:unknown,lo:number,hi:number):number|null{
   if(v===null||v===undefined)return null;
@@ -15,7 +15,7 @@ function int(v:unknown,lo:number,hi:number):number|null{
     throw new ClassroomFailure(400,"参数无效");
   return v;
 }
-async function score(expected:string,bytes:Uint8Array,mime:string):Promise<Record<string,unknown>>{
+export async function scoreClassroomAudio(expected:string,bytes:Uint8Array,mime:string):Promise<Record<string,unknown>>{
   const form=new FormData();
   form.append("expected_text",expected);form.append("lang","en");
   form.append("file",new Blob([new Uint8Array(bytes)],{type:mime}),mime==="audio/mp4"?"voice.mp4":"voice.webm");
@@ -37,11 +37,11 @@ async function score(expected:string,bytes:Uint8Array,mime:string):Promise<Recor
     throw new ClassroomFailure(502,"评分引擎未返回有效分数");
   return result;
 }
-async function saveRecording(tenant:string,attempt:string,mime:string,data:Uint8Array):Promise<string>{
-  const dir=path.join(recorderRoot(),id(tenant));
+export async function saveClassroomRecording(tenant:string,attempt:string,mime:string,data:Uint8Array):Promise<string>{
+  const dir=path.join(classroomRecordingRoot(),id(tenant));
   await mkdir(dir,{recursive:true,mode:0o700});
   const rel=id(tenant)+"/"+id(attempt)+(mime==="audio/mp4"?".mp4":".webm");
-  await writeFile(path.join(recorderRoot(),rel),data,{flag:"wx",mode:0o600});
+  await writeFile(path.join(classroomRecordingRoot(),rel),data,{flag:"wx",mode:0o600});
   return rel;
 }
 export async function assessmentHandler(req:NextRequest,p:string[],a:Actor):
@@ -84,9 +84,9 @@ export async function assessmentHandler(req:NextRequest,p:string[],a:Actor):
         "WHERE tenant_id=$1 AND student_id=$2 AND linked_at>now()-interval '1 hour'"].join(" "),
         [tenant,a.accountId]);
       if(count.rows[0].n>=40)throw new ClassroomFailure(429,"练习次数过多，请稍后再试");
-      const result=await score(sentenceRow.rows[0].english_text,bytes,mime);
+      const result=await scoreClassroomAudio(sentenceRow.rows[0].english_text,bytes,mime);
       const attempt=crypto.randomUUID(),session=crypto.randomUUID();
-      const saved=await saveRecording(tenant,attempt,mime,bytes);
+      const saved=await saveClassroomRecording(tenant,attempt,mime,bytes);
       try{
         await db.query(["INSERT INTO accent.practice_sessions(tenant_id,id,student_id,class_id)",
           "VALUES($1,$2,$3,$4)"].join(" "),[tenant,session,a.accountId,invitation.classId]);
@@ -125,7 +125,7 @@ export async function assessmentHandler(req:NextRequest,p:string[],a:Actor):
         return {duplicate:false,attempt_id:attempt,score:result.score,
           assessment:result,submitted:complete,student_id:a.accountId};
       }catch(e){
-        await unlink(path.join(recorderRoot(),saved)).catch(()=>undefined);
+        await unlink(path.join(classroomRecordingRoot(),saved)).catch(()=>undefined);
         throw e;
       }
     });
@@ -209,7 +209,7 @@ export async function assessmentHandler(req:NextRequest,p:string[],a:Actor):
       const ext=String(x.recording_asset_key||"");
       if(ext!==tenant+"/"+attempt+".mp4"&&ext!==tenant+"/"+attempt+".webm")
         throw new ClassroomFailure(404,"录音路径无效");
-      const data=await readFile(path.join(recorderRoot(),ext)).catch(()=>null);
+      const data=await readFile(path.join(classroomRecordingRoot(),ext)).catch(()=>null);
       if(!data)throw new ClassroomFailure(404,"录音文件不可用");
       return new Response(new Uint8Array(data),{status:200,headers:{
         "Content-Type":ext.endsWith(".mp4")?"audio/mp4":"audio/webm",
