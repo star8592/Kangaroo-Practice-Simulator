@@ -302,10 +302,20 @@ export default function NativePronunciationTrial(){
    if(!active())return;
    setStage("cue");setStatus(studyMode==="dialogue"?"提示音后，请说出参考句的回答。":"第 2 步：提示音后开始跟读");
    const cue=new Audio(CUE);
-   await new Promise<void>((resolve,reject)=>{
-    cue.onended=()=>resolve();
-    cue.onerror=()=>reject(Error("提示音未就绪；未启动录音"));
-    void cue.play().catch(reject);
+   // The consented microphone recording must not fail solely because a
+   // nonessential cue file is missing or unsupported by the browser.
+   const cuePlayed=await new Promise<boolean>(resolve=>{
+    let completed=false;
+    const finish=(played:boolean)=>{
+     if(completed)return;completed=true;
+     clearTimeout(timer);cue.onended=null;cue.onerror=null;
+     if(!played)cue.pause();
+     resolve(played);
+    };
+    const timer=setTimeout(()=>finish(false),2500);
+    cue.onended=()=>finish(true);
+    cue.onerror=()=>finish(false);
+    void cue.play().catch(()=>finish(false));
    });
    if(!active())return;
    const chunks:BlobPart[]=[];
@@ -345,7 +355,9 @@ export default function NativePronunciationTrial(){
     void sendToRust(itemId,blob,generation,scoreText);
    };
    recorder.start(300);
-   setStage("recording");setStatus("第 3 步：轮到你读啦。读完稍作停顿就会自动结束。");
+   setStage("recording");setStatus(cuePlayed
+    ?"第 3 步：轮到你读啦。读完稍作停顿就会自动结束。"
+    :"提示音没响，但录音已经开始。现在请读，读完稍作停顿即可。");
    const ctx=new AudioContext();
    audioContextRef.current=ctx;
    const analyser=ctx.createAnalyser();
