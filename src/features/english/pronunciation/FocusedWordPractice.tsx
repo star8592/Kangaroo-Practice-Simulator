@@ -198,7 +198,9 @@ export default function FocusedWordPractice({
    if(!active())return;
    micRef.current=null;recRef.current=null;
    operationRef.current=false;setStage("idle");
-   setFeedback(e instanceof Error?e.message:"无法使用麦克风");
+   setFeedback(e instanceof DOMException&&e.name==="NotAllowedError"
+    ?"没有获得麦克风权限，请允许录音后再试。"
+    :"这次没能开始录音，请检查麦克风后重试。");
   }
  }
  return <section className={styles.panel} data-testid="native-focused-word" aria-label="单词重点纠音">
