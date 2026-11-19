@@ -31,3 +31,17 @@ export const BEGINNER_SHORT_ITEMS:ReadonlyArray<BeginnerShortItem> = [
   audioUrl:"/english/pronunciation/app/audio/foundation-v36/f-3b772b1437-c64d8477834d.mp3",audioSha256:"c64d8477834d24549af472657347396a78cda9b4d8d683ecbc7290da60bfbc94",voice:"Kokoro af_heart"},
 ];
 export const BEGINNER_SLOW_PREFIX="/english/pronunciation/next-lab/audio/beginner-slow-03";
+
+/** Curated prompts only; R8 is guided reference-answer practice, not semantic AI grading. */
+export const BEGINNER_GUIDED_QUESTIONS:Readonly<Record<string,{question:string;translation:string;hint:string}>>={
+ "cat-sleeping-one":{question:"What is the cat doing?",translation:"这只猫正在做什么？",hint:"想想 sleeping 的意思。"},
+ "cat-sleeping-many":{question:"What are the cats doing?",translation:"这些猫正在做什么？",hint:"这里不止一只猫。"},
+ "want-red-apple":{question:"What do you want?",translation:"你想要什么？",hint:"你想要一个红苹果。"},
+ "want-the-apple":{question:"Which apple do you want?",translation:"你想要哪个苹果？",hint:"你想要那个红苹果。"},
+ "find-it-can":{question:"Can she find it?",translation:"她能找到它吗？",hint:"她能找到它。"},
+ "find-it-cannot":{question:"Can she find it?",translation:"她能找到它吗？",hint:"这一次，她找不到它。"},
+ "read-this-can":{question:"Can we read this?",translation:"我们能读这个吗？",hint:"我们能读。"},
+ "read-this-cannot":{question:"Can we read this?",translation:"我们能读这个吗？",hint:"这一次，我们读不了。"},
+ "cant-swim":{question:"Can you swim?",translation:"你会游泳吗？",hint:"试着用 I 开头回答。"},
+ "green-apples":{question:"What fruit do you see?",translation:"你看到了什么水果？",hint:"看到了青苹果。"},
+};
