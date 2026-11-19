@@ -331,14 +331,14 @@ export default function NativePronunciationTrial(){
   }
  }
  const currentError=error||loadError;
- return <section className={styles.shell} aria-label="Next.js 原生发音跟读候选">
-  <div className={styles.eyebrow}>ENGLISH · PRONUNCIATION <span>原生 Next.js 迁移候选</span></div>
+ return <section className={styles.shell} aria-label="英语逐句跟读">
+  <div className={styles.eyebrow}>ENGLISH · PRONUNCIATION <span>基础跟读</span></div>
   <header className={styles.hero}>
    <div>
     <h1>听一句，跟读一句</h1>
-    <p>一个屏幕完成示范、提示、朗读和评分。读取正在运行的 Rust 服务，不新建题库或评分后端。</p>
+    <p>听不清就放慢，单词不会就点它。听一句、读一句、拿到分数，再练一次。</p>
    </div>
-   <span className={styles.counter}>{catalog?.items.length??"—"} 句原创语料</span>
+   <span className={styles.counter}>{catalog?.items.length??"—"} 句练习</span>
   </header>
   <div className={styles.stage} role="status" aria-live="polite">
    <span className={styles.statusDot}/>{status}
@@ -349,26 +349,31 @@ export default function NativePronunciationTrial(){
     <span>{current.title} · {current.topic} · {current.level}</span>
     <span>{currentIndex+1} / {catalog?.items.length}</span>
    </div>
-   <div className={styles.sentence} aria-label="按单词可分别试听">
+   <p className={styles.wordGuide}>每个英文单词都能点，点一下就读给你听</p>
+   <div className={styles.sentence} aria-label="点击任意单词听发音">
     {getWords(current.sentence).map((token,i)=>/^\s+$/.test(token)
      ? <span key={i}>{token}</span>
-     : <button type="button" key={i} className={styles.word} disabled={busy}
-       onClick={()=>playWord(token)} title={"点按试听 "+token}>{token}</button>)}
+     : <button type="button" key={i} className={cleanWord(token)===activeWord?styles.wordActive:styles.word} disabled={busy}
+       onClick={()=>playWord(token)} title={"点一下听 "+token}>{token}</button>)}
    </div>
    <p className={styles.translation}>{current.translation}</p>
    {wordHint?<p className={styles.wordTip} role="status">{wordHint}</p>:null}
    <div className={styles.speed}>
-    <label htmlFor="native-pronun-speed">示范速度</label>
+    <label htmlFor="native-pronun-speed">听整句的速度</label>
     <select id="native-pronun-speed" value={speed} disabled={busy}
-     onChange={event=>{const n=Number(event.target.value);setSpeed(n);if(audioRef.current)audioRef.current.playbackRate=n;}}>
-     <option value={0.8}>0.8 × 慢速</option>
-     <option value={1}>1.0 × 标准</option>
+     onChange={event=>{const n=Number(event.target.value);audioRef.current?.pause();window.speechSynthesis?.cancel();setActiveWord("");setSpeed(n);}}>
+     <option value={0.3}>0.3 × 极慢</option>
+     <option value={0.5}>0.5 × 很慢</option>
+     <option value={0.7}>0.7 × 慢速</option>
+     <option value={0.85}>0.85 × 稍慢</option>
+     <option value={1}>1.0 × 正常</option>
      <option value={1.15}>1.15 × 稍快</option>
     </select>
-    <button type="button" onClick={()=>void playReference()} disabled={busy||!previewSrc}>试听示范</button>
+    <button type="button" onClick={()=>void playReference()} disabled={busy||!previewSrc}>▶ 听整句</button>
    </div>
-   <audio ref={audioRef} src={previewSrc||undefined} preload="none" controls
-    aria-label="示范音频" className={styles.audio}/>
+   <audio ref={audioRef} src={referenceSrc||undefined} preload="none" controls
+    aria-label="整句示范音频" className={styles.audio}
+    onError={()=>{if(useSlowTrack){setSlowTrackFailed(true);setStatus("已改用设备的极慢速播放，再点「听整句」即可。");}}}/>
    <div className={styles.actions}>
     {stage==="recording"
      ?<button type="button" className={styles.stop} onClick={stopRecording}>
@@ -378,23 +383,25 @@ export default function NativePronunciationTrial(){
       ?<button type="button" className={styles.stop} onClick={cancelPending}>取消等待麦克风</button>
      :<button type="button" className={styles.primary} disabled={busy||!previewSrc||catalog?.scoring_status!=="connected"}
        onClick={()=>void beginPractice()}>
-       {busy?stage==="scoring"?"Rust 正在评分…":"跟读进行中…":"一键听音 → 跟读 → 评分"}
+       {busy?stage==="scoring"?"正在打分…":"跟读进行中…":"一键听音 → 跟读 → 评分"}
       </button>}
     <div className={styles.switch}>
      <button type="button" disabled={busy||currentIndex===0} onClick={()=>selectIndex(currentIndex-1)}>上一句</button>
      <button type="button" disabled={busy||currentIndex===(catalog?.items.length??1)-1} onClick={()=>selectIndex(currentIndex+1)}>下一句</button>
     </div>
    </div>
-   {score?<section className={styles.result} aria-label="Rust 发音评分">
-    <strong>{Math.round(score.score)} <small> / 100 · Rust 实验评分（非正式考试成绩）</small></strong>
-    {score.transcribe?<p>识别结果：{score.transcribe}</p>:null}
-    {score.differences?.words_with_errors?.length
-     ?<p>优先纠音：<b>{score.differences.words_with_errors[0]}</b></p>:<p>评分由服务端生成；未返回明确的优先纠音词。</p>}
+   {score?<section className={styles.result} aria-label="本次得分">
+    <p className={styles.resultLabel}>本次得分</p>
+    <strong>{Math.round(score.score)} <small>/ 100 分</small></strong>
+    {suggestedWord
+     ?<p className={styles.practiceTip}>下一步：试着练好 <b>{suggestedWord}</b>。点这个词听一遍，再读整句。</p>
+     :<p className={styles.practiceTip}>继续加油！可以再听一遍示范，试试把整句读得更清楚。</p>}
+    {score.transcribe?<details className={styles.scoreDetails}><summary>看看我刚才读了什么</summary><p>{score.transcribe}</p></details>:null}
    </section>:null}
    {recorded?<section className={styles.reviewSection} aria-label="本人录音与参考示范对照">
     <button type="button" className={styles.reviewToggle} aria-expanded={waveOpen}
      onClick={()=>{setWaveOpen(x=>!x);if(focusOpen)setFocusOpen(false);}}>
-     {waveOpen?"收起双轨波形与录音回听":"展开双轨波形与录音回听"} <span aria-hidden="true">{waveOpen?"−":"+"}</span>
+     {waveOpen?"收起我的录音对照":"听听我的录音对照"} <span aria-hidden="true">{waveOpen?"−":"+"}</span>
     </button>
     {waveOpen?<SyncedAudioOverlay referenceUrl={previewSrc} studentBlob={recorded}
       onPlay={()=>{audioRef.current?.pause();window.speechSynthesis?.cancel();}}/>:null}
@@ -402,25 +409,28 @@ export default function NativePronunciationTrial(){
    {score?<section className={styles.reviewSection} aria-label="一个词重点纠音">
     <button type="button" className={styles.reviewToggle} aria-expanded={focusOpen}
      onClick={()=>{setFocusOpen(x=>!x);if(waveOpen)setWaveOpen(false);}}>
-     {focusOpen?"收起重点纠音":"展开重点纠音 · "+(score.differences?.words_with_errors?.[0]||"自主选词")}
+     {focusOpen?"收起单词练习":"只练一个词 · "+(suggestedWord||"自己选词")}
      <span aria-hidden="true">{focusOpen?"−":"+"}</span>
     </button>
     {focusOpen?<FocusedWordPractice key={current.id+"-"+score.score} itemId={current.id}
-      sentence={current.sentence} suggested={score.differences?.words_with_errors?.[0]}
+      sentence={current.sentence} suggested={suggestedWord}
       onPlay={()=>{audioRef.current?.pause();window.speechSynthesis?.cancel();}}/>:null}
    </section>:null}
-   <p className={styles.disclosure}>示范音：{current.voice_profile}。单词点读使用浏览器设备语音，不能当作标准参考音源。点击“一键听音 → 跟读 → 评分”并授权麦克风后，本次录音将在结束时自动发送至本站自托管实验评分服务；后端不可用时不会生成假分数。回听波形在浏览器本地解码，不另行上传；更换句子会清除页面中的上一次录音。</p>
    <details className={styles.provider}>
-    <summary>实验评分的准确性与录音处理说明</summary>
-    <p>{catalog?.scoring_message||"评分引擎的准确性和隐私处理以对应服务端公告为准。"}</p>
+    <summary>录音、示范音和评分说明</summary>
+    <p>整句示范音：{current.voice_profile}。0.3 倍速优先使用预先处理的保音高音轨；如果音轨暂时不可用，自动回退到设备变速播放。单词点读使用设备语音，可能与整句发音人不同。</p>
+    <p>只有你点击跟读并授权麦克风后才录音。结束后将录音发送到本站评分服务；评分失败不会生成分数。录音回听在本页处理，换句会清除上一句临时录音。</p>
+    <p>{catalog?.scoring_message||"评分仅供练习参考，并非正式考试成绩。"}</p>
    </details>
   </section>:<section className={styles.practice}><p>{loadError?"无法连接 Rust 服务，未展示虚构语料。":"正在读取真实句子…"}</p></section>}
   <footer className={styles.footer}>
-   <strong>迁移验收状态</strong>
-   <p>本 Next.js 候选已接入真实 Rust 发音评分、双轨波形、分段回听和单词局部重练，仍需验证不同手机录音行为、评分稳定性及课堂作业。原 V3 的教师作业、详细记录与全功能版本在正式迁移验收前继续保留。</p>
-   <a href="/english/pronunciation/next-lab/assignments">进入原生作业与录音提交候选</a>
-   <a href="/english/pronunciation/next-lab/classroom">查看原生课堂与学习历史候选</a>
-   <a href="/english/pronunciation/app/practice-library">进入当前正式发音工作台</a>
+   <details>
+    <summary>其他练习与教师入口</summary>
+    <p>原有课堂、学习历史与完整发音工作台仍然保留。</p>
+    <a href="/english/pronunciation/next-lab/assignments">我的作业</a>
+    <a href="/english/pronunciation/next-lab/classroom">课堂与学习记录</a>
+    <a href="/english/pronunciation/app/practice-library">原有发音工作台</a>
+   </details>
   </footer>
  </section>;
 }
