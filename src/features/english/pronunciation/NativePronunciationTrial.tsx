@@ -413,7 +413,7 @@ export default function NativePronunciationTrial(){
      <span aria-hidden="true">{focusOpen?"−":"+"}</span>
     </button>
     {focusOpen?<FocusedWordPractice key={current.id+"-"+score.score} itemId={current.id}
-      sentence={current.sentence} suggested={suggestedWord}
+      sentence={current.sentence} suggested={suggestedWord} speed={speed}
       onPlay={()=>{audioRef.current?.pause();window.speechSynthesis?.cancel();}}/>:null}
    </section>:null}
    <details className={styles.provider}>
