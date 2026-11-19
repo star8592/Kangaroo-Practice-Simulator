@@ -183,7 +183,7 @@ export default function NativePronunciationTrial(){
       ||result.score<0||result.score>100)
     throw Error("服务端没有提供 0—100 范围内的有效评分");
    if(active()){setScore(result);setStatus("打分完成！看一看这次得了多少分。");}
-  }catch(e){
+  }catch{
    if(active()){
     setError("这次没有打出分数，请再读一次。你的录音没有被算作零分。");
     setStatus("没有打出分数，可以重新跟读。");
