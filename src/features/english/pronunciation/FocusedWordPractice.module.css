@@ -35,7 +35,7 @@
 
 /* R7D: the direct-word training view shares the original sentence's visual
  * hierarchy instead of shrinking the whole English sentence into tiny chips. */
-.panelDirect{margin:0;border:0;border-radius:0;padding:0;background:transparent}
+.panelDirect{display:flow-root;margin:0;border:0;border-radius:0;padding:0;background:transparent}
 .wordsDirect{font-size:clamp(23px,3.7vw,34px);line-height:1.7;font-weight:750;
  letter-spacing:-.025em;color:#172e36;margin:28px 0 12px;min-height:94px;
  overflow-wrap:break-word;word-break:normal}
@@ -54,7 +54,7 @@
 .panelDirect .actions button{font-size:14px}
 .panelDirect .feedback{font-size:13px}
 @media(max-width:650px){
- .wordsDirect{margin:21px 0 11px;min-height:0;font-size:clamp(23px,5.9vw,29px);line-height:1.75}
+ .wordsDirect{margin:15px 0 9px;min-height:70px;font-size:26px;line-height:1.7}
  .panelDirect .actions{grid-template-columns:1fr 1fr}
  .panelDirect .actions button{font-size:13px;min-height:48px}
  .speedDirect{margin:15px 0}
