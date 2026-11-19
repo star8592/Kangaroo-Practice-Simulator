@@ -89,7 +89,7 @@ test("sentence: permission denied unlocks stage and never fabricates a score",as
   });
  });
  await page.getByRole("button",{name:/一键听音/}).click();
- await expect(page.getByRole("alert")).toContainText("Permission denied");
+ await expect(page.getByRole("alert").filter({hasText:"Permission denied"})).toHaveCount(1);
  await expect(page.getByRole("button",{name:/一键听音/})).toBeEnabled();
  await expect(page.getByRole("button",{name:"下一句"})).toBeEnabled();
  await expect(page.getByRole("region",{name:"Rust 发音评分"})).toHaveCount(0);
