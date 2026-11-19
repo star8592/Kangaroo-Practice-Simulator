@@ -70,7 +70,7 @@ export async function studentHandler(req:NextRequest,p:string[],a:Actor):Promise
         [tenant,assignment]);
       if(!visible.rows.length)throw new ClassroomFailure(404,"作业不存在或尚未发布");
       const entries=await db.query([
-        "SELECT i.ordinal,s.english_text AS sentence FROM accent.class_assignment_items i",
+        "SELECT i.ordinal,s.english_text AS sentence,i.speaker_label AS speaker FROM accent.class_assignment_items i",
         "JOIN accent.sentence_items s ON s.tenant_id=i.tenant_id AND s.id=i.sentence_id",
         "WHERE i.tenant_id=$1 AND i.assignment_id=$2 ORDER BY i.ordinal LIMIT 30"
       ].join(" "),[tenant,assignment]);
@@ -191,7 +191,7 @@ export async function studentHandler(req:NextRequest,p:string[],a:Actor):Promise
     if(p.length===4&&method==="GET")
       return tx({tenant,account:a.accountId},async db=>{
         const i=await invite(db,tenant,raw);await enrolled(db,a,tenant,i.classId);
-        const r=await db.query(["SELECT s.id AS sentence_id,s.english_text AS sentence,x.ordinal",
+        const r=await db.query(["SELECT s.id AS sentence_id,s.english_text AS sentence,x.ordinal,x.speaker_label AS speaker",
           "FROM accent.class_assignment_items x JOIN accent.sentence_items s",
           "ON s.tenant_id=x.tenant_id AND s.id=x.sentence_id",
           "WHERE x.tenant_id=$1 AND x.assignment_id=$2 ORDER BY x.ordinal"].join(" "),

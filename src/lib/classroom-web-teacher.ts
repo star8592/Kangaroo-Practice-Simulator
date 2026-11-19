@@ -1,4 +1,5 @@
 import crypto from "node:crypto";
+import {validateSpeakerLabels} from "@/lib/classroom-roleplay";
 import {validStudentFeeMode} from "./teacher-pilot-policy";
 import {classInvitationLink} from "./classroom-invitations";
 import {
@@ -455,6 +456,10 @@ export async function teacherHandler(req:NextRequest,p:string[],a:Actor):Promise
       throw new ClassroomFailure(400,"请选择 1–30 句作业");
     const sentenceIds=(ids as string[]).map(id);
     if(new Set(sentenceIds).size!==sentenceIds.length)throw new ClassroomFailure(400,"重复的练习句子");
+    let speakerLabels:(string|null)[];
+    try{speakerLabels=validateSpeakerLabels(body.speaker_labels,sentenceIds.length)}
+    catch{throw new ClassroomFailure(400,"角色标记必须与句子数量一致，且只使用简短英文字母角色名");}
+
     const assignment=crypto.randomUUID(),raw=newShareToken();
     return tx({tenant,account:a.accountId},async db=>{
       await teacher(db,a,tenant,cl);
@@ -472,9 +477,9 @@ export async function teacherHandler(req:NextRequest,p:string[],a:Actor):Promise
         [tenant,assignment,cl,setId,a.accountId,title]);
       for(let i=0;i<sentenceIds.length;i++)
         await db.query(["INSERT INTO accent.class_assignment_items",
-          "(tenant_id,assignment_id,sentence_set_id,sentence_id,ordinal)",
-          "VALUES($1,$2,$3,$4,$5)"].join(" "),
-          [tenant,assignment,setId,sentenceIds[i],i+1]);
+          "(tenant_id,assignment_id,sentence_set_id,sentence_id,ordinal,speaker_label)",
+          "VALUES($1,$2,$3,$4,$5,$6)"].join(" "),
+          [tenant,assignment,setId,sentenceIds[i],i+1,speakerLabels[i]]);
       await db.query(["INSERT INTO accent.assignment_invitation_links",
         "(tenant_id,assignment_id,token_digest,expires_at)",
         "VALUES($1,$2,decode($3,'hex'),now()+interval '7 days')"].join(" "),[tenant,assignment,digest(raw)]);
