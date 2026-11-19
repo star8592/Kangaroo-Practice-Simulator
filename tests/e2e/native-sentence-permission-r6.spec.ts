@@ -33,7 +33,7 @@ async function ready(page:import("@playwright/test").Page){
   return route.fulfill({status:503,body:"Unexpected late score call"});
  });
  await page.goto("/english/pronunciation/next-lab");
- await expect(page.getByText("2 句原创语料")).toBeVisible();
+ await expect(page.getByText("2 句练习")).toBeVisible();
  await page.evaluate(()=>{
   const media=navigator.mediaDevices;
   const original=media.getUserMedia.bind(media);
@@ -72,7 +72,7 @@ test("sentence: double-click opens one mic request; cancel, change sentence and 
  await page.evaluate(()=>(window as unknown as {__sentenceLateMic:LateMic}).__sentenceLateMic.pending[0].release());
  await page.waitForFunction(()=>(window as unknown as {__sentenceLateMic:LateMic}).__sentenceLateMic.pending[0].stream.getTracks().every(t=>t.readyState==="ended"));
  await expect(page.getByRole("button",{name:/一键听音/})).toBeEnabled();
- await expect(page.getByRole("region",{name:"Rust 发音评分"})).toHaveCount(0);
+ await expect(page.getByRole("region",{name:"本次得分"})).toHaveCount(0);
  expect(scoreCalls).toHaveLength(0);
  const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth);
  expect(overflow).toBeLessThanOrEqual(2);
@@ -89,10 +89,10 @@ test("sentence: permission denied unlocks stage and never fabricates a score",as
   });
  });
  await page.getByRole("button",{name:/一键听音/}).click();
- await expect(page.getByRole("alert").filter({hasText:"Permission denied"})).toHaveCount(1);
+ await expect(page.getByRole("alert").filter({hasText:"没有获得麦克风权限"})).toHaveCount(1);
  await expect(page.getByRole("button",{name:/一键听音/})).toBeEnabled();
  await expect(page.getByRole("button",{name:"下一句"})).toBeEnabled();
- await expect(page.getByRole("region",{name:"Rust 发音评分"})).toHaveCount(0);
+ await expect(page.getByRole("region",{name:"本次得分"})).toHaveCount(0);
  expect(scoreCalls).toHaveLength(0);
 });
 
@@ -112,6 +112,6 @@ test("sentence: stale permission resolution cannot hijack a newer recording requ
  await page.evaluate(()=>(window as unknown as {__sentenceLateMic:LateMic}).__sentenceLateMic.pending[1].release());
  await page.waitForFunction(()=>(window as unknown as {__sentenceLateMic:LateMic}).__sentenceLateMic.pending[1].stream.getTracks().every(t=>t.readyState==="ended"));
  await expect(page.getByRole("button",{name:/一键听音/})).toBeEnabled();
- await expect(page.getByRole("region",{name:"Rust 发音评分"})).toHaveCount(0);
+ await expect(page.getByRole("region",{name:"本次得分"})).toHaveCount(0);
  expect(scoreCalls).toHaveLength(0);
 });

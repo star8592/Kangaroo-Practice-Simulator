@@ -51,13 +51,13 @@ async function openFocusedWord(page:import("@playwright/test").Page,scoreCalls:{
     differences:{words_with_errors:["octopus"]}})});
  });
  await page.goto("/english/pronunciation/next-lab");
- await expect(page.getByText("2 句原创语料")).toBeVisible();
+ await expect(page.getByText("2 句练习")).toBeVisible();
  await page.getByRole("button",{name:/一键听音/}).click();
  await page.getByRole("button",{name:/停止并评分/}).waitFor();
  await page.waitForTimeout(1100);
  await page.getByRole("button",{name:/停止并评分/}).click();
- await expect(page.getByRole("region",{name:"Rust 发音评分"})).toContainText("86");
- await page.getByRole("button",{name:/展开重点纠音/}).click();
+ await expect(page.getByRole("region",{name:"本次得分"})).toContainText("86");
+ await page.getByRole("button",{name:/只练一个词/}).click();
  return page.getByTestId("native-focused-word");
 }
 async function recordWord(focus:import("@playwright/test").Locator){
@@ -65,7 +65,7 @@ async function recordWord(focus:import("@playwright/test").Locator){
  await focus.getByRole("button",{name:"停止单词录音"}).waitFor();
  await new Promise(resolve=>setTimeout(resolve,1400));
  await focus.getByRole("button",{name:"停止单词录音"}).click();
- await expect(focus.getByText(/Rust 实验参考分/)).toContainText("72");
+ await expect(focus.getByText(/单词得分/)).toContainText("72");
 }
 
 test("A/B uses two independent real microphone Blobs, rotates only after success",async({page})=>{
@@ -83,7 +83,7 @@ test("A/B uses two independent real microphone Blobs, rotates only after success
  await page.waitForTimeout(1400);
  await focus.getByRole("button",{name:"停止单词录音"}).click();
  await expect(focus.getByLabel("上一次单词录音（A）")).toHaveAttribute("src",first!);
- await expect(focus.getByText(/Rust 实验参考分/)).toContainText("72");
+ await expect(focus.getByText(/单词得分/)).toContainText("72");
  const second=await focus.getByLabel("我的单词录音回听").getAttribute("src");
  expect(second).toMatch(/^blob:/);expect(second).not.toBe(first);
  const lengths=await page.evaluate(async urls=>Promise.all(urls.map(async url=>(await (await fetch(url)).blob()).size)),[first!,second!]);
@@ -110,7 +110,7 @@ test("A/B uses two independent real microphone Blobs, rotates only after success
   });
  });
  await focus.getByRole("button",{name:"录这个词并评分"}).click();
- await expect(focus.getByText(/Permission denied/)).toBeVisible();
+ await expect(focus.getByText(/没有获得麦克风权限/)).toBeVisible();
  await expect(focus.getByLabel("上一次单词录音（A）")).toHaveAttribute("src",second!);
  await expect(focus.getByLabel("我的单词录音回听")).toHaveAttribute("src",third!);
  await focus.getByRole("button",{name:"curious",exact:true}).click();

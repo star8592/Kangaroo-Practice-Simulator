@@ -21,15 +21,16 @@ test("Next-native pronunciation trial reads Rust catalog and keeps a compact mob
  expect(response?.status()).toBe(200);
  await expect(page.getByRole("heading",{name:"听一句，跟读一句"})).toBeVisible();
  await expect(page.getByText("章鱼很好奇。")).toBeVisible();
- await expect(page.getByText("2 句原创语料")).toBeVisible();
+ await expect(page.getByText("2 句练习")).toBeVisible();
  await expect(page.getByRole("button",{name:/一键听音/})).toBeEnabled();
  await expect(page.locator('audio')).toHaveAttribute("src",
   "/english/pronunciation/app/audio/follow-along/octopus-flexibility.mp3");
  await page.getByRole("button",{name:"下一句"}).click();
  await expect(page.getByText("蜜蜂分享信息。")).toBeVisible();
- await page.getByLabel("示范速度").selectOption("0.8");
- await expect(page.getByLabel("示范速度")).toHaveValue("0.8");
- await expect(page.getByRole("link",{name:"进入当前正式发音工作台"})).toHaveAttribute(
+ await page.getByLabel("听整句的速度").selectOption("0.5");
+ await expect(page.getByLabel("听整句的速度")).toHaveValue("0.5");
+ await page.getByText("其他练习与教师入口").click();
+ await expect(page.getByRole("link",{name:"原有发音工作台"})).toHaveAttribute(
   "href","/english/pronunciation/app/practice-library");
  expect(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth))
   .toBeLessThanOrEqual(isMobile?2:2);
@@ -39,7 +40,7 @@ test("Rust outage shows an error instead of fake sentences, scores or playback",
   status:503,contentType:"application/json",body:JSON.stringify({error:"unavailable"}),
  }));
  await page.goto("/english/pronunciation/next-lab");
- await expect(page.locator("main p[role=alert]")).toContainText("HTTP 503");
+ await expect(page.locator("main p[role=alert]")).toContainText("练习暂时打不开");
  await expect(page.getByRole("button",{name:/一键听音/})).toHaveCount(0);
  await expect(page.locator("main")).not.toContainText("Rust 评分已返回");
 });
