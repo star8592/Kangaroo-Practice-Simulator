@@ -53,7 +53,7 @@ export default function NativePronunciationTrial(){
  const [speed,setSpeed]=useState(0.7);
  const [slowTrackFailed,setSlowTrackFailed]=useState(false);
  const [activeWord,setActiveWord]=useState("");
- const [status,setStatus]=useState("正在连接现有 Rust 句子目录…");
+ const [status,setStatus]=useState("正在打开练习…");
  const [stage,setStage]=useState<"idle"|"requesting"|"reference"|"cue"|"recording"|"scoring">("idle");
  const [score,setScore]=useState<ScoreResponse|null>(null);
  const [error,setError]=useState("");
@@ -88,10 +88,10 @@ export default function NativePronunciationTrial(){
     if(!valid.length)throw Error("没有通过音源校验的句子");
     setCatalog({...d,items:valid});
     setStatus("请选择一句，试听示范，再开始跟读");
-   }).catch(e=>{
+   }).catch(()=>{
     if(controller.signal.aborted)return;
-    setLoadError(e instanceof Error?e.message:"暂时无法载入语料");
-    setStatus("Rust 语料服务暂时不可用");
+    setLoadError("练习暂时打不开，请刷新页面再试一次。");
+    setStatus("暂时无法打开练习");
    });
   const playbackAudio=audioRef.current;
   return ()=>{
@@ -147,7 +147,7 @@ export default function NativePronunciationTrial(){
   const clean=cleanWord(word);
   if(!clean)return;
   audioRef.current?.pause();
-  if(!window.speechSynthesis){
+  if(!window.speechSynthesis||typeof SpeechSynthesisUtterance==="undefined"){
    setWordHint("这台设备暂不支持单词点读，请先听整句。");return;
   }
   window.speechSynthesis.cancel();
@@ -326,7 +326,9 @@ export default function NativePronunciationTrial(){
    if(mountedRef.current){
     setStage("idle");
     setStatus("本次跟读没有完成");
-    setError(e instanceof Error?e.message:"麦克风不可用");
+    setError(e instanceof DOMException&&e.name==="NotAllowedError"
+     ?"没有获得麦克风权限，请允许使用麦克风后再试。"
+     :"这次没能录音，请检查麦克风后重试。");
    }
   }
  }
