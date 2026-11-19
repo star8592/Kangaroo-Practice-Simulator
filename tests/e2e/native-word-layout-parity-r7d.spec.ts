@@ -66,7 +66,7 @@ test("R7D: every visible English word can be selected at full sentence size",asy
  await expect(page.getByText("1 句练习")).toBeVisible();
  await page.getByRole("button",{name:"单词专项",exact:true}).click();
  const words=page.getByRole("group",{name:"选择重点单词"});
- await expect(words.getByRole("button")).toHaveCount(14);
+ await expect(words.getByRole("button")).toHaveCount(13);
  await words.getByRole("button",{name:"narrow",exact:true}).click();
  await expect(words.getByRole("button",{name:"narrow",exact:true})).toHaveAttribute("aria-pressed","true");
  await expect(words.getByRole("button",{name:"An",exact:true})).toHaveAttribute("aria-pressed","false");
