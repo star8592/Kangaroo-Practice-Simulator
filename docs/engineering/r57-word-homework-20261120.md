@@ -25,3 +25,9 @@
 - 设备TTS 0.3倍是目标请求，某些手机会限制实际速度；不声称它是考试官方原声。
 - 单词发音分和句子分不做横向比较。
 - 微信真机文件选择、学生真机录音仍需教师实测验证。
+
+## 新增发布保护（R57 复核）
+- 主站原子自动发布脚本在检测到 `src/lib/classroom-web-words.ts` 时，先运行 `ops/release/check_r57_word_db_ready.sh` 的只读检查。
+- 必须四表同时存在、全部 FORCE RLS、tenant_boundary 策略存在、`accentclass` 具备 SELECT/INSERT/UPDATE，才允许构建和切换。
+- 数据库未就绪时记录 `AUTO_DEPLOY=SKIP reason=r57_word_database_not_ready`，保持旧站在线。
+- 单词录音幂等编号绑定单词题目；同一编号用于另一单词返回 409，避免错配成绩。

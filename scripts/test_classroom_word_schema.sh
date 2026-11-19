@@ -28,11 +28,16 @@ for v in 1 2 3 4 5 6 7; do
 done
 psql_local -f "$ROOT/ops/db/20261119_accent_roleplay_speakers.sql" >/dev/null
 psql_local -f "$ROOT/ops/db/20261119_accent_roleplay_speakers.sql" >/dev/null
+psql_local -c "CREATE ROLE accentclass" >/dev/null
 psql_local -f "$ROOT/ops/db/20261120_accent_word_homework.sql" >/dev/null
 psql_local -f "$ROOT/ops/db/20261120_accent_word_homework.sql" >/dev/null
 word_schema="$(psql_local -Atc "SELECT count(*) FROM pg_class WHERE oid IN ('accent.word_assignments'::regclass,'accent.word_assignment_items'::regclass,'accent.word_assignment_attempts'::regclass,'accent.word_assignment_receipts'::regclass) AND relrowsecurity AND relforcerowsecurity")"
 test "$word_schema" = 4 || { echo "R57_RLS_FAILED=$word_schema"; exit 1; }
 echo "R57_PG18_WORD_HOMEWORK_MIGRATION_RLS_PASS=YES"
+granted="$(psql_local -Atc "SELECT count(*) FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname='accent' AND c.relname IN ('word_assignments','word_assignment_items','word_assignment_attempts','word_assignment_receipts') AND c.relrowsecurity AND c.relforcerowsecurity AND has_table_privilege('accentclass',c.oid,'SELECT') AND has_table_privilege('accentclass',c.oid,'INSERT') AND has_table_privilege('accentclass',c.oid,'UPDATE')")"
+test "$granted" = 4 || { echo "R57_APP_ROLE_GRANT_FAILED=$granted"; exit 1; }
+echo "R57_UNPRIVILEGED_APP_ROLE_GRANT_PASS=4/4"
+
 actual="$(psql_local -Atc "SELECT concat(a.attname,':',c.conname,':',t.relrowsecurity,':',t.relforcerowsecurity) FROM pg_attribute a JOIN pg_class t ON t.oid=a.attrelid JOIN pg_constraint c ON c.conrelid=t.oid WHERE a.attrelid='accent.class_assignment_items'::regclass AND a.attname='speaker_label' AND NOT a.attisdropped AND c.conname='accent_assignment_speaker_label_format'")"
 test "$actual" = "speaker_label:accent_assignment_speaker_label_format:t:t" || { echo "R56_RLS_OR_CONSTRAINT_FAILED=$actual"; exit 1; }
 echo "R56_PG18_MIGRATION_IDEMPOTENT_RLS_PASS=YES"

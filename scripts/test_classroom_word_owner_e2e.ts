@@ -264,6 +264,12 @@ try {
        if(!repeat.duplicate||repeat.attempt_id!==result.attempt_id||
           repeat.score!==result.score)
          throw Error("Duplicate request incorrectly re-scored or wrote another attempt");
+       // Reusing an idempotency key for a DIFFERENT word must not silently
+       // return the previous word's score as the new item's result.
+       const wrongWord=await api(student,"POST",
+        ["tenants",tenant,"w",wordToken,"items",wordSheet.items[1].item_id,"attempts"],
+        audio,{"x-request-id":repeatKey});
+       if(wrongWord.code!==409)throw Error("Cross-item request ID was not rejected");
       }
       if(!Number.isFinite(result.score)||result.score<0||result.score>100||
          result.submitted!==(j===1))

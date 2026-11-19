@@ -112,6 +112,21 @@ if git cat-file -e "$TARGET_SHA:src/lib/platform-grants.ts" 2>/dev/null; then
   fi
 fi
 
+# R57 word homework must never auto-deploy before the additive classroom
+# PostgreSQL schema and least-privilege grants exist. This read-only gate runs
+# after CI verification but before the candidate build or service change.
+if git cat-file -e "$TARGET_SHA:src/lib/classroom-web-words.ts" 2>/dev/null; then
+  if ! git cat-file -e "$TARGET_SHA:ops/release/check_r57_word_db_ready.sh" 2>/dev/null; then
+    log "AUTO_DEPLOY=SKIP reason=r57_db_gate_missing sha=$TARGET_SHA"
+    exit 0
+  fi
+  if ! R57_GATE_LOG="$(git show "$TARGET_SHA:ops/release/check_r57_word_db_ready.sh" | bash -s -- accent_lab 2>&1)"; then
+    log "AUTO_DEPLOY=SKIP reason=r57_word_database_not_ready sha=$TARGET_SHA detail=$R57_GATE_LOG"
+    exit 0
+  fi
+  log "R57_DB_GATE_PASS sha=$TARGET_SHA detail=$R57_GATE_LOG"
+fi
+
 PREV_CURRENT="$(readlink -f "$CURRENT" 2>/dev/null || true)"
 VERSION="$(git show "$TARGET_SHA:VERSION" 2>/dev/null | tr -d '\r\n' || true)"
 [[ -n "$VERSION" ]] || VERSION=dev

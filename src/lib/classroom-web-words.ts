@@ -187,10 +187,15 @@ export async function wordHomeworkHandler(req:NextRequest,p:string[],actor:Actor
     await db.query("SELECT pg_advisory_xact_lock(hashtextextended($1,0))",
       ["word:"+tenant+":"+assignment.id+":"+actor.accountId+":"+requestId]);
     const existing=await db.query([
-     "SELECT id,score FROM accent.word_assignment_attempts",
+     "SELECT id,score,item_id FROM accent.word_assignment_attempts",
      "WHERE tenant_id=$1 AND assignment_id=$2 AND student_id=$3 AND client_request_id=$4"
     ].join(" "),[tenant,assignment.id,actor.accountId,requestId]);
     if(existing.rows.length){
+     // A retried HTTP request is only idempotent for the SAME vocabulary item.
+     // Reject a reused request ID for a different word instead of returning the
+     // previous word's grade under the wrong question.
+     if(existing.rows[0].item_id!==item)
+      throw new ClassroomFailure(409,"录音请求编号已属于另一单词，请重新录音");
      const status=await listWordProgress(db,tenant,assignment.id,actor.accountId);
      return {duplicate:true,attempt_id:existing.rows[0].id,score:existing.rows[0].score,submitted:status.submitted};
     }
