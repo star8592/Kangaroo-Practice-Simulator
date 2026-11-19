@@ -167,7 +167,7 @@ export default function NativePronunciationTrial(){
  async function sendToRust(itemId:string,blob:Blob,generation:number){
   const active=()=>mountedRef.current&&generationRef.current===generation;
   if(!active())return;
-  setStage("scoring");setStatus("录音已结束，正在等待 Rust 返回真实评分");
+  setStage("scoring");setStatus("录好了，正在给你打分…");
   const controller=new AbortController();requestRef.current=controller;
   try{
    const response=await fetch(API+"/follow-along/items/"+encodeURIComponent(itemId)+"/score",{
@@ -182,11 +182,11 @@ export default function NativePronunciationTrial(){
    if(typeof result.score!=="number"||!Number.isFinite(result.score)
       ||result.score<0||result.score>100)
     throw Error("服务端没有提供 0—100 范围内的有效评分");
-   if(active()){setScore(result);setStatus("Rust 真实评分已返回");}
+   if(active()){setScore(result);setStatus("打分完成！看一看这次得了多少分。");}
   }catch(e){
    if(active()){
-    setError(e instanceof Error?e.message:"真实评分暂不可用");
-    setStatus("未生成分数；请稍后重试");
+    setError("这次没有打出分数，请再读一次。你的录音没有被算作零分。");
+    setStatus("没有打出分数，可以重新跟读。");
    }
   }finally{
    if(requestRef.current===controller)requestRef.current=null;
@@ -217,7 +217,8 @@ export default function NativePronunciationTrial(){
   operationRef.current=true; // Lock synchronously before permission prompt can yield.
   const generation=++generationRef.current;
   const active=()=>mountedRef.current&&generationRef.current===generation;
-  setError("");setScore(null);setElapsed(0);setWordHint("");
+  setError("");setScore(null);setElapsed(0);setWordHint("");setActiveWord("");
+  audioRef.current?.pause();window.speechSynthesis?.cancel();
   setRecorded(null);setWaveOpen(false);setFocusOpen(false);
   setStage("requesting");setStatus("正在等待麦克风授权，可取消本次等待");
   const itemId=current.id;
@@ -233,16 +234,16 @@ export default function NativePronunciationTrial(){
    streamRef.current=stream;
    setStage("reference");
    const player=audioRef.current;
-   if(!player)throw Error("参考音频未就绪");
-   player.pause();player.currentTime=0;player.playbackRate=speed;
-   setStatus("第 1 步：听标准示范音");
+   if(!player)throw Error("示范音没准备好，请再试一次");
+   player.pause();player.currentTime=0;player.preservesPitch=true;player.playbackRate=referenceRate;
+   setStatus("第 1 步：先听清楚这一句");
    await new Promise<void>((resolve,reject)=>{
     player.onended=()=>{player.onended=null;player.onerror=null;resolve();};
     player.onerror=()=>{player.onended=null;player.onerror=null;reject(Error("标准示范音无法播放"));};
     void player.play().catch(reject);
    });
    if(!active())return;
-   setStage("cue");setStatus("第 2 步：叮声提示，即将自动开始录音");
+   setStage("cue");setStatus("第 2 步：提示音后开始跟读");
    const cue=new Audio(CUE);
    await new Promise<void>((resolve,reject)=>{
     cue.onended=()=>resolve();
@@ -287,7 +288,7 @@ export default function NativePronunciationTrial(){
     void sendToRust(itemId,blob,generation);
    };
    recorder.start(300);
-   setStage("recording");setStatus("第 3 步：正在自动录音，停顿约 1.75 秒后自动结束");
+   setStage("recording");setStatus("第 3 步：轮到你读啦。读完稍作停顿就会自动结束。");
    const ctx=new AudioContext();
    audioContextRef.current=ctx;
    const analyser=ctx.createAnalyser();
