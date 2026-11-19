@@ -1,0 +1,111 @@
+{
+  "version": 1,
+  "source": "AccentLab foundation-v36, Kokoro af_heart synthetic",
+  "source_manifest": "src/features/english/pronunciation/BeginnerShortData.ts",
+  "filter": "ffmpeg rubberband=tempo=0.3",
+  "preserves_pitch": true,
+  "is_human_recording": false,
+  "human_listening_review": "pending",
+  "items": [
+    {
+      "id": "cat-sleeping-one",
+      "source_file": "f-07412159f1-fcfcba54f643.mp3",
+      "source_sha256": "fcfcba54f643194f352658996bf0c442fdbb1cd2715c1cf97272bf3e24a294a1",
+      "output_file": "cat-sleeping-one.mp3",
+      "output_sha256": "778cdbbae05c3d84183c96c64b8456877061b8cd5f85ef5f86942811398f9202",
+      "original_seconds": 2.426,
+      "slow_seconds": 8.079,
+      "output_bytes": 97964
+    },
+    {
+      "id": "cat-sleeping-many",
+      "source_file": "f-40713ce468-ae12c2fd921c.mp3",
+      "source_sha256": "ae12c2fd921c38717a933e6cf9343911515cba46b4e5b470a40024d1632df41d",
+      "output_file": "cat-sleeping-many.mp3",
+      "output_sha256": "002dab611ad6be40f7507303757454fd60b1945c93a5f53daa75af780f68b93e",
+      "original_seconds": 2.45,
+      "slow_seconds": 8.158,
+      "output_bytes": 98828
+    },
+    {
+      "id": "want-red-apple",
+      "source_file": "f-e13c01f36c-16093d096823.mp3",
+      "source_sha256": "16093d0968230dba69e9c51f594c1c5fa1a3ea68961484057284257fe27b496a",
+      "output_file": "want-red-apple.mp3",
+      "output_sha256": "4a0fcbbb49d0e7563e3e789e5b62af9cf9593d5887fbe26a5aa89352a34a4e32",
+      "original_seconds": 2.475,
+      "slow_seconds": 8.243,
+      "output_bytes": 99980
+    },
+    {
+      "id": "want-the-apple",
+      "source_file": "f-124c88ccc9-8a494762ae59.mp3",
+      "source_sha256": "8a494762ae5977f00499a91116f5d25f7c9fbe5e65fbeabaf52c882e9e188f1f",
+      "output_file": "want-the-apple.mp3",
+      "output_sha256": "90c0b18563805f1dfde83425fa2072f523344ef969c64ab53cd5c418e07e86d4",
+      "original_seconds": 2.426,
+      "slow_seconds": 8.079,
+      "output_bytes": 97964
+    },
+    {
+      "id": "find-it-can",
+      "source_file": "f-a11c776b9e-377b1f37c837.mp3",
+      "source_sha256": "377b1f37c837fccc7da79f6d5c694e433d551629725922ace3aadd53e79d72e9",
+      "output_file": "find-it-can.mp3",
+      "output_sha256": "bebada1ab271415b6715e3d9b9e82228f1ea9f1783073b6d874e8035f1f6b862",
+      "original_seconds": 2.275,
+      "slow_seconds": 7.578,
+      "output_bytes": 91916
+    },
+    {
+      "id": "find-it-cannot",
+      "source_file": "f-fd112865aa-96a9d5c3cb2d.mp3",
+      "source_sha256": "96a9d5c3cb2d6a3b78bb5b6b1b599889a22cb174ab6c6c724720f2cbaee2ae28",
+      "output_file": "find-it-cannot.mp3",
+      "output_sha256": "9fbeace304f9c19cd7b7fc02afe58faa3a501bce08154da92a28209fe5c41139",
+      "original_seconds": 2.325,
+      "slow_seconds": 7.742,
+      "output_bytes": 93932
+    },
+    {
+      "id": "read-this-can",
+      "source_file": "f-583698d0c3-eae2faa12acf.mp3",
+      "source_sha256": "eae2faa12acf5fded675cd1e184bf8d29437a636f2aa1e9fd075dfe130838143",
+      "output_file": "read-this-can.mp3",
+      "output_sha256": "49135972e0eb4c55ec71cac916feff924f700dccaa3111dba24046bfec959986",
+      "original_seconds": 2.35,
+      "slow_seconds": 7.826,
+      "output_bytes": 95084
+    },
+    {
+      "id": "read-this-cannot",
+      "source_file": "f-b9762dc12f-915db2db0571.mp3",
+      "source_sha256": "915db2db0571fbc98918e46fa5994a51a24dc91b013a5be0472fbf9d159deec7",
+      "output_file": "read-this-cannot.mp3",
+      "output_sha256": "60c216394112e3b7594d34c1ee358ff2b25fd634247e62be4fcc41bf7d9cdcc5",
+      "original_seconds": 2.45,
+      "slow_seconds": 8.158,
+      "output_bytes": 98828
+    },
+    {
+      "id": "cant-swim",
+      "source_file": "f-5861d11ee5-3ddad4d7b717.mp3",
+      "source_sha256": "3ddad4d7b7178639c1311cbfaea4402eb35e1a1614dd01f8d3e97a4ee46c43db",
+      "output_file": "cant-swim.mp3",
+      "output_sha256": "9e3b83d83c9456448bce7355350c6f72a6621e1072df163d25b3cdbcfb5771f4",
+      "original_seconds": 2.3,
+      "slow_seconds": 7.662,
+      "output_bytes": 93068
+    },
+    {
+      "id": "green-apples",
+      "source_file": "f-3b772b1437-c64d8477834d.mp3",
+      "source_sha256": "c64d8477834d24549af472657347396a78cda9b4d8d683ecbc7290da60bfbc94",
+      "output_file": "green-apples.mp3",
+      "output_sha256": "7a065ad76fc346c556b3c0b1e36ee4e402df9e9f385370141bd4573f199b493a",
+      "original_seconds": 2.25,
+      "slow_seconds": 7.493,
+      "output_bytes": 91052
+    }
+  ]
+}
