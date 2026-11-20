@@ -1,0 +1,111 @@
+{
+  "schema": "kidsbox1-unit4-source-observed-v1",
+  "book_id": "kids-box-student-1",
+  "source_sha256": "67e8ae9405469552379e29e18a1b2058865f12beb99907b3a2d88c5da50ac31d",
+  "verification": "direct_visual_check_of_user_supplied_pdf_pages_27_to_32",
+  "publish_status": "teacher_review_required",
+  "pages": {
+    "27": {
+      "printed_page": 20,
+      "lesson_activity": [
+        "Listen and point.",
+        "Listen, point and repeat."
+      ],
+      "candidate_text": "",
+      "practice_words": [],
+      "read_questions": [],
+      "templates": [],
+      "phonics": [],
+      "requires_official_audio": true,
+      "note": "My family单元开头是人物与家庭相册插画；没有印刷完整听力对白，不能按画面猜测原版答案。"
+    },
+    "28": {
+      "printed_page": 21,
+      "lesson_activity": [
+        "Listen and say the number.",
+        "Look, listen and say the words."
+      ],
+      "candidate_text": "mother\nfather\nbrother\nsister\ngrandmother\ngrandfather",
+      "practice_words": [
+        "mother",
+        "father",
+        "brother",
+        "sister",
+        "grandmother",
+        "grandfather"
+      ],
+      "read_questions": [],
+      "templates": [],
+      "phonics": [],
+      "requires_official_audio": true,
+      "note": "六个家庭称谓按原书P21页脚顺序。老师核对后可用于独立跟读；编号听力没有原声，不自动生成编号答案。"
+    },
+    "29": {
+      "printed_page": 22,
+      "lesson_activity": [
+        "Listen and point.",
+        "Listen and do the actions."
+      ],
+      "candidate_text": "old\nyoung\nugly\nbeautiful\nhappy\nsad",
+      "practice_words": [
+        "old",
+        "young",
+        "ugly",
+        "beautiful",
+        "happy",
+        "sad"
+      ],
+      "read_questions": [],
+      "templates": [],
+      "phonics": [],
+      "requires_official_audio": true,
+      "note": "六个形容词依照P22页脚顺序，动作听力无原声，不以图片代替原音频给出标准答案。"
+    },
+    "30": {
+      "printed_page": 23,
+      "lesson_activity": [
+        "Sing the song."
+      ],
+      "candidate_text": "",
+      "practice_words": [],
+      "read_questions": [],
+      "templates": [],
+      "phonics": [],
+      "requires_official_audio": true,
+      "note": "P23歌曲配图没有完整印刷歌词或原版音频，保留看图讨论，不编写冒充原书的歌曲朗读题。"
+    },
+    "31": {
+      "printed_page": 24,
+      "lesson_activity": [
+        "Say it with Monty.",
+        "Listen and correct."
+      ],
+      "candidate_text": "Look at number one. She's beautiful.\nNo, she isn't. She's ugly.",
+      "practice_words": [
+        "bat"
+      ],
+      "read_questions": [],
+      "templates": [],
+      "phonics": [
+        "B",
+        "Bertie bat"
+      ],
+      "requires_official_audio": true,
+      "note": "B / Bertie bat是可见字母语音线索；示例的两句纠错话语印刷在书上，可以由老师审核后作为固定朗读。其余人物图的音频纠错不可凭图片推断。"
+    },
+    "32": {
+      "printed_page": 25,
+      "lesson_activity": [
+        "Listen to the story.",
+        "Listen and say the number."
+      ],
+      "candidate_text": "",
+      "practice_words": [],
+      "read_questions": [],
+      "templates": [],
+      "phonics": [],
+      "requires_official_audio": true,
+      "note": "六格漫画以及编号听力没有完整的印刷故事台词、原版音轨或编号答案；不得猜测故事字幕或给学生做自动听力评分。"
+    }
+  }
+}
