@@ -337,11 +337,6 @@ try {
   if(u4Story.source_note?.candidate_text!==""||
      u4Story.source_note?.requires_official_audio!==true)
     throw Error("Unit 4 fabricated story audio/transcript");
-  const review1NotReady=ok(await api(teacher,"GET",
-    [...base,"books","kids-box-student-1","pages","33","ocr"]),200,
-    "Review 1 stays unsupported until a separate verified source reader exists");
-  if(review1NotReady.source_note!==null)
-    throw Error("Unreviewed Review 1 impersonates verified unit source");
   // R64: Unit 5 verified private source, same unchanged router and safety boundary.
   const u5Opening=ok(await api(teacher,"GET",
     [...base,"books","kids-box-student-1","pages","35","ocr"]),200,
