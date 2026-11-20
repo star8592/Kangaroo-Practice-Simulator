@@ -204,6 +204,59 @@ try {
     throw Error("Student exposed private source-derived metadata");
   console.log("KIDSBOX_R60_UNIT1_SOURCE_EVIDENCE_PASS pages=9-14 colors=7 story_no_fake_script=YES");
 
+  // R61: Unit 2 text is sourced directly from the user's six scan pages,
+  // not a guessed chant/story transcript or a model-generated textbook.
+  const u2First=ok(await api(teacher,"GET",
+   [...base,"books","kids-box-student-1","pages","15","ocr"]),200,
+   "Unit 2 page 8 has no fabricated dialogue");
+  if(u2First.source_note?.unit_number!==2||
+     u2First.source_note?.candidate_text!=="")
+    throw Error("Unit 2 opening illustration inferred non-existent spoken text");
+  const u2Words=ok(await api(teacher,"GET",
+   [...base,"books","kids-box-student-1","pages","16","ocr"]),200,
+   "Teacher sees exact six classroom objects from printed page 9");
+  if(u2Words.source_note?.unit_number!==2||
+     JSON.stringify(u2Words.source_note?.practice_words)!==
+     JSON.stringify(["book","chair","eraser","pen","pencil","table"])||
+     !u2Words.source_note?.candidate_text.includes("Four purple chairs.")||
+     !u2Words.source_note?.candidate_text.includes("No. Six orange chairs.")||
+     u2Words.review_status!=="unverified_ocr_draft"||
+     u2Words.student_scoring_ready!==false)
+    throw Error("Unit 2 source-backed page 9 wording/review state mismatch");
+  const u2Question=ok(await api(teacher,"GET",
+   [...base,"books","kids-box-student-1","pages","17","ocr"]),200,
+   "Teacher sees incomplete unit 2 He/She templates");
+  if(!u2Question.source_note?.templates.includes("He's ...")||
+     !u2Question.source_note?.templates.includes("She's ..."))
+    throw Error("Unit 2 incomplete speaking frames misreported");
+  const u2Greeting=ok(await api(teacher,"GET",
+   [...base,"books","kids-box-student-1","pages","18","ocr"]),200,
+   "Teacher sees printed page 11 greeting exchange");
+  if(!u2Greeting.source_note?.candidate_text.includes("I'm fine, thank you."))
+    throw Error("Unit 2 genuine greeting text missing");
+  const u2Color=ok(await api(teacher,"GET",
+   [...base,"books","kids-box-student-1","pages","19","ocr"]),200,
+   "Teacher sees printed page 12 colour question and phonics");
+  if(!u2Color.source_note?.read_questions.includes("What colour is the bag?")||
+     !u2Color.source_note?.phonics.includes("Michael monkey"))
+    throw Error("Unit 2 colour and phonics evidence missing");
+  const u2Story=ok(await api(teacher,"GET",
+   [...base,"books","kids-box-student-1","pages","20","ocr"]),200,
+   "Unit 2 page 13 comic is not assigned invented spoken dialogue");
+  if(u2Story.source_note?.candidate_text!==""||
+     u2Story.source_note?.requires_official_audio!==true)
+    throw Error("Unit 2 six-panel story falsely assigned script/audio");
+  const u2Next=ok(await api(teacher,"GET",
+   [...base,"books","kids-box-student-1","pages","21","ocr"]),200,
+   "Future unit not yet reviewed must not invent source notes");
+  if(u2Next.source_note!==null)throw Error("Source notes leaked into next unit");
+  const u2Student=await api(students[0],"GET",
+   [...base,"books","kids-box-student-1","pages","16","ocr"]);
+  if(u2Student.code!==403&&u2Student.code!==503)
+   throw Error("Student exposed unit 2 private teacher evidence");
+  console.log("R61_UNIT2_SOURCE_BACKED_E2E_PASS pages=15-20 six_words=6 audio_not_fabricated=YES");
+
+
   const rawTeacherReview="Hello, I'm a teacher. What is your name?";
   const childEdit=await api(students[0],"POST",
    [...base,"books","kids-box-student-1","pages","10","review"],
