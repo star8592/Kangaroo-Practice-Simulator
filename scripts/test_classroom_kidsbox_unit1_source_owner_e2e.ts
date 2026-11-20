@@ -466,11 +466,57 @@ try {
   if(u7Story.source_note?.candidate_text!==""||
      u7Story.source_note?.requires_official_audio!==true)
     throw Error("Unit 7 invented comic script or audio");
-  const u8NotReady=ok(await api(teacher,"GET",
+  // R67: Unit 8 printed clothes, unfilled grammar templates and privacy.
+  const u8Opening=ok(await api(teacher,"GET",
     [...base,"books","kids-box-student-1","pages","53","ocr"]),200,
-    "Unreviewed Unit 8 has no verified teacher source note");
-  if(u8NotReady.source_note!==null)
-    throw Error("Unit 8 unverified source leaked");
+    "Unit 8 picture labels do not become invented spoken dialogue");
+  if(u8Opening.source_note?.unit_number!==8||
+     u8Opening.source_note?.candidate_text!=="")
+    throw Error("Unit 8 opening labels reported as recorded dialogue");
+  const u8Clothes=ok(await api(teacher,"GET",
+    [...base,"books","kids-box-student-1","pages","54","ocr"]),200,
+    "Teacher sees exact Unit 8 printed clothing word order");
+  if(JSON.stringify(u8Clothes.source_note?.practice_words)!==
+     JSON.stringify(["jacket","shoes","skirt","socks","trousers","T-shirt"])||
+     u8Clothes.review_status!=="unverified_ocr_draft"||
+     u8Clothes.student_scoring_ready!==false)
+    throw Error("Unit 8 word list or teacher-review requirement mismatch");
+  const u8Grammar=ok(await api(teacher,"GET",
+    [...base,"books","kids-box-student-1","pages","55","ocr"]),200,
+    "Teacher sees incomplete he/she clothing grammar templates only");
+  if(u8Grammar.source_note?.candidate_text!==""||
+     !u8Grammar.source_note?.templates.includes("He's / She's got ...")||
+     !u8Grammar.source_note?.templates.includes("He / She hasn't got ..."))
+    throw Error("Unit 8 templates incorrectly converted into full original speech");
+  const u8Song=ok(await api(teacher,"GET",
+    [...base,"books","kids-box-student-1","pages","56","ocr"]),200,
+    "Unit 8 song does not generate invented original lyrics");
+  if(u8Song.source_note?.candidate_text!==""||
+     u8Song.source_note?.requires_official_audio!==true)
+    throw Error("Unit 8 fabricated song transcript");
+  const u8Daisy=ok(await api(teacher,"GET",
+    [...base,"books","kids-box-student-1","pages","57","ocr"]),200,
+    "Daisy dog and printed clothing guess are preserved");
+  if(!u8Daisy.source_note?.phonics.includes("Daisy dog")||
+     !u8Daisy.source_note?.candidate_text.includes("She's got a yellow jacket.")||
+     !u8Daisy.source_note?.candidate_text.includes("Meera!"))
+    throw Error("Unit 8 printed phonics or fixed game lines mismatch");
+  const u8Story=ok(await api(teacher,"GET",
+    [...base,"books","kids-box-student-1","pages","58","ocr"]),200,
+    "Unit 8 story has no invented original dialogues or numbering answers");
+  if(u8Story.source_note?.candidate_text!==""||
+     u8Story.source_note?.requires_official_audio!==true)
+    throw Error("Unit 8 fabricated comic audio or answer");
+  const review2NotReady=ok(await api(teacher,"GET",
+    [...base,"books","kids-box-student-1","pages","59","ocr"]),200,
+    "Review 5-8 has no falsely verified original source note");
+  if(review2NotReady.source_note!==null)
+    throw Error("Unreviewed Review 2 source leaked");
+  const studentUnit8=await api(students[0],"GET",
+    [...base,"books","kids-box-student-1","pages","54","ocr"]);
+  if(studentUnit8.code!==403&&studentUnit8.code!==503)
+    throw Error("Student accessed Unit 8 private source evidence");
+  console.log("R67_UNIT8_PRIVATE_SOURCE_E2E_PASS pages=53-58 clothes=6 grammar_templates=2 no_fake_story=YES");
   const studentUnit7=await api(students[0],"GET",
     [...base,"books","kids-box-student-1","pages","48","ocr"]);
   if(studentUnit7.code!==403&&studentUnit7.code!==503)
