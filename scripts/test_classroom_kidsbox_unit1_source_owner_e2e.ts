@@ -424,11 +424,58 @@ try {
   if(u6Story.source_note?.candidate_text!==""||
      u6Story.source_note?.requires_official_audio!==true)
     throw Error("Unit 6 story audio/yes-no answers fabricated");
-  const u7NotReady=ok(await api(teacher,"GET",
+  // R66: Unit 7 teacher-only wild-animal source, without guessing scripts.
+  const u7Open=ok(await api(teacher,"GET",
     [...base,"books","kids-box-student-1","pages","47","ocr"]),200,
-    "Unit 7 remains without verified teacher notes");
-  if(u7NotReady.source_note!==null)
-    throw Error("Unreviewed Unit 7 mislabelled verified");
+    "Unit 7 opening picture has no fabricated dialogue");
+  if(u7Open.source_note?.unit_number!==7||
+     u7Open.source_note?.candidate_text!=="")
+    throw Error("Unit 7 picture-only page falsely assigned speech");
+  const u7Animals=ok(await api(teacher,"GET",
+    [...base,"books","kids-box-student-1","pages","48","ocr"]),200,
+    "Teacher sees seven source-printed wild animal names");
+  if(JSON.stringify(u7Animals.source_note?.practice_words)!==
+     JSON.stringify(["crocodile","elephant","giraffe","hippo","monkey","snake","tiger"])||
+     u7Animals.review_status!=="unverified_ocr_draft"||
+     u7Animals.student_scoring_ready!==false)
+    throw Error("Unit 7 wild-animal word order or teacher review guard mismatch");
+  const u7Body=ok(await api(teacher,"GET",
+    [...base,"books","kids-box-student-1","pages","49","ocr"]),200,
+    "Teacher sees foot and feet as distinct body vocabulary");
+  if(JSON.stringify(u7Body.source_note?.practice_words)!==
+     JSON.stringify(["arm","foot","feet","hand","leg","tail"])||
+     !u7Body.source_note?.templates.includes("They've got ...")||
+     !u7Body.source_note?.templates.includes("They haven't got ..."))
+    throw Error("Unit 7 body word list or printed plural templates mismatch");
+  const u7Song=ok(await api(teacher,"GET",
+    [...base,"books","kids-box-student-1","pages","50","ocr"]),200,
+    "Unit 7 illustrated song does not invent original lyrics");
+  if(u7Song.source_note?.candidate_text!==""||
+     u7Song.source_note?.requires_official_audio!==true)
+    throw Error("Unit 7 fake song transcript");
+  const u7Cassandra=ok(await api(teacher,"GET",
+    [...base,"books","kids-box-student-1","pages","51","ocr"]),200,
+    "Cassandra cat and original animal question preserved");
+  if(!u7Cassandra.source_note?.phonics.includes("Cassandra cat")||
+     !u7Cassandra.source_note?.read_questions.includes("Have they got long noses?")||
+     !u7Cassandra.source_note?.candidate_text.includes("Yes."))
+    throw Error("Unit 7 phonics or printed answer mismatch");
+  const u7Story=ok(await api(teacher,"GET",
+    [...base,"books","kids-box-student-1","pages","52","ocr"]),200,
+    "Unit 7 illustrated story contains no fabricated dialogue");
+  if(u7Story.source_note?.candidate_text!==""||
+     u7Story.source_note?.requires_official_audio!==true)
+    throw Error("Unit 7 invented comic script or audio");
+  const u8NotReady=ok(await api(teacher,"GET",
+    [...base,"books","kids-box-student-1","pages","53","ocr"]),200,
+    "Unreviewed Unit 8 has no verified teacher source note");
+  if(u8NotReady.source_note!==null)
+    throw Error("Unit 8 unverified source leaked");
+  const studentUnit7=await api(students[0],"GET",
+    [...base,"books","kids-box-student-1","pages","48","ocr"]);
+  if(studentUnit7.code!==403&&studentUnit7.code!==503)
+    throw Error("Student accessed private Unit 7 teacher evidence");
+  console.log("R66_UNIT7_PRIVATE_SOURCE_E2E_PASS pages=47-52 animals=7 body=6 no_fake_story=YES");
   const studentUnit6=await api(students[0],"GET",
     [...base,"books","kids-box-student-1","pages","42","ocr"]);
   if(studentUnit6.code!==403&&studentUnit6.code!==503)
