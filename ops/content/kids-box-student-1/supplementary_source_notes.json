@@ -1,0 +1,187 @@
+{
+  "schema": "kidsbox1-supplementary-source-observed-v1",
+  "book_id": "kids-box-student-1",
+  "source_sha256": "67e8ae9405469552379e29e18a1b2058865f12beb99907b3a2d88c5da50ac31d",
+  "verification": "source_page_visual_inspection_review_sections_and_glossary_33_34_59_60_85_to_92",
+  "publish_status": "teacher_review_required",
+  "pages": {
+    "33": {
+      "section_id": "review-01",
+      "printed_page": 26,
+      "lesson_activity": [
+        "Listen and say the number.",
+        "Listen and say 'yes' or 'no'."
+      ],
+      "candidate_text": "",
+      "practice_words": [],
+      "read_questions": [],
+      "templates": [],
+      "phonics": [],
+      "requires_official_audio": true,
+      "note": "Our world Review 1–4，图片听力编号与yes/no问题；未附原版音轨和判断答案。该页可用于教师看图复习，不应自动给听力成绩。"
+    },
+    "34": {
+      "section_id": "review-01",
+      "printed_page": 27,
+      "lesson_activity": [
+        "Make your spinner.",
+        "Play the game."
+      ],
+      "candidate_text": "",
+      "practice_words": [],
+      "read_questions": [],
+      "templates": [],
+      "phonics": [],
+      "requires_official_audio": true,
+      "note": "复习1–4的手工转盘和课堂游戏；需要动手制作，原书未提供可以直接朗读评分的完整固定句。"
+    },
+    "59": {
+      "section_id": "review-02",
+      "printed_page": 52,
+      "lesson_activity": [
+        "Listen and say the number.",
+        "Listen and say 'yes' or 'no'."
+      ],
+      "candidate_text": "",
+      "practice_words": [],
+      "read_questions": [],
+      "templates": [],
+      "phonics": [],
+      "requires_official_audio": true,
+      "note": "Our world Review 5–8，真实动物等照片对应的编号/真假听力活动，原声与标准答案未随扫描PDF提供。"
+    },
+    "60": {
+      "section_id": "review-02",
+      "printed_page": 53,
+      "lesson_activity": [
+        "Make books.",
+        "Cut out the photos.",
+        "Colour the pictures.",
+        "Make a book."
+      ],
+      "candidate_text": "",
+      "practice_words": [],
+      "read_questions": [],
+      "templates": [],
+      "phonics": [],
+      "requires_official_audio": true,
+      "note": "复习5–8的裁剪、涂色和制作图册流程，保留教学活动说明，不能将图片制作环节伪装为口语自动评分题。"
+    },
+    "85": {
+      "section_id": "review-03",
+      "printed_page": 78,
+      "lesson_activity": [
+        "Listen and say the number.",
+        "Listen and chant."
+      ],
+      "candidate_text": "",
+      "practice_words": [],
+      "read_questions": [],
+      "templates": [],
+      "phonics": [],
+      "requires_official_audio": true,
+      "note": "Our world Review 9–12，交通安全与儿童活动照片配编号听力和chant；没有可核验原版音轨、完整歌词或配套答案。"
+    },
+    "86": {
+      "section_id": "review-03",
+      "printed_page": 79,
+      "lesson_activity": [
+        "Make a poster.",
+        "Draw and colour.",
+        "Cut and stick."
+      ],
+      "candidate_text": "",
+      "practice_words": [],
+      "read_questions": [],
+      "templates": [],
+      "phonics": [],
+      "requires_official_audio": true,
+      "note": "复习9–12的海报手工项目，重点是画画、涂色、剪贴及展示；无原版可直接评分的口语台词。"
+    },
+    "87": {
+      "section_id": "word-list",
+      "printed_page": 80,
+      "lesson_activity": [
+        "Word list."
+      ],
+      "candidate_text": "",
+      "practice_words": [],
+      "read_questions": [],
+      "templates": [],
+      "phonics": [],
+      "requires_official_audio": true,
+      "note": "原书P80双栏英汉词表，约字母A–C词条，含词性和中文释义；保留原图供老师对照，不直接采用低质量OCR作为发音标准文本。"
+    },
+    "88": {
+      "section_id": "word-list",
+      "printed_page": 81,
+      "lesson_activity": [
+        "Word list."
+      ],
+      "candidate_text": "",
+      "practice_words": [],
+      "read_questions": [],
+      "templates": [],
+      "phonics": [],
+      "requires_official_audio": true,
+      "note": "原书P81双栏英汉词表，约字母C–H词条；词条涉及动词和名词等词性，老师可查阅，不直接生成整页单词作业。"
+    },
+    "89": {
+      "section_id": "word-list",
+      "printed_page": 82,
+      "lesson_activity": [
+        "Word list."
+      ],
+      "candidate_text": "",
+      "practice_words": [],
+      "read_questions": [],
+      "templates": [],
+      "phonics": [],
+      "requires_official_audio": true,
+      "note": "原书P82英汉词表，约字母H–M；含room和ice cream等短语，需避免将词组拆成错误词条。"
+    },
+    "90": {
+      "section_id": "word-list",
+      "printed_page": 83,
+      "lesson_activity": [
+        "Word list."
+      ],
+      "candidate_text": "",
+      "practice_words": [],
+      "read_questions": [],
+      "templates": [],
+      "phonics": [],
+      "requires_official_audio": true,
+      "note": "原书P83英汉词表，约字母N–R，包含play football、play the piano等词组；仅作为词典查找来源。"
+    },
+    "91": {
+      "section_id": "word-list",
+      "printed_page": 84,
+      "lesson_activity": [
+        "Word list."
+      ],
+      "candidate_text": "",
+      "practice_words": [],
+      "read_questions": [],
+      "templates": [],
+      "phonics": [],
+      "requires_official_audio": true,
+      "note": "原书P84英汉词表，约字母R–U；包含ride a bike、T-shirt等，OCR容易误识字符，不能直接成为自动评分标准。"
+    },
+    "92": {
+      "section_id": "word-list",
+      "printed_page": 85,
+      "lesson_activity": [
+        "Word list.",
+        "Names."
+      ],
+      "candidate_text": "",
+      "practice_words": [],
+      "read_questions": [],
+      "templates": [],
+      "phonics": [],
+      "requires_official_audio": true,
+      "note": "原书P85英汉词表尾部与Names人名表、词性缩写解释；不把人物专有名词误当普通词汇题。"
+    }
+  }
+}
