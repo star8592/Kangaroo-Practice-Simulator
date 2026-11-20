@@ -248,13 +248,65 @@ try {
     throw Error("Unit 2 six-panel story falsely assigned script/audio");
   const u2Next=ok(await api(teacher,"GET",
    [...base,"books","kids-box-student-1","pages","21","ocr"]),200,
-   "Future unit not yet reviewed must not invent source notes");
-  if(u2Next.source_note!==null)throw Error("Source notes leaked into next unit");
+   "Next verified unit has separate source note, no cross-unit contamination");
+  if(u2Next.source_note?.unit_number!==3)
+   throw Error("Source note not scoped to the correct reviewed unit");
   const u2Student=await api(students[0],"GET",
    [...base,"books","kids-box-student-1","pages","16","ocr"]);
   if(u2Student.code!==403&&u2Student.code!==503)
    throw Error("Student exposed unit 2 private teacher evidence");
   console.log("R61_UNIT2_SOURCE_BACKED_E2E_PASS pages=15-20 six_words=6 audio_not_fabricated=YES");
+
+  // R62 data-only source upgrade: the unchanged R61 book router must read new
+  // Unit 3 notes only when provided as verified private book metadata.
+  const u3Opening=ok(await api(teacher,"GET",
+    [...base,"books","kids-box-student-1","pages","21","ocr"]),200,
+    "Unit 3 opening picture does not generate guessed dialogue");
+  if(u3Opening.source_note?.unit_number!==3||
+     u3Opening.source_note?.candidate_text!=="")
+    throw Error("Unit 3 invented dialogue for picture-only page");
+  const u3Words=ok(await api(teacher,"GET",
+    [...base,"books","kids-box-student-1","pages","22","ocr"]),200,
+    "Teacher sees 10 exact toy/colour words from printed book page 15");
+  if(JSON.stringify(u3Words.source_note?.practice_words)!==
+     JSON.stringify(["ball","bike","black","brown","car","computer",
+                     "doll","grey","train","white"])||
+     u3Words.student_scoring_ready!==false||
+     u3Words.review_status!=="unverified_ocr_draft")
+    throw Error("Unit 3 P15 list or unverified status changed");
+  const u3Prepositions=ok(await api(teacher,"GET",
+    [...base,"books","kids-box-student-1","pages","23","ocr"]),200,
+    "Teacher sees four printed position words and phrase");
+  if(JSON.stringify(u3Prepositions.source_note?.practice_words)!==
+     JSON.stringify(["in","on","under","next to"]))
+    throw Error("Unit 3 P16 position words differ from scan");
+  const u3Dialogue=ok(await api(teacher,"GET",
+    [...base,"books","kids-box-student-1","pages","24","ocr"]),200,
+    "Teacher sees actual position question and answer");
+  if(!u3Dialogue.source_note?.candidate_text.includes("Is Monty under the chair?")||
+     !u3Dialogue.source_note?.candidate_text.includes("No, he isn't."))
+    throw Error("Unit 3 P17 printed dialogue missing");
+  const u3Phonics=ok(await api(teacher,"GET",
+    [...base,"books","kids-box-student-1","pages","25","ocr"]),200,
+    "Teacher sees T/Tommy tortoise as only phonics clue");
+  if(!u3Phonics.source_note?.phonics.includes("Tommy tortoise"))
+    throw Error("Unit 3 P18 phonics source mismatch");
+  const u3Story=ok(await api(teacher,"GET",
+    [...base,"books","kids-box-student-1","pages","26","ocr"]),200,
+    "Unit 3 six-panel comic has no invented original audio or script");
+  if(u3Story.source_note?.candidate_text!==""||
+     u3Story.source_note?.requires_official_audio!==true)
+    throw Error("Unit 3 fictional story audio/text leak");
+  const u4NotReady=ok(await api(teacher,"GET",
+    [...base,"books","kids-box-student-1","pages","27","ocr"]),200,
+    "Not-yet-reviewed Unit 4 does not impersonate verified source");
+  if(u4NotReady.source_note!==null)throw Error("Unit 4 unverified source leaked");
+  const studentUnit3=await api(students[0],"GET",
+    [...base,"books","kids-box-student-1","pages","22","ocr"]);
+  if(studentUnit3.code!==403&&studentUnit3.code!==503)
+    throw Error("Student exposed Unit 3 private teacher metadata");
+  console.log("R62_UNIT3_PRIVATE_SOURCE_E2E_PASS pages=21-26 toy_words=10 positions=4 no_fake_story=YES");
+
 
 
   const rawTeacherReview="Hello, I'm a teacher. What is your name?";
