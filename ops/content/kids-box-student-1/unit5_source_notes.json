@@ -1,0 +1,110 @@
+{
+  "schema": "kidsbox1-unit5-source-observed-v1",
+  "book_id": "kids-box-student-1",
+  "source_sha256": "67e8ae9405469552379e29e18a1b2058865f12beb99907b3a2d88c5da50ac31d",
+  "verification": "direct_visual_check_of_user_supplied_pdf_pages_35_to_40",
+  "publish_status": "teacher_review_required",
+  "pages": {
+    "35": {
+      "printed_page": 28,
+      "lesson_activity": [
+        "Listen and point.",
+        "Listen, point and repeat."
+      ],
+      "candidate_text": "",
+      "practice_words": [],
+      "read_questions": [],
+      "templates": [],
+      "phonics": [],
+      "requires_official_audio": true,
+      "note": "Our pets单元开篇宠物展示插图，可见部分动物图旁的标签，但没有完整印刷听力对白；编号或实际听力内容不可凭图片臆造。"
+    },
+    "36": {
+      "printed_page": 29,
+      "lesson_activity": [
+        "Say the chant.",
+        "Listen and say the number."
+      ],
+      "candidate_text": "bird\ncat\ndog\nfish\nhorse\nmouse",
+      "practice_words": [
+        "bird",
+        "cat",
+        "dog",
+        "fish",
+        "horse",
+        "mouse"
+      ],
+      "read_questions": [],
+      "templates": [],
+      "phonics": [],
+      "requires_official_audio": true,
+      "note": "六个宠物词按原书P29页脚顺序。chant未印出完整文字，编号听力原声缺失；可以审核后作为独立词汇跟读。"
+    },
+    "37": {
+      "printed_page": 30,
+      "lesson_activity": [
+        "Listen and point.",
+        "Listen, point and repeat."
+      ],
+      "candidate_text": "big\nsmall\nlong\nshort\nclean\ndirty",
+      "practice_words": [
+        "big",
+        "small",
+        "long",
+        "short",
+        "clean",
+        "dirty"
+      ],
+      "read_questions": [],
+      "templates": [],
+      "phonics": [],
+      "requires_official_audio": true,
+      "note": "六个形容词依照原书P30页脚顺序，与插图中的尺寸、长短、清洁状态相互对应；原声听力未提供。"
+    },
+    "38": {
+      "printed_page": 31,
+      "lesson_activity": [
+        "Sing the song.",
+        "Listen and do the actions."
+      ],
+      "candidate_text": "",
+      "practice_words": [],
+      "read_questions": [],
+      "templates": [],
+      "phonics": [],
+      "requires_official_audio": true,
+      "note": "歌曲与动作配图没有完整印刷歌词或音频；不编造原版歌词、动作指令或评分答案。"
+    },
+    "39": {
+      "printed_page": 32,
+      "lesson_activity": [
+        "Say it with Monty.",
+        "Say and guess."
+      ],
+      "candidate_text": "It's beautiful and orange.\nNumber two. The fish.",
+      "practice_words": [],
+      "read_questions": [],
+      "templates": [],
+      "phonics": [
+        "P",
+        "Penny penguin"
+      ],
+      "requires_official_audio": true,
+      "note": "原书可见P / Penny penguin字母语音线索与猜动物活动中印刷的两句示例。固定句可审核后作朗读候选；8幅图的自由描述答案不应被硬编码为官方标准答案。"
+    },
+    "40": {
+      "printed_page": 33,
+      "lesson_activity": [
+        "Listen to the story.",
+        "Act out the story."
+      ],
+      "candidate_text": "",
+      "practice_words": [],
+      "read_questions": [],
+      "templates": [],
+      "phonics": [],
+      "requires_official_audio": true,
+      "note": "原书六格漫画与角色扮演活动，没有印刷完整原版故事对白，原音轨未提供；保留为看图叙述/课堂角色活动，不自动生成原版故事朗读文本。"
+    }
+  }
+}
