@@ -507,11 +507,6 @@ try {
   if(u8Story.source_note?.candidate_text!==""||
      u8Story.source_note?.requires_official_audio!==true)
     throw Error("Unit 8 fabricated comic audio or answer");
-  const review2NotReady=ok(await api(teacher,"GET",
-    [...base,"books","kids-box-student-1","pages","59","ocr"]),200,
-    "Review 5-8 has no falsely verified original source note");
-  if(review2NotReady.source_note!==null)
-    throw Error("Unreviewed Review 2 source leaked");
   const studentUnit8=await api(students[0],"GET",
     [...base,"books","kids-box-student-1","pages","54","ocr"]);
   if(studentUnit8.code!==403&&studentUnit8.code!==503)
@@ -632,16 +627,53 @@ try {
     "Unit 12 six-panel story without invented original speech");
   if(u12Story.source_note?.candidate_text!=="")
     throw Error("Unit 12 invented story dialogue");
-  const uReview3=ok(await api(teacher,"GET",
-    [...base,"books","kids-box-student-1","pages","85","ocr"]),200,
-    "Review 9-12 still lacks a dedicated verified source-note reader");
-  if(uReview3.source_note!==null)
-    throw Error("Review 3 falsely marked verified");
   const studentUnit12=await api(students[0],"GET",
     [...base,"books","kids-box-student-1","pages","80","ocr"]);
   if(studentUnit12.code!==403&&studentUnit12.code!==503)
     throw Error("Student accessed Unit 12 private teacher evidence");
   console.log("R68_R71_UNITS9_12_SOURCE_E2E_PASS pages=61-84 source_phrases=verified review_required=YES stories_fabricated=NO");
+  // R72: all supplementary sections now use the same private source-note
+  // reader; they do NOT contain guessed OCR scoring targets.
+  for(const [page,sectionId,activity] of [
+    [33,"review-01","Listen and say the number."],
+    [34,"review-01","Make your spinner."],
+    [59,"review-02","Listen and say the number."],
+    [60,"review-02","Make books."],
+    [85,"review-03","Listen and say the number."],
+    [86,"review-03","Make a poster."],
+    [87,"word-list","Word list."],
+    [88,"word-list","Word list."],
+    [89,"word-list","Word list."],
+    [90,"word-list","Word list."],
+    [91,"word-list","Word list."],
+    [92,"word-list","Names."]
+  ] as Array<[number,string,string]>){
+    const draft=ok(await api(teacher,"GET",
+      [...base,"books","kids-box-student-1","pages",String(page),"ocr"]),200,
+      "Teacher reads private supplementary source note "+page);
+    if(draft.source_note?.section_id!==sectionId||
+       draft.source_note?.unit_number!==null||
+       !draft.source_note?.lesson_activity.includes(activity)||
+       draft.source_note?.candidate_text!==""||
+       draft.source_note?.practice_words.length!==0||
+       draft.review_status!=="unverified_ocr_draft"||
+       draft.student_scoring_ready!==false)
+      throw Error("Supplementary page "+page+" fabricated or not source-bound");
+  }
+  for(const page of [8,93,94]){
+    const other=ok(await api(teacher,"GET",
+      [...base,"books","kids-box-student-1","pages",String(page),"ocr"]),200,
+      "Front/back non-teaching page stays without fake source note "+page);
+    if(other.source_note!==null)
+      throw Error("Source note leaked to cover/front/back page "+page);
+  }
+  for(const page of [33,59,85,87,92]){
+    const child=await api(students[0],"GET",
+      [...base,"books","kids-box-student-1","pages",String(page),"ocr"]);
+    if(child.code!==403&&child.code!==503)
+      throw Error("Student accessed teacher private supplement page "+page);
+  }
+  console.log("R72_PRIVATE_SUPPLEMENTARY_E2E_PASS reviews=6 glossary=6 student=denied source_audio_fabricated=NO");
   const studentUnit7=await api(students[0],"GET",
     [...base,"books","kids-box-student-1","pages","48","ocr"]);
   if(studentUnit7.code!==403&&studentUnit7.code!==503)
