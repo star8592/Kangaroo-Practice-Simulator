@@ -1,0 +1,107 @@
+{
+  "schema": "kidsbox1-unit10-source-observed-v1",
+  "book_id": "kids-box-student-1",
+  "source_sha256": "67e8ae9405469552379e29e18a1b2058865f12beb99907b3a2d88c5da50ac31d",
+  "verification": "direct_visual_check_of_user_supplied_pdf_pages_67_to_72",
+  "publish_status": "teacher_review_required",
+  "pages": {
+    "67": {
+      "printed_page": 60,
+      "lesson_activity": [
+        "Listen and point.",
+        "Listen, point and repeat."
+      ],
+      "candidate_text": "",
+      "practice_words": [],
+      "read_questions": [],
+      "templates": [],
+      "phonics": [],
+      "requires_official_audio": true,
+      "note": "At the funfair首页为游乐场交通工具插图，印有boat、bus、helicopter、lorry、motorbike、plane标签，缺完整原版听力对白。"
+    },
+    "68": {
+      "printed_page": 61,
+      "lesson_activity": [
+        "Say the chant and do the actions.",
+        "Listen and say 'yes' or 'no'."
+      ],
+      "candidate_text": "boat\nbus\nhelicopter\nlorry\nmotorbike\nplane",
+      "practice_words": [
+        "boat",
+        "bus",
+        "helicopter",
+        "lorry",
+        "motorbike",
+        "plane"
+      ],
+      "read_questions": [],
+      "templates": [],
+      "phonics": [],
+      "requires_official_audio": true,
+      "note": "六个交通工具词按原书P61页脚顺序；未提供动作chant原声和真假判断的官方音频答案。"
+    },
+    "69": {
+      "printed_page": 62,
+      "lesson_activity": [
+        "Listen and point.",
+        "Listen, point and repeat."
+      ],
+      "candidate_text": "What are you doing, Maskman?\nI'm flying my plane.",
+      "practice_words": [],
+      "read_questions": [
+        "What are you doing, Maskman?"
+      ],
+      "templates": [
+        "What are you doing?",
+        "I'm flying / driving / riding / walking."
+      ],
+      "phonics": [],
+      "requires_official_audio": true,
+      "note": "P62画面印有具体问答句；页脚还印有What are you doing?和I'm flying / driving / riding / walking.的共享动词结构。后一个斜线组是模板，不能伪装为单句原版发音。"
+    },
+    "70": {
+      "printed_page": 63,
+      "lesson_activity": [
+        "Sing the song."
+      ],
+      "candidate_text": "",
+      "practice_words": [],
+      "read_questions": [],
+      "templates": [],
+      "phonics": [],
+      "requires_official_audio": true,
+      "note": "整页歌曲配插图，没有可核实完整印刷歌词或原版音轨；不自动编唱。"
+    },
+    "71": {
+      "printed_page": 64,
+      "lesson_activity": [
+        "Say it with Monty.",
+        "Listen and correct."
+      ],
+      "candidate_text": "I'm driving my car.\nNo, I'm walking.",
+      "practice_words": [],
+      "read_questions": [],
+      "templates": [],
+      "phonics": [
+        "N",
+        "Nancy night owl"
+      ],
+      "requires_official_audio": true,
+      "note": "P64印刷N / Nancy night owl语音线索和两句纠错示例；其余编号图的听力内容缺原音轨，不推断官方答案。"
+    },
+    "72": {
+      "printed_page": 65,
+      "lesson_activity": [
+        "Listen to the story.",
+        "Listen and say the number."
+      ],
+      "candidate_text": "",
+      "practice_words": [],
+      "read_questions": [],
+      "templates": [],
+      "phonics": [],
+      "requires_official_audio": true,
+      "note": "六格漫画和听力编号活动可作看图教学，但原版故事无完整印刷对白与音轨，不虚构对应朗读题或标准答案。"
+    }
+  }
+}
