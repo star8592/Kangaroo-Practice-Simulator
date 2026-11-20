@@ -37,23 +37,31 @@ type TeacherSourceNote={
  requires_official_audio:boolean;
  note:string;
 };
-/** A book's lesson hints live outside Next public assets.
- * Manifest unit ranges are the only authority for file selection, so adding
- * a future textbook unit requires reviewed private metadata, not new routes.
+/** Scanned source hints stay outside public assets and are teacher-only.
+ * The manifest is authoritative for both units and the four explicitly
+ * approved supplementary sections. Front matter/back cover remain source
+ * images without falsely promoted OCR notes.
  */
 async function reviewedSourceNote(book:BookManifest,p:number):Promise<
- (TeacherSourceNote&{unit_number:number})|null>{
- const section=book.sections.find(s=>s.unit_number!==null&&
-   p>=s.start_pdf_page&&p<=s.end_pdf_page);
+ (TeacherSourceNote&{unit_number:number|null;section_id?:string})|null>{
+ const section=book.sections.find(s=>p>=s.start_pdf_page&&p<=s.end_pdf_page);
  if(!section)return null;
  const unit=section.unit_number;
- if(unit===null||!Number.isInteger(unit)||unit<1||unit>12)return null;
- const basename="unit"+String(unit)+"_source_notes.json";
+ const supplementary=unit===null;
+ const allowedSupplementary=["review-01","review-02","review-03","word-list"];
+ if(supplementary&&!allowedSupplementary.includes(section.id))return null;
+ if(!supplementary&&(!Number.isInteger(unit)||unit<1||unit>12))return null;
+ const basename=supplementary
+   ?"supplementary_source_notes.json"
+   :"unit"+String(unit)+"_source_notes.json";
+ const expectedSchema=supplementary
+   ?"kidsbox1-supplementary-source-observed-v1"
+   :"kidsbox1-unit"+unit+"-source-observed-v1";
  try{
   const data=JSON.parse(await readFile(path.join(ROOT(),"metadata",basename),"utf8")) as
    {schema:string;book_id:string;source_sha256:string;
-    publish_status:string;pages:Record<string,TeacherSourceNote>};
-  if(data.schema!=="kidsbox1-unit"+unit+"-source-observed-v1"||
+    publish_status:string;pages:Record<string,TeacherSourceNote&{section_id?:string}>};
+  if(data.schema!==expectedSchema||
      data.book_id!==BOOK_ID||data.source_sha256!==SOURCE_SHA||
      data.publish_status!=="teacher_review_required")return null;
   const note=data.pages[String(p)];
@@ -63,7 +71,12 @@ async function reviewedSourceNote(book:BookManifest,p:number):Promise<
      !Array.isArray(note.lesson_activity)||!Array.isArray(note.templates)||
      !Array.isArray(note.phonics)||typeof note.note!=="string"||
      note.requires_official_audio!==true)return null;
-  return {...note,unit_number:unit};
+  // Review listening activities, paper crafts and glossary pages contain no
+  // verified audio/scoring transcript. Never promote them to exercise text.
+  if(supplementary&&(note.section_id!==section.id||
+     note.candidate_text!==""||note.practice_words.length!==0||
+     note.read_questions.length!==0||note.templates.length!==0))return null;
+  return {...note,unit_number:unit,...(supplementary?{section_id:section.id}:{})};
  }catch{return null;}
 }
 async function pageDraft(db:PoolClient,tenant:string,cl:string,p:number,book:BookManifest){
