@@ -342,6 +342,56 @@ try {
     "Review 1 stays unsupported until a separate verified source reader exists");
   if(review1NotReady.source_note!==null)
     throw Error("Unreviewed Review 1 impersonates verified unit source");
+  // R64: Unit 5 verified private source, same unchanged router and safety boundary.
+  const u5Opening=ok(await api(teacher,"GET",
+    [...base,"books","kids-box-student-1","pages","35","ocr"]),200,
+    "Unit 5 opening picture does not invent pet conversation");
+  if(u5Opening.source_note?.unit_number!==5||
+     u5Opening.source_note?.candidate_text!=="")
+    throw Error("Unit 5 opening image falsely assigned dialogue");
+  const u5Pets=ok(await api(teacher,"GET",
+    [...base,"books","kids-box-student-1","pages","36","ocr"]),200,
+    "Teacher sees six pets from printed Unit 5 page 29");
+  if(JSON.stringify(u5Pets.source_note?.practice_words)!==
+     JSON.stringify(["bird","cat","dog","fish","horse","mouse"])||
+     u5Pets.review_status!=="unverified_ocr_draft"||
+     u5Pets.student_scoring_ready!==false)
+    throw Error("Unit 5 pet words or unverified review state mismatch");
+  const u5Adjectives=ok(await api(teacher,"GET",
+    [...base,"books","kids-box-student-1","pages","37","ocr"]),200,
+    "Teacher sees six printed pet adjectives");
+  if(JSON.stringify(u5Adjectives.source_note?.practice_words)!==
+     JSON.stringify(["big","small","long","short","clean","dirty"]))
+    throw Error("Unit 5 adjective words not source faithful");
+  const u5Song=ok(await api(teacher,"GET",
+    [...base,"books","kids-box-student-1","pages","38","ocr"]),200,
+    "Unit 5 song and action page does not invent lyrics");
+  if(u5Song.source_note?.candidate_text!==""||
+     u5Song.source_note?.requires_official_audio!==true)
+    throw Error("Unit 5 song invented transcript");
+  const u5Penny=ok(await api(teacher,"GET",
+    [...base,"books","kids-box-student-1","pages","39","ocr"]),200,
+    "Teacher sees Penny penguin and printed guess-game examples");
+  if(!u5Penny.source_note?.phonics.includes("Penny penguin")||
+     !u5Penny.source_note?.candidate_text.includes("It's beautiful and orange.")||
+     !u5Penny.source_note?.candidate_text.includes("Number two. The fish."))
+    throw Error("Unit 5 P phonics or printed guessing lines missing");
+  const u5Story=ok(await api(teacher,"GET",
+    [...base,"books","kids-box-student-1","pages","40","ocr"]),200,
+    "Unit 5 six-panel story has no fictional original dialogue");
+  if(u5Story.source_note?.candidate_text!==""||
+     u5Story.source_note?.requires_official_audio!==true)
+    throw Error("Unit 5 fake story audio/text");
+  const u6NotReady=ok(await api(teacher,"GET",
+    [...base,"books","kids-box-student-1","pages","41","ocr"]),200,
+    "Next not-yet-reviewed unit has no verified private hint");
+  if(u6NotReady.source_note!==null)
+    throw Error("Unverified Unit 6 falsely marked verified source");
+  const studentUnit5=await api(students[0],"GET",
+    [...base,"books","kids-box-student-1","pages","36","ocr"]);
+  if(studentUnit5.code!==403&&studentUnit5.code!==503)
+    throw Error("Student accessed teacher-only Unit 5 notes");
+  console.log("R64_UNIT5_PRIVATE_SOURCE_E2E_PASS pages=35-40 pets=6 adjectives=6 no_fake_story=YES");
   const studentUnit4=await api(students[0],"GET",
     [...base,"books","kids-box-student-1","pages","28","ocr"]);
   if(studentUnit4.code!==403&&studentUnit4.code!==503)
