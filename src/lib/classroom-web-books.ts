@@ -26,6 +26,32 @@ async function manifest():Promise<BookManifest>{
  }catch{throw new ClassroomFailure(503,"教材库正在初始化，请稍后再试")}
 }
 const safeSection=(x:string)=>/^(?:unit-\d{2}|review-\d{2}|front|word-list|back)$/.test(x);
+type TeacherSourceNote={
+ printed_page:number;
+ lesson_activity:string[];
+ candidate_text:string;
+ practice_words:string[];
+ read_questions:string[];
+ templates:string[];
+ phonics:string[];
+ requires_official_audio:boolean;
+ note:string;
+};
+async function unit1SourceNote(p:number):Promise<TeacherSourceNote|null>{
+ if(p<9||p>14)return null;
+ try{
+  const data=JSON.parse(await readFile(path.join(ROOT(),"metadata","unit1_source_notes.json"),"utf8")) as
+   {schema:string;book_id:string;source_sha256:string;publish_status:string;pages:Record<string,TeacherSourceNote>};
+  if(data.schema!=="kidsbox1-unit1-source-observed-v1"||
+     data.book_id!==BOOK_ID||data.source_sha256!==SOURCE_SHA||
+     data.publish_status!=="teacher_review_required")return null;
+  const note=data.pages[String(p)];
+  if(!note||note.printed_page!==p-7||
+     typeof note.candidate_text!=="string"||note.candidate_text.length>1800||
+     !Array.isArray(note.practice_words)||!Array.isArray(note.read_questions))return null;
+  return note;
+ }catch{return null;}
+}
 async function pageDraft(db:PoolClient,tenant:string,cl:string,p:number){
  const reviewed=await db.query([
   "SELECT reviewed_text,version,reviewed_at",
@@ -33,6 +59,7 @@ async function pageDraft(db:PoolClient,tenant:string,cl:string,p:number){
   "WHERE tenant_id=$1 AND class_id=$2 AND book_id=$3 AND pdf_page=$4"
  ].join(" "),[tenant,cl,BOOK_ID,p]);
  const saved=reviewed.rows[0];
+ const source_note=await unit1SourceNote(p);
  try{
   const data=JSON.parse(await readFile(
    path.join(ROOT(),"ocr","page-"+String(p).padStart(3,"0")+".json"),"utf8")) as
@@ -42,12 +69,12 @@ async function pageDraft(db:PoolClient,tenant:string,cl:string,p:number){
    text_draft:saved?.reviewed_text??data.text_draft,
    review_status:saved?"teacher_verified":"unverified_ocr_draft",
    reviewed_version:saved?.version??0,reviewed_at:saved?.reviewed_at??null,
-   student_scoring_ready:false};
+   source_note,student_scoring_ready:false};
  }catch{
   return {pdf_page:p,confidence:null,text_draft:saved?.reviewed_text??"",
    review_status:saved?"teacher_verified":"not_available",
    reviewed_version:saved?.version??0,reviewed_at:saved?.reviewed_at??null,
-   student_scoring_ready:false};
+   source_note,student_scoring_ready:false};
  }
 }
 function privateMedia(data:Buffer,type:string,name?:string):Response{
