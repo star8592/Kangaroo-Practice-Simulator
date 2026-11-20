@@ -297,10 +297,56 @@ try {
   if(u3Story.source_note?.candidate_text!==""||
      u3Story.source_note?.requires_official_audio!==true)
     throw Error("Unit 3 fictional story audio/text leak");
-  const u4NotReady=ok(await api(teacher,"GET",
+  // R63: the same private R61 book API reads Unit 4 verified source notes.
+  const u4Opening=ok(await api(teacher,"GET",
     [...base,"books","kids-box-student-1","pages","27","ocr"]),200,
-    "Not-yet-reviewed Unit 4 does not impersonate verified source");
-  if(u4NotReady.source_note!==null)throw Error("Unit 4 unverified source leaked");
+    "Unit 4 opening artwork has no invented dialogue");
+  if(u4Opening.source_note?.unit_number!==4||
+     u4Opening.source_note?.candidate_text!=="")
+    throw Error("Unit 4 picture-only page invented dialogue");
+  const u4Family=ok(await api(teacher,"GET",
+    [...base,"books","kids-box-student-1","pages","28","ocr"]),200,
+    "Teacher sees six printed Unit 4 family words");
+  if(JSON.stringify(u4Family.source_note?.practice_words)!==
+     JSON.stringify(["mother","father","brother","sister","grandmother","grandfather"])||
+     u4Family.review_status!=="unverified_ocr_draft"||
+     u4Family.student_scoring_ready!==false)
+    throw Error("Unit 4 family words or unverified state mismatch");
+  const u4Adj=ok(await api(teacher,"GET",
+    [...base,"books","kids-box-student-1","pages","29","ocr"]),200,
+    "Teacher sees six printed Unit 4 adjectives");
+  if(JSON.stringify(u4Adj.source_note?.practice_words)!==
+     JSON.stringify(["old","young","ugly","beautiful","happy","sad"]))
+    throw Error("Unit 4 printed adjectives mismatch");
+  const u4Song=ok(await api(teacher,"GET",
+    [...base,"books","kids-box-student-1","pages","30","ocr"]),200,
+    "Unit 4 song has no fabricated original lyrics");
+  if(u4Song.source_note?.candidate_text!==""||
+     u4Song.source_note?.requires_official_audio!==true)
+    throw Error("Unit 4 fake song transcript");
+  const u4Bertie=ok(await api(teacher,"GET",
+    [...base,"books","kids-box-student-1","pages","31","ocr"]),200,
+    "Teacher sees printed B Bertie bat and fixed correction dialogue");
+  if(!u4Bertie.source_note?.phonics.includes("Bertie bat")||
+     !u4Bertie.source_note?.candidate_text.includes("She's beautiful.")||
+     !u4Bertie.source_note?.candidate_text.includes("No, she isn't. She's ugly."))
+    throw Error("Unit 4 phonics or printed correction dialogue missing");
+  const u4Story=ok(await api(teacher,"GET",
+    [...base,"books","kids-box-student-1","pages","32","ocr"]),200,
+    "Unit 4 six-panel story has no fabricated spoken lines");
+  if(u4Story.source_note?.candidate_text!==""||
+     u4Story.source_note?.requires_official_audio!==true)
+    throw Error("Unit 4 fabricated story audio/transcript");
+  const review1NotReady=ok(await api(teacher,"GET",
+    [...base,"books","kids-box-student-1","pages","33","ocr"]),200,
+    "Review 1 stays unsupported until a separate verified source reader exists");
+  if(review1NotReady.source_note!==null)
+    throw Error("Unreviewed Review 1 impersonates verified unit source");
+  const studentUnit4=await api(students[0],"GET",
+    [...base,"books","kids-box-student-1","pages","28","ocr"]);
+  if(studentUnit4.code!==403&&studentUnit4.code!==503)
+    throw Error("Student exposed Unit 4 private teacher notes");
+  console.log("R63_UNIT4_PRIVATE_SOURCE_E2E_PASS pages=27-32 family=6 adjectives=6 no_fake_story=YES");
   const studentUnit3=await api(students[0],"GET",
     [...base,"books","kids-box-student-1","pages","22","ocr"]);
   if(studentUnit3.code!==403&&studentUnit3.code!==503)
