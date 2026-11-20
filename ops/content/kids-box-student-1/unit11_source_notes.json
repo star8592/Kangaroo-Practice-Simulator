@@ -1,0 +1,117 @@
+{
+  "schema": "kidsbox1-unit11-source-observed-v1",
+  "book_id": "kids-box-student-1",
+  "source_sha256": "67e8ae9405469552379e29e18a1b2058865f12beb99907b3a2d88c5da50ac31d",
+  "verification": "direct_visual_check_of_user_supplied_pdf_pages_73_to_78",
+  "publish_status": "teacher_review_required",
+  "pages": {
+    "73": {
+      "printed_page": 66,
+      "lesson_activity": [
+        "Listen and point.",
+        "Listen, point and repeat."
+      ],
+      "candidate_text": "bathroom\nbedroom\ndining room\nhall\nkitchen\nliving room",
+      "practice_words": [
+        "bathroom",
+        "bedroom",
+        "dining room",
+        "hall",
+        "kitchen",
+        "living room"
+      ],
+      "read_questions": [],
+      "templates": [],
+      "phonics": [],
+      "requires_official_audio": true,
+      "note": "Our house首页六幅房间图印有bathroom、bedroom、dining room、hall、kitchen、living room标签；图上可直接核验词汇，未印完整原声台词。"
+    },
+    "74": {
+      "printed_page": 67,
+      "lesson_activity": [
+        "Look at page 66. Listen and correct.",
+        "Listen and say 'yes' or 'no'."
+      ],
+      "candidate_text": "Monty's in the bathroom.\nNo, Monty's in the bedroom.",
+      "practice_words": [
+        "bathroom",
+        "bedroom",
+        "dining room",
+        "hall",
+        "kitchen",
+        "living room"
+      ],
+      "read_questions": [],
+      "templates": [],
+      "phonics": [],
+      "requires_official_audio": true,
+      "note": "P67两个气泡印有明确纠错示例；六个房间词依页脚bathroom bedroom dining room hall kitchen living room。其他听力纠错和yes/no缺原版音轨，不能推断答案。"
+    },
+    "75": {
+      "printed_page": 68,
+      "lesson_activity": [
+        "Listen and point.",
+        "Listen, point and repeat."
+      ],
+      "candidate_text": "What's Simon doing?\nHe's drawing a picture.",
+      "practice_words": [],
+      "read_questions": [
+        "What's Simon doing?"
+      ],
+      "templates": [
+        "What is he / she doing?",
+        "He's / She's ...ing."
+      ],
+      "phonics": [],
+      "requires_official_audio": true,
+      "note": "P68原书印刷完整Simon问答。页脚语法框中的he/she与...ing均是模板而非完整原版朗读句，不得自动补写当真题。"
+    },
+    "76": {
+      "printed_page": 69,
+      "lesson_activity": [
+        "Sing the song.",
+        "Ask and answer."
+      ],
+      "candidate_text": "What's Stella doing?\nShe's reading a book.",
+      "practice_words": [],
+      "read_questions": [
+        "What's Stella doing?"
+      ],
+      "templates": [],
+      "phonics": [],
+      "requires_official_audio": true,
+      "note": "P69歌曲原版歌词未提供，页面下方的Ask and answer示例确有两句印刷固定问答，教师可单独审核后用于朗读。"
+    },
+    "77": {
+      "printed_page": 70,
+      "lesson_activity": [
+        "Say it with Monty.",
+        "Say the number."
+      ],
+      "candidate_text": "They're eating fish.\nNumber four.",
+      "practice_words": [],
+      "read_questions": [],
+      "templates": [],
+      "phonics": [
+        "G",
+        "Gertie goat"
+      ],
+      "requires_official_audio": true,
+      "note": "P70出现G / Gertie goat语音线索，编号说话气泡实际印有They're eating fish.和Number four.；其余编号题并无完整原版音轨，不猜答案。"
+    },
+    "78": {
+      "printed_page": 71,
+      "lesson_activity": [
+        "Listen to the story.",
+        "Listen and say 'yes' or 'no'."
+      ],
+      "candidate_text": "",
+      "practice_words": [],
+      "read_questions": [],
+      "templates": [],
+      "phonics": [],
+      "requires_official_audio": true,
+      "note": "六格故事及是非听力活动，完整官方故事台词和真假答案未印出，且没有附带原声；只给老师看图素材。"
+    }
+  }
+}
