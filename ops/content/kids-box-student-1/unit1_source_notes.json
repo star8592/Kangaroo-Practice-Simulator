@@ -1,0 +1,119 @@
+{
+  "schema": "kidsbox1-unit1-source-observed-v1",
+  "book_id": "kids-box-student-1",
+  "source_sha256": "67e8ae9405469552379e29e18a1b2058865f12beb99907b3a2d88c5da50ac31d",
+  "verification": "human_visual_check_of_provided_scan",
+  "publish_status": "teacher_review_required",
+  "printed_offset": 7,
+  "pages": {
+    "9": {
+      "printed_page": 2,
+      "lesson_activity": [
+        "Listen and point.",
+        "Listen, point and repeat."
+      ],
+      "candidate_text": "",
+      "practice_words": [],
+      "read_questions": [],
+      "templates": [],
+      "phonics": [],
+      "requires_official_audio": true,
+      "note": "大幅人物插图与听力指令，没有可确认的连续台词；不能仅凭图片生成对话或听力文本。"
+    },
+    "10": {
+      "printed_page": 3,
+      "lesson_activity": [
+        "Listen and do the actions.",
+        "Say the chant."
+      ],
+      "candidate_text": "What's your name?\nGoodbye",
+      "practice_words": [
+        "Goodbye"
+      ],
+      "read_questions": [
+        "What's your name?"
+      ],
+      "templates": [
+        "Hello, I'm ..."
+      ],
+      "phonics": [],
+      "requires_official_audio": true,
+      "note": "原书页脚出现 Hello, I'm ... / What's your name? / Goodbye / 1–10；Hello, I'm ... 含省略号，必须由老师补全后才能作逐字朗读评分。数字以1–10形式出现，并未逐个印出英文单词。"
+    },
+    "11": {
+      "printed_page": 4,
+      "lesson_activity": [
+        "Listen and point.",
+        "Listen, point and repeat."
+      ],
+      "candidate_text": "How old are you?",
+      "practice_words": [],
+      "read_questions": [
+        "How old are you?"
+      ],
+      "templates": [
+        "I'm ..."
+      ],
+      "phonics": [],
+      "requires_official_audio": true,
+      "note": "原书页脚 How old are you? / I'm ...；人物胸前分别标示 Simon 6、Meera 8、Suzy 3、Stella 7。回答含省略号，不能作为固定标准答案。"
+    },
+    "12": {
+      "printed_page": 5,
+      "lesson_activity": [
+        "Sing the song.",
+        "Listen and say the colour."
+      ],
+      "candidate_text": "blue\ngreen\norange\npink\npurple\nred\nyellow",
+      "practice_words": [
+        "blue",
+        "green",
+        "orange",
+        "pink",
+        "purple",
+        "red",
+        "yellow"
+      ],
+      "read_questions": [],
+      "templates": [],
+      "phonics": [],
+      "requires_official_audio": true,
+      "note": "7个颜色词按原书页脚印刷清单顺序录入；可用于独立单词朗读，但歌曲、听力和颜色指认的原版音频不在PDF中。"
+    },
+    "13": {
+      "printed_page": 6,
+      "lesson_activity": [
+        "Say it with Monty",
+        "Ask the questions."
+      ],
+      "candidate_text": "What's your name?\nHow old are you?\nsnake",
+      "practice_words": [
+        "snake"
+      ],
+      "read_questions": [
+        "What's your name?",
+        "How old are you?"
+      ],
+      "templates": [],
+      "phonics": [
+        "Sid snake"
+      ],
+      "requires_official_audio": true,
+      "note": "读音活动字母 S、Sid snake 与两个提问气泡确实印在本页。snake 是从 Sid snake 拆出的单词候选，不应把图片人物对话臆造成新的原文。"
+    },
+    "14": {
+      "printed_page": 7,
+      "lesson_activity": [
+        "Listen to the story.",
+        "Listen and say the number."
+      ],
+      "candidate_text": "",
+      "practice_words": [],
+      "read_questions": [],
+      "templates": [],
+      "phonics": [],
+      "requires_official_audio": true,
+      "note": "六格漫画没有可读取的完整英文对白，原书听故事活动需要原音轨/文字稿；当前不提供所谓官方台词或故事朗读评分。"
+    }
+  }
+}
