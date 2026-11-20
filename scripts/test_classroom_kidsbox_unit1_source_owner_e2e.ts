@@ -387,6 +387,58 @@ try {
     "Next not-yet-reviewed unit has no verified private hint");
   if(u6NotReady.source_note!==null)
     throw Error("Unverified Unit 6 falsely marked verified source");
+  // R65: Unit 6 original scanned page evidence, including the difference
+  // between an incomplete grammar template and a printed fixed dialogue.
+  const u6Open=ok(await api(teacher,"GET",
+    [...base,"books","kids-box-student-1","pages","41","ocr"]),200,
+    "Unit 6 picture labels do not invent a recorded dialogue");
+  if(u6Open.source_note?.unit_number!==6||
+     u6Open.source_note?.candidate_text!=="")
+    throw Error("Unit 6 face illustration misreported as original speech");
+  const u6Parts=ok(await api(teacher,"GET",
+    [...base,"books","kids-box-student-1","pages","42","ocr"]),200,
+    "Teacher sees six original Unit 6 face words");
+  if(JSON.stringify(u6Parts.source_note?.practice_words)!==
+     JSON.stringify(["face","ears","eyes","mouth","nose","teeth"])||
+     u6Parts.review_status!=="unverified_ocr_draft"||
+     u6Parts.student_scoring_ready!==false)
+    throw Error("Unit 6 printed word order or teacher-review guard mismatch");
+  const u6Grammar=ok(await api(teacher,"GET",
+    [...base,"books","kids-box-student-1","pages","43","ocr"]),200,
+    "Incomplete have-got templates do not become invented full answers");
+  if(!u6Grammar.source_note?.templates.includes("I've got ...")||
+     !u6Grammar.source_note?.templates.includes("Have you got ...?")||
+     !u6Grammar.source_note?.candidate_text.includes("No, I haven't."))
+    throw Error("Unit 6 source-printed templates or fixed replies missing");
+  const u6Song=ok(await api(teacher,"GET",
+    [...base,"books","kids-box-student-1","pages","44","ocr"]),200,
+    "Unit 6 monster song has no invented original lyrics");
+  if(u6Song.source_note?.candidate_text!==""||
+     u6Song.source_note?.requires_official_audio!==true)
+    throw Error("Unit 6 fake song audio/transcript");
+  const u6Henry=ok(await api(teacher,"GET",
+    [...base,"books","kids-box-student-1","pages","45","ocr"]),200,
+    "H Henry horse and exact fixed original question are preserved");
+  if(!u6Henry.source_note?.phonics.includes("Henry horse")||
+     !u6Henry.source_note?.read_questions.includes("Have you got a black dog?")||
+     !u6Henry.source_note?.candidate_text.includes("Yes, I have."))
+    throw Error("Unit 6 phonics or printed dialogue mismatch");
+  const u6Story=ok(await api(teacher,"GET",
+    [...base,"books","kids-box-student-1","pages","46","ocr"]),200,
+    "Unit 6 story and yes/no activity lack invented original answers");
+  if(u6Story.source_note?.candidate_text!==""||
+     u6Story.source_note?.requires_official_audio!==true)
+    throw Error("Unit 6 story audio/yes-no answers fabricated");
+  const u7NotReady=ok(await api(teacher,"GET",
+    [...base,"books","kids-box-student-1","pages","47","ocr"]),200,
+    "Unit 7 remains without verified teacher notes");
+  if(u7NotReady.source_note!==null)
+    throw Error("Unreviewed Unit 7 mislabelled verified");
+  const studentUnit6=await api(students[0],"GET",
+    [...base,"books","kids-box-student-1","pages","42","ocr"]);
+  if(studentUnit6.code!==403&&studentUnit6.code!==503)
+    throw Error("Student accessed private Unit 6 face words");
+  console.log("R65_UNIT6_PRIVATE_SOURCE_E2E_PASS pages=41-46 parts=6 fixed_dialogue=YES no_fake_story=YES");
   const studentUnit5=await api(students[0],"GET",
     [...base,"books","kids-box-student-1","pages","36","ocr"]);
   if(studentUnit5.code!==403&&studentUnit5.code!==503)
