@@ -127,6 +127,21 @@ if git cat-file -e "$TARGET_SHA:src/lib/classroom-web-words.ts" 2>/dev/null; the
   log "R57_DB_GATE_PASS sha=$TARGET_SHA detail=$R57_GATE_LOG"
 fi
 
+# R59: teacher-reviewed textbook page storage must be ready before enabling
+# persistent saves. The check is read-only; skipped deployments retain the old
+# immutable runtime without touching classroom production.
+if git cat-file -e "$TARGET_SHA:ops/db/20261120_accent_teacher_book_page_reviews.sql" 2>/dev/null; then
+  if ! git cat-file -e "$TARGET_SHA:ops/release/check_r59_book_review_db_ready.sh" 2>/dev/null; then
+    log "AUTO_DEPLOY=SKIP reason=r59_book_review_db_gate_missing sha=$TARGET_SHA"
+    exit 0
+  fi
+  if ! R59_GATE_LOG="$(git show "$TARGET_SHA:ops/release/check_r59_book_review_db_ready.sh" | bash -s -- accent_lab 2>&1)"; then
+    log "AUTO_DEPLOY=SKIP reason=r59_book_review_database_not_ready sha=$TARGET_SHA detail=$R59_GATE_LOG"
+    exit 0
+  fi
+  log "R59_BOOK_REVIEW_DB_GATE_PASS sha=$TARGET_SHA detail=$R59_GATE_LOG"
+fi
+
 PREV_CURRENT="$(readlink -f "$CURRENT" 2>/dev/null || true)"
 VERSION="$(git show "$TARGET_SHA:VERSION" 2>/dev/null | tr -d '\r\n' || true)"
 [[ -n "$VERSION" ]] || VERSION=dev
