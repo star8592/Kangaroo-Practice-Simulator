@@ -3,6 +3,7 @@ import {ClassroomFailure,actor,tx,writeOrigin} from "@/lib/classroom-web-core";
 import {teacherHandler,assignmentTeacherHandler} from "@/lib/classroom-web-teacher";
 import {studentHandler} from "@/lib/classroom-web-student";
 import {wordHomeworkHandler} from "@/lib/classroom-web-words";
+import {teacherBookHandler} from "@/lib/classroom-web-books";
 import {assessmentHandler} from "@/lib/classroom-web-assessment";
 
 /** SOC THINK native classroom API. Runs in the already deployed Next.js Web
@@ -37,7 +38,8 @@ async function handle(req:NextRequest,context:Context):Promise<Response>{
       await assignmentTeacherHandler(req,path,user) ??
       await studentHandler(req,path,user) ??
       await assessmentHandler(req,path,user) ??
-      await wordHomeworkHandler(req,path,user);
+      await wordHomeworkHandler(req,path,user) ??
+      await teacherBookHandler(req,path,user);
     if(result===undefined)throw new ClassroomFailure(404,"课堂接口不存在");
     if(result instanceof Response)return result;
     return NextResponse.json(result,{headers});
