@@ -1,0 +1,112 @@
+{
+  "schema": "kidsbox1-unit12-source-observed-v1",
+  "book_id": "kids-box-student-1",
+  "source_sha256": "67e8ae9405469552379e29e18a1b2058865f12beb99907b3a2d88c5da50ac31d",
+  "verification": "direct_visual_check_of_user_supplied_pdf_pages_79_to_84",
+  "publish_status": "teacher_review_required",
+  "pages": {
+    "79": {
+      "printed_page": 72,
+      "lesson_activity": [
+        "Listen and point.",
+        "Listen, point and repeat."
+      ],
+      "candidate_text": "",
+      "practice_words": [],
+      "read_questions": [],
+      "templates": [],
+      "phonics": [],
+      "requires_official_audio": true,
+      "note": "Party time!首页野餐派对插图标有apple banana burger cake chocolate ice cream等食物，原版整段对白和音轨未印出，不推断。"
+    },
+    "80": {
+      "printed_page": 73,
+      "lesson_activity": [
+        "Say the chant.",
+        "Listen and say 'yes' or 'no'."
+      ],
+      "candidate_text": "apple\nbanana\nburger\ncake\nchocolate\nice cream\norange",
+      "practice_words": [
+        "apple",
+        "banana",
+        "burger",
+        "cake",
+        "chocolate",
+        "ice cream",
+        "orange"
+      ],
+      "read_questions": [],
+      "templates": [],
+      "phonics": [],
+      "requires_official_audio": true,
+      "note": "七个食物词依照P73页脚准确顺序，ice cream是两词短语。chant和真假判断没有附带原音及标准答案。"
+    },
+    "81": {
+      "printed_page": 74,
+      "lesson_activity": [
+        "Listen and point.",
+        "Listen, point and repeat."
+      ],
+      "candidate_text": "I like chocolate cake.\nI don't like chocolate.\nDo you like Maskman cake?",
+      "practice_words": [],
+      "read_questions": [
+        "Do you like Maskman cake?"
+      ],
+      "templates": [
+        "I like ...",
+        "I don't like ...",
+        "Do you like ...?"
+      ],
+      "phonics": [],
+      "requires_official_audio": true,
+      "note": "P74图上的三句固定印刷文字与页脚三组省略号语法模板分开保留；只可老师审核后用固定句跟读，不能把模板当完整原音。"
+    },
+    "82": {
+      "printed_page": 75,
+      "lesson_activity": [
+        "Ask and answer."
+      ],
+      "candidate_text": "Do you like apples?\nYes, I do.\nDo you like ice cream?\nNo, I don't.",
+      "practice_words": [],
+      "read_questions": [
+        "Do you like apples?",
+        "Do you like ice cream?"
+      ],
+      "templates": [],
+      "phonics": [],
+      "requires_official_audio": true,
+      "note": "P75印有两组完整的Do you like?问答。可用于审核后固定问答朗读，不把个人真实喜好当唯一标准答案。"
+    },
+    "83": {
+      "printed_page": 76,
+      "lesson_activity": [
+        "Say it with Monty.",
+        "Read. Listen and say the name."
+      ],
+      "candidate_text": "",
+      "practice_words": [],
+      "read_questions": [],
+      "templates": [],
+      "phonics": [
+        "L",
+        "Larry llama"
+      ],
+      "requires_official_audio": true,
+      "note": "P76为L / Larry llama的语音线索及Sam、Sue、May、Ben四人的食物/爱好小图标混排阅读听力。正文部分由图标表示，不具有可直接验证的连续标准朗读文本；未经老师核对不得替图片填词组成所谓原版句子。"
+    },
+    "84": {
+      "printed_page": 77,
+      "lesson_activity": [
+        "Listen to the story.",
+        "Act out the story."
+      ],
+      "candidate_text": "",
+      "practice_words": [],
+      "read_questions": [],
+      "templates": [],
+      "phonics": [],
+      "requires_official_audio": true,
+      "note": "六格漫画和课堂角色扮演活动，没有印刷完整故事对白或原版音频，不能生成冒充官方的故事朗读稿。"
+    }
+  }
+}

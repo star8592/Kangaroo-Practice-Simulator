@@ -1,0 +1,110 @@
+{
+  "schema": "kidsbox1-unit9-source-observed-v1",
+  "book_id": "kids-box-student-1",
+  "source_sha256": "67e8ae9405469552379e29e18a1b2058865f12beb99907b3a2d88c5da50ac31d",
+  "verification": "direct_visual_check_of_user_supplied_pdf_pages_61_to_66",
+  "publish_status": "teacher_review_required",
+  "pages": {
+    "61": {
+      "printed_page": 54,
+      "lesson_activity": [
+        "Listen and point.",
+        "Listen, point and repeat."
+      ],
+      "candidate_text": "",
+      "practice_words": [],
+      "read_questions": [],
+      "templates": [],
+      "phonics": [],
+      "requires_official_audio": true,
+      "note": "Fun time! 单元开头为运动与音乐活动图片，可见play the piano、play basketball、play the guitar等标签；没有完整印刷音频或角色对白，不推断问答。"
+    },
+    "62": {
+      "printed_page": 55,
+      "lesson_activity": [
+        "Sing the song.",
+        "Listen and answer."
+      ],
+      "candidate_text": "play football\nplay basketball\nplay tennis\nplay the guitar\nplay the piano\nswim\nride a bike",
+      "practice_words": [
+        "play football",
+        "play basketball",
+        "play tennis",
+        "play the guitar",
+        "play the piano",
+        "swim",
+        "ride a bike"
+      ],
+      "read_questions": [],
+      "templates": [],
+      "phonics": [],
+      "requires_official_audio": true,
+      "note": "P55页脚将play football / basketball / tennis和play the guitar / piano分组印刷，这里展开为七个完整动作短语，未假称原歌歌词；缺原版歌曲音轨及Listen and answer答案。"
+    },
+    "63": {
+      "printed_page": 56,
+      "lesson_activity": [
+        "Listen and point.",
+        "Listen, point and repeat."
+      ],
+      "candidate_text": "I can't sing.\nI can ride a bike.\nShe can ride a horse.\ncan\ncan't",
+      "practice_words": [
+        "can",
+        "can't"
+      ],
+      "read_questions": [],
+      "templates": [],
+      "phonics": [],
+      "requires_official_audio": true,
+      "note": "P56原书图中可见三句能力描述，页脚印有can和can't；可作为教师审核后的固定朗读候选，Listen and point缺原音轨。"
+    },
+    "64": {
+      "printed_page": 57,
+      "lesson_activity": [
+        "Say the chant.",
+        "Listen and answer."
+      ],
+      "candidate_text": "",
+      "practice_words": [],
+      "read_questions": [],
+      "templates": [],
+      "phonics": [],
+      "requires_official_audio": true,
+      "note": "P57为chant与听力问题图，不具备完整可核验歌词或原版音频；不自动生成题目答案。"
+    },
+    "65": {
+      "printed_page": 58,
+      "lesson_activity": [
+        "Say it with Monty.",
+        "Ask and answer."
+      ],
+      "candidate_text": "Can you sing?\nYes, I can.\nCan you swim?\nNo, I can't.",
+      "practice_words": [],
+      "read_questions": [
+        "Can you sing?",
+        "Can you swim?"
+      ],
+      "templates": [],
+      "phonics": [
+        "F",
+        "Freddy frog"
+      ],
+      "requires_official_audio": true,
+      "note": "P58印刷F / Freddy frog语音线索及两个完整Can you?问答示例；这些为固定句朗读候选，不把开放式会话当理解题自动评分。"
+    },
+    "66": {
+      "printed_page": 59,
+      "lesson_activity": [
+        "Listen to the story.",
+        "Act out the story."
+      ],
+      "candidate_text": "",
+      "practice_words": [],
+      "read_questions": [],
+      "templates": [],
+      "phonics": [],
+      "requires_official_audio": true,
+      "note": "六格故事漫画可用于看图或课堂扮演，但未提供完整原版印刷对白和音轨，不编造故事原文。"
+    }
+  }
+}

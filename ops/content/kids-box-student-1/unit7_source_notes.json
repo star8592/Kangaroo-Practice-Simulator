@@ -1,0 +1,115 @@
+{
+  "schema": "kidsbox1-unit7-source-observed-v1",
+  "book_id": "kids-box-student-1",
+  "source_sha256": "67e8ae9405469552379e29e18a1b2058865f12beb99907b3a2d88c5da50ac31d",
+  "verification": "direct_visual_check_of_user_supplied_pdf_pages_47_to_52",
+  "publish_status": "teacher_review_required",
+  "pages": {
+    "47": {
+      "printed_page": 40,
+      "lesson_activity": [
+        "Listen and point.",
+        "Listen, point and repeat."
+      ],
+      "candidate_text": "",
+      "practice_words": [],
+      "read_questions": [],
+      "templates": [],
+      "phonics": [],
+      "requires_official_audio": true,
+      "note": "Wild animals单元开篇带有giraffe、elephant、snake、hippo、crocodile、monkey、tiger等图片标签；未印出完整原声对白，不能根据插图补写对话。"
+    },
+    "48": {
+      "printed_page": 41,
+      "lesson_activity": [
+        "Say the chant. Do the actions.",
+        "Listen and point."
+      ],
+      "candidate_text": "crocodile\nelephant\ngiraffe\nhippo\nmonkey\nsnake\ntiger",
+      "practice_words": [
+        "crocodile",
+        "elephant",
+        "giraffe",
+        "hippo",
+        "monkey",
+        "snake",
+        "tiger"
+      ],
+      "read_questions": [],
+      "templates": [],
+      "phonics": [],
+      "requires_official_audio": true,
+      "note": "七种野生动物名按P41页脚实际顺序；chant歌词和配套听力原声缺失，只作为单词跟读候选。"
+    },
+    "49": {
+      "printed_page": 42,
+      "lesson_activity": [
+        "Listen and point.",
+        "Listen, point and repeat."
+      ],
+      "candidate_text": "arm\nfoot\nfeet\nhand\nleg\ntail",
+      "practice_words": [
+        "arm",
+        "foot",
+        "feet",
+        "hand",
+        "leg",
+        "tail"
+      ],
+      "read_questions": [],
+      "templates": [
+        "They've got ...",
+        "They haven't got ..."
+      ],
+      "phonics": [],
+      "requires_official_audio": true,
+      "note": "六个身体部位词按P42页脚顺序；foot和feet是不同词形，须分别保留。They've got和They haven't got为带省略号的原书语法模板，不能作为完整原版朗读句。"
+    },
+    "50": {
+      "printed_page": 43,
+      "lesson_activity": [
+        "Sing the song."
+      ],
+      "candidate_text": "",
+      "practice_words": [],
+      "read_questions": [],
+      "templates": [],
+      "phonics": [],
+      "requires_official_audio": true,
+      "note": "歌曲配动物大幅插图，但没有完整印刷的官方歌词或音频，不合成假歌曲，不自动设置听力评分答案。"
+    },
+    "51": {
+      "printed_page": 44,
+      "lesson_activity": [
+        "Say it with Monty.",
+        "Play the game. Ask and answer."
+      ],
+      "candidate_text": "Have they got long noses?\nYes.",
+      "practice_words": [],
+      "read_questions": [
+        "Have they got long noses?"
+      ],
+      "templates": [],
+      "phonics": [
+        "C",
+        "Cassandra cat"
+      ],
+      "requires_official_audio": true,
+      "note": "C / Cassandra cat为清晰可见的字母语音线索。原书两句印刷示例问答可供老师核对后朗读；游戏其他回答不能凭图片预测并冒充官方标准答案。"
+    },
+    "52": {
+      "printed_page": 45,
+      "lesson_activity": [
+        "Listen to the story.",
+        "Act out the story."
+      ],
+      "candidate_text": "",
+      "practice_words": [],
+      "read_questions": [],
+      "templates": [],
+      "phonics": [],
+      "requires_official_audio": true,
+      "note": "六格故事及Act out the story角色活动存在，但PDF没有完整原版配音和印刷对白；不杜撰角色对话或自动给听力判断分。"
+    }
+  }
+}

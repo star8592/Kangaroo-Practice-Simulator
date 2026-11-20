@@ -1,0 +1,116 @@
+{
+  "schema": "kidsbox1-unit3-source-observed-v1",
+  "book_id": "kids-box-student-1",
+  "source_sha256": "67e8ae9405469552379e29e18a1b2058865f12beb99907b3a2d88c5da50ac31d",
+  "verification": "direct_visual_check_of_user_supplied_pdf_pages_21_to_26",
+  "publish_status": "teacher_review_required",
+  "pages": {
+    "21": {
+      "printed_page": 14,
+      "lesson_activity": [
+        "Listen and point.",
+        "Listen, point and repeat."
+      ],
+      "candidate_text": "",
+      "practice_words": [],
+      "read_questions": [],
+      "templates": [],
+      "phonics": [],
+      "requires_official_audio": true,
+      "note": "Favourite toys单元开头人物和玩具插图。课本没有印出完整人物对白；原版音频未随PDF提供。"
+    },
+    "22": {
+      "printed_page": 15,
+      "lesson_activity": [
+        "Listen and say the number.",
+        "Say the chant."
+      ],
+      "candidate_text": "ball\nbike\nblack\nbrown\ncar\ncomputer\ndoll\ngrey\ntrain\nwhite",
+      "practice_words": [
+        "ball",
+        "bike",
+        "black",
+        "brown",
+        "car",
+        "computer",
+        "doll",
+        "grey",
+        "train",
+        "white"
+      ],
+      "read_questions": [],
+      "templates": [],
+      "phonics": [],
+      "requires_official_audio": true,
+      "note": "10个玩具与颜色词依照原书第15页页脚打印顺序。可以在老师逐页核实后作为单词跟读；Listen and say the number和chant的原声未提供。"
+    },
+    "23": {
+      "printed_page": 16,
+      "lesson_activity": [
+        "Listen and do the actions.",
+        "Listen, point and repeat."
+      ],
+      "candidate_text": "in\non\nunder\nnext to",
+      "practice_words": [
+        "in",
+        "on",
+        "under",
+        "next to"
+      ],
+      "read_questions": [],
+      "templates": [],
+      "phonics": [],
+      "requires_official_audio": true,
+      "note": "4个方位词/短语按原书页脚顺序。next to是两个词的短语，不能拆成没有原书依据的独立概念；听动作和指图的原声未提供。"
+    },
+    "24": {
+      "printed_page": 17,
+      "lesson_activity": [
+        "Sing the song.",
+        "Ask and answer."
+      ],
+      "candidate_text": "Is Monty under the chair?\nNo, he isn't.",
+      "practice_words": [],
+      "read_questions": [
+        "Is Monty under the chair?"
+      ],
+      "templates": [],
+      "phonics": [],
+      "requires_official_audio": true,
+      "note": "课本问答气泡中的两句是真实印刷文字，可以核对后做固定句子或角色朗读；歌曲没有原版音轨。不要把对固定句的发音评分当作真实理解题或自由问答内容评分。"
+    },
+    "25": {
+      "printed_page": 18,
+      "lesson_activity": [
+        "Say it with Monty.",
+        "Hide and play."
+      ],
+      "candidate_text": "tortoise",
+      "practice_words": [
+        "tortoise"
+      ],
+      "read_questions": [],
+      "templates": [],
+      "phonics": [
+        "T",
+        "Tommy tortoise"
+      ],
+      "requires_official_audio": true,
+      "note": "原书出现字母 T 与 Tommy tortoise 的音素线索，可将 tortoise 作为独立词汇候选。Hide and play为课堂猜物品活动，图中问号和叉号不是可评分口语答案。"
+    },
+    "26": {
+      "printed_page": 19,
+      "lesson_activity": [
+        "Listen to the story.",
+        "Answer the questions."
+      ],
+      "candidate_text": "",
+      "practice_words": [],
+      "read_questions": [],
+      "templates": [],
+      "phonics": [],
+      "requires_official_audio": true,
+      "note": "六格故事漫画与课堂提问指令，但未印出完整原版故事台词和问答标准答案；不能编造听力稿或给学生按朗读分评价自由回答。"
+    }
+  }
+}

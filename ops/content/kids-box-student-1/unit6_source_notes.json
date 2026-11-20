@@ -1,0 +1,109 @@
+{
+  "schema": "kidsbox1-unit6-source-observed-v1",
+  "book_id": "kids-box-student-1",
+  "source_sha256": "67e8ae9405469552379e29e18a1b2058865f12beb99907b3a2d88c5da50ac31d",
+  "verification": "direct_visual_check_of_user_supplied_pdf_pages_41_to_46",
+  "publish_status": "teacher_review_required",
+  "pages": {
+    "41": {
+      "printed_page": 34,
+      "lesson_activity": [
+        "Listen and point.",
+        "Listen, point and repeat."
+      ],
+      "candidate_text": "",
+      "practice_words": [],
+      "read_questions": [],
+      "templates": [],
+      "phonics": [],
+      "requires_official_audio": true,
+      "note": "My face首页怪兽图片上有ears eyes face teeth nose mouth标签；可用于教师指图认词，但无完整印刷原版听力对白，不应猜造音轨。"
+    },
+    "42": {
+      "printed_page": 35,
+      "lesson_activity": [
+        "Say the chant.",
+        "Listen and correct."
+      ],
+      "candidate_text": "face\nears\neyes\nmouth\nnose\nteeth",
+      "practice_words": [
+        "face",
+        "ears",
+        "eyes",
+        "mouth",
+        "nose",
+        "teeth"
+      ],
+      "read_questions": [],
+      "templates": [],
+      "phonics": [],
+      "requires_official_audio": true,
+      "note": "六个面部词按原书P35页脚顺序，原书有8格动作图与纠错图，但chant及Listen and correct的原声未提供，不能自动给出对应标准听力答案。"
+    },
+    "43": {
+      "printed_page": 36,
+      "lesson_activity": [
+        "Listen and point.",
+        "Listen, point and repeat."
+      ],
+      "candidate_text": "Yes, I have.\nNo, I haven't.",
+      "practice_words": [],
+      "read_questions": [],
+      "templates": [
+        "I've got ...",
+        "Have you got ...?",
+        "Yes, I have.",
+        "No, I haven't."
+      ],
+      "phonics": [],
+      "requires_official_audio": true,
+      "note": "原书P36页脚印刷以上句型及肯否完整回答。I've got与Have you got均带省略号，不是可直接朗读的完整原版句子；不应凭图补出未印刷宾语或冒充听力。"
+    },
+    "44": {
+      "printed_page": 37,
+      "lesson_activity": [
+        "Sing the song."
+      ],
+      "candidate_text": "",
+      "practice_words": [],
+      "read_questions": [],
+      "templates": [],
+      "phonics": [],
+      "requires_official_audio": true,
+      "note": "歌曲怪兽插图没有完整印刷的歌词或原版音频；只能看图教学，不编造歌词和标准评分文本。"
+    },
+    "45": {
+      "printed_page": 38,
+      "lesson_activity": [
+        "Say it with Monty.",
+        "Play the game. Ask and guess."
+      ],
+      "candidate_text": "Have you got a black dog?\nYes, I have.",
+      "practice_words": [],
+      "read_questions": [
+        "Have you got a black dog?"
+      ],
+      "templates": [],
+      "phonics": [
+        "H",
+        "Henry horse"
+      ],
+      "requires_official_audio": true,
+      "note": "原书可见H / Henry horse字母语音线索；游戏示例问答确为印刷文字，可在教师核对后做固定句跟读，其他图片对应的猜物答案不能自动当作官方标准。"
+    },
+    "46": {
+      "printed_page": 39,
+      "lesson_activity": [
+        "Listen to the story.",
+        "Listen and say 'yes' or 'no'."
+      ],
+      "candidate_text": "",
+      "practice_words": [],
+      "read_questions": [],
+      "templates": [],
+      "phonics": [],
+      "requires_official_audio": true,
+      "note": "六格漫画配Listen to the story、yes/no听力指令，但未印完整原版故事对白和听力真假判断答案；不能伪造原音与评分结果。"
+    }
+  }
+}

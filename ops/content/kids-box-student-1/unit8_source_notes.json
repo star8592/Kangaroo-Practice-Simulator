@@ -1,0 +1,105 @@
+{
+  "schema": "kidsbox1-unit8-source-observed-v1",
+  "book_id": "kids-box-student-1",
+  "source_sha256": "67e8ae9405469552379e29e18a1b2058865f12beb99907b3a2d88c5da50ac31d",
+  "verification": "direct_visual_check_of_user_supplied_pdf_pages_53_to_58",
+  "publish_status": "teacher_review_required",
+  "pages": {
+    "53": {
+      "printed_page": 46,
+      "lesson_activity": [
+        "Listen and point.",
+        "Listen, point and repeat."
+      ],
+      "candidate_text": "",
+      "practice_words": [],
+      "read_questions": [],
+      "templates": [],
+      "phonics": [],
+      "requires_official_audio": true,
+      "note": "My clothes单元首页为服装图片，标有T-shirt、skirt、shoes、jacket、socks、trousers等。缺完整印刷人物对白和原声，不能凭插图推测听力答案。"
+    },
+    "54": {
+      "printed_page": 47,
+      "lesson_activity": [
+        "Say the chant.",
+        "Listen and say the number."
+      ],
+      "candidate_text": "jacket\nshoes\nskirt\nsocks\ntrousers\nT-shirt",
+      "practice_words": [
+        "jacket",
+        "shoes",
+        "skirt",
+        "socks",
+        "trousers",
+        "T-shirt"
+      ],
+      "read_questions": [],
+      "templates": [],
+      "phonics": [],
+      "requires_official_audio": true,
+      "note": "六个服饰词依照P47页脚原书顺序；T-shirt大小写和连字符必须保留。chant与编号听力的原音轨缺失，不推断编号结果。"
+    },
+    "55": {
+      "printed_page": 48,
+      "lesson_activity": [
+        "Listen and point.",
+        "Listen, point and repeat."
+      ],
+      "candidate_text": "",
+      "practice_words": [],
+      "read_questions": [],
+      "templates": [
+        "He's / She's got ...",
+        "He / She hasn't got ..."
+      ],
+      "phonics": [],
+      "requires_official_audio": true,
+      "note": "原书页脚印刷的是He’s / She’s got…与He / She hasn’t got…的省略号句型，不是完整原版朗读句；不替换省略号伪造原声对白。"
+    },
+    "56": {
+      "printed_page": 49,
+      "lesson_activity": [
+        "Sing the song."
+      ],
+      "candidate_text": "",
+      "practice_words": [],
+      "read_questions": [],
+      "templates": [],
+      "phonics": [],
+      "requires_official_audio": true,
+      "note": "原书歌唱活动有插画，没有印刷完整官方歌词或原版音轨；不编造歌词及评分答案。"
+    },
+    "57": {
+      "printed_page": 50,
+      "lesson_activity": [
+        "Say it with Monty.",
+        "Ask and answer."
+      ],
+      "candidate_text": "She's got a yellow jacket.\nMeera!",
+      "practice_words": [],
+      "read_questions": [],
+      "templates": [],
+      "phonics": [
+        "D",
+        "Daisy dog"
+      ],
+      "requires_official_audio": true,
+      "note": "字母D / Daisy dog是明确印刷的语音线索。原书说话泡中的服装描述与Meera!为可见固定朗读候选；开放式指人游戏不自动生成官方标准答案。"
+    },
+    "58": {
+      "printed_page": 51,
+      "lesson_activity": [
+        "Listen to the story.",
+        "Listen and say the number."
+      ],
+      "candidate_text": "",
+      "practice_words": [],
+      "read_questions": [],
+      "templates": [],
+      "phonics": [],
+      "requires_official_audio": true,
+      "note": "故事为五幅标号漫画并配听力编号活动，没有印刷完整原版故事对白/编号音轨，不自动编造字幕、音频或标准答案。"
+    }
+  }
+}

@@ -248,13 +248,453 @@ try {
     throw Error("Unit 2 six-panel story falsely assigned script/audio");
   const u2Next=ok(await api(teacher,"GET",
    [...base,"books","kids-box-student-1","pages","21","ocr"]),200,
-   "Future unit not yet reviewed must not invent source notes");
-  if(u2Next.source_note!==null)throw Error("Source notes leaked into next unit");
+   "Next verified unit has separate source note, no cross-unit contamination");
+  if(u2Next.source_note?.unit_number!==3)
+   throw Error("Source note not scoped to the correct reviewed unit");
   const u2Student=await api(students[0],"GET",
    [...base,"books","kids-box-student-1","pages","16","ocr"]);
   if(u2Student.code!==403&&u2Student.code!==503)
    throw Error("Student exposed unit 2 private teacher evidence");
   console.log("R61_UNIT2_SOURCE_BACKED_E2E_PASS pages=15-20 six_words=6 audio_not_fabricated=YES");
+
+  // R62 data-only source upgrade: the unchanged R61 book router must read new
+  // Unit 3 notes only when provided as verified private book metadata.
+  const u3Opening=ok(await api(teacher,"GET",
+    [...base,"books","kids-box-student-1","pages","21","ocr"]),200,
+    "Unit 3 opening picture does not generate guessed dialogue");
+  if(u3Opening.source_note?.unit_number!==3||
+     u3Opening.source_note?.candidate_text!=="")
+    throw Error("Unit 3 invented dialogue for picture-only page");
+  const u3Words=ok(await api(teacher,"GET",
+    [...base,"books","kids-box-student-1","pages","22","ocr"]),200,
+    "Teacher sees 10 exact toy/colour words from printed book page 15");
+  if(JSON.stringify(u3Words.source_note?.practice_words)!==
+     JSON.stringify(["ball","bike","black","brown","car","computer",
+                     "doll","grey","train","white"])||
+     u3Words.student_scoring_ready!==false||
+     u3Words.review_status!=="unverified_ocr_draft")
+    throw Error("Unit 3 P15 list or unverified status changed");
+  const u3Prepositions=ok(await api(teacher,"GET",
+    [...base,"books","kids-box-student-1","pages","23","ocr"]),200,
+    "Teacher sees four printed position words and phrase");
+  if(JSON.stringify(u3Prepositions.source_note?.practice_words)!==
+     JSON.stringify(["in","on","under","next to"]))
+    throw Error("Unit 3 P16 position words differ from scan");
+  const u3Dialogue=ok(await api(teacher,"GET",
+    [...base,"books","kids-box-student-1","pages","24","ocr"]),200,
+    "Teacher sees actual position question and answer");
+  if(!u3Dialogue.source_note?.candidate_text.includes("Is Monty under the chair?")||
+     !u3Dialogue.source_note?.candidate_text.includes("No, he isn't."))
+    throw Error("Unit 3 P17 printed dialogue missing");
+  const u3Phonics=ok(await api(teacher,"GET",
+    [...base,"books","kids-box-student-1","pages","25","ocr"]),200,
+    "Teacher sees T/Tommy tortoise as only phonics clue");
+  if(!u3Phonics.source_note?.phonics.includes("Tommy tortoise"))
+    throw Error("Unit 3 P18 phonics source mismatch");
+  const u3Story=ok(await api(teacher,"GET",
+    [...base,"books","kids-box-student-1","pages","26","ocr"]),200,
+    "Unit 3 six-panel comic has no invented original audio or script");
+  if(u3Story.source_note?.candidate_text!==""||
+     u3Story.source_note?.requires_official_audio!==true)
+    throw Error("Unit 3 fictional story audio/text leak");
+  // R63: the same private R61 book API reads Unit 4 verified source notes.
+  const u4Opening=ok(await api(teacher,"GET",
+    [...base,"books","kids-box-student-1","pages","27","ocr"]),200,
+    "Unit 4 opening artwork has no invented dialogue");
+  if(u4Opening.source_note?.unit_number!==4||
+     u4Opening.source_note?.candidate_text!=="")
+    throw Error("Unit 4 picture-only page invented dialogue");
+  const u4Family=ok(await api(teacher,"GET",
+    [...base,"books","kids-box-student-1","pages","28","ocr"]),200,
+    "Teacher sees six printed Unit 4 family words");
+  if(JSON.stringify(u4Family.source_note?.practice_words)!==
+     JSON.stringify(["mother","father","brother","sister","grandmother","grandfather"])||
+     u4Family.review_status!=="unverified_ocr_draft"||
+     u4Family.student_scoring_ready!==false)
+    throw Error("Unit 4 family words or unverified state mismatch");
+  const u4Adj=ok(await api(teacher,"GET",
+    [...base,"books","kids-box-student-1","pages","29","ocr"]),200,
+    "Teacher sees six printed Unit 4 adjectives");
+  if(JSON.stringify(u4Adj.source_note?.practice_words)!==
+     JSON.stringify(["old","young","ugly","beautiful","happy","sad"]))
+    throw Error("Unit 4 printed adjectives mismatch");
+  const u4Song=ok(await api(teacher,"GET",
+    [...base,"books","kids-box-student-1","pages","30","ocr"]),200,
+    "Unit 4 song has no fabricated original lyrics");
+  if(u4Song.source_note?.candidate_text!==""||
+     u4Song.source_note?.requires_official_audio!==true)
+    throw Error("Unit 4 fake song transcript");
+  const u4Bertie=ok(await api(teacher,"GET",
+    [...base,"books","kids-box-student-1","pages","31","ocr"]),200,
+    "Teacher sees printed B Bertie bat and fixed correction dialogue");
+  if(!u4Bertie.source_note?.phonics.includes("Bertie bat")||
+     !u4Bertie.source_note?.candidate_text.includes("She's beautiful.")||
+     !u4Bertie.source_note?.candidate_text.includes("No, she isn't. She's ugly."))
+    throw Error("Unit 4 phonics or printed correction dialogue missing");
+  const u4Story=ok(await api(teacher,"GET",
+    [...base,"books","kids-box-student-1","pages","32","ocr"]),200,
+    "Unit 4 six-panel story has no fabricated spoken lines");
+  if(u4Story.source_note?.candidate_text!==""||
+     u4Story.source_note?.requires_official_audio!==true)
+    throw Error("Unit 4 fabricated story audio/transcript");
+  // R64: Unit 5 verified private source, same unchanged router and safety boundary.
+  const u5Opening=ok(await api(teacher,"GET",
+    [...base,"books","kids-box-student-1","pages","35","ocr"]),200,
+    "Unit 5 opening picture does not invent pet conversation");
+  if(u5Opening.source_note?.unit_number!==5||
+     u5Opening.source_note?.candidate_text!=="")
+    throw Error("Unit 5 opening image falsely assigned dialogue");
+  const u5Pets=ok(await api(teacher,"GET",
+    [...base,"books","kids-box-student-1","pages","36","ocr"]),200,
+    "Teacher sees six pets from printed Unit 5 page 29");
+  if(JSON.stringify(u5Pets.source_note?.practice_words)!==
+     JSON.stringify(["bird","cat","dog","fish","horse","mouse"])||
+     u5Pets.review_status!=="unverified_ocr_draft"||
+     u5Pets.student_scoring_ready!==false)
+    throw Error("Unit 5 pet words or unverified review state mismatch");
+  const u5Adjectives=ok(await api(teacher,"GET",
+    [...base,"books","kids-box-student-1","pages","37","ocr"]),200,
+    "Teacher sees six printed pet adjectives");
+  if(JSON.stringify(u5Adjectives.source_note?.practice_words)!==
+     JSON.stringify(["big","small","long","short","clean","dirty"]))
+    throw Error("Unit 5 adjective words not source faithful");
+  const u5Song=ok(await api(teacher,"GET",
+    [...base,"books","kids-box-student-1","pages","38","ocr"]),200,
+    "Unit 5 song and action page does not invent lyrics");
+  if(u5Song.source_note?.candidate_text!==""||
+     u5Song.source_note?.requires_official_audio!==true)
+    throw Error("Unit 5 song invented transcript");
+  const u5Penny=ok(await api(teacher,"GET",
+    [...base,"books","kids-box-student-1","pages","39","ocr"]),200,
+    "Teacher sees Penny penguin and printed guess-game examples");
+  if(!u5Penny.source_note?.phonics.includes("Penny penguin")||
+     !u5Penny.source_note?.candidate_text.includes("It's beautiful and orange.")||
+     !u5Penny.source_note?.candidate_text.includes("Number two. The fish."))
+    throw Error("Unit 5 P phonics or printed guessing lines missing");
+  const u5Story=ok(await api(teacher,"GET",
+    [...base,"books","kids-box-student-1","pages","40","ocr"]),200,
+    "Unit 5 six-panel story has no fictional original dialogue");
+  if(u5Story.source_note?.candidate_text!==""||
+     u5Story.source_note?.requires_official_audio!==true)
+    throw Error("Unit 5 fake story audio/text");
+  // R65: Unit 6 original scanned page evidence, including the difference
+  // between an incomplete grammar template and a printed fixed dialogue.
+  const u6Open=ok(await api(teacher,"GET",
+    [...base,"books","kids-box-student-1","pages","41","ocr"]),200,
+    "Unit 6 picture labels do not invent a recorded dialogue");
+  if(u6Open.source_note?.unit_number!==6||
+     u6Open.source_note?.candidate_text!=="")
+    throw Error("Unit 6 face illustration misreported as original speech");
+  const u6Parts=ok(await api(teacher,"GET",
+    [...base,"books","kids-box-student-1","pages","42","ocr"]),200,
+    "Teacher sees six original Unit 6 face words");
+  if(JSON.stringify(u6Parts.source_note?.practice_words)!==
+     JSON.stringify(["face","ears","eyes","mouth","nose","teeth"])||
+     u6Parts.review_status!=="unverified_ocr_draft"||
+     u6Parts.student_scoring_ready!==false)
+    throw Error("Unit 6 printed word order or teacher-review guard mismatch");
+  const u6Grammar=ok(await api(teacher,"GET",
+    [...base,"books","kids-box-student-1","pages","43","ocr"]),200,
+    "Incomplete have-got templates do not become invented full answers");
+  if(!u6Grammar.source_note?.templates.includes("I've got ...")||
+     !u6Grammar.source_note?.templates.includes("Have you got ...?")||
+     !u6Grammar.source_note?.candidate_text.includes("No, I haven't."))
+    throw Error("Unit 6 source-printed templates or fixed replies missing");
+  const u6Song=ok(await api(teacher,"GET",
+    [...base,"books","kids-box-student-1","pages","44","ocr"]),200,
+    "Unit 6 monster song has no invented original lyrics");
+  if(u6Song.source_note?.candidate_text!==""||
+     u6Song.source_note?.requires_official_audio!==true)
+    throw Error("Unit 6 fake song audio/transcript");
+  const u6Henry=ok(await api(teacher,"GET",
+    [...base,"books","kids-box-student-1","pages","45","ocr"]),200,
+    "H Henry horse and exact fixed original question are preserved");
+  if(!u6Henry.source_note?.phonics.includes("Henry horse")||
+     !u6Henry.source_note?.read_questions.includes("Have you got a black dog?")||
+     !u6Henry.source_note?.candidate_text.includes("Yes, I have."))
+    throw Error("Unit 6 phonics or printed dialogue mismatch");
+  const u6Story=ok(await api(teacher,"GET",
+    [...base,"books","kids-box-student-1","pages","46","ocr"]),200,
+    "Unit 6 story and yes/no activity lack invented original answers");
+  if(u6Story.source_note?.candidate_text!==""||
+     u6Story.source_note?.requires_official_audio!==true)
+    throw Error("Unit 6 story audio/yes-no answers fabricated");
+  // R66: Unit 7 teacher-only wild-animal source, without guessing scripts.
+  const u7Open=ok(await api(teacher,"GET",
+    [...base,"books","kids-box-student-1","pages","47","ocr"]),200,
+    "Unit 7 opening picture has no fabricated dialogue");
+  if(u7Open.source_note?.unit_number!==7||
+     u7Open.source_note?.candidate_text!=="")
+    throw Error("Unit 7 picture-only page falsely assigned speech");
+  const u7Animals=ok(await api(teacher,"GET",
+    [...base,"books","kids-box-student-1","pages","48","ocr"]),200,
+    "Teacher sees seven source-printed wild animal names");
+  if(JSON.stringify(u7Animals.source_note?.practice_words)!==
+     JSON.stringify(["crocodile","elephant","giraffe","hippo","monkey","snake","tiger"])||
+     u7Animals.review_status!=="unverified_ocr_draft"||
+     u7Animals.student_scoring_ready!==false)
+    throw Error("Unit 7 wild-animal word order or teacher review guard mismatch");
+  const u7Body=ok(await api(teacher,"GET",
+    [...base,"books","kids-box-student-1","pages","49","ocr"]),200,
+    "Teacher sees foot and feet as distinct body vocabulary");
+  if(JSON.stringify(u7Body.source_note?.practice_words)!==
+     JSON.stringify(["arm","foot","feet","hand","leg","tail"])||
+     !u7Body.source_note?.templates.includes("They've got ...")||
+     !u7Body.source_note?.templates.includes("They haven't got ..."))
+    throw Error("Unit 7 body word list or printed plural templates mismatch");
+  const u7Song=ok(await api(teacher,"GET",
+    [...base,"books","kids-box-student-1","pages","50","ocr"]),200,
+    "Unit 7 illustrated song does not invent original lyrics");
+  if(u7Song.source_note?.candidate_text!==""||
+     u7Song.source_note?.requires_official_audio!==true)
+    throw Error("Unit 7 fake song transcript");
+  const u7Cassandra=ok(await api(teacher,"GET",
+    [...base,"books","kids-box-student-1","pages","51","ocr"]),200,
+    "Cassandra cat and original animal question preserved");
+  if(!u7Cassandra.source_note?.phonics.includes("Cassandra cat")||
+     !u7Cassandra.source_note?.read_questions.includes("Have they got long noses?")||
+     !u7Cassandra.source_note?.candidate_text.includes("Yes."))
+    throw Error("Unit 7 phonics or printed answer mismatch");
+  const u7Story=ok(await api(teacher,"GET",
+    [...base,"books","kids-box-student-1","pages","52","ocr"]),200,
+    "Unit 7 illustrated story contains no fabricated dialogue");
+  if(u7Story.source_note?.candidate_text!==""||
+     u7Story.source_note?.requires_official_audio!==true)
+    throw Error("Unit 7 invented comic script or audio");
+  // R67: Unit 8 printed clothes, unfilled grammar templates and privacy.
+  const u8Opening=ok(await api(teacher,"GET",
+    [...base,"books","kids-box-student-1","pages","53","ocr"]),200,
+    "Unit 8 picture labels do not become invented spoken dialogue");
+  if(u8Opening.source_note?.unit_number!==8||
+     u8Opening.source_note?.candidate_text!=="")
+    throw Error("Unit 8 opening labels reported as recorded dialogue");
+  const u8Clothes=ok(await api(teacher,"GET",
+    [...base,"books","kids-box-student-1","pages","54","ocr"]),200,
+    "Teacher sees exact Unit 8 printed clothing word order");
+  if(JSON.stringify(u8Clothes.source_note?.practice_words)!==
+     JSON.stringify(["jacket","shoes","skirt","socks","trousers","T-shirt"])||
+     u8Clothes.review_status!=="unverified_ocr_draft"||
+     u8Clothes.student_scoring_ready!==false)
+    throw Error("Unit 8 word list or teacher-review requirement mismatch");
+  const u8Grammar=ok(await api(teacher,"GET",
+    [...base,"books","kids-box-student-1","pages","55","ocr"]),200,
+    "Teacher sees incomplete he/she clothing grammar templates only");
+  if(u8Grammar.source_note?.candidate_text!==""||
+     !u8Grammar.source_note?.templates.includes("He's / She's got ...")||
+     !u8Grammar.source_note?.templates.includes("He / She hasn't got ..."))
+    throw Error("Unit 8 templates incorrectly converted into full original speech");
+  const u8Song=ok(await api(teacher,"GET",
+    [...base,"books","kids-box-student-1","pages","56","ocr"]),200,
+    "Unit 8 song does not generate invented original lyrics");
+  if(u8Song.source_note?.candidate_text!==""||
+     u8Song.source_note?.requires_official_audio!==true)
+    throw Error("Unit 8 fabricated song transcript");
+  const u8Daisy=ok(await api(teacher,"GET",
+    [...base,"books","kids-box-student-1","pages","57","ocr"]),200,
+    "Daisy dog and printed clothing guess are preserved");
+  if(!u8Daisy.source_note?.phonics.includes("Daisy dog")||
+     !u8Daisy.source_note?.candidate_text.includes("She's got a yellow jacket.")||
+     !u8Daisy.source_note?.candidate_text.includes("Meera!"))
+    throw Error("Unit 8 printed phonics or fixed game lines mismatch");
+  const u8Story=ok(await api(teacher,"GET",
+    [...base,"books","kids-box-student-1","pages","58","ocr"]),200,
+    "Unit 8 story has no invented original dialogues or numbering answers");
+  if(u8Story.source_note?.candidate_text!==""||
+     u8Story.source_note?.requires_official_audio!==true)
+    throw Error("Unit 8 fabricated comic audio or answer");
+  const studentUnit8=await api(students[0],"GET",
+    [...base,"books","kids-box-student-1","pages","54","ocr"]);
+  if(studentUnit8.code!==403&&studentUnit8.code!==503)
+    throw Error("Student accessed Unit 8 private source evidence");
+  console.log("R67_UNIT8_PRIVATE_SOURCE_E2E_PASS pages=53-58 clothes=6 grammar_templates=2 no_fake_story=YES");
+  // R68-R71: source-scoped Unit 9-12; grammar placeholders are not invented
+  // original recorded sentences, and picture-only content stays non-scoring.
+  const u9Activities=ok(await api(teacher,"GET",
+    [...base,"books","kids-box-student-1","pages","62","ocr"]),200,
+    "Unit 9 teacher sees seven source-derived full activity phrases");
+  if(JSON.stringify(u9Activities.source_note?.practice_words)!==
+     JSON.stringify(["play football","play basketball","play tennis","play the guitar","play the piano","swim","ride a bike"])||
+     u9Activities.review_status!=="unverified_ocr_draft"||
+     u9Activities.student_scoring_ready!==false)
+    throw Error("Unit 9 activity phrases not in exact source-backed order");
+  const u9Can=ok(await api(teacher,"GET",
+    [...base,"books","kids-box-student-1","pages","63","ocr"]),200,
+    "Unit 9 fixed can/can't examples retained");
+  if(!u9Can.source_note?.practice_words.includes("can't")||
+     !u9Can.source_note?.candidate_text.includes("I can't sing.")||
+     !u9Can.source_note?.candidate_text.includes("She can ride a horse."))
+    throw Error("Unit 9 fixed printed can/can't wording mismatch");
+  const u9Answer=ok(await api(teacher,"GET",
+    [...base,"books","kids-box-student-1","pages","65","ocr"]),200,
+    "Unit 9 Freddy frog and printed can-you question answers");
+  if(!u9Answer.source_note?.phonics.includes("Freddy frog")||
+     !u9Answer.source_note?.candidate_text.includes("No, I can't."))
+    throw Error("Unit 9 P58 question and phonics missing");
+  const u9Story=ok(await api(teacher,"GET",
+    [...base,"books","kids-box-student-1","pages","66","ocr"]),200,
+    "Unit 9 six-panel story has no invented original script");
+  if(u9Story.source_note?.candidate_text!==""||
+     u9Story.source_note?.requires_official_audio!==true)
+    throw Error("Unit 9 invented story text");
+
+  const u10Transport=ok(await api(teacher,"GET",
+    [...base,"books","kids-box-student-1","pages","68","ocr"]),200,
+    "Unit 10 original transport names preserved");
+  if(JSON.stringify(u10Transport.source_note?.practice_words)!==
+     JSON.stringify(["boat","bus","helicopter","lorry","motorbike","plane"])||
+     u10Transport.student_scoring_ready!==false)
+    throw Error("Unit 10 vehicle word order/review state mismatch");
+  const u10Doing=ok(await api(teacher,"GET",
+    [...base,"books","kids-box-student-1","pages","69","ocr"]),200,
+    "Unit 10 literal dialogue distinct from slash-separated grammar");
+  if(!u10Doing.source_note?.candidate_text.includes("I'm flying my plane.")||
+     !u10Doing.source_note?.templates.includes("I'm flying / driving / riding / walking."))
+    throw Error("Unit 10 fixed dialogue vs template mismatch");
+  const u10Nancy=ok(await api(teacher,"GET",
+    [...base,"books","kids-box-student-1","pages","71","ocr"]),200,
+    "Unit 10 N Nancy night owl fixed correction examples");
+  if(!u10Nancy.source_note?.phonics.includes("Nancy night owl")||
+     !u10Nancy.source_note?.candidate_text.includes("No, I'm walking."))
+    throw Error("Unit 10 original correction example missing");
+  const u10Story=ok(await api(teacher,"GET",
+    [...base,"books","kids-box-student-1","pages","72","ocr"]),200,
+    "Unit 10 untranscribed story is not a scoring target");
+  if(u10Story.source_note?.candidate_text!=="")
+    throw Error("Unit 10 invented story dialogue");
+
+  const u11Rooms=ok(await api(teacher,"GET",
+    [...base,"books","kids-box-student-1","pages","74","ocr"]),200,
+    "Unit 11 six original room names and Monty correction example");
+  if(JSON.stringify(u11Rooms.source_note?.practice_words)!==
+     JSON.stringify(["bathroom","bedroom","dining room","hall","kitchen","living room"])||
+     !u11Rooms.source_note?.candidate_text.includes("No, Monty's in the bedroom."))
+    throw Error("Unit 11 room names or original correction wording mismatch");
+  const u11Doing=ok(await api(teacher,"GET",
+    [...base,"books","kids-box-student-1","pages","75","ocr"]),200,
+    "Unit 11 complete Simon sentence and incomplete he/she grammar frame");
+  if(!u11Doing.source_note?.candidate_text.includes("He's drawing a picture.")||
+     !u11Doing.source_note?.templates.includes("He's / She's ...ing."))
+    throw Error("Unit 11 printed grammar source mismatch");
+  const u11Stella=ok(await api(teacher,"GET",
+    [...base,"books","kids-box-student-1","pages","76","ocr"]),200,
+    "Unit 11 original Stella reading example visible independently of song");
+  if(!u11Stella.source_note?.candidate_text.includes("She's reading a book."))
+    throw Error("Unit 11 fixed answer missing");
+  const u11Gertie=ok(await api(teacher,"GET",
+    [...base,"books","kids-box-student-1","pages","77","ocr"]),200,
+    "Unit 11 G Gertie goat and actual example speech");
+  if(!u11Gertie.source_note?.phonics.includes("Gertie goat")||
+     !u11Gertie.source_note?.candidate_text.includes("They're eating fish."))
+    throw Error("Unit 11 printed speech missing");
+  const u11Story=ok(await api(teacher,"GET",
+    [...base,"books","kids-box-student-1","pages","78","ocr"]),200,
+    "Unit 11 story missing official audio stays blank");
+  if(u11Story.source_note?.candidate_text!=="")
+    throw Error("Unit 11 guessed comic script");
+
+  const u12Food=ok(await api(teacher,"GET",
+    [...base,"books","kids-box-student-1","pages","80","ocr"]),200,
+    "Unit 12 seven food entries preserve ice cream as a phrase");
+  if(JSON.stringify(u12Food.source_note?.practice_words)!==
+     JSON.stringify(["apple","banana","burger","cake","chocolate","ice cream","orange"])||
+     u12Food.student_scoring_ready!==false)
+    throw Error("Unit 12 food sequence or unverified state mismatch");
+  const u12Likes=ok(await api(teacher,"GET",
+    [...base,"books","kids-box-student-1","pages","81","ocr"]),200,
+    "Unit 12 actual printed food dialogue is separate from templates");
+  if(!u12Likes.source_note?.candidate_text.includes("I don't like chocolate.")||
+     !u12Likes.source_note?.templates.includes("Do you like ...?"))
+    throw Error("Unit 12 likes source wording mismatch");
+  const u12Question=ok(await api(teacher,"GET",
+    [...base,"books","kids-box-student-1","pages","82","ocr"]),200,
+    "Unit 12 two printed yes/no preference exchanges");
+  if(!u12Question.source_note?.candidate_text.includes("Do you like apples?")||
+     !u12Question.source_note?.candidate_text.includes("No, I don't."))
+    throw Error("Unit 12 printed yes/no dialogues not preserved");
+  const u12Pictograms=ok(await api(teacher,"GET",
+    [...base,"books","kids-box-student-1","pages","83","ocr"]),200,
+    "Unit 12 pictogram-reading activity does not fake source transcript");
+  if(u12Pictograms.source_note?.candidate_text!==""||
+     !u12Pictograms.source_note?.phonics.includes("Larry llama"))
+    throw Error("Unit 12 pictograms misreported as complete original sentences");
+  const u12Story=ok(await api(teacher,"GET",
+    [...base,"books","kids-box-student-1","pages","84","ocr"]),200,
+    "Unit 12 six-panel story without invented original speech");
+  if(u12Story.source_note?.candidate_text!=="")
+    throw Error("Unit 12 invented story dialogue");
+  const studentUnit12=await api(students[0],"GET",
+    [...base,"books","kids-box-student-1","pages","80","ocr"]);
+  if(studentUnit12.code!==403&&studentUnit12.code!==503)
+    throw Error("Student accessed Unit 12 private teacher evidence");
+  console.log("R68_R71_UNITS9_12_SOURCE_E2E_PASS pages=61-84 source_phrases=verified review_required=YES stories_fabricated=NO");
+  // R72: all supplementary sections now use the same private source-note
+  // reader; they do NOT contain guessed OCR scoring targets.
+  for(const [page,sectionId,activity] of [
+    [33,"review-01","Listen and say the number."],
+    [34,"review-01","Make your spinner."],
+    [59,"review-02","Listen and say the number."],
+    [60,"review-02","Make books."],
+    [85,"review-03","Listen and say the number."],
+    [86,"review-03","Make a poster."],
+    [87,"word-list","Word list."],
+    [88,"word-list","Word list."],
+    [89,"word-list","Word list."],
+    [90,"word-list","Word list."],
+    [91,"word-list","Word list."],
+    [92,"word-list","Names."]
+  ] as Array<[number,string,string]>){
+    const draft=ok(await api(teacher,"GET",
+      [...base,"books","kids-box-student-1","pages",String(page),"ocr"]),200,
+      "Teacher reads private supplementary source note "+page);
+    if(draft.source_note?.section_id!==sectionId||
+       draft.source_note?.unit_number!==null||
+       !draft.source_note?.lesson_activity.includes(activity)||
+       draft.source_note?.candidate_text!==""||
+       draft.source_note?.practice_words.length!==0||
+       draft.review_status!=="unverified_ocr_draft"||
+       draft.student_scoring_ready!==false)
+      throw Error("Supplementary page "+page+" fabricated or not source-bound");
+  }
+  for(const page of [8,93,94]){
+    const other=ok(await api(teacher,"GET",
+      [...base,"books","kids-box-student-1","pages",String(page),"ocr"]),200,
+      "Front/back non-teaching page stays without fake source note "+page);
+    if(other.source_note!==null)
+      throw Error("Source note leaked to cover/front/back page "+page);
+  }
+  for(const page of [33,59,85,87,92]){
+    const child=await api(students[0],"GET",
+      [...base,"books","kids-box-student-1","pages",String(page),"ocr"]);
+    if(child.code!==403&&child.code!==503)
+      throw Error("Student accessed teacher private supplement page "+page);
+  }
+  console.log("R72_PRIVATE_SUPPLEMENTARY_E2E_PASS reviews=6 glossary=6 student=denied source_audio_fabricated=NO");
+  const studentUnit7=await api(students[0],"GET",
+    [...base,"books","kids-box-student-1","pages","48","ocr"]);
+  if(studentUnit7.code!==403&&studentUnit7.code!==503)
+    throw Error("Student accessed private Unit 7 teacher evidence");
+  console.log("R66_UNIT7_PRIVATE_SOURCE_E2E_PASS pages=47-52 animals=7 body=6 no_fake_story=YES");
+  const studentUnit6=await api(students[0],"GET",
+    [...base,"books","kids-box-student-1","pages","42","ocr"]);
+  if(studentUnit6.code!==403&&studentUnit6.code!==503)
+    throw Error("Student accessed private Unit 6 face words");
+  console.log("R65_UNIT6_PRIVATE_SOURCE_E2E_PASS pages=41-46 parts=6 fixed_dialogue=YES no_fake_story=YES");
+  const studentUnit5=await api(students[0],"GET",
+    [...base,"books","kids-box-student-1","pages","36","ocr"]);
+  if(studentUnit5.code!==403&&studentUnit5.code!==503)
+    throw Error("Student accessed teacher-only Unit 5 notes");
+  console.log("R64_UNIT5_PRIVATE_SOURCE_E2E_PASS pages=35-40 pets=6 adjectives=6 no_fake_story=YES");
+  const studentUnit4=await api(students[0],"GET",
+    [...base,"books","kids-box-student-1","pages","28","ocr"]);
+  if(studentUnit4.code!==403&&studentUnit4.code!==503)
+    throw Error("Student exposed Unit 4 private teacher notes");
+  console.log("R63_UNIT4_PRIVATE_SOURCE_E2E_PASS pages=27-32 family=6 adjectives=6 no_fake_story=YES");
+  const studentUnit3=await api(students[0],"GET",
+    [...base,"books","kids-box-student-1","pages","22","ocr"]);
+  if(studentUnit3.code!==403&&studentUnit3.code!==503)
+    throw Error("Student exposed Unit 3 private teacher metadata");
+  console.log("R62_UNIT3_PRIVATE_SOURCE_E2E_PASS pages=21-26 toy_words=10 positions=4 no_fake_story=YES");
+
 
 
   const rawTeacherReview="Hello, I'm a teacher. What is your name?";
