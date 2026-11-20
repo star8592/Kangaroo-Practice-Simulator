@@ -1,0 +1,114 @@
+{
+  "schema": "kidsbox1-unit2-source-observed-v1",
+  "book_id": "kids-box-student-1",
+  "source_sha256": "67e8ae9405469552379e29e18a1b2058865f12beb99907b3a2d88c5da50ac31d",
+  "verification": "direct_visual_check_of_user_supplied_pdf_pages_15_to_20",
+  "publish_status": "teacher_review_required",
+  "pages": {
+    "15": {
+      "printed_page": 8,
+      "lesson_activity": [
+        "Listen and point.",
+        "Listen, point and repeat."
+      ],
+      "candidate_text": "",
+      "practice_words": [],
+      "read_questions": [],
+      "templates": [],
+      "phonics": [],
+      "requires_official_audio": true,
+      "note": "课本第8页主要是 My school 单元开头的插图、听力和跟读提示；原扫描页没有可靠的完整台词或单词清单，不从插图推断评分文本。"
+    },
+    "16": {
+      "printed_page": 9,
+      "lesson_activity": [
+        "Say the chant.",
+        "Listen and correct."
+      ],
+      "candidate_text": "book\nchair\neraser\npen\npencil\ntable\nFour purple chairs.\nNo. Six orange chairs.",
+      "practice_words": [
+        "book",
+        "chair",
+        "eraser",
+        "pen",
+        "pencil",
+        "table"
+      ],
+      "read_questions": [],
+      "templates": [],
+      "phonics": [],
+      "requires_official_audio": true,
+      "note": "六个文具/教室物品词按原书第9页页脚顺序录入；上面两句是课本对话气泡的可见文字，仅可在老师核对后做朗读/对话练习，不代表已经取得听力或 chant 原声。"
+    },
+    "17": {
+      "printed_page": 10,
+      "lesson_activity": [
+        "Listen and point.",
+        "Listen, point and repeat."
+      ],
+      "candidate_text": "Who's that?",
+      "practice_words": [],
+      "read_questions": [
+        "Who's that?"
+      ],
+      "templates": [
+        "He's ...",
+        "She's ..."
+      ],
+      "phonics": [],
+      "requires_official_audio": true,
+      "note": "页脚是 Who's that? / He's ... / She's ...。后两句未补全，不可直接当作固定朗读答案；Who's that? 很短，现有课堂句子接口可能不接受，需要老师选择适当练习形式。"
+    },
+    "18": {
+      "printed_page": 11,
+      "lesson_activity": [
+        "Make the puppets.",
+        "Sing the song."
+      ],
+      "candidate_text": "How are you?\nI'm fine, thank you.",
+      "practice_words": [],
+      "read_questions": [
+        "How are you?"
+      ],
+      "templates": [],
+      "phonics": [],
+      "requires_official_audio": true,
+      "note": "两句英文来自原书第11页页脚，可作为教师确认后的固定句子朗读；制作手偶是动手活动，唱歌需要未提供的教材原音频和歌词。"
+    },
+    "19": {
+      "printed_page": 12,
+      "lesson_activity": [
+        "Say it with Monty.",
+        "Ask and answer."
+      ],
+      "candidate_text": "monkey\nWhat colour is the bag?\nPink.",
+      "practice_words": [
+        "monkey"
+      ],
+      "read_questions": [
+        "What colour is the bag?"
+      ],
+      "templates": [],
+      "phonics": [
+        "M",
+        "Michael monkey"
+      ],
+      "requires_official_audio": true,
+      "note": "原书印有 M / Michael monkey、问句 What colour is the bag? 和回答 Pink.。monkey 从拼读短语拆出供词汇练习。问答内容评分与单句朗读不是一回事，不能用朗读分替代口语问答分。"
+    },
+    "20": {
+      "printed_page": 13,
+      "lesson_activity": [
+        "Listen to the story.",
+        "Act out the story."
+      ],
+      "candidate_text": "",
+      "practice_words": [],
+      "read_questions": [],
+      "templates": [],
+      "phonics": [],
+      "requires_official_audio": true,
+      "note": "第13页六格故事漫画有物品图片及 Activity Book、ERASER 等图中文字，但没有完整的原版人物对话稿；不能凭画面生成官方故事听力或角色标准台词。"
+    }
+  }
+}

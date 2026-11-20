@@ -37,29 +37,43 @@ type TeacherSourceNote={
  requires_official_audio:boolean;
  note:string;
 };
-async function unit1SourceNote(p:number):Promise<TeacherSourceNote|null>{
- if(p<9||p>14)return null;
+/** A book's lesson hints live outside Next public assets.
+ * Manifest unit ranges are the only authority for file selection, so adding
+ * a future textbook unit requires reviewed private metadata, not new routes.
+ */
+async function reviewedSourceNote(book:BookManifest,p:number):Promise<
+ (TeacherSourceNote&{unit_number:number})|null>{
+ const section=book.sections.find(s=>s.unit_number!==null&&
+   p>=s.start_pdf_page&&p<=s.end_pdf_page);
+ if(!section)return null;
+ const unit=section.unit_number;
+ if(unit===null||!Number.isInteger(unit)||unit<1||unit>12)return null;
+ const basename="unit"+String(unit)+"_source_notes.json";
  try{
-  const data=JSON.parse(await readFile(path.join(ROOT(),"metadata","unit1_source_notes.json"),"utf8")) as
-   {schema:string;book_id:string;source_sha256:string;publish_status:string;pages:Record<string,TeacherSourceNote>};
-  if(data.schema!=="kidsbox1-unit1-source-observed-v1"||
+  const data=JSON.parse(await readFile(path.join(ROOT(),"metadata",basename),"utf8")) as
+   {schema:string;book_id:string;source_sha256:string;
+    publish_status:string;pages:Record<string,TeacherSourceNote>};
+  if(data.schema!=="kidsbox1-unit"+unit+"-source-observed-v1"||
      data.book_id!==BOOK_ID||data.source_sha256!==SOURCE_SHA||
      data.publish_status!=="teacher_review_required")return null;
   const note=data.pages[String(p)];
   if(!note||note.printed_page!==p-7||
      typeof note.candidate_text!=="string"||note.candidate_text.length>1800||
-     !Array.isArray(note.practice_words)||!Array.isArray(note.read_questions))return null;
-  return note;
+     !Array.isArray(note.practice_words)||!Array.isArray(note.read_questions)||
+     !Array.isArray(note.lesson_activity)||!Array.isArray(note.templates)||
+     !Array.isArray(note.phonics)||typeof note.note!=="string"||
+     note.requires_official_audio!==true)return null;
+  return {...note,unit_number:unit};
  }catch{return null;}
 }
-async function pageDraft(db:PoolClient,tenant:string,cl:string,p:number){
+async function pageDraft(db:PoolClient,tenant:string,cl:string,p:number,book:BookManifest){
  const reviewed=await db.query([
   "SELECT reviewed_text,version,reviewed_at",
   "FROM accent.teacher_book_page_reviews",
   "WHERE tenant_id=$1 AND class_id=$2 AND book_id=$3 AND pdf_page=$4"
  ].join(" "),[tenant,cl,BOOK_ID,p]);
  const saved=reviewed.rows[0];
- const source_note=await unit1SourceNote(p);
+ const source_note=await reviewedSourceNote(book,p);
  try{
   const data=JSON.parse(await readFile(
    path.join(ROOT(),"ocr","page-"+String(p).padStart(3,"0")+".json"),"utf8")) as
@@ -125,7 +139,7 @@ export async function teacherBookHandler(req:NextRequest,p:string[],a:Actor):
    if(!Number.isInteger(page)||page<1||page>94||String(page)!==p[7])
     throw new ClassroomFailure(404,"页码不存在");
    if(p.length===9&&p[8]==="ocr"&&req.method==="GET")
-    return pageDraft(db,tenant,cl,page);
+    return pageDraft(db,tenant,cl,page,book);
    if(p.length===9&&p[8]==="review"&&req.method==="POST"){
     const body=await jsonBody(req,16000);
     const reviewedText=typeof body.text==="string"?body.text.trim():"";
