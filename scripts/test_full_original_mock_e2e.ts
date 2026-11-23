@@ -86,8 +86,11 @@ async function main() {
     );
     const reportHtml = '<!doctype html><html lang="zh"><head><meta charset="UTF-8"></head><body>' + markup + '</body></html>';
     assert.ok(reportHtml.includes("本题完整解析"));
+    assert.ok(reportHtml.includes("逐题状态速览"));
+    assert.ok(reportHtml.includes("未记录"));
+
     assert.ok(reportHtml.includes(questions[0].solution));
-    assert.equal((reportHtml.match(/class="report-page"/g) || []).length, 6+Math.ceil(questions.length/2));
+    assert.equal((reportHtml.match(/class="report-page"/g) || []).length, 7+Math.ceil(questions.length/2));
     const pdfBytes = renderDiagnosticReportPdfFromHtml(reportHtml);
     assert.equal(pdfBytes.subarray(0, 5).toString("utf8"), "%PDF-");
     assert.ok(pdfBytes.length > 10_000, "rendered report PDF must not be empty");

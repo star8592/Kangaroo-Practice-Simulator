@@ -15,7 +15,7 @@ function Bar({name,value,count,extra}:{name:string;value:number;count:number;ext
 
 export default function DiagnosticReportView({report}:{report:DiagnosticReport}){
   const qPages=chunks(report.questions,2);
-  const total=6+qPages.length;
+  const total=7+qPages.length;
   const topFindings=[...report.findings].sort((a,b)=>({priority:0,watch:1,strength:2}[a.kind]-{priority:0,watch:1,strength:2}[b.kind])).slice(0,3);
   let p=1;
   return <div className="diagnostic-report">
@@ -42,6 +42,13 @@ export default function DiagnosticReportView({report}:{report:DiagnosticReport})
       <p className="dr-subtitle">从本次考试的可观察行为，识别需要复盘的时间分配、答案修改和漏答现象；不凭一场考试推断孩子的性格或心理状态。</p>
       <div className="dr-section"><SectionHead title="答题行为信号" desc="只描述可观察行为，不直接贴“粗心/畏难”等标签"/><div className="dr-behavior-grid"><div className="dr-behavior"><span>快速失分</span><strong>{report.behavior.rushedWrong}</strong><small>显著快于个人本卷典型用时的错题</small></div><div className="dr-behavior"><span>耗时失分</span><strong>{report.behavior.stuckWrong}</strong><small>投入较久仍未得分的题</small></div><div className="dr-behavior"><span>答案修改</span><strong>{report.behavior.answerChanges}</strong><small>{report.behavior.wrongToCorrect} 次带来得分 · {report.behavior.correctToWrong} 次导致失分</small></div><div className="dr-behavior"><span>未作答</span><strong>{report.behavior.unanswered}</strong><small>可用于判断时间回收空间</small></div><div className="dr-behavior"><span>正确但偏慢</span><strong>{report.behavior.slowCorrect}</strong><small>会做，但自动化程度仍可提升</small></div><div className="dr-behavior"><span>改答案题数</span><strong>{report.behavior.changedQuestions}</strong><small>观察复查策略是否有效</small></div><div className="dr-behavior"><span>切出考试页</span><strong>{report.behavior.tabAwayCount}</strong><small>仅作为环境数据，不作能力判断</small></div><div className="dr-behavior"><span>平均题时</span><strong>{sec(report.summary.avgQuestionSeconds)}</strong><small>总有效考试时长 / 题量</small></div></div></div>
       <div className="dr-section"><SectionHead title="这些数字如何使用" desc="仅反映这一场考试"/><div className="dr-method-grid"><div className="dr-method"><strong>先核查失分题</strong><p>将快速失分和耗时失分与逐题解析对应，区分知识缺口、解题路径和时间分配。</p></div><div className="dr-method"><strong>避免单次过度解释</strong><p>答题修改、切换页面、用时较长都只是行为记录，不等于粗心、拖延或注意力缺陷。</p></div></div></div>
+    </Page>
+
+    <Page report={report} page={p++} total={total}>
+      <div className="dr-kicker">答题状态总表</div><h1 className="dr-title">逐题表现与知识点索引</h1>
+      <p className="dr-subtitle">按照试卷题序查看考生答题结果、涉及知识点和行为信号。对应的完整题干、选项、答案与解题步骤见后续逐题解析页面。</p>
+      <div className="dr-section"><SectionHead title="逐题状态速览" desc="仅展示真实采集数据；未记录的用时不编造"/><table className="dr-table dr-question-summary"><thead><tr><th>题号</th><th>知识点</th><th>结果</th><th>有效用时</th><th>作答信号</th></tr></thead><tbody>{report.questions.map(q=><tr key={q.questionId}><td className="num">Q{q.no}</td><td>{q.concept}</td><td>{q.result}</td><td>{q.dwellSeconds>0?sec(q.dwellSeconds):"未记录"}</td><td>{q.pattern}</td></tr>)}</tbody></table></div>
+      <div className="dr-section"><div className="dr-note">有效用时仅根据实际采集到的答题事件计算；显示“未记录”不等于未作答。答题结果及知识点来自本场考试快照，不是官方排名。</div></div>
     </Page>
 
     <Page report={report} page={p++} total={total}>

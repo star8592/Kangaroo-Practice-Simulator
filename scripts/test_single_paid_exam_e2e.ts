@@ -93,7 +93,7 @@ async function main() {
     const reportHtml = '<!doctype html><html lang="zh"><head><meta charset="UTF-8"></head><body>' + markup + '</body></html>';
     assert.ok(reportHtml.includes("本题完整解析"));
     assert.ok(reportHtml.includes("2 + 2 = 4"));
-    assert.equal((reportHtml.match(/class="report-page"/g) || []).length, 7);
+    assert.equal((reportHtml.match(/class="report-page"/g) || []).length, 8);
     const pdfBytes = renderDiagnosticReportPdfFromHtml(reportHtml);
     assert.equal(pdfBytes.subarray(0, 5).toString("utf8"), "%PDF-");
     assert.ok(pdfBytes.length > 10_000, "rendered report PDF must not be empty");
