@@ -1,11 +1,11 @@
 import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
-import type { Choice, ExamBundle, GradeResult, Question } from "./types";
+import type { ExamBundle, GradeResult, Choice, Question } from "./types";
 import type { PublicStudent } from "./auth";
+import { ensureUserDataDir, userDataPath } from "./user-data-store";
 
 export type ExamEvent = { type: string; questionId?: string; at: number; value?: string };
-
 export type QuestionReviewSnapshot = {
   stem: string;
   stemEn?: string;
@@ -16,187 +16,166 @@ export type QuestionReviewSnapshot = {
   assetUrlZh?: string;
   assetUrlEn?: string;
 };
-
 export type QuestionBehavior = {
-  questionId: string;
-  questionNo: number;
-  points: number;
-  concept: string;
-  selected: string | null;
-  correctAnswer: string;
-  correct: boolean | null;
-  dwellMs: number;
-  firstAnswerMs: number | null;
-  answerChanges: number;
-  flagCount: number;
-  answerHistory: string[];
-  awayMs: number;
-  tabAwayCount: number;
+  questionId: string; questionNo: number; points: number; concept: string;
+  selected: string | null; correctAnswer: string; correct: boolean | null;
+  dwellMs: number; firstAnswerMs: number | null; answerChanges: number;
+  flagCount: number; answerHistory: string[]; awayMs: number; tabAwayCount: number;
   reviewSnapshot?: QuestionReviewSnapshot;
 };
-
 export type ExamAttemptRecord = {
-  id: string;
-  userId: string;
-  sessionId?: string;
-  candidateNo: string;
-  examId: string;
-  profile: {
-    name: string;
-    country?: string;
-    year?: number;
-    grades: string;
-    questionCount: number;
-    maxScore: number;
-    competitionId?: string;
-    formatId?: string;
-    paperType?: string;
-  };
-  startedAt: number;
-  submittedAt: number;
-  elapsedSeconds: number;
-  grade: GradeResult;
-  questions: QuestionBehavior[];
-  events: ExamEvent[];
+  id: string; sessionId?: string; userId: string; candidateNo: string; examId: string;
+  profile: { name: string; country?: string; year?: number; grades: string; questionCount: number;
+    maxScore: number; competitionId?: string; formatId?: string; paperType?: string };
+  startedAt: number; submittedAt: number; elapsedSeconds: number;
+  grade: GradeResult; questions: QuestionBehavior[]; events: ExamEvent[];
 };
 
-const D = path.join(process.cwd(), "private", "users");
-const F = path.join(D, "exam-attempts.jsonl");
+const FILE = userDataPath("exam-attempts.jsonl");
+const LOCK_DIR = userDataPath(".exam-submit-locks");
+
+function readAll(): ExamAttemptRecord[] {
+  ensureUserDataDir();
+  if (!fs.existsSync(FILE)) return [];
+  return fs.readFileSync(FILE, "utf8").split("\n").filter(Boolean).flatMap(line => {
+    try { return [JSON.parse(line) as ExamAttemptRecord]; } catch { return []; }
+  });
+}
+
+export function withExamSubmitLock<T>(userId: string, examId: string, sessionId: string, fn: () => T): T {
+  if (!userId || !examId || !sessionId) throw new Error("EXAM_SUBMIT_SESSION_REQUIRED");
+  ensureUserDataDir();
+  fs.mkdirSync(LOCK_DIR, { recursive: true });
+  // Preserve the historical submit lock key so old and new graders cannot race.
+  const key = crypto.createHash("sha256").update(JSON.stringify([userId, examId, sessionId])).digest("hex");
+  const directory = path.join(LOCK_DIR, key);
+  try {
+    fs.mkdirSync(directory);
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code !== "EEXIST") throw error;
+    const stale = Date.now() - fs.statSync(directory).mtimeMs > 10 * 60 * 1000;
+    if (!stale) throw new Error("EXAM_SUBMIT_BUSY");
+    fs.rmdirSync(directory);
+    try { fs.mkdirSync(directory); } catch { throw new Error("EXAM_SUBMIT_BUSY"); }
+  }
+  try { return fn(); }
+  finally { fs.rmdirSync(directory); }
+}
+
+function span(events: ExamEvent[], id: string, end: number, types: [string, string]) {
+  const rows = events.filter(e => e.questionId === id && types.includes(e.type) && e.at <= end).sort((a, b) => a.at - b.at);
+  let start: number | null = null, total = 0, count = 0;
+  for (const event of rows) {
+    if (event.type === types[0] && start === null) { start = event.at; count++; }
+    else if (event.type === types[1] && start !== null) { total += Math.max(0, event.at - start); start = null; }
+  }
+  if (start !== null) total += Math.max(0, end - start);
+  return { ms: total, count };
+}
+
 const text = (value: unknown) => typeof value === "string" ? value.trim() : "";
 
-function span(es: ExamEvent[], id: string, end: number, types: [string, string]) {
-  const rows = es
-    .filter(e => e.questionId === id && types.includes(e.type) && e.at <= end)
-    .sort((a, b) => a.at - b.at);
-  let s: number | null = null, t = 0, c = 0;
-  for (const e of rows) {
-    if (e.type === types[0] && s === null) {
-      s = e.at;
-      c++;
-    } else if (e.type === types[1] && s !== null) {
-      t += Math.max(0, e.at - s);
-      s = null;
-    }
-  }
-  if (s !== null) t += Math.max(0, end - s);
-  return { ms: t, count: c };
-}
-
-function reviewSnapshot(q: Question): QuestionReviewSnapshot {
-  const zh = q.localized?.zh;
-  const en = q.localized?.en;
-  const commonVisual = q.studentAssetUrl || q.assetUrl;
+function reviewSnapshot(question: Question): QuestionReviewSnapshot {
+  const zh = question.localized?.zh;
+  const en = question.localized?.en;
+  const commonVisual = question.studentAssetUrl || question.assetUrl;
   return {
-    stem: text(zh?.stem) || text(q.stem) || "请查看下方原题图。",
-    stemEn: text(en?.stem) || text(q.stemEn) || text(q.stem) || "See the problem image below.",
-    choices: zh?.choices?.length ? zh.choices : q.choices,
-    choicesEn: en?.choices?.length ? en.choices : q.choicesEn?.length ? q.choicesEn : q.choices,
-    answerMode: q.answerMode || (q.choices?.length ? "choice" : "integer"),
+    stem: text(zh?.stem) || text(question.stem) || "请查看下方原题图。",
+    stemEn: text(en?.stem) || text(question.stemEn) || text(question.stem) || "See the problem image below.",
+    choices: zh?.choices?.length ? zh.choices : question.choices,
+    choicesEn: en?.choices?.length ? en.choices : question.choicesEn?.length ? question.choicesEn : question.choices,
+    answerMode: question.answerMode || (question.choices?.length ? "choice" : "integer"),
     assetUrl: commonVisual,
-    assetUrlZh: q.studentAssetUrlZh || q.assetUrlZh || commonVisual,
-    assetUrlEn: q.studentAssetUrlEn || q.assetUrlEn || commonVisual,
+    assetUrlZh: question.studentAssetUrlZh || question.assetUrlZh || commonVisual,
+    assetUrlEn: question.studentAssetUrlEn || question.assetUrlEn || commonVisual,
   };
 }
 
-export function appendExamAttempt(a: {
-  user: PublicStudent;
-  sessionId?: string;
-  bundle: ExamBundle;
-  grade: GradeResult;
-  events: ExamEvent[];
-  startedAt: number;
-  submittedAt: number;
-  elapsedSeconds: number;
+export function findExamAttemptBySession(userId: string, sessionId: string): ExamAttemptRecord | null {
+  if (!userId || !sessionId) return null;
+  return readAll().filter(row => row.userId === userId && row.sessionId === sessionId)
+    .sort((a, b) => b.submittedAt - a.submittedAt)[0] ?? null;
+}
+
+/** Compatibility wrapper to ensure the exam ID also matches when reading existing attempts. */
+export function findExamAttemptForSession(userId: string, examId: string, sessionId: string) {
+  const result = findExamAttemptBySession(userId, sessionId);
+  return result?.examId === examId ? result : null;
+}
+
+export function appendExamAttempt(args: {
+  user: PublicStudent; bundle: ExamBundle; grade: GradeResult; events: ExamEvent[];
+  startedAt: number; submittedAt: number; elapsedSeconds: number; sessionId: string;
 }) {
-  const es = a.events.slice(-5000);
-  const by = new Map(a.grade.items.map(x => [x.questionId, x]));
-  const qs = a.bundle.questions.map(q => {
-    const item = by.get(q.id);
-    const sel = es
-      .filter(e => e.questionId === q.id && e.type === "answer_selected" && e.value)
-      .sort((x, y) => x.at - y.at);
-    const hist = sel.map(e => e.value!).filter((v, i, z) => !i || v !== z[i - 1]);
-    const enter = es
-      .filter(e => e.questionId === q.id && e.type === "question_enter")
-      .sort((x, y) => x.at - y.at)[0]?.at;
-    const d = span(es, q.id, a.submittedAt, ["question_enter", "question_leave"]);
-    const away = span(es, q.id, a.submittedAt, ["visibility_hidden", "visibility_visible"]);
+  if (!args.sessionId) throw new Error("EXAM_ATTEMPT_SESSION_REQUIRED");
+  const existing = findExamAttemptBySession(args.user.id, args.sessionId);
+  if (existing) return existing;
+
+  const events = args.events.slice(-5000);
+  const byQuestion = new Map(args.grade.items.map(item => [item.questionId, item]));
+  const questions = args.bundle.questions.map(question => {
+    const item = byQuestion.get(question.id);
+    const selectedEvents = events.filter(event => event.questionId === question.id && event.type === "answer_selected" && event.value)
+      .sort((a, b) => a.at - b.at);
+    const history = selectedEvents.map(event => event.value!).filter((value, index, all) => !index || value !== all[index - 1]);
+    const enteredAt = events.filter(event => event.questionId === question.id && event.type === "question_enter")
+      .sort((a, b) => a.at - b.at)[0]?.at;
+    const dwell = span(events, question.id, args.submittedAt, ["question_enter", "question_leave"]);
+    const away = span(events, question.id, args.submittedAt, ["visibility_hidden", "visibility_visible"]);
     return {
-      questionId: q.id,
-      questionNo: q.questionNo,
-      points: q.points,
-      concept: q.concept,
+      questionId: question.id,
+      questionNo: question.questionNo,
+      points: question.points,
+      concept: question.concept,
       selected: item?.selected ?? null,
-      correctAnswer: item?.correctAnswer ?? q.answer,
+      correctAnswer: item?.correctAnswer ?? question.answer,
       correct: item?.correct ?? null,
-      dwellMs: Math.max(0, d.ms - away.ms),
-      firstAnswerMs: enter && sel[0]
-        ? Math.max(0, sel[0].at - enter - span(es, q.id, sel[0].at, ["visibility_hidden", "visibility_visible"]).ms)
+      dwellMs: Math.max(0, dwell.ms - away.ms),
+      firstAnswerMs: enteredAt && selectedEvents[0]
+        ? Math.max(0, selectedEvents[0].at - enteredAt - span(events, question.id, selectedEvents[0].at, ["visibility_hidden", "visibility_visible"]).ms)
         : null,
-      answerChanges: Math.max(0, hist.length - 1),
-      flagCount: es.filter(e => e.questionId === q.id && e.type === "flagged").length,
-      answerHistory: hist.slice(-10),
+      answerChanges: Math.max(0, history.length - 1),
+      flagCount: events.filter(event => event.questionId === question.id && event.type === "flagged").length,
+      answerHistory: history.slice(-10),
       awayMs: away.ms,
       tabAwayCount: away.count,
-      reviewSnapshot: reviewSnapshot(q),
+      reviewSnapshot: reviewSnapshot(question),
     } as QuestionBehavior;
   });
-  const r: ExamAttemptRecord = {
-    id: `att_${crypto.randomBytes(9).toString("hex")}`,
-    userId: a.user.id,
-    sessionId: a.sessionId,
-    candidateNo: a.user.candidateNo,
-    examId: a.bundle.profile.id,
+
+  const record: ExamAttemptRecord = {
+    id: "att_" + crypto.randomBytes(9).toString("hex"),
+    sessionId: args.sessionId,
+    userId: args.user.id,
+    candidateNo: args.user.candidateNo,
+    examId: args.bundle.profile.id,
     profile: {
-      name: a.bundle.profile.name,
-      country: a.bundle.profile.country,
-      year: a.bundle.profile.year,
-      grades: a.bundle.profile.grades,
-      questionCount: a.bundle.profile.questionCount,
-      maxScore: a.bundle.profile.maxScore,
-      competitionId: a.bundle.profile.competitionId,
-      formatId: a.bundle.profile.formatId,
-      paperType: a.bundle.profile.paperType,
+      name: args.bundle.profile.name,
+      country: args.bundle.profile.country,
+      year: args.bundle.profile.year,
+      grades: args.bundle.profile.grades,
+      questionCount: args.bundle.profile.questionCount,
+      maxScore: args.bundle.profile.maxScore,
+      competitionId: args.bundle.profile.competitionId,
+      formatId: args.bundle.profile.formatId,
+      paperType: args.bundle.profile.paperType,
     },
-    startedAt: a.startedAt,
-    submittedAt: a.submittedAt,
-    elapsedSeconds: a.elapsedSeconds,
-    grade: a.grade,
-    questions: qs,
-    events: es,
+    startedAt: args.startedAt,
+    submittedAt: args.submittedAt,
+    elapsedSeconds: args.elapsedSeconds,
+    grade: args.grade,
+    questions,
+    events,
   };
-  fs.mkdirSync(D, { recursive: true });
-  fs.appendFileSync(F, JSON.stringify(r) + "\n");
-  return r;
+  ensureUserDataDir();
+  fs.appendFileSync(FILE, JSON.stringify(record) + "\n", { mode: 0o600 });
+  return record;
 }
 
-export function loadExamAttempts(uid: string, limit = 300): ExamAttemptRecord[] {
-  if (!fs.existsSync(F)) return [];
-  return fs.readFileSync(F, "utf8").split("\n").filter(Boolean).flatMap(l => {
-    try {
-      const x = JSON.parse(l) as ExamAttemptRecord;
-      return x.userId === uid ? [x] : [];
-    } catch {
-      return [];
-    }
-  }).slice(-limit);
+export function loadExamAttempts(userId: string, limit = 300): ExamAttemptRecord[] {
+  return readAll().filter(row => row.userId === userId).slice(-limit);
 }
 
-export function hasSubmittedQuestion(uid: string, questionId: string) {
-  return loadExamAttempts(uid, 2000).some(a => a.questions.some(q => q.questionId === questionId));
-}
-
-
-/** Find the persisted result for a precisely-owned signed examination session. */
-export function findExamAttemptForSession(uid: string, examId: string, sessionId: string): ExamAttemptRecord | null {
-  if (!uid || !examId || !sessionId || !fs.existsSync(F)) return null;
-  const lines = fs.readFileSync(F, "utf8").split("\n");
-  for (let i = lines.length - 1; i >= 0; i--) {
-    if (!lines[i]) continue;
-    try {
-      const attempt = JSON.parse(lines[i]) as ExamAttemptRecord;
-      if (attempt.userId === uid && attempt.examId === examId && attempt.sessionId === sessionId) return attempt;
-    } catch { /* Corrupted unrelated line must not reveal or shadow another student's result. */ }
-  }
-  return null;
+export function hasSubmittedQuestion(userId: string, questionId: string) {
+  return loadExamAttempts(userId, 2000).some(attempt => attempt.questions.some(question => question.questionId === questionId));
 }
