@@ -9,6 +9,8 @@ export type ExamEvent = { type: string; questionId?: string; at: number; value?:
 export type QuestionReviewSnapshot = {
   stem: string;
   stemEn?: string;
+  /** Immutable scored explanation snapshot. */
+  solution?: string;
   choices: Choice[];
   choicesEn?: Choice[];
   answerMode?: "choice" | "integer";
@@ -85,6 +87,7 @@ function reviewSnapshot(question: Question): QuestionReviewSnapshot {
     choices: zh?.choices?.length ? zh.choices : question.choices,
     choicesEn: en?.choices?.length ? en.choices : question.choicesEn?.length ? question.choicesEn : question.choices,
     answerMode: question.answerMode || (question.choices?.length ? "choice" : "integer"),
+    solution: text(zh?.solution) || text(question.solution),
     assetUrl: commonVisual,
     assetUrlZh: question.studentAssetUrlZh || question.assetUrlZh || commonVisual,
     assetUrlEn: question.studentAssetUrlEn || question.assetUrlEn || commonVisual,

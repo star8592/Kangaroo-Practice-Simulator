@@ -39,7 +39,8 @@ function loadCommercialOriginalBundle(examId: string): ExamBundle | null {
   if (raw.profile.id !== examId ||
     raw.profile.sourceRegistryId !== "user-original-math-simulations" ||
     raw.profile.rightsPolicy?.commercialUse !== true ||
-    raw.profile.rightsPolicy?.publicQuestionDisplay !== true) return null;
+    raw.profile.rightsPolicy?.publicQuestionDisplay !== true ||
+    !raw.questions?.every(q => typeof q.solution === "string" && q.solution.trim().length > 0)) return null;
   const bundle = normalizeBundle(raw);
   if (!["zoumei-style", "huasai-advanced"].includes(bundle.profile.competitionId || "")) return null;
   return bundle;

@@ -82,6 +82,28 @@ async function main() {
     assert.ok(report);
     assert.equal(report?.exam.id,examId);
     assert.equal(report?.questions?.[0]?.stem,"2 + 2 = ?");
+    assert.equal(report?.questions?.[0]?.solution,"2 + 2 = 4");
+    const React = await import("react");
+    const ReactDomServer = await import("react-dom/server");
+    const DiagnosticReportDocument = (await import("../src/components/DiagnosticReportDocument")).default;
+    const { renderDiagnosticReportPdfFromHtml } = await import("../src/lib/diagnostic-report-pdf");
+    const markup = ReactDomServer.renderToStaticMarkup(
+      React.createElement(DiagnosticReportDocument, {report: report!, attemptId: result.attemptId})
+    );
+    const reportHtml = '<!doctype html><html lang="zh"><head><meta charset="UTF-8"></head><body>' + markup + '</body></html>';
+    assert.ok(reportHtml.includes("本题完整解析"));
+    assert.ok(reportHtml.includes("2 + 2 = 4"));
+    assert.equal((reportHtml.match(/class="report-page"/g) || []).length, 7);
+    const pdfBytes = renderDiagnosticReportPdfFromHtml(reportHtml);
+    assert.equal(pdfBytes.subarray(0, 5).toString("utf8"), "%PDF-");
+    assert.ok(pdfBytes.length > 10_000, "rendered report PDF must not be empty");
+    const pdfArtifact = path.join(temp, "diagnostic-report.pdf");
+    fs.writeFileSync(pdfArtifact, pdfBytes);
+    const fixtureEvidence = process.env.SOCTHINK_E2E_REPORT_EVIDENCE;
+    if (fixtureEvidence) {
+      fs.mkdirSync(path.dirname(fixtureEvidence), { recursive: true });
+      fs.copyFileSync(pdfArtifact, fixtureEvidence);
+    }
     assert.equal(loadExamAttempts(user.id).length,1);
     const repeat = await grading.POST(req("/api/grade",token,{
       examId,sessionId:startedValue.session.id,answers:{[examId+"-q1"]:"A"},events:[],

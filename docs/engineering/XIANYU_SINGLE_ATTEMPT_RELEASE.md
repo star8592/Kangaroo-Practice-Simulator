@@ -13,6 +13,10 @@
 - scripts/test_single_paid_exam_e2e.ts：隔离合成自有卷的开通、进入、限时提交、评分和完整诊断对象生成。
 - scripts/test_exam_submit_recovery.ts：已有交卷恢复与并发锁回归。
 - tsconfig.single-exam-check.json：改动范围 TypeScript 编译检查。
+- scripts/test_full_original_mock_e2e.ts：走美杯风格 G6 2026 A 卷、华赛高阶 G6 2026 B 卷的 15 题完整考试、1 次权益核销、逐题解析和 PDF 真正渲染。
+- 两份由自有试卷 + 合成考生生成的报告均实际导出 **14 页 A4 PDF**，各含 **15/15 条已审核题目解析**；华赛报告逐页确认 14/14 个连续页脚、所有解析均存在。用户数据和正式题目内容未写入 Git。
+- PDF 报告把“答题行为与时间管理”独立为一页，解决早先因为分页溢出产生额外残页的问题。
+
 
 以上全部属于开发环境，不代表真实闲鱼支付、上架或 PDF 浏览器正式渲染通过。
 
