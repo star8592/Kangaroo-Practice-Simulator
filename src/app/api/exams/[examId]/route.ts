@@ -16,8 +16,9 @@ export async function GET(request: NextRequest, context: { params: Promise<{ exa
   const { examId } = await context.params;
   try {
     const bundle = loadTrainingExamBundle(examId);
-    if (isCommerceExamUser(currentUser.id) && isCommercialMockExamReady(bundle.profile)) {
-      if (!hasAvailableExamCreditForExam(currentUser.id, examId)) {
+    if (isCommercialMockExamReady(bundle.profile)) {
+      // Original paid papers are never available to an unrelated normal student.
+      if (!isCommerceExamUser(currentUser.id) || !hasAvailableExamCreditForExam(currentUser.id, examId)) {
         return NextResponse.json({ error: "当前订单未购买这套年份／场次试卷", code: "EXAM_SKU_MISMATCH" }, { status: 403 });
       }
       const entitlement = getExamEntitlementSummary(currentUser.id);

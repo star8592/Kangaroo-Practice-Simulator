@@ -9,6 +9,7 @@ import seamoG1Revised from "@/data/seamo-original-mocks/seamo-original-g1-revise
 import seamoG2Revised from "@/data/seamo-original-mocks/seamo-original-g2-revised-1.json";
 
 const EXAMS_DIR = path.join(process.cwd(), "private", "exams");
+const COMMERCE_EXAMS_DIR = path.join(process.cwd(), "private", "commerce-exams");
 const ORIGINAL_SEAMO_BUNDLES: ExamBundle[] = [seamoG1, seamoG2, seamoG1Revised, seamoG2Revised] as unknown as ExamBundle[];
 // Keep published v1 paper IDs readable for historical attempts, but list only revised editions.
 const SUPERSEDED_SEAMO_IDS = new Set(["seamo-original-g1-mock-1", "seamo-original-g2-mock-1"]);
@@ -29,6 +30,31 @@ function safeExamId(examId: string) {
 
 function normalizeBundle(raw: ExamBundle): ExamBundle {
   return { ...raw, profile: normalizeExamProfile(raw.profile) };
+}
+
+function loadCommercialOriginalBundle(examId: string): ExamBundle | null {
+  const file = path.join(COMMERCE_EXAMS_DIR, examId + ".json");
+  if (!fs.existsSync(file)) return null;
+  const raw = JSON.parse(fs.readFileSync(file, "utf8")) as ExamBundle;
+  if (raw.profile.id !== examId ||
+    raw.profile.sourceRegistryId !== "user-original-math-simulations" ||
+    raw.profile.rightsPolicy?.commercialUse !== true ||
+    raw.profile.rightsPolicy?.publicQuestionDisplay !== true) return null;
+  const bundle = normalizeBundle(raw);
+  if (!["zoumei-style", "huasai-advanced"].includes(bundle.profile.competitionId || "")) return null;
+  return bundle;
+}
+
+function listCommercialOriginalBundles(gate: BundleGate): ExamBundle[] {
+  if (!fs.existsSync(COMMERCE_EXAMS_DIR)) return [];
+  const bundles: ExamBundle[] = [];
+  for (const name of fs.readdirSync(COMMERCE_EXAMS_DIR).filter(name => name.endsWith(".json")).sort()) {
+    try {
+      const bundle = loadCommercialOriginalBundle(name.slice(0, -5));
+      if (bundle && gate(bundle)) bundles.push(bundle);
+    } catch { /* Invalid bundle is not advertised for sale. */ }
+  }
+  return bundles;
 }
 
 function loadArchiveBundles(gate: BundleGate): ExamBundle[] {
@@ -55,6 +81,14 @@ function loadArchiveBundles(gate: BundleGate): ExamBundle[] {
 export function loadStoredExamBundle(examId: string, options: LoadOptions): ExamBundle {
   const id = safeExamId(examId);
   if (id === "level-a") return loadStoredExamBundle("au-amc-pre-a-sample-1", options);
+
+  const commercialOriginal = loadCommercialOriginalBundle(id);
+  if (commercialOriginal) {
+    if (options.requireReadyDirect && !options.gate(commercialOriginal)) {
+      throw new Error(options.incompleteMessage?.(id) || "Commercial mock exam is incomplete");
+    }
+    return commercialOriginal;
+  }
 
   const originalSeamo = ORIGINAL_SEAMO_BUNDLES.find(bundle => bundle.profile.id === id);
   if (originalSeamo) {
@@ -88,6 +122,12 @@ export function loadStoredExamBundle(examId: string, options: LoadOptions): Exam
 export function listStoredExamProfiles(gate: BundleGate): ExamProfile[] {
   const archives = loadArchiveBundles(gate);
   const profiles: ExamProfile[] = [...mixedProfiles(archives)];
+  // Paid original papers are not pooled into automatically mixed/smart papers.
+  for (const bundle of listCommercialOriginalBundles(gate)) {
+    if (!profiles.some(profile => profile.id === bundle.profile.id)) {
+      profiles.push({ ...bundle.profile, studentReady: true });
+    }
+  }
   for (const bundle of archives) {
     if (!profiles.some((profile) => profile.id === bundle.profile.id)) {
       profiles.push({ ...bundle.profile, studentReady: true });

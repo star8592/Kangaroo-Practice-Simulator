@@ -58,7 +58,9 @@ export async function POST(request: NextRequest) {
 
     const bundle = loadTrainingExamBundle(examId);
     if (!isExamBundleTrainingReady(bundle)) return NextResponse.json({ error: "Exam is not training-ready" }, { status: 404 });
-    const commerceUser = isCommerceExamUser(currentUser.id) && isCommercialMockExamReady(bundle.profile);
+    const paidExam = isCommercialMockExamReady(bundle.profile);
+    if (paidExam && !isCommerceExamUser(currentUser.id)) return entitlementRequired();
+    const commerceUser = paidExam && isCommerceExamUser(currentUser.id);
     if (commerceUser) {
       const entitlement = getExamEntitlementForSession(currentUser.id, sessionId);
       if (!entitlement || entitlement.reservedExamId !== examId

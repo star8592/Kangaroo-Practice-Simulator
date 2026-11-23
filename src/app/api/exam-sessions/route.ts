@@ -41,7 +41,8 @@ export async function GET(request: NextRequest) {
     const bundle = loadTrainingExamBundle(examId);
     if (!isExamBundleTrainingReady(bundle)) return NextResponse.json({ error: "Exam is not training-ready" }, { status: 404 });
     const session = activeExamSession(currentUser.id, examId);
-    if (!isCommerceExamUser(currentUser.id) || !isCommercialMockExamReady(bundle.profile)) return NextResponse.json({ session });
+    if (!isCommercialMockExamReady(bundle.profile)) return NextResponse.json({ session });
+    if (!isCommerceExamUser(currentUser.id)) return reservationError("no_exam_credit", getExamEntitlementSummary(currentUser.id));
 
     const summary = getExamEntitlementSummary(currentUser.id);
     if (session) {
@@ -77,8 +78,12 @@ export async function POST(request: NextRequest) {
     if (!isExamBundleTrainingReady(bundle)) return NextResponse.json({ error: "Exam is not training-ready" }, { status: 404 });
 
     const started = startExamSession(currentUser.id, examId, bundle.profile.durationSeconds, bundle.profile.timingSections);
-    if (!isCommerceExamUser(currentUser.id) || !isCommercialMockExamReady(bundle.profile)) {
+    if (!isCommercialMockExamReady(bundle.profile)) {
       return NextResponse.json({ ...started, durationSeconds: bundle.profile.durationSeconds });
+    }
+    if (!isCommerceExamUser(currentUser.id)) {
+      if (!started.resumed) cancelExamSession(started.session.id, currentUser.id, examId);
+      return reservationError("no_exam_credit", getExamEntitlementSummary(currentUser.id));
     }
 
     const reserved = reserveExamEntitlement({
@@ -118,7 +123,7 @@ export async function PATCH(request: NextRequest) {
 
     const valid = validateExamSession(sessionId, currentUser.id, examId);
     if (!valid.ok) return NextResponse.json({ error: valid.error }, { status: 409 });
-    if (isCommerceExamUser(currentUser.id) && isCommercialMockExamReady(bundle.profile)) {
+    if (isCommercialMockExamReady(bundle.profile)) {
       const entitlement = getExamEntitlementForSession(currentUser.id, sessionId);
       if (!entitlement || entitlement.reservedExamId !== examId || !["reserved", "submitting"].includes(entitlement.status)) {
         return NextResponse.json({ error: "没有本场考试的有效权益，请检查剩余次数", entitlement: getExamEntitlementSummary(currentUser.id) }, { status: 402 });
