@@ -1,0 +1,23 @@
+{
+  "extends": "./tsconfig.json",
+  "include": [
+    "next-env.d.ts",
+    "src/lib/exam-entitlement-store.ts",
+    "src/lib/exam-service-policy.ts",
+    "src/lib/exam-session.ts",
+    "src/lib/attempt-store.ts",
+    "src/app/api/internal/commerce/students/route.ts",
+    "src/app/api/exam-sessions/route.ts",
+    "src/app/api/exams/[examId]/route.ts",
+    "src/app/api/grade/route.ts",
+    "src/app/api/reports/[attemptId]/pdf/route.ts",
+    "src/app/report/[attemptId]/page.tsx",
+    "scripts/test_exam_entitlement_flow.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "tests/e2e",
+    "src/workers",
+    "apps/miniapp"
+  ]
+}

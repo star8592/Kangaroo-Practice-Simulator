@@ -14,8 +14,8 @@ function SectionHead({title,desc}:{title:string;desc?:string}){return <div class
 function Bar({name,value,count,extra}:{name:string;value:number;count:number;extra?:string}){return <div className="dr-bar-row"><div className="name">{name}</div><div className="dr-bar"><i style={{width:`${Math.max(2,Math.round(value*100))}%`}}/></div><div className="value"><strong>{pct(value)}</strong><small>{extra||`${count}题`}</small></div></div>}
 
 export default function DiagnosticReportView({report}:{report:DiagnosticReport}){
-  const qPages=chunks(report.questions,3);
-  const total=5+qPages.length;
+  const qPages=chunks(report.questions,2);
+  const total=7+qPages.length;
   const topFindings=[...report.findings].sort((a,b)=>({priority:0,watch:1,strength:2}[a.kind]-{priority:0,watch:1,strength:2}[b.kind])).slice(0,3);
   let p=1;
   return <div className="diagnostic-report">
@@ -33,8 +33,22 @@ export default function DiagnosticReportView({report}:{report:DiagnosticReport})
       <div className="dr-kicker">能力与策略画像</div><h1 className="dr-title">能力结构与考试策略</h1><p className="dr-subtitle">把“会不会”与“怎么做”分开看。能力维度使用题目标签；策略维度使用真实作答时间、修改和未作答行为。</p>
       <div className="dr-grid-2 dr-section"><div className="dr-panel"><h3>能力维度</h3>{report.skills.slice(0,9).map(s=><Bar key={s.rawName} name={s.name} value={s.accuracy} count={s.count} extra={`${s.correct}/${s.count} · ${s.confidence}`}/>)}</div><div className="dr-panel"><h3>难度 / 题段表现</h3>{report.difficulty.map(d=><Bar key={d.label} name={d.label} value={d.accuracy} count={d.count} extra={`${d.correct}/${d.count}`}/>)}{report.difficulty.length===0&&<p className="dr-subtitle">当前试卷没有可比较的难度分层标签。</p>}</div></div>
       <div className="dr-section"><SectionHead title="考试过程分段" desc="用于观察后程掉速、时间分配与题目难度叠加效应"/><div className="dr-phase-grid">{report.phases.map(x=><div className="dr-phase" key={x.label}><span>{x.label}</span><strong>{pct(x.accuracy)}</strong><small>{x.correct}/{x.count} 正确 · 平均 {sec(x.avgSeconds)}/题</small></div>)}</div></div>
+
+
+    </Page>
+
+    <Page report={report} page={p++} total={total}>
+      <div className="dr-kicker">完整考试过程</div><h1 className="dr-title">作答行为与时间管理</h1>
+      <p className="dr-subtitle">从本次考试的可观察行为，识别需要复盘的时间分配、答案修改和漏答现象；不凭一场考试推断孩子的性格或心理状态。</p>
       <div className="dr-section"><SectionHead title="答题行为信号" desc="只描述可观察行为，不直接贴“粗心/畏难”等标签"/><div className="dr-behavior-grid"><div className="dr-behavior"><span>快速失分</span><strong>{report.behavior.rushedWrong}</strong><small>显著快于个人本卷典型用时的错题</small></div><div className="dr-behavior"><span>耗时失分</span><strong>{report.behavior.stuckWrong}</strong><small>投入较久仍未得分的题</small></div><div className="dr-behavior"><span>答案修改</span><strong>{report.behavior.answerChanges}</strong><small>{report.behavior.wrongToCorrect} 次带来得分 · {report.behavior.correctToWrong} 次导致失分</small></div><div className="dr-behavior"><span>未作答</span><strong>{report.behavior.unanswered}</strong><small>可用于判断时间回收空间</small></div><div className="dr-behavior"><span>正确但偏慢</span><strong>{report.behavior.slowCorrect}</strong><small>会做，但自动化程度仍可提升</small></div><div className="dr-behavior"><span>改答案题数</span><strong>{report.behavior.changedQuestions}</strong><small>观察复查策略是否有效</small></div><div className="dr-behavior"><span>切出考试页</span><strong>{report.behavior.tabAwayCount}</strong><small>仅作为环境数据，不作能力判断</small></div><div className="dr-behavior"><span>平均题时</span><strong>{sec(report.summary.avgQuestionSeconds)}</strong><small>总有效考试时长 / 题量</small></div></div></div>
-      <div className="dr-section"><div className="dr-note">能力条只在样本量足够时形成稳定判断。单一能力维度少于 4 题时标记为“探索性”，应由后续测评验证。</div></div>
+      <div className="dr-section"><SectionHead title="这些数字如何使用" desc="仅反映这一场考试"/><div className="dr-method-grid"><div className="dr-method"><strong>先核查失分题</strong><p>将快速失分和耗时失分与逐题解析对应，区分知识缺口、解题路径和时间分配。</p></div><div className="dr-method"><strong>避免单次过度解释</strong><p>答题修改、切换页面、用时较长都只是行为记录，不等于粗心、拖延或注意力缺陷。</p></div></div></div>
+    </Page>
+
+    <Page report={report} page={p++} total={total}>
+      <div className="dr-kicker">答题状态总表</div><h1 className="dr-title">逐题表现与知识点索引</h1>
+      <p className="dr-subtitle">按照试卷题序查看考生答题结果、涉及知识点和行为信号。对应的完整题干、选项、答案与解题步骤见后续逐题解析页面。</p>
+      <div className="dr-section"><SectionHead title="逐题状态速览" desc="仅展示真实采集数据；未记录的用时不编造"/><table className="dr-table dr-question-summary"><thead><tr><th>题号</th><th>知识点</th><th>结果</th><th>有效用时</th><th>作答信号</th></tr></thead><tbody>{report.questions.map(q=><tr key={q.questionId}><td className="num">Q{q.no}</td><td>{q.concept}</td><td>{q.result}</td><td>{q.dwellSeconds>0?sec(q.dwellSeconds):"未记录"}</td><td>{q.pattern}</td></tr>)}</tbody></table></div>
+      <div className="dr-section"><div className="dr-note">有效用时仅根据实际采集到的答题事件计算；显示“未记录”不等于未作答。答题结果及知识点来自本场考试快照，不是官方排名。</div></div>
     </Page>
 
     <Page report={report} page={p++} total={total}>
@@ -56,6 +70,7 @@ export default function DiagnosticReportView({report}:{report:DiagnosticReport})
           </div>;
         })}</div>:<div className="dr-review-answer"><span>你的答案：<strong>{q.selected||"未作答"}</strong></span><span>正确答案：<strong>{q.correctAnswer}</strong></span></div>}
         <div className="dr-review-evidence"><span>你的答案 <strong>{q.selected||"未作答"}</strong></span><span>正确答案 <strong>{q.correctAnswer}</strong></span><span>有效用时 <strong>{sec(q.dwellSeconds)}</strong></span><span>首次作答 <strong>{q.firstAnswerSeconds===null?"—":sec(q.firstAnswerSeconds)}</strong></span><span>修改 <strong>{q.answerChanges} 次</strong></span></div>
+        <div className="dr-review-solution"><strong>本题完整解析</strong><p>{q.solution || "本题解析尚未通过审核，请以原试卷解析为准。"}</p></div>
       </article>)}</div>
       <div className="dr-section"><div className="dr-note">先遮住“正确答案”重新做，再打开答案核对。行为标签只描述当时发生了什么，真正错因仍应结合解题过程确认。</div></div>
     </Page>)}
@@ -71,7 +86,7 @@ export default function DiagnosticReportView({report}:{report:DiagnosticReport})
       <div className="dr-kicker">成长记录与方法说明</div><h1 className="dr-title">成长记录与方法说明</h1><p className="dr-subtitle">单次成绩告诉我们“这一次发生了什么”；连续记录才告诉我们“是否真正发生了学习”。</p>
       <div className="dr-section"><SectionHead title="同类测评趋势" desc={report.trend.length>1?`最近 ${report.trend.length} 次同类考试`:"当前只有 1 次同类测评，先作为基线"}/><div className="dr-trend">{report.trend.map((x,i)=><div className="dr-trend-col" key={x.attemptId}><div className="dr-trend-value">{pct(x.scorePct)}</div><div className="dr-trend-bar" style={{height:`${Math.max(3,Math.round(x.scorePct*100))}%`}}/><div className="dr-trend-date">{date(x.submittedAt)}{i===report.trend.length-1?" · 本次":""}</div></div>)}</div></div>
       <div className="dr-section"><SectionHead title="诊断方法"/><div className="dr-method-grid"><div className="dr-method"><strong>1. 得分与正确率分开</strong><p>不同竞赛存在不同计分机制，因此报告同时保留原始得分率与题目正确率。</p></div><div className="dr-method"><strong>2. 单题有效时间</strong><p>依据进入/离开题目、页面可见性等事件估计有效作答时间，减少切屏对速度画像的干扰。</p></div><div className="dr-method"><strong>3. 行为模式不等于心理标签</strong><p>报告可以说“快速失分”或“反复修改”，但不凭一次考试断言“粗心、畏难、注意力差”。</p></div><div className="dr-method"><strong>4. 样本量决定结论强度</strong><p>能力维度题量越少，结论越应保守；后续同赛制测评用于确认或推翻当前判断。</p></div></div></div>
-      <div className="dr-disclaimer"><strong>关于排名与常模：</strong>{report.benchmarkNote}<br/><br/><strong>报告版本：</strong>{report.meta.engineVersion} · 数据快照 {report.meta.attemptId}。本报告用于学习诊断与训练决策，不替代竞赛主办方官方成绩、学校评价或心理/医学评估。</div>
+      <div className="dr-disclaimer"><strong>关于排名与常模：</strong>{report.benchmarkNote}<br/><br/><strong>报告版本：</strong>{report.meta.engineVersion} · 数据快照 {report.meta.attemptId}。单一能力维度少于 4 题时标记为“探索性”，应由后续测评验证。本报告用于学习诊断与训练决策，不替代竞赛主办方官方成绩、学校评价或心理/医学评估。</div>
     </Page>
   </div>;
 }

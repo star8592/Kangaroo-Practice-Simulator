@@ -4,4 +4,32 @@ export const DIAGNOSTIC_REPORT_CSS = String.raw`
 .diagnostic-actions{width:210mm;margin:0 auto 14px;display:flex;justify-content:flex-end;gap:9px}.diagnostic-actions a,.diagnostic-actions button{border:0;border-radius:9px;padding:10px 14px;font-size:13px;font-weight:700;text-decoration:none;cursor:pointer}.diagnostic-actions .primary{background:var(--dr-ink);color:#fff}.diagnostic-actions .secondary{background:#fff;color:var(--dr-ink);border:1px solid var(--dr-line)}
 @media(max-width:900px){.diagnostic-report{padding:0;background:#fff}.diagnostic-report .report-page{width:100%;min-height:auto;margin:0;box-shadow:none;padding:26px 18px 52px}.diagnostic-actions{width:auto;margin:12px 16px}.dr-cover-band{grid-template-columns:1fr}.dr-score{text-align:left}.dr-grid-2{grid-template-columns:1fr}.dr-metrics,.dr-behavior-grid{grid-template-columns:repeat(2,1fr)}}
 @media print{@page{size:A4;margin:0}.site-header,.site-footer,.diagnostic-actions{display:none!important}body{background:#fff!important}.diagnostic-report{background:#fff!important;padding:0!important}.diagnostic-report .report-page{margin:0!important;box-shadow:none!important;width:210mm!important;min-height:297mm!important;padding:15mm 15mm 13mm!important}.dr-finding,.dr-plan-item,.dr-panel{break-inside:avoid}}
+ .dr-review-solution{border:1px solid #d9e7df;background:#f4faf6;padding:8px 10px;border-radius:8px;margin-top:8px}.dr-review-solution>strong{display:block;font-size:8px;color:#216447;margin-bottom:4px}.dr-review-solution p{font-size:7.7px;line-height:1.65;white-space:pre-wrap;overflow-wrap:anywhere;margin:0;color:#2b4937}
+
+/* Paid exam PDF: paper text must be genuinely readable, not 6-point microtype. */
+@media print {
+.diagnostic-report .dr-review-list{gap:17px}
+.diagnostic-report .dr-review-card{padding:18px 17px;border-radius:13px}
+.diagnostic-report .dr-review-head{font-size:9.5px;margin-bottom:10px}
+.diagnostic-report .dr-review-head strong{font-size:12px}
+.diagnostic-report .dr-review-stem{font-size:13px;line-height:1.65;margin-bottom:13px}
+.diagnostic-report .dr-review-choices{gap:8px}
+.diagnostic-report .dr-review-choice{font-size:10.5px;padding:9px 10px;line-height:1.55;gap:8px;grid-template-columns:21px minmax(0,1fr) auto}
+.diagnostic-report .dr-review-choice>strong{font-size:11px}
+.diagnostic-report .dr-review-choice em{font-size:8px;padding:3px 6px}
+.diagnostic-report .dr-review-evidence{font-size:9.5px;line-height:1.6;gap:10px;margin-top:12px;padding-top:10px}
+.diagnostic-report .dr-review-answer{font-size:11px;padding:10px}
+.diagnostic-report .dr-review-solution{margin-top:14px;padding:13px 14px}
+.diagnostic-report .dr-review-solution>strong{font-size:11px;margin-bottom:7px}
+.diagnostic-report .dr-review-solution p{font-size:11px;line-height:1.75}
+.diagnostic-report .dr-review-list + .dr-section .dr-note{font-size:10px;line-height:1.65}
+}
+
+@media print {
+.diagnostic-report .dr-question-summary td{font-size:9.6px;line-height:1.45;padding:7px 6px}
+.diagnostic-report .dr-question-summary th{font-size:9px;padding:8px 6px}
+.diagnostic-report .dr-review-stem{font-size:14px}
+.diagnostic-report .dr-review-choice{font-size:12px}
+.diagnostic-report .dr-review-solution p{font-size:12.5px}
+}
 `;

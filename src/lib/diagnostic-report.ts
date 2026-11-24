@@ -180,7 +180,7 @@ export function buildDiagnosticReport(user: PublicStudent, attemptId: string): D
         assetUrl: saved?.assetUrl || current?.assetUrl,
         assetUrlZh: saved?.assetUrlZh || current?.assetUrlZh || saved?.assetUrl || current?.assetUrl,
         assetUrlEn: saved?.assetUrlEn || current?.assetUrlEn || saved?.assetUrl || current?.assetUrl,
-        solution: item?.solution,
+        solution: saved?.solution || item?.solution,
       };
     }),
     plan, trend,

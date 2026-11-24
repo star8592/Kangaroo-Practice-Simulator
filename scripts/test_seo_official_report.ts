@@ -15,12 +15,13 @@ try {
   process.env.SOCTHINK_SEO_DATA_DIR=path.join(dir,"seo");
   const input=path.join(dir,"normalized.json");
   const evidence=path.join(dir,"original-google-export.csv");
-  const now=new Date("2026-11-18T04:00:00Z");
+  const now=new Date();
+  const day=(offset:number)=>new Date(now.getTime()+offset*86400000).toISOString().slice(0,10);
   fs.writeFileSync(evidence,"query,clicks,impressions\nenglish,4,120\n",{mode:0o600});
   assert.equal(readOfficialSeoReports().status,"missing");
   const base={
     site:"https://socthink.cn",provider:"google",source:"google_search_analytics_api",
-    periodStart:"2026-11-16",periodEnd:"2026-11-17",metrics:{clicks:4,impressions:120},
+    periodStart:day(-2),periodEnd:day(-1),metrics:{clicks:4,impressions:120},
   };
   fs.writeFileSync(input,JSON.stringify(base));
   const imported=importOfficialSeoReport(input,evidence,now);
@@ -34,7 +35,7 @@ try {
   assert.equal(stats?.sourceStatus,"reported");
   assert.ok(stats?.source.includes("Google Search Console"));
   fs.writeFileSync(path.join(process.env.SOCTHINK_SEO_DATA_DIR!,"seo-collection-status.json"),JSON.stringify({
-    google:{state:"imported",checkedAt:now.toISOString(),importedDays:1,lastPeriod:"2026-11-17"},
+    google:{state:"imported",checkedAt:now.toISOString(),importedDays:1,lastPeriod:day(-1)},
     bing:{state:"missing_credentials",checkedAt:now.toISOString()}
   }),{mode:0o600});
   const withCollector=getSeoMonitorDashboard();
@@ -48,7 +49,7 @@ try {
   fs.unlinkSync(path.join(process.env.SOCTHINK_SEO_DATA_DIR!,"seo-collection-status.json"));
   const again=importOfficialSeoReport(input,evidence,now);
   assert.equal(again.totalRecords,2);
-  const stale=summarizeOfficialSeoProvider("google",readOfficialSeoReports().reports,"ok",new Date("2026-12-02T00:00:00Z"));
+  const stale=summarizeOfficialSeoProvider("google",readOfficialSeoReports().reports,"ok",new Date(now.getTime()+14*86400000));
   assert.equal(stale.status,"stale");
   assert.equal(stale.clicks,4);
   fs.writeFileSync(input,JSON.stringify({...base,site:"https://another.example"}));
