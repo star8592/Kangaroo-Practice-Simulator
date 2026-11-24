@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { userFromRequest } from "@/lib/auth";
+import { hasFullExamAccess } from "@/lib/exam-access";
+import { deniedItemExamResponse } from "@/lib/item-access-server";
 import { isExamBundleTrainingReady, loadTrainingExamBundle } from "@/lib/training-question-bank";
 import { isCommercialMockExamReady } from "@/lib/exam-service-policy";
 import {
@@ -34,14 +36,16 @@ function reservationError(reason: string, summary: ReturnType<typeof getExamEnti
 
 export async function GET(request: NextRequest) {
   const currentUser = user(request);
-  if (!currentUser) return NextResponse.json({ error: "请先登录考生账号" }, { status: 401 });
+  if (!hasFullExamAccess(currentUser)) return NextResponse.json({ error: "请先登录考生账号" }, { status: 401 });
   const examId = request.nextUrl.searchParams.get("examId") || "";
   if (!examId) return NextResponse.json({ error: "missing examId" }, { status: 400 });
   try {
+    const denied = await deniedItemExamResponse(request, examId);
+    if (denied) return denied;
     const bundle = loadTrainingExamBundle(examId);
     if (!isExamBundleTrainingReady(bundle)) return NextResponse.json({ error: "Exam is not training-ready" }, { status: 404 });
     const session = activeExamSession(currentUser.id, examId);
-    if (!isCommercialMockExamReady(bundle.profile)) return NextResponse.json({ session });
+    if (!isCommercialMockExamReady(bundle.profile)) return NextResponse.json({ session, serverNow: Date.now() });
     if (!isCommerceExamUser(currentUser.id)) return reservationError("no_exam_credit", getExamEntitlementSummary(currentUser.id));
 
     const summary = getExamEntitlementSummary(currentUser.id);
@@ -71,15 +75,17 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const currentUser = user(request);
-    if (!currentUser) return NextResponse.json({ error: "请先登录考生账号" }, { status: 401 });
+    if (!hasFullExamAccess(currentUser)) return NextResponse.json({ error: "请先登录考生账号" }, { status: 401 });
     const body = await request.json();
     const examId = String(body?.examId || "");
+    const denied = await deniedItemExamResponse(request, examId);
+    if (denied) return denied;
     const bundle = loadTrainingExamBundle(examId);
     if (!isExamBundleTrainingReady(bundle)) return NextResponse.json({ error: "Exam is not training-ready" }, { status: 404 });
 
     const started = startExamSession(currentUser.id, examId, bundle.profile.durationSeconds, bundle.profile.timingSections);
     if (!isCommercialMockExamReady(bundle.profile)) {
-      return NextResponse.json({ ...started, durationSeconds: bundle.profile.durationSeconds });
+      return NextResponse.json({ ...started, serverNow: Date.now(), durationSeconds: bundle.profile.durationSeconds });
     }
     if (!isCommerceExamUser(currentUser.id)) {
       if (!started.resumed) cancelExamSession(started.session.id, currentUser.id, examId);
@@ -100,6 +106,7 @@ export async function POST(request: NextRequest) {
     const entitlement = getExamEntitlementSummary(currentUser.id);
     return NextResponse.json({
       ...started,
+      serverNow: Date.now(),
       durationSeconds: bundle.profile.durationSeconds,
       entitlement,
       remainingAttempts: entitlement.available,
@@ -113,11 +120,13 @@ export async function POST(request: NextRequest) {
 export async function PATCH(request: NextRequest) {
   try {
     const currentUser = user(request);
-    if (!currentUser) return NextResponse.json({ error: "请先登录考生账号" }, { status: 401 });
+    if (!hasFullExamAccess(currentUser)) return NextResponse.json({ error: "请先登录考生账号" }, { status: 401 });
     const body = await request.json();
     const examId = String(body?.examId || "");
     const sessionId = String(body?.sessionId || "");
     const action = String(body?.action || "");
+    const denied = await deniedItemExamResponse(request, examId);
+    if (denied) return denied;
     const bundle = loadTrainingExamBundle(examId);
     if (!isExamBundleTrainingReady(bundle)) return NextResponse.json({ error: "Exam is not training-ready" }, { status: 404 });
 
@@ -138,14 +147,14 @@ export async function PATCH(request: NextRequest) {
     }
     if (action === "start-section") {
       const session = startExamSection({ id: sessionId, userId: currentUser.id, examId, sectionIndex: index });
-      return NextResponse.json({ session });
+      return NextResponse.json({ session, serverNow: Date.now() });
     }
     if (action === "save-section") {
       const section = sections[index];
       const questionIds = bundle.questions.filter(question => question.questionNo >= section.questionStart && question.questionNo <= section.questionEnd).map(question => question.id);
       const answers = (body?.answers && typeof body.answers === "object" ? body.answers : {}) as Record<string, string>;
       const session = saveExamSectionDraft({ id: sessionId, userId: currentUser.id, examId, sectionIndex: index, answers, questionIds, durationSeconds: section.durationSeconds });
-      return NextResponse.json({ session });
+      return NextResponse.json({ session, serverNow: Date.now() });
     }
     if (action === "lock-section") {
       const section = sections[index];

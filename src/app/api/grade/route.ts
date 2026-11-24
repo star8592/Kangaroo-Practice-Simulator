@@ -4,6 +4,7 @@ import { isExamBundleTrainingReady, loadTrainingExamBundle } from "@/lib/trainin
 import { isCommercialMockExamReady } from "@/lib/exam-service-policy";
 import { userFromRequest } from "@/lib/auth";
 import { hasFullExamAccess } from "@/lib/exam-access";
+import { deniedItemExamResponse } from "@/lib/item-access-server";
 import {
   appendExamAttempt,
   findExamAttemptBySession,
@@ -56,6 +57,8 @@ export async function POST(request: NextRequest) {
     const sessionId = String(body?.sessionId || "");
     if (!examId || !sessionId) return NextResponse.json({ error: "缺少考试或会话标识" }, { status: 400 });
 
+    const denied = await deniedItemExamResponse(request, examId);
+    if (denied) return denied;
     const bundle = loadTrainingExamBundle(examId);
     if (!isExamBundleTrainingReady(bundle)) return NextResponse.json({ error: "Exam is not training-ready" }, { status: 404 });
     const paidExam = isCommercialMockExamReady(bundle.profile);

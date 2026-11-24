@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { SESSION_COOKIE, userFromSessionToken } from "@/lib/auth";
+import { userFromRequest } from "@/lib/auth";
 import { buildDiagnosticReport } from "@/lib/diagnostic-report";
 import { diagnosticReportPdfResponse } from "@/lib/diagnostic-report-pdf-response";
 import { getExamEntitlementForAttempt, getExamEntitlementSummary, isCommerceExamUser } from "@/lib/exam-entitlement-store";
@@ -8,7 +8,7 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function GET(request: NextRequest, { params }: { params: Promise<{ attemptId: string }> }) {
-  const user = userFromSessionToken(request.cookies.get(SESSION_COOKIE)?.value);
+  const user = userFromRequest(request);
   if (!user) return NextResponse.json({ error: "请先登录" }, { status: 401 });
   const { attemptId } = await params;
   const report = buildDiagnosticReport(user, attemptId);
