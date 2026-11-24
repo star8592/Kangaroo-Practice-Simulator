@@ -78,7 +78,7 @@ function withLock<T>(fn: () => T): T {
           if (!processAlive(pid)) fs.rmSync(LOCK_FILE, { force: true });
         }
       } catch { /* lock disappeared; retry */ }
-      if (Date.now() >= deadline) throw new Error("EXAM_ENTITLEMENT_STORE_BUSY");
+      if (Date.now() >= deadline) throw new Error("EXAM_ENTITLEMENT_STORE_BUSY", { cause: error });
       Atomics.wait(sleepCell, 0, 0, 25);
     }
   }

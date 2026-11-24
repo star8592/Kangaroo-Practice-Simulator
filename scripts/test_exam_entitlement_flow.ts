@@ -69,11 +69,11 @@ async function main() {
     assert.equal(policy.isFormalStaticMockExam("sample"),true);
     assert.equal(policy.isFormalStaticMockExam("practice"),false);
     assert.equal(policy.isFormalStaticMockExam("smart"),false);
-    const commercialProfile: any = {
+    const commercialProfile = {
       id:"original-2026-6-a", name:"Original mock", grades:"6", questionCount:15,
       durationSeconds:5400, paperType:"practice", sourceRegistryId:"user-original-math-simulations",
       rightsPolicy:{commercialUse:true,publicQuestionDisplay:true}
-    };
+    } as unknown as Parameters<typeof policy.isCommercialMockExamReady>[0];
     assert.equal(policy.isCommercialMockExamReady(commercialProfile),true);
     assert.equal(policy.isCommercialMockExamReady({...commercialProfile,rightsPolicy:{commercialUse:false,publicQuestionDisplay:true}}),false);
     assert.equal(policy.isCommercialMockExamReady({...commercialProfile,rightsPolicy:{commercialUse:true,publicQuestionDisplay:false}}),false);

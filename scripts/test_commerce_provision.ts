@@ -13,7 +13,7 @@ function request(body: unknown, token?: string) {
 }
 async function response(body: unknown, token?: string) {
   const res = await POST(request(body, token));
-  return { status: res.status, value: await res.json() as Record<string, any> };
+  return { status: res.status, value: await res.json() as { entitlement: { total: number; selectedExamId: string }; idempotent?: boolean } };
 }
 async function main() {
   const token = process.env.COMMERCEFLOW_PROVISION_TOKEN || "";

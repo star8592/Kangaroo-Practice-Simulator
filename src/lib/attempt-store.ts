@@ -56,7 +56,7 @@ export function withExamSubmitLock<T>(userId: string, examId: string, sessionId:
   } catch (error) {
     if ((error as NodeJS.ErrnoException).code !== "EEXIST") throw error;
     const stale = Date.now() - fs.statSync(directory).mtimeMs > 10 * 60 * 1000;
-    if (!stale) throw new Error("EXAM_SUBMIT_BUSY");
+    if (!stale) throw new Error("EXAM_SUBMIT_BUSY", { cause: error });
     fs.rmdirSync(directory);
     try { fs.mkdirSync(directory); } catch { throw new Error("EXAM_SUBMIT_BUSY"); }
   }

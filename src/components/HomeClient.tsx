@@ -35,7 +35,7 @@ function gradeBucket(exam:ExamProfile):GradeFilter{
 }
 function regionName(region:string,lang:Lang){return lang==="zh"?(REGION_ZH[region]||region):region;}
 function yearOf(exam:ExamProfile){return exam.year??0;}
-function competitionOf(exam:ExamProfile):CompetitionFilter|null{return exam.competitionId||null;}
+function competitionOf(exam:ExamProfile):CompetitionFilter|null{const id=exam.competitionId;return id&&COMPETITION_OPTIONS.includes(id as CompetitionFilter)?id as CompetitionFilter:null;}
 
 const UI={
  zh:{title1:"竞赛模拟",title2:"选赛制 · 做试卷 · 看成长",copy:"选择已入库的国际数学竞赛模拟试卷，按赛制完成训练、评分与错题复盘。赛事介绍、报名资格和赛历统一在赛事管家查看。",admin:"我的学习报告",chooseCompetition:"模拟考试与真题训练",chooseCompetitionDesc:"已入库的赛制与试卷统一放在这里。赛事介绍、报名核验与备赛计划请前往独立的赛事管家。",choose:"选择训练学段",chooseDesc:"不同赛区、组别或样题可能采用不同赛制，系统会分别处理。",all:"全部年级",questions:"题",minutes:"分钟",max:"满分",start:"开始考试",open:"进入",past:"历年真题",samples:"官方样题",practice:"官方专项训练",papers:"套",regions:"个来源",range:"年份",exams:"套试卷",items:"道题",rules:"赛制"},
