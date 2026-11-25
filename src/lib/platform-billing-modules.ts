@@ -5,7 +5,7 @@
  */
 import {ENGLISH_PRODUCTS,type EnglishProductId} from "./english-products";
 
-export type BillingModuleId = "platform" | "math" | EnglishProductId;
+export type BillingModuleId = "platform" | "math" | "color" | EnglishProductId;
 export type BillingModule = Readonly<{
   id: BillingModuleId;
   name: string;
@@ -24,7 +24,7 @@ const MATH: BillingModule = {
   accountUrl:"/account",owner:"socthink",fulfillment:"central-plan",
 };
 export const PLATFORM_BILLING_MODULES: ReadonlyArray<BillingModule> =
-  Object.freeze([CORE,MATH,...ENGLISH_PRODUCTS.filter(item=>item.id!=="reading").map(item=>({
+  Object.freeze([CORE,MATH,{id:"color",name:"AI 调色工坊",checkoutUrl:"/membership",accountUrl:"/account",owner:"socthink",fulfillment:"not-onboarded"},...ENGLISH_PRODUCTS.filter(item=>item.id!=="reading").map(item=>({
     id:item.id,name:item.name,checkoutUrl:"/membership" as const,
     accountUrl:"/account" as const,owner:"socthink" as const,
     // No English module may claim a paid seat or plan until a *verified*

@@ -55,6 +55,12 @@ export default function SocthinkPortal(){
     </div>)}
    </nav>
   </section>
+  <section className={styles.catalogSection} aria-labelledby="tools-title">
+   <div className={styles.sectionHeading}><h2 id="tools-title">创作与实用工具</h2><p>独立应用，共用 SOC THINK 账户入口。</p></div>
+   <nav aria-label="创作与实用工具" className={styles.grid}>
+    <div className={styles.card}><a href="/color/" className={styles.cardLink}><span className={styles.icon} aria-hidden="true">色</span><strong>AI 调色工坊</strong><span>本地图片调色 · 胶片风格 · LUT</span><small>免费体验 →</small></a></div>
+   </nav>
+  </section>
   <p className={styles.note}>专项应用保留原生学习与评分界面。统一账户、授权和支付以真实开通状态为准。</p>
  </div>;
 }
