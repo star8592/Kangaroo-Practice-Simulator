@@ -10,6 +10,14 @@ export const metadata:Metadata={
 
 const BASE="/english/pronunciation/app";
 const wuhanHref=BASE+"/exam-simulator?paper=wuhan-2027&version=W2&mode=simulation";
+const wuhanPracticeHref=BASE+"/exam-simulator?paper=wuhan-2027&version=W2&mode=practice&focus=";
+const wuhanDrills=[
+ {name:"听后选择",id:"scene-museum-meeting",detail:"听懂对话，选择正确信息。"},
+ {name:"听后应答",id:"answer-gift-budget",detail:"听懂问题，录音完成英语应答。"},
+ {name:"模仿朗读",id:"read-trees",detail:"先听原创范读，再模仿录音。"},
+ {name:"听后转述",id:"retell-river-cleanup",detail:"提取关键信息并用英语转述。"},
+] as const;
+const wuhanSessions=[["08:30–09:00","09:10–09:40","09:50–10:20"],["10:30–11:00","11:10–11:40","11:50–12:20"],["14:00–14:30","14:40–15:10","15:20–15:50"],["16:00–16:30","16:40–17:10","17:20–17:50"]] as const;
 const papers=[
   {id:"beijing-2026",name:"北京题型模拟",intro:"听力选择、听后回答、转述与短文朗读等原创题型练习。",duration:"约20分钟",href:BASE+"/exam-simulator?paper=beijing-2026&pack=A&mode=simulation"},
   {id:"shanghai-2026",name:"上海题型模拟",intro:"朗读、交际应答、听后复述与口头表达等原创短卷。",duration:"约10分钟",href:BASE+"/exam-simulator?paper=shanghai-2026&pack=A&mode=simulation"},
@@ -37,7 +45,17 @@ export default function EnglishSpeakingExamCenter(){
     <article className={styles.card}><h3>专项自由练习</h3><p>听力理解、应答、朗读、转述，可按原题回听、复练。</p><Link href={BASE+"/exam-simulator?paper=wuhan-2027&version=W2&mode=practice"}>进入自由练习 →</Link></article>
     <article className={styles.card}><h3>发音与纠音</h3><p>标准示范、逐词点读、跟读录音及模型参考反馈。</p><Link href={BASE+"/practice-library"}>进入发音训练 →</Link></article>
    </div>
+   <h3 className={styles.wuhanSubheading}>四题型专项体验</h3>
+   <div className={styles.wuhanDrills}>{wuhanDrills.map(drill=><article className={styles.card} key={drill.id}>
+    <h3>{drill.name}</h3><p>{drill.detail}</p><Link href={wuhanPracticeHref+drill.id}>练习一题 →</Link>
+   </article>)}</div>
    <p>电脑优先用于整卷演练；手机适合日常练习。四题型原创训练并非官方样卷，不承诺官方等值评分。</p>
+   <details className={styles.wuhanSchedule}><summary>查看正式考试场次与教师演练参考</summary>
+    <p>据所获实施方案，4月17—18日每日4个时段、12场；各场包含进退场和设备检测。考生实际场次以学校安排为准。以下不是本站排考结果。</p>
+    <div className={styles.steps}>{wuhanSessions.map((sessions,index)=><div key={index} className={styles.sessionGroup}><strong>时段 {index+1}</strong>{sessions.map((session,i)=><div key={session}>第{index*3+i+1}场 · {session}</div>)}</div>)}</div>
+    <p>教师可通过现有工作台安排听说练习；学校批量排考、跨设备成绩汇总仍在开发。</p>
+    <Link href="/workspace">进入教师工作台 →</Link>
+   </details>
   </section>
   <section className={styles.journey} aria-label="学习到复练的闭环">
    <h2>学 → 练 → 考 → 再练</h2>
