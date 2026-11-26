@@ -3,12 +3,13 @@ import type {Metadata} from "next";
 import styles from "./english-speaking.module.css";
 
 export const metadata:Metadata={
-  title:"英语听说考试中心｜北京·上海·综合原创模拟｜SOCTHINK",
-  description:"SOC THINK 已开放的原创听说试测、北京上海与综合模拟训练，学—练—考—复练。非官方真题或官方等值评分。",
+  title:"2027武汉中考英语听说机考｜地区原创模拟｜SOCTHINK",
+  description:"武汉2027中考英语听说四题型备考，以及北京、上海、综合原创模拟训练。非官方真题或官方等值评分。",
   alternates:{canonical:"/assessments/english-speaking"},
 };
 
 const BASE="/english/pronunciation/app";
+const wuhanHref=BASE+"/exam-simulator?paper=wuhan-2027&version=W2&mode=simulation";
 const papers=[
   {id:"beijing-2026",name:"北京题型模拟",intro:"听力选择、听后回答、转述与短文朗读等原创题型练习。",duration:"约20分钟",href:BASE+"/exam-simulator?paper=beijing-2026&pack=A&mode=simulation"},
   {id:"shanghai-2026",name:"上海题型模拟",intro:"朗读、交际应答、听后复述与口头表达等原创短卷。",duration:"约10分钟",href:BASE+"/exam-simulator?paper=shanghai-2026&pack=A&mode=simulation"},
@@ -23,9 +24,21 @@ export default function EnglishSpeakingExamCenter(){
   <header className={styles.hero}>
    <p className={styles.eyebrow}>SOCTHINK · LANGUAGE EXAMS</p>
    <h1>英语听说考试中心</h1>
-   <p>听过、练过，还要考过才知道掌握得怎样。统一选择已有听说测评与地区原创模拟卷；发音学习和逐词纠音仍在 AccentLab 完成。</p>
-   <div className={styles.heroLinks}><a href="#papers">选择试卷</a><Link href="/english/pronunciation/app/practice-library">先去发音练习</Link></div>
+   <p>听过、练过，还要考过才知道掌握得怎样。武汉2027优先备考，并提供北京、上海及综合原创模拟；发音学习和逐词纠音仍在 AccentLab 完成。</p>
+   <div className={styles.heroLinks}><a href="#wuhan-2027">武汉2027备考</a><Link href="/english/pronunciation/app/practice-library">先去发音练习</Link></div>
   </header>
+  <section className={styles.journey} id="wuhan-2027" aria-labelledby="wuhan-heading">
+   <span className={styles.kicker}>2027 · 武汉中考</span>
+   <h2 id="wuhan-heading">武汉英语听说机考备考</h2>
+   <div className={styles.steps}><span>4月17—18日<br/>考试日期</span><span>30分<br/>计入英语总分</span><span>四类题型<br/>人机对话</span><span>30分钟<br/>含考务与设备测试</span></div>
+   <p>根据所获2027年实施方案资料：听后选择、听后应答、模仿朗读、听后转述。具体题量、题序、答题净时长、分值和播音次数仍待核实；实施方案的公开发布链接待核。缓考日期为4月19日，成绩与英语纸笔考试成绩一并公布。</p>
+   <div className={styles.cards}>
+    <article className={styles.card}><h3>四题型原创模拟</h3><p>先选择适合的训练卷，熟悉设备检查与限时作答。题量与计时为教学设定。</p><Link href={wuhanHref}>进入武汉模拟训练 →</Link></article>
+    <article className={styles.card}><h3>专项自由练习</h3><p>听力理解、应答、朗读、转述，可按原题回听、复练。</p><Link href={BASE+"/exam-simulator?paper=wuhan-2027&version=W2&mode=practice"}>进入自由练习 →</Link></article>
+    <article className={styles.card}><h3>发音与纠音</h3><p>标准示范、逐词点读、跟读录音及模型参考反馈。</p><Link href={BASE+"/practice-library"}>进入发音训练 →</Link></article>
+   </div>
+   <p>电脑优先用于整卷演练；手机适合日常练习。四题型原创训练并非官方样卷，不承诺官方等值评分。</p>
+  </section>
   <section className={styles.journey} aria-label="学习到复练的闭环">
    <h2>学 → 练 → 考 → 再练</h2>
    <div className={styles.steps}><span>听示范、学发音</span><span>跟读、录音、纠音</span><span>听说模拟测评</span><span>看反馈、针对性复练</span></div>
@@ -46,6 +59,6 @@ export default function EnglishSpeakingExamCenter(){
    <div><h2>考试结束后继续学习</h2><p>查看分项反馈，找出未掌握的听力内容、朗读句子或词汇，再回 AccentLab 重练；下一次模拟才能检验是否真正进步。</p></div>
    <Link href="/english/pronunciation/app/practice-library">进入专项复练</Link>
   </section>
-  <p className={styles.note}>所有现有卷均为原创教学训练，并非北京、上海、武汉官方真题，不能当作官方等值成绩。武汉专项考试仍在开发中，不会伪装为已开放。</p>
+  <p className={styles.note}>所有现有卷均为原创教学训练，并非北京、上海、武汉官方真题，不能当作官方等值成绩。武汉专项的正式参数、跨设备学习档案和学校整班演练服务仍待完善。</p>
  </div>;
 }
