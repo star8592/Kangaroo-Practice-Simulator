@@ -14,7 +14,7 @@ export async function generateMetadata({params}:Props):Promise<Metadata>{
 export default async function RegionalExamPage({params}:Props){
  const {city,year}=await params;const r=regionByYear(city,year);if(!r)notFound();
  const alternatives=SPEAKING_REGIONS.filter(x=>x.city===city&&x.year!==year);
- return <main className={styles.page} data-testid="english-speaking-city-page" data-paper={r.paperId}>
+ return <div className={styles.page} data-testid="english-speaking-city-page" data-paper={r.paperId}>
   <nav className={styles.crumbs} aria-label="当前位置"><Link href="/">首页</Link><span>/</span><Link href={ENGLISH_SPEAKING_ROOT}>英语听说考试中心</Link><span>/</span><span aria-current="page">{r.cityName} {year}</span></nav>
   <header className={styles.hero}>
    <p className={styles.eyebrow}>SOC THINK · {r.cityName}专版 · {year}</p>
@@ -39,5 +39,5 @@ export default async function RegionalExamPage({params}:Props){
   <section className={styles.retrain}><div><h2>教师布置训练与考后复练</h2><p>使用现有教师工作台及发音练习；整班排考、跨设备归档及开放题语义自动评分仍待完善。</p></div><Link href="/workspace">教师工作台 →</Link></section>
   <p><Link href="/english/pronunciation/app/practice-library">进入 AccentLab 发音与纠音</Link></p>
   <section className={styles.journey}><h2>规则资料与说明</h2><ul>{r.sources.map(s=><li key={s.url}><a href={s.url} target="_blank" rel="noopener noreferrer">{s.label}</a></li>)}</ul><p>独立原创备考服务，非官方真题、官方客户端或官方等值评分。旧政策与新考纲分开管理。</p></section>
- </main>;
+ </div>;
 }
