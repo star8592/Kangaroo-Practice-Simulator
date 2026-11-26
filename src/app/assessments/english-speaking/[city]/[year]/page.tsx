@@ -28,7 +28,7 @@ export default async function RegionalExamPage({params}:Props){
    {alternatives.length>0&&<p>其他年份：{alternatives.map(x=><Link key={x.year} href={regionPath(x)}>{x.year}版（{x.status}）</Link>)}</p>}
   </section>
   <section className={styles.list} id="papers" aria-labelledby="regional-papers">
-   <h2 id="regional-papers">本地区原创模拟卷</h2><div className={styles.cards}>{r.papers.map(p=><article key={p.label} className={styles.card}><h3>{p.label}</h3><p>{p.note}</p><Link href={regionExamHref(r,p,"simulation")}>限时模拟 →</Link><Link href={regionExamHref(r,p,"practice")}>自由练习 →</Link></article>)}</div>
+   <h2 id="regional-papers">{city==="wuhan"?"武汉四题型统一适应性模拟":"本地区原创模拟卷"}</h2><div className={styles.cards}>{r.papers.map(p=><article key={p.label} className={styles.card}><h3>{p.label}</h3><p>{p.note}</p><Link href={regionExamHref(r,p,"simulation")}>限时模拟 →</Link><Link href={regionExamHref(r,p,"practice")}>自由练习 →</Link></article>)}</div>
   </section>
   <section className={styles.list} id="skills" aria-labelledby="regional-skills">
    <h2 id="regional-skills">专项训练</h2>
