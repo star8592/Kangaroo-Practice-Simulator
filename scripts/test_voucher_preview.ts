@@ -1,0 +1,11 @@
+import assert from "node:assert/strict";
+import {voucherPreviewEnabled} from "../src/lib/commerce/voucher-preview";
+const env={NODE_ENV:"development",SOCTHINK_VOUCHER_PREVIEW:"1",SOCTHINK_BILLING_DATABASE_URL:"postgres://localhost/voucher_ci",SOCTHINK_PUBLIC_ORIGIN:"http://localhost:3000",SOCTHINK_VOUCHER_PREVIEW_LOOKUP_KEY:"a".repeat(64)} as NodeJS.ProcessEnv;
+assert(voucherPreviewEnabled(env));
+assert(!voucherPreviewEnabled({...env,NODE_ENV:"production"}));
+assert(!voucherPreviewEnabled({...env,SOCTHINK_VOUCHER_PREVIEW:"0"}));
+assert(!voucherPreviewEnabled({...env,SOCTHINK_BILLING_DATABASE_URL:"postgres://localhost/production"}));
+assert(!voucherPreviewEnabled({...env,SOCTHINK_BILLING_DATABASE_URL:"postgres://example.org/voucher_ci"}));
+assert(!voucherPreviewEnabled({...env,SOCTHINK_PUBLIC_ORIGIN:"https://socthink.cn"}));
+assert(!voucherPreviewEnabled({...env,SOCTHINK_VOUCHER_PREVIEW_LOOKUP_KEY:"invalid"}));
+console.log("VOUCHER_PREVIEW_GATE=PASS");
