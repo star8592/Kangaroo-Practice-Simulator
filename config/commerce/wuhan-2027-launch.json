@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "status": "preparation_only",
+  "region": "wuhan",
+  "examYear": 2027,
+  "template": "W2",
+  "currency": "CNY",
+  "validUntil": "2027-04-18T23:59:59+08:00",
+  "canonicalPath": "/assessments/english-speaking/wuhan/2027",
+  "checkoutPath": "/membership",
+  "identityAuthority": "socthink",
+  "ledgerAuthority": "socthink",
+  "referenceScoreOnly": true,
+  "paidCheckoutEnabled": false,
+  "skus": [
+    {"id":"wh-ls-2027-trial","priceMinor":0,"studentSeats":1,"scoredAttempts":1,"minimumVerifiedPapers":1,"enabledForSale":false},
+    {"id":"wh-ls-2027-entry","priceMinor":990,"studentSeats":1,"scoredAttempts":5,"minimumVerifiedPapers":5,"enabledForSale":false},
+    {"id":"wh-ls-2027-standard","priceMinor":3990,"studentSeats":1,"scoredAttempts":30,"minimumVerifiedPapers":5,"enabledForSale":false},
+    {"id":"wh-ls-2027-plus","priceMinor":6990,"studentSeats":1,"scoredAttempts":100,"minimumVerifiedPapers":5,"requiresDetailedCorrection":true,"enabledForSale":false},
+    {"id":"wh-ls-2027-class30","priceMinor":39900,"studentSeats":30,"scoredAttempts":null,"enabledForSale":false}
+  ],
+  "channels": [
+    {"id":"website","provider":"wechat","status":"awaiting_entitlement_and_payment_acceptance"},
+    {"id":"xiaohongshu","provider":"xiaohongshu","status":"awaiting_category_and_voucher_approval","externalSkuId":null},
+    {"id":"douyin","provider":"douyin","status":"planned","externalSkuId":null},
+    {"id":"taobao","provider":"taobao","status":"planned","externalSkuId":null},
+    {"id":"institution","provider":"contract","status":"planned","externalSkuId":null}
+  ]
+}
