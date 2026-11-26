@@ -56,7 +56,7 @@ export const regionPath=(r:Pick<SpeakingRegion,"city"|"year">)=>ENGLISH_SPEAKING
 export const regionByYear=(city:string,year:string)=>SPEAKING_REGIONS.find(r=>r.city===city&&r.year===year);
 export const cityDefault=(city:string)=>SPEAKING_REGIONS.find(r=>r.city===city);
 export function regionExamHref(r:SpeakingRegion,p:SpeakingRegion["papers"][number],mode:"simulation"|"practice",focus?:string){
- const q=new URLSearchParams({paper:r.paperId,mode});
+ const q=new URLSearchParams({paper:r.paperId,mode,edition:"city"});
  if(p.version)q.set("version",p.version);
  if(p.pack)q.set("pack",p.pack);
  if(focus&&mode==="practice")q.set("focus",focus);

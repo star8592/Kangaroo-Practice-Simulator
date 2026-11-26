@@ -17,6 +17,7 @@ for(const r of SPEAKING_REGIONS){
  for(const paper of r.papers){
   const u=new URL(regionExamHref(r,paper,"simulation","test"),"https://socthink.cn");
   assert.equal(u.searchParams.get("paper"),r.paperId);
+  assert.equal(u.searchParams.get("edition"),"city");
   assert.equal(u.searchParams.get("mode"),"simulation");
   assert.equal(u.searchParams.has("focus"),false);
   if(r.city==="wuhan")assert.ok(["W1","W2","W3"].includes(u.searchParams.get("version")??""));
@@ -24,6 +25,7 @@ for(const r of SPEAKING_REGIONS){
  for(const d of r.drills??[]){
   const u=new URL(regionExamHref(r,r.papers[0],"practice",d.id),"https://socthink.cn");
   assert.equal(u.searchParams.get("paper"),r.paperId);
+  assert.equal(u.searchParams.get("edition"),"city");
   assert.equal(u.searchParams.get("focus"),d.id);
   assert.equal(u.searchParams.get("mode"),"practice");
  }
