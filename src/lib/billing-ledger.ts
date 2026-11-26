@@ -2,6 +2,7 @@ import crypto from "node:crypto";
 import { Pool, type PoolClient } from "pg";
 import type { AccessGrant } from "./access-policy";
 import {verifyDigitalResourceIntegrity,type DigitalResourceFile} from "./digital-resource-file";
+import {voucherPreviewEnabled} from "./commerce/voucher-preview";
 import {DIGITAL_SALES_POLICY_VERSION} from "./digital-sales-policy";
 
 // Internal transactional ledger; no HTTP handler exposes settlement mutations.
@@ -104,7 +105,7 @@ export async function createBillingOrder(
     throw new BillingConflictError("Digital sales policy confirmation required");
   return transaction(async c=>{
     const product=await c.query<{
-      amount_minor:string;currency:string;product_kind:"subscription"|"item"|"service"|"organization";
+      amount_minor:string;currency:string;product_kind:"subscription"|"item"|"service"|"organization"|"exam_access";
       content_kind:"exam"|"resource"|"report"|"career_interview"|"vocab_seats"|null;content_id:string|null;
       rights_approved:boolean;delivery_verified:boolean;access_restricted:boolean;title_zh:string|null;
     }>(
@@ -112,6 +113,14 @@ export async function createBillingOrder(
     if(!product.rows[0])throw new BillingConflictError("Product unavailable");
     const id="ord_"+crypto.randomBytes(12).toString("hex");
     const p=product.rows[0];
+    if(p.product_kind==="exam_access"){
+      if(!voucherPreviewEnabled()||provider!=="wechat_native"||organization||!consent)
+        throw new BillingConflictError("Exam checkout not activated");
+      const result=await c.query<{amount:string}>(
+        "SELECT exam_access_draft.create_direct_order($1,$2,$3,$4,$5,$6)::text AS amount",
+        [id,parentId,productId,provider,consent.policyVersion,consent.acceptedAt]);
+      return {id,priceMinor:Number(result.rows[0].amount),currency:p.currency};
+    }
     // Item sales require separate verified content rights and a working delivery target.
     if(p.product_kind==="item" && (!p.rights_approved || !p.delivery_verified ||
         !p.access_restricted || !p.content_kind || !p.content_id ||
@@ -327,7 +336,7 @@ export async function settleVerifiedOrder(r:VerifiedPaymentReceipt){
       id:string;payer_parent_id:string;price_minor:string;currency:string;provider:string;
       provider_transaction_id:string|null;state:string;
       tier:"plus"|"pro"|null;period:"month"|"year"|null;
-      product_kind:"subscription"|"item"|"service"|"organization";
+      product_kind:"subscription"|"item"|"service"|"organization"|"exam_access";
       content_kind:"exam"|"resource"|"report"|"career_interview"|"vocab_seats"|null;content_id:string|null;
       service_sessions_snapshot:number|null;service_billing_mode_snapshot:"per_use"|"monthly"|null;
       organization_id:string|null;organization_seats_snapshot:number|null;organization_days_snapshot:number|null;
@@ -337,6 +346,12 @@ export async function settleVerifiedOrder(r:VerifiedPaymentReceipt){
       throw new BillingConflictError("Provider order amount/currency mismatch");
     if(o.state==="paid"){
       if(o.provider_transaction_id!==r.transactionId)throw new BillingConflictError("Transaction already settled differently");
+      if(o.product_kind==="exam_access"){
+        if(!voucherPreviewEnabled())throw new BillingConflictError("Exam checkout not activated");
+        const e=await c.query("SELECT source_order_id FROM exam_access_draft.grants WHERE source_order_id=$1",[o.id]);
+        if(!e.rows[0])throw new BillingConflictError("Paid exam order without grant");
+        return {orderId:o.id,grantId:o.id,tier:null,created:false};
+      }
       const grantTable=o.product_kind==="item"?"billing_item_entitlements":o.product_kind==="service"?
         "billing_career_session_grants":o.product_kind==="organization"?
         "billing_organization_entitlements":"billing_entitlements";
@@ -352,6 +367,11 @@ export async function settleVerifiedOrder(r:VerifiedPaymentReceipt){
       [r.provider,r.eventId,o.id,r.transactionId,r.verifiedAt,r.payloadSha256]);
     await c.query("UPDATE billing_orders SET state='paid',paid_at=$2,provider_transaction_id=$3 WHERE id=$1",
       [o.id,r.verifiedAt,r.transactionId]);
+    if(o.product_kind==="exam_access"){
+      if(!voucherPreviewEnabled())throw new BillingConflictError("Exam checkout not activated");
+      await c.query("SELECT exam_access_draft.grant_paid_direct_order($1)",[o.id]);
+      return {orderId:o.id,grantId:o.id,tier:null,created:true};
+    }
     if(o.product_kind==="organization"){
       if(o.content_kind!=="vocab_seats"||o.content_id!=="vocabulary"||
         !o.organization_id||!ORG_ID.test(o.organization_id)||
@@ -440,7 +460,7 @@ export async function refundVerifiedOrder(r:VerifiedPaymentReceipt){
   return transaction(async c=>{
     const rows=await c.query<{
       id:string;provider:string;price_minor:string;currency:string;provider_transaction_id:string|null;state:string;
-      product_kind:"subscription"|"item"|"service"|"organization";
+      product_kind:"subscription"|"item"|"service"|"organization"|"exam_access";
     }>("SELECT * FROM billing_orders WHERE id=$1 FOR UPDATE",[r.orderId]);
     const o=rows.rows[0];
     if(!o || o.provider!==r.provider || Number(o.price_minor)!==r.amountMinor ||
@@ -453,6 +473,10 @@ export async function refundVerifiedOrder(r:VerifiedPaymentReceipt){
     await c.query("UPDATE billing_orders SET state='refunded',refunded_at=$2 WHERE id=$1",[o.id,r.verifiedAt]);
     await c.query("UPDATE billing_entitlements SET revoked_at=$2 WHERE source_order_id=$1 AND revoked_at IS NULL",[o.id,r.verifiedAt]);
     await c.query("UPDATE billing_item_entitlements SET revoked_at=$2 WHERE source_order_id=$1 AND revoked_at IS NULL",[o.id,r.verifiedAt]);
+    if(o.product_kind==="exam_access"){
+      if(!voucherPreviewEnabled())throw new BillingConflictError("Exam checkout not activated");
+      await c.query("UPDATE exam_access_draft.grants SET revoked_at=$2 WHERE source_order_id=$1 AND revoked_at IS NULL",[o.id,r.verifiedAt]);
+    }
     if(o.product_kind==="service")
       await c.query("UPDATE billing_career_session_grants SET revoked_at=$2 WHERE source_order_id=$1 AND revoked_at IS NULL",[o.id,r.verifiedAt]);
     if(o.product_kind==="organization")

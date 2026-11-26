@@ -1,0 +1,33 @@
+import assert from "node:assert/strict";
+import {createHash} from "node:crypto";
+import {billingPool,closeBillingPoolForTests,createBillingOrder,settleVerifiedOrder,refundVerifiedOrder,type VerifiedPaymentReceipt} from "../src/lib/billing-ledger";
+import {DIGITAL_SALES_POLICY_VERSION} from "../src/lib/digital-sales-policy";
+import {voucherPreviewEnabled} from "../src/lib/commerce/voucher-preview";
+async function main(){
+ assert(voucherPreviewEnabled(),"isolated preview required");
+ const p=billingPool();
+ const consent={policyVersion:DIGITAL_SALES_POLICY_VERSION,acceptedAt:new Date()};
+ const sku="wh-ls-2027-standard";
+ const buyer="par_fixture_direct";
+ await p.query("INSERT INTO billing_products(id,product_kind,content_kind,content_id,title_zh,amount_minor,currency,enabled,rights_approved,delivery_verified,access_restricted) VALUES($1,'exam_access','exam_access','wuhan-2027','test fixture',3990,'CNY',true,true,true,true)",[sku]);
+ await p.query("INSERT INTO exam_access_draft.offer_terms VALUES($1,30,now()+interval '2 day','all_verified_papers_and_updates')",[sku]);
+ const first=await Promise.allSettled([createBillingOrder(buyer,sku,"wechat_native",consent),createBillingOrder(buyer,sku,"wechat_native",consent)]);
+ const success=first.filter(r=>r.status==="fulfilled");
+ assert.equal(success.length,1);
+ const order=success[0].value;
+ assert.equal(order.priceMinor,3990);
+ await p.query("UPDATE exam_access_draft.offer_terms SET capacity=5 WHERE product_id=$1",[sku]);
+ const rec:VerifiedPaymentReceipt={provider:"wechat_native",orderId:order.id,eventId:"fixture-pay",transactionId:"fixture-txn",amountMinor:3990,currency:"CNY",verifiedAt:new Date(),payloadSha256:createHash("sha256").update("fixture").digest("hex"),signatureVerified:true,providerStatusConfirmed:true};
+ await assert.rejects(()=>settleVerifiedOrder({...rec,amountMinor:1}));
+ assert.equal((await p.query("SELECT count(*)::int n FROM exam_access_draft.grants")).rows[0].n,0);
+ assert.equal((await settleVerifiedOrder(rec)).created,true);
+ assert.equal((await settleVerifiedOrder(rec)).created,false);
+ assert.equal((await p.query("SELECT capacity FROM exam_access_draft.grants WHERE source_order_id=$1",[order.id])).rows[0].capacity,30);
+ assert.equal((await p.query("SELECT exam_access_draft.consume_report($1,'wuhan-2027','fixture-report') AS r",[buyer])).rows[0].r,"consumed");
+ assert.equal((await refundVerifiedOrder({...rec,eventId:"fixture-refund"})).revoked,true);
+ assert.equal((await refundVerifiedOrder({...rec,eventId:"fixture-refund"})).revoked,false);
+ assert.equal((await p.query("SELECT count(*)::int n FROM exam_access_draft.active_grants")).rows[0].n,0);
+ assert.equal((await p.query("SELECT count(*)::int n FROM exam_access_draft.completed_reports")).rows[0].n,1);
+ console.log("DIRECT_EXAM_LEDGER_PREVIEW=PASS");
+}
+main().catch(e=>{console.error(e);process.exitCode=1;}).finally(closeBillingPoolForTests);
