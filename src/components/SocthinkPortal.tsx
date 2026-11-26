@@ -1,5 +1,7 @@
 import Link from "next/link";
 import styles from "./SocthinkPortal.module.css";
+import {regionByYear,regionPath,regionExamHref} from "@/lib/english-speaking-regions";
+const wuhan=regionByYear("wuhan","2027")!;
 
 // C and B customers have different journeys; disciplines remain shared.
 const AUDIENCES=[
@@ -29,6 +31,20 @@ export default function SocthinkPortal(){
     <input id="socthink-query" type="search" name="q" placeholder="搜索已收录的职业课程、技能或实训" maxLength={100}/>
     <button type="submit">搜索</button>
    </form>
+  </section>
+  <section className={styles.examSpotlight} aria-labelledby="wuhan-spotlight-title" data-testid="wuhan-home-promotion">
+   <div className={styles.examSpotlightCopy}>
+    <span className={styles.examSpotlightTag}>2027 武汉中考 · 听说新考制</span>
+    <h2 id="wuhan-spotlight-title">听说机考30分，提前练起来</h2>
+    <p>4月17—18日正式考试。四大题型原创限时模拟，考后查看原文证据、朗读错词及针对性复练建议。</p>
+    <div className={styles.examSpotlightSkills}>{wuhan.skills.map(([name])=><span key={name}>{name}</span>)}</div>
+    <div className={styles.examSpotlightActions}><Link href={regionPath(wuhan)}>进入武汉2027专版 →</Link><Link href={regionExamHref(wuhan,wuhan.papers[0],"simulation")}>开始模拟考试</Link></div>
+    <small>依据长江日报2026年11月26日报道（武汉市政府门户转载）。本站原创训练，非官方试卷；开放口语语义评分仍待完善。</small>
+   </div>
+   <div className={styles.examSpotlightVisual} aria-hidden="true">
+    <span>英语听说机考</span><strong>30<span>分</span></strong><div>英语总分 120 · 笔试 90</div>
+    <svg viewBox="0 0 200 46" width="200" height="46" fill="none" aria-hidden="true">{[8,16,28,12,36,24,42,20,32,12,26,38,16,24,9,22,33,12,20].map((h,i)=><rect key={i} x={5+i*10} y={(46-h)/2} width="4" height={h} rx="2" fill="currentColor" opacity={0.45+(i%3)*0.2}/>)}</svg>
+   </div>
   </section>
   <section className={styles.audienceSection} aria-labelledby="choose-audience">
    <div className={styles.sectionHeading}>

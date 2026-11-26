@@ -23,6 +23,9 @@ for(const href of ['/my/learning','/teach','/teach#organizations'])
 for(const [id,href] of [['math','/math'],['english','/english'],['k12','/subjects'],['career','/learn'],['assessment','/assessment-center'],['exams','/assessments']])
  assert(portal.includes('id:"'+id+'"')&&portal.includes('href:"'+href+'"'),id);
 assert.match(portal,/id="learning-catalog"/);
+assert.ok(portal.indexOf('data-testid="wuhan-home-promotion"')<portal.indexOf('aria-labelledby="choose-audience"'));
+assert.ok(portal.includes('regionPath(wuhan)')&&portal.includes('regionExamHref(wuhan,wuhan.papers[0],"simulation")'));
+assert.ok(portal.includes('非官方试卷')&&portal.includes('开放口语语义评分仍待完善'));
 assert.match(css,/\.audienceGrid/);
 assert.match(css,/@media\(max-width:760px\)/);
 assert.match(header,/SITE_PORTAL_NAV/);
