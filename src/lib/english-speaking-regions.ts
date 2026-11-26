@@ -1,7 +1,7 @@
 /** Public read-only projection of AccentLab regional exam catalog.
  * Not an independent question bank, scorer, payment or exam-session authority.
  * Existing engine guides: AccentLab frontend/src/data/officialExamGuides.ts.
- * Wuhan source: supplied implementation-plan scan, original pp.2–4; public link pending.
+ * Wuhan primary source: Changjiang Daily 2026-11-26 (government portal reprint); supplied scan is supplemental.
  */
 export const ENGLISH_SPEAKING_ROOT="/assessments/english-speaking";
 const ENGINE="/english/pronunciation/app";
@@ -15,14 +15,14 @@ export type SpeakingRegion={
 };
 const twoPapers=[{label:"原创模拟卷 A",note:"地区题型训练",pack:"A"},{label:"原创模拟卷 B",note:"不同原创材料",pack:"B"}] as const;
 export const SPEAKING_REGIONS:readonly SpeakingRegion[]=[
- {city:"wuhan",year:"2027",cityName:"武汉",paperId:"wuhan-2027",status:"武汉政府门户11月26日报道确认四题型；详细参数待核",
- summary:"根据所获2027年全市初中毕业生学业水平考试英语听说机考实施方案扫描件（原页2–4），人机对话、单人单机；成绩与英语纸笔考试成绩一并公布。",
- facts:[["考试日期","4月17—18日"],["满分","30分"],["每场含考务","30分钟"],["缓考","4月19日"]],
+ {city:"wuhan",year:"2027",cityName:"武汉",paperId:"wuhan-2027",status:"长江日报2026-11-26报道 · 武汉市政府门户转载",
+ summary:"依据长江日报2026年11月26日报道：应届初中毕业生单人单机进行人机对话，英语总分120分，其中听说30分、笔试90分，成绩一并公布。",
+ facts:[["考试日期","4月17—18日"],["听说满分","30分"],["英语总分","120分"],["笔试满分","90分"],["每场含考务","30分钟"],["缓考","4月19日"]],
  skills:[["听后选择","听取对话或独白，选择正确信息。"],["听后应答","听懂问题，组织英语回答。"],["模仿朗读","先听示范，再模仿录音。"],["听后转述","提取信息并用英语转述。"]],
  papers:[{label:"W2 · 均衡四模块",note:"18项 · 20分钟教学训练",version:"W2"},{label:"W1 · 选择应答强化",note:"22项 · 25分钟教学训练",version:"W1"},{label:"W3 · 转述强化",note:"15项 · 18分钟教学训练",version:"W3"}],
  drills:[{name:"听后选择",id:"scene-museum-meeting"},{name:"听后应答",id:"answer-gift-budget"},{name:"模仿朗读",id:"read-trees"},{name:"听后转述",id:"retell-river-cleanup"}],
- sources:[{label:"武汉市人民政府：2026年11月26日实施方案发布报道",url:"https://www.wuhan.gov.cn/hdjl/rdhy/202611/t20261126_2885415.shtml"},{label:"湖北省教育厅：统一命题及机考政策（省级背景）",url:"https://jyt.hubei.gov.cn/zfxxgk/zc_GK2020/gfxwj_GK2020/202306/t20230629_4727322.shtml"}],
- caution:"政府门户已公开报道核心规则，完整原始公文待核。省级通知规定考务10分钟，优先使用20分钟训练卷。净答题时长、题量、正式题序、细项分值、播放次数与评分细则未在所获文件列明。W4/W5仅保留拓展练习。"},
+ sources:[{label:"长江日报：2026年11月26日实施方案发布报道（武汉市政府门户转载，首要依据）",url:"https://www.wuhan.gov.cn/hdjl/rdhy/202611/t20261126_2885415.shtml"},{label:"湖北省教育厅：统一命题及机考政策（省级背景）",url:"https://jyt.hubei.gov.cn/zfxxgk/zc_GK2020/gfxwj_GK2020/202306/t20230629_4727322.shtml"}],
+ caution:"以长江日报报道为首要依据，完整原始公文及详细样卷待核。净答题时长、题量、正式题序、分题分值、播放次数与评分细则未在报道中列明；20分钟卷仅为本站教学设置。W4/W5仅保留拓展练习。"},
  {city:"beijing",year:"2026",cityName:"北京",paperId:"beijing-2026",status:"2026赛制参考；非2027正式试卷",
  summary:"按现有北京2026版资料训练四类听说能力，模拟身份核验、耳麦和键盘检测、单向限时作答。",
  facts:[["2026满分","40分"],["2026考试时长","约30分钟"],["题型","四类"],["训练套卷","A / B"]],
