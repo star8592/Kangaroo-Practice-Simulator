@@ -1,17 +1,5 @@
 -- Candidate only. Apply after channel_exam_bridge.sql.
 BEGIN;
-CREATE TABLE IF NOT EXISTS exam_access_draft.offer_terms(
- product_id text PRIMARY KEY REFERENCES public.billing_products(id),
- capacity integer NOT NULL CHECK(capacity BETWEEN 1 AND 1000),
- expires_at timestamptz NOT NULL,
- paper_access text NOT NULL CHECK(paper_access IN ('five_verified_papers','all_verified_papers_and_updates'))
-);
-CREATE TABLE IF NOT EXISTS exam_access_draft.order_terms(
- source_order_id text PRIMARY KEY REFERENCES public.billing_orders(id),
- capacity integer NOT NULL CHECK(capacity BETWEEN 1 AND 1000),
- expires_at timestamptz NOT NULL,
- paper_access text NOT NULL CHECK(paper_access IN ('five_verified_papers','all_verified_papers_and_updates'))
-);
 -- Unique pending slot across both exam cards; not a prohibition on repeat purchases.
 CREATE UNIQUE INDEX IF NOT EXISTS billing_exam_draft_one_pending ON public.billing_orders(payer_parent_id,content_id)
  WHERE product_kind='exam_access' AND state='pending';
@@ -27,6 +15,10 @@ CREATE OR REPLACE FUNCTION exam_access_draft.create_direct_order(oid text,a text
  IF NOT FOUND THEN RAISE EXCEPTION 'exam product unavailable'; END IF;
  SELECT * INTO terms FROM exam_access_draft.offer_terms WHERE product_id=pid FOR SHARE;
  IF NOT FOUND OR terms.expires_at<=clock_timestamp() THEN RAISE EXCEPTION 'exam terms unavailable'; END IF;
+ IF terms.paper_access='five_verified_papers' THEN
+  PERFORM pg_advisory_xact_lock(hashtextextended(p.content_id,5438));
+  IF (SELECT count(*) FROM exam_access_draft.basic_papers b JOIN exam_access_draft.paper_registry r USING(exam_key,paper_id) WHERE b.exam_key=p.content_id AND r.verified AND r.available)<>5 THEN RAISE EXCEPTION 'basic bundle not ready'; END IF;
+ END IF;
  PERFORM pg_advisory_xact_lock(hashtextextended(jsonb_build_array(a,p.content_id)::text,9134));
  IF EXISTS(SELECT 1 FROM public.billing_orders WHERE payer_parent_id=a AND content_id=p.content_id AND product_kind='exam_access' AND state='pending') THEN RAISE EXCEPTION 'exam payment already pending'; END IF;
  INSERT INTO public.billing_orders(id,payer_parent_id,product_id,price_minor,currency,provider,product_kind,content_kind,content_id,title_snapshot,sales_policy_version,sales_policy_accepted_at)

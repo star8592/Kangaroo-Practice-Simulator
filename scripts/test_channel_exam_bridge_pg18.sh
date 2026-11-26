@@ -16,7 +16,8 @@ p -f ops/db/drafts/channel_exam_bridge.sql
 p -f ops/db/drafts/channel_exam_bridge.sql
 p -c "INSERT INTO billing_products(id,product_kind,content_kind,content_id,title_zh,amount_minor,currency,enabled,rights_approved,delivery_verified,access_restricted) VALUES
 ('wh-standard','exam_access','exam_access','wuhan-2027','fixture',3990,'CNY',true,true,true,true);
-INSERT INTO voucher_draft.channel_mapping VALUES('xiaohongshu','shop','sku-1','wh-standard',30,now()+interval '2 days',true);"
+INSERT INTO exam_access_draft.offer_terms VALUES('wh-standard',30,now()+interval '2 days','all_verified_papers_and_updates');
+INSERT INTO voucher_draft.channel_mapping SELECT 'xiaohongshu','shop','sku-1',product_id,capacity,expires_at,true FROM exam_access_draft.offer_terms;"
 issue(){ p -c "SELECT voucher_draft.issue_exam('xiaohongshu','shop','line',$1,'sku-1','actual-fixture-tx',${3:-3990},'CNY',repeat('$2',64),repeat('f',64),now())"; }
 claim(){ p -c "SELECT voucher_draft.claim_exam(repeat('$1',64),'$2')"; }
 refund(){ p -c "SELECT voucher_draft.refund_exam('xiaohongshu','shop','line',$1,repeat('e',64),now())"; }

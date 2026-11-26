@@ -13,7 +13,8 @@ async function main(){
  const b=authenticateOrCreateWechatParent({wechatId:"fixture-b",openId:"fixture-b"});
  const code="SOC-1-"+randomBytes(24).toString("base64url");
  const digest=createHmac("sha256",Buffer.from(process.env.SOCTHINK_VOUCHER_PREVIEW_LOOKUP_KEY!,"hex")).update("soc-voucher-lookup\0"+code).digest("hex");
- await db.query("INSERT INTO voucher_draft.channel_mapping VALUES('xiaohongshu','fixture-shop','fixture-external','wh-ls-2027-standard',30,now()+interval '2 days',true)");
+ await db.query("UPDATE exam_access_draft.offer_terms SET capacity=30");
+ await db.query("INSERT INTO voucher_draft.channel_mapping SELECT 'xiaohongshu','fixture-shop','fixture-external',product_id,capacity,expires_at,true FROM exam_access_draft.offer_terms");
  assert.equal((await db.query("SELECT voucher_draft.issue_exam('xiaohongshu','fixture-shop','fixture-line',0,'fixture-external','fixture-external-txn',3990,'CNY',$1,repeat('a',64),now()) AS r",[digest])).rows[0].r,"issued");
  function request(owner?:string,body:unknown={code},origin="http://localhost:3000"){
   const headers:Record<string,string>={origin,"content-type":"application/json"};

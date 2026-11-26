@@ -19,10 +19,11 @@ export DB=voucher_ci
 for f in ops/db/00*.sql ops/db/010*.sql ops/db/011*.sql; do p -f "$f" >/dev/null; done
 p -c 'CREATE ROLE socthink_billing NOLOGIN;'
 p -f ops/db/015_platform_organization_seats.sql >/dev/null
-for f in channel_voucher_receipt_projection exam_access_usage channel_exam_bridge direct_exam_checkout; do p -f "ops/db/drafts/$f.sql" >/dev/null; done
+for f in channel_voucher_receipt_projection exam_access_usage channel_exam_bridge direct_exam_checkout exam_paper_access; do p -f "ops/db/drafts/$f.sql" >/dev/null; done
 export NODE_ENV=development SOCTHINK_VOUCHER_PREVIEW=1 SOCTHINK_PUBLIC_ORIGIN=http://localhost:3000
 export SOCTHINK_BILLING_DATABASE_URL="postgresql://$(id -un):$pw@127.0.0.1:$port/voucher_ci"
 export SOCTHINK_VOUCHER_PREVIEW_LOOKUP_KEY="$(openssl rand -hex 32)"
 node_modules/.bin/tsx scripts/test_direct_exam_checkout_preview.ts
 export SOCTHINK_USER_DATA_DIR="$tmp/users"
 node_modules/.bin/tsx scripts/test_voucher_redeem_route_preview.ts
+node_modules/.bin/tsx scripts/test_exam_paper_access_preview.ts

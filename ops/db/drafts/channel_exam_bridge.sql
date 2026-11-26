@@ -15,6 +15,18 @@ BEGIN
   EXECUTE 'ALTER TABLE public.billing_orders ADD CONSTRAINT billing_orders_item_shape_check CHECK (('||expr||') OR (product_kind=''exam_access'' AND content_kind=''exam_access'' AND content_id IS NOT NULL AND service_sessions_snapshot IS NULL AND service_billing_mode_snapshot IS NULL AND organization_id IS NULL AND organization_seats_snapshot IS NULL AND organization_days_snapshot IS NULL))';
  END IF;
 END $$;
+CREATE TABLE IF NOT EXISTS exam_access_draft.offer_terms(
+ product_id text PRIMARY KEY REFERENCES public.billing_products(id),
+ capacity integer NOT NULL CHECK(capacity BETWEEN 1 AND 1000),
+ expires_at timestamptz NOT NULL,
+ paper_access text NOT NULL CHECK(paper_access IN ('five_verified_papers','all_verified_papers_and_updates'))
+);
+CREATE TABLE IF NOT EXISTS exam_access_draft.order_terms(
+ source_order_id text PRIMARY KEY REFERENCES public.billing_orders(id),
+ capacity integer NOT NULL CHECK(capacity BETWEEN 1 AND 1000),
+ expires_at timestamptz NOT NULL,
+ paper_access text NOT NULL CHECK(paper_access IN ('five_verified_papers','all_verified_papers_and_updates'))
+);
 CREATE TABLE IF NOT EXISTS voucher_draft.channel_mapping(
  channel text NOT NULL CHECK(channel IN ('xiaohongshu','douyin','taobao')),
  merchant_id text NOT NULL,
@@ -35,6 +47,7 @@ CREATE TABLE IF NOT EXISTS voucher_draft.order_receipts(
  amount_minor bigint NOT NULL CHECK(amount_minor>0),
  currency text NOT NULL CHECK(currency='CNY'),
  title_snapshot text NOT NULL,
+ paper_access text NOT NULL CHECK(paper_access IN ('five_verified_papers','all_verified_papers_and_updates')),
  central_order_id text UNIQUE REFERENCES public.billing_orders(id),
  PRIMARY KEY(channel,merchant_id,order_line_id,unit_index),
  FOREIGN KEY(channel,merchant_id,order_line_id,unit_index) REFERENCES voucher_draft.units(channel,merchant_id,order_line_id,unit_index)
@@ -48,6 +61,7 @@ CREATE OR REPLACE FUNCTION voucher_draft.issue_exam(c text,m text,l text,i integ
  DECLARE p public.billing_products%ROWTYPE;
  DECLARE old voucher_draft.order_receipts%ROWTYPE;
  DECLARE outcome text;
+ DECLARE terms exam_access_draft.offer_terms%ROWTYPE;
  BEGIN
  PERFORM voucher_draft.unit_lock(c,m,l,i);
  IF EXISTS(SELECT 1 FROM voucher_draft.refunds WHERE (channel,merchant_id,order_line_id,unit_index)=(c,m,l,i)) THEN RETURN 'refunded'; END IF;
@@ -60,10 +74,16 @@ CREATE OR REPLACE FUNCTION voucher_draft.issue_exam(c text,m text,l text,i integ
  IF NOT FOUND THEN RAISE EXCEPTION 'channel SKU unavailable'; END IF;
  SELECT * INTO p FROM public.billing_products WHERE id=map.product_id AND enabled AND product_kind='exam_access' AND rights_approved AND delivery_verified AND access_restricted FOR SHARE;
  IF NOT FOUND OR amount IS DISTINCT FROM p.amount_minor OR cur IS DISTINCT FROM p.currency OR map.expires_at<=clock_timestamp() THEN RAISE EXCEPTION 'product or amount unavailable'; END IF;
- outcome:=voucher_draft.issue(c,m,l,i,p.id,p.content_id,map.capacity,map.expires_at,h,r,t);
+ SELECT * INTO terms FROM exam_access_draft.offer_terms WHERE product_id=p.id FOR SHARE;
+ IF NOT FOUND OR (terms.capacity,terms.expires_at) IS DISTINCT FROM (map.capacity,map.expires_at) THEN RAISE EXCEPTION 'channel terms differ from central offer'; END IF;
+ IF terms.paper_access='five_verified_papers' THEN
+  PERFORM pg_advisory_xact_lock(hashtextextended(p.content_id,5438));
+  IF (SELECT count(*) FROM exam_access_draft.basic_papers b JOIN exam_access_draft.paper_registry r USING(exam_key,paper_id) WHERE b.exam_key=p.content_id AND r.verified AND r.available)<>5 THEN RAISE EXCEPTION 'basic bundle not ready'; END IF;
+ END IF;
+ outcome:=voucher_draft.issue(c,m,l,i,p.id,p.content_id,terms.capacity,terms.expires_at,h,r,t);
  IF outcome<>'issued' THEN RAISE EXCEPTION 'missing integrated receipt'; END IF;
- INSERT INTO voucher_draft.order_receipts(channel,merchant_id,order_line_id,unit_index,provider_transaction,external_sku,amount_minor,currency,title_snapshot)
- VALUES(c,m,l,i,tx,x,amount,cur,p.title_zh);
+ INSERT INTO voucher_draft.order_receipts(channel,merchant_id,order_line_id,unit_index,provider_transaction,external_sku,amount_minor,currency,title_snapshot,paper_access)
+ VALUES(c,m,l,i,tx,x,amount,cur,p.title_zh,terms.paper_access);
  RETURN 'issued';
  END;
 $$;
@@ -94,6 +114,7 @@ CREATE OR REPLACE FUNCTION voucher_draft.claim_exam(h text,a text)
  VALUES(oid,a,u.sku,rec.amount_minor,rec.currency,u.channel,'paid',u.paid_at,'exam_access','exam_access',u.content_id,rec.title_snapshot);
  INSERT INTO public.billing_payment_events(provider,event_id,order_id,event_kind,transaction_id,verified_at,payload_sha256)
  VALUES(u.channel,oid||':paid',oid,'paid',rec.provider_transaction,u.paid_at,u.verified_receipt_digest);
+ INSERT INTO exam_access_draft.order_terms VALUES(oid,u.capacity,u.expires_at,rec.paper_access);
  INSERT INTO exam_access_draft.grants(source_order_id,owner_id,exam_key,capacity,expires_at)
  VALUES(oid,a,u.content_id,u.capacity,u.expires_at);
  UPDATE voucher_draft.order_receipts SET central_order_id=oid WHERE (channel,merchant_id,order_line_id,unit_index)=(u.channel,u.merchant_id,u.order_line_id,u.unit_index);
