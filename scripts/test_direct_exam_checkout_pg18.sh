@@ -24,3 +24,5 @@ export NODE_ENV=development SOCTHINK_VOUCHER_PREVIEW=1 SOCTHINK_PUBLIC_ORIGIN=ht
 export SOCTHINK_BILLING_DATABASE_URL="postgresql://$(id -un):$pw@127.0.0.1:$port/voucher_ci"
 export SOCTHINK_VOUCHER_PREVIEW_LOOKUP_KEY="$(openssl rand -hex 32)"
 node_modules/.bin/tsx scripts/test_direct_exam_checkout_preview.ts
+export SOCTHINK_USER_DATA_DIR="$tmp/users"
+node_modules/.bin/tsx scripts/test_voucher_redeem_route_preview.ts
