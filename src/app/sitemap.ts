@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { ENGLISH_SPEAKING_ROOT,SPEAKING_REGIONS,regionPath } from "@/lib/english-speaking-regions";
 import { CAREER_ORIGINAL_GUIDES } from "@/lib/career-original-guides";
 import { TECH_BOOKS } from "@/lib/tech-books";
 import { ASSESSMENT_EVIDENCE } from "@/lib/assessment-evidence";
@@ -15,6 +16,8 @@ export const dynamic = "force-dynamic";
 const publicPaths = [
   "/",
   "/english",
+  ENGLISH_SPEAKING_ROOT,
+  ...SPEAKING_REGIONS.filter(r=>r.paperId!=="shanghai-2027").map(regionPath),
   "/subjects",
   "/teach",
   "/english/pronunciation",
