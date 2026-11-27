@@ -43,6 +43,41 @@ async function main(){
  await db.query("SELECT voucher_draft.refund_exam('xiaohongshu','paper-shop','line-mixed',0,repeat('7',64),now())");
  assert.equal(await debit(a,"fixture-7","refunded-advanced"),"no_entitlement");
  console.log("PAPER_SCOPED_DEBIT=PASS");
+ // Synthetic trusted-service receipts. Never expose receipt insertion to
+ // the browser, never treat R68 research decisions as verified scores.
+ async function verifiedDebit(owner:string,paper:string,report:string){
+  return (await db.query("SELECT exam_access_draft.consume_verified_report($1,'wuhan-2027',$2,$3) AS r",[owner,paper,report])).rows[0].r;
+ }
+ async function receipt(id:string,status:string,owner=a,valid=1,count=18){
+  await db.query("INSERT INTO exam_access_draft.verified_report_receipts VALUES($1,$2,'wuhan-2027','fixture-1',$3,repeat('b',64),$4,18,$5,$6,now())",[id,owner,'attempt-'+id,status,count,valid]);
+ }
+ assert.equal(await verifiedDebit(a,"fixture-1","nonexistent"),"no_verified_report");
+ await receipt("research-only","research");assert.equal(await verifiedDebit(a,"fixture-1","research-only"),"report_not_billable");
+ await receipt("failed-score","failed",a,0,17);assert.equal(await verifiedDebit(a,"fixture-1","failed-score"),"report_not_billable");
+ await assert.rejects(()=>receipt("fake-blank-verified","verified",a,0,18));
+ await assert.rejects(()=>receipt("fake-incomplete-verified","verified",a,1,17));
+ await receipt("trusted-fixture","verified");
+ assert.equal(await verifiedDebit(stranger,"fixture-1","trusted-fixture"),"report_scope_conflict");
+ assert.equal(await verifiedDebit(a,"fixture-2","trusted-fixture"),"report_scope_conflict");
+ assert.deepEqual((await Promise.all([verifiedDebit(a,"fixture-1","trusted-fixture"),verifiedDebit(a,"fixture-1","trusted-fixture")])).sort(),["already_consumed","consumed"]);
+ assert.equal(await verifiedDebit(a,"fixture-1","trusted-fixture"),"already_consumed");
+ await assert.rejects(()=>db.query("INSERT INTO exam_access_draft.verified_report_receipts SELECT 'new-id',owner_id,exam_key,paper_id,attempt_id,evidence_sha256,status,expected_tasks,accounted_tasks,valid_oral_results,finalized_at FROM exam_access_draft.verified_report_receipts WHERE report_id='trusted-fixture'"));
+ // Role grants only in this disposable database. No client-facing writer.
+ await db.query("CREATE ROLE fixture_report_writer NOLOGIN; CREATE ROLE fixture_report_consumer NOLOGIN; GRANT USAGE ON SCHEMA exam_access_draft TO fixture_report_writer,fixture_report_consumer; GRANT INSERT ON exam_access_draft.verified_report_receipts TO fixture_report_writer; GRANT EXECUTE ON FUNCTION exam_access_draft.consume_verified_report(text,text,text,text) TO fixture_report_consumer");
+ const isolated=await db.connect();
+ try{
+  await isolated.query("SET ROLE fixture_report_consumer");
+  await assert.rejects(()=>isolated.query("SELECT * FROM exam_access_draft.verified_report_receipts"),/permission denied/);
+  await assert.rejects(()=>isolated.query("SELECT exam_access_draft.consume_report($1,'wuhan-2027','fixture-1','bypass')",[a]),/permission denied/);
+  await assert.rejects(()=>isolated.query("INSERT INTO exam_access_draft.verified_report_receipts VALUES('forged',$1,'wuhan-2027','fixture-1','forged',repeat('a',64),'verified',18,18,1,now())",[a]),/permission denied/);
+  assert.equal((await isolated.query("SELECT exam_access_draft.consume_verified_report($1,'wuhan-2027','fixture-1','trusted-fixture') AS r",[a])).rows[0].r,"already_consumed");
+  await isolated.query("RESET ROLE; SET ROLE fixture_report_writer");
+  await isolated.query("INSERT INTO exam_access_draft.verified_report_receipts VALUES('writer-fixture',$1,'wuhan-2027','fixture-1','writer-attempt',repeat('a',64),'research',18,18,1,now())",[a]);
+  await assert.rejects(()=>isolated.query("UPDATE exam_access_draft.verified_report_receipts SET status='verified'"),/permission denied/);
+  await assert.rejects(()=>isolated.query("SELECT exam_access_draft.consume_verified_report($1,'wuhan-2027','fixture-1','trusted-fixture')",[a]),/permission denied/);
+ }finally{await isolated.query("RESET ROLE");isolated.release();}
+ console.log("VERIFIED_REPORT_ROLE_ISOLATION=PASS");
+ console.log("VERIFIED_REPORT_DEBIT_CONTRACT=PASS");
  await db.query("SELECT voucher_draft.refund_exam('xiaohongshu','paper-shop','line',0,repeat('e',64),now())");
  assert(!await open(b,"fixture-6"));
  const active=await db.query("SELECT count(*)::int n FROM exam_access_draft.active_grants WHERE owner_id=$1",[b]);
