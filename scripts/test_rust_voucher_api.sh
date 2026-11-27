@@ -306,7 +306,7 @@ if [[ "${SOCTHINK_TEST_AUTO_ARCHIVE:-0}" == "1" ]]; then
    WUHAN_RESEARCH_ARCHIVE_OWNER_A="$OWNER_ID" WUHAN_RESEARCH_ARCHIVE_OWNER_B="$OTHER_ID" \
    WUHAN_TEST_OWNER_SESSION="$OWNER_TOKEN" WUHAN_TEST_OTHER_SESSION="$OTHER_TOKEN" \
    python3 -u scripts/evidence_lab/test_wuhan_auto_archive.py)
-  [[ "$(psql_db -At -c 'SELECT count(*) FROM exam_access_draft.research_report_archive')" == "2" ]]
+  [[ "$(psql_db -At -c 'SELECT count(*) FROM exam_access_draft.research_report_archive')" == "3" ]]
   [[ "$(psql_db -At -c 'SELECT count(*) FROM exam_access_draft.completed_reports')" == "0" ]]
   echo WUHAN_AUTO_ARCHIVE_NO_BILLING=PASS
 fi
