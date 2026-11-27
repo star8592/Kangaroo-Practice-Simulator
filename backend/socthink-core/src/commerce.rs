@@ -7,7 +7,7 @@
 use axum::{
     Json, Router,
     body::Bytes,
-    extract::{DefaultBodyLimit, Query, State},
+    extract::{DefaultBodyLimit, Path, Query, State},
     http::{HeaderMap, HeaderValue, StatusCode, header},
     response::{IntoResponse, Response},
     routing::{get, post},
@@ -85,6 +85,10 @@ pub fn commerce_router(state: CommerceState) -> Router {
         .route("/healthz", get(health))
         .route("/api/platform/admin/commerce", get(admin_commerce))
         .route("/api/platform/billing/exam-access", get(exam_access))
+        .route(
+            "/api/platform/research/wuhan/reports/{id}",
+            get(research_report),
+        )
         .route(
             "/api/platform/billing/redeem",
             post(redeem_voucher).layer(DefaultBodyLimit::max(256)),
@@ -266,6 +270,41 @@ fn private_json(status: StatusCode, body: Value) -> Response {
         .headers_mut()
         .insert(header::VARY, HeaderValue::from_static("Cookie"));
     response
+}
+
+// This route exists only inside the already gated localhost commerce preview.
+// No public upload or caller-supplied owner; the research archive cannot bill.
+async fn research_report(
+    State(state): State<CommerceState>,
+    Path(id): Path<String>,
+    headers: HeaderMap,
+) -> Response {
+    let user = match auth_or_response(&headers, &state) {
+        Ok(u) => u,
+        Err(r) => return r,
+    };
+    if id.len() != 32
+        || !id
+            .bytes()
+            .all(|b| b.is_ascii_digit() || (b'a'..=b'f').contains(&b))
+    {
+        return private_json(StatusCode::NOT_FOUND, json!({"code":"REPORT_NOT_FOUND"}));
+    }
+    let result = sqlx::query_scalar::<_, Option<Value>>(
+        "SELECT exam_access_draft.read_research_report($1,$2)",
+    )
+    .bind(&user.id)
+    .bind(&id)
+    .fetch_one(&state.pool)
+    .await;
+    match result {
+        Ok(Some(report)) => private_json(StatusCode::OK, report),
+        Ok(None) => private_json(StatusCode::NOT_FOUND, json!({"code":"REPORT_NOT_FOUND"})),
+        Err(_) => private_json(
+            StatusCode::SERVICE_UNAVAILABLE,
+            json!({"code":"TEMPORARILY_UNAVAILABLE"}),
+        ),
+    }
 }
 
 fn auth_or_response(headers: &HeaderMap, state: &CommerceState) -> Result<ParentRecord, Response> {

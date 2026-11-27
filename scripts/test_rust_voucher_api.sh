@@ -4,11 +4,13 @@ ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
 TMP="$(mktemp -d /tmp/socthink-rust-voucher-api.XXXXXX)"
 API_PID=""
+NEXT_PID=""
 OWN_PG=0
 PG_BIN="/usr/lib/postgresql/18/bin"
 if [[ -n "$(printenv PG18_BIN 2>/dev/null || true)" ]]; then PG_BIN="$(printenv PG18_BIN)"; fi
 API_PORT="$(printenv SOCTHINK_COMMERCE_TEST_PORT 2>/dev/null || python3 -c 'import socket;s=socket.socket();s.bind(("127.0.0.1",0));print(s.getsockname()[1]);s.close()')"
 cleanup() {
+  if [[ -n "$NEXT_PID" ]]; then kill -- "-$NEXT_PID" >/dev/null 2>&1 || true; wait "$NEXT_PID" >/dev/null 2>&1 || true; fi
   if [[ -n "$API_PID" ]]; then kill "$API_PID" >/dev/null 2>&1 || true; wait "$API_PID" >/dev/null 2>&1 || true; fi
   if [[ "$OWN_PG" == "1" ]]; then "$PG_BIN/pg_ctl" -D "$TMP/pg" -m immediate stop >/dev/null 2>&1 || true; fi
   rm -rf -- "$TMP"
@@ -44,6 +46,7 @@ psql_db -f ops/db/drafts/channel_voucher_receipt_projection.sql >/dev/null
 psql_db -f ops/db/drafts/exam_access_usage.sql >/dev/null
 psql_db -f ops/db/drafts/channel_exam_bridge.sql >/dev/null
 psql_db -f ops/db/drafts/exam_paper_access.sql >/dev/null
+psql_db -f ops/db/drafts/wuhan_research_report_archive.sql >/dev/null
 
 RUN_HEX="$(od -An -N8 -tx1 /dev/urandom | tr -d ' \n')"
 OTHER_HEX="$(od -An -N8 -tx1 /dev/urandom | tr -d ' \n')"
@@ -105,6 +108,29 @@ RECEIPT_DIGEST="$(printf 'isolated-provider-receipt' | sha256sum | cut -d' ' -f1
 ISSUE_RESULT="$(psql_db -At -c "SELECT voucher_draft.issue_exam('xiaohongshu','$MERCHANT_ID','$ORDER_LINE',0,'$EXTERNAL_SKU','$TXN_ID',3990,'CNY','$LOOKUP_DIGEST','$RECEIPT_DIGEST',now())")"
 [[ "$ISSUE_RESULT" == "issued" ]]
 
+REPORT_ID="$(python3 - "$TMP/report.json" <<'PYREPORT'
+import json,sys,secrets,os
+from pathlib import Path
+source=os.environ.get("WUHAN_SYNTHETIC_REPORT_FIXTURE")
+if source:
+    p=Path(source).resolve()
+    assert p.parent==Path("/tmp") and p.name.startswith("wuhan-r72-synthetic-")
+    report=json.loads(p.read_text())
+else:
+    report={"attempt_id":secrets.token_hex(16),"paper_id":"WH01","finalized":True,
+            "billable":False,"official_score":False,"report_status":"research","total_score":None,
+            "total_tasks":18,"items":[{"task_id":f"fixture-{i}","state":"not_submitted"} for i in range(18)],
+            "rubric_sha256":"a"*64,"report_evidence_sha256":"b"*64}
+assert report["report_status"]=="research" and report["billable"] is False and report["total_score"] is None
+Path(sys.argv[1]).write_text(json.dumps(report,ensure_ascii=False))
+print(report["attempt_id"])
+PYREPORT
+)"
+# Trusted test writer only, not a browser upload endpoint.
+psql_db -v owner="$OWNER_ID" -v report_id="$REPORT_ID" -v report_json="$(cat "$TMP/report.json")" <<'SQLREPORT'
+INSERT INTO exam_access_draft.research_report_archive(attempt_id,owner_id,paper_id,payload)
+VALUES(:'report_id',:'owner',(:'report_json'::jsonb)->>'paper_id',:'report_json'::jsonb);
+SQLREPORT
 cargo build --locked --offline --manifest-path backend/socthink-core/Cargo.toml --bin socthink-commerce-api >/dev/null
 env NODE_ENV="$NODE_ENV" SOCTHINK_VOUCHER_PREVIEW="$SOCTHINK_VOUCHER_PREVIEW" \
   SOCTHINK_BILLING_DATABASE_URL="$SOCTHINK_BILLING_DATABASE_URL" \
@@ -180,4 +206,91 @@ d=json.load(open(sys.argv[1]))
 assert len(d["rows"])==1 and d["rows"][0]["status"]=="refunded"
 PY
 
+REPORT_URL="$BASE/api/platform/research/wuhan/reports/$REPORT_ID"
+request 401 "$REPORT_URL"
+request 404 -H "Cookie: socthink_parent_session=$OTHER_TOKEN" -H "X-Owner: $OWNER_ID" "$REPORT_URL"
+request 200 -H "Cookie: socthink_parent_session=$OWNER_TOKEN" "$REPORT_URL"
+python3 - "$TMP/report.json" "$TMP/response.json" <<'PYREPORT'
+import json,sys
+a,b=[json.load(open(p)) for p in sys.argv[1:]]
+assert a==b and b["billable"] is False and b["total_score"] is None
+PYREPORT
+request 405 -X POST -H "Cookie: socthink_parent_session=$OWNER_TOKEN" --data '{"billable":true}' "$REPORT_URL"
+# Missing values and billable archives fail the SQL CHECK (including NULL).
+psql_db <<'SQLREPORT'
+DO $$
+BEGIN
+ BEGIN
+  INSERT INTO exam_access_draft.research_report_archive
+  SELECT repeat('c',32),owner_id,paper_id,jsonb_set(jsonb_set(payload,'{attempt_id}',to_jsonb(repeat('c',32))),'{billable}','true'),now()
+  FROM exam_access_draft.research_report_archive LIMIT 1;
+  RAISE EXCEPTION 'billable archive accepted';
+ EXCEPTION WHEN check_violation THEN NULL; END;
+ BEGIN
+  INSERT INTO exam_access_draft.research_report_archive
+  SELECT repeat('d',32),owner_id,paper_id,jsonb_set(payload,'{attempt_id}',to_jsonb(repeat('d',32)))-'billable',now()
+  FROM exam_access_draft.research_report_archive LIMIT 1;
+  RAISE EXCEPTION 'missing billable flag accepted';
+ EXCEPTION WHEN check_violation THEN NULL; END;
+END $$;
+SQLREPORT
+if [[ "${SOCTHINK_TEST_RESEARCH_PAGE:-0}" == "1" ]]; then
+  [[ -n "${WUHAN_SYNTHETIC_REPORT_FIXTURE:-}" ]] || { echo "Synthetic report fixture required"; exit 1; }
+  NEXT_PORT="$(python3 -c 'import socket;s=socket.socket();s.bind(("127.0.0.1",0));print(s.getsockname()[1]);s.close()')"
+  export SOCTHINK_RUST_COMMERCE_INTERNAL_URL="$BASE"
+  setsid node_modules/.bin/next dev --webpack -H 127.0.0.1 -p "$NEXT_PORT" >"$TMP/next.log" 2>&1 &
+  NEXT_PID=$!
+  for _ in $(seq 1 80); do
+    grep -q 'Ready in' "$TMP/next.log" && break
+    kill -0 "$NEXT_PID" 2>/dev/null || { tail -30 "$TMP/next.log"; exit 1; }
+    sleep 0.25
+  done
+  URL="http://127.0.0.1:$NEXT_PORT/account/research/wuhan/$REPORT_ID"
+  curl -fsS --max-time 60 -H "Cookie: socthink_parent_session=$OWNER_TOKEN" "$URL" >"$TMP/page.html" || { tail -30 "$TMP/next.log";exit 1; }
+  python3 - "$TMP/page.html" <<'PYREPORT'
+from html.parser import HTMLParser
+import sys
+class Page(HTMLParser):
+ def __init__(self):super().__init__();self.tasks=[];self.content=[];self.skip=False
+ def handle_starttag(self,t,a):
+  if t in ('script','style'):self.skip=True
+  d=dict(a)
+  if 'data-report-task' in d:self.tasks.append(d['data-report-task'])
+ def handle_endtag(self,t):
+  if t in ('script','style'):self.skip=False
+ def handle_data(self,d):
+  if not self.skip:self.content.append(d)
+p=Page();p.feed(open(sys.argv[1]).read());s=' '.join(p.content)
+assert len(p.tasks)==18 and len(set(p.tasks))==18,p.tasks
+assert '两种识别结果不一致' in s and 'Whisper 文本差异' in s and 'Parakeet 文本差异' in s
+assert '内部研究报告' in s and '不扣次' in s
+print('WUHAN_RESEARCH_PAGE_RENDER=PASS 18 tasks, explicit ASR disagreement and no billing')
+PYREPORT
+  OTHER_STATUS="$(curl -sS --max-time 45 -o "$TMP/other.html" -w '%{http_code}' -H "Cookie: socthink_parent_session=$OTHER_TOKEN" "$URL")"
+  [[ "$OTHER_STATUS" == 404 ]] || { echo "foreign page status=$OTHER_STATUS";exit 1; }
+  echo WUHAN_RESEARCH_PAGE_OWNER_SCOPE=PASS
+fi
+# Prove read-only role cannot mutate archive or access the backing table.
+# DDL is rolled back, including the temporary role.
+psql_db <<'SQLREPORT'
+BEGIN;
+CREATE ROLE fixture_wuhan_archive_reader NOLOGIN;
+GRANT USAGE ON SCHEMA exam_access_draft TO fixture_wuhan_archive_reader;
+GRANT EXECUTE ON FUNCTION exam_access_draft.read_research_report(text,text) TO fixture_wuhan_archive_reader;
+SET LOCAL ROLE fixture_wuhan_archive_reader;
+DO $$
+BEGIN
+ BEGIN
+  PERFORM payload FROM exam_access_draft.research_report_archive LIMIT 1;
+  RAISE EXCEPTION 'reader got raw table access';
+ EXCEPTION WHEN insufficient_privilege THEN NULL; END;
+ BEGIN
+  DELETE FROM exam_access_draft.research_report_archive;
+  RAISE EXCEPTION 'reader modified archive';
+ EXCEPTION WHEN insufficient_privilege THEN NULL; END;
+END $$;
+ROLLBACK;
+SQLREPORT
+echo WUHAN_RESEARCH_ARCHIVE_ROLE_ISOLATION=PASS
+echo "WUHAN_RESEARCH_ARCHIVE_SESSION_READ=PASS"
 echo "RUST_VOUCHER_API_E2E=PASS auth=verified owner_scope=verified idempotent_claim=PASS cross_account_rejected=PASS refund_revokes_future_access=PASS no_raw_codes=PASS"
