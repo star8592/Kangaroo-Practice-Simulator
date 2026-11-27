@@ -27,3 +27,4 @@ node_modules/.bin/tsx scripts/test_direct_exam_checkout_preview.ts
 export SOCTHINK_USER_DATA_DIR="$tmp/users"
 node_modules/.bin/tsx scripts/test_voucher_redeem_route_preview.ts
 node_modules/.bin/tsx scripts/test_exam_paper_access_preview.ts
+node_modules/.bin/tsx scripts/test_admin_voucher_preview.ts

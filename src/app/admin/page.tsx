@@ -12,6 +12,7 @@ import { readStorefrontAvailability } from "@/lib/store-products";
 import { nativeCheckoutAllowed, nativeSettlementAllowed } from "@/lib/wechat-native-flags";
 import { getSeoMonitorDashboard } from "@/lib/seo-monitor-store";
 import { listTrainingExamProfiles } from "@/lib/training-question-bank";
+import {voucherPreviewEnabled} from "@/lib/commerce/voucher-preview";
 import AdminOperationsNav from "@/components/AdminOperationsNav";
 import styles from "./executive.module.css";
 
@@ -127,7 +128,7 @@ export default async function AdminPage({ searchParams }: Params) {
         </nav>
       </div>
     </header>
-    <AdminOperationsNav />
+    <AdminOperationsNav commercePreview={owner&&voucherPreviewEnabled()} />
 
     <section aria-labelledby="income-heading" className={styles.section}>
       <div className={styles.sectionTitle}>
