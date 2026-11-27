@@ -36,7 +36,7 @@ export default function SocthinkPortal(){
    <div className={styles.examSpotlightCopy}>
     <span className={styles.examSpotlightTag}>2027 武汉中考 · 听说新考制</span>
     <h2 id="wuhan-spotlight-title">听说机考30分，提前练起来</h2>
-    <p>4月17—18日正式考试。四大题型原创限时模拟，考后查看原文证据、朗读错词及针对性复练建议。</p>
+    <p>4月17—18日正式考试。首批{wuhan.papers.length}套四大题型原创限时模拟，考后查看原文证据、朗读错词及针对性复练建议。</p>
     <div className={styles.examSpotlightSkills}>{wuhan.skills.map(([name])=><span key={name}>{name}</span>)}</div>
     <div className={styles.examSpotlightActions}><Link href={regionPath(wuhan)}>进入武汉2027专版 →</Link><Link href={regionExamHref(wuhan,wuhan.papers[0],"simulation")}>开始模拟考试</Link></div>
     <small>依据长江日报2026年11月26日报道（武汉市政府门户转载）。本站原创训练，非官方试卷；开放口语语义评分仍待完善。</small>
