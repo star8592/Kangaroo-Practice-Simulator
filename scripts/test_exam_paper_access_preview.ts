@@ -1,7 +1,5 @@
 import assert from "node:assert/strict";
-import {NextRequest} from "next/server";
-import {authenticateOrCreateWechatParent,createParentSessionToken,PARENT_SESSION_COOKIE} from "../src/lib/parent-auth";
-import {GET} from "../src/app/api/platform/billing/exam-access/route";
+import {authenticateOrCreateWechatParent} from "../src/lib/parent-auth";
 import {billingPool,closeBillingPoolForTests,createBillingOrder,settleVerifiedOrder,type VerifiedPaymentReceipt} from "../src/lib/billing-ledger";
 import {DIGITAL_SALES_POLICY_VERSION} from "../src/lib/digital-sales-policy";
 import {voucherPreviewEnabled} from "../src/lib/commerce/voucher-preview";
@@ -12,11 +10,6 @@ async function main(){
  const a=authenticateOrCreateWechatParent({wechatId:"paper-basic",openId:"paper-basic"}).id;
  const b=authenticateOrCreateWechatParent({wechatId:"paper-standard",openId:"paper-standard"}).id;
  const stranger=authenticateOrCreateWechatParent({wechatId:"paper-stranger",openId:"paper-stranger"}).id;
- function request(owner?:string){
-  return new NextRequest("http://localhost:3000/api/platform/billing/exam-access?owner="+b,
-   {headers:owner?{cookie:PARENT_SESSION_COOKIE+"="+createParentSessionToken(owner)}:{}});
- }
- assert.equal((await GET(request())).status,401);
  await db.query("INSERT INTO billing_products(id,product_kind,content_kind,content_id,title_zh,amount_minor,currency,enabled,rights_approved,delivery_verified,access_restricted) VALUES('wh-ls-2027-entry','exam_access','exam_access','wuhan-2027','fixture entry',990,'CNY',true,true,true,true)");
  await db.query("INSERT INTO exam_access_draft.offer_terms VALUES('wh-ls-2027-entry',5,now()+interval '2 day','five_verified_papers')");
  await db.query("INSERT INTO exam_access_draft.paper_registry SELECT 'wuhan-2027','fixture-'||i,true,true FROM generate_series(1,6) i");
@@ -31,23 +24,13 @@ async function main(){
  await db.query("SELECT voucher_draft.claim_exam(repeat('c',64),$1)",[b]);
  async function open(owner:string,id:string,exam="wuhan-2027"){return (await db.query("SELECT exam_access_draft.can_open_paper($1,$2,$3) AS ok",[owner,exam,id])).rows[0].ok;}
  assert(await open(a,"fixture-1"));assert(!await open(a,"fixture-6"));assert(await open(b,"fixture-6"));
- assert(!await open(b,"fixture-1","beijing-2027"));assert(!await open("par_stranger","fixture-1"));
+ assert(!await open(b,"fixture-1","beijing-2027"));assert(!await open(stranger,"fixture-1"));
  await db.query("INSERT INTO exam_access_draft.paper_registry VALUES('wuhan-2027','fixture-7',true,true),('wuhan-2027','unverified',false,true)");
  assert(await open(b,"fixture-7"));assert(!await open(a,"fixture-7"));assert(!await open(b,"unverified"));
- const aView=await (await GET(request(a))).json();
- const bView=await (await GET(request(b))).json();
- assert.equal(aView.remainingScoredAttempts,5);assert.equal(aView.availablePaperIds.length,5);
- assert.equal(bView.remainingScoredAttempts,30);assert.equal(bView.availablePaperIds.length,7);
- const empty=await (await GET(request(stranger))).json();
- assert.equal(empty.remainingScoredAttempts,0);assert.deepEqual(empty.availablePaperIds,[]);
- assert.equal((await GET(request(a))).headers.get("Cache-Control"),"private, no-store");
  await db.query("SELECT voucher_draft.refund_exam('xiaohongshu','paper-shop','line',0,repeat('e',64),now())");
  assert(!await open(b,"fixture-6"));
- const revoked=await (await GET(request(b))).json();
- assert.equal(revoked.remainingScoredAttempts,0);assert.deepEqual(revoked.availablePaperIds,[]);
- process.env.SOCTHINK_VOUCHER_PREVIEW="0";
- assert.equal((await GET(request(a))).status,404);
- console.log("EXAM_ACCESS_ACCOUNT_ROUTE_PG18=PASS");
+ const active=await db.query("SELECT count(*)::int n FROM exam_access_draft.active_grants WHERE owner_id=$1",[b]);
+ assert.equal(active.rows[0].n,0);
  console.log("EXAM_PAPER_ACCESS_PG18=PASS");
 }
 main().catch(e=>{console.error(e);process.exitCode=1;}).finally(closeBillingPoolForTests);

@@ -1,6 +1,6 @@
 # SOC THINK 全站逐页路由归属审计（代码扫描台账）
 
-审计基线：2026-11-04；源自 GitHub Next.js `src/app/**/page.tsx` 路由树，**103 个 Next.js 页面模板 + 1 个静态兼容 HTML 入口（共 104 个），非实际商品、试卷或动态 URL 实例数**。
+审计基线：2026-11-27；源自当前 Next.js `src/app/**/page.tsx` 路由树，**108 个 Next.js 页面模板 + 1 个静态兼容 HTML 入口（共 109 个），非实际商品、试卷或动态 URL 实例数**。
 
 > **地位**：本表是 [《全站信息架构总纲》](SOCTHINK_SITE_ARCHITECTURE_MASTER.md) 的逐页实施台账，不是另一套页面注册表、CMS、路由或授权来源。内容归属仍以 `src/lib/site-architecture.ts` 和现有业务权威目录为准。
 
@@ -35,12 +35,14 @@
 | `/english/aelos` | 英语学习 | `/english` | 公开内容 | AelOS 独立综合英语项目；已有公网界面，账户授权待接通 |
 | `/account` | 账户与权益 | `/` | 私有流程 | 页脚、会话导航 → 我的订单 |
 | `/account/profile` | 账户与权益 | `/account` | 私有实名显示受控 noindex | 微信资料昵称未返回时必填平台显示名；同一账号不重新注册 |
+| `/account/redeem` | 账户与权益 | `/account` | 受控激活 noindex | 已登录微信账号输入外部渠道卡券；Rust 校验并绑定现有统一权益账本 |
 | `/workspace` | 账户与权益 | `/account` | 私有流程 | 已授权账号进入动态工作台；无授权不展示管理模块 |
 | `/my/learning` | 账户与权益 | `/account` | 受控学习记录 | 主站统一登录后进入个人跨学科入口；专项历史成绩仍由原评分服务提供 |
 | `/admin` | 管理后台 | `/` | 管理员 | 管理员登录后的工作台（仅授权后可达） |
 | `/admin/activate` | 管理后台 | `/admin/login` | 邀请流程 | 仅一次性管理员邀请，不公开导航 |
 | `/admin/competition-source-watch` | 管理后台 | `/admin` | 管理员 | AdminOperationsNav → 赛事来源审核 |
 | `/admin/classroom` | 管理后台 | `/admin` | 管理员 | AdminOperationsNav → 英语课堂与教师；网站所有者授权后审批老师 |
+| `/admin/commerce` | 管理后台 | `/admin` | 管理员 | 网站 Owner 查看渠道卡券、核销状态、退款与中央订单关联；只读账本视图 |
 | `/admin/platform-authorizations` | 管理后台 | `/admin` | 管理员 | 仅网站 Owner 可查询微信用户及授予、撤销模块管理权限 |
 | `/admin/families` | 管理后台 | `/admin` | 管理员 | 管理后台内的专用页面 |
 | `/admin/feedback` | 管理后台 | `/admin` | 管理员 | 管理后台内的专用页面 |

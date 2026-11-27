@@ -2,7 +2,7 @@
 name = "socthink-rust-core"
 version = "0.1.0"
 edition = "2024"
-description = "SOC THINK Rust Core: read-only catalogue plus offline grade parity, no public grade API"
+description = "SOC THINK Rust Core: read-only catalogue, offline grade parity, and isolated internal commerce preview"
 publish = false
 
 [[bin]]
@@ -13,8 +13,17 @@ path = "src/main.rs"
 name = "grade-fixture"
 path = "src/bin/grade_fixture.rs"
 
+[[bin]]
+name = "socthink-commerce-api"
+path = "src/bin/commerce_api.rs"
+
 [dependencies]
 axum = { version = "0.8.9", features = ["json", "query", "http1", "tokio"] }
+base64 = "0.22.1"
+hmac = "0.12.1"
+sqlx = { version = "0.8.6", default-features = false, features = ["runtime-tokio-rustls", "postgres", "json"] }
+sha2 = "0.10.9"
+url = "2.5.8"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 tokio = { version = "1.53", features = ["macros", "rt-multi-thread", "net", "signal"] }

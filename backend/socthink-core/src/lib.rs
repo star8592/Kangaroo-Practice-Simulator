@@ -1,11 +1,12 @@
-//! SOCTHINK Rust R1: one read-only catalog adapter.
+//! SOCTHINK Rust core: read-only catalogue, offline grade parity, and a
+//! separately gated internal commerce preview API.
 //!
-//! The authoritative training-readiness decision is in
-//! `src/lib/training-question-bank.ts`. This Rust module accepts ONLY the
-//! already-gated public metadata snapshot built by the existing TypeScript
-//! adapter, never original questions, answers, users, scores or payment data.
-//! No new production endpoint is activated until a separate parity release.
+//! The catalogue adapter accepts only already-gated public metadata. The
+//! commerce preview verifies the existing parent session and site-owner files
+//! read-only, and refuses production configuration. No production payment or
+//! voucher endpoint is enabled by this crate without a separate release.
 
+pub mod commerce;
 pub mod grading;
 
 use std::collections::HashSet;
