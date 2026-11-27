@@ -10,7 +10,7 @@ import styles from "../executive.module.css";
 export const dynamic="force-dynamic";
 export const metadata={title:"商业运营 · 卡券管理",robots:{index:false,follow:false,noarchive:true}};
 const labels:Record<string,string>={all:"全部",unclaimed:"待激活",activated:"已激活",expired:"已过期",refunded:"已退款",inconsistent:"待核对"};
-const channels:Record<string,string>={xiaohongshu:"小红书",douyin:"抖音",taobao:"淘宝"};
+const channels:Record<string,string>={xiaohongshu:"小红书",douyin:"抖音",taobao:"淘宝",xianyu:"闲鱼"};
 const titles:Record<string,string>={"wh-ls-2027-entry":"基础训练卡","wh-ls-2027-standard":"考前畅练卡"};
 export default async function CommerceAdmin({searchParams}:{searchParams:Promise<{state?:string;q?:string}>}){
  if(!voucherPreviewEnabled())notFound();

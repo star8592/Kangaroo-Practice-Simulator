@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS exam_access_draft.order_terms(
  paper_access text NOT NULL CHECK(paper_access IN ('five_verified_papers','all_verified_papers_and_updates'))
 );
 CREATE TABLE IF NOT EXISTS voucher_draft.channel_mapping(
- channel text NOT NULL CHECK(channel IN ('xiaohongshu','douyin','taobao')),
+ channel text NOT NULL CHECK(channel IN ('xiaohongshu','douyin','taobao','xianyu')),
  merchant_id text NOT NULL,
  external_sku text NOT NULL,
  product_id text NOT NULL REFERENCES public.billing_products(id),

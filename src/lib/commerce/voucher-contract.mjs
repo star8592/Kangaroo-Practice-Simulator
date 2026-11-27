@@ -1,11 +1,11 @@
 // Isolated voucher primitive; no API, database or issuance side effects.
 // Only verified provider adapters may construct the receipt passed into this module.
 import {createHmac, timingSafeEqual} from "node:crypto";
-const channels=new Set(["xiaohongshu","douyin","taobao"]);
+const channels=new Set(["xiaohongshu","douyin","taobao","xianyu"]);
 const id=/^[A-Za-z0-9_.:-]{1,128}$/;
 export function validateVoucherUnit(unit){
-  if(!unit || !channels.has(unit.channel) || !id.test(unit.merchantId??"") ||
-     !id.test(unit.orderLineId??"") || !Number.isSafeInteger(unit.unitIndex) ||
+  if(!unit || !channels.has(unit.channel) || typeof unit.merchantId!=="string" || !id.test(unit.merchantId) ||
+     typeof unit.orderLineId!=="string" || !id.test(unit.orderLineId) || !Number.isSafeInteger(unit.unitIndex) ||
      unit.unitIndex<0 || unit.unitIndex>9999) throw new Error("Invalid voucher unit");
   return JSON.stringify([unit.channel,unit.merchantId,unit.orderLineId,unit.unitIndex]);
 }

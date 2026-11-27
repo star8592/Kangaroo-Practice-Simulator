@@ -44,4 +44,6 @@ owner=$(p -c "SELECT payer_parent_id FROM billing_orders")
 [[ "$(issue 2 c)" == refunded ]]
 [[ "$(p -c 'SELECT count(*) FROM billing_orders')" == 2 ]]
 [[ "$(p -c "SELECT exam_access_draft.consume_report('par_three','wuhan-2027','report-2')")" == consumed ]]
+p -f ops/db/drafts/exam_paper_access.sql
+SOC_VOUCHER_TEST_SOCKET="$tmp" SOC_VOUCHER_TEST_ISOLATED=1 SOC_VOUCHER_TEST_PSQL="$pgbin/psql" node scripts/test_xianyu_voucher_stock.mjs
 echo 'CHANNEL_EXAM_BRIDGE_PG18=PASS'

@@ -5,7 +5,7 @@ const issue=randomBytes(32),lookup=randomBytes(32);
 const unit={channel:"xiaohongshu",merchantId:"sandbox-shop",orderLineId:"sandbox-line",unitIndex:0};
 const a=deriveVoucherCode(unit,issue);
 assert.equal(a,deriveVoucherCode(unit,issue));
-for(const u of [{...unit,unitIndex:1},{...unit,channel:"douyin"},{...unit,merchantId:"other"},{...unit,orderLineId:"other"}])assert.notEqual(a,deriveVoucherCode(u,issue));
+for(const u of [{...unit,unitIndex:1},{...unit,channel:"douyin"},{...unit,channel:"xianyu"},{...unit,merchantId:"other"},{...unit,orderLineId:"other"}])assert.notEqual(a,deriveVoucherCode(u,issue));
 assert.notEqual(a,deriveVoucherCode(unit,issue,2));
 assert.notEqual(a,deriveVoucherCode(unit,randomBytes(32)));
 assert.throws(()=>deriveVoucherCode(unit,Buffer.alloc(8)));

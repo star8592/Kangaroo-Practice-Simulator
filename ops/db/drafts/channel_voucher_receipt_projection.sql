@@ -4,7 +4,7 @@
 BEGIN;
 CREATE SCHEMA IF NOT EXISTS voucher_draft;
 CREATE TABLE IF NOT EXISTS voucher_draft.units(
- channel text NOT NULL CHECK(channel IN ('xiaohongshu','douyin','taobao')),
+ channel text NOT NULL CHECK(channel IN ('xiaohongshu','douyin','taobao','xianyu')),
  merchant_id text NOT NULL CHECK(length(merchant_id) BETWEEN 1 AND 128),
  order_line_id text NOT NULL CHECK(length(order_line_id) BETWEEN 1 AND 128),
  unit_index integer NOT NULL CHECK(unit_index BETWEEN 0 AND 9999),
@@ -29,7 +29,7 @@ CREATE OR REPLACE VIEW voucher_draft.active_grants AS
  FROM voucher_draft.units WHERE claimed_at IS NOT NULL AND revoked_at IS NULL AND expires_at>now();
 -- Tombstone prevents refund-first callbacks from being resurrected by delayed paid events.
 CREATE TABLE IF NOT EXISTS voucher_draft.refunds(
- channel text NOT NULL CHECK(channel IN ('xiaohongshu','douyin','taobao')),
+ channel text NOT NULL CHECK(channel IN ('xiaohongshu','douyin','taobao','xianyu')),
  merchant_id text NOT NULL CHECK(length(merchant_id) BETWEEN 1 AND 128),
  order_line_id text NOT NULL CHECK(length(order_line_id) BETWEEN 1 AND 128),
  unit_index integer NOT NULL CHECK(unit_index BETWEEN 0 AND 9999),
