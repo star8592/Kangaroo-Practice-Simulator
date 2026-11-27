@@ -160,6 +160,17 @@ request() {
   actual="$(curl -sS -o "$TMP/response.json" -w '%{http_code}' "$@")"
   [[ "$actual" == "$expected" ]] || { echo "HTTP expected=$expected actual=$actual"; cat "$TMP/response.json"; exit 1; }
 }
+if [[ "${SOCTHINK_TEST_TICKET_ATTEMPT:-0}" == "1" ]]; then
+  ACCENT_ROOT="$WUHAN_ACCENT_RESEARCH_ROOT"
+  python3 scripts/project_wuhan_research_contract.py "$ACCENT_ROOT"
+  (cd "$ACCENT_ROOT"; cargo build --locked --offline --example wuhan-oral-preview-api >/dev/null;
+   export WUHAN_RESEARCH_ARCHIVE_ORIGIN="$BASE" WUHAN_RESEARCH_ARCHIVE_KEY="$SOCTHINK_RESEARCH_ARCHIVE_KEY" WUHAN_RESEARCH_TICKET_KEY="$SOCTHINK_RESEARCH_TICKET_KEY"
+   export WUHAN_TEST_OWNER_SESSION="$OWNER_TOKEN" WUHAN_TEST_OTHER_SESSION="$OTHER_TOKEN" WUHAN_TEST_OWNER_ID="$OWNER_ID" WUHAN_TEST_OTHER_ID="$OTHER_ID"
+   python3 -u scripts/evidence_lab/test_wuhan_ticket_attempt.py)
+  [[ "$(psql_db -At -c 'SELECT count(*) FROM exam_access_draft.research_report_archive a JOIN exam_access_draft.research_attempt_ticket t USING(attempt_id) WHERE t.claimed_at IS NOT NULL AND a.owner_id=t.owner_id AND a.paper_id=t.paper_id')" == "2" ]]
+  [[ "$(psql_db -At -c 'SELECT count(*) FROM exam_access_draft.completed_reports')" == "0" ]]
+  echo R76_TICKET_ARCHIVE_PG18_BINDING_PASS
+fi
 WUHAN_TICKET_TEST_ORIGIN="$BASE" WUHAN_TICKET_OWNER_SESSION="$OWNER_TOKEN" WUHAN_TICKET_OTHER_SESSION="$OTHER_TOKEN" \
  WUHAN_TICKET_OWNER_ID="$OWNER_ID" WUHAN_TICKET_OTHER_ID="$OTHER_ID" \
  python3 -B scripts/test_wuhan_research_ticket_http.py
@@ -317,7 +328,7 @@ if [[ "${SOCTHINK_TEST_AUTO_ARCHIVE:-0}" == "1" ]]; then
    WUHAN_RESEARCH_ARCHIVE_OWNER_A="$OWNER_ID" WUHAN_RESEARCH_ARCHIVE_OWNER_B="$OTHER_ID" \
    WUHAN_TEST_OWNER_SESSION="$OWNER_TOKEN" WUHAN_TEST_OTHER_SESSION="$OTHER_TOKEN" \
    python3 -u scripts/evidence_lab/test_wuhan_auto_archive.py)
-  [[ "$(psql_db -At -c 'SELECT count(*) FROM exam_access_draft.research_report_archive')" == "3" ]]
+  [[ "$(psql_db -At -c 'SELECT count(*) FROM exam_access_draft.research_report_archive')" == "$(if [[ "${SOCTHINK_TEST_TICKET_ATTEMPT:-0}" == "1" ]]; then echo 5; else echo 3; fi)" ]]
   [[ "$(psql_db -At -c 'SELECT count(*) FROM exam_access_draft.completed_reports')" == "0" ]]
   echo WUHAN_AUTO_ARCHIVE_NO_BILLING=PASS
 fi
