@@ -20,13 +20,13 @@ for(const r of SPEAKING_REGIONS){
   assert.equal(u.searchParams.get("edition"),"city");
   assert.equal(u.searchParams.get("mode"),"simulation");
   assert.equal(u.searchParams.has("focus"),false);
-  if(r.city==="wuhan"){assert.equal(r.papers.length,1);assert.equal(u.searchParams.get("version"),"W2");for(const legacy of ["W1","W3","W4","W5"])assert.equal(new URL(regionExamHref(r,{label:"legacy",note:"retired",version:legacy},"simulation"),"https://socthink.cn").searchParams.get("version"),"W2");}
+  if(r.city==="wuhan"){assert.equal(r.papers.length,10);assert.equal(u.searchParams.get("set"),paper.set);assert.equal(u.searchParams.get("version"),"W2");for(const legacy of ["W1","W3","W4","W5"])assert.equal(new URL(regionExamHref(r,{label:"legacy",note:"retired",version:legacy},"simulation"),"https://socthink.cn").searchParams.get("version"),"W2");}
  }
  for(const d of r.drills??[]){
   const u=new URL(regionExamHref(r,r.papers[0],"practice",d.id),"https://socthink.cn");
   assert.equal(u.searchParams.get("paper"),r.paperId);
   assert.equal(u.searchParams.get("edition"),"city");
-  assert.equal(u.searchParams.get("focus"),d.id);
+  assert.equal(u.searchParams.get("focus"),d.id);if(r.city==="wuhan")assert.equal(u.searchParams.get("set"),"WH01");
   assert.equal(u.searchParams.get("mode"),"practice");
  }
  console.log("PASS",r.paperId,r.papers.length,"papers",r.drills?.length,"precise drills");
