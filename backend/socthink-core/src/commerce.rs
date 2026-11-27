@@ -322,6 +322,125 @@ async fn research_report(
     }
 }
 
+// Validate the complete ordered task manifest and objective keys independently
+// of the sender. Frozen projection of the current research rubric revision.
+fn research_report_valid(r: &Value) -> bool {
+    let contract: Value = serde_json::from_str(include_str!("wuhan-research-report-contract.json"))
+        .expect("frozen research contract");
+    if r.get("rubric_sha256") != contract.get("rubricSha256")
+        || r.get("finalized") != Some(&Value::Bool(true))
+        || r.get("billable") != Some(&Value::Bool(false))
+        || r.get("official_score") != Some(&Value::Bool(false))
+        || r.get("total_score") != Some(&Value::Null)
+        || r["report_status"] != "research"
+        || r["total_tasks"] != 18
+    {
+        return false;
+    }
+    let Some(paper) = contract["papers"]
+        .as_array()
+        .and_then(|p| p.iter().find(|p| p["paperId"] == r["paper_id"]))
+    else {
+        return false;
+    };
+    let (Some(items), Some(tasks)) = (r["items"].as_array(), paper["tasks"].as_array()) else {
+        return false;
+    };
+    if items.len() != 18 || tasks.len() != 18 {
+        return false;
+    }
+    let mut correct = 0;
+    let mut wrong = 0;
+    let mut submitted = 0;
+    for (item, t) in items.iter().zip(tasks) {
+        if item["task_id"] != t["taskId"] || item["kind"] != t["kind"] {
+            return false;
+        }
+        let Some(state) = item["state"].as_str() else {
+            return false;
+        };
+        let Some(c) = item.get("candidate") else {
+            return false;
+        };
+        if state == "not_submitted" {
+            if !c.is_null() {
+                return false;
+            }
+            continue;
+        }
+        submitted += 1;
+        if c["scope"]["attempt_id"] != r["attempt_id"]
+            || c["scope"]["paper_id"] != r["paper_id"]
+            || c["scope"]["task_id"] != t["taskId"]
+        {
+            return false;
+        }
+        match t["kind"].as_str() {
+            Some("choice") => {
+                let Some(sel) = c["selected_option"].as_u64() else {
+                    return false;
+                };
+                if sel >= t["optionCount"].as_u64().unwrap_or(0) {
+                    return false;
+                }
+                let expected = if Some(sel) == t["correctOption"].as_u64() {
+                    "correct"
+                } else {
+                    "incorrect"
+                };
+                if state != expected || c["status"] != expected {
+                    return false;
+                }
+                if expected == "correct" {
+                    correct += 1
+                } else {
+                    wrong += 1
+                }
+            }
+            Some("read") => {
+                let d = &c["diagnosis"];
+                if !matches!(
+                    state,
+                    "unanswered"
+                        | "needs_review"
+                        | "reference_text_matched"
+                        | "reference_text_differs"
+                        | "asr_disagreement"
+                ) || d["status"] != state
+                    || d.get("pronunciation_score") != Some(&Value::Null)
+                    || d["official_score"] != false
+                    || d["human_review_required"] != true
+                {
+                    return false;
+                }
+            }
+            Some("answer" | "retell") => {
+                if !matches!(
+                    state,
+                    "unanswered"
+                        | "needs_review"
+                        | "reference_match"
+                        | "known_mismatch"
+                        | "partial_reference"
+                ) || c["status"] != state
+                    || c.get("reference_content_score") != Some(&Value::Null)
+                    || c["official_score"] != false
+                    || c["human_review_required"] != true
+                {
+                    return false;
+                }
+                if state == "partial_reference" && t["kind"] != "retell" {
+                    return false;
+                }
+            }
+            _ => return false,
+        }
+    }
+    r["submitted"] == submitted
+        && r["choice_correct"] == correct
+        && r["choice_incorrect"] == wrong
+        && r["choice_unsubmitted"] == 8 - correct - wrong
+}
 #[derive(Deserialize)]
 #[serde(deny_unknown_fields)]
 struct ResearchArchiveEnvelope {
@@ -383,13 +502,7 @@ async fn archive_research_report(
     }) {
         return private_json(StatusCode::FORBIDDEN, json!({"code":"UNKNOWN_ACCOUNT"}));
     }
-    // Reject malformed arrays before the SQL constraint's jsonb_array_length.
-    if envelope
-        .report
-        .get("items")
-        .and_then(Value::as_array)
-        .is_none_or(|v| v.len() != 18)
-    {
+    if !research_report_valid(&envelope.report) {
         return private_json(StatusCode::BAD_REQUEST, json!({"code":"INVALID_REPORT"}));
     }
     let result = sqlx::query_scalar::<_, String>(

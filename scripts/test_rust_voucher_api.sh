@@ -299,6 +299,7 @@ echo WUHAN_RESEARCH_ARCHIVE_ROLE_ISOLATION=PASS
 if [[ "${SOCTHINK_TEST_AUTO_ARCHIVE:-0}" == "1" ]]; then
   ACCENT_ROOT="$WUHAN_ACCENT_RESEARCH_ROOT"
   [[ -f "$ACCENT_ROOT/scripts/evidence_lab/test_wuhan_auto_archive.py" ]] || { echo "Explicit AccentLab research checkout required"; exit 1; }
+  python3 scripts/project_wuhan_research_contract.py "$ACCENT_ROOT"
   (cd "$ACCENT_ROOT"; cargo build --locked --offline --example wuhan-oral-preview-api >/dev/null;
    WUHAN_RESEARCH_ARCHIVE_ORIGIN="$BASE" WUHAN_RESEARCH_ARCHIVE_KEY="$SOCTHINK_RESEARCH_ARCHIVE_KEY" \
    WUHAN_RESEARCH_ARCHIVE_OWNER_A="$OWNER_ID" WUHAN_RESEARCH_ARCHIVE_OWNER_B="$OTHER_ID" \
