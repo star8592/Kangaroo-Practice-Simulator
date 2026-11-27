@@ -43,20 +43,26 @@
       "status": "awaiting_entitlement_and_payment_acceptance"
     },
     {
-      "id": "xiaohongshu",
-      "provider": "xiaohongshu",
-      "status": "awaiting_category_and_voucher_approval",
-      "externalSkuId": null
-    },
-    {
-      "id": "douyin",
-      "provider": "douyin",
-      "status": "planned",
+      "id": "xianyu",
+      "provider": "xianyu",
+      "status": "awaiting_category_and_verified_delivery",
       "externalSkuId": null
     },
     {
       "id": "taobao",
       "provider": "taobao",
+      "status": "awaiting_category_and_verified_delivery",
+      "externalSkuId": null
+    },
+    {
+      "id": "xiaohongshu",
+      "provider": "xiaohongshu",
+      "status": "paused_awaiting_category_and_voucher_approval",
+      "externalSkuId": null
+    },
+    {
+      "id": "douyin",
+      "provider": "douyin",
       "status": "planned",
       "externalSkuId": null
     },
