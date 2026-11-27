@@ -27,6 +27,22 @@ async function main(){
  assert(!await open(b,"fixture-1","beijing-2027"));assert(!await open(stranger,"fixture-1"));
  await db.query("INSERT INTO exam_access_draft.paper_registry VALUES('wuhan-2027','fixture-7',true,true),('wuhan-2027','unverified',false,true)");
  assert(await open(b,"fixture-7"));assert(!await open(a,"fixture-7"));assert(!await open(b,"unverified"));
+ async function debit(owner:string,paper:string,report:string){
+  return (await db.query("SELECT exam_access_draft.consume_report($1,'wuhan-2027',$2,$3) AS r",[owner,paper,report])).rows[0].r;
+ }
+ assert.equal(await debit(a,"fixture-6","outside-basic"),"no_entitlement");
+ assert.equal(await debit(a,"unverified","unverified-report"),"paper_unavailable");
+ await db.query("SELECT voucher_draft.issue_exam('xiaohongshu','paper-shop','line-mixed',0,'sku-standard','fixture-mixed-txn',3990,'CNY',repeat('9',64),repeat('8',64),now())");
+ await db.query("SELECT voucher_draft.claim_exam(repeat('9',64),$1)",[a]);
+ assert.equal(await debit(a,"fixture-6","advanced"),"consumed");
+ assert.equal(await debit(a,"fixture-6","advanced"),"already_consumed");
+ assert.equal(await debit(a,"fixture-1","advanced"),"report_scope_conflict");
+ assert.deepEqual((await Promise.all([debit(a,"fixture-1","basic"),debit(a,"fixture-1","basic")])).sort(),["already_consumed","consumed"]);
+ const usage=(await db.query("SELECT t.paper_access,g.used FROM exam_access_draft.grants g JOIN exam_access_draft.order_terms t USING(source_order_id) WHERE g.owner_id=$1 ORDER BY t.paper_access",[a])).rows;
+ assert.deepEqual(usage.map(x=>[x.paper_access,x.used]),[["all_verified_papers_and_updates",1],["five_verified_papers",1]]);
+ await db.query("SELECT voucher_draft.refund_exam('xiaohongshu','paper-shop','line-mixed',0,repeat('7',64),now())");
+ assert.equal(await debit(a,"fixture-7","refunded-advanced"),"no_entitlement");
+ console.log("PAPER_SCOPED_DEBIT=PASS");
  await db.query("SELECT voucher_draft.refund_exam('xiaohongshu','paper-shop','line',0,repeat('e',64),now())");
  assert(!await open(b,"fixture-6"));
  const active=await db.query("SELECT count(*)::int n FROM exam_access_draft.active_grants WHERE owner_id=$1",[b]);

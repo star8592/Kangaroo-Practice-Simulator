@@ -23,7 +23,8 @@ async function main(){
  assert.equal((await settleVerifiedOrder(rec)).created,true);
  assert.equal((await settleVerifiedOrder(rec)).created,false);
  assert.equal((await p.query("SELECT capacity FROM exam_access_draft.grants WHERE source_order_id=$1",[order.id])).rows[0].capacity,30);
- assert.equal((await p.query("SELECT exam_access_draft.consume_report($1,'wuhan-2027','fixture-report') AS r",[buyer])).rows[0].r,"consumed");
+ await p.query("INSERT INTO exam_access_draft.paper_registry VALUES('wuhan-2027','direct-fixture',true,true)");
+ assert.equal((await p.query("SELECT exam_access_draft.consume_report($1,'wuhan-2027','direct-fixture','fixture-report') AS r",[buyer])).rows[0].r,"consumed");
  assert.equal((await refundVerifiedOrder({...rec,eventId:"fixture-refund"})).revoked,true);
  assert.equal((await refundVerifiedOrder({...rec,eventId:"fixture-refund"})).revoked,false);
  assert.equal((await p.query("SELECT count(*)::int n FROM exam_access_draft.active_grants")).rows[0].n,0);
