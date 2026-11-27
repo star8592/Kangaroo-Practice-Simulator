@@ -50,6 +50,7 @@ psql_db -f ops/db/drafts/exam_access_usage.sql >/dev/null
 psql_db -f ops/db/drafts/channel_exam_bridge.sql >/dev/null
 psql_db -f ops/db/drafts/exam_paper_access.sql >/dev/null
 psql_db -f ops/db/drafts/wuhan_research_report_archive.sql >/dev/null
+psql_db -f ops/db/drafts/wuhan_research_report_erasure.sql >/dev/null
 
 RUN_HEX="$(od -An -N8 -tx1 /dev/urandom | tr -d ' \n')"
 OTHER_HEX="$(od -An -N8 -tx1 /dev/urandom | tr -d ' \n')"
