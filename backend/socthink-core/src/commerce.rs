@@ -38,6 +38,7 @@ pub struct CommerceState {
     public_origin: String,
     lookup_key: Vec<u8>,
     research_archive_key: Option<Vec<u8>>,
+    research_ticket_key: Option<Vec<u8>>,
 }
 
 impl CommerceState {
@@ -76,6 +77,15 @@ impl CommerceState {
             Err(env::VarError::NotPresent) => None,
             Err(e) => return Err(e.into()),
         };
+        let research_ticket_key = match env::var("SOCTHINK_RESEARCH_TICKET_KEY") {
+            Ok(v) => Some(
+                decode_hex(&v)
+                    .filter(|k| k != &lookup_key && Some(k) != research_archive_key.as_ref())
+                    .ok_or("invalid or reused research ticket key")?,
+            ),
+            Err(env::VarError::NotPresent) => None,
+            Err(e) => return Err(e.into()),
+        };
         let pool = PgPoolOptions::new()
             .max_connections(8)
             .connect(&database_url)
@@ -87,6 +97,7 @@ impl CommerceState {
             public_origin,
             lookup_key,
             research_archive_key,
+            research_ticket_key,
         })
     }
 }
@@ -98,6 +109,14 @@ pub fn commerce_router(state: CommerceState) -> Router {
         .route(
             "/internal/research/wuhan/archive",
             post(archive_research_report).layer(DefaultBodyLimit::max(262144)),
+        )
+        .route(
+            "/api/platform/research/wuhan/tickets/{paper}",
+            post(issue_research_ticket).layer(DefaultBodyLimit::max(128)),
+        )
+        .route(
+            "/internal/research/wuhan/claim-ticket",
+            post(claim_research_ticket).layer(DefaultBodyLimit::max(512)),
         )
         .route("/api/platform/billing/exam-access", get(exam_access))
         .route(
@@ -527,6 +546,184 @@ async fn archive_research_report(
     }
 }
 
+fn valid_research_paper(p: &str) -> bool {
+    matches!(
+        p,
+        "WH01" | "WH02" | "WH03" | "WH04" | "WH05" | "WH06" | "WH07" | "WH08" | "WH09" | "WH10"
+    )
+}
+async fn issue_research_ticket(
+    State(state): State<CommerceState>,
+    Path(paper): Path<String>,
+    headers: HeaderMap,
+    body: Bytes,
+) -> Response {
+    if state.research_ticket_key.is_none() {
+        return private_json(StatusCode::NOT_FOUND, json!({"code":"DISABLED"}));
+    }
+    if headers.get(header::ORIGIN).and_then(|v| v.to_str().ok())
+        != Some(state.public_origin.as_str())
+        || headers.get("sec-fetch-site").and_then(|v| v.to_str().ok()) == Some("cross-site")
+    {
+        return private_json(StatusCode::FORBIDDEN, json!({"code":"INVALID_ORIGIN"}));
+    }
+    let user = match auth_or_response(&headers, &state) {
+        Ok(u) => u,
+        Err(r) => return r,
+    };
+    // No caller-supplied account, identity override, consent or payment claim.
+    if !body.is_empty() || !valid_research_paper(&paper) || !valid_parent_id(&user.id) {
+        return private_json(
+            StatusCode::BAD_REQUEST,
+            json!({"code":"INVALID_TICKET_REQUEST"}),
+        );
+    }
+    let Ok(version) = i64::try_from(user.session_version.unwrap_or(1).max(1)) else {
+        return private_json(StatusCode::FORBIDDEN, json!({"code":"INVALID_SESSION"}));
+    };
+    // current_parent verified the exact cookie signature. Limit the grant
+    // to that session's original expiry as well as the 120s ceiling.
+    let session_exp = cookie_value(&headers, PARENT_SESSION_COOKIE)
+        .and_then(|t| t.split_once('.').map(|(body, _)| body.to_owned()))
+        .and_then(|body| URL_SAFE_NO_PAD.decode(body).ok())
+        .and_then(|raw| serde_json::from_slice::<SessionClaims>(&raw).ok())
+        .and_then(|c| i64::try_from(c.exp).ok());
+    let Some(session_exp) = session_exp else {
+        return private_json(StatusCode::FORBIDDEN, json!({"code":"INVALID_SESSION"}));
+    };
+    match sqlx::query_scalar::<_, Option<Value>>(
+        "SELECT exam_access_draft.issue_research_ticket($1,$2,$3,$4)",
+    )
+    .bind(&user.id)
+    .bind(version)
+    .bind(&paper)
+    .bind(session_exp)
+    .fetch_one(&state.pool)
+    .await
+    {
+        Ok(Some(v)) => private_json(StatusCode::OK, v),
+        Ok(None) => private_json(
+            StatusCode::TOO_MANY_REQUESTS,
+            json!({"code":"TICKET_LIMIT"}),
+        ),
+        Err(_) => private_json(
+            StatusCode::SERVICE_UNAVAILABLE,
+            json!({"code":"TEMPORARILY_UNAVAILABLE"}),
+        ),
+    }
+}
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+struct ClaimResearchTicket {
+    ticket: String,
+    paper_id: String,
+}
+async fn claim_research_ticket(
+    State(state): State<CommerceState>,
+    headers: HeaderMap,
+    body: Bytes,
+) -> Response {
+    let Some(key) = state.research_ticket_key.as_ref() else {
+        return private_json(StatusCode::NOT_FOUND, json!({"code":"DISABLED"}));
+    };
+    if headers.contains_key(header::ORIGIN) || headers.contains_key(header::COOKIE) {
+        return private_json(StatusCode::FORBIDDEN, json!({"code":"INTERNAL_ONLY"}));
+    }
+    let signature = headers
+        .get("x-research-ticket-signature")
+        .and_then(|v| v.to_str().ok())
+        .and_then(decode_hex);
+    let mut mac = HmacSha256::new_from_slice(key).expect("validated key");
+    mac.update(b"wuhan-research-ticket-v1\0");
+    mac.update(&body);
+    if !signature.is_some_and(|sig| mac.verify_slice(&sig).is_ok()) {
+        return private_json(
+            StatusCode::UNAUTHORIZED,
+            json!({"code":"INVALID_SIGNATURE"}),
+        );
+    }
+    let Ok(c) = serde_json::from_slice::<ClaimResearchTicket>(&body) else {
+        return private_json(
+            StatusCode::BAD_REQUEST,
+            json!({"code":"INVALID_TICKET_REQUEST"}),
+        );
+    };
+    if !valid_research_paper(&c.paper_id)
+        || c.ticket.len() != 64
+        || !c
+            .ticket
+            .bytes()
+            .all(|b| b.is_ascii_digit() || (b'a'..=b'f').contains(&b))
+    {
+        return private_json(
+            StatusCode::BAD_REQUEST,
+            json!({"code":"INVALID_TICKET_REQUEST"}),
+        );
+    }
+    let unavailable = || {
+        private_json(
+            StatusCode::SERVICE_UNAVAILABLE,
+            json!({"code":"TEMPORARILY_UNAVAILABLE"}),
+        )
+    };
+    let rejected = || {
+        private_json(
+            StatusCode::NOT_FOUND,
+            json!({"code":"TICKET_NOT_AVAILABLE"}),
+        )
+    };
+    let bound = match sqlx::query_scalar::<_, Option<Value>>(
+        "SELECT exam_access_draft.inspect_research_ticket($1,$2)",
+    )
+    .bind(&c.ticket)
+    .bind(&c.paper_id)
+    .fetch_one(&state.pool)
+    .await
+    {
+        Ok(Some(v)) => v,
+        Ok(None) => return rejected(),
+        Err(_) => return unavailable(),
+    };
+    let (Some(owner), Some(version)) = (
+        bound["owner_id"].as_str(),
+        bound["session_version"].as_i64(),
+    ) else {
+        return unavailable();
+    };
+    // Re-read the existing account state, including session revocation. This is
+    // a handoff, not a replacement for verified guardian consent.
+    let parents = fs::read_to_string(state.user_data_dir.join(PARENTS_FILE))
+        .ok()
+        .and_then(|s| serde_json::from_str::<Vec<ParentRecord>>(&s).ok());
+    let Some(parents) = parents else {
+        return unavailable();
+    };
+    if !parents.iter().any(|p| {
+        p.id == owner
+            && p.active.unwrap_or(true)
+            && i64::try_from(p.session_version.unwrap_or(1).max(1)).ok() == Some(version)
+            && (p.wechat_id.as_deref().is_some_and(|s| !s.trim().is_empty())
+                || p.wechat_open_id
+                    .as_deref()
+                    .is_some_and(|s| !s.trim().is_empty()))
+    }) {
+        return rejected();
+    }
+    match sqlx::query_scalar::<_, Option<Value>>(
+        "SELECT exam_access_draft.claim_research_ticket($1,$2,$3,$4)",
+    )
+    .bind(&c.ticket)
+    .bind(&c.paper_id)
+    .bind(owner)
+    .bind(version)
+    .fetch_one(&state.pool)
+    .await
+    {
+        Ok(Some(v)) => private_json(StatusCode::OK, v),
+        Ok(None) => rejected(),
+        Err(_) => unavailable(),
+    }
+}
 fn auth_or_response(headers: &HeaderMap, state: &CommerceState) -> Result<ParentRecord, Response> {
     current_parent(headers, state)
         .ok_or_else(|| private_json(StatusCode::UNAUTHORIZED, json!({"code":"LOGIN_REQUIRED"})))

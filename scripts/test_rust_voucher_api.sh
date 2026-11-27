@@ -51,6 +51,7 @@ psql_db -f ops/db/drafts/channel_exam_bridge.sql >/dev/null
 psql_db -f ops/db/drafts/exam_paper_access.sql >/dev/null
 psql_db -f ops/db/drafts/wuhan_research_report_archive.sql >/dev/null
 psql_db -f ops/db/drafts/wuhan_research_report_erasure.sql >/dev/null
+psql_db -f ops/db/drafts/wuhan_research_attempt_ticket.sql >/dev/null
 
 RUN_HEX="$(od -An -N8 -tx1 /dev/urandom | tr -d ' \n')"
 OTHER_HEX="$(od -An -N8 -tx1 /dev/urandom | tr -d ' \n')"
@@ -76,6 +77,7 @@ export SOCTHINK_VOUCHER_PREVIEW_LOOKUP_KEY="$(printf 'b%.0s' {1..64})"
 export SOCTHINK_USER_DATA_DIR="$TMP/users"
 export SOCTHINK_COMMERCE_BIND="127.0.0.1:$API_PORT"
 export SOCTHINK_RESEARCH_ARCHIVE_KEY="$(openssl rand -hex 32)"
+export SOCTHINK_RESEARCH_TICKET_KEY="$(openssl rand -hex 32)"
 mkdir -m 700 -p "$SOCTHINK_USER_DATA_DIR"
 SESSION_SECRET="$(printf 'a%.0s' {1..96})"
 printf '%s' "$SESSION_SECRET" > "$SOCTHINK_USER_DATA_DIR/parent-session-secret.txt"
@@ -142,7 +144,7 @@ env NODE_ENV="$NODE_ENV" SOCTHINK_VOUCHER_PREVIEW="$SOCTHINK_VOUCHER_PREVIEW" \
   SOCTHINK_PUBLIC_ORIGIN="$SOCTHINK_PUBLIC_ORIGIN" \
   SOCTHINK_VOUCHER_PREVIEW_LOOKUP_KEY="$SOCTHINK_VOUCHER_PREVIEW_LOOKUP_KEY" \
   SOCTHINK_USER_DATA_DIR="$SOCTHINK_USER_DATA_DIR" SOCTHINK_COMMERCE_BIND="$SOCTHINK_COMMERCE_BIND" \
-  backend/socthink-core/target/debug/socthink-commerce-api >"$TMP/api.log" 2>&1 &
+  "${CARGO_TARGET_DIR:-$ROOT/backend/socthink-core/target}/debug/socthink-commerce-api" >"$TMP/api.log" 2>&1 &
 API_PID=$!
 BASE="http://127.0.0.1:$API_PORT"
 for _ in $(seq 1 40); do
@@ -158,6 +160,15 @@ request() {
   actual="$(curl -sS -o "$TMP/response.json" -w '%{http_code}' "$@")"
   [[ "$actual" == "$expected" ]] || { echo "HTTP expected=$expected actual=$actual"; cat "$TMP/response.json"; exit 1; }
 }
+WUHAN_TICKET_TEST_ORIGIN="$BASE" WUHAN_TICKET_OWNER_SESSION="$OWNER_TOKEN" WUHAN_TICKET_OTHER_SESSION="$OTHER_TOKEN" \
+ WUHAN_TICKET_OWNER_ID="$OWNER_ID" WUHAN_TICKET_OTHER_ID="$OTHER_ID" \
+ python3 -B scripts/test_wuhan_research_ticket_http.py
+psql_db -c "DO \$\$ BEGIN
+ IF (SELECT count(*) FROM exam_access_draft.completed_reports)<>0 THEN RAISE EXCEPTION 'ticket consumed billing'; END IF;
+ IF EXISTS(SELECT 1 FROM exam_access_draft.research_attempt_ticket WHERE digest !~ '^[0-9a-f]{64}$') THEN RAISE EXCEPTION 'invalid stored digest'; END IF;
+ END \$\$" >/dev/null
+psql_db -f scripts/test_wuhan_research_ticket_binding.sql >/dev/null
+echo WUHAN_RESEARCH_TICKET_BINDING_PG18_PASS
 request 401 "$BASE/api/platform/admin/commerce"
 request 403 -H "Cookie: socthink_parent_session=$OTHER_TOKEN" "$BASE/api/platform/admin/commerce"
 request 200 -H "Cookie: socthink_parent_session=$OWNER_TOKEN" "$BASE/api/platform/admin/commerce?state=unclaimed&q=$ORDER_LINE"
