@@ -28,12 +28,15 @@ if u.hostname not in ("127.0.0.1","localhost") or not u.path.lstrip("/").endswit
 PY
 else
   [[ -x "$PG_BIN/initdb" && -x "$PG_BIN/pg_ctl" ]] || { echo "PostgreSQL 18 binaries required when no isolated database URL is supplied"; exit 2; }
-  "$PG_BIN/initdb" -D "$TMP/pg" -A trust --no-locale >/dev/null
+  PG_PASSWORD="$(openssl rand -hex 24)"
+  printf '%s\n' "$PG_PASSWORD" >"$TMP/pg-password"
+  chmod 600 "$TMP/pg-password"
+  "$PG_BIN/initdb" -D "$TMP/pg" -A scram-sha-256 --pwfile="$TMP/pg-password" --no-locale >/dev/null
   PG_PORT="$(python3 -c 'import socket;s=socket.socket();s.bind(("127.0.0.1",0));print(s.getsockname()[1]);s.close()')"
   "$PG_BIN/pg_ctl" -D "$TMP/pg" -l "$TMP/pg.log" -o "-c listen_addresses=127.0.0.1 -c unix_socket_directories=$TMP -p $PG_PORT" -w start >/dev/null
   OWN_PG=1
-  "$PG_BIN/createdb" -h 127.0.0.1 -p "$PG_PORT" socthink_voucher_ci
-  DATABASE_URL="postgres://$(id -un)@127.0.0.1:$PG_PORT/socthink_voucher_ci"
+  PGPASSWORD="$PG_PASSWORD" "$PG_BIN/createdb" -h 127.0.0.1 -p "$PG_PORT" socthink_voucher_ci
+  DATABASE_URL="postgres://$(id -un):$PG_PASSWORD@127.0.0.1:$PG_PORT/socthink_voucher_ci"
 fi
 
 psql_db() { psql "$DATABASE_URL" -X -v ON_ERROR_STOP=1 -q "$@"; }
@@ -71,6 +74,7 @@ export SOCTHINK_PUBLIC_ORIGIN=http://localhost:3000
 export SOCTHINK_VOUCHER_PREVIEW_LOOKUP_KEY="$(printf 'b%.0s' {1..64})"
 export SOCTHINK_USER_DATA_DIR="$TMP/users"
 export SOCTHINK_COMMERCE_BIND="127.0.0.1:$API_PORT"
+export SOCTHINK_RESEARCH_ARCHIVE_KEY="$(openssl rand -hex 32)"
 mkdir -m 700 -p "$SOCTHINK_USER_DATA_DIR"
 SESSION_SECRET="$(printf 'a%.0s' {1..96})"
 printf '%s' "$SESSION_SECRET" > "$SOCTHINK_USER_DATA_DIR/parent-session-secret.txt"
@@ -292,5 +296,17 @@ END $$;
 ROLLBACK;
 SQLREPORT
 echo WUHAN_RESEARCH_ARCHIVE_ROLE_ISOLATION=PASS
+if [[ "${SOCTHINK_TEST_AUTO_ARCHIVE:-0}" == "1" ]]; then
+  ACCENT_ROOT="$WUHAN_ACCENT_RESEARCH_ROOT"
+  [[ -f "$ACCENT_ROOT/scripts/evidence_lab/test_wuhan_auto_archive.py" ]] || { echo "Explicit AccentLab research checkout required"; exit 1; }
+  (cd "$ACCENT_ROOT"; cargo build --locked --offline --example wuhan-oral-preview-api >/dev/null;
+   WUHAN_RESEARCH_ARCHIVE_ORIGIN="$BASE" WUHAN_RESEARCH_ARCHIVE_KEY="$SOCTHINK_RESEARCH_ARCHIVE_KEY" \
+   WUHAN_RESEARCH_ARCHIVE_OWNER_A="$OWNER_ID" WUHAN_RESEARCH_ARCHIVE_OWNER_B="$OTHER_ID" \
+   WUHAN_TEST_OWNER_SESSION="$OWNER_TOKEN" WUHAN_TEST_OTHER_SESSION="$OTHER_TOKEN" \
+   python3 -u scripts/evidence_lab/test_wuhan_auto_archive.py)
+  [[ "$(psql_db -At -c 'SELECT count(*) FROM exam_access_draft.research_report_archive')" == "2" ]]
+  [[ "$(psql_db -At -c 'SELECT count(*) FROM exam_access_draft.completed_reports')" == "0" ]]
+  echo WUHAN_AUTO_ARCHIVE_NO_BILLING=PASS
+fi
 echo "WUHAN_RESEARCH_ARCHIVE_SESSION_READ=PASS"
 echo "RUST_VOUCHER_API_E2E=PASS auth=verified owner_scope=verified idempotent_claim=PASS cross_account_rejected=PASS refund_revokes_future_access=PASS no_raw_codes=PASS"

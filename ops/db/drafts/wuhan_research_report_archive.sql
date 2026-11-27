@@ -29,3 +29,28 @@ RETURNS jsonb LANGUAGE sql STABLE SECURITY DEFINER SET search_path=pg_catalog,pg
 $$;
 REVOKE ALL ON FUNCTION exam_access_draft.read_research_report(text,text) FROM PUBLIC;
 COMMIT;
+
+-- Immutable, idempotent research ingestion. This is an internal-only contract.
+BEGIN;
+CREATE FUNCTION exam_access_draft.archive_research_report(a text,r text,p jsonb)
+RETURNS text LANGUAGE plpgsql SECURITY DEFINER SET search_path=pg_catalog,pg_temp AS $$
+DECLARE existing exam_access_draft.research_report_archive%ROWTYPE;
+BEGIN
+ IF a IS NULL OR r IS NULL OR p IS NULL THEN RETURN 'invalid'; END IF;
+ IF r !~ '^[0-9a-f]{32}$' OR a !~ '^par_[0-9a-f]{16,48}$' THEN RETURN 'invalid'; END IF;
+ PERFORM pg_advisory_xact_lock(hashtextextended('research-report:'||r,0));
+ SELECT * INTO existing FROM exam_access_draft.research_report_archive WHERE attempt_id=r;
+ IF FOUND THEN
+  IF existing.owner_id=a AND existing.payload=p THEN RETURN 'already_archived'; END IF;
+  RETURN 'conflict';
+ END IF;
+ BEGIN
+  INSERT INTO exam_access_draft.research_report_archive(attempt_id,owner_id,paper_id,payload)
+  VALUES(r,a,p->>'paper_id',p);
+ EXCEPTION WHEN check_violation OR not_null_violation THEN RETURN 'invalid';
+ END;
+ RETURN 'archived';
+END;
+$$;
+REVOKE ALL ON FUNCTION exam_access_draft.archive_research_report(text,text,jsonb) FROM PUBLIC;
+COMMIT;
