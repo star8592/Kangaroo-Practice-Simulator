@@ -106,13 +106,31 @@ BEGIN
  -- Do not accept pre-existing reports outside this fenced operation.
  IF EXISTS(SELECT 1 FROM exam_access_draft.research_report_archive WHERE attempt_id=r)
  THEN RETURN 'archive_conflict'; END IF;
- outcome:=exam_access_draft.archive_claimed_research_report(a,r,p);
+ -- The claimed owner/paper and current lease have already been checked above.
+ outcome:=exam_access_draft.archive_research_report(a,r,p);
  IF outcome<>'archived' THEN RETURN outcome; END IF;
  UPDATE exam_access_draft.research_scoring_job SET state='completed',lease_id=NULL,lease_until=NULL,
  available_at=clock_timestamp() WHERE attempt_id=r;
  RETURN 'completed';
 END $$;
 REVOKE ALL ON FUNCTION exam_access_draft.complete_research_scoring(text,text,uuid,text,jsonb) FROM PUBLIC;
+-- Existing synchronous archive endpoint must not bypass a queued job.
+-- Both paths share the same attempt lock. Legacy fixture-only grant must stay disabled.
+CREATE OR REPLACE FUNCTION exam_access_draft.archive_claimed_research_report(a text,r text,p jsonb)
+RETURNS text LANGUAGE plpgsql SECURITY DEFINER SET search_path=pg_catalog,pg_temp AS $$
+BEGIN
+ IF a IS NULL OR r IS NULL OR p IS NULL OR r !~ '^[0-9a-f]{32}$'
+ OR a !~ '^par_[0-9a-f]{16,48}$' THEN RETURN 'invalid'; END IF;
+ PERFORM pg_advisory_xact_lock(hashtextextended('research-report:'||r,0));
+ IF EXISTS(SELECT 1 FROM exam_access_draft.research_scoring_job WHERE attempt_id=r)
+ THEN RETURN 'conflict'; END IF;
+ PERFORM 1 FROM exam_access_draft.research_attempt_ticket
+ WHERE attempt_id=r AND owner_id=a AND paper_id=p->>'paper_id' AND claimed_at IS NOT NULL
+ FOR SHARE;
+ IF NOT FOUND THEN RETURN 'conflict'; END IF;
+ RETURN exam_access_draft.archive_research_report(a,r,p);
+END $$;
+REVOKE ALL ON FUNCTION exam_access_draft.archive_claimed_research_report(text,text,jsonb) FROM PUBLIC;
 -- Read only after server-side identity and current consent verification.
 -- Do not leave a user in an eternal running state after exhausted lease/session.
 CREATE FUNCTION exam_access_draft.read_research_scoring(a text,r text)

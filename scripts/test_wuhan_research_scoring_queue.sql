@@ -30,6 +30,7 @@ BEGIN
  p:=jsonb_build_object('attempt_id',r,'paper_id','WH01','finalized',true,'billable',false,'official_score',false,
  'report_status','research','total_score',NULL,'total_tasks',18,'items',(SELECT jsonb_agg(jsonb_build_object('question',i)) FROM generate_series(1,18)i),
  'rubric_sha256',repeat('a',64),'report_evidence_sha256',repeat('b',64));
+ IF exam_access_draft.archive_claimed_research_report(a,r,p)<>'conflict' THEN RAISE EXCEPTION 'sync archive bypass'; END IF;
  IF exam_access_draft.complete_research_scoring(a,r,k,h,p)<>'stale_lease' THEN RAISE EXCEPTION 'stale archive'; END IF;
  IF exam_access_draft.complete_research_scoring(a,r,(j->>'lease_id')::uuid,repeat('b',64),p)<>'manifest_conflict' THEN RAISE EXCEPTION 'manifest conflict'; END IF;
  IF exam_access_draft.complete_research_scoring(b,r,(j->>'lease_id')::uuid,h,p)<>'not_available' THEN RAISE EXCEPTION 'wrong owner archive'; END IF;
