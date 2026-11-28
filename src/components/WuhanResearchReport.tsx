@@ -1,4 +1,5 @@
 import styles from "./WuhanResearchReport.module.css";
+import { practiceRow, practiceSummary } from "../lib/wuhan-practice-summary";
 type Obj=Record<string,unknown>;
 const obj=(v:unknown):Obj=>v!==null&&typeof v==="object"&&!Array.isArray(v)?v as Obj:{};
 const str=(v:unknown)=>typeof v==="string"?v:"";
@@ -20,18 +21,34 @@ export function WuhanResearchReport({report}:{report:unknown}){
  const correct=items.filter(v=>obj(v).kind==="choice"&&obj(v).state==="correct").length;
  const wrong=items.filter(v=>obj(v).kind==="choice"&&obj(v).state==="incorrect").length;
  const blank=items.filter(v=>["not_submitted","unanswered"].includes(str(obj(v).state))).length;
+ const practice=practiceSummary(items);
  return <section className={styles.report} data-site-shell="content" aria-labelledby="research-report-title">
   <p className={styles.eyebrow}>内部研究报告 · 不扣次 · 不提供正式考试成绩</p>
   <h1 id="research-report-title">武汉英语听说 · {str(r.paper_id)} 诊断报告</h1>
   <p className={styles.disclosure}>这是识别证据与候选判定，不是官方成绩。模型分歧不等于学生读错。未作答不会产生口语分数。</p>
   <div className={styles.summary}><div><span>选择正确</span><strong>{correct}/8</strong></div><div><span>选择错误</span><strong>{wrong}</strong></div><div><span>未作答（含静音）</span><strong>{blank}</strong></div></div>
+  {practice.hasMachineEvidence&&<section className={styles.practice} aria-labelledby="practice-title" data-machine-practice-summary="true">
+   <h2 id="practice-title">听后应答 · 内容练习点</h2>
+   <p>仅比较双识别与当前机器参考规则明确判定的短答内容，不是发音分、官方分或整卷总分。</p>
+   {practice.points?<p className={styles.practiceScore}><strong>{practice.points.earned}/{practice.points.possible}</strong> 已判定短答的内容练习点</p>:<p>当前不汇总练习点。</p>}
+   <p>明确内容判定：{practice.decided}/{practice.total}题；待核查：{practice.counts.uncertain}题；未提交：{practice.counts.blank}题；无有效答音：{practice.counts.silence}题。</p>
+   {(practice.counts.legacy>0||practice.counts.invalid>0)&&<p>旧版或不完整练习证据：{practice.counts.legacy+practice.counts.invalid}题，不参与合计。</p>}
+   {practice.mixedRevision&&<p>存在不同机器规则版本，暂不合并练习点。</p>}
+   <p>未判定和未作答不计入已判定题的分母，不能据此推算全卷正确率。</p>
+  </section>}
   {items.map((value,i)=>{
    const t=obj(value),c=obj(t.candidate),d=obj(c.diagnosis),timing=obj(d.timing),state=str(t.state);
+   const shortPractice=practiceRow(t);
    const spans=arr(d.replay_word_spans).map(obj).filter(w=>count(w.start_ms)!==null&&count(w.end_ms)!==null&&Number(w.end_ms)>Number(w.start_ms)&&Number(w.end_ms)<=Number(timing.duration_ms));
    return <article key={i} className={styles.task} data-report-task={str(t.task_id)}>
     <div className={styles.heading}><h2>第{i+1}题 · {kinds[str(t.kind)]||"题目"}</h2><span>{states[state]||"待核查"}</span></div>
     {t.kind==="choice"&&count(c.selected_option)!==null&&Number(c.selected_option)<26&&<p>本人选择：{String.fromCharCode(65+Number(c.selected_option))}</p>}
+    {shortPractice?.kind==="match"&&<p>机器内容练习点：1/1（参考内容匹配）</p>}
+    {shortPractice?.kind==="mismatch"&&<p>机器内容练习点：0/1（已知内容不符）</p>}
+    {shortPractice?.kind==="silence"&&<p>未识别到有效答音，不计入已判定练习点。</p>}
+    {shortPractice?.kind==="uncertain"&&<p>机器证据不足，暂不判分。</p>}
     {str(c.evidence_quote)&&<p>识别内容：{str(c.evidence_quote)}</p>}
+    {str(c.secondary_evidence_quote)&&str(c.secondary_evidence_quote)!==str(c.evidence_quote)&&<p>第二识别结果：{str(c.secondary_evidence_quote)}</p>}
     {str(d.primary_text)&&str(d.secondary_text)&&<details className={styles.details} open={state==="asr_disagreement"}><summary>逐词识别证据</summary>
       <p><strong>Whisper：</strong>{str(d.primary_text)}</p><p><strong>Parakeet：</strong>{str(d.secondary_text)}</p>
       <div className={styles.columns}><Differences title="Whisper 文本差异" value={d.primary_text_edits}/><Differences title="Parakeet 文本差异" value={d.secondary_text_edits}/></div>

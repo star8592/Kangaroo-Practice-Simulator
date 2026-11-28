@@ -11,3 +11,6 @@
 .details summary{cursor:pointer;font-weight:650}.columns{display:grid;grid-template-columns:1fr 1fr;gap:12px}.columns h4{font-size:14px}.columns ul{padding-left:22px}
 .words{display:flex;gap:8px;flex-wrap:wrap}.words>div{padding:7px 10px;border:1px solid #d7e0e1;border-radius:7px;display:flex;flex-direction:column}.words small{font-size:11px}
 @media(max-width:540px){.report{margin:16px auto;padding:0 14px 32px}.summary{gap:6px}.summary>div{padding:10px}.summary span{font-size:12px}.columns{grid-template-columns:1fr}.heading h2{font-size:16px}}
+
+.practice{border:1px solid #d7e0e1;border-radius:12px;padding:14px 18px;margin:18px 0;overflow-wrap:anywhere}
+.practice h2{font-size:18px;margin:0 0 6px}.practice p{margin:8px 0}.practiceScore strong{font-size:28px;font-variant-numeric:tabular-nums;margin-right:8px}
