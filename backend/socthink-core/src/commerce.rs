@@ -115,6 +115,10 @@ pub fn commerce_router(state: CommerceState) -> Router {
             post(issue_research_ticket).layer(DefaultBodyLimit::max(128)),
         )
         .route(
+            "/internal/research/wuhan/check-attempt",
+            post(check_research_attempt).layer(DefaultBodyLimit::max(512)),
+        )
+        .route(
             "/internal/research/wuhan/claim-ticket",
             post(claim_research_ticket).layer(DefaultBodyLimit::max(512)),
         )
@@ -723,6 +727,97 @@ async fn claim_research_ticket(
         Ok(None) => rejected(),
         Err(_) => unavailable(),
     }
+}
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+struct CheckResearchAttempt {
+    attempt_id: String,
+    owner_id: String,
+    paper_id: String,
+}
+async fn check_research_attempt(
+    State(state): State<CommerceState>,
+    headers: HeaderMap,
+    body: Bytes,
+) -> Response {
+    let Some(key) = state.research_ticket_key.as_ref() else {
+        return private_json(StatusCode::NOT_FOUND, json!({"code":"DISABLED"}));
+    };
+    if headers.contains_key(header::ORIGIN) || headers.contains_key(header::COOKIE) {
+        return private_json(StatusCode::FORBIDDEN, json!({"code":"INTERNAL_ONLY"}));
+    }
+    let sig = headers
+        .get("x-research-ticket-signature")
+        .and_then(|v| v.to_str().ok())
+        .and_then(decode_hex);
+    let mut mac = HmacSha256::new_from_slice(key).expect("validated key");
+    mac.update(b"wuhan-research-access-v1\0");
+    mac.update(&body);
+    if !sig.is_some_and(|s| mac.verify_slice(&s).is_ok()) {
+        return private_json(
+            StatusCode::UNAUTHORIZED,
+            json!({"code":"INVALID_SIGNATURE"}),
+        );
+    }
+    let Ok(c) = serde_json::from_slice::<CheckResearchAttempt>(&body) else {
+        return private_json(StatusCode::BAD_REQUEST, json!({"code":"INVALID_REQUEST"}));
+    };
+    if !valid_parent_id(&c.owner_id)
+        || !valid_research_paper(&c.paper_id)
+        || c.attempt_id.len() != 32
+        || !c
+            .attempt_id
+            .bytes()
+            .all(|b| b.is_ascii_digit() || (b'a'..=b'f').contains(&b))
+    {
+        return private_json(StatusCode::BAD_REQUEST, json!({"code":"INVALID_REQUEST"}));
+    }
+    let rejected = || {
+        private_json(
+            StatusCode::NOT_FOUND,
+            json!({"code":"ATTEMPT_NOT_AVAILABLE"}),
+        )
+    };
+    let unavailable = || {
+        private_json(
+            StatusCode::SERVICE_UNAVAILABLE,
+            json!({"code":"TEMPORARILY_UNAVAILABLE"}),
+        )
+    };
+    let version = match sqlx::query_scalar::<_, Option<i64>>(
+        "SELECT exam_access_draft.inspect_research_attempt_access($1,$2,$3)",
+    )
+    .bind(&c.attempt_id)
+    .bind(&c.owner_id)
+    .bind(&c.paper_id)
+    .fetch_one(&state.pool)
+    .await
+    {
+        Ok(Some(v)) => v,
+        Ok(None) => return rejected(),
+        Err(_) => return unavailable(),
+    };
+    let Some(parents) = fs::read_to_string(state.user_data_dir.join(PARENTS_FILE))
+        .ok()
+        .and_then(|s| serde_json::from_str::<Vec<ParentRecord>>(&s).ok())
+    else {
+        return unavailable();
+    };
+    if !parents.iter().any(|p| {
+        p.id == c.owner_id
+            && p.active.unwrap_or(true)
+            && i64::try_from(p.session_version.unwrap_or(1).max(1)).ok() == Some(version)
+            && (p.wechat_id.as_deref().is_some_and(|s| !s.trim().is_empty())
+                || p.wechat_open_id
+                    .as_deref()
+                    .is_some_and(|s| !s.trim().is_empty()))
+    }) {
+        return rejected();
+    }
+    private_json(
+        StatusCode::OK,
+        json!({"attempt_id":c.attempt_id,"allowed":true,"billable":false}),
+    )
 }
 fn auth_or_response(headers: &HeaderMap, state: &CommerceState) -> Result<ParentRecord, Response> {
     current_parent(headers, state)

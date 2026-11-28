@@ -7,6 +7,7 @@ CREATE TABLE exam_access_draft.research_attempt_ticket(
  session_version bigint NOT NULL CHECK(session_version>0),
  paper_id text NOT NULL CHECK(paper_id ~ '^WH(0[1-9]|10)$'),
  expires_at timestamptz NOT NULL,
+ session_expires_at timestamptz NOT NULL,
  claimed_at timestamptz
 );
 REVOKE ALL ON exam_access_draft.research_attempt_ticket FROM PUBLIC;
@@ -23,8 +24,8 @@ BEGIN
  t:=replace(gen_random_uuid()::text,'-','')||replace(gen_random_uuid()::text,'-','');
  r:=replace(gen_random_uuid()::text,'-','');
  e:=least(clock_timestamp()+interval '120 seconds',to_timestamp(session_exp));
- INSERT INTO exam_access_draft.research_attempt_ticket(digest,attempt_id,owner_id,session_version,paper_id,expires_at)
- VALUES(encode(sha256(convert_to(t,'UTF8')),'hex'),r,a,v,p,e);
+ INSERT INTO exam_access_draft.research_attempt_ticket(digest,attempt_id,owner_id,session_version,paper_id,expires_at,session_expires_at)
+ VALUES(encode(sha256(convert_to(t,'UTF8')),'hex'),r,a,v,p,e,to_timestamp(session_exp));
  RETURN jsonb_build_object('ticket',t,'attempt_id',r,'paper_id',p,'expires_in',greatest(0,floor(extract(epoch FROM (e-clock_timestamp())))::int),'billable',false);
 END $$;
 CREATE FUNCTION exam_access_draft.inspect_research_ticket(t text,p text)
@@ -44,6 +45,15 @@ $$;
 REVOKE ALL ON FUNCTION exam_access_draft.issue_research_ticket(text,bigint,text,bigint),
  exam_access_draft.inspect_research_ticket(text,text),
  exam_access_draft.claim_research_ticket(text,text,text,bigint) FROM PUBLIC;
+-- Claimed ticket access requires original login lifetime and absence of erasure.
+CREATE FUNCTION exam_access_draft.inspect_research_attempt_access(r text,a text,p text)
+RETURNS bigint LANGUAGE sql STABLE SECURITY DEFINER SET search_path=pg_catalog,pg_temp AS $$
+ SELECT session_version FROM exam_access_draft.research_attempt_ticket t
+ WHERE t.attempt_id=r AND t.owner_id=a AND t.paper_id=p AND t.claimed_at IS NOT NULL
+ AND t.session_expires_at>statement_timestamp()
+ AND NOT EXISTS(SELECT 1 FROM exam_access_draft.research_report_erasure e WHERE e.attempt_id=r)
+$$;
+REVOKE ALL ON FUNCTION exam_access_draft.inspect_research_attempt_access(text,text,text) FROM PUBLIC;
 CREATE OR REPLACE FUNCTION exam_access_draft.archive_research_report(a text,r text,p jsonb)
 RETURNS text LANGUAGE plpgsql SECURITY DEFINER SET search_path=pg_catalog,pg_temp AS $$
 DECLARE existing exam_access_draft.research_report_archive%ROWTYPE;
