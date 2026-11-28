@@ -49,12 +49,41 @@ with tempfile.TemporaryDirectory(prefix="wuhan-oral-preview-",dir="/tmp") as sto
                 assert c["status"] in ("known_mismatch","needs_review"),c
                 assert (c["practice_content"] is None if c["status"]=="needs_review" else c["practice_content"]["earned"]==0)
             if spoken is None:assert c["status"]=="unanswered" and c["practice_content"]["earned"]==0
+        fluency_test=os.environ.get("SOCTHINK_TEST_R81_FLUENCY_PAGE")=="1"
+        if fluency_test:
+            wav=Path(tmp)/"reading.wav"
+            subprocess.run(["espeak-ng","-v","en-us","-s","145","-w",str(wav),"Trees also slow rainwater as it reaches the ground."],check=True)
+            raw=Path(tmp)/"reading.pcm"
+            subprocess.run(["ffmpeg","-nostdin","-v","error","-i",str(wav),"-ac","1","-ar","16000","-f","s16le",str(raw)],check=True)
+            with wave.open(str(wav),"wb") as f:
+                f.setparams((1,2,16000,0,"NONE","not compressed"));f.writeframes(raw.read_bytes())
+            status,c=exam("/tasks/read-trees",wav.read_bytes(),"audio/wav")
+            assert status==200,(status,c)
+            diag=c["diagnosis"]
+            print("R81_ACTUAL_READING_DIAG",json.dumps(diag,ensure_ascii=False),flush=True)
+            assert diag["status"] in ("reference_text_matched","asr_disagreement","reference_text_differs") and diag["pronunciation_score"] is None
+            assert diag["fluency_evidence"] is not None,diag
+            if diag["status"]=="asr_disagreement":assert diag["fluency_evidence"]["recording_words_per_minute"] is None
+            elif diag["status"]=="reference_text_matched":assert diag["fluency_evidence"]["recording_words_per_minute"]==152,diag
+            print("R81_ACTUAL_READING_EVIDENCE",json.dumps(diag["fluency_evidence"]),flush=True)
         status,report=exam("/finalize",b"")
-        assert status==200 and report["finalized"] and report["submitted"]==3 and report["total_score"] is None and report["billable"] is False
+        assert status==200 and report["finalized"] and report["submitted"]==(4 if fluency_test else 3) and report["total_score"] is None and report["billable"] is False
         assert read(aid)==(200,report) and read(aid,other)[0]==404
         assert exam("/archive-status")[1]["archive_status"]=="archived"
+        if fluency_test:
+            import copy,hmac
+            for field,value in [("recording_words_per_minute",999),("speech_activity_percent",101),("internal_pause_count",4),("active_speech_words_per_minute",9999)]:
+                invalid=copy.deepcopy(report)
+                d=next(x for x in invalid["items"] if x["task_id"]=="read-trees")["candidate"]["diagnosis"]
+                d["fluency_evidence"][field]=value
+                raw=json.dumps({"owner_id":owner,"report":invalid},separators=(",",":")).encode()
+                sig=hmac.new(bytes.fromhex(os.environ["SOCTHINK_RESEARCH_ARCHIVE_KEY"]),b"wuhan-research-archive-v1"+bytes(1)+raw,hashlib.sha256).hexdigest()
+                code,_=request(origin,"/internal/research/wuhan/archive",raw,{"Content-Type":"application/json","x-research-signature":sig})
+                assert code==400,(field,code)
+            assert read(aid)==(200,report)
+            print("R81_SIGNED_INVALID_FLUENCY_HTTP_REJECTED 4 cases",flush=True)
         out.write_text(json.dumps(report,ensure_ascii=False))
-        print("R79_REAL_SCORER_ARCHIVE_PASS 3 recorded tasks; 4 short answers unsubmitted; exact owner read; no official grade",flush=True)
+        print(f"R79_REAL_SCORER_ARCHIVE_PASS {report['submitted']} recorded tasks; 4 short answers unsubmitted; exact owner read; no official grade",flush=True)
     finally:
         p.terminate()
         try:p.wait(timeout=10)
