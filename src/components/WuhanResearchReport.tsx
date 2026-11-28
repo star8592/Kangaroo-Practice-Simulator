@@ -1,5 +1,5 @@
 import "server-only";
-import { reviewReference,retellChecklist } from "../lib/wuhan-review-reference.server";
+import { reviewReference,retellChecklist,reviewPlan } from "../lib/wuhan-review-reference.server";
 import styles from "./WuhanResearchReport.module.css";
 import { practiceRow, practiceSummary } from "../lib/wuhan-practice-summary";
 import { readingFluency } from "../lib/wuhan-reading-fluency";
@@ -41,6 +41,7 @@ export function WuhanResearchReport({report}:{report:unknown}){
  const wrong=items.filter(v=>obj(v).kind==="choice"&&obj(v).state==="incorrect").length;
  const blank=items.filter(v=>["not_submitted","unanswered"].includes(str(obj(v).state))).length;
  const practice=practiceSummary(items);
+ const plan=reviewPlan(r);
  return <section className={styles.report} data-site-shell="content" aria-labelledby="research-report-title">
   <p className={styles.eyebrow}>内部研究报告 · 不扣次 · 不提供正式考试成绩</p>
   <h1 id="research-report-title">武汉英语听说 · {str(r.paper_id)} 诊断报告</h1>
@@ -55,12 +56,22 @@ export function WuhanResearchReport({report}:{report:unknown}){
    {practice.mixedRevision&&<p>存在不同机器规则版本，暂不合并练习点。</p>}
    <p>未判定和未作答不计入已判定题的分母，不能据此推算全卷正确率。</p>
   </section>}
+  {plan.length>0&&<section className={styles.practice} aria-labelledby="review-plan-title" data-review-plan="true">
+   <h2 id="review-plan-title">下一步 · 专项复练</h2>
+   <p>优先练习明确答错的题目，再补练未作答和需要巩固的题目。</p>
+   <a className={styles.retryLink} data-review-start="true" href={plan[0]!.href} target="_blank" rel="noopener noreferrer">开始第{plan[0]!.number}题专项复练</a>
+   <details className={styles.details}><summary>查看全部建议复练题目（{plan.length}题）</summary>
+    <ul className={styles.retryList}>{plan.map(t=><li key={t.id}><a data-review-task={t.id} href={t.href} target="_blank" rel="noopener noreferrer">第{t.number}题 · {kinds[t.kind]}</a><span>{t.reason}</span></li>)}</ul>
+   </details>
+   <p className={styles.disclosure}>新窗口进入原题自由练习，不修改本次报告，不是独立能力复测；自由练习使用现有训练引擎，开放口语未接入此报告的研究评分。</p>
+  </section>}
   {items.map((value,i)=>{
    const t=obj(value),c=obj(t.candidate),d=obj(c.diagnosis),timing=obj(d.timing),state=str(t.state);
    const shortPractice=practiceRow(t);
    const fluency=readingFluency(t);
    const review=reviewReference(r,t);
    const checklist=retellChecklist(r,t);
+   const retry=plan.find(x=>x.id===t.task_id);
    const feedback=str(c.feedback_code);
    const feedbackText=feedbackMessages[feedback];
    const showFeedback=!!feedbackText&&["answer","retell"].includes(str(t.kind))&&(state==="needs_review"||state==="unanswered"||state==="partial_reference"||shortPractice?.kind==="match"||shortPractice?.kind==="mismatch");
@@ -105,6 +116,7 @@ export function WuhanResearchReport({report}:{report:unknown}){
       {fluency.pauses>0&&<p>练习建议：先听示范，按意群连贯朗读，在自然句界停顿，不必刻意加快速度。</p>}
       <details className={styles.details}><summary>测量说明</summary><p>语音活动期间语速：{fluency.activeWpm===null?"暂不估计":fluency.activeWpm+" 词/分钟"}。停顿基于近似语音活动检测，不是精确词界；正常停顿与慢速朗读不自动扣分。这些测量不是流利度分数、发音分或官方成绩。</p></details>
     </section>}
+    {retry&&<p><a className={styles.retryLink} data-task-retry={retry.id} href={retry.href} target="_blank" rel="noopener noreferrer">重新练习本题</a></p>}
     {count(timing.duration_ms)!==null&&<p>录音时长 {(Number(timing.duration_ms)/1000).toFixed(2)} 秒；语音活动检测 {(Number(timing.speech_ms)/1000).toFixed(2)} 秒。仅供回听分析。</p>}
    </article>;
   })}

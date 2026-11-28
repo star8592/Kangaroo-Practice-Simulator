@@ -14,3 +14,7 @@
 
 .practice{border:1px solid #d7e0e1;border-radius:12px;padding:14px 18px;margin:18px 0;overflow-wrap:anywhere}
 .practice h2{font-size:18px;margin:0 0 6px}.practice p{margin:8px 0}.practiceScore strong{font-size:28px;font-variant-numeric:tabular-nums;margin-right:8px}
+
+.retryLink{display:inline-flex;align-items:center;min-height:44px;padding:8px 14px;background:#0f766e;color:#fff!important;border-radius:8px;text-decoration:none;font-weight:650}
+.retryLink:focus-visible,.retryList a:focus-visible{outline:3px solid #155e75;outline-offset:3px}
+.retryList{list-style:none;padding:0;margin:8px 0}.retryList li{display:flex;flex-wrap:wrap;gap:4px 12px;padding:8px 0;border-bottom:1px solid #d7e0e1}.retryList a{font-weight:600;color:inherit;text-decoration:underline}.retryList span{color:#52656b;font-size:13px}

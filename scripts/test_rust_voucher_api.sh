@@ -305,12 +305,14 @@ if [[ "${SOCTHINK_TEST_RESEARCH_PAGE:-0}" == "1" || "${SOCTHINK_TEST_R79_LIVE_PA
 from html.parser import HTMLParser
 import sys
 class Page(HTMLParser):
- def __init__(self):super().__init__();self.tasks=[];self.content=[];self.review=0;self.skip=False
+ def __init__(self):super().__init__();self.tasks=[];self.content=[];self.review=0;self.retry=[];self.start=None;self.skip=False
  def handle_starttag(self,t,a):
   if t in ('script','style'):self.skip=True
   d=dict(a)
   if 'data-report-task' in d:self.tasks.append(d['data-report-task'])
   if t=='details' and d.get('data-review-reference')=='true':self.review+=1
+  if t=='a' and 'data-review-task' in d:self.retry.append((d['data-review-task'],d['href']))
+  if t=='a' and d.get('data-review-start')=='true':self.start=d['href']
  def handle_endtag(self,t):
   if t in ('script','style'):self.skip=False
  def handle_data(self,d):
@@ -361,6 +363,16 @@ if os.environ.get("SOCTHINK_TEST_R79_LIVE_PAGE")=="1":
   assert '转述关键信息' in s and '已确认2/6项练习信息' in compact and '尚未确认不等于一定漏答' in s
   assert 'They planted twenty trees.' in s and 'They collected rubbish.' in s
   print('R83_REAL_RETELL_NEXT_PAGE_PASS 2/6 confirmed groups, non-official')
+  from urllib.parse import urlparse,parse_qs
+  assert p.retry[0][0]=='answer-poster-deadline' and p.start==p.retry[0][1]
+  assert 'answer-gift-budget' not in [k for k,_ in p.retry]
+  assert 'read-trees' not in [k for k,_ in p.retry]
+  assert {'answer-poster-deadline','answer-train-platform','retell-river-cleanup'}<=set(k for k,_ in p.retry)
+  for k,u in p.retry:
+   link=urlparse(u);q=parse_qs(link.query)
+   assert not link.netloc and link.path=='/english/pronunciation/app/exam-simulator' and q['focus']==[k] and q['set']==['WH01'] and q['mode']==['practice']
+  print('R84_ACTUAL_REPORT_REVIEW_PLAN_SSR_PASS exact links and priority; correct items excluded')
+
 
 
 else:

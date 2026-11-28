@@ -1,5 +1,8 @@
 import "server-only";
 import bank from "./wuhan-review-reference.json";
+import contract from "../../backend/socthink-core/src/wuhan-research-report-contract.json";
+import {buildWuhanReviewPlan} from "./wuhan-review-plan";
+import {regionByYear,regionExamHref} from "./english-speaking-regions";
 
 export function reviewReference(report:Record<string,unknown>,task:Record<string,unknown>){
  // Server-rendered owner-authorized finalized reports only. No public answer
@@ -17,4 +20,12 @@ export function retellChecklist(report:Record<string,unknown>,task:Record<string
  const indices=e.confirmed_indices;
  if(indices.some((x,i)=>!Number.isInteger(x)||x<0||x>=g.groups.length||(i>0&&x<=indices[i-1])))return null;
  return {confirmed:indices.length,total:g.groups.length,rows:g.groups.map((text,i)=>({text,confirmed:indices.includes(i)}))};
+}
+
+export function reviewPlan(report:Record<string,unknown>){
+ const paper=contract.papers.find(p=>p.paperId===report.paper_id);
+ const region=regionByYear("wuhan","2027");
+ const set=region?.papers.find(p=>p.set===report.paper_id);
+ if(!paper||!region||!set)return [];
+ return buildWuhanReviewPlan(report,contract.rubricSha256,paper.tasks).map(task=>({...task,href:regionExamHref(region,set,"practice",task.id)}));
 }
