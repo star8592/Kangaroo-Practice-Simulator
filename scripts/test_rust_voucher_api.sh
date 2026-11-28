@@ -305,11 +305,12 @@ if [[ "${SOCTHINK_TEST_RESEARCH_PAGE:-0}" == "1" || "${SOCTHINK_TEST_R79_LIVE_PA
 from html.parser import HTMLParser
 import sys
 class Page(HTMLParser):
- def __init__(self):super().__init__();self.tasks=[];self.content=[];self.skip=False
+ def __init__(self):super().__init__();self.tasks=[];self.content=[];self.review=0;self.skip=False
  def handle_starttag(self,t,a):
   if t in ('script','style'):self.skip=True
   d=dict(a)
   if 'data-report-task' in d:self.tasks.append(d['data-report-task'])
+  if t=='details' and d.get('data-review-reference')=='true':self.review+=1
  def handle_endtag(self,t):
   if t in ('script','style'):self.skip=False
  def handle_data(self,d):
@@ -346,6 +347,9 @@ if os.environ.get("SOCTHINK_TEST_R79_LIVE_PAGE")=="1":
  assert '机器内容练习点：1/1' in s
  assert ('机器内容练习点：0/1' in s)==bool(states.count("known_mismatch"))
  assert '未识别到有效答音，不计入已判定练习点' in s
+ assert p.review==10,p.review
+ assert '题后复习' in s and 'Friday morning' in s
+ print('R82_FINALIZED_REFERENCE_REVIEW_SSR_PASS 10 oral tasks; frozen bank',flush=True)
  print(f'R79_REAL_SCORER_NEXT_PAGE_PASS 18 tasks; 1/{decided} points; decided {decided}/7; {uncertain} uncertain; 4 unsubmitted; 1 silence; no official grade')
  if os.environ.get("SOCTHINK_TEST_R81_FLUENCY_PAGE")=="1":
   f=next(x for x in r["items"] if x["task_id"]=="read-trees")["candidate"]["diagnosis"]["fluency_evidence"]

@@ -25,3 +25,21 @@ payload=json.dumps(data,ensure_ascii=False,indent=2)+'\n'
 if a.write:target.write_text(payload)
 else:assert target.read_text()==payload,'Frozen rubric projection differs; explicit review/update required'
 print('WUHAN_RESEARCH_CONTRACT_PROJECTION_PASS 10 papers 180 tasks')
+
+# Minimal review-only reference projection. Import from a server-only module.
+# Keep the same frozen revision as the report; never reinterpret an old bank.
+oral=json.loads((source/names[2]).read_text())['records']
+reading=json.loads((source/names[1]).read_text())['records']
+review={'rubricSha256':h.hexdigest(),'records':[]}
+for r in oral:
+    review['records'].append({'paperId':r['paperId'],'taskId':r['taskId'],'kind':r['kind'],'question':r['question'],'reference':r['reference']})
+for r in reading:
+    review['records'].append({'paperId':r['paperId'],'taskId':r['taskId'],'kind':'read','question':'','reference':r['reference']})
+assert len(review['records'])==100
+assert len({(r['paperId'],r['taskId']) for r in review['records']})==100
+assert all(r['reference'] and len(r['reference'])<=4000 for r in review['records'])
+target=ROOT/'src/lib/wuhan-review-reference.json'
+payload=json.dumps(review,ensure_ascii=False,indent=2)+'\n'
+if a.write:target.write_text(payload)
+else:assert target.read_text()==payload,'Review reference projection drift'
+print('WUHAN_REVIEW_REFERENCE_PROJECTION_PASS 100 oral tasks')

@@ -1,3 +1,5 @@
+import "server-only";
+import { reviewReference } from "../lib/wuhan-review-reference.server";
 import styles from "./WuhanResearchReport.module.css";
 import { practiceRow, practiceSummary } from "../lib/wuhan-practice-summary";
 import { readingFluency } from "../lib/wuhan-reading-fluency";
@@ -57,6 +59,7 @@ export function WuhanResearchReport({report}:{report:unknown}){
    const t=obj(value),c=obj(t.candidate),d=obj(c.diagnosis),timing=obj(d.timing),state=str(t.state);
    const shortPractice=practiceRow(t);
    const fluency=readingFluency(t);
+   const review=reviewReference(r,t);
    const feedback=str(c.feedback_code);
    const feedbackText=feedbackMessages[feedback];
    const showFeedback=!!feedbackText&&["answer","retell"].includes(str(t.kind))&&(state==="needs_review"||state==="unanswered"||state==="partial_reference"||shortPractice?.kind==="match"||shortPractice?.kind==="mismatch");
@@ -72,6 +75,13 @@ export function WuhanResearchReport({report}:{report:unknown}){
     {showFeedback&&<p className={styles.disclosure} data-feedback-code={feedback}>{feedbackText}</p>}
     {recognition.length>=2&&<details className={styles.details}><summary>语音识别依据</summary>{recognition.map((e,j)=><p key={j}><strong>{str(e.engine)}：</strong>{str(e.transcript)}</p>)}</details>}
     {str(c.evidence_quote)&&<p>识别内容：{str(c.evidence_quote)}</p>}
+    {review&&<details className={styles.details} data-review-reference="true" open={shortPractice?.kind==="mismatch"||state==="partial_reference"}>
+      <summary>题后复习 · 参考表达</summary>
+      {review.question&&<p><strong>原题：</strong>{review.question}</p>}
+      <p><strong>{t.kind==="read"?"标准练习文本：":"参考表达："}</strong>{review.reference}</p>
+      <p>{t.kind==="read"?"先听示范，再按意群完整朗读。":t.kind==="retell"?"对照参考表达，尝试用自己的话补全信息。":"听清问题后，用自己的话说出关键信息，不必逐字背诵参考答案。"}</p>
+    </details>}
+
     {str(c.secondary_evidence_quote)&&str(c.secondary_evidence_quote)!==str(c.evidence_quote)&&<p>第二识别结果：{str(c.secondary_evidence_quote)}</p>}
     {str(d.primary_text)&&str(d.secondary_text)&&<details className={styles.details} open={state==="asr_disagreement"}><summary>逐词识别证据</summary>
       <p><strong>Whisper：</strong>{str(d.primary_text)}</p><p><strong>Parakeet：</strong>{str(d.secondary_text)}</p>
