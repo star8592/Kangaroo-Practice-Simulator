@@ -1,8 +1,8 @@
 import "server-only";
 import {constants,openSync,fstatSync,readFileSync,closeSync} from "node:fs";
-import {scorePrivatePractice,PrivatePracticeError} from "./wuhan-private-practice-transport";
+import {scorePrivatePractice,scorePrivateBatch,PrivatePracticeError,type PracticeBatchItem} from "./wuhan-private-practice-transport";
 // No route exposes this helper yet. Only caller-authorized recordings may enter.
-export async function evaluateAuthorizedPracticeAudio(paper:string,task:string,mime:string,audio:Uint8Array){
+function privateSettings(){
  if(process.env.SOCTHINK_WUHAN_PRIVATE_PRACTICE!=="1")throw new PrivatePracticeError(503,"私有评分暂未开放");
  let key:Buffer;
  try{
@@ -15,5 +15,13 @@ export async function evaluateAuthorizedPracticeAudio(paper:string,task:string,m
    key=Buffer.from(text,"hex");
   }finally{closeSync(fd)}
  }catch{throw new PrivatePracticeError(503,"私有评分凭证不可用")}
- return scorePrivatePractice({origin:process.env.SOCTHINK_WUHAN_PRIVATE_ORIGIN||"",key,revision:process.env.SOCTHINK_WUHAN_PRIVATE_REVISION||""},paper,task,mime,audio);
+ return {origin:process.env.SOCTHINK_WUHAN_PRIVATE_ORIGIN||"",key,revision:process.env.SOCTHINK_WUHAN_PRIVATE_REVISION||""};
+}
+
+export async function evaluateAuthorizedPracticeAudio(paper:string,task:string,mime:string,audio:Uint8Array){
+ return scorePrivatePractice(privateSettings(),paper,task,mime,audio);
+}
+// Internal only: upstream must authorize every recording before invoking.
+export async function evaluateAuthorizedPracticeBatch(items:readonly PracticeBatchItem[]){
+ return scorePrivateBatch(privateSettings(),items);
 }
