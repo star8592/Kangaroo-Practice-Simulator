@@ -120,6 +120,10 @@ pub fn commerce_router(state: CommerceState) -> Router {
             post(archive_research_report).layer(DefaultBodyLimit::max(262144)),
         )
         .route(
+            "/internal/research/wuhan/complete-scoring",
+            post(complete_scoring_report).layer(DefaultBodyLimit::max(262144)),
+        )
+        .route(
             "/api/platform/research/wuhan/tickets/{paper}",
             post(issue_research_ticket).layer(DefaultBodyLimit::max(128)),
         )
@@ -754,6 +758,108 @@ async fn archive_research_report(
             json!({"code":result.unwrap(),"attempt_id":id,"billable":false}),
         ),
         Ok("conflict") => private_json(StatusCode::CONFLICT, json!({"code":"REPORT_CONFLICT"})),
+        Ok("invalid") => private_json(StatusCode::BAD_REQUEST, json!({"code":"INVALID_REPORT"})),
+        _ => private_json(
+            StatusCode::SERVICE_UNAVAILABLE,
+            json!({"code":"TEMPORARILY_UNAVAILABLE"}),
+        ),
+    }
+}
+
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+struct ScoringCompleteEnvelope {
+    owner_id: String,
+    lease_id: String,
+    manifest_sha256: String,
+    report: Value,
+}
+// Candidate loopback-only signed completion, never a browser route.
+async fn complete_scoring_report(
+    State(state): State<CommerceState>,
+    headers: HeaderMap,
+    body: Bytes,
+) -> Response {
+    if env::var("SOCTHINK_WUHAN_ASYNC_PREVIEW").as_deref() != Ok("1") || state.legacy_research_archive_fixture {
+        return private_json(StatusCode::NOT_FOUND, json!({"code":"DISABLED"}));
+    }
+    let Some(key) = state.research_archive_key.as_ref() else {
+        return private_json(StatusCode::NOT_FOUND, json!({"code":"DISABLED"}));
+    };
+    if headers.contains_key(header::ORIGIN) || headers.contains_key(header::COOKIE) {
+        return private_json(StatusCode::FORBIDDEN, json!({"code":"INTERNAL_ONLY"}));
+    }
+    let signature = headers
+        .get("x-research-signature")
+        .and_then(|v| v.to_str().ok())
+        .and_then(decode_hex);
+    let mut mac = HmacSha256::new_from_slice(key).expect("validated key");
+    mac.update(b"wuhan-research-async-complete-v1\0");
+    mac.update(&body);
+    if !signature.is_some_and(|sig| mac.verify_slice(&sig).is_ok()) {
+        return private_json(
+            StatusCode::UNAUTHORIZED,
+            json!({"code":"INVALID_SIGNATURE"}),
+        );
+    }
+    let Ok(envelope) = serde_json::from_slice::<ScoringCompleteEnvelope>(&body) else {
+        return private_json(StatusCode::BAD_REQUEST, json!({"code":"INVALID_REPORT"}));
+    };
+    let Some(id) = envelope.report.get("attempt_id").and_then(Value::as_str) else {
+        return private_json(StatusCode::BAD_REQUEST, json!({"code":"INVALID_REPORT"}));
+    };
+    if !valid_parent_id(&envelope.owner_id)
+        || id.len() != 32
+        || !id
+            .bytes()
+            .all(|b| b.is_ascii_digit() || (b'a'..=b'f').contains(&b))
+    {
+        return private_json(StatusCode::BAD_REQUEST, json!({"code":"INVALID_REPORT"}));
+    }
+    let parents = fs::read_to_string(state.user_data_dir.join(PARENTS_FILE))
+        .ok()
+        .and_then(|s| serde_json::from_str::<Vec<ParentRecord>>(&s).ok());
+    let Some(parent) = parents.and_then(|ps| ps.into_iter().find(|p|
+        p.id == envelope.owner_id && p.active.unwrap_or(true)
+        && (p.wechat_id.as_deref().is_some_and(|s| !s.trim().is_empty())
+            || p.wechat_open_id.as_deref().is_some_and(|s| !s.trim().is_empty()))
+    )) else {
+        return private_json(StatusCode::FORBIDDEN, json!({"code":"UNKNOWN_ACCOUNT"}));
+    };
+    let bound = sqlx::query_scalar::<_, Option<i64>>(
+        "SELECT exam_access_draft.inspect_research_attempt_access($1,$2,$3)",
+    ).bind(id).bind(&envelope.owner_id)
+    .bind(envelope.report["paper_id"].as_str().unwrap_or(""))
+    .fetch_one(&state.pool).await;
+    match bound {
+        Ok(Some(version)) if Some(version) == i64::try_from(parent.session_version.unwrap_or(1).max(1)).ok() => (),
+        Ok(_) => return private_json(StatusCode::CONFLICT, json!({"code":"ATTEMPT_NOT_AVAILABLE"})),
+        Err(_) => return private_json(StatusCode::SERVICE_UNAVAILABLE, json!({"code":"TEMPORARILY_UNAVAILABLE"})),
+    }
+    if !research_report_valid(&envelope.report) {
+        return private_json(StatusCode::BAD_REQUEST, json!({"code":"INVALID_REPORT"}));
+    }
+    if envelope.lease_id.len() != 36
+        || !envelope.lease_id.bytes().enumerate().all(|(i,b)| if [8,13,18,23].contains(&i) { b==b'-' } else { b.is_ascii_digit() || (b'a'..=b'f').contains(&b) })
+        || decode_hex(&envelope.manifest_sha256).is_none() {
+        return private_json(StatusCode::BAD_REQUEST, json!({"code":"INVALID_BINDING"}));
+    }
+    let result = sqlx::query_scalar::<_, String>(
+        "SELECT exam_access_draft.complete_research_scoring($1,$2,$3::uuid,$4,$5)",
+    )
+        .bind(&envelope.owner_id)
+        .bind(id)
+        .bind(&envelope.lease_id)
+        .bind(&envelope.manifest_sha256)
+        .bind(&envelope.report)
+        .fetch_one(&state.pool)
+        .await;
+    match result.as_deref() {
+        Ok("completed") => private_json(
+            StatusCode::OK,
+            json!({"code":result.unwrap(),"attempt_id":id,"billable":false}),
+        ),
+        Ok("conflict" | "stale_lease" | "manifest_conflict" | "not_available" | "archive_conflict") => private_json(StatusCode::CONFLICT, json!({"code":"REPORT_CONFLICT"})),
         Ok("invalid") => private_json(StatusCode::BAD_REQUEST, json!({"code":"INVALID_REPORT"})),
         _ => private_json(
             StatusCode::SERVICE_UNAVAILABLE,

@@ -450,6 +450,26 @@ d=json.load(open(sys.argv[1]))
 assert d==dict(code="SCORING_FAILED",attempt_id=sys.argv[2],state="failed",billable=False),d
 PYASYNC
   echo R90_ASYNC_REPORT_HTTP_PASS
+  if [[ -n "${WUHAN_R91_FIXTURE_OUTPUT:-}" ]]; then
+    REAL_ID="$(python3 - "$WUHAN_R91_FIXTURE_OUTPUT" <<'PYR91'
+import json,sys,re
+r=json.load(open(sys.argv[1]));assert re.fullmatch('[a-f0-9]{32}',r['attempt_id']);print(r['attempt_id'])
+PYR91
+)"
+    # This is an isolated queue/lease fixture, not a real user's submission.
+    R91_MANIFEST="$(printf 'r91-isolated-fixture' | sha256sum | cut -d' ' -f1)"
+    psql_db -v aid="$REAL_ID" -v owner="$OWNER_ID" <<'SQLR91'
+INSERT INTO exam_access_draft.research_attempt_ticket(digest,attempt_id,owner_id,session_version,paper_id,expires_at,session_expires_at,claimed_at)
+VALUES(repeat('d',64),:'aid',:'owner',1,'WH01',clock_timestamp()+interval '2 minutes',clock_timestamp()+interval '1 hour',clock_timestamp());
+SQLR91
+    [[ "$(psql_db -At -v aid="$REAL_ID" -v owner="$OWNER_ID" -v hash="$R91_MANIFEST" <<'SQLR91'
+SELECT exam_access_draft.enqueue_research_scoring(:'owner',:'aid','WH01',:'hash');
+SQLR91
+)" == "queued" ]]
+    R91_LEASE="$(psql_db -At -c "SELECT exam_access_draft.claim_research_scoring()->>'lease_id'")"
+    WUHAN_TICKET_TEST_ORIGIN="$BASE" WUHAN_TICKET_OWNER_ID="$OWNER_ID" WUHAN_TICKET_OWNER_SESSION="$OWNER_TOKEN" WUHAN_TICKET_OTHER_SESSION="$OTHER_TOKEN" WUHAN_R91_LEASE="$R91_LEASE" WUHAN_R91_MANIFEST="$R91_MANIFEST" python3 -B scripts/test_wuhan_r91_complete_http.py
+  fi
+
 fi
 echo "WUHAN_RESEARCH_ARCHIVE_SESSION_READ=PASS"
 echo "RUST_VOUCHER_API_E2E=PASS auth=verified owner_scope=verified idempotent_claim=PASS cross_account_rejected=PASS refund_revokes_future_access=PASS no_raw_codes=PASS"
