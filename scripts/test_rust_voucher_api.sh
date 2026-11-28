@@ -171,6 +171,17 @@ if [[ "$SOCTHINK_RESEARCH_LEGACY_FIXTURE" == "0" ]]; then
  WUHAN_TICKET_OWNER_ID="$OWNER_ID" WUHAN_TICKET_OTHER_ID="$OTHER_ID" \
  python3 -B scripts/test_wuhan_strict_archive_http.py
 fi
+if [[ "${SOCTHINK_TEST_R79_LIVE_PAGE:-0}" == "1" ]]; then
+  [[ "$SOCTHINK_RESEARCH_LEGACY_FIXTURE" == "0" && "${SOCTHINK_TEST_TICKET_ATTEMPT:-0}" == "0" ]] || { echo "Run R79 live page separately in strict mode"; exit 1; }
+  ACCENT_ROOT="$WUHAN_ACCENT_RESEARCH_ROOT"
+  python3 scripts/project_wuhan_research_contract.py "$ACCENT_ROOT"
+  WUHAN_TICKET_TEST_ORIGIN="$BASE" WUHAN_TICKET_OWNER_SESSION="$OWNER_TOKEN" WUHAN_TICKET_OTHER_SESSION="$OTHER_TOKEN" \
+  WUHAN_TICKET_OWNER_ID="$OWNER_ID" WUHAN_TICKET_OTHER_ID="$OTHER_ID" \
+  python3 -u scripts/test_wuhan_r79_live_report.py "$ACCENT_ROOT" "$WUHAN_ACCENT_RESEARCH_BINARY" "$TMP/r79-live.json"
+  R79_REPORT_ID="$(python3 -c 'import json,sys;print(json.load(open(sys.argv[1]))["attempt_id"])' "$TMP/r79-live.json")"
+  [[ "$(psql_db -At -c "SELECT count(*) FROM exam_access_draft.research_report_archive a JOIN exam_access_draft.research_attempt_ticket t USING(attempt_id) WHERE a.attempt_id='$R79_REPORT_ID' AND t.claimed_at IS NOT NULL AND a.owner_id=t.owner_id AND a.paper_id=t.paper_id")" == "1" ]]
+  [[ "$(psql_db -At -c 'SELECT count(*) FROM exam_access_draft.completed_reports')" == "0" ]]
+fi
 if [[ "${SOCTHINK_TEST_TICKET_ATTEMPT:-0}" == "1" ]]; then
   ACCENT_ROOT="$WUHAN_ACCENT_RESEARCH_ROOT"
   python3 scripts/project_wuhan_research_contract.py "$ACCENT_ROOT"
@@ -272,8 +283,13 @@ BEGIN
  EXCEPTION WHEN check_violation THEN NULL; END;
 END $$;
 SQLREPORT
-if [[ "${SOCTHINK_TEST_RESEARCH_PAGE:-0}" == "1" ]]; then
-  [[ -n "${WUHAN_SYNTHETIC_REPORT_FIXTURE:-}" ]] || { echo "Synthetic report fixture required"; exit 1; }
+if [[ "${SOCTHINK_TEST_RESEARCH_PAGE:-0}" == "1" || "${SOCTHINK_TEST_R79_LIVE_PAGE:-0}" == "1" ]]; then
+  if [[ "${SOCTHINK_TEST_R79_LIVE_PAGE:-0}" == "1" ]]; then
+    PAGE_REPORT_ID="$R79_REPORT_ID"
+  else
+    [[ -n "${WUHAN_SYNTHETIC_REPORT_FIXTURE:-}" ]] || { echo "Synthetic report fixture required"; exit 1; }
+    PAGE_REPORT_ID="$REPORT_ID"
+  fi
   NEXT_PORT="$(python3 -c 'import socket;s=socket.socket();s.bind(("127.0.0.1",0));print(s.getsockname()[1]);s.close()')"
   export SOCTHINK_RUST_COMMERCE_INTERNAL_URL="$BASE"
   setsid node_modules/.bin/next dev --webpack -H 127.0.0.1 -p "$NEXT_PORT" >"$TMP/next.log" 2>&1 &
@@ -283,9 +299,9 @@ if [[ "${SOCTHINK_TEST_RESEARCH_PAGE:-0}" == "1" ]]; then
     kill -0 "$NEXT_PID" 2>/dev/null || { tail -30 "$TMP/next.log"; exit 1; }
     sleep 0.25
   done
-  URL="http://127.0.0.1:$NEXT_PORT/account/research/wuhan/$REPORT_ID"
+  URL="http://127.0.0.1:$NEXT_PORT/account/research/wuhan/$PAGE_REPORT_ID"
   curl -fsS --max-time 60 -H "Cookie: socthink_parent_session=$OWNER_TOKEN" "$URL" >"$TMP/page.html" || { tail -30 "$TMP/next.log";exit 1; }
-  python3 - "$TMP/page.html" <<'PYREPORT'
+  python3 - "$TMP/page.html" "$TMP/r79-live.json" <<'PYREPORT'
 from html.parser import HTMLParser
 import sys
 class Page(HTMLParser):
@@ -300,7 +316,9 @@ class Page(HTMLParser):
   if not self.skip:self.content.append(d)
 p=Page();p.feed(open(sys.argv[1]).read());s=' '.join(p.content)
 assert len(p.tasks)==18 and len(set(p.tasks))==18,p.tasks
-assert '两种识别结果不一致' in s and 'Whisper 文本差异' in s and 'Parakeet 文本差异' in s
+import os
+if os.environ.get('SOCTHINK_TEST_R79_LIVE_PAGE')!='1':
+ assert '两种识别结果不一致' in s and 'Whisper 文本差异' in s and 'Parakeet 文本差异' in s
 assert '内部研究报告' in s and '不扣次' in s
 import os
 if os.environ.get("SOCTHINK_TEST_MACHINE_PRACTICE_PAGE")=="1":
@@ -313,7 +331,24 @@ if os.environ.get("SOCTHINK_TEST_MACHINE_PRACTICE_PAGE")=="1":
  assert '未识别到有效答音，不计入已判定练习点' in s
  print('WUHAN_MACHINE_PRACTICE_PAGE_RENDER=PASS points 2/3; decided 3/7; no official score')
 
-print('WUHAN_RESEARCH_PAGE_RENDER=PASS 18 tasks, explicit ASR disagreement and no billing')
+if os.environ.get("SOCTHINK_TEST_R79_LIVE_PAGE")=="1":
+ import json
+ r=json.load(open(sys.argv[2]))
+ answers=[x for x in r["items"] if x["kind"]=="answer"]
+ states=[x["state"] for x in answers]
+ assert len(answers)==7 and states.count("reference_match")==1 and states.count("unanswered")==1 and states.count("not_submitted")==4
+ assert states.count("known_mismatch")+states.count("needs_review")==1
+ decided=1+states.count("known_mismatch")
+ uncertain=states.count("needs_review")
+ compact=''.join(s.split())
+ assert '听后应答·内容练习点' in compact and f'1/{decided}' in compact and f'明确内容判定：{decided}/7题' in compact,compact[-8000:]
+ assert f'待核查：{uncertain}题' in compact and '未提交：4题' in compact and '无有效答音：1题' in compact
+ assert '机器内容练习点：1/1' in s
+ assert ('机器内容练习点：0/1' in s)==bool(states.count("known_mismatch"))
+ assert '未识别到有效答音，不计入已判定练习点' in s
+ print(f'R79_REAL_SCORER_NEXT_PAGE_PASS 18 tasks; 1/{decided} points; decided {decided}/7; {uncertain} uncertain; 4 unsubmitted; 1 silence; no official grade')
+else:
+ print('WUHAN_RESEARCH_PAGE_RENDER=PASS 18 tasks, explicit ASR disagreement and no billing')
 PYREPORT
   OTHER_STATUS="$(curl -sS --max-time 45 -o "$TMP/other.html" -w '%{http_code}' -H "Cookie: socthink_parent_session=$OTHER_TOKEN" "$URL")"
   [[ "$OTHER_STATUS" == 404 ]] || { echo "foreign page status=$OTHER_STATUS";exit 1; }
