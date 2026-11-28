@@ -39,6 +39,7 @@ pub struct CommerceState {
     lookup_key: Vec<u8>,
     research_archive_key: Option<Vec<u8>>,
     research_ticket_key: Option<Vec<u8>>,
+    legacy_research_archive_fixture: bool,
 }
 
 impl CommerceState {
@@ -86,6 +87,13 @@ impl CommerceState {
             Err(env::VarError::NotPresent) => None,
             Err(e) => return Err(e.into()),
         };
+        // Explicit opt-in to old synthetic fixture ingestion, never default.
+        let legacy_research_archive_fixture = match env::var("SOCTHINK_RESEARCH_LEGACY_FIXTURE") {
+            Err(env::VarError::NotPresent) => false,
+            Ok(v) if v == "0" => false,
+            Ok(v) if v == "1" => true,
+            _ => return Err("invalid research fixture flag".into()),
+        };
         let pool = PgPoolOptions::new()
             .max_connections(8)
             .connect(&database_url)
@@ -98,6 +106,7 @@ impl CommerceState {
             lookup_key,
             research_archive_key,
             research_ticket_key,
+            legacy_research_archive_fixture,
         })
     }
 }
@@ -528,14 +537,17 @@ async fn archive_research_report(
     if !research_report_valid(&envelope.report) {
         return private_json(StatusCode::BAD_REQUEST, json!({"code":"INVALID_REPORT"}));
     }
-    let result = sqlx::query_scalar::<_, String>(
-        "SELECT exam_access_draft.archive_research_report($1,$2,$3)",
-    )
-    .bind(&envelope.owner_id)
-    .bind(id)
-    .bind(&envelope.report)
-    .fetch_one(&state.pool)
-    .await;
+    let archive_sql = if state.legacy_research_archive_fixture {
+        "SELECT exam_access_draft.archive_research_report($1,$2,$3)"
+    } else {
+        "SELECT exam_access_draft.archive_claimed_research_report($1,$2,$3)"
+    };
+    let result = sqlx::query_scalar::<_, String>(archive_sql)
+        .bind(&envelope.owner_id)
+        .bind(id)
+        .bind(&envelope.report)
+        .fetch_one(&state.pool)
+        .await;
     match result.as_deref() {
         Ok("archived" | "already_archived") => private_json(
             StatusCode::OK,
