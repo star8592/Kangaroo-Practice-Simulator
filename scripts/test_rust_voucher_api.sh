@@ -302,6 +302,17 @@ p=Page();p.feed(open(sys.argv[1]).read());s=' '.join(p.content)
 assert len(p.tasks)==18 and len(set(p.tasks))==18,p.tasks
 assert '两种识别结果不一致' in s and 'Whisper 文本差异' in s and 'Parakeet 文本差异' in s
 assert '内部研究报告' in s and '不扣次' in s
+import os
+if os.environ.get("SOCTHINK_TEST_MACHINE_PRACTICE_PAGE")=="1":
+ assert '听后应答 · 内容练习点' in s
+ compact=''.join(s.split())
+ assert '2/3' in compact and '明确内容判定：3/7题' in compact,compact[-8000:]
+ assert '待核查：1题' in compact and '未提交：2题' in compact and '无有效答音：1题' in compact,compact[-8000:]
+ assert '第二识别结果：' in s
+ assert '机器内容练习点：0/1' in s
+ assert '未识别到有效答音，不计入已判定练习点' in s
+ print('WUHAN_MACHINE_PRACTICE_PAGE_RENDER=PASS points 2/3; decided 3/7; no official score')
+
 print('WUHAN_RESEARCH_PAGE_RENDER=PASS 18 tasks, explicit ASR disagreement and no billing')
 PYREPORT
   OTHER_STATUS="$(curl -sS --max-time 45 -o "$TMP/other.html" -w '%{http_code}' -H "Cookie: socthink_parent_session=$OTHER_TOKEN" "$URL")"
