@@ -20,6 +20,8 @@ RETURNS text LANGUAGE plpgsql SECURITY DEFINER SET search_path=pg_catalog,pg_tem
 DECLARE old_hash text;
 BEGIN
  IF h IS NULL OR h !~ '^[0-9a-f]{64}$' OR a IS NULL OR r IS NULL OR p IS NULL THEN RETURN 'invalid'; END IF;
+ -- Serialize only enqueue admission, not inference or report generation.
+ PERFORM pg_advisory_xact_lock(hashtextextended('research-scoring-admission',0));
  PERFORM pg_advisory_xact_lock(hashtextextended('research-report:'||r,0));
  IF NOT EXISTS(SELECT 1 FROM exam_access_draft.research_attempt_ticket t
  WHERE t.attempt_id=r AND t.owner_id=a AND t.paper_id=p AND t.claimed_at IS NOT NULL
@@ -30,6 +32,19 @@ BEGIN
  IF FOUND THEN RETURN CASE WHEN old_hash=h THEN 'already_queued' ELSE 'conflict' END; END IF;
  IF EXISTS(SELECT 1 FROM exam_access_draft.research_report_archive WHERE attempt_id=r)
  THEN RETURN 'already_archived'; END IF;
+ -- Count only actionable jobs. Proposed pilot ceilings, not measured capacity.
+ IF (SELECT count(*) FROM exam_access_draft.research_scoring_job q
+ JOIN exam_access_draft.research_attempt_ticket t ON t.attempt_id=q.attempt_id
+ WHERE q.state IN ('queued','leased') AND (q.tries<3 OR q.lease_until>clock_timestamp())
+ AND t.session_expires_at>clock_timestamp()
+ AND NOT EXISTS(SELECT 1 FROM exam_access_draft.research_report_erasure e WHERE e.attempt_id=q.attempt_id))>=32
+ THEN RETURN 'queue_full'; END IF;
+ IF (SELECT count(*) FROM exam_access_draft.research_scoring_job q
+ JOIN exam_access_draft.research_attempt_ticket t ON t.attempt_id=q.attempt_id
+ WHERE t.owner_id=a AND q.state IN ('queued','leased') AND (q.tries<3 OR q.lease_until>clock_timestamp())
+ AND t.session_expires_at>clock_timestamp()
+ AND NOT EXISTS(SELECT 1 FROM exam_access_draft.research_report_erasure e WHERE e.attempt_id=q.attempt_id))>=2
+ THEN RETURN 'owner_limit'; END IF;
  INSERT INTO exam_access_draft.research_scoring_job(attempt_id,manifest_sha256) VALUES(r,h);
  RETURN 'queued';
 END $$;
@@ -51,7 +66,7 @@ BEGIN
  lease_id=token,lease_until=clock_timestamp()+interval '5 minutes' WHERE attempt_id=j.attempt_id;
  RETURN jsonb_build_object('attempt_id',j.attempt_id,'manifest_sha256',j.manifest_sha256,'lease_id',token,'try',j.tries+1);
 END $$;
--- Completion cannot manufacture a grade: an existing archived report is mandatory.
+-- Retry only; successful completion must atomically archive under its current lease.
 CREATE FUNCTION exam_access_draft.finish_research_scoring(r text,l uuid,success boolean)
 RETURNS text LANGUAGE plpgsql SECURITY DEFINER SET search_path=pg_catalog,pg_temp AS $$
 DECLARE j exam_access_draft.research_scoring_job%ROWTYPE; next_state text;
@@ -61,14 +76,9 @@ BEGIN
  SELECT * INTO j FROM exam_access_draft.research_scoring_job WHERE attempt_id=r FOR UPDATE;
  IF NOT FOUND OR j.state<>'leased' OR j.lease_id<>l OR j.lease_until<=clock_timestamp()
  THEN RETURN 'stale_lease'; END IF;
+ IF success THEN RETURN 'atomic_archive_required'; END IF;
  IF EXISTS(SELECT 1 FROM exam_access_draft.research_report_erasure WHERE attempt_id=r)
  THEN next_state:='failed';
- ELSIF success THEN
-  IF NOT EXISTS(SELECT 1 FROM exam_access_draft.research_report_archive x
-   JOIN exam_access_draft.research_attempt_ticket t ON t.attempt_id=x.attempt_id
-   AND t.owner_id=x.owner_id AND t.paper_id=x.paper_id WHERE x.attempt_id=r)
-  THEN RETURN 'report_missing'; END IF;
-  next_state:='completed';
  ELSE next_state:=CASE WHEN j.tries>=3 THEN 'failed' ELSE 'queued' END;
  END IF;
  UPDATE exam_access_draft.research_scoring_job SET state=next_state,lease_id=NULL,lease_until=NULL,
@@ -76,14 +86,41 @@ BEGIN
  WHERE attempt_id=r;
  RETURN next_state;
 END $$;
+-- Grant this only to the authenticated evidence-validated archive worker.
+-- Manifest digest is a binding supplied by that trusted worker, not a client score.
+CREATE FUNCTION exam_access_draft.complete_research_scoring(a text,r text,l uuid,h text,p jsonb)
+RETURNS text LANGUAGE plpgsql SECURITY DEFINER SET search_path=pg_catalog,pg_temp AS $$
+DECLARE j exam_access_draft.research_scoring_job%ROWTYPE; outcome text;
+BEGIN
+ IF a IS NULL OR r IS NULL OR l IS NULL OR h IS NULL OR p IS NULL THEN RETURN 'invalid'; END IF;
+ PERFORM pg_advisory_xact_lock(hashtextextended('research-report:'||r,0));
+ SELECT * INTO j FROM exam_access_draft.research_scoring_job WHERE attempt_id=r FOR UPDATE;
+ IF NOT FOUND OR j.state<>'leased' OR j.lease_id<>l OR j.lease_until<=clock_timestamp()
+ THEN RETURN 'stale_lease'; END IF;
+ IF j.manifest_sha256<>h THEN RETURN 'manifest_conflict'; END IF;
+ IF NOT EXISTS(SELECT 1 FROM exam_access_draft.research_attempt_ticket t
+ WHERE t.attempt_id=r AND t.owner_id=a AND t.paper_id=p->>'paper_id'
+ AND t.claimed_at IS NOT NULL AND t.session_expires_at>clock_timestamp())
+ OR EXISTS(SELECT 1 FROM exam_access_draft.research_report_erasure WHERE attempt_id=r)
+ THEN RETURN 'not_available'; END IF;
+ -- Do not accept pre-existing reports outside this fenced operation.
+ IF EXISTS(SELECT 1 FROM exam_access_draft.research_report_archive WHERE attempt_id=r)
+ THEN RETURN 'archive_conflict'; END IF;
+ outcome:=exam_access_draft.archive_claimed_research_report(a,r,p);
+ IF outcome<>'archived' THEN RETURN outcome; END IF;
+ UPDATE exam_access_draft.research_scoring_job SET state='completed',lease_id=NULL,lease_until=NULL,
+ available_at=clock_timestamp() WHERE attempt_id=r;
+ RETURN 'completed';
+END $$;
+REVOKE ALL ON FUNCTION exam_access_draft.complete_research_scoring(text,text,uuid,text,jsonb) FROM PUBLIC;
 -- Read only after server-side identity and current consent verification.
 -- Do not leave a user in an eternal running state after exhausted lease/session.
 CREATE FUNCTION exam_access_draft.read_research_scoring(a text,r text)
 RETURNS jsonb LANGUAGE sql STABLE SECURITY DEFINER SET search_path=pg_catalog,pg_temp AS $$
  SELECT jsonb_build_object('attempt_id',q.attempt_id,'state',
- CASE WHEN q.state='leased' AND q.lease_until<=statement_timestamp() AND q.tries>=3 THEN 'failed'
+ CASE WHEN q.state IN ('queued','leased') AND t.session_expires_at<=statement_timestamp() THEN 'failed'
+ WHEN q.state='leased' AND q.lease_until<=statement_timestamp() AND q.tries>=3 THEN 'failed'
  WHEN q.state='leased' AND q.lease_until<=statement_timestamp() THEN 'queued'
- WHEN q.state IN ('queued','leased') AND t.session_expires_at<=statement_timestamp() THEN 'failed'
  ELSE q.state END)
  FROM exam_access_draft.research_scoring_job q
  JOIN exam_access_draft.research_attempt_ticket t ON t.attempt_id=q.attempt_id
