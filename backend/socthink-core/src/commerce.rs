@@ -346,6 +346,27 @@ async fn research_report(
     .await;
     match result {
         Ok(Some(report)) => private_json(StatusCode::OK, report),
+        Ok(None) if env::var("SOCTHINK_WUHAN_ASYNC_PREVIEW").as_deref() == Ok("1") => {
+            // Same authenticated owner scope. A queue receipt is not a report.
+            let job = sqlx::query_scalar::<_, Option<Value>>(
+                "SELECT exam_access_draft.read_research_scoring($1,$2)",
+            )
+            .bind(&user.id)
+            .bind(&id)
+            .fetch_one(&state.pool)
+            .await;
+            match job {
+                Ok(Some(job)) => match job.get("state").and_then(Value::as_str) {
+                    Some("queued" | "leased") => private_json(StatusCode::ACCEPTED,
+                        json!({"code":"SCORING_PENDING","attempt_id":id,"state":job["state"],"billable":false})),
+                    Some("failed") => private_json(StatusCode::OK,
+                        json!({"code":"SCORING_FAILED","attempt_id":id,"state":"failed","billable":false})),
+                    _ => private_json(StatusCode::SERVICE_UNAVAILABLE,json!({"code":"TEMPORARILY_UNAVAILABLE"})),
+                },
+                Ok(None) => private_json(StatusCode::NOT_FOUND,json!({"code":"REPORT_NOT_FOUND"})),
+                Err(_) => private_json(StatusCode::SERVICE_UNAVAILABLE,json!({"code":"TEMPORARILY_UNAVAILABLE"})),
+            }
+        }
         Ok(None) => private_json(StatusCode::NOT_FOUND, json!({"code":"REPORT_NOT_FOUND"})),
         Err(_) => private_json(
             StatusCode::SERVICE_UNAVAILABLE,

@@ -53,6 +53,10 @@ psql_db -f ops/db/drafts/wuhan_research_report_archive.sql >/dev/null
 psql_db -f ops/db/drafts/wuhan_research_report_erasure.sql >/dev/null
 psql_db -f ops/db/drafts/wuhan_research_attempt_ticket.sql >/dev/null
 psql_db -f ops/db/drafts/wuhan_research_strict_archive.sql >/dev/null
+if [[ "${SOCTHINK_TEST_ASYNC_QUEUE:-0}" == "1" ]]; then
+ psql_db -f ops/db/drafts/wuhan_research_scoring_queue.sql >/dev/null
+ export SOCTHINK_WUHAN_ASYNC_PREVIEW=1
+fi
 
 RUN_HEX="$(od -An -N8 -tx1 /dev/urandom | tr -d ' \n')"
 OTHER_HEX="$(od -An -N8 -tx1 /dev/urandom | tr -d ' \n')"
@@ -416,6 +420,36 @@ if [[ "${SOCTHINK_TEST_AUTO_ARCHIVE:-0}" == "1" ]]; then
   [[ "$(psql_db -At -c 'SELECT count(*) FROM exam_access_draft.research_report_archive')" == "$(if [[ "${SOCTHINK_TEST_TICKET_ATTEMPT:-0}" == "1" ]]; then echo 5; else echo 3; fi)" ]]
   [[ "$(psql_db -At -c 'SELECT count(*) FROM exam_access_draft.completed_reports')" == "0" ]]
   echo WUHAN_AUTO_ARCHIVE_NO_BILLING=PASS
+fi
+if [[ "${SOCTHINK_TEST_ASYNC_QUEUE:-0}" == "1" ]]; then
+  ASYNC_ID="$(python3 -c 'import secrets;print(secrets.token_hex(16))')"
+  # Isolated fixture only: do not consume a prior test's ticket quota.
+  psql_db -v aid="$ASYNC_ID" -v owner="$OWNER_ID" <<'SQLASYNC'
+INSERT INTO exam_access_draft.research_attempt_ticket(digest,attempt_id,owner_id,session_version,paper_id,expires_at,session_expires_at,claimed_at)
+VALUES(repeat('e',64),:'aid',:'owner',1,'WH01',clock_timestamp()+interval '2 minutes',clock_timestamp()+interval '1 hour',clock_timestamp());
+SQLASYNC
+  [[ "$(psql_db -At -v aid="$ASYNC_ID" -v owner="$OWNER_ID" <<'SQLASYNC'
+SELECT exam_access_draft.enqueue_research_scoring(:'owner',:'aid','WH01',repeat('a',64));
+SQLASYNC
+)" == "queued" ]]
+  request 401 "$BASE/api/platform/research/wuhan/reports/$ASYNC_ID"
+  request 404 -H "Cookie: socthink_parent_session=$OTHER_TOKEN" "$BASE/api/platform/research/wuhan/reports/$ASYNC_ID"
+  request 202 -H "Cookie: socthink_parent_session=$OWNER_TOKEN" "$BASE/api/platform/research/wuhan/reports/$ASYNC_ID"
+  python3 - "$TMP/response.json" "$ASYNC_ID" <<'PYASYNC'
+import json,sys
+d=json.load(open(sys.argv[1]))
+assert d==dict(code="SCORING_PENDING",attempt_id=sys.argv[2],state="queued",billable=False),d
+PYASYNC
+  psql_db -v aid="$ASYNC_ID" <<'SQLASYNC'
+UPDATE exam_access_draft.research_scoring_job SET state='failed' WHERE attempt_id=:'aid';
+SQLASYNC
+  request 200 -H "Cookie: socthink_parent_session=$OWNER_TOKEN" "$BASE/api/platform/research/wuhan/reports/$ASYNC_ID"
+  python3 - "$TMP/response.json" "$ASYNC_ID" <<'PYASYNC'
+import json,sys
+d=json.load(open(sys.argv[1]))
+assert d==dict(code="SCORING_FAILED",attempt_id=sys.argv[2],state="failed",billable=False),d
+PYASYNC
+  echo R90_ASYNC_REPORT_HTTP_PASS
 fi
 echo "WUHAN_RESEARCH_ARCHIVE_SESSION_READ=PASS"
 echo "RUST_VOUCHER_API_E2E=PASS auth=verified owner_scope=verified idempotent_claim=PASS cross_account_rejected=PASS refund_revokes_future_access=PASS no_raw_codes=PASS"

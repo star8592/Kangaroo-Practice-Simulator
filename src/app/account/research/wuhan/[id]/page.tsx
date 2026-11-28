@@ -2,6 +2,7 @@ import {cookies} from "next/headers";
 import {notFound,redirect} from "next/navigation";
 import {PARENT_SESSION_COOKIE,parentFromSessionToken} from "@/lib/parent-auth";
 import {voucherPreviewEnabled} from "@/lib/commerce/voucher-preview";
+import {WuhanScoringPending} from "@/components/WuhanScoringPending";
 import {WuhanResearchReport} from "@/components/WuhanResearchReport";
 export const dynamic="force-dynamic";
 export const metadata={robots:{index:false,follow:false}};
@@ -20,5 +21,9 @@ export default async function ResearchReportPage({params}:{params:Promise<{id:st
  if(response.status===401)redirect("/login");
  if(response.status===404)notFound();
  if(!response.ok)return <section data-site-shell="content"><h1>研究报告暂不可用</h1><p>请稍后重试，不会生成成绩或扣次。</p></section>;
- return <WuhanResearchReport report={await response.json()}/>;
+ const report=await response.json();
+ if(response.status===202&&report?.code==="SCORING_PENDING"&&report.attempt_id===id&&report.billable===false&&["queued","leased"].includes(report.state))return <WuhanScoringPending attemptId={id} state={report.state}/>;
+ if(report?.code==="SCORING_FAILED"&&report.attempt_id===id&&report.billable===false)return <section data-site-shell="content"><h1>本次评分未完成</h1><p>没有生成有效成绩。请返回练习或联系老师，不会因本次评分失败扣次。</p><a href="/account">返回个人中心</a></section>;
+ if(response.status===202)return <section data-site-shell="content"><h1>评分状态暂不可用</h1><p>请稍后刷新页面。</p></section>;
+ return <WuhanResearchReport report={report}/>;
 }
