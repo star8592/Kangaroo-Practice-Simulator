@@ -7,6 +7,22 @@ const count=(v:unknown)=>typeof v==="number"&&Number.isInteger(v)&&v>=0?v:null;
 const arr=(v:unknown)=>Array.isArray(v)?v:[];
 const kinds:Record<string,string>={choice:"听后选择",answer:"听后应答",read:"模仿朗读",retell:"听后转述"};
 const states:Record<string,string>={correct:"选择正确",incorrect:"选择错误",not_submitted:"未作答",unanswered:"未作答",pending:"待提交",reference_match:"参考内容匹配（待复核）",known_mismatch:"已知内容不符（待复核）",partial_reference:"部分内容匹配（待复核）",reference_text_matched:"双识别文本匹配（非发音评分）",reference_text_differs:"双识别文本存在差异",asr_disagreement:"两种识别结果不一致",needs_review:"待核查，不评分"};
+// Student-facing instructions, based on server evidence; no invented grades.
+const feedbackMessages:Record<string,string>={
+ content_correct:"关键信息回答正确。继续练习完整、清晰的表达。",
+ content_incorrect:"回答的关键信息与题目要求不符。重听题干，重点核对时间、数字或人物等信息。",
+ conflicting_answers:"回答包含两个不同的备选时间。听后应答应给出一个明确答案。",
+ no_answer:"本题未检测到有效答音。请在提示音后开始作答。",
+ partial_content:"已经答出部分关键内容。重听材料并练习补全其他事实。",
+ possible_reference_playback:"录音疑似包含示范音，请使用自己的声音重新练习。",
+ no_clear_speech:"没有检测到清晰的语音。请靠近麦克风、减少环境噪声后重练。",
+ recording_unusable:"录音无法有效分析。请检查麦克风并重新录制。",
+ recording_check_incomplete:"录音检测未完成，本次没有计分。请重新练习。",
+ repeat_clearly:"本次录音的关键信息未能稳定识别。建议清楚地读出关键时间、数字或词语后重练。",
+ answer_not_established:"当前回答没有形成可确认的完整信息。建议先听懂问题，再用一个明确、完整的答案作答。",
+ evaluation_unavailable:"本次自动评价未完成，未计分。请重新练习。"
+};
+const studentStates:Record<string,string>={reference_match:"内容正确",known_mismatch:"内容错误",partial_reference:"部分内容正确",needs_review:"建议重练"};
 function edits(value:unknown){
  return arr(value).map(obj).filter(x=>["substitution","deletion","insertion"].includes(str(x.operation)));
 }
@@ -39,14 +55,20 @@ export function WuhanResearchReport({report}:{report:unknown}){
   {items.map((value,i)=>{
    const t=obj(value),c=obj(t.candidate),d=obj(c.diagnosis),timing=obj(d.timing),state=str(t.state);
    const shortPractice=practiceRow(t);
+   const feedback=str(c.feedback_code);
+   const feedbackText=feedbackMessages[feedback];
+   const showFeedback=!!feedbackText&&["answer","retell"].includes(str(t.kind))&&(state==="needs_review"||state==="unanswered"||state==="partial_reference"||shortPractice?.kind==="match"||shortPractice?.kind==="mismatch");
+   const recognition=arr(c.recognition_evidence).map(obj).filter(x=>["whisper-large-v3","parakeet-tdt-0.6b-v3","qwen3-asr-1.7b"].includes(str(x.engine))&&str(x.transcript).length>0&&str(x.transcript).length<=2400).slice(0,3);
    const spans=arr(d.replay_word_spans).map(obj).filter(w=>count(w.start_ms)!==null&&count(w.end_ms)!==null&&Number(w.end_ms)>Number(w.start_ms)&&Number(w.end_ms)<=Number(timing.duration_ms));
    return <article key={i} className={styles.task} data-report-task={str(t.task_id)}>
-    <div className={styles.heading}><h2>第{i+1}题 · {kinds[str(t.kind)]||"题目"}</h2><span>{states[state]||"待核查"}</span></div>
+    <div className={styles.heading}><h2>第{i+1}题 · {kinds[str(t.kind)]||"题目"}</h2><span>{showFeedback&&studentStates[state]?studentStates[state]:states[state]||"待核查"}</span></div>
     {t.kind==="choice"&&count(c.selected_option)!==null&&Number(c.selected_option)<26&&<p>本人选择：{String.fromCharCode(65+Number(c.selected_option))}</p>}
     {shortPractice?.kind==="match"&&<p>机器内容练习点：1/1（参考内容匹配）</p>}
     {shortPractice?.kind==="mismatch"&&<p>机器内容练习点：0/1（已知内容不符）</p>}
     {shortPractice?.kind==="silence"&&<p>未识别到有效答音，不计入已判定练习点。</p>}
-    {shortPractice?.kind==="uncertain"&&<p>机器证据不足，暂不判分。</p>}
+    {shortPractice?.kind==="uncertain"&&<p>本题暂未计入内容练习点。</p>}
+    {showFeedback&&<p className={styles.disclosure} data-feedback-code={feedback}>{feedbackText}</p>}
+    {recognition.length>=2&&<details className={styles.details}><summary>语音识别依据</summary>{recognition.map((e,j)=><p key={j}><strong>{str(e.engine)}：</strong>{str(e.transcript)}</p>)}</details>}
     {str(c.evidence_quote)&&<p>识别内容：{str(c.evidence_quote)}</p>}
     {str(c.secondary_evidence_quote)&&str(c.secondary_evidence_quote)!==str(c.evidence_quote)&&<p>第二识别结果：{str(c.secondary_evidence_quote)}</p>}
     {str(d.primary_text)&&str(d.secondary_text)&&<details className={styles.details} open={state==="asr_disagreement"}><summary>逐词识别证据</summary>
