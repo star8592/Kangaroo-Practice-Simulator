@@ -354,6 +354,35 @@ async fn research_report(
     }
 }
 
+// Independently validate optional practice points at the trusted archive
+// boundary. Historical candidate-only reports remain readable; unknown
+// extra point fields must not silently become a grade.
+fn research_practice_valid(kind: &str, state: &str, c: &Value) -> bool {
+    let Some(p) = c.get("practice_content") else {
+        return true;
+    };
+    let rev = c.get("machine_rule_revision").and_then(Value::as_str);
+    if kind != "answer" {
+        return p.is_null();
+    }
+    let Some(rev) = rev else { return false };
+    if rev.len() != 64
+        || !rev
+            .bytes()
+            .all(|b| b.is_ascii_digit() || (b'a'..=b'f').contains(&b))
+    {
+        return false;
+    }
+    let expected = match state {
+        "reference_match" => json!({"earned":1,"possible":1,"basis":"automatic_content_match"}),
+        "known_mismatch" => json!({"earned":0,"possible":1,"basis":"automatic_known_mismatch"}),
+        "unanswered" => json!({"earned":0,"possible":1,"basis":"no_answer_audio"}),
+        "needs_review" => Value::Null,
+        _ => return false,
+    };
+    *p == expected
+}
+
 // Validate the complete ordered task manifest and objective keys independently
 // of the sender. Frozen projection of the current research rubric revision.
 fn research_report_valid(r: &Value) -> bool {
@@ -404,6 +433,16 @@ fn research_report_valid(r: &Value) -> bool {
         if c["scope"]["attempt_id"] != r["attempt_id"]
             || c["scope"]["paper_id"] != r["paper_id"]
             || c["scope"]["task_id"] != t["taskId"]
+        {
+            return false;
+        }
+        if !research_practice_valid(t["kind"].as_str().unwrap_or(""), state, c) {
+            return false;
+        }
+        if t["kind"] == "read"
+            && c["diagnosis"]
+                .get("practice_content")
+                .is_some_and(|v| !v.is_null())
         {
             return false;
         }
@@ -1191,5 +1230,66 @@ mod tests {
             one,
             lookup_digest("SOC-1-0123456789abcdefghijklmnopqrstuv", &[8u8; 32]).unwrap()
         );
+    }
+}
+
+#[cfg(test)]
+mod research_practice_tests {
+    use super::*;
+    #[test]
+    fn practice_points_are_consistent_with_machine_evidence() {
+        let rev = "a".repeat(64);
+        let good = json!({"machine_rule_revision":rev,"practice_content":{"earned":1,"possible":1,"basis":"automatic_content_match"}});
+        assert!(research_practice_valid("answer", "reference_match", &good));
+        assert!(!research_practice_valid("answer", "known_mismatch", &good));
+        assert!(!research_practice_valid("answer", "needs_review", &good));
+        assert!(!research_practice_valid(
+            "read",
+            "reference_text_matched",
+            &good
+        ));
+        assert!(!research_practice_valid(
+            "retell",
+            "partial_reference",
+            &good
+        ));
+        assert!(!research_practice_valid("choice", "correct", &good));
+        assert!(!research_practice_valid(
+            "answer",
+            "reference_match",
+            &json!({"practice_content":good["practice_content"]})
+        ));
+        assert!(!research_practice_valid(
+            "answer",
+            "reference_match",
+            &json!({"machine_rule_revision":"bad","practice_content":good["practice_content"]})
+        ));
+        for invalid in [
+            json!(100),
+            json!({"earned":100,"possible":1,"basis":"automatic_content_match"}),
+            json!({"earned":1,"possible":0,"basis":"automatic_content_match"}),
+            json!({"earned":1,"possible":1,"basis":"automatic_content_match","official":true}),
+        ] {
+            assert!(!research_practice_valid(
+                "answer",
+                "reference_match",
+                &json!({"machine_rule_revision":rev,"practice_content":invalid})
+            ));
+        }
+        assert!(research_practice_valid(
+            "answer",
+            "needs_review",
+            &json!({"machine_rule_revision":rev,"practice_content":null})
+        ));
+        assert!(research_practice_valid(
+            "answer",
+            "unanswered",
+            &json!({"machine_rule_revision":rev,"practice_content":{"earned":0,"possible":1,"basis":"no_answer_audio"}})
+        ));
+        assert!(research_practice_valid(
+            "answer",
+            "reference_match",
+            &json!({"status":"reference_match"})
+        ));
     }
 }

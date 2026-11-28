@@ -39,6 +39,42 @@ assert status==200 and c["attempt_id"]==r["attempt_id"]
 assert archive(r,other)[0]==409
 assert archive(report(r["attempt_id"],"WH02"))[0]==409
 assert read(r["attempt_id"])[0]==404
+# Signed transport does not authorize inconsistent or forged practice points.
+import copy
+def with_answer(state,point,revision="a"*64):
+    result=copy.deepcopy(r)
+    item=next(x for x in result["items"] if x["kind"]=="answer")
+    item["state"]=state
+    item["candidate"]={"scope":{"attempt_id":r["attempt_id"],"paper_id":r["paper_id"],"task_id":item["task_id"],"audio_sha256":"f"*64},
+        "status":state,"official_score":False,"human_review_required":True,"reference_content_score":None,
+        "machine_rule_revision":revision,"practice_content":point}
+    result["submitted"]=1
+    return result
+positive={"earned":1,"possible":1,"basis":"automatic_content_match"}
+bad=[
+    with_answer("known_mismatch",positive),
+    with_answer("needs_review",positive),
+    with_answer("reference_match",{"earned":100,"possible":1,"basis":"automatic_content_match"}),
+    with_answer("reference_match",positive,"not-a-digest"),
+    with_answer("unanswered",positive),
+]
+for row in bad:assert archive(row)[0]==400
+for kind,state in [("choice","correct"),("retell","partial_reference"),("read","reference_text_matched")]:
+    row=copy.deepcopy(r);item=next(x for x in row["items"] if x["kind"]==kind)
+    item["state"]=state
+    c={"scope":{"attempt_id":r["attempt_id"],"paper_id":r["paper_id"],"task_id":item["task_id"],"audio_sha256":"f"*64},"status":state,"official_score":False,"human_review_required":True,"reference_content_score":None,"practice_content":positive}
+    if kind=="choice":
+        task=next(x for x in contract["papers"][0]["tasks"] if x["taskId"]==item["task_id"])
+        c["selected_option"]=task["correctOption"]
+        row["choice_correct"]=1;row["choice_unsubmitted"]=7
+    if kind=="read":
+        c["diagnosis"]={"status":state,"official_score":False,"human_review_required":True,"pronunciation_score":None,"practice_content":positive}
+        c.pop("practice_content")
+    item["candidate"]=c;row["submitted"]=1
+    assert archive(row)[0]==400,kind
+assert read(r["attempt_id"])[0]==404
+print("R80_PRACTICE_ARCHIVE_FORGERY_8_PASS",flush=True)
+
 assert archive(r)[1]["code"]=="archived"
 assert archive(r)[1]["code"]=="already_archived"
 assert read(r["attempt_id"])==(200,r)
