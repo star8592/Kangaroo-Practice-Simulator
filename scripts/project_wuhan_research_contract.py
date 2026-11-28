@@ -31,6 +31,15 @@ print('WUHAN_RESEARCH_CONTRACT_PROJECTION_PASS 10 papers 180 tasks')
 oral=json.loads((source/names[2]).read_text())['records']
 reading=json.loads((source/names[1]).read_text())['records']
 review={'rubricSha256':h.hexdigest(),'records':[]}
+# Independently pin the bounded expression bank and its ordered fact groups.
+machine_bytes=(source/'machine-semantic-r78.json').read_bytes()
+machine=json.loads(machine_bytes)
+retells=[{'paperId':r['paperId'],'taskId':r['taskId'],'groups':[g[0] for g in r['groups']]} for r in machine['records'] if r['kind']=='retell']
+assert len(retells)==10 and all(1<=len(r['groups'])<=12 for r in retells)
+assert len({(r['paperId'],r['taskId']) for r in retells})==10
+review['retellBankSha256']=hashlib.sha256(machine_bytes).hexdigest()
+review['retellGroups']=retells
+
 for r in oral:
     review['records'].append({'paperId':r['paperId'],'taskId':r['taskId'],'kind':r['kind'],'question':r['question'],'reference':r['reference']})
 for r in reading:

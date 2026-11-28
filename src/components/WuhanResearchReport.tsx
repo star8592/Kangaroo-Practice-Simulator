@@ -1,5 +1,5 @@
 import "server-only";
-import { reviewReference } from "../lib/wuhan-review-reference.server";
+import { reviewReference,retellChecklist } from "../lib/wuhan-review-reference.server";
 import styles from "./WuhanResearchReport.module.css";
 import { practiceRow, practiceSummary } from "../lib/wuhan-practice-summary";
 import { readingFluency } from "../lib/wuhan-reading-fluency";
@@ -60,6 +60,7 @@ export function WuhanResearchReport({report}:{report:unknown}){
    const shortPractice=practiceRow(t);
    const fluency=readingFluency(t);
    const review=reviewReference(r,t);
+   const checklist=retellChecklist(r,t);
    const feedback=str(c.feedback_code);
    const feedbackText=feedbackMessages[feedback];
    const showFeedback=!!feedbackText&&["answer","retell"].includes(str(t.kind))&&(state==="needs_review"||state==="unanswered"||state==="partial_reference"||shortPractice?.kind==="match"||shortPractice?.kind==="mismatch");
@@ -75,6 +76,13 @@ export function WuhanResearchReport({report}:{report:unknown}){
     {showFeedback&&<p className={styles.disclosure} data-feedback-code={feedback}>{feedbackText}</p>}
     {recognition.length>=2&&<details className={styles.details}><summary>语音识别依据</summary>{recognition.map((e,j)=><p key={j}><strong>{str(e.engine)}：</strong>{str(e.transcript)}</p>)}</details>}
     {str(c.evidence_quote)&&<p>识别内容：{str(c.evidence_quote)}</p>}
+    {checklist&&<section className={styles.practice} data-retell-checklist="true">
+      <h3>转述关键信息</h3>
+      <p>已确认 {checklist.confirmed}/{checklist.total} 项练习信息</p>
+      <ul>{checklist.rows.map((row,j)=><li key={j}><strong>{row.confirmed?"已确认":"尚未确认"}：</strong>{row.text}</li>)}</ul>
+      <p>下一步：对照尚未确认的信息，重听材料，再用自己的话完整转述。</p>
+      <p className={styles.disclosure}>这是有限表达库的识别证据，不是官方分数；尚未确认不等于一定漏答。</p>
+    </section>}
     {review&&<details className={styles.details} data-review-reference="true" open={shortPractice?.kind==="mismatch"||state==="partial_reference"}>
       <summary>题后复习 · 参考表达</summary>
       {review.question&&<p><strong>原题：</strong>{review.question}</p>}

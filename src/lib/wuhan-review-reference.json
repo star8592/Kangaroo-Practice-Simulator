@@ -701,5 +701,123 @@
       "question": "",
       "reference": "Last Saturday I left my phone at home and met two friends in the park. We played a ball game and talked for a long time. I did not miss my phone as much as I expected. Spending time together was more enjoyable than looking at a screen."
     }
+  ],
+  "retellBankSha256": "8857cff5909663f1b1cbf0e954141bbae0a929b5114d83dc8a9f23d98d6a063e",
+  "retellGroups": [
+    {
+      "paperId": "WH02",
+      "taskId": "wh02-18",
+      "groups": [
+        "The exchange took place in the school hall last Friday.",
+        "Students brought books they had already read.",
+        "Volunteers sorted the books.",
+        "More than forty books found new owners.",
+        "They planned another exchange before the winter holiday."
+      ]
+    },
+    {
+      "paperId": "WH03",
+      "taskId": "wh03-18",
+      "groups": [
+        "The cycling club opened at Green Park in September.",
+        "Eighteen teenagers came to the first meeting.",
+        "A coach taught them to check their brakes and wear helmets.",
+        "They cycled around the lake.",
+        "The club meets every second Sunday and welcomes beginners."
+      ]
+    },
+    {
+      "paperId": "WH04",
+      "taskId": "wh04-18",
+      "groups": [
+        "The class recorded the weather for four weeks in May.",
+        "Two students recorded temperature and weather every morning.",
+        "They made a chart.",
+        "The second week was the rainiest.",
+        "The teacher put the chart up in the corridor."
+      ]
+    },
+    {
+      "paperId": "WH05",
+      "taskId": "wh05-18",
+      "groups": [
+        "Twenty students visited a farm outside the city on Saturday.",
+        "They learned how to plant beans and water plants.",
+        "They worked in pairs and planted two rows of beans.",
+        "They picked vegetables for the school kitchen.",
+        "They will go back in six weeks."
+      ]
+    },
+    {
+      "paperId": "WH06",
+      "taskId": "wh06-18",
+      "groups": [
+        "The community centre held a repair afternoon last Sunday.",
+        "Volunteers helped people fix things.",
+        "A teenager repaired a lamp with an adult.",
+        "Others learned to sew buttons and mend bags.",
+        "People reused things instead of throwing them away.",
+        "Another event is planned for next month."
+      ]
+    },
+    {
+      "paperId": "WH07",
+      "taskId": "wh07-18",
+      "groups": [
+        "The talent show took place in the school hall on Thursday evening.",
+        "Twelve groups performed music, drama or dance.",
+        "Students made decorations.",
+        "The art club designed the programme.",
+        "The audience raised eight hundred yuan for books.",
+        "The organisers thanked the helpers."
+      ]
+    },
+    {
+      "paperId": "WH08",
+      "taskId": "wh08-18",
+      "groups": [
+        "The food festival took place in the playground on Friday afternoon.",
+        "Classes prepared dishes and ingredient posters.",
+        "Teachers checked the food.",
+        "Visitors voted.",
+        "Class Three won with vegetable dumplings.",
+        "The money was used to buy sports equipment."
+      ]
+    },
+    {
+      "paperId": "WH09",
+      "taskId": "wh09-18",
+      "groups": [
+        "The school group went to the city museum on Tuesday.",
+        "The guide showed old street photographs and explained changes in transport.",
+        "Groups compared old maps with new maps.",
+        "They gave reports at school.",
+        "They learned about the history of the city."
+      ]
+    },
+    {
+      "paperId": "WH10",
+      "taskId": "wh10-18",
+      "groups": [
+        "The community library held a reading day last Saturday.",
+        "Older children read stories to younger visitors.",
+        "Volunteers helped people choose books and make bookmarks.",
+        "More than fifty families came.",
+        "Many families borrowed books.",
+        "The library plans a reading afternoon every month."
+      ]
+    },
+    {
+      "paperId": "WH01",
+      "taskId": "retell-river-cleanup",
+      "groups": [
+        "More than sixty volunteers joined the cleanup.",
+        "They collected rubbish.",
+        "They placed sharp objects in a special container.",
+        "They planted twenty trees.",
+        "They filled thirty bags with rubbish.",
+        "The leader hopes to organize a cleanup on the first Sunday of every month."
+      ]
+    }
   ]
 }

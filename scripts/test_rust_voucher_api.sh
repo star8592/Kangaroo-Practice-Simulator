@@ -357,6 +357,11 @@ if os.environ.get("SOCTHINK_TEST_R79_LIVE_PAGE")=="1":
   assert '朗读节奏与停顿' in s and ('录音语速：暂不估计' if pace is None else f'录音语速：{pace}词/分钟') in compact
   assert f'有效语音活动：{f["speech_activity_percent"]}%' in compact and f'内部停顿：{f["internal_pause_count"]}次' in compact and '这些测量不是流利度分数' in s
   print('R81_REAL_FLUENCY_NEXT_PAGE_PASS',pace,'WPM;',f["speech_activity_percent"],'% activity;',f["internal_pause_count"],'pauses; no official score')
+ if os.environ.get("SOCTHINK_TEST_R83_RETELL_PAGE")=="1":
+  assert '转述关键信息' in s and '已确认2/6项练习信息' in compact and '尚未确认不等于一定漏答' in s
+  assert 'They planted twenty trees.' in s and 'They collected rubbish.' in s
+  print('R83_REAL_RETELL_NEXT_PAGE_PASS 2/6 confirmed groups, non-official')
+
 
 else:
  print('WUHAN_RESEARCH_PAGE_RENDER=PASS 18 tasks, explicit ASR disagreement and no billing')

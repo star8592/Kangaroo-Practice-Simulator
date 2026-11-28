@@ -66,8 +66,17 @@ with tempfile.TemporaryDirectory(prefix="wuhan-oral-preview-",dir="/tmp") as sto
             if diag["status"]=="asr_disagreement":assert diag["fluency_evidence"]["recording_words_per_minute"] is None
             elif diag["status"]=="reference_text_matched":assert diag["fluency_evidence"]["recording_words_per_minute"]==152,diag
             print("R81_ACTUAL_READING_EVIDENCE",json.dumps(diag["fluency_evidence"]),flush=True)
+        retell_test=os.environ.get("SOCTHINK_TEST_R83_RETELL_PAGE")=="1"
+        if retell_test:
+            wav=Path(tmp)/"retell.wav"
+            subprocess.run(["espeak-ng","-v","en-us","-s","145","-w",str(wav),"They planted twenty young trees. They picked up rubbish."],check=True)
+            status,c=exam("/tasks/retell-river-cleanup",wav.read_bytes(),"audio/wav")
+            assert status==200 and c["status"]=="partial_reference",c
+            e=c["retell_coverage"]
+            assert e["confirmed_indices"]==[1,3] and e["total_groups"]==6 and c["reference_content_score"] is None and c["practice_content"] is None
+            print("R83_REAL_RETELL_COVERAGE",json.dumps(e),flush=True)
         status,report=exam("/finalize",b"")
-        assert status==200 and report["finalized"] and report["submitted"]==(4 if fluency_test else 3) and report["total_score"] is None and report["billable"] is False
+        assert status==200 and report["finalized"] and report["submitted"]==(3+int(fluency_test)+int(retell_test)) and report["total_score"] is None and report["billable"] is False
         assert read(aid)==(200,report) and read(aid,other)[0]==404
         assert exam("/archive-status")[1]["archive_status"]=="archived"
         if fluency_test:
@@ -82,6 +91,18 @@ with tempfile.TemporaryDirectory(prefix="wuhan-oral-preview-",dir="/tmp") as sto
                 assert code==400,(field,code)
             assert read(aid)==(200,report)
             print("R81_SIGNED_INVALID_FLUENCY_HTTP_REJECTED 4 cases",flush=True)
+        if retell_test:
+            import copy,hmac
+            for field,value in [("confirmed_indices",[1,1]),("confirmed_indices",[6]),("confirmed_indices",[]),("total_groups",99),("bank_sha256","0"*64),("schema_version",2)]:
+                invalid=copy.deepcopy(report)
+                d=next(x for x in invalid["items"] if x["kind"]=="retell")["candidate"]
+                d["retell_coverage"][field]=value
+                raw=json.dumps({"owner_id":owner,"report":invalid},separators=(",",":")).encode()
+                sig=hmac.new(bytes.fromhex(os.environ["SOCTHINK_RESEARCH_ARCHIVE_KEY"]),b"wuhan-research-archive-v1"+bytes(1)+raw,hashlib.sha256).hexdigest()
+                code,_=request(origin,"/internal/research/wuhan/archive",raw,{"Content-Type":"application/json","x-research-signature":sig})
+                assert code==400,(field,code)
+            assert read(aid)==(200,report)
+            print("R83_SIGNED_INVALID_RETELL_HTTP_REJECTED 6 cases",flush=True)
         out.write_text(json.dumps(report,ensure_ascii=False))
         print(f"R79_REAL_SCORER_ARCHIVE_PASS {report['submitted']} recorded tasks; 4 short answers unsubmitted; exact owner read; no official grade",flush=True)
     finally:

@@ -453,6 +453,70 @@ fn research_fluency_valid(state: &str, d: &Value) -> bool {
 
 // Validate the complete ordered task manifest and objective keys independently
 // of the sender. Frozen projection of the current research rubric revision.
+// Validate shape, bank binding, unique sorted indices and score separation.
+fn research_retell_valid(report: &Value, item: &Value, c: &Value) -> bool {
+    let Some(e) = c.get("retell_coverage") else {
+        return true;
+    };
+    if e.is_null() {
+        return true;
+    }
+    if item["kind"] != "retell"
+        || !matches!(
+            item["state"].as_str(),
+            Some("partial_reference" | "reference_match")
+        )
+        || c["practice_content"] != Value::Null
+    {
+        return false;
+    }
+    let bank: Value =
+        serde_json::from_str(include_str!("../../../src/lib/wuhan-review-reference.json"))
+            .expect("review projection");
+    let Some(groups) = bank["retellGroups"]
+        .as_array()
+        .and_then(|v| {
+            v.iter()
+                .find(|g| g["paperId"] == report["paper_id"] && g["taskId"] == item["task_id"])
+        })
+        .and_then(|g| g["groups"].as_array())
+    else {
+        return false;
+    };
+    let Some(rev) = c["machine_rule_revision"].as_str() else {
+        return false;
+    };
+    if rev.len() != 64
+        || !rev
+            .bytes()
+            .all(|b| b.is_ascii_digit() || (b'a'..=b'f').contains(&b))
+        || report["machine_rule_revision"] != rev
+    {
+        return false;
+    }
+    if e.as_object().map(|o| o.len()) != Some(5)
+        || e["schema_version"] != 1
+        || e["basis"] != "independent_bounded_fact_groups"
+        || e["bank_sha256"] != bank["retellBankSha256"]
+        || e["total_groups"].as_u64() != Some(groups.len() as u64)
+    {
+        return false;
+    }
+    let Some(indices) = e["confirmed_indices"].as_array() else {
+        return false;
+    };
+    let mut prev = None;
+    !indices.is_empty()
+        && indices.iter().all(|i| {
+            let Some(n) = i.as_u64() else { return false };
+            if n >= groups.len() as u64 || prev.is_some_and(|p| p >= n) {
+                return false;
+            }
+            prev = Some(n);
+            true
+        })
+}
+
 fn research_report_valid(r: &Value) -> bool {
     let contract: Value = serde_json::from_str(include_str!("wuhan-research-report-contract.json"))
         .expect("frozen research contract");
@@ -501,6 +565,13 @@ fn research_report_valid(r: &Value) -> bool {
         if c["scope"]["attempt_id"] != r["attempt_id"]
             || c["scope"]["paper_id"] != r["paper_id"]
             || c["scope"]["task_id"] != t["taskId"]
+        {
+            return false;
+        }
+        if !research_retell_valid(r, item, c)
+            || c["diagnosis"]
+                .get("retell_coverage")
+                .is_some_and(|v| !v.is_null())
         {
             return false;
         }
