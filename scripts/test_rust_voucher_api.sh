@@ -52,6 +52,7 @@ psql_db -f ops/db/drafts/exam_paper_access.sql >/dev/null
 psql_db -f ops/db/drafts/wuhan_research_report_archive.sql >/dev/null
 psql_db -f ops/db/drafts/wuhan_research_report_erasure.sql >/dev/null
 psql_db -f ops/db/drafts/wuhan_research_attempt_ticket.sql >/dev/null
+psql_db -f ops/db/drafts/wuhan_research_strict_archive.sql >/dev/null
 
 RUN_HEX="$(od -An -N8 -tx1 /dev/urandom | tr -d ' \n')"
 OTHER_HEX="$(od -An -N8 -tx1 /dev/urandom | tr -d ' \n')"
@@ -78,6 +79,11 @@ export SOCTHINK_USER_DATA_DIR="$TMP/users"
 export SOCTHINK_COMMERCE_BIND="127.0.0.1:$API_PORT"
 export SOCTHINK_RESEARCH_ARCHIVE_KEY="$(openssl rand -hex 32)"
 export SOCTHINK_RESEARCH_TICKET_KEY="$(openssl rand -hex 32)"
+# Older synthetic archive tests must explicitly request their compatibility mode.
+export SOCTHINK_RESEARCH_LEGACY_FIXTURE=0
+if [[ "${SOCTHINK_TEST_AUTO_ARCHIVE:-0}" == "1" ]]; then
+ export SOCTHINK_RESEARCH_LEGACY_FIXTURE=1
+fi
 mkdir -m 700 -p "$SOCTHINK_USER_DATA_DIR"
 SESSION_SECRET="$(printf 'a%.0s' {1..96})"
 printf '%s' "$SESSION_SECRET" > "$SOCTHINK_USER_DATA_DIR/parent-session-secret.txt"
@@ -160,6 +166,11 @@ request() {
   actual="$(curl -sS -o "$TMP/response.json" -w '%{http_code}' "$@")"
   [[ "$actual" == "$expected" ]] || { echo "HTTP expected=$expected actual=$actual"; cat "$TMP/response.json"; exit 1; }
 }
+if [[ "$SOCTHINK_RESEARCH_LEGACY_FIXTURE" == "0" ]]; then
+ WUHAN_TICKET_TEST_ORIGIN="$BASE" WUHAN_TICKET_OWNER_SESSION="$OWNER_TOKEN" WUHAN_TICKET_OTHER_SESSION="$OTHER_TOKEN" \
+ WUHAN_TICKET_OWNER_ID="$OWNER_ID" WUHAN_TICKET_OTHER_ID="$OTHER_ID" \
+ python3 -B scripts/test_wuhan_strict_archive_http.py
+fi
 if [[ "${SOCTHINK_TEST_TICKET_ATTEMPT:-0}" == "1" ]]; then
   ACCENT_ROOT="$WUHAN_ACCENT_RESEARCH_ROOT"
   python3 scripts/project_wuhan_research_contract.py "$ACCENT_ROOT"
@@ -167,7 +178,7 @@ if [[ "${SOCTHINK_TEST_TICKET_ATTEMPT:-0}" == "1" ]]; then
    export WUHAN_RESEARCH_ARCHIVE_ORIGIN="$BASE" WUHAN_RESEARCH_ARCHIVE_KEY="$SOCTHINK_RESEARCH_ARCHIVE_KEY" WUHAN_RESEARCH_TICKET_KEY="$SOCTHINK_RESEARCH_TICKET_KEY"
    export WUHAN_TEST_OWNER_SESSION="$OWNER_TOKEN" WUHAN_TEST_OTHER_SESSION="$OTHER_TOKEN" WUHAN_TEST_OWNER_ID="$OWNER_ID" WUHAN_TEST_OTHER_ID="$OTHER_ID"
    python3 -u scripts/evidence_lab/test_wuhan_ticket_attempt.py)
-  [[ "$(psql_db -At -c 'SELECT count(*) FROM exam_access_draft.research_report_archive a JOIN exam_access_draft.research_attempt_ticket t USING(attempt_id) WHERE t.claimed_at IS NOT NULL AND a.owner_id=t.owner_id AND a.paper_id=t.paper_id')" == "2" ]]
+  [[ "$(psql_db -At -c 'SELECT count(*) FROM exam_access_draft.research_report_archive a JOIN exam_access_draft.research_attempt_ticket t USING(attempt_id) WHERE t.claimed_at IS NOT NULL AND a.owner_id=t.owner_id AND a.paper_id=t.paper_id')" == "$(if [[ "$SOCTHINK_RESEARCH_LEGACY_FIXTURE" == "0" ]]; then echo 3; else echo 2; fi)" ]]
   [[ "$(psql_db -At -c 'SELECT count(*) FROM exam_access_draft.completed_reports')" == "0" ]]
   echo R76_TICKET_ARCHIVE_PG18_BINDING_PASS
 fi
