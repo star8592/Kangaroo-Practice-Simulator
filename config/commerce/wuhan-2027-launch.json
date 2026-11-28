@@ -1,0 +1,87 @@
+{
+  "schemaVersion": 2,
+  "status": "preparation_only",
+  "region": "wuhan",
+  "examYear": 2027,
+  "template": "W2",
+  "currency": "CNY",
+  "validUntil": "2027-04-18T23:59:59+08:00",
+  "canonicalPath": "/assessments/english-speaking/wuhan/2027",
+  "checkoutPath": "/membership",
+  "identityAuthority": "socthink",
+  "ledgerAuthority": "socthink",
+  "referenceScoreOnly": true,
+  "paidCheckoutEnabled": false,
+  "skus": [
+    {
+      "id": "wh-ls-2027-entry",
+      "priceMinor": 990,
+      "studentSeats": 1,
+      "scoredAttempts": 5,
+      "minimumVerifiedPapers": 5,
+      "enabledForSale": false,
+      "titleZh": "基础训练卡",
+      "diagnosticPolicy": "same_verified_scoring_and_diagnostics",
+      "paperAccess": "five_verified_papers"
+    },
+    {
+      "id": "wh-ls-2027-standard",
+      "priceMinor": 3990,
+      "studentSeats": 1,
+      "scoredAttempts": 30,
+      "minimumVerifiedPapers": 5,
+      "enabledForSale": false,
+      "titleZh": "考前畅练卡",
+      "diagnosticPolicy": "same_verified_scoring_and_diagnostics",
+      "paperAccess": "all_verified_papers_and_updates"
+    }
+  ],
+  "channels": [
+    {
+      "id": "website",
+      "provider": "wechat",
+      "status": "awaiting_entitlement_and_payment_acceptance"
+    },
+    {
+      "id": "xianyu",
+      "provider": "xianyu",
+      "status": "awaiting_category_and_verified_delivery",
+      "externalSkuId": null
+    },
+    {
+      "id": "taobao",
+      "provider": "taobao",
+      "status": "awaiting_category_and_verified_delivery",
+      "externalSkuId": null
+    },
+    {
+      "id": "xiaohongshu",
+      "provider": "xiaohongshu",
+      "status": "paused_awaiting_category_and_voucher_approval",
+      "externalSkuId": null
+    },
+    {
+      "id": "douyin",
+      "provider": "douyin",
+      "status": "planned",
+      "externalSkuId": null
+    },
+    {
+      "id": "institution",
+      "provider": "contract",
+      "status": "planned",
+      "externalSkuId": null
+    }
+  ],
+  "freeTrial": {
+    "studentSeats": 1,
+    "scoredAttempts": 1,
+    "minimumVerifiedPapers": 1,
+    "commercialSku": false
+  },
+  "institutionPolicy": {
+    "publicSku": false,
+    "mode": "bulk_existing_sku_after_verified_seat_fulfillment",
+    "pricing": "quote"
+  }
+}

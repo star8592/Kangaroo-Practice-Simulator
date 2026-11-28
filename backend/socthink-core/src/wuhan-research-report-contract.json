@@ -1,0 +1,937 @@
+{
+  "schemaVersion": 1,
+  "scope": "research_candidate_only",
+  "papers": [
+    {
+      "paperId": "WH01",
+      "tasks": [
+        {
+          "taskId": "scene-museum-meeting",
+          "kind": "choice",
+          "optionCount": 3,
+          "correctOption": 1
+        },
+        {
+          "taskId": "scene-gift-wrapping",
+          "kind": "choice",
+          "optionCount": 3,
+          "correctOption": 0
+        },
+        {
+          "taskId": "scene-volunteer-bring",
+          "kind": "choice",
+          "optionCount": 3,
+          "correctOption": 0
+        },
+        {
+          "taskId": "scene-train-depart",
+          "kind": "choice",
+          "optionCount": 3,
+          "correctOption": 1
+        },
+        {
+          "taskId": "scene-robot-final-test",
+          "kind": "choice",
+          "optionCount": 3,
+          "correctOption": 0
+        },
+        {
+          "taskId": "scene-garden-water",
+          "kind": "choice",
+          "optionCount": 3,
+          "correctOption": 1
+        },
+        {
+          "taskId": "scene-river-frequency",
+          "kind": "choice",
+          "optionCount": 3,
+          "correctOption": 1
+        },
+        {
+          "taskId": "scene-science-room",
+          "kind": "choice",
+          "optionCount": 3,
+          "correctOption": 2
+        },
+        {
+          "taskId": "answer-gift-budget",
+          "kind": "answer"
+        },
+        {
+          "taskId": "answer-poster-deadline",
+          "kind": "answer"
+        },
+        {
+          "taskId": "answer-train-platform",
+          "kind": "answer"
+        },
+        {
+          "taskId": "answer-lunch-allergy",
+          "kind": "answer"
+        },
+        {
+          "taskId": "answer-robot-test",
+          "kind": "answer"
+        },
+        {
+          "taskId": "answer-volunteer-bring",
+          "kind": "answer"
+        },
+        {
+          "taskId": "answer-octopus",
+          "kind": "answer"
+        },
+        {
+          "taskId": "read-trees",
+          "kind": "read"
+        },
+        {
+          "taskId": "read-octopus",
+          "kind": "read"
+        },
+        {
+          "taskId": "retell-river-cleanup",
+          "kind": "retell"
+        }
+      ]
+    },
+    {
+      "paperId": "WH02",
+      "tasks": [
+        {
+          "taskId": "wh02-01",
+          "kind": "choice",
+          "optionCount": 3,
+          "correctOption": 1
+        },
+        {
+          "taskId": "wh02-02",
+          "kind": "choice",
+          "optionCount": 3,
+          "correctOption": 0
+        },
+        {
+          "taskId": "wh02-03",
+          "kind": "choice",
+          "optionCount": 3,
+          "correctOption": 2
+        },
+        {
+          "taskId": "wh02-04",
+          "kind": "choice",
+          "optionCount": 3,
+          "correctOption": 1
+        },
+        {
+          "taskId": "wh02-05",
+          "kind": "choice",
+          "optionCount": 3,
+          "correctOption": 0
+        },
+        {
+          "taskId": "wh02-06",
+          "kind": "choice",
+          "optionCount": 3,
+          "correctOption": 2
+        },
+        {
+          "taskId": "wh02-07",
+          "kind": "choice",
+          "optionCount": 3,
+          "correctOption": 1
+        },
+        {
+          "taskId": "wh02-08",
+          "kind": "choice",
+          "optionCount": 3,
+          "correctOption": 0
+        },
+        {
+          "taskId": "wh02-09",
+          "kind": "answer"
+        },
+        {
+          "taskId": "wh02-10",
+          "kind": "answer"
+        },
+        {
+          "taskId": "wh02-11",
+          "kind": "answer"
+        },
+        {
+          "taskId": "wh02-12",
+          "kind": "answer"
+        },
+        {
+          "taskId": "wh02-13",
+          "kind": "answer"
+        },
+        {
+          "taskId": "wh02-14",
+          "kind": "answer"
+        },
+        {
+          "taskId": "wh02-15",
+          "kind": "answer"
+        },
+        {
+          "taskId": "wh02-16",
+          "kind": "read"
+        },
+        {
+          "taskId": "wh02-17",
+          "kind": "read"
+        },
+        {
+          "taskId": "wh02-18",
+          "kind": "retell"
+        }
+      ]
+    },
+    {
+      "paperId": "WH03",
+      "tasks": [
+        {
+          "taskId": "wh03-01",
+          "kind": "choice",
+          "optionCount": 3,
+          "correctOption": 0
+        },
+        {
+          "taskId": "wh03-02",
+          "kind": "choice",
+          "optionCount": 3,
+          "correctOption": 2
+        },
+        {
+          "taskId": "wh03-03",
+          "kind": "choice",
+          "optionCount": 3,
+          "correctOption": 1
+        },
+        {
+          "taskId": "wh03-04",
+          "kind": "choice",
+          "optionCount": 3,
+          "correctOption": 0
+        },
+        {
+          "taskId": "wh03-05",
+          "kind": "choice",
+          "optionCount": 3,
+          "correctOption": 2
+        },
+        {
+          "taskId": "wh03-06",
+          "kind": "choice",
+          "optionCount": 3,
+          "correctOption": 1
+        },
+        {
+          "taskId": "wh03-07",
+          "kind": "choice",
+          "optionCount": 3,
+          "correctOption": 0
+        },
+        {
+          "taskId": "wh03-08",
+          "kind": "choice",
+          "optionCount": 3,
+          "correctOption": 2
+        },
+        {
+          "taskId": "wh03-09",
+          "kind": "answer"
+        },
+        {
+          "taskId": "wh03-10",
+          "kind": "answer"
+        },
+        {
+          "taskId": "wh03-11",
+          "kind": "answer"
+        },
+        {
+          "taskId": "wh03-12",
+          "kind": "answer"
+        },
+        {
+          "taskId": "wh03-13",
+          "kind": "answer"
+        },
+        {
+          "taskId": "wh03-14",
+          "kind": "answer"
+        },
+        {
+          "taskId": "wh03-15",
+          "kind": "answer"
+        },
+        {
+          "taskId": "wh03-16",
+          "kind": "read"
+        },
+        {
+          "taskId": "wh03-17",
+          "kind": "read"
+        },
+        {
+          "taskId": "wh03-18",
+          "kind": "retell"
+        }
+      ]
+    },
+    {
+      "paperId": "WH04",
+      "tasks": [
+        {
+          "taskId": "wh04-01",
+          "kind": "choice",
+          "optionCount": 3,
+          "correctOption": 2
+        },
+        {
+          "taskId": "wh04-02",
+          "kind": "choice",
+          "optionCount": 3,
+          "correctOption": 1
+        },
+        {
+          "taskId": "wh04-03",
+          "kind": "choice",
+          "optionCount": 3,
+          "correctOption": 0
+        },
+        {
+          "taskId": "wh04-04",
+          "kind": "choice",
+          "optionCount": 3,
+          "correctOption": 2
+        },
+        {
+          "taskId": "wh04-05",
+          "kind": "choice",
+          "optionCount": 3,
+          "correctOption": 1
+        },
+        {
+          "taskId": "wh04-06",
+          "kind": "choice",
+          "optionCount": 3,
+          "correctOption": 0
+        },
+        {
+          "taskId": "wh04-07",
+          "kind": "choice",
+          "optionCount": 3,
+          "correctOption": 2
+        },
+        {
+          "taskId": "wh04-08",
+          "kind": "choice",
+          "optionCount": 3,
+          "correctOption": 1
+        },
+        {
+          "taskId": "wh04-09",
+          "kind": "answer"
+        },
+        {
+          "taskId": "wh04-10",
+          "kind": "answer"
+        },
+        {
+          "taskId": "wh04-11",
+          "kind": "answer"
+        },
+        {
+          "taskId": "wh04-12",
+          "kind": "answer"
+        },
+        {
+          "taskId": "wh04-13",
+          "kind": "answer"
+        },
+        {
+          "taskId": "wh04-14",
+          "kind": "answer"
+        },
+        {
+          "taskId": "wh04-15",
+          "kind": "answer"
+        },
+        {
+          "taskId": "wh04-16",
+          "kind": "read"
+        },
+        {
+          "taskId": "wh04-17",
+          "kind": "read"
+        },
+        {
+          "taskId": "wh04-18",
+          "kind": "retell"
+        }
+      ]
+    },
+    {
+      "paperId": "WH05",
+      "tasks": [
+        {
+          "taskId": "wh05-01",
+          "kind": "choice",
+          "optionCount": 3,
+          "correctOption": 1
+        },
+        {
+          "taskId": "wh05-02",
+          "kind": "choice",
+          "optionCount": 3,
+          "correctOption": 0
+        },
+        {
+          "taskId": "wh05-03",
+          "kind": "choice",
+          "optionCount": 3,
+          "correctOption": 2
+        },
+        {
+          "taskId": "wh05-04",
+          "kind": "choice",
+          "optionCount": 3,
+          "correctOption": 1
+        },
+        {
+          "taskId": "wh05-05",
+          "kind": "choice",
+          "optionCount": 3,
+          "correctOption": 0
+        },
+        {
+          "taskId": "wh05-06",
+          "kind": "choice",
+          "optionCount": 3,
+          "correctOption": 2
+        },
+        {
+          "taskId": "wh05-07",
+          "kind": "choice",
+          "optionCount": 3,
+          "correctOption": 1
+        },
+        {
+          "taskId": "wh05-08",
+          "kind": "choice",
+          "optionCount": 3,
+          "correctOption": 0
+        },
+        {
+          "taskId": "wh05-09",
+          "kind": "answer"
+        },
+        {
+          "taskId": "wh05-10",
+          "kind": "answer"
+        },
+        {
+          "taskId": "wh05-11",
+          "kind": "answer"
+        },
+        {
+          "taskId": "wh05-12",
+          "kind": "answer"
+        },
+        {
+          "taskId": "wh05-13",
+          "kind": "answer"
+        },
+        {
+          "taskId": "wh05-14",
+          "kind": "answer"
+        },
+        {
+          "taskId": "wh05-15",
+          "kind": "answer"
+        },
+        {
+          "taskId": "wh05-16",
+          "kind": "read"
+        },
+        {
+          "taskId": "wh05-17",
+          "kind": "read"
+        },
+        {
+          "taskId": "wh05-18",
+          "kind": "retell"
+        }
+      ]
+    },
+    {
+      "paperId": "WH06",
+      "tasks": [
+        {
+          "taskId": "wh06-01",
+          "kind": "choice",
+          "optionCount": 3,
+          "correctOption": 0
+        },
+        {
+          "taskId": "wh06-02",
+          "kind": "choice",
+          "optionCount": 3,
+          "correctOption": 2
+        },
+        {
+          "taskId": "wh06-03",
+          "kind": "choice",
+          "optionCount": 3,
+          "correctOption": 1
+        },
+        {
+          "taskId": "wh06-04",
+          "kind": "choice",
+          "optionCount": 3,
+          "correctOption": 0
+        },
+        {
+          "taskId": "wh06-05",
+          "kind": "choice",
+          "optionCount": 3,
+          "correctOption": 2
+        },
+        {
+          "taskId": "wh06-06",
+          "kind": "choice",
+          "optionCount": 3,
+          "correctOption": 1
+        },
+        {
+          "taskId": "wh06-07",
+          "kind": "choice",
+          "optionCount": 3,
+          "correctOption": 0
+        },
+        {
+          "taskId": "wh06-08",
+          "kind": "choice",
+          "optionCount": 3,
+          "correctOption": 2
+        },
+        {
+          "taskId": "wh06-09",
+          "kind": "answer"
+        },
+        {
+          "taskId": "wh06-10",
+          "kind": "answer"
+        },
+        {
+          "taskId": "wh06-11",
+          "kind": "answer"
+        },
+        {
+          "taskId": "wh06-12",
+          "kind": "answer"
+        },
+        {
+          "taskId": "wh06-13",
+          "kind": "answer"
+        },
+        {
+          "taskId": "wh06-14",
+          "kind": "answer"
+        },
+        {
+          "taskId": "wh06-15",
+          "kind": "answer"
+        },
+        {
+          "taskId": "wh06-16",
+          "kind": "read"
+        },
+        {
+          "taskId": "wh06-17",
+          "kind": "read"
+        },
+        {
+          "taskId": "wh06-18",
+          "kind": "retell"
+        }
+      ]
+    },
+    {
+      "paperId": "WH07",
+      "tasks": [
+        {
+          "taskId": "wh07-01",
+          "kind": "choice",
+          "optionCount": 3,
+          "correctOption": 2
+        },
+        {
+          "taskId": "wh07-02",
+          "kind": "choice",
+          "optionCount": 3,
+          "correctOption": 1
+        },
+        {
+          "taskId": "wh07-03",
+          "kind": "choice",
+          "optionCount": 3,
+          "correctOption": 0
+        },
+        {
+          "taskId": "wh07-04",
+          "kind": "choice",
+          "optionCount": 3,
+          "correctOption": 2
+        },
+        {
+          "taskId": "wh07-05",
+          "kind": "choice",
+          "optionCount": 3,
+          "correctOption": 1
+        },
+        {
+          "taskId": "wh07-06",
+          "kind": "choice",
+          "optionCount": 3,
+          "correctOption": 0
+        },
+        {
+          "taskId": "wh07-07",
+          "kind": "choice",
+          "optionCount": 3,
+          "correctOption": 2
+        },
+        {
+          "taskId": "wh07-08",
+          "kind": "choice",
+          "optionCount": 3,
+          "correctOption": 1
+        },
+        {
+          "taskId": "wh07-09",
+          "kind": "answer"
+        },
+        {
+          "taskId": "wh07-10",
+          "kind": "answer"
+        },
+        {
+          "taskId": "wh07-11",
+          "kind": "answer"
+        },
+        {
+          "taskId": "wh07-12",
+          "kind": "answer"
+        },
+        {
+          "taskId": "wh07-13",
+          "kind": "answer"
+        },
+        {
+          "taskId": "wh07-14",
+          "kind": "answer"
+        },
+        {
+          "taskId": "wh07-15",
+          "kind": "answer"
+        },
+        {
+          "taskId": "wh07-16",
+          "kind": "read"
+        },
+        {
+          "taskId": "wh07-17",
+          "kind": "read"
+        },
+        {
+          "taskId": "wh07-18",
+          "kind": "retell"
+        }
+      ]
+    },
+    {
+      "paperId": "WH08",
+      "tasks": [
+        {
+          "taskId": "wh08-01",
+          "kind": "choice",
+          "optionCount": 3,
+          "correctOption": 1
+        },
+        {
+          "taskId": "wh08-02",
+          "kind": "choice",
+          "optionCount": 3,
+          "correctOption": 0
+        },
+        {
+          "taskId": "wh08-03",
+          "kind": "choice",
+          "optionCount": 3,
+          "correctOption": 2
+        },
+        {
+          "taskId": "wh08-04",
+          "kind": "choice",
+          "optionCount": 3,
+          "correctOption": 1
+        },
+        {
+          "taskId": "wh08-05",
+          "kind": "choice",
+          "optionCount": 3,
+          "correctOption": 0
+        },
+        {
+          "taskId": "wh08-06",
+          "kind": "choice",
+          "optionCount": 3,
+          "correctOption": 2
+        },
+        {
+          "taskId": "wh08-07",
+          "kind": "choice",
+          "optionCount": 3,
+          "correctOption": 1
+        },
+        {
+          "taskId": "wh08-08",
+          "kind": "choice",
+          "optionCount": 3,
+          "correctOption": 0
+        },
+        {
+          "taskId": "wh08-09",
+          "kind": "answer"
+        },
+        {
+          "taskId": "wh08-10",
+          "kind": "answer"
+        },
+        {
+          "taskId": "wh08-11",
+          "kind": "answer"
+        },
+        {
+          "taskId": "wh08-12",
+          "kind": "answer"
+        },
+        {
+          "taskId": "wh08-13",
+          "kind": "answer"
+        },
+        {
+          "taskId": "wh08-14",
+          "kind": "answer"
+        },
+        {
+          "taskId": "wh08-15",
+          "kind": "answer"
+        },
+        {
+          "taskId": "wh08-16",
+          "kind": "read"
+        },
+        {
+          "taskId": "wh08-17",
+          "kind": "read"
+        },
+        {
+          "taskId": "wh08-18",
+          "kind": "retell"
+        }
+      ]
+    },
+    {
+      "paperId": "WH09",
+      "tasks": [
+        {
+          "taskId": "wh09-01",
+          "kind": "choice",
+          "optionCount": 3,
+          "correctOption": 0
+        },
+        {
+          "taskId": "wh09-02",
+          "kind": "choice",
+          "optionCount": 3,
+          "correctOption": 2
+        },
+        {
+          "taskId": "wh09-03",
+          "kind": "choice",
+          "optionCount": 3,
+          "correctOption": 1
+        },
+        {
+          "taskId": "wh09-04",
+          "kind": "choice",
+          "optionCount": 3,
+          "correctOption": 0
+        },
+        {
+          "taskId": "wh09-05",
+          "kind": "choice",
+          "optionCount": 3,
+          "correctOption": 2
+        },
+        {
+          "taskId": "wh09-06",
+          "kind": "choice",
+          "optionCount": 3,
+          "correctOption": 1
+        },
+        {
+          "taskId": "wh09-07",
+          "kind": "choice",
+          "optionCount": 3,
+          "correctOption": 0
+        },
+        {
+          "taskId": "wh09-08",
+          "kind": "choice",
+          "optionCount": 3,
+          "correctOption": 2
+        },
+        {
+          "taskId": "wh09-09",
+          "kind": "answer"
+        },
+        {
+          "taskId": "wh09-10",
+          "kind": "answer"
+        },
+        {
+          "taskId": "wh09-11",
+          "kind": "answer"
+        },
+        {
+          "taskId": "wh09-12",
+          "kind": "answer"
+        },
+        {
+          "taskId": "wh09-13",
+          "kind": "answer"
+        },
+        {
+          "taskId": "wh09-14",
+          "kind": "answer"
+        },
+        {
+          "taskId": "wh09-15",
+          "kind": "answer"
+        },
+        {
+          "taskId": "wh09-16",
+          "kind": "read"
+        },
+        {
+          "taskId": "wh09-17",
+          "kind": "read"
+        },
+        {
+          "taskId": "wh09-18",
+          "kind": "retell"
+        }
+      ]
+    },
+    {
+      "paperId": "WH10",
+      "tasks": [
+        {
+          "taskId": "wh10-01",
+          "kind": "choice",
+          "optionCount": 3,
+          "correctOption": 2
+        },
+        {
+          "taskId": "wh10-02",
+          "kind": "choice",
+          "optionCount": 3,
+          "correctOption": 1
+        },
+        {
+          "taskId": "wh10-03",
+          "kind": "choice",
+          "optionCount": 3,
+          "correctOption": 0
+        },
+        {
+          "taskId": "wh10-04",
+          "kind": "choice",
+          "optionCount": 3,
+          "correctOption": 2
+        },
+        {
+          "taskId": "wh10-05",
+          "kind": "choice",
+          "optionCount": 3,
+          "correctOption": 1
+        },
+        {
+          "taskId": "wh10-06",
+          "kind": "choice",
+          "optionCount": 3,
+          "correctOption": 0
+        },
+        {
+          "taskId": "wh10-07",
+          "kind": "choice",
+          "optionCount": 3,
+          "correctOption": 2
+        },
+        {
+          "taskId": "wh10-08",
+          "kind": "choice",
+          "optionCount": 3,
+          "correctOption": 1
+        },
+        {
+          "taskId": "wh10-09",
+          "kind": "answer"
+        },
+        {
+          "taskId": "wh10-10",
+          "kind": "answer"
+        },
+        {
+          "taskId": "wh10-11",
+          "kind": "answer"
+        },
+        {
+          "taskId": "wh10-12",
+          "kind": "answer"
+        },
+        {
+          "taskId": "wh10-13",
+          "kind": "answer"
+        },
+        {
+          "taskId": "wh10-14",
+          "kind": "answer"
+        },
+        {
+          "taskId": "wh10-15",
+          "kind": "answer"
+        },
+        {
+          "taskId": "wh10-16",
+          "kind": "read"
+        },
+        {
+          "taskId": "wh10-17",
+          "kind": "read"
+        },
+        {
+          "taskId": "wh10-18",
+          "kind": "retell"
+        }
+      ]
+    }
+  ],
+  "rubricSha256": "f4c3ab2105a5d0312465f1a8f5d53f3e39a75605c355428486a763a2bdfeaeff"
+}

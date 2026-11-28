@@ -1,0 +1,13 @@
+import assert from "node:assert/strict";
+import {readFileSync} from "node:fs";
+const p=JSON.parse(readFileSync("config/commerce/wuhan-2027-paper-projection.json","utf8"));
+const c=JSON.parse(readFileSync("config/commerce/wuhan-2027-launch.json","utf8"));
+assert.equal(p.authority,"AccentLab");assert.equal(p.template,c.template);
+assert.deepEqual(p.paperIds,Array.from({length:10},(_,i)=>"WH"+String(i+1).padStart(2,"0")));
+assert.equal(p.basicCandidatePaperIds.length,5);
+assert.deepEqual(p.basicCandidatePaperIds,p.paperIds.slice(0,5));
+assert.equal(p.newAudioCount,p.newPaperCount*18);
+assert.equal(p.commercialApproved,false);assert.equal(p.humanListeningReview,false);
+assert(c.skus.every(s=>!s.enabledForSale));
+assert.equal(c.paidCheckoutEnabled,false);
+console.log("WUHAN_PAPER_PROJECTION=PASS 10 content sets / 1 template; commercial disabled");

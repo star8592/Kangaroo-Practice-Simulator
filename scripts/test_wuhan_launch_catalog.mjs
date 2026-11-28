@@ -1,0 +1,17 @@
+import assert from "node:assert/strict";
+import {readFileSync} from "node:fs";
+const c=JSON.parse(readFileSync(new URL("../config/commerce/wuhan-2027-launch.json",import.meta.url),"utf8"));
+assert.equal(c.schemaVersion,2);
+assert.equal(c.template,"W2");
+assert.equal(c.freeTrial.commercialSku,false);
+assert.equal(c.freeTrial.scoredAttempts,1);
+assert.deepEqual(c.skus.map(s=>s.id),["wh-ls-2027-entry","wh-ls-2027-standard"]);
+assert.deepEqual(c.skus.map(s=>s.priceMinor),[990,3990]);
+assert.deepEqual(c.skus.map(s=>s.scoredAttempts),[5,30]);
+assert.equal(c.skus[0].diagnosticPolicy,c.skus[1].diagnosticPolicy);
+assert(c.skus.every(s=>s.enabledForSale===false&&s.studentSeats===1));
+assert.equal(c.paidCheckoutEnabled,false);
+assert.equal(c.institutionPolicy.publicSku,false);
+assert.equal(c.ledgerAuthority,"socthink");
+assert(c.channels.every(s=>s.externalSkuId==null));
+console.log("WUHAN_TWO_PAID_SKUS=PASS");

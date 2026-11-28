@@ -24,10 +24,11 @@ const groups: AdminGroup[] = [
   { title: "增长分析", links: [{ href: "/admin/seo", label: "搜索增长与收录", glyph: "⌕" }] },
 ];
 
-export default function AdminOperationsNav() {
+export default function AdminOperationsNav({commercePreview=false}:{commercePreview?:boolean}={}) {
+  const visibleGroups=commercePreview?[groups[0],{title:"商业运营",links:[{href:"/admin/commerce",label:"卡券与渠道订单",glyph:"▤"}]},...groups.slice(1)]:groups;
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
-  const current = groups.flatMap(group => group.links).find(
+  const current = visibleGroups.flatMap(group => group.links).find(
     link => pathname === link.href || (link.href !== "/admin" && pathname.startsWith(link.href + "/"))
   );
   return <aside className={styles.sidebar} data-admin-navigation aria-label="运营后台导航">
@@ -45,7 +46,7 @@ export default function AdminOperationsNav() {
     </div>
     <div className={styles.navGroups + (open ? " " + styles.navGroupsOpen : "")} id="admin-navigation-groups">
       <nav className={styles.nav} aria-label="后台功能模块">
-        {groups.map(group => <div key={group.title} className={styles.navGroup}>
+        {visibleGroups.map(group => <div key={group.title} className={styles.navGroup}>
           <span className={styles.navGroupTitle}>{group.title}</span>
           {group.links.map(link => {
             const active = pathname === link.href ||

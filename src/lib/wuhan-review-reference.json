@@ -1,0 +1,823 @@
+{
+  "rubricSha256": "f4c3ab2105a5d0312465f1a8f5d53f3e39a75605c355428486a763a2bdfeaeff",
+  "records": [
+    {
+      "paperId": "WH01",
+      "taskId": "answer-gift-budget",
+      "kind": "answer",
+      "question": "How much do the sketchbook and colored pencils cost together?",
+      "reference": "The sketchbook and colored pencils cost eighteen pounds together."
+    },
+    {
+      "paperId": "WH01",
+      "taskId": "answer-poster-deadline",
+      "kind": "answer",
+      "question": "When must the class energy-saving poster be handed in?",
+      "reference": "It must be handed in by Friday morning."
+    },
+    {
+      "paperId": "WH01",
+      "taskId": "answer-train-platform",
+      "kind": "answer",
+      "question": "Why should the passenger go to Platform Five?",
+      "reference": "The passenger should use Platform Five because the train has changed platforms."
+    },
+    {
+      "paperId": "WH01",
+      "taskId": "answer-lunch-allergy",
+      "kind": "answer",
+      "question": "Why does the girl want to talk to the kitchen staff?",
+      "reference": "She wants to check that the meal is safe because she cannot eat peanuts."
+    },
+    {
+      "paperId": "WH01",
+      "taskId": "answer-robot-test",
+      "kind": "answer",
+      "question": "When will the students test their robot again?",
+      "reference": "They will test their robot after school on Thursday."
+    },
+    {
+      "paperId": "WH01",
+      "taskId": "answer-volunteer-bring",
+      "kind": "answer",
+      "question": "What does Ben need to bring to volunteer?",
+      "reference": "Ben only needs to bring his student card."
+    },
+    {
+      "paperId": "WH01",
+      "taskId": "answer-octopus",
+      "kind": "answer",
+      "question": "What can an octopus learn or remember?",
+      "reference": "An octopus can explore a puzzle, remember a route, and learn from experience."
+    },
+    {
+      "paperId": "WH01",
+      "taskId": "retell-river-cleanup",
+      "kind": "retell",
+      "question": "Retell what the volunteers did near Green Bridge.",
+      "reference": "Last Sunday, more than sixty volunteers took part in a river cleanup near Green Bridge. They collected rubbish, wore gloves, and placed sharp objects in a special container. They planted twenty young trees and filled thirty bags with rubbish. The project leader hopes to organize a cleanup on the first Sunday of every month."
+    },
+    {
+      "paperId": "WH02",
+      "taskId": "wh02-09",
+      "kind": "answer",
+      "question": "How would you respond?",
+      "reference": "Of course. I can help you carry them upstairs."
+    },
+    {
+      "paperId": "WH02",
+      "taskId": "wh02-10",
+      "kind": "answer",
+      "question": "How can we get to the museum?",
+      "reference": "We can walk through the park."
+    },
+    {
+      "paperId": "WH02",
+      "taskId": "wh02-11",
+      "kind": "answer",
+      "question": "When must you return the science book?",
+      "reference": "I must return it by Wednesday."
+    },
+    {
+      "paperId": "WH02",
+      "taskId": "wh02-12",
+      "kind": "answer",
+      "question": "What can you order to drink?",
+      "reference": "I can order apple juice or orange juice."
+    },
+    {
+      "paperId": "WH02",
+      "taskId": "wh02-13",
+      "kind": "answer",
+      "question": "What would you say to your classmate?",
+      "reference": "That's all right. Please bring it tomorrow."
+    },
+    {
+      "paperId": "WH02",
+      "taskId": "wh02-14",
+      "kind": "answer",
+      "question": "Why can't Ben come to practice?",
+      "reference": "He has a doctor's appointment."
+    },
+    {
+      "paperId": "WH02",
+      "taskId": "wh02-15",
+      "kind": "answer",
+      "question": "Where and when should you meet?",
+      "reference": "At the school gate at eight fifteen."
+    },
+    {
+      "paperId": "WH02",
+      "taskId": "wh02-18",
+      "kind": "retell",
+      "question": "When and where was the exchange? What did students and volunteers do? What was the result and future plan?",
+      "reference": "Class Nine held a book exchange in the school hall last Friday. Students brought books they had read, and volunteers sorted them. More than forty books found new owners. They planned another exchange before the winter holiday."
+    },
+    {
+      "paperId": "WH03",
+      "taskId": "wh03-09",
+      "kind": "answer",
+      "question": "What would you say?",
+      "reference": "Congratulations! Well done."
+    },
+    {
+      "paperId": "WH03",
+      "taskId": "wh03-10",
+      "kind": "answer",
+      "question": "What must you do before taking a photo?",
+      "reference": "I must turn off the flash."
+    },
+    {
+      "paperId": "WH03",
+      "taskId": "wh03-11",
+      "kind": "answer",
+      "question": "When is your friend free to help?",
+      "reference": "On Sunday afternoon."
+    },
+    {
+      "paperId": "WH03",
+      "taskId": "wh03-12",
+      "kind": "answer",
+      "question": "What two things do you need to do?",
+      "reference": "I need to fill in the form and show my student ID."
+    },
+    {
+      "paperId": "WH03",
+      "taskId": "wh03-13",
+      "kind": "answer",
+      "question": "What sensible advice could you give?",
+      "reference": "You should tell an adult and drink some water."
+    },
+    {
+      "paperId": "WH03",
+      "taskId": "wh03-14",
+      "kind": "answer",
+      "question": "Where should you wait?",
+      "reference": "Outside the supermarket."
+    },
+    {
+      "paperId": "WH03",
+      "taskId": "wh03-15",
+      "kind": "answer",
+      "question": "What is your job?",
+      "reference": "I need to make the slides."
+    },
+    {
+      "paperId": "WH03",
+      "taskId": "wh03-18",
+      "kind": "retell",
+      "question": "Introduce the club, the first meeting, the safety lesson and future schedule.",
+      "reference": "The cycling club opened at Green Park in September. Eighteen teenagers attended the first meeting. A coach taught them to check brakes and wear helmets. They rode around the lake. The club meets every second Sunday and welcomes beginners."
+    },
+    {
+      "paperId": "WH04",
+      "taskId": "wh04-09",
+      "kind": "answer",
+      "question": "How could you accept the invitation?",
+      "reference": "I'd love to come. Thank you for inviting me."
+    },
+    {
+      "paperId": "WH04",
+      "taskId": "wh04-10",
+      "kind": "answer",
+      "question": "How much is a return ticket?",
+      "reference": "It costs five yuan."
+    },
+    {
+      "paperId": "WH04",
+      "taskId": "wh04-11",
+      "kind": "answer",
+      "question": "Which day should you avoid visiting?",
+      "reference": "I should avoid Monday."
+    },
+    {
+      "paperId": "WH04",
+      "taskId": "wh04-12",
+      "kind": "answer",
+      "question": "What can you do instead?",
+      "reference": "We can play table tennis indoors."
+    },
+    {
+      "paperId": "WH04",
+      "taskId": "wh04-13",
+      "kind": "answer",
+      "question": "What should you say?",
+      "reference": "I'm sorry. Are you all right?"
+    },
+    {
+      "paperId": "WH04",
+      "taskId": "wh04-14",
+      "kind": "answer",
+      "question": "What would you like to try?",
+      "reference": "I'd like to try the smaller green jacket."
+    },
+    {
+      "paperId": "WH04",
+      "taskId": "wh04-15",
+      "kind": "answer",
+      "question": "What should you do if you need the books longer?",
+      "reference": "I should renew them online."
+    },
+    {
+      "paperId": "WH04",
+      "taskId": "wh04-18",
+      "kind": "retell",
+      "question": "Explain the length of the project, what was recorded, the finding and how it was shared.",
+      "reference": "The class recorded weather for four weeks in May. Two students noted temperature and weather each morning. They made a chart and found that the second week was the rainiest. The teacher displayed the chart in the corridor."
+    },
+    {
+      "paperId": "WH05",
+      "taskId": "wh05-09",
+      "kind": "answer",
+      "question": "How could you agree politely?",
+      "reference": "Certainly. Here you are."
+    },
+    {
+      "paperId": "WH05",
+      "taskId": "wh05-10",
+      "kind": "answer",
+      "question": "How long will today's journey take?",
+      "reference": "It will take an hour."
+    },
+    {
+      "paperId": "WH05",
+      "taskId": "wh05-11",
+      "kind": "answer",
+      "question": "Where should you put paper?",
+      "reference": "In the blue box."
+    },
+    {
+      "paperId": "WH05",
+      "taskId": "wh05-12",
+      "kind": "answer",
+      "question": "What safe advice would you give?",
+      "reference": "Stop running and ask an adult for help."
+    },
+    {
+      "paperId": "WH05",
+      "taskId": "wh05-13",
+      "kind": "answer",
+      "question": "What can your parent do if they cannot come?",
+      "reference": "They can join online."
+    },
+    {
+      "paperId": "WH05",
+      "taskId": "wh05-14",
+      "kind": "answer",
+      "question": "Where is the flower shop?",
+      "reference": "Between the bank and the bus stop."
+    },
+    {
+      "paperId": "WH05",
+      "taskId": "wh05-15",
+      "kind": "answer",
+      "question": "How could you respond?",
+      "reference": "Thank you. I'm glad you like it."
+    },
+    {
+      "paperId": "WH05",
+      "taskId": "wh05-18",
+      "kind": "retell",
+      "question": "Tell what happened on the farm, what students planted and what they plan to do next.",
+      "reference": "Twenty students visited a farm outside the city on Saturday. They learned to plant beans and water plants. Working in pairs, they planted two rows of beans and picked vegetables for the school kitchen. They will return in six weeks."
+    },
+    {
+      "paperId": "WH06",
+      "taskId": "wh06-09",
+      "kind": "answer",
+      "question": "How could you give a simple direction?",
+      "reference": "Go straight and turn left at the corner."
+    },
+    {
+      "paperId": "WH06",
+      "taskId": "wh06-10",
+      "kind": "answer",
+      "question": "When should you hand in your answer?",
+      "reference": "Before lunch."
+    },
+    {
+      "paperId": "WH06",
+      "taskId": "wh06-11",
+      "kind": "answer",
+      "question": "What two choices do you have?",
+      "reference": "I can choose soup or a salad."
+    },
+    {
+      "paperId": "WH06",
+      "taskId": "wh06-12",
+      "kind": "answer",
+      "question": "How should you respond?",
+      "reference": "Thank you. It's lovely."
+    },
+    {
+      "paperId": "WH06",
+      "taskId": "wh06-13",
+      "kind": "answer",
+      "question": "What could you do to stay warm?",
+      "reference": "I could put on a warm coat."
+    },
+    {
+      "paperId": "WH06",
+      "taskId": "wh06-14",
+      "kind": "answer",
+      "question": "Why is the match cancelled?",
+      "reference": "Because the field is flooded."
+    },
+    {
+      "paperId": "WH06",
+      "taskId": "wh06-15",
+      "kind": "answer",
+      "question": "When and where must you return it?",
+      "reference": "To the desk by five."
+    },
+    {
+      "paperId": "WH06",
+      "taskId": "wh06-18",
+      "kind": "retell",
+      "question": "Describe the event, examples of repairs, its purpose and the next event.",
+      "reference": "Last Sunday the community centre organised a repair afternoon. Volunteers helped people repair objects. A teenager fixed a lamp with an adult, and others learnt to sew buttons and mend bags. People reused their objects instead of throwing them away. Another event is planned for next month."
+    },
+    {
+      "paperId": "WH07",
+      "taskId": "wh07-09",
+      "kind": "answer",
+      "question": "What would you say?",
+      "reference": "Thank you for bringing it back."
+    },
+    {
+      "paperId": "WH07",
+      "taskId": "wh07-10",
+      "kind": "answer",
+      "question": "Which bus should you take to the zoo?",
+      "reference": "Bus twenty-one."
+    },
+    {
+      "paperId": "WH07",
+      "taskId": "wh07-11",
+      "kind": "answer",
+      "question": "When is the lesson now?",
+      "reference": "On Wednesday."
+    },
+    {
+      "paperId": "WH07",
+      "taskId": "wh07-12",
+      "kind": "answer",
+      "question": "When does the shop open on Sunday?",
+      "reference": "At ten."
+    },
+    {
+      "paperId": "WH07",
+      "taskId": "wh07-13",
+      "kind": "answer",
+      "question": "What encouraging advice could you give?",
+      "reference": "Practise with a friend first. You can do it."
+    },
+    {
+      "paperId": "WH07",
+      "taskId": "wh07-14",
+      "kind": "answer",
+      "question": "What must you do before using a computer?",
+      "reference": "I must book it at the desk."
+    },
+    {
+      "paperId": "WH07",
+      "taskId": "wh07-15",
+      "kind": "answer",
+      "question": "How could you reply politely?",
+      "reference": "That's okay. Have a nice visit."
+    },
+    {
+      "paperId": "WH07",
+      "taskId": "wh07-18",
+      "kind": "retell",
+      "question": "Retell the time, performances, student contributions and result.",
+      "reference": "The school talent show was in the hall on Thursday evening. Twelve groups performed music, drama or dance. Students made decorations and the art club designed the programme. The audience donated money for books, raising eight hundred yuan. The organisers thanked the helpers."
+    },
+    {
+      "paperId": "WH08",
+      "taskId": "wh08-09",
+      "kind": "answer",
+      "question": "How could you accept?",
+      "reference": "Yes, please. That would be helpful."
+    },
+    {
+      "paperId": "WH08",
+      "taskId": "wh08-10",
+      "kind": "answer",
+      "question": "When is the long jump?",
+      "reference": "At eleven."
+    },
+    {
+      "paperId": "WH08",
+      "taskId": "wh08-11",
+      "kind": "answer",
+      "question": "What two things should you do?",
+      "reference": "Switch off the lights and close the windows."
+    },
+    {
+      "paperId": "WH08",
+      "taskId": "wh08-12",
+      "kind": "answer",
+      "question": "What would you say?",
+      "reference": "Sorry about that. Goodbye."
+    },
+    {
+      "paperId": "WH08",
+      "taskId": "wh08-13",
+      "kind": "answer",
+      "question": "Why is the canteen serving noodles?",
+      "reference": "Because the rice cooker is broken."
+    },
+    {
+      "paperId": "WH08",
+      "taskId": "wh08-14",
+      "kind": "answer",
+      "question": "Where and when is the meeting?",
+      "reference": "In the school library tomorrow at three."
+    },
+    {
+      "paperId": "WH08",
+      "taskId": "wh08-15",
+      "kind": "answer",
+      "question": "How could you respond kindly?",
+      "reference": "I'll miss you too. Let's keep in touch."
+    },
+    {
+      "paperId": "WH08",
+      "taskId": "wh08-18",
+      "kind": "retell",
+      "question": "Explain the festival, what classes prepared, how food was checked and the result.",
+      "reference": "The food festival was on Friday afternoon in the playground. Classes made dishes and posters about ingredients. Teachers checked the food, and visitors voted. Class Three won with vegetable dumplings. The money raised bought sports equipment."
+    },
+    {
+      "paperId": "WH09",
+      "taskId": "wh09-09",
+      "kind": "answer",
+      "question": "How could you give permission?",
+      "reference": "Yes, of course. Please open it."
+    },
+    {
+      "paperId": "WH09",
+      "taskId": "wh09-10",
+      "kind": "answer",
+      "question": "Which room should you go to?",
+      "reference": "Room 205."
+    },
+    {
+      "paperId": "WH09",
+      "taskId": "wh09-11",
+      "kind": "answer",
+      "question": "Why should you bring lunch?",
+      "reference": "Because there is no cafe at the nature centre."
+    },
+    {
+      "paperId": "WH09",
+      "taskId": "wh09-12",
+      "kind": "answer",
+      "question": "What would you say?",
+      "reference": "Well done! You must be proud."
+    },
+    {
+      "paperId": "WH09",
+      "taskId": "wh09-13",
+      "kind": "answer",
+      "question": "How much is the yellow hat?",
+      "reference": "Twenty-five yuan."
+    },
+    {
+      "paperId": "WH09",
+      "taskId": "wh09-14",
+      "kind": "answer",
+      "question": "What could you say to your classmate?",
+      "reference": "I hope you feel better soon."
+    },
+    {
+      "paperId": "WH09",
+      "taskId": "wh09-15",
+      "kind": "answer",
+      "question": "When is the book due?",
+      "reference": "On the fifteenth."
+    },
+    {
+      "paperId": "WH09",
+      "taskId": "wh09-18",
+      "kind": "retell",
+      "question": "Retell where and when the group went, what they saw and did, and what they learned.",
+      "reference": "A school group visited the city museum on Tuesday. A guide showed old street photographs and explained changes in transport. Groups compared old and new maps, then gave reports at school. The visit helped them understand city history."
+    },
+    {
+      "paperId": "WH10",
+      "taskId": "wh10-09",
+      "kind": "answer",
+      "question": "How could you decline politely?",
+      "reference": "Thank you, but I need to prepare for my test."
+    },
+    {
+      "paperId": "WH10",
+      "taskId": "wh10-10",
+      "kind": "answer",
+      "question": "Does your brother pay full price?",
+      "reference": "No, he pays half price."
+    },
+    {
+      "paperId": "WH10",
+      "taskId": "wh10-11",
+      "kind": "answer",
+      "question": "Where was the umbrella found?",
+      "reference": "Beside the classroom door."
+    },
+    {
+      "paperId": "WH10",
+      "taskId": "wh10-12",
+      "kind": "answer",
+      "question": "Which lesson has changed?",
+      "reference": "The science lesson."
+    },
+    {
+      "paperId": "WH10",
+      "taskId": "wh10-13",
+      "kind": "answer",
+      "question": "How would you respond?",
+      "reference": "Of course. I'll speak more slowly."
+    },
+    {
+      "paperId": "WH10",
+      "taskId": "wh10-14",
+      "kind": "answer",
+      "question": "When must students arrive?",
+      "reference": "By seven fifteen."
+    },
+    {
+      "paperId": "WH10",
+      "taskId": "wh10-15",
+      "kind": "answer",
+      "question": "What will the students make?",
+      "reference": "A thank-you card."
+    },
+    {
+      "paperId": "WH10",
+      "taskId": "wh10-18",
+      "kind": "retell",
+      "question": "Describe the event, the activities, attendance and future plan.",
+      "reference": "Last Saturday the community library held a reading day. Older children read stories to younger visitors. Volunteers helped choose books and make bookmarks. Over fifty families came and many borrowed books. The library plans a reading afternoon every month."
+    },
+    {
+      "paperId": "WH01",
+      "taskId": "read-trees",
+      "kind": "read",
+      "question": "",
+      "reference": "Trees also slow rainwater as it reaches the ground."
+    },
+    {
+      "paperId": "WH01",
+      "taskId": "read-octopus",
+      "kind": "read",
+      "question": "",
+      "reference": "But flexibility is only one of its remarkable abilities."
+    },
+    {
+      "paperId": "WH02",
+      "taskId": "wh02-16",
+      "kind": "read",
+      "question": "",
+      "reference": "I used to rush out of the house without breakfast. Now I prepare my schoolbag before going to bed. I have enough time to eat, check my homework and walk to school. A small change has made my mornings much calmer."
+    },
+    {
+      "paperId": "WH02",
+      "taskId": "wh02-17",
+      "kind": "read",
+      "question": "",
+      "reference": "My grandfather taught me how to mend a loose button. At first I found it difficult to hold the needle. After a few tries, I could do it by myself. I was proud that I did not have to throw away my shirt."
+    },
+    {
+      "paperId": "WH03",
+      "taskId": "wh03-16",
+      "kind": "read",
+      "question": "",
+      "reference": "There is a small reading corner beside our classroom window. Students can sit there during the lunch break. We take turns looking after the books, and everyone is asked to speak quietly. It is my favourite place on a busy school day."
+    },
+    {
+      "paperId": "WH03",
+      "taskId": "wh03-17",
+      "kind": "read",
+      "question": "",
+      "reference": "During a cooking lesson, I added too much salt to the soup. My partner suggested adding more water and vegetables. The soup tasted better in the end. I learned that a mistake can become a chance to find a solution together."
+    },
+    {
+      "paperId": "WH04",
+      "taskId": "wh04-16",
+      "kind": "read",
+      "question": "",
+      "reference": "On Sunday, my aunt showed me how to make dumplings. She prepared the filling while I rolled out the dough. We made some unusual shapes, but they tasted delicious. By the time we finished, the whole kitchen smelled wonderful."
+    },
+    {
+      "paperId": "WH04",
+      "taskId": "wh04-17",
+      "kind": "read",
+      "question": "",
+      "reference": "Our neighbour noticed that the path was slippery after the rain. He brought a broom and cleared the wet leaves away. Soon the children could walk past safely. It reminded me that looking after shared spaces is everyone's responsibility."
+    },
+    {
+      "paperId": "WH05",
+      "taskId": "wh05-16",
+      "kind": "read",
+      "question": "",
+      "reference": "While cleaning a cupboard, I found an old map of our town. Many of the streets still had the same names, but several buildings had disappeared. My father showed me where he used to play as a child. The map helped me see our town differently."
+    },
+    {
+      "paperId": "WH05",
+      "taskId": "wh05-17",
+      "kind": "read",
+      "question": "",
+      "reference": "Our class built a model bridge from paper. One group made the base while another tested its strength. We changed our design when it began to bend. At the end of the lesson, the bridge could hold several small books without breaking."
+    },
+    {
+      "paperId": "WH06",
+      "taskId": "wh06-16",
+      "kind": "read",
+      "question": "",
+      "reference": "I planted a bean seed in a paper cup and kept it near the window. For several days nothing seemed to happen. Then a tiny green leaf appeared. Watching it grow taught me to be patient and to notice small changes in nature."
+    },
+    {
+      "paperId": "WH06",
+      "taskId": "wh06-17",
+      "kind": "read",
+      "question": "",
+      "reference": "A new student joined our class last month. At lunchtime she often sat alone, so we invited her to join our table. We discovered that she enjoyed drawing animals as much as we did. Soon we were sharing ideas for a class poster."
+    },
+    {
+      "paperId": "WH07",
+      "taskId": "wh07-16",
+      "kind": "read",
+      "question": "",
+      "reference": "The wall near our school used to be plain and grey. A group of students planned a picture of birds, trees and flowers. Local residents helped paint it over a weekend. Now the wall makes the street brighter, and people often stop to look at it."
+    },
+    {
+      "paperId": "WH07",
+      "taskId": "wh07-17",
+      "kind": "read",
+      "question": "",
+      "reference": "My grandmother showed me a letter she wrote when she was my age. She described her school and the games she played with friends. Some things were different, but her excitement about learning felt familiar. Reading the letter brought us closer together."
+    },
+    {
+      "paperId": "WH08",
+      "taskId": "wh08-16",
+      "kind": "read",
+      "question": "",
+      "reference": "Before our class presentation, I was afraid of forgetting my words. My partner reminded me to look at the audience and speak slowly. When I finished, I realised that I had enjoyed sharing our ideas. The next time I felt much more confident."
+    },
+    {
+      "paperId": "WH08",
+      "taskId": "wh08-17",
+      "kind": "read",
+      "question": "",
+      "reference": "Our town has a path along the river. Volunteers often collect rubbish left by visitors. They also put up signs to remind people to take their litter home. A clean river is important for wildlife and for everyone who enjoys walking beside it."
+    },
+    {
+      "paperId": "WH09",
+      "taskId": "wh09-16",
+      "kind": "read",
+      "question": "",
+      "reference": "Last summer, my family stayed in a village instead of visiting a large city. We walked through fields, bought fruit from a small market and watched the stars at night. We did not make a busy timetable. It was one of the most relaxing holidays I can remember."
+    },
+    {
+      "paperId": "WH09",
+      "taskId": "wh09-17",
+      "kind": "read",
+      "question": "",
+      "reference": "I noticed how many plastic bags we used each week. Now I carry a cloth bag when I go shopping. I also refill my water bottle rather than buying a new one. These simple habits help me create less waste without changing my daily life very much."
+    },
+    {
+      "paperId": "WH10",
+      "taskId": "wh10-16",
+      "kind": "read",
+      "question": "",
+      "reference": "While walking in the park, I noticed a bird building its nest. I stood at a distance and watched it carry small pieces of grass into a tree. I did not disturb it. Seeing the bird at work made an ordinary walk much more interesting."
+    },
+    {
+      "paperId": "WH10",
+      "taskId": "wh10-17",
+      "kind": "read",
+      "question": "",
+      "reference": "Last Saturday I left my phone at home and met two friends in the park. We played a ball game and talked for a long time. I did not miss my phone as much as I expected. Spending time together was more enjoyable than looking at a screen."
+    }
+  ],
+  "retellBankSha256": "8857cff5909663f1b1cbf0e954141bbae0a929b5114d83dc8a9f23d98d6a063e",
+  "retellGroups": [
+    {
+      "paperId": "WH02",
+      "taskId": "wh02-18",
+      "groups": [
+        "The exchange took place in the school hall last Friday.",
+        "Students brought books they had already read.",
+        "Volunteers sorted the books.",
+        "More than forty books found new owners.",
+        "They planned another exchange before the winter holiday."
+      ]
+    },
+    {
+      "paperId": "WH03",
+      "taskId": "wh03-18",
+      "groups": [
+        "The cycling club opened at Green Park in September.",
+        "Eighteen teenagers came to the first meeting.",
+        "A coach taught them to check their brakes and wear helmets.",
+        "They cycled around the lake.",
+        "The club meets every second Sunday and welcomes beginners."
+      ]
+    },
+    {
+      "paperId": "WH04",
+      "taskId": "wh04-18",
+      "groups": [
+        "The class recorded the weather for four weeks in May.",
+        "Two students recorded temperature and weather every morning.",
+        "They made a chart.",
+        "The second week was the rainiest.",
+        "The teacher put the chart up in the corridor."
+      ]
+    },
+    {
+      "paperId": "WH05",
+      "taskId": "wh05-18",
+      "groups": [
+        "Twenty students visited a farm outside the city on Saturday.",
+        "They learned how to plant beans and water plants.",
+        "They worked in pairs and planted two rows of beans.",
+        "They picked vegetables for the school kitchen.",
+        "They will go back in six weeks."
+      ]
+    },
+    {
+      "paperId": "WH06",
+      "taskId": "wh06-18",
+      "groups": [
+        "The community centre held a repair afternoon last Sunday.",
+        "Volunteers helped people fix things.",
+        "A teenager repaired a lamp with an adult.",
+        "Others learned to sew buttons and mend bags.",
+        "People reused things instead of throwing them away.",
+        "Another event is planned for next month."
+      ]
+    },
+    {
+      "paperId": "WH07",
+      "taskId": "wh07-18",
+      "groups": [
+        "The talent show took place in the school hall on Thursday evening.",
+        "Twelve groups performed music, drama or dance.",
+        "Students made decorations.",
+        "The art club designed the programme.",
+        "The audience raised eight hundred yuan for books.",
+        "The organisers thanked the helpers."
+      ]
+    },
+    {
+      "paperId": "WH08",
+      "taskId": "wh08-18",
+      "groups": [
+        "The food festival took place in the playground on Friday afternoon.",
+        "Classes prepared dishes and ingredient posters.",
+        "Teachers checked the food.",
+        "Visitors voted.",
+        "Class Three won with vegetable dumplings.",
+        "The money was used to buy sports equipment."
+      ]
+    },
+    {
+      "paperId": "WH09",
+      "taskId": "wh09-18",
+      "groups": [
+        "The school group went to the city museum on Tuesday.",
+        "The guide showed old street photographs and explained changes in transport.",
+        "Groups compared old maps with new maps.",
+        "They gave reports at school.",
+        "They learned about the history of the city."
+      ]
+    },
+    {
+      "paperId": "WH10",
+      "taskId": "wh10-18",
+      "groups": [
+        "The community library held a reading day last Saturday.",
+        "Older children read stories to younger visitors.",
+        "Volunteers helped people choose books and make bookmarks.",
+        "More than fifty families came.",
+        "Many families borrowed books.",
+        "The library plans a reading afternoon every month."
+      ]
+    },
+    {
+      "paperId": "WH01",
+      "taskId": "retell-river-cleanup",
+      "groups": [
+        "More than sixty volunteers joined the cleanup.",
+        "They collected rubbish.",
+        "They placed sharp objects in a special container.",
+        "They planted twenty trees.",
+        "They filled thirty bags with rubbish.",
+        "The leader hopes to organize a cleanup on the first Sunday of every month."
+      ]
+    }
+  ]
+}

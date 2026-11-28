@@ -1,0 +1,12 @@
+import assert from "node:assert/strict";
+import {readingFluency} from "../src/lib/wuhan-reading-fluency";
+const diagnosis={status:"reference_text_matched",official_score:false,pronunciation_score:null,primary_text:"Trees also slow rainwater as it reaches the ground.",secondary_text:"Trees also slow rainwater as it reaches the ground.",timing:{duration_ms:3558,speech_ms:3558,speech_segments:1,internal_gap_count:0,longest_internal_gap_ms:0},fluency_evidence:{schema_version:1,basis:"vad_with_optional_dual_asr_word_count",speech_activity_percent:100,internal_pause_count:0,longest_internal_pause_ms:0,agreed_recognized_words:9,recording_words_per_minute:152,active_speech_words_per_minute:152}};
+const item={kind:"read",state:diagnosis.status,candidate:{diagnosis}};
+assert.deepEqual(readingFluency(item),{activity:100,pauses:0,longestMs:0,recordingWpm:152,activeWpm:152});
+const bad=structuredClone(item);bad.candidate.diagnosis.fluency_evidence.recording_words_per_minute=999;
+assert.equal(readingFluency(bad),null);
+assert.equal(readingFluency({...item,kind:"answer"}),null);
+const disagree={kind:"read",state:"asr_disagreement",candidate:{diagnosis:{...diagnosis,status:"asr_disagreement",secondary_text:"Trees also sow rainwater as it reaches the ground.",fluency_evidence:{...diagnosis.fluency_evidence,agreed_recognized_words:null,recording_words_per_minute:null,active_speech_words_per_minute:null}}}};
+assert.deepEqual(readingFluency(disagree),{activity:100,pauses:0,longestMs:0,recordingWpm:null,activeWpm:null});
+assert.equal(readingFluency({...item,candidate:{diagnosis:{...diagnosis,fluency_evidence:null}}}),null);
+console.log("WUHAN_READING_FLUENCY_DISPLAY_PASS");

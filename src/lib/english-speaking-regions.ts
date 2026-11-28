@@ -3,13 +3,14 @@
  * Existing engine guides: AccentLab frontend/src/data/officialExamGuides.ts.
  * Wuhan primary source: Changjiang Daily 2026-11-26 (government portal reprint); supplied scan is supplemental.
  */
+import wuhanCatalog from "../../config/commerce/wuhan-2027-paper-projection.json";
 export const ENGLISH_SPEAKING_ROOT="/assessments/english-speaking";
 const ENGINE="/english/pronunciation/app";
 export type SpeakingRegion={
  city:string; year:string; cityName:string; paperId:string; status:string;
  summary:string; facts:readonly (readonly [string,string])[];
  skills:readonly (readonly [string,string])[];
- papers:readonly {label:string;note:string;version?:string;pack?:"A"|"B"}[];
+ papers:readonly {label:string;note:string;version?:string;set?:string;pack?:"A"|"B"}[];
  sources:readonly {label:string;url:string}[]; caution:string;
  drills?:readonly {name:string;id:string;skill?:string}[];
 };
@@ -19,7 +20,7 @@ export const SPEAKING_REGIONS:readonly SpeakingRegion[]=[
  summary:"依据长江日报2026年11月26日报道：应届初中毕业生单人单机进行人机对话，英语总分120分，其中听说30分、笔试90分，成绩一并公布。",
  facts:[["考试日期","4月17—18日"],["听说满分","30分"],["英语总分","120分"],["笔试满分","90分"],["每场含考务","30分钟"],["缓考","4月19日"]],
  skills:[["听后选择","听取对话或独白，选择正确信息。"],["听后应答","听懂问题，组织英语回答。"],["模仿朗读","先听示范，再模仿录音。"],["听后转述","提取信息并用英语转述。"]],
- papers:[{label:"武汉2027 · 四题型统一模拟",note:"依已公布四题型设置统一适应性训练；具体题量和计时为教学设定",version:"W2"}],
+ papers:wuhanCatalog.paperIds.map((set,index)=>({label:"武汉2027 · 第"+(index+1)+"套（"+set+"）",note:index===0?"四题型统一适应性训练；教学计时":"同一四题型结构 · 不同原创材料；多声线合成音频已机器核验",version:"W2",set})),
  drills:[{name:"听后选择",id:"scene-museum-meeting"},{name:"听后应答",id:"answer-gift-budget"},{name:"模仿朗读",id:"read-trees"},{name:"听后转述",id:"retell-river-cleanup"}],
  sources:[{label:"长江日报：2026年11月26日实施方案发布报道（武汉市政府门户转载，首要依据）",url:"https://www.wuhan.gov.cn/hdjl/rdhy/202611/t20261126_2885415.shtml"},{label:"湖北省教育厅：统一命题及机考政策（省级背景）",url:"https://jyt.hubei.gov.cn/zfxxgk/zc_GK2020/gfxwj_GK2020/202306/t20230629_4727322.shtml"}],
  caution:"以长江日报报道为首要依据，完整原始公文及详细样卷待核。净答题时长、题量、正式题序、分题分值、播放次数与评分细则未在报道中列明；20分钟仅为本站适应性训练设置；不再提供不同题量、题序或时长的猜测卷。"},
@@ -57,7 +58,7 @@ export const regionByYear=(city:string,year:string)=>SPEAKING_REGIONS.find(r=>r.
 export const cityDefault=(city:string)=>SPEAKING_REGIONS.find(r=>r.city===city);
 export function regionExamHref(r:SpeakingRegion,p:SpeakingRegion["papers"][number],mode:"simulation"|"practice",focus?:string){
  const q=new URLSearchParams({paper:r.paperId,mode,edition:"city"});
- if(r.city==="wuhan")q.set("version","W2");
+ if(r.city==="wuhan"){q.set("version","W2");if(p.set&&wuhanCatalog.paperIds.includes(p.set))q.set("set",p.set);}
  else if(p.version)q.set("version",p.version);
  if(p.pack)q.set("pack",p.pack);
  if(focus&&mode==="practice")q.set("focus",focus);

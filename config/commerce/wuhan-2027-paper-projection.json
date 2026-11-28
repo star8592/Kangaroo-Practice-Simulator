@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "authority": "AccentLab",
+  "sourceCommit": "2b173991e238f446e943c3b0c67a0aa37a01d706",
+  "template": "W2",
+  "paperIds": [
+    "WH01",
+    "WH02",
+    "WH03",
+    "WH04",
+    "WH05",
+    "WH06",
+    "WH07",
+    "WH08",
+    "WH09",
+    "WH10"
+  ],
+  "basicCandidatePaperIds": [
+    "WH01",
+    "WH02",
+    "WH03",
+    "WH04",
+    "WH05"
+  ],
+  "newPaperCount": 9,
+  "newAudioCount": 162,
+  "bankSha256": "73a862829c8483456dbc879c9ba7a1c64cd147a9270c27c0fb74748e61840513",
+  "audioManifestSha256": "e0c3948481753210d1d6599d50db30dd3b26abe590d18c2904afa7750e255c33",
+  "machineAudioAudit": true,
+  "humanListeningReview": false,
+  "commercialApproved": false,
+  "liveSampleHashesMatched": [
+    "wh02-01",
+    "wh06-01",
+    "wh10-18"
+  ]
+}
