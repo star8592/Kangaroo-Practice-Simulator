@@ -2,7 +2,7 @@
 import {Pool} from "pg";
 import {constants,openSync,fstatSync,readFileSync,closeSync} from "node:fs";
 import {runScoringWorkerOnce} from "../src/lib/wuhan-scoring-worker";
-import {activeParentSessionVersion} from "../src/lib/parent-auth";
+import {createHmac} from "node:crypto";
 function secret(name:string){
  const fd=openSync(process.env[name]||"",constants.O_RDONLY|constants.O_NOFOLLOW|constants.O_NONBLOCK);
  try{const st=fstatSync(fd);if(!st.isFile()||st.size>4096||(st.mode&0o077)!==0)throw Error("private credential required");return readFileSync(fd,"utf8").trim()}finally{closeSync(fd)}
@@ -17,7 +17,7 @@ async function main(){
  if(stageKey.equals(rpcKey)||stageKey.equals(archiveKey)||archiveKey.equals(rpcKey))throw Error("separate credentials required");
  const revision=process.env.SOCTHINK_WUHAN_PRIVATE_REVISION||"";
  if(!/^[a-f0-9]{64}$/.test(revision))throw Error("pinned scorer revision required");
- if(!process.env.SOCTHINK_USER_DATA_DIR?.startsWith("/"))throw Error("explicit identity adapter required");
+
  const settings={origin:localOrigin(process.env.SOCTHINK_WUHAN_PRIVATE_ORIGIN),key:rpcKey,revision};
  const archive={origin:localOrigin(process.env.SOCTHINK_WUHAN_ARCHIVE_ORIGIN),key:archiveKey};
  const pool=new Pool({connectionString:db,max:2,connectionTimeoutMillis:3000,statement_timeout:15000,application_name:"wuhan-scoring-worker"});
@@ -28,7 +28,14 @@ async function main(){
   for(const origin of [settings.origin,archive.origin])if(!(await fetch(origin+"/healthz",{signal:AbortSignal.timeout(3000),redirect:"error"})).ok)throw Error("dependency unavailable");
   console.log("WUHAN_SCORING_WORKER_READY");
   while(!stopped){
-   const result=await runScoringWorkerOnce(pool,settings,stageKey,archive,async owner=>activeParentSessionVersion(owner));
+   const result=await runScoringWorkerOnce(pool,settings,stageKey,archive,async (owner,attempt,paper,lease)=>{
+    const body=JSON.stringify({owner_id:owner,attempt_id:attempt,paper_id:paper,lease_id:lease});
+    const sig=createHmac("sha256",archiveKey).update("wuhan-scoring-access-v1\0").update(body).digest("hex");
+    const response=await fetch(archive.origin+"/internal/research/wuhan/check-scoring-access",{method:"POST",headers:{"Content-Type":"application/json","x-research-signature":sig},body,cache:"no-store",redirect:"error",signal:AbortSignal.timeout(5000)});
+    if(!response.ok)return null;
+    const result=await response.json();
+    return result.code==="ACCESS_CONFIRMED"&&Number.isSafeInteger(result.session_version)?result.session_version:null;
+   });
    if(result!=="idle")console.log("WUHAN_SCORING_TICK",result);
    await new Promise(r=>setTimeout(r,result==="idle"?5000:1000));
   }

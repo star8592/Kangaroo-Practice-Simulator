@@ -38,7 +38,16 @@ if [[ "${WUHAN_R92_REAL_WORKER:-0}" == "1" ]]; then
  apiport=$(python3 -c 'import socket;s=socket.socket();s.bind(("127.0.0.1",0));print(s.getsockname()[1]);s.close()')
  export SOCTHINK_COMMERCE_BIND="127.0.0.1:$apiport" WUHAN_STAGE_ARCHIVE_ORIGIN="http://127.0.0.1:$apiport"
  cargo build --manifest-path backend/socthink-core/Cargo.toml --locked --offline --bin socthink-commerce-api >/dev/null
- backend/socthink-core/target/debug/socthink-commerce-api > "$tmp/api.log" 2>&1 & api=$!
+ if [[ "${WUHAN_R94_ARCHIVE:-0}" == "1" ]]; then
+  export SOCTHINK_WUHAN_PRIVATE_ARCHIVE=1 SOCTHINK_WUHAN_ARCHIVE_MODE=test
+  export SOCTHINK_WUHAN_ARCHIVE_DATABASE_URL="$WUHAN_STAGE_TEST_DB" SOCTHINK_WUHAN_ARCHIVE_BIND="$SOCTHINK_COMMERCE_BIND"
+  export SOCTHINK_WUHAN_ARCHIVE_KEY_FILE="$tmp/archive-key"
+  printf '%s' "$SOCTHINK_RESEARCH_ARCHIVE_KEY" > "$SOCTHINK_WUHAN_ARCHIVE_KEY_FILE";chmod 600 "$SOCTHINK_WUHAN_ARCHIVE_KEY_FILE"
+  cargo build --manifest-path backend/socthink-core/Cargo.toml --locked --offline --bin wuhan_archive_api >/dev/null
+  backend/socthink-core/target/debug/wuhan_archive_api > "$tmp/api.log" 2>&1 & api=$!
+ else
+  backend/socthink-core/target/debug/socthink-commerce-api > "$tmp/api.log" 2>&1 & api=$!
+ fi
  for i in $(seq 1 30); do if curl -fsS "$WUHAN_STAGE_ARCHIVE_ORIGIN/healthz" >/dev/null 2>&1; then break; fi; sleep 1; done
  curl -fsS "$WUHAN_STAGE_ARCHIVE_ORIGIN/healthz" >/dev/null
  node_modules/.bin/tsx scripts/test_wuhan_r92_real_worker.ts

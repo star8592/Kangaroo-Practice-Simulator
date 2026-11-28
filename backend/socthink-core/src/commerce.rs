@@ -886,7 +886,16 @@ fn wuhan_archive_db_gate(db: &str, mode: &str) -> bool {
 pub async fn wuhan_private_archive_router() -> Result<Router, Box<dyn std::error::Error + Send + Sync>> {
     if env::var("SOCTHINK_WUHAN_PRIVATE_ARCHIVE").as_deref()!=Ok("1") { return Err("private archive disabled".into()); }
     let mode=env::var("SOCTHINK_WUHAN_ARCHIVE_MODE")?;
-    let db=env::var("SOCTHINK_WUHAN_ARCHIVE_DATABASE_URL")?;
+    let db=match env::var("SOCTHINK_WUHAN_ARCHIVE_DB_FILE") {
+        Ok(path)=>{
+            use std::os::unix::fs::PermissionsExt;
+            let m=fs::symlink_metadata(&path)?;
+            if !m.is_file() || m.permissions().mode() & 0o077 != 0 || m.len()>4096 {return Err("private archive database credential required".into());}
+            fs::read_to_string(path)?.trim().to_owned()
+        },
+        Err(_) if mode=="test"=>env::var("SOCTHINK_WUHAN_ARCHIVE_DATABASE_URL")?,
+        Err(_)=>return Err("archive database credential required".into()),
+    };
     if !wuhan_archive_db_gate(&db,&mode) { return Err("dedicated archive database required".into()); }
     let user_data_dir=PathBuf::from(env::var("SOCTHINK_USER_DATA_DIR")?);
     if !user_data_dir.is_absolute() || !user_data_dir.join(PARENTS_FILE).is_file() { return Err("live identity store unavailable".into()); }
@@ -905,10 +914,37 @@ pub async fn wuhan_private_archive_router() -> Result<Router, Box<dyn std::error
     Ok(Router::new()
         .route("/healthz", get(health))
         .route("/internal/research/wuhan/complete-scoring",post(wuhan_private_complete).layer(DefaultBodyLimit::max(262144)))
+        .route("/internal/research/wuhan/check-scoring-access",post(wuhan_private_access).layer(DefaultBodyLimit::max(1024)))
         .with_state(WuhanArchiveState{pool,user_data_dir,key}))
 }
 async fn wuhan_private_complete(State(state):State<WuhanArchiveState>,headers:HeaderMap,body:Bytes)->Response {
     complete_scoring_bound(&state.pool,&state.user_data_dir,&state.key,headers,body).await
+}
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+struct WuhanScoringAccess { owner_id:String, attempt_id:String, paper_id:String, lease_id:String }
+async fn wuhan_private_access(State(state):State<WuhanArchiveState>,headers:HeaderMap,body:Bytes)->Response {
+    if headers.contains_key(header::ORIGIN)||headers.contains_key(header::COOKIE) {
+        return private_json(StatusCode::FORBIDDEN,json!({"code":"INTERNAL_ONLY"}));
+    }
+    let mut mac=HmacSha256::new_from_slice(&state.key).expect("validated key");
+    mac.update(b"wuhan-scoring-access-v1\0");mac.update(&body);
+    if !headers.get("x-research-signature").and_then(|v|v.to_str().ok()).and_then(decode_hex).is_some_and(|sig|mac.verify_slice(&sig).is_ok()){
+        return private_json(StatusCode::UNAUTHORIZED,json!({"code":"INVALID_SIGNATURE"}));
+    }
+    let Ok(r)=serde_json::from_slice::<WuhanScoringAccess>(&body) else {return private_json(StatusCode::BAD_REQUEST,json!({"code":"INVALID_BINDING"}));};
+    if !valid_parent_id(&r.owner_id)||r.attempt_id.len()!=32||!r.attempt_id.bytes().all(|b|b.is_ascii_digit()||(b'a'..=b'f').contains(&b))
+      ||!valid_research_paper(&r.paper_id)||r.lease_id.len()!=36||!r.lease_id.bytes().enumerate().all(|(i,b)|if [8,13,18,23].contains(&i){b==b'-'}else{b.is_ascii_digit()||(b'a'..=b'f').contains(&b)}){
+        return private_json(StatusCode::BAD_REQUEST,json!({"code":"INVALID_BINDING"}));
+    }
+    let parents=fs::read_to_string(state.user_data_dir.join(PARENTS_FILE)).ok().and_then(|s|serde_json::from_str::<Vec<ParentRecord>>(&s).ok());
+    let Some(parent)=parents.and_then(|ps|ps.into_iter().find(|p|p.id==r.owner_id&&p.active.unwrap_or(true)&&(p.wechat_id.as_deref().is_some_and(|s|!s.trim().is_empty())||p.wechat_open_id.as_deref().is_some_and(|s|!s.trim().is_empty())))) else {
+        return private_json(StatusCode::FORBIDDEN,json!({"code":"ACCESS_DENIED"}));
+    };
+    let bound=sqlx::query_scalar::<_,Option<i64>>("SELECT exam_access_draft.inspect_research_attempt_access($1,$2,$3)").bind(&r.attempt_id).bind(&r.owner_id).bind(&r.paper_id).fetch_one(&state.pool).await;
+    let version=match bound {Ok(Some(v)) if Some(v)==i64::try_from(parent.session_version.unwrap_or(1).max(1)).ok()=>v,_=>return private_json(StatusCode::FORBIDDEN,json!({"code":"ACCESS_DENIED"}))};
+    let lease=sqlx::query_scalar::<_,bool>("SELECT exam_access_draft.inspect_scoring_stage_access($1,$2::uuid)").bind(&r.attempt_id).bind(&r.lease_id).fetch_one(&state.pool).await;
+    match lease {Ok(true)=>private_json(StatusCode::OK,json!({"code":"ACCESS_CONFIRMED","session_version":version})),_=>private_json(StatusCode::FORBIDDEN,json!({"code":"ACCESS_DENIED"}))}
 }
 #[cfg(test)]
 #[test]

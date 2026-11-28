@@ -4,7 +4,7 @@ import {createHmac} from "node:crypto";
 import {openScoringStage} from "./wuhan-scoring-stage";
 import {buildScoringReport} from "./wuhan-scoring-job";
 type Settings=Parameters<typeof buildScoringReport>[2];
-export async function runScoringWorkerOnce(pool:Pool,settings:Settings,stageKey:Buffer,archive:{origin:string;key:Buffer},liveVersion:(owner:string)=>Promise<number|null>){
+export async function runScoringWorkerOnce(pool:Pool,settings:Settings,stageKey:Buffer,archive:{origin:string;key:Buffer},liveVersion:(owner:string,attempt:string,paper:string,lease:string)=>Promise<number|null>){
  if(!/^http:\/\/127\.0\.0\.1:[1-9][0-9]{0,4}$/.test(archive.origin)||archive.key.length!==32)throw Error("invalid internal archive settings");
  await pool.query("SELECT exam_access_draft.cleanup_scoring_stage()");
  const job=(await pool.query("SELECT exam_access_draft.claim_research_scoring() AS v")).rows[0]?.v;
@@ -14,7 +14,7 @@ export async function runScoringWorkerOnce(pool:Pool,settings:Settings,stageKey:
  try{
   const row=(await pool.query("SELECT * FROM exam_access_draft.load_research_scoring($1,$2)",[id,lease])).rows[0];
   if(!row||row.manifest_sha256!==job.manifest_sha256)throw Error("stage unavailable");
-  const allowed=async()=>await liveVersion(row.owner_id)===Number(row.session_version)&&(await pool.query("SELECT exam_access_draft.renew_scoring_lease($1,$2) AS v",[id,lease])).rows[0]?.v===true;
+  const allowed=async()=>await liveVersion(row.owner_id,id,row.paper_id,lease)===Number(row.session_version)&&(await pool.query("SELECT exam_access_draft.renew_scoring_lease($1,$2) AS v",[id,lease])).rows[0]?.v===true;
   if(!await allowed())throw Error("authorization revoked");
   input=openScoringStage(row.owner_id,id,row.manifest_sha256,row.ciphertext,stageKey);
   if(input.paper!==row.paper_id)throw Error("paper mismatch");

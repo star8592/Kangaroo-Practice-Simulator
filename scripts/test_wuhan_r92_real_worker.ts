@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import {spawn,execFileSync} from "node:child_process";
-import {createHash,randomBytes} from "node:crypto";
+import {createHash,createHmac,randomBytes} from "node:crypto";
 import {mkdtempSync,writeFileSync,readFileSync,rmSync} from "node:fs";
 import {tmpdir} from "node:os";
 import path from "node:path";
@@ -26,22 +26,36 @@ async function main(){
   await q("SELECT exam_access_draft.claim_research_ticket($1,'WH01',$2,1)",[t.ticket,owner]);
   const tasks=contract.papers[0]!.tasks;
   const phrases:Record<string,string>={"answer-gift-budget":"Eighteen pounds.","answer-poster-deadline":"By Friday afternoon.","read-trees":"Trees also slow rainwater as it reaches the ground.","retell-river-cleanup":"They planted twenty young trees. They picked up rubbish."};
-  const recordings=tasks.filter(t=>t.kind!=="choice").map((t,i)=>{let audio=Buffer.alloc(0);if(phrases[t.taskId]){const wav=path.join(dir,i+".wav");execFileSync("espeak-ng",["-v","en-us","-s","145","-w",wav,phrases[t.taskId]!]);audio=readFileSync(wav)}return {task:t.taskId,mime:"audio/wav",audio}});
+  const recordings=tasks.filter(t=>t.kind!=="choice").map((t,i)=>{let audio=Buffer.alloc(0);if(phrases[t.taskId]&&(process.env.WUHAN_R94_ARCHIVE!=="1"||t.taskId==="answer-gift-budget")){const wav=path.join(dir,i+".wav");execFileSync("espeak-ng",["-v","en-us","-s","145","-w",wav,phrases[t.taskId]!]);audio=readFileSync(wav)}return {task:t.taskId,mime:"audio/wav",audio}});
   const submission={attemptId:t.attempt_id,paper:"WH01",choices:tasks.filter(t=>t.kind==="choice").map(t=>({task:t.taskId,selected:t.correctOption!})),recordings};
   assert.equal((await q("SELECT exam_access_draft.grant_scoring_consent($1,$2,1) AS v",[owner,t.attempt_id]))[0].v,true);
   const stage=sealScoringStage(owner,submission,stageKey);
   assert.equal((await q("SELECT exam_access_draft.stage_research_scoring($1,$2,'WH01',$3,$4) AS v",[owner,t.attempt_id,stage.manifest,stage.ciphertext]))[0].v,"queued");
   const token=createParentSessionToken(owner,3600);
   const read=()=>fetch(archiveOrigin+"/api/platform/research/wuhan/reports/"+t.attempt_id,{headers:{Cookie:"socthink_parent_session="+token},cache:"no-store"});
-  assert.equal((await read()).status,202);
+  if(process.env.WUHAN_R94_ARCHIVE!=="1")assert.equal((await read()).status,202);
   const started=Date.now();
-  assert.equal(await runScoringWorkerOnce(pool,{origin,key,revision},stageKey,{origin:archiveOrigin,key:Buffer.from(process.env.SOCTHINK_RESEARCH_ARCHIVE_KEY!,"hex")},async a=>activeParentSessionVersion(a)),"completed");
-  const res=await read();assert.equal(res.status,200);const report=await res.json();
+  const archiveKey=Buffer.from(process.env.SOCTHINK_RESEARCH_ARCHIVE_KEY!,"hex");
+  const check=async(a:string,id:string,paper:string,lease:string)=>{
+   if(process.env.WUHAN_R94_ARCHIVE!=="1")return activeParentSessionVersion(a);
+   const call=async(owner:string,token:string)=>{
+    const body=JSON.stringify({owner_id:owner,attempt_id:id,paper_id:paper,lease_id:token});
+    const sig=createHmac("sha256",archiveKey).update("wuhan-scoring-access-v1\0").update(body).digest("hex");
+    return fetch(archiveOrigin+"/internal/research/wuhan/check-scoring-access",{method:"POST",headers:{"Content-Type":"application/json","x-research-signature":sig},body});
+   };
+   assert.equal((await call(a,"00000000-0000-0000-0000-000000000000")).status,403);
+   const r=await call(a,lease);assert.equal(r.status,200);return (await r.json()).session_version;
+  };
+  assert.equal(await runScoringWorkerOnce(pool,{origin,key,revision},stageKey,{origin:archiveOrigin,key:archiveKey},check),"completed");
+  let report;
+  if(process.env.WUHAN_R94_ARCHIVE==="1"){
+   const [{v}]=await q("SELECT exam_access_draft.read_research_report($1,$2) AS v",[owner,t.attempt_id]);report=v;
+  }else{const res=await read();assert.equal(res.status,200);report=await res.json()}
   assert.equal(report.items.length,18);assert.equal(report.submitted,18);assert.equal(report.choice_correct,8);assert.equal(report.total_score,null);assert.equal(report.billable,false);
   assert.equal(report.items.find((x:any)=>x.task_id==="answer-gift-budget").state,"reference_match");
   assert.equal(report.items.find((x:any)=>x.task_id==="answer-train-platform").state,"unanswered");
   assert.equal((await q("SELECT count(*)::int AS n FROM exam_access_draft.research_scoring_stage WHERE attempt_id=$1",[t.attempt_id]))[0].n,0);
-  console.log("R92_DURABLE_REAL_WORKER_PASS",JSON.stringify({elapsed:(Date.now()-started)/1000,submitted:report.submitted,spoken:4,empty:6,choices:8,manifestBound:true,stageDeleted:true}));
+  console.log("R92_DURABLE_REAL_WORKER_PASS",JSON.stringify({elapsed:(Date.now()-started)/1000,submitted:report.submitted,spoken:process.env.WUHAN_R94_ARCHIVE==="1"?1:4,empty:process.env.WUHAN_R94_ARCHIVE==="1"?9:6,choices:8,manifestBound:true,stageDeleted:true}));
  }finally{p.kill();await new Promise<void>(r=>{if(p.exitCode!==null||p.signalCode!==null)r();else p.once("exit",()=>r())});rmSync(dir,{recursive:true,force:true});await pool.end()}
 }
 main().catch(e=>{console.error(e);process.exit(1)});
