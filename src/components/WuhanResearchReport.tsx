@@ -1,5 +1,6 @@
 import styles from "./WuhanResearchReport.module.css";
 import { practiceRow, practiceSummary } from "../lib/wuhan-practice-summary";
+import { readingFluency } from "../lib/wuhan-reading-fluency";
 type Obj=Record<string,unknown>;
 const obj=(v:unknown):Obj=>v!==null&&typeof v==="object"&&!Array.isArray(v)?v as Obj:{};
 const str=(v:unknown)=>typeof v==="string"?v:"";
@@ -55,6 +56,7 @@ export function WuhanResearchReport({report}:{report:unknown}){
   {items.map((value,i)=>{
    const t=obj(value),c=obj(t.candidate),d=obj(c.diagnosis),timing=obj(d.timing),state=str(t.state);
    const shortPractice=practiceRow(t);
+   const fluency=readingFluency(t);
    const feedback=str(c.feedback_code);
    const feedbackText=feedbackMessages[feedback];
    const showFeedback=!!feedbackText&&["answer","retell"].includes(str(t.kind))&&(state==="needs_review"||state==="unanswered"||state==="partial_reference"||shortPractice?.kind==="match"||shortPractice?.kind==="mismatch");
@@ -77,6 +79,14 @@ export function WuhanResearchReport({report}:{report:unknown}){
       {state==="asr_disagreement"&&<p className={styles.disclosure}>识别模型存在分歧，不自动扣分或定位错误读音。</p>}
       {spans.length>0&&<><h4>可供人工听辨的时间位置</h4><div className={styles.words}>{spans.map((w,i)=><div key={i}><strong>{str(w.word)}</strong><small>{(Number(w.start_ms)/1000).toFixed(2)}–{(Number(w.end_ms)/1000).toFixed(2)}秒</small></div>)}</div><p>此归档不保存原始录音，不能在这里播放片段；时间位置不是发音评分。</p></>}
     </details>}
+    {fluency&&<section className={styles.practice} data-reading-fluency="true" aria-label="朗读节奏测量">
+      <h3>朗读节奏与停顿</h3>
+      <p>录音语速：{fluency.recordingWpm===null?"暂不估计":fluency.recordingWpm+" 词/分钟"}；有效语音活动：{fluency.activity}%。</p>
+      <p>内部停顿：{fluency.pauses}次；最长检测停顿：{(fluency.longestMs/1000).toFixed(2)}秒。</p>
+      {fluency.recordingWpm===null&&<p>识别证据不足或不一致，暂不估计语速。建议清楚、完整地再读一遍。</p>}
+      {fluency.pauses>0&&<p>练习建议：先听示范，按意群连贯朗读，在自然句界停顿，不必刻意加快速度。</p>}
+      <details className={styles.details}><summary>测量说明</summary><p>语音活动期间语速：{fluency.activeWpm===null?"暂不估计":fluency.activeWpm+" 词/分钟"}。停顿基于近似语音活动检测，不是精确词界；正常停顿与慢速朗读不自动扣分。这些测量不是流利度分数、发音分或官方成绩。</p></details>
+    </section>}
     {count(timing.duration_ms)!==null&&<p>录音时长 {(Number(timing.duration_ms)/1000).toFixed(2)} 秒；语音活动检测 {(Number(timing.speech_ms)/1000).toFixed(2)} 秒。仅供回听分析。</p>}
    </article>;
   })}

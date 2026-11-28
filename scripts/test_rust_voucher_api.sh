@@ -347,6 +347,13 @@ if os.environ.get("SOCTHINK_TEST_R79_LIVE_PAGE")=="1":
  assert ('机器内容练习点：0/1' in s)==bool(states.count("known_mismatch"))
  assert '未识别到有效答音，不计入已判定练习点' in s
  print(f'R79_REAL_SCORER_NEXT_PAGE_PASS 18 tasks; 1/{decided} points; decided {decided}/7; {uncertain} uncertain; 4 unsubmitted; 1 silence; no official grade')
+ if os.environ.get("SOCTHINK_TEST_R81_FLUENCY_PAGE")=="1":
+  f=next(x for x in r["items"] if x["task_id"]=="read-trees")["candidate"]["diagnosis"]["fluency_evidence"]
+  pace=f["recording_words_per_minute"]
+  assert '朗读节奏与停顿' in s and ('录音语速：暂不估计' if pace is None else f'录音语速：{pace}词/分钟') in compact
+  assert f'有效语音活动：{f["speech_activity_percent"]}%' in compact and f'内部停顿：{f["internal_pause_count"]}次' in compact and '这些测量不是流利度分数' in s
+  print('R81_REAL_FLUENCY_NEXT_PAGE_PASS',pace,'WPM;',f["speech_activity_percent"],'% activity;',f["internal_pause_count"],'pauses; no official score')
+
 else:
  print('WUHAN_RESEARCH_PAGE_RENDER=PASS 18 tasks, explicit ASR disagreement and no billing')
 PYREPORT

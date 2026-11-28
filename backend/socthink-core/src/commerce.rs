@@ -383,6 +383,74 @@ fn research_practice_valid(kind: &str, state: &str, c: &Value) -> bool {
     *p == expected
 }
 
+// Optional R81 descriptive fluency evidence. Independently recompute ratios;
+// no model inference or official scoring at the archive boundary.
+fn research_fluency_valid(state: &str, d: &Value) -> bool {
+    let Some(e) = d.get("fluency_evidence") else {
+        return true;
+    };
+    if e.is_null() {
+        return true;
+    }
+    if !matches!(
+        state,
+        "reference_text_matched" | "reference_text_differs" | "asr_disagreement"
+    ) {
+        return false;
+    }
+    let t = &d["timing"];
+    let (Some(duration), Some(speech), Some(segments), Some(gaps), Some(longest)) = (
+        t["duration_ms"].as_u64(),
+        t["speech_ms"].as_u64(),
+        t["speech_segments"].as_u64(),
+        t["internal_gap_count"].as_u64(),
+        t["longest_internal_gap_ms"].as_u64(),
+    ) else {
+        return false;
+    };
+    if duration == 0
+        || duration > 90000
+        || speech == 0
+        || speech > duration
+        || segments == 0
+        || segments > 600
+        || gaps != segments - 1
+        || longest > duration - speech
+        || (gaps == 0 && longest != 0)
+    {
+        return false;
+    }
+    fn words(v: &Value) -> Option<Vec<String>> {
+        let s = v.as_str()?;
+        if s.len() > 2400 || s.chars().any(|c| c.is_alphabetic() && !c.is_ascii()) {
+            return None;
+        }
+        let w: Vec<_> = s
+            .to_ascii_lowercase()
+            .replace("rain water", "rainwater")
+            .split(|c: char| !c.is_ascii_alphanumeric())
+            .filter(|x| !x.is_empty())
+            .map(str::to_owned)
+            .collect();
+        (!w.is_empty()).then_some(w)
+    }
+    let (Some(a), Some(b)) = (words(&d["primary_text"]), words(&d["secondary_text"])) else {
+        return false;
+    };
+    let agree = a == b;
+    if agree == (state == "asr_disagreement") {
+        return false;
+    }
+    let n = (agree && (5..=500).contains(&a.len()) && duration >= 2000 && speech >= 1000)
+        .then_some(a.len() as u64);
+    let ratio = |n: u64, d: u64| (n + d / 2) / d;
+    *e == json!({"schema_version":1,"basis":"vad_with_optional_dual_asr_word_count",
+      "speech_activity_percent":ratio(speech*100,duration),"internal_pause_count":gaps,
+      "longest_internal_pause_ms":longest,"agreed_recognized_words":n,
+      "recording_words_per_minute":n.map(|n|ratio(n*60000,duration)),
+      "active_speech_words_per_minute":n.map(|n|ratio(n*60000,speech))})
+}
+
 // Validate the complete ordered task manifest and objective keys independently
 // of the sender. Frozen projection of the current research rubric revision.
 fn research_report_valid(r: &Value) -> bool {
@@ -481,6 +549,7 @@ fn research_report_valid(r: &Value) -> bool {
                     || d.get("pronunciation_score") != Some(&Value::Null)
                     || d["official_score"] != false
                     || d["human_review_required"] != true
+                    || !research_fluency_valid(state, d)
                 {
                     return false;
                 }
@@ -1291,5 +1360,32 @@ mod research_practice_tests {
             "reference_match",
             &json!({"status":"reference_match"})
         ));
+    }
+}
+
+#[cfg(test)]
+mod research_fluency_tests {
+    use super::*;
+    #[test]
+    fn recompute_descriptive_evidence_and_reject_inconsistent_fields() {
+        let mut d = json!({"primary_text":"Trees also slow rainwater as it reaches the ground.","secondary_text":"Trees also slow rainwater as it reaches the ground.","timing":{"duration_ms":3558,"speech_ms":3558,"speech_segments":1,"internal_gap_count":0,"longest_internal_gap_ms":0},"fluency_evidence":{"schema_version":1,"basis":"vad_with_optional_dual_asr_word_count","speech_activity_percent":100,"internal_pause_count":0,"longest_internal_pause_ms":0,"agreed_recognized_words":9,"recording_words_per_minute":152,"active_speech_words_per_minute":152}});
+        assert!(research_fluency_valid("reference_text_matched", &d));
+        assert!(!research_fluency_valid("unanswered", &d));
+        d["fluency_evidence"]["recording_words_per_minute"] = json!(999);
+        assert!(!research_fluency_valid("reference_text_matched", &d));
+        d["fluency_evidence"]["recording_words_per_minute"] = json!(152);
+        d["secondary_text"] = json!("Trees also sow rainwater as it reaches the ground.");
+        assert!(!research_fluency_valid("asr_disagreement", &d));
+        for k in [
+            "agreed_recognized_words",
+            "recording_words_per_minute",
+            "active_speech_words_per_minute",
+        ] {
+            d["fluency_evidence"][k] = Value::Null;
+        }
+        assert!(research_fluency_valid("asr_disagreement", &d));
+        d["timing"]["speech_ms"] = json!(4000);
+        assert!(!research_fluency_valid("asr_disagreement", &d));
+        assert!(research_fluency_valid("unanswered", &json!({})));
     }
 }
