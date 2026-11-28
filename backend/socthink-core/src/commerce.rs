@@ -786,6 +786,10 @@ async fn complete_scoring_report(
     let Some(key) = state.research_archive_key.as_ref() else {
         return private_json(StatusCode::NOT_FOUND, json!({"code":"DISABLED"}));
     };
+    complete_scoring_bound(&state.pool, &state.user_data_dir, key, headers, body).await
+}
+// Shared narrow archive boundary; no voucher or payment operations.
+async fn complete_scoring_bound(pool: &PgPool, user_data_dir: &std::path::Path, key: &[u8], headers: HeaderMap, body: Bytes) -> Response {
     if headers.contains_key(header::ORIGIN) || headers.contains_key(header::COOKIE) {
         return private_json(StatusCode::FORBIDDEN, json!({"code":"INTERNAL_ONLY"}));
     }
@@ -816,7 +820,7 @@ async fn complete_scoring_report(
     {
         return private_json(StatusCode::BAD_REQUEST, json!({"code":"INVALID_REPORT"}));
     }
-    let parents = fs::read_to_string(state.user_data_dir.join(PARENTS_FILE))
+    let parents = fs::read_to_string(user_data_dir.join(PARENTS_FILE))
         .ok()
         .and_then(|s| serde_json::from_str::<Vec<ParentRecord>>(&s).ok());
     let Some(parent) = parents.and_then(|ps| ps.into_iter().find(|p|
@@ -830,7 +834,7 @@ async fn complete_scoring_report(
         "SELECT exam_access_draft.inspect_research_attempt_access($1,$2,$3)",
     ).bind(id).bind(&envelope.owner_id)
     .bind(envelope.report["paper_id"].as_str().unwrap_or(""))
-    .fetch_one(&state.pool).await;
+    .fetch_one(pool).await;
     match bound {
         Ok(Some(version)) if Some(version) == i64::try_from(parent.session_version.unwrap_or(1).max(1)).ok() => (),
         Ok(_) => return private_json(StatusCode::CONFLICT, json!({"code":"ATTEMPT_NOT_AVAILABLE"})),
@@ -852,7 +856,7 @@ async fn complete_scoring_report(
         .bind(&envelope.lease_id)
         .bind(&envelope.manifest_sha256)
         .bind(&envelope.report)
-        .fetch_one(&state.pool)
+        .fetch_one(pool)
         .await;
     match result.as_deref() {
         Ok("completed") => private_json(
@@ -866,6 +870,54 @@ async fn complete_scoring_report(
             json!({"code":"TEMPORARILY_UNAVAILABLE"}),
         ),
     }
+}
+
+#[derive(Clone)]
+struct WuhanArchiveState { pool: PgPool, user_data_dir: PathBuf, key: Vec<u8> }
+fn wuhan_archive_db_gate(db: &str, mode: &str) -> bool {
+    let Ok(url)=Url::parse(db) else { return false; };
+    if !matches!(url.scheme(),"postgres"|"postgresql") || !matches!(url.host_str(),Some("127.0.0.1"|"localhost")) { return false; }
+    match mode {
+        "production" => url.path()=="/socthink_wuhan_scoring_prod" && url.username()=="wuhan_scoring_archive_runtime",
+        "test" => url.path().ends_with("_ci"),
+        _ => false,
+    }
+}
+pub async fn wuhan_private_archive_router() -> Result<Router, Box<dyn std::error::Error + Send + Sync>> {
+    if env::var("SOCTHINK_WUHAN_PRIVATE_ARCHIVE").as_deref()!=Ok("1") { return Err("private archive disabled".into()); }
+    let mode=env::var("SOCTHINK_WUHAN_ARCHIVE_MODE")?;
+    let db=env::var("SOCTHINK_WUHAN_ARCHIVE_DATABASE_URL")?;
+    if !wuhan_archive_db_gate(&db,&mode) { return Err("dedicated archive database required".into()); }
+    let user_data_dir=PathBuf::from(env::var("SOCTHINK_USER_DATA_DIR")?);
+    if !user_data_dir.is_absolute() || !user_data_dir.join(PARENTS_FILE).is_file() { return Err("live identity store unavailable".into()); }
+    let path=PathBuf::from(env::var("SOCTHINK_WUHAN_ARCHIVE_KEY_FILE")?);
+    let m=fs::symlink_metadata(&path)?;
+    use std::os::unix::fs::PermissionsExt;
+    if !m.is_file() || m.permissions().mode() & 0o077 != 0 || m.len()>128 { return Err("private regular key file required".into()); }
+    let key=decode_hex(fs::read_to_string(path)?.trim()).ok_or("invalid archive key")?;
+    let pool=PgPoolOptions::new().max_connections(2).connect(&db).await?;
+    let ready:bool=sqlx::query_scalar("SELECT has_function_privilege(current_user,'exam_access_draft.complete_research_scoring(text,text,uuid,text,jsonb)','EXECUTE')").fetch_one(&pool).await?;
+    if !ready { return Err("archive role unavailable".into()); }
+    if mode=="production" {
+        let restricted:bool=sqlx::query_scalar("SELECT NOT has_table_privilege(current_user,'exam_access_draft.research_scoring_stage','SELECT') AND NOT has_function_privilege(current_user,'exam_access_draft.archive_research_report(text,text,jsonb)','EXECUTE') AND NOT has_function_privilege(current_user,'exam_access_draft.claim_research_scoring()','EXECUTE')").fetch_one(&pool).await?;
+        if !restricted {return Err("archive role too broad".into());}
+    }
+    Ok(Router::new()
+        .route("/healthz", get(health))
+        .route("/internal/research/wuhan/complete-scoring",post(wuhan_private_complete).layer(DefaultBodyLimit::max(262144)))
+        .with_state(WuhanArchiveState{pool,user_data_dir,key}))
+}
+async fn wuhan_private_complete(State(state):State<WuhanArchiveState>,headers:HeaderMap,body:Bytes)->Response {
+    complete_scoring_bound(&state.pool,&state.user_data_dir,&state.key,headers,body).await
+}
+#[cfg(test)]
+#[test]
+fn wuhan_archive_db_isolation() {
+    assert!(wuhan_archive_db_gate("postgres://wuhan_scoring_archive_runtime@127.0.0.1/socthink_wuhan_scoring_prod","production"));
+    assert!(!wuhan_archive_db_gate("postgres://wuhan_scoring_archive_runtime@127.0.0.1/socthink_billing_prod","production"));
+    assert!(!wuhan_archive_db_gate("postgres://postgres@127.0.0.1/socthink_wuhan_scoring_prod","production"));
+    assert!(!wuhan_archive_db_gate("postgres://wuhan_scoring_archive_runtime@remote.invalid/socthink_wuhan_scoring_prod","production"));
+    assert!(wuhan_archive_db_gate("postgres://postgres@localhost/wuhan_stage_ci","test"));
 }
 
 fn valid_research_paper(p: &str) -> bool {

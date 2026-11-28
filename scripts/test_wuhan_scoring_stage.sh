@@ -14,7 +14,7 @@ export PGPASSWORD="$pw"
 "$pg/createdb" -h 127.0.0.1 -p "$port" wuhan_stage_ci
 export WUHAN_STAGE_TEST_DB="postgres://$(id -un):$pw@127.0.0.1:$port/wuhan_stage_ci"
 psql -h 127.0.0.1 -p "$port" -d wuhan_stage_ci -v ON_ERROR_STOP=1 -q -c 'CREATE SCHEMA exam_access_draft'
-for f in wuhan_research_report_archive wuhan_research_report_erasure wuhan_research_attempt_ticket wuhan_research_strict_archive wuhan_research_scoring_queue wuhan_research_scoring_stage; do
+for f in wuhan_research_report_archive wuhan_research_report_erasure wuhan_research_attempt_ticket wuhan_research_strict_archive wuhan_research_scoring_queue wuhan_research_scoring_stage wuhan_research_scoring_runtime; do
  psql -h 127.0.0.1 -p "$port" -d wuhan_stage_ci -v ON_ERROR_STOP=1 -q -f "ops/db/drafts/$f.sql"
 done
 node_modules/.bin/tsx scripts/test_wuhan_scoring_stage.ts
@@ -43,3 +43,5 @@ if [[ "${WUHAN_R92_REAL_WORKER:-0}" == "1" ]]; then
  curl -fsS "$WUHAN_STAGE_ARCHIVE_ORIGIN/healthz" >/dev/null
  node_modules/.bin/tsx scripts/test_wuhan_r92_real_worker.ts
 fi
+
+psql -h 127.0.0.1 -p "$port" -d wuhan_stage_ci -v ON_ERROR_STOP=1 -q -f scripts/test_wuhan_scoring_runtime.sql
